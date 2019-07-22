@@ -17,11 +17,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public FileOrigin Origin { get; }
 
-        public FilePath(string path, Docset docset)
-            : this(path, docset != null && docset.IsFallback() ? FileOrigin.Fallback : FileOrigin.Current)
-        {
-        }
-
         public FilePath(string path, FileOrigin from = FileOrigin.Current)
         {
             Path = path;
@@ -48,14 +43,19 @@ namespace Microsoft.Docs.Build
 
         public bool Equals(FilePath other)
         {
-            return other?.Path == Path && other?.Origin == Origin;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.Path == Path && other.Origin == Origin;
         }
 
         public int CompareTo(FilePath other)
         {
-            var result = string.Compare(Path, other?.Path, PathUtility.PathComparison);
+            var result = string.Compare(Path, other.Path, PathUtility.PathComparison);
             if (result == 0)
-                result = Origin.CompareTo(other?.Origin);
+                result = Origin.CompareTo(other.Origin);
 
             return result;
         }

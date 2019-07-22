@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
 
             Docset = docset;
-            FilePath = new FilePath(filePath, docset);
+            FilePath = CreateFilePath(filePath, docset);
             SitePath = sitePath;
             SiteUrl = siteUrl;
             CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;
@@ -528,7 +528,7 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = JsonUtility.ReadMime(reader, new FilePath(pathToDocset, docset));
+                        mime = JsonUtility.ReadMime(reader, CreateFilePath(pathToDocset, docset));
                     }
                 }
             }
@@ -538,12 +538,15 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(new FilePath(pathToDocset, docset), 1, 1));
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(CreateFilePath(pathToDocset, docset), 1, 1));
                     }
                 }
             }
 
             return mime;
         }
+
+        private static FilePath CreateFilePath(string path, Docset docset)
+            => new FilePath(path, docset != null && docset.IsFallback() ? FileOrigin.Fallback : FileOrigin.Current);
     }
 }
