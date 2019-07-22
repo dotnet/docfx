@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -15,7 +16,8 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor : IDisposable
     {
-        private readonly string _url;
+        private static readonly Uri _url = new Uri("https://api.github.com/graphql");
+
         private readonly HttpClient _httpClient = new HttpClient();
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
@@ -24,8 +26,6 @@ namespace Microsoft.Docs.Build
 
         public GitHubAccessor(string token = null)
         {
-            _url = "https://api.github.com/graphql";
-
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
             if (!string.IsNullOrEmpty(token))
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
@@ -70,7 +70,7 @@ query ($login: String!) {
                     return (error, null);
                 }
 
-                var grahpApiResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(), new
+                var grahpApiResponse = JsonConvert.DeserializeAnonymousType(response, new
                 {
                     errors = new[]
                     {
@@ -102,10 +102,10 @@ query ($login: String!) {
                     var rateLimitError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "MAX_NODE_LIMIT_EXCEEDED" || e.type == "RATE_LIMITED");
                     if (rateLimitError != null)
                     {
-                        _rateLimitError = Errors.GitHubApiFailed(_url, rateLimitError.message);
+                        _rateLimitError = Errors.GitHubApiFailed(rateLimitError.message);
                     }
 
-                    return (Errors.GitHubApiFailed(_url, rateLimitError?.message ?? grahpApiResponse.errors.First().message), null);
+                    return (Errors.GitHubApiFailed(rateLimitError?.message ?? grahpApiResponse.errors.First().message), null);
                 }
 
                 return (null, new GitHubUser
@@ -119,7 +119,7 @@ query ($login: String!) {
             catch (Exception ex)
             {
                 Log.Write(ex);
-                return (Errors.GitHubApiFailed(_url, ex.InnerException?.Message ?? ex.Message), null);
+                return (Errors.GitHubApiFailed(ex.InnerException?.Message ?? ex.Message), null);
             }
         }
 
@@ -176,7 +176,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     return (error, null);
                 }
 
-                var grahpApiResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(), new
+                var grahpApiResponse = JsonConvert.DeserializeAnonymousType(response, new
                 {
                     errors = new[]
                     {
@@ -229,10 +229,10 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     var rateLimitError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "MAX_NODE_LIMIT_EXCEEDED" || e.type == "RATE_LIMITED");
                     if (rateLimitError != null)
                     {
-                        _rateLimitError = Errors.GitHubApiFailed(_url, rateLimitError.message);
+                        _rateLimitError = Errors.GitHubApiFailed(rateLimitError.message);
                     }
 
-                    return (Errors.GitHubApiFailed(_url, notFoundError?.message ?? rateLimitError?.message ?? grahpApiResponse.errors.First().message), null);
+                    return (Errors.GitHubApiFailed(notFoundError?.message ?? rateLimitError?.message ?? grahpApiResponse.errors.First().message), null);
                 }
 
                 var githubUsers = new List<GitHubUser>();
@@ -258,42 +258,32 @@ query ($owner: String!, $name: String!, $commit: String!) {
             catch (Exception ex)
             {
                 Log.Write(ex);
-                return (Errors.GitHubApiFailed(_url, ex.InnerException?.Message ?? ex.Message), null);
+                return (Errors.GitHubApiFailed(ex.InnerException?.Message ?? ex.Message), null);
             }
         }
 
-        private async Task<(Error, HttpResponseMessage)> Query(string query, object variables)
+        private async Task<(Error, string)> Query(string query, object variables)
         {
-            var request = new
-            {
-                query,
-                variables,
-            };
+            var request = JsonUtility.Serialize(new { query, variables });
 
-            var response = await RetryUtility.Retry(
-                   () => _httpClient.SendAsync(
-                       new HttpRequestMessage
-                       {
-                           RequestUri = new Uri(_url),
-                           Content = new StringContent(JsonUtility.Serialize(request), System.Text.Encoding.UTF8, "application/json"),
-                           Method = HttpMethod.Post,
-                       }),
+            using (var response = await RetryUtility.Retry(
+                   () => _httpClient.PostAsync(_url, new StringContent(request, Encoding.UTF8, "application/json")),
                    ex =>
                     (ex.InnerException ?? ex) is OperationCanceledException ||
-                    (ex.InnerException ?? ex) is System.IO.IOException);
-
-            if (!response.IsSuccessStatusCode)
+                    (ex.InnerException ?? ex) is System.IO.IOException))
             {
-                var message = await response.Content.ReadAsStringAsync();
-
-                if (response.StatusCode == (HttpStatusCode)401)
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
                 {
-                    _unauthorizedError = Errors.GitHubApiFailed(_url, message);
+                    if (response.StatusCode == (HttpStatusCode)401)
+                    {
+                        _unauthorizedError = Errors.GitHubApiFailed(content);
+                    }
+                    return (Errors.GitHubApiFailed(content), null);
                 }
-                return (Errors.GitHubApiFailed(_url, message), null);
-            }
 
-            return (null, response);
+                return (null, content);
+            }
         }
     }
 }
