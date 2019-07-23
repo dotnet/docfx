@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                             };
                             if (!docset.Config.Output.CopyResources)
                             {
-                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath));
+                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.Path));
                             }
                             output.ResourceOutput = resourceOutput;
                         }
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteJson(
                 new
                 {
-                    groups = monikerGroups.Any() ? monikerGroups.Select(item => new
+                    groups = monikerGroups.Any() ? monikerGroups.OrderBy(item => item.Key).Select(item => new
                     {
                         group = item.Key,
                         monikers = item.Value,

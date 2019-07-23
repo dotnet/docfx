@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
                 if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
                     var content = RestoreMap.GetRestoredFileContent(docset, url);
-                    var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, url);
+                    var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
                     foreach (var spec in xrefMap.References)
                     {
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                     using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         var json = ReadJsonFragment(stream, start, end);
-                        return JsonUtility.Deserialize<ExternalXrefSpec>(json, filePath);
+                        return JsonUtility.Deserialize<ExternalXrefSpec>(json, new FilePath(filePath));
                     }
                 })));
             }

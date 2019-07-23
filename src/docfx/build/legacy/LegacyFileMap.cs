@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +14,6 @@ namespace Microsoft.Docs.Build
         public static void Convert(
             Docset docset,
             Context context,
-            List<Document> documents,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap,
             Dictionary<Document, PublishItem> fileManifests,
             LegacyVersionProvider legacyVersionProvider)
@@ -25,19 +23,19 @@ namespace Microsoft.Docs.Build
                 var listBuilder = new ListBuilder<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
 
                 Parallel.ForEach(
-                    documents,
-                    document =>
+                    fileManifests,
+                    fileManifest =>
                     {
+                        var document = fileManifest.Key;
                         if (!document.IsPage)
                         {
                             return;
                         }
-                        fileManifests.TryGetValue(document, out var publishItem);
-                        var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, publishItem);
+                        var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var version = legacyVersionProvider.GetLegacyVersion(document);
-                        var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, document.ContentType, version, publishItem.Monikers);
+                        var fileItem = LegacyFileMapItem.Instance(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, document.ContentType, version, fileManifest.Value.Monikers);
                         if (fileItem != null)
                         {
                             listBuilder.Add((PathUtility.NormalizeFile(document.ToLegacyPathRelativeToBasePath(docset)), fileItem));

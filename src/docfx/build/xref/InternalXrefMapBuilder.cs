@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -69,11 +68,11 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(schemaErrors);
                     xrefs.AddRange(specs);
                 }
-                context.ErrorLog.Write(file.ToString(), errors);
+                context.ErrorLog.Write(file, errors);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file.ToString(), dex.Error, isException: true);
+                context.ErrorLog.Write(file, dex.Error, isException: true);
             }
             catch
             {
@@ -118,7 +117,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Length > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclaringFile);
-                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
+                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath.Path)));
             }
 
             // uid conflicts with overlapping monikers
