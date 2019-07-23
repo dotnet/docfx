@@ -7,12 +7,13 @@ root = true
 [*]
 charset = utf-8
 indent_style = space
+trim_trailing_whitespace = true
+insert_final_newline = true
 # (Please don't specify an indent_size here; that has too many unintended consequences.)
 
 # Code files
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
-insert_final_newline = true
 charset = utf-8-bom
 
 # XML project files
@@ -30,6 +31,10 @@ indent_size = 2
 # YAML files
 [*.{csproj,yml}]
 indent_size = 2
+
+# Markdown files
+[*.{md,yml}]
+trim_trailing_whitespace = false
 
 # Powershell files
 [*.ps1]
