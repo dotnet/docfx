@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    // srting -> attribute name, JToken -> valid value, EnumDependenciesSchema -> other attribute depends top attribute
     internal class EnumDependenciesSchema : Dictionary<string, Dictionary<JToken, EnumDependenciesSchema>>
     {
     }

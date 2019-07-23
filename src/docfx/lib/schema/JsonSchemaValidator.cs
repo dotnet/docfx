@@ -393,7 +393,7 @@ namespace Microsoft.Docs.Build
                 var (fieldName, fieldIndex) = GetFieldNameAndIndex(fieldNameWithIndex);
                 if (map.TryGetValue(fieldName, out var fieldRawValue))
                 {
-                    var fieldValue = GetFieldValue(fieldRawValue, fieldIndex);
+                    var fieldValue = fieldRawValue is JArray array && fieldIndex < array.Count ? array[fieldIndex] : null;
 
                     if (fieldValue == null)
                     {
@@ -431,36 +431,20 @@ namespace Microsoft.Docs.Build
         // For array type: name = 'topic[0]', output = ('topic', 0) or name = 'topic[1]', output = ('topic', 1) or ...
         private (string, int) GetFieldNameAndIndex(string name)
         {
-            var match = Regex.Match(name, @"\[\d+\]$");
-
-            if (match.Success)
+            if (name.Contains('[') && name.Contains(']'))
             {
-                if (int.TryParse(match.Value.Substring(1, match.Value.Length - 2), out var index))
+                var match = Regex.Match(name, @"\[\d+\]$");
+
+                if (match.Success)
                 {
-                    return (name.Substring(0, name.Length - match.Value.Length), index);
+                    if (int.TryParse(match.Value.Substring(1, match.Value.Length - 2), out var index))
+                    {
+                        return (name.Substring(0, name.Length - match.Value.Length), index);
+                    }
                 }
             }
 
             return (name, 0);
-        }
-
-        private JToken GetFieldValue(JToken fieldRawValue, int fieldIndex)
-        {
-            if (fieldRawValue.Type == JTokenType.Array)
-            {
-                var array = fieldRawValue as JArray;
-
-                if (fieldIndex < array.Count)
-                {
-                    return (fieldRawValue as JArray)[fieldIndex];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            return fieldRawValue;
         }
 
         private Error OverwriteError(JsonSchema schema, string name, Error baseError)
