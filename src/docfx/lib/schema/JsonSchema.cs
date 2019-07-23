@@ -11,7 +11,14 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(JsonSchemaConverter))]
     internal class JsonSchema
     {
+        /// <summary>
+        /// `true` is a valid boolean JSON schema. A `true` JSON schema is deserialized into this instance.
+        /// </summary>
         public static readonly JsonSchema TrueSchema = new JsonSchema();
+
+        /// <summary>
+        /// `false` is a valid boolean JSON schema. A `false` JSON schema is deserialized into this instance.
+        /// </summary>
         public static readonly JsonSchema FalseSchema = new JsonSchema();
 
         // A core subset of JSON schema
