@@ -393,7 +393,7 @@ namespace Microsoft.Docs.Build
                 var (fieldName, fieldIndex) = GetFieldNameAndIndex(fieldNameWithIndex);
                 if (map.TryGetValue(fieldName, out var fieldRawValue))
                 {
-                    var fieldValue = fieldRawValue is JArray array && fieldIndex < array.Count ? array[fieldIndex] : null;
+                    var fieldValue = fieldRawValue is JArray array ? (fieldIndex < array.Count ? array[fieldIndex] : null) : fieldRawValue;
 
                     if (fieldValue == null)
                     {
