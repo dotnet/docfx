@@ -1599,8 +1599,8 @@ inputs:
   docs/TOC.yml: |
     items:
       - name: test
-        href: 1/toc.yml
-  docs/1/toc.yml: |
+        href: 1/TOC.yml
+  docs/1/TOC.yml: |
     - name: included toc
       href: non-existing.md
 outputs:
