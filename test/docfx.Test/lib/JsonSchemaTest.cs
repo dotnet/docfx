@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
         // Test against a subset of JSON schema test suite: https://github.com/json-schema-org/JSON-Schema-Test-Suite
         private static readonly string[] s_notSupportedSuites =
         {
-            "additionalItems",
             "allOf",
             "anyOf",
             "definitions",
@@ -216,6 +215,14 @@ namespace Microsoft.Docs.Build
         [InlineData("{'contains': {'const': 1}}", "[1]", "")]
         [InlineData("{'contains': {'const': 1}}", "[2]",
             @"['warning','array-contains-failed','Array '' should contain at least one item that matches JSON schema','file',1,1]")]
+
+        // additionalItems validation
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': true}", "[1]", "")]
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': false}", "[1]", "")]
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': false}", "[1, 2]",
+            "['warning','array-length-invalid','Array '' length should be <= 1','file',1,1]")]
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': {'const': 2}}", "[1, 3]",
+            "['warning','invalid-value','Invalid value for '': '3'','file',1,5]")]
 
         // required validation
         [InlineData("{'required': []}", "{}", "")]

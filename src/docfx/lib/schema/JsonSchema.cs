@@ -74,6 +74,11 @@ namespace Microsoft.Docs.Build
         public (JsonSchema schema, JsonSchema[] schemas) Items { get; set; }
 
         /// <summary>
+        /// The JSON schema that applies to additional items of an array.
+        /// </summary>
+        public JsonSchema AdditionalItems { get; set; }
+
+        /// <summary>
         /// Whether an array contains this element.
         /// </summary>
         public JsonSchema Contains { get; set; }

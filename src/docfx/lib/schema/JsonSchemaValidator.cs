@@ -127,15 +127,20 @@ namespace Microsoft.Docs.Build
             }
             else if (eachItem != null)
             {
-                if (array.Count < eachItem.Length)
+                for (var i = 0; i < array.Count; i++)
                 {
-                    errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {eachItem.Length}")));
-                }
-                else
-                {
-                    for (var i = 0; i < eachItem.Length; i++)
+                    if (i < eachItem.Length)
                     {
                         Validate(eachItem[i], name, array[i], errors);
+                    }
+                    else if (schema.AdditionalItems == JsonSchema.FalseSchema)
+                    {
+                        errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $"<= {eachItem.Length}")));
+                        break;
+                    }
+                    else if (schema.AdditionalItems != null && schema.AdditionalItems != JsonSchema.FalseSchema)
+                    {
+                        Validate(schema.AdditionalItems, name, array[i], errors);
                     }
                 }
             }
@@ -197,7 +202,7 @@ namespace Microsoft.Docs.Build
                     {
                         errors.Add((name, Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString())));
                     }
-                    else
+                    else if (schema.AdditionalProperties != JsonSchema.TrueSchema)
                     {
                         Validate(schema.AdditionalProperties, name, value, errors);
                     }

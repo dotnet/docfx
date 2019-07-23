@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
+    /// <summary>
+    /// JsonConverter that converts a tuple based on whether input JSON is a scalar, array or object.
+    /// </summary>
     internal class UnionTypeConverter : JsonConverter
     {
         public override bool CanWrite => false;
@@ -17,35 +20,47 @@ namespace Microsoft.Docs.Build
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var genericTypes = objectType.GetGenericArguments();
-            var args = new object[genericTypes.Length];
-
-            for (var i = 0; i < args.Length; i++)
-            {
-                if (TypeMatches(reader.TokenType, genericTypes[i]))
-                {
-                    args[i] = serializer.Deserialize(reader, genericTypes[i]);
-                    break;
-                }
-            }
+            var args = ReadJsonCore(reader, objectType, serializer);
 
             return Activator.CreateInstance(objectType, args);
         }
 
-        private static bool TypeMatches(JsonToken tokenType, Type type)
+        private static object[] ReadJsonCore(JsonReader reader, Type objectType, JsonSerializer serializer)
         {
-            if (type == typeof(string))
-                return tokenType == JsonToken.String;
-            if (type == typeof(bool))
-                return tokenType == JsonToken.Boolean;
-            if (type == typeof(int))
-                return tokenType == JsonToken.Integer;
-            if (type == typeof(float) || type == typeof(double))
-                return tokenType == JsonToken.Float;
-            if (type.IsArray)
-                return tokenType == JsonToken.StartArray;
+            var genericTypes = objectType.GetGenericArguments();
+            var i = 0;
 
-            return tokenType == JsonToken.StartObject;
+            switch (reader.TokenType)
+            {
+                case JsonToken.StartArray:
+                    for (i = 0; i < genericTypes.Length; i++)
+                    {
+                        if (genericTypes[i].IsArray)
+                        {
+                            break;
+                        }
+                    }
+                    break;
+
+                case JsonToken.StartObject:
+                    for (i = 0; i < genericTypes.Length; i++)
+                    {
+                        if (genericTypes[i].IsPrimitive || genericTypes[i] == typeof(string))
+                        {
+                            break;
+                        }
+                    }
+                    break;
+            }
+
+            if (i == genericTypes.Length)
+            {
+                i = 0;
+            }
+
+            var args = new object[genericTypes.Length];
+            args[i] = serializer.Deserialize(reader, genericTypes[i]);
+            return args;
         }
     }
 }
