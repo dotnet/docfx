@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
                     // in v2, the non-reoslved link will be relocated to a relative path, v3 tries to avoid the behavior change here
                     // the relocation of relative path can be removed when migration from v2 to v3 is done
                     var pathToDocsetAbosulteUrl = Document.PathToAbsoluteUrl(pathToDocset, Document.GetContentType(pathToDocset), null, declaringFile.Docset.Config.Output.Json, true);
-                    return (error, pathToDocsetAbosulteUrl, fragment, linkType, null, false);
+                    return (error, pathToDocsetAbosulteUrl + query + fragment, fragment, linkType, null, false);
                 }
 
                 // set file to resource got from histroy, reset the error
