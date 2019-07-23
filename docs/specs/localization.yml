@@ -951,7 +951,7 @@ repos:
           [link to deleted markdown doesnt work](b.md)
 outputs:
   docs/a.json: |
-    {"conceptual":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b\">link to deleted markdown doesnt work</a></p>\n"}
+    {"conceptual":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesnt work</a></p>\n"}
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'b.md'.","docs/a.md",2,1]
   .dependencymap.json: |

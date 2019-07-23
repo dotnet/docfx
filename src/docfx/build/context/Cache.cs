@@ -32,13 +32,13 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, TableOfContentsModel tocModel, List<Document> referencedFiles, List<Document> referencedTocs) LoadTocModel(Context context, Document file)
             => _tocModelCache.GetOrAdd(
-                file.FilePath,
+                file.FilePath.Path,
                 new Lazy<(List<Error>, TableOfContentsModel, List<Document>, List<Document>)>(
                     () => TableOfContentsParser.Load(context, file))).Value;
 
         private string GetKeyFromFile(Document file)
         {
-            var filePath = Path.Combine(file.Docset.DocsetPath, file.FilePath);
+            var filePath = Path.Combine(file.Docset.DocsetPath, file.FilePath.Path);
             return filePath + new FileInfo(filePath).LastWriteTime;
         }
     }

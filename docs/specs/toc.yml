@@ -134,19 +134,19 @@ outputs:
                   "items":[  
                       {  
                         "name":"Reference No-Existing File 1",
-                        "href":"no-existing"
+                        "href":"no-existing.md"
                       },
                       {  
                         "name":"Reference No-Existing File 2",
-                        "href":"no-existing.system"
+                        "href":"no-existing.system.md"
                       },
                       {  
                         "name":"Reference No-Existing File 3",
-                        "href":"../no-existing"
+                        "href":"../no-existing.md"
                       },
                       {  
                         "name":"Reference No-Existing File 4",
-                        "href":"no-existing"
+                        "href":"~/docs/no-existing.md"
                       }
                   ],
                   "name":"No Existing File Reference"
@@ -594,20 +594,28 @@ outputs:
        ]
     }
 ---
-# Homepage only shows when topic href is set
+# Homepage only shows when topic href is set and href is not 
 inputs:
   docfx.yml:
   docs/TOC.yml: |
-    - name: name
+    - name: name1
       href: /f1/a
+    - name: name2
+      href: /f2/a
+      topicHref: /f2/b
 outputs:
   docs/toc.json: |
     {
        "items":[
           {
-             "name":"name",
+             "name":"name1",
              "href":"/f1/a",
-             "!homepage": "f1/a"
+             "!homepage": null
+          },
+          {
+             "name":"name2",
+             "href":"/f2/b",
+             "!homepage": null
           }
        ]
     }

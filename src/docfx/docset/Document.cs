@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         ///  - Does not start with '/'
         ///  - Does not end with '/'
         /// </summary>
-        public string FilePath { get; }
+        public FilePath FilePath { get; }
 
         /// <summary>
         /// Gets file path relative to site root that is:
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
 
             Docset = docset;
-            FilePath = filePath;
+            FilePath = CreateFilePath(filePath, docset);
             SitePath = sitePath;
             SiteUrl = siteUrl;
             CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;
@@ -140,9 +140,9 @@ namespace Microsoft.Docs.Build
             IsPage = isPage;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
-            _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath));
+            _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
 
-            Debug.Assert(IsValidRelativePath(FilePath));
+            Debug.Assert(IsValidRelativePath(FilePath.Path));
             Debug.Assert(IsValidRelativePath(SitePath));
 
             Debug.Assert(SiteUrl.StartsWith('/'));
@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(ContentType != ContentType.Redirection);
             Debug.Assert(!IsFromHistory);
 
-            return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath));
+            return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path));
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
             if (result == 0)
                 result = ContentType.CompareTo(other.ContentType);
             if (result == 0)
-                result = PathUtility.PathComparer.Compare(FilePath, other.FilePath);
+                result = FilePath.CompareTo(other.FilePath);
             return result;
         }
 
@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
             }
 
             return string.Equals(Docset.DocsetPath, other.Docset.DocsetPath, PathUtility.PathComparison) &&
-                   string.Equals(FilePath, other.FilePath, PathUtility.PathComparison) &&
+                   Equals(FilePath, other.FilePath) &&
                    ContentType == other.ContentType;
         }
 
@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
 
         public override string ToString()
         {
-            return FilePath;
+            return FilePath.ToString();
         }
 
         public static bool operator ==(Document obj1, Document obj2)
@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
+            var mime = type == ContentType.Page ? ReadMimeFromFile(docset, filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
@@ -459,7 +459,7 @@ namespace Microsoft.Docs.Build
 
         private (string docId, string versionIndependentId) LoadDocumentId()
         {
-            var sourcePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath));
+            var sourcePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath.Path));
 
             var (mappedDepotName, mappedSourcePath) = Docset.Config.DocumentId.GetMapping(sourcePath);
 
@@ -518,7 +518,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath)
+        private static SourceInfo<string> ReadMimeFromFile(Docset docset, string pathToDocset, string filePath)
         {
             SourceInfo<string> mime = default;
 
@@ -528,7 +528,7 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = JsonUtility.ReadMime(reader, pathToDocset);
+                        mime = JsonUtility.ReadMime(reader, CreateFilePath(pathToDocset, docset));
                     }
                 }
             }
@@ -538,12 +538,15 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(pathToDocset, 1, 1));
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(CreateFilePath(pathToDocset, docset), 1, 1));
                     }
                 }
             }
 
             return mime;
         }
+
+        private static FilePath CreateFilePath(string path, Docset docset)
+            => new FilePath(path, docset != null && docset.IsFallback() ? FileOrigin.Fallback : FileOrigin.Current);
     }
 }
