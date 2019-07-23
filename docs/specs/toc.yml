@@ -1611,4 +1611,4 @@ outputs:
           - name: included toc
             href: 1/non-existing
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: 'non-existing.md'.","docs/1/toc.yml",2,9]
+    ["warning","file-not-found","Invalid file link: 'non-existing.md'.","docs/1/TOC.yml",2,9]
