@@ -182,7 +182,7 @@ inputs:
   docfx.yml:
   a.md: '[](../a.md)'
 outputs:
-  a.json: '{ "conceptual": "<p><a href=\"\"></a></p>" }'
+  a.json: '{ "conceptual": "<p><a href=\"../a.md\"></a></p>" }'
   .errors.log: |
     ["warning","file-path-invalid","Link '../a.md' points to a local file outside current directory","a.md",1,1]
 ---
