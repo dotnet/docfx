@@ -36,9 +36,15 @@ namespace Microsoft.Docs.Build
 
         public string OriginalContentGitUrl { get; set; }
 
+        [JsonProperty("_op_articleFileGitUrl")]
+        public string ArticleFileGitUrl { get; set; }
+
         public string OriginalContentGitUrlTemplate { get; set; }
 
         public string Gitcommit { get; set; }
+
+        [JsonProperty("_op_articleFileGitCommit")]
+        public string ArticleFileGitCommit { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool EnableLocSxs { get; set; }

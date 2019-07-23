@@ -135,7 +135,20 @@ namespace Microsoft.Docs.Build
             outputMetadata.Monikers = monikers;
 
             (outputMetadata.DocumentId, outputMetadata.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (outputMetadata.ContentGitUrl, outputMetadata.OriginalContentGitUrl, outputMetadata.OriginalContentGitUrlTemplate, outputMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
+
+            var (contentGitUrl, originalContentGitUrl, originalContentGitUrlTemplate, gitcommitUrl) = context.ContributionProvider.GetGitUrls(file);
+            outputMetadata.OriginalContentGitUrlTemplate = originalContentGitUrlTemplate;
+            if (file.Mime != null && !TemplateEngine.IsLandingData(file.Mime))
+            {
+                outputMetadata.ArticleFileGitCommit = gitcommitUrl;
+                outputMetadata.ArticleFileGitUrl = originalContentGitUrl;
+            }
+            else
+            {
+                outputMetadata.OriginalContentGitUrl = originalContentGitUrl;
+                outputMetadata.ContentGitUrl = contentGitUrl;
+                outputMetadata.Gitcommit = gitcommitUrl;
+            }
 
             List<Error> contributorErrors;
             (contributorErrors, outputMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);

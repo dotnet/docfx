@@ -290,7 +290,7 @@ outputs:
       "!contributors": null
     }
 ---
-# Show content_git_url, original_content_git_url and gitcommit
+# Show content_git_url, original_content_git_url and gitcommit for conceptual page
 repos:
   https://docascode@github.com/testowner/testrepo.git#master-content-git-url:
     - files:
@@ -304,6 +304,25 @@ outputs:
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-content-git-url/docs/index.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+    }
+---
+# Show content_git_url, original_content_git_url and gitcommit for sdp page
+repos:
+  https://docascode@github.com/testowner/testrepo.git#master-sdp-git-url:
+    - files:
+        docs/page.yml: |
+          #YamlMime:TestPage
+        docfx.yml:
+inputs:
+  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: "{}"
+outputs:
+  docs/page.json: |
+    {
+      "!content_git_url": null,
+      "_op_articleFileGitUrl": "https://github.com/testowner/testrepo/blob/master-sdp-git-url/docs/page.yml",
+      "original_content_git_url_template": "{repo}/blob/{branch}/docs/page.yml",
+      "_op_articleFileGitCommit": "https://github.com/testowner/testrepo/blob/a11462a1ecdbaa6843277f0e77072ae90dd259c0/docs/page.yml",
     }
 ---
 # Specify editLink repo and branch in config
