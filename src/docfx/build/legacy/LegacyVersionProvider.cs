@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (glob, monikerRange) in _versionConfigs)
             {
-                if (glob(file.FilePath))
+                if (glob(file.FilePath.Path))
                 {
                     return monikerRange;
                 }

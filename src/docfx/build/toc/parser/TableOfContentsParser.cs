@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
                 {
                     Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
                     TocHref = resolvedTocHref,
-                    Homepage = !string.IsNullOrEmpty(tocModelItem.TopicHref) ? resolvedTopicHref : default,
+                    Homepage = string.IsNullOrEmpty(tocModelItem.Href) && !string.IsNullOrEmpty(tocModelItem.TopicHref) ? resolvedTopicHref : default,
                     Name = tocModelItem.Name.Or(resolvedTopicName),
                     Document = document ?? subChildrenFirstItem?.Document,
                     Items = subChildren?.Items ?? tocModelItem.Items,

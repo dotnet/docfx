@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
             var content = RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
 
-            return JsonUtility.Deserialize<DependencyLockModel>(content, dependencyLockPath);
+            return JsonUtility.Deserialize<DependencyLockModel>(content, new FilePath(dependencyLockPath));
         }
 
         public static void Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)

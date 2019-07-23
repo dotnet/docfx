@@ -9,7 +9,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class TableOfContentsMetadata
+    internal class TableOfContentsMetadata
     {
         public List<string> Monikers { get; set; }
 

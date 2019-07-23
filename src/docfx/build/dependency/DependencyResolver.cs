@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
 
         private string ResolveToDocsetRelativePath(string path, Document declaringFile)
         {
-            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(declaringFile.FilePath), path));
+            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(declaringFile.FilePath.Path), path));
             if (!File.Exists(Path.Combine(declaringFile.Docset.DocsetPath, docsetRelativePath)))
             {
                 foreach (var (alias, aliasPath) in _resolveAlias)

@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input, string file)
+        public static T Deserialize<T>(string input, FilePath file)
         {
             var (_, token) = ParseAsJToken(input, file);
             return token.ToObject<T>(JsonUtility.Serializer);
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(string input, string file)
+        public static (List<Error>, JToken) Parse(string input, FilePath file)
         {
             var (errors, token) = ParseAsJToken(input, file);
             var (nullErrors, result) = token.RemoveNulls();
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static (List<Error>, JToken) ParseAsJToken(string input, string file)
+        private static (List<Error>, JToken) ParseAsJToken(string input, FilePath file)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JToken ParseAsJToken(IParser parser, string file, List<Error> errors)
+        private static JToken ParseAsJToken(IParser parser, FilePath file, List<Error> errors)
         {
             switch (parser.Expect<NodeEvent>())
             {
@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
             return new JValue(value);
         }
 
-        private static JToken SetSourceInfo(JToken token, ParsingEvent node, string file)
+        private static JToken SetSourceInfo(JToken token, ParsingEvent node, FilePath file)
         {
             return JsonUtility.SetSourceInfo(
                 token,
