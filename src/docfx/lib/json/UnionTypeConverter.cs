@@ -59,7 +59,10 @@ namespace Microsoft.Docs.Build
             }
 
             var args = new object[genericTypes.Length];
-            args[i] = serializer.Deserialize(reader, genericTypes[i]);
+            if (i < args.Length)
+            {
+                args[i] = serializer.Deserialize(reader, genericTypes[i]);
+            }
             return args;
         }
     }
