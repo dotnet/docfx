@@ -232,6 +232,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
+            var source = new SourceInfo<string>(path, href);
 
             switch (UrlUtility.GetLinkType(href))
             {
@@ -239,7 +240,7 @@ namespace Microsoft.Docs.Build
                     return (null, declaringFile, query, fragment, LinkType.SelfBookmark, null);
 
                 case LinkType.WindowsAbsolutePath:
-                    return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath, null);
+                    return (Errors.LocalFilePath(source), null, null, null, LinkType.WindowsAbsolutePath, null);
 
                 case LinkType.RelativePath:
                     // Resolve path relative to docset
@@ -247,7 +248,7 @@ namespace Microsoft.Docs.Build
 
                     if (pathToDocset.StartsWith(".."))
                     {
-                        return (Errors.FilePathInvalid(href), null, null, null, LinkType.RelativePath, "");
+                        return (Errors.FilePathInvalid(source), null, null, null, LinkType.RelativePath, "");
                     }
 
                     // Use the actual file name case
@@ -281,7 +282,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.FileNotFound(href), null, query, fragment, LinkType.RelativePath, pathToDocset);
+                        return (Errors.FileNotFound(source), null, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
                     return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
