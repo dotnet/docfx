@@ -240,6 +240,12 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
             "['warning','missing-paired-attribute','Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,11]")]
 
+        // dependencies as schema
+        [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{}", "")]
+        [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
+        [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
+            "['warning','missing-attribute','Missing required attribute: 'key2'','file',1,1]")]
+
         // either validation
         [InlineData("{'either': []}", "{}", "")]
         [InlineData("{'either': [['key1', 'key2']]}", "{'key1': 1}", "")]
