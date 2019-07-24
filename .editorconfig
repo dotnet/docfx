@@ -13,7 +13,3 @@ indent_size = 2
 
 [*.{md,yml}]
 trim_trailing_whitespace = false
-
- # Dotnet diagnostic settings
-[*.{cs,vb}]
-dotnet_diagnostic.MEN002.severity = none
