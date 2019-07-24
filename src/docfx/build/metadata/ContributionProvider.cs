@@ -43,9 +43,11 @@ namespace Microsoft.Docs.Build
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
+            Contributor authorFromCommits = null;
             var contributors = new List<Contributor>();
             var errors = new List<Error>();
-            var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var contributorsGroupByEmail = new Dictionary<string, Contributor>(StringComparer.OrdinalIgnoreCase);
+            var contributorIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
             var contributionInfo = updatedDateTime != default
                 ? new ContributionInfo
@@ -69,13 +71,18 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var commit in contributionCommits)
                 {
-                    if (!emails.Add(commit.AuthorEmail))
-                        continue;
+                    if (!contributorsGroupByEmail.TryGetValue(commit.AuthorEmail, out var contributor))
+                    {
+                        contributorsGroupByEmail[commit.AuthorEmail] = contributor = await GetContributor(commit);
+                    }
 
-                    var contributor = await GetContributor(commit);
                     if (contributor != null && !excludes.Contains(contributor.Name))
                     {
-                        contributors.Add(contributor);
+                        authorFromCommits = contributor;
+                        if (contributorIds.Add(contributor.Id))
+                        {
+                            contributors.Add(contributor);
+                        }
                     }
                 }
             }
@@ -89,10 +96,7 @@ namespace Microsoft.Docs.Build
             if (contributionInfo != null)
             {
                 contributionInfo.Author = author;
-                contributionInfo.Contributors = contributors
-                    .GroupBy(c => c.Id, StringComparer.OrdinalIgnoreCase)
-                    .Select(c => c.First())
-                    .ToList();
+                contributionInfo.Contributors = contributors;
             }
 
             return (errors, contributionInfo);
@@ -119,12 +123,9 @@ namespace Microsoft.Docs.Build
                     errors.AddIfNotNull(error);
                     return result?.ToContributor();
                 }
-                else if (contributors.Count > 0)
-                {
-                    // When author name is not specified, last contributor is author
-                    return contributors[contributors.Count - 1];
-                }
-                return null;
+
+                // When author name is not specified, last contributor is author
+                return authorFromCommits;
             }
 
             List<GitCommit> GetContributionCommits()
