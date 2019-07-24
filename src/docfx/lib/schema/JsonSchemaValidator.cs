@@ -101,13 +101,7 @@ namespace Microsoft.Docs.Build
             if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
                 errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {schema.MinItems}")));
 
-            if (schema.Items != null)
-            {
-                foreach (var item in array)
-                {
-                    Validate(schema.Items, name, item, errors);
-                }
-            }
+            ValidateItems(schema, name, array, errors);
 
             if (schema.UniqueItems && array.Distinct(JsonUtility.DeepEqualsComparer).Count() != array.Count)
             {
@@ -117,6 +111,38 @@ namespace Microsoft.Docs.Build
             if (schema.Contains != null && !array.Any(item => Validate(schema.Contains, item).Count == 0))
             {
                 errors.Add((name, Errors.ArrayContainsFailed(JsonUtility.GetSourceInfo(array), name)));
+            }
+        }
+
+        private void ValidateItems(JsonSchema schema, string name, JArray array, List<(string name, Error)> errors)
+        {
+            var (items, eachItem) = schema.Items;
+
+            if (items != null)
+            {
+                foreach (var item in array)
+                {
+                    Validate(items, name, item, errors);
+                }
+            }
+            else if (eachItem != null)
+            {
+                for (var i = 0; i < array.Count; i++)
+                {
+                    if (i < eachItem.Length)
+                    {
+                        Validate(eachItem[i], name, array[i], errors);
+                    }
+                    else if (schema.AdditionalItems == JsonSchema.FalseSchema)
+                    {
+                        errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $"<= {eachItem.Length}")));
+                        break;
+                    }
+                    else if (schema.AdditionalItems != null && schema.AdditionalItems != JsonSchema.FalseSchema)
+                    {
+                        Validate(schema.AdditionalItems, name, array[i], errors);
+                    }
+                }
             }
         }
 
@@ -176,7 +202,7 @@ namespace Microsoft.Docs.Build
                     {
                         errors.Add((name, Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString())));
                     }
-                    else
+                    else if (schema.AdditionalProperties != JsonSchema.TrueSchema)
                     {
                         Validate(schema.AdditionalProperties, name, value, errors);
                     }

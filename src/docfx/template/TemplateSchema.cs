@@ -30,7 +30,9 @@ namespace Microsoft.Docs.Build
         {
             if (string.Equals(schemaName, "LandingData"))
                 return true;
-            return File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
+
+            return File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.tmpl"))
+                || File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
         }
 
         private (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore(string schemaDir, string schemaName)
