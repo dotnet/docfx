@@ -26,11 +26,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly string[] s_notSupportedTests =
         {
-            //dependencies
-            "dependencies with boolean subschemas",
-            "multiple dependencies subschema",
-            "dependencies with escaped characters",
-
              // ref
             "relative pointer ref to object",
             "relative pointer ref to array",
