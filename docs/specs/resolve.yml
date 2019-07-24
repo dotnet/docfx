@@ -161,7 +161,7 @@ inputs:
     [Missing](c.md)
 outputs:
   docs/a.json: |
-    { "conceptual": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb\">Invalid</a><a href=\"c\">Missing</a></p>" }
+    { "conceptual": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'a<>b.md'.","docs/a.md",1,11]
     ["warning","file-not-found","Invalid file link: 'c.md'.","b.md",1,1]
@@ -334,7 +334,7 @@ inputs:
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"../b\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b\">B3</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"%7E/b.md\">B1</a>Link to <a href=\"b\">B2</a>Link to <a href=\"%7Edocs/b.md\">B3</a></p>" }
   docs/b.json:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: '~/b.md'.","docs/a.md",1,9]
@@ -359,7 +359,7 @@ outputs:
     { "conceptual": "<p>Link to <a href=\"b\">B1.1</a>
                         Link to <a href=\"b\">B1.2</a>
                         Link to <a href=\"b\">B2</a>
-                        Link to <a href=\"docs/b\">B3</a>
+                        Link to <a href=\"%7E/docs/b.md\">B3</a>
                         <img src=\"c.png\" alt=\"C\"></p>" 
     }
   docs/b.json:
