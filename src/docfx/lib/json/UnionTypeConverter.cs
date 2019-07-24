@@ -28,42 +28,53 @@ namespace Microsoft.Docs.Build
         private static object[] ReadJsonCore(JsonReader reader, Type objectType, JsonSerializer serializer)
         {
             var genericTypes = objectType.GetGenericArguments();
-            var i = 0;
+            var args = new object[genericTypes.Length];
 
-            switch (reader.TokenType)
+            // Trying to find an exact match first
+            for (var i = 0; i < genericTypes.Length; i++)
+            {
+                if (TypeExactlyMatches(reader.TokenType, genericTypes[i]))
+                {
+                    args[i] = serializer.Deserialize(reader, genericTypes[i]);
+                    return args;
+                }
+            }
+
+            // Exclude types that never matches
+            for (var i = 0; i < genericTypes.Length; i++)
+            {
+                if (!TypeNeverMatches(reader.TokenType, genericTypes[i]))
+                {
+                    args[i] = serializer.Deserialize(reader, genericTypes[i]);
+                    return args;
+                }
+            }
+
+            return args;
+        }
+
+        private static bool TypeExactlyMatches(JsonToken tokenType, Type objectType)
+        {
+            switch (tokenType)
             {
                 case JsonToken.StartArray:
-                    for (i = 0; i < genericTypes.Length; i++)
-                    {
-                        if (genericTypes[i].IsArray)
-                        {
-                            break;
-                        }
-                    }
-                    break;
-
-                case JsonToken.StartObject:
-                    for (i = 0; i < genericTypes.Length; i++)
-                    {
-                        if (genericTypes[i].IsPrimitive || genericTypes[i] == typeof(string))
-                        {
-                            break;
-                        }
-                    }
-                    break;
+                    return objectType.IsArray;
+                case JsonToken.String:
+                    return objectType == typeof(string);
+                case JsonToken.Boolean:
+                    return objectType == typeof(bool);
+                case JsonToken.Integer:
+                    return objectType == typeof(int);
+                case JsonToken.Float:
+                    return objectType == typeof(float);
+                default:
+                    return false;
             }
+        }
 
-            if (i == genericTypes.Length)
-            {
-                i = 0;
-            }
-
-            var args = new object[genericTypes.Length];
-            if (i < args.Length)
-            {
-                args[i] = serializer.Deserialize(reader, genericTypes[i]);
-            }
-            return args;
+        private static bool TypeNeverMatches(JsonToken tokenType, Type objectType)
+        {
+            return objectType.IsArray && tokenType != JsonToken.StartArray;
         }
     }
 }
