@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("section.tmpl", "{'section':{'value':'value','foo':'foo'}}", "<p>value</p>")]
         [InlineData("section.tmpl", "{'section':false}", "")]
+        [InlineData("section.tmpl", "{'section':{}}", "<p></p>")]
         [InlineData(
             "include.tmpl",
             "{'description':'hello','tags':[1,2],'page':{'value':3}}",
