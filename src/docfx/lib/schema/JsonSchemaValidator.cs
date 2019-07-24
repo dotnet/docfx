@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -214,10 +215,26 @@ namespace Microsoft.Docs.Build
 
             switch (schema.Format)
             {
+                case JsonSchemaStringFormat.None:
+                    break;
+
                 case JsonSchemaStringFormat.DateTime:
-                    if (!DateTime.TryParse(str, out var _))
+                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
                         errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.DateTime)));
                     break;
+
+                case JsonSchemaStringFormat.Date:
+                    if (!Regex.IsMatch(str, @"^(\d{4})-(\d{2})-(\d{2})$"))
+                        errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Date)));
+                    break;
+
+                case JsonSchemaStringFormat.Time:
+                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.NoCurrentDateDefault, out var time) || time.Date != default)
+                        errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Time)));
+                    break;
+
+                default:
+                    throw new NotSupportedException($"JsonSchema: format '{schema.Format}'");
             }
         }
 

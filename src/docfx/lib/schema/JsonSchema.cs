@@ -110,6 +110,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JToken[] Enum { get; set; }
 
+        /// <summary>
+        /// The string format for the current value.
+        /// </summary>
         public JsonSchemaStringFormat Format { get; set; }
 
         /// <summary>
