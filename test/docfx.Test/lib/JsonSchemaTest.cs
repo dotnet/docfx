@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -17,7 +18,6 @@ namespace Microsoft.Docs.Build
             "additionalItems",
             "allOf",
             "anyOf",
-            "boolean_schema",
             "definitions",
             "if-then-else",
             "not",
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         {
             "an array of schemas for items",
             "items and subitems",
-            "with boolean schema",
+            "items with boolean schema",
 
             //dependencies
             "dependencies with boolean subschemas",
@@ -41,8 +41,6 @@ namespace Microsoft.Docs.Build
             "relative pointer ref to array",
             "escaped pointer ref",
             "remote ref, containing refs itself",
-            "$ref to boolean schema true",
-            "$ref to boolean schema false",
             "Recursive references between schemas",
             "refs with quote",
         };
@@ -60,7 +58,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var schema in JArray.Parse(File.ReadAllText(file)))
                 {
-                    var schemaText = schema["schema"].ToString();
+                    var schemaText = schema["schema"].ToString(Formatting.None);
                     foreach (var test in schema["tests"])
                     {
                         var description = $"{(schema["description"])}/{(test["description"])}";
@@ -228,6 +226,11 @@ namespace Microsoft.Docs.Build
         [InlineData("{'required': ['a']}", "{'a': 1}", "")]
         [InlineData("{'required': ['a']}", "{'b': 1}",
             "['warning','missing-attribute','Missing required attribute: 'a'','file',1,1]")]
+
+        // boolean schema
+        [InlineData("true", "[]", "")]
+        [InlineData("false", "[]",
+            "['warning','boolean-schema-failed','Boolean schema validation failed for ''','file',1,1]")]
 
         // dependencies validation
         [InlineData("{'dependencies': {}}", "{}", "")]

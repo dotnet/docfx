@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
+            ValidateBooleanSchema(schema, name, token, errors);
             ValidateDeprecated(schema, name, token, errors);
             ValidateConst(schema, name, token, errors);
             ValidateEnum(schema, name, token, errors);
@@ -169,17 +170,25 @@ namespace Microsoft.Docs.Build
                 }
 
                 // additionalProperties
-                if (isAdditonalProperty)
+                if (isAdditonalProperty && schema.AdditionalProperties != null)
                 {
-                    if (schema.AdditionalProperties.schema != null)
-                    {
-                        Validate(schema.AdditionalProperties.schema, name, value, errors);
-                    }
-                    else if (!schema.AdditionalProperties.value)
+                    if (schema.AdditionalProperties == JsonSchema.FalseSchema)
                     {
                         errors.Add((name, Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString())));
                     }
+                    else
+                    {
+                        Validate(schema.AdditionalProperties, name, value, errors);
+                    }
                 }
+            }
+        }
+
+        private void ValidateBooleanSchema(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
+        {
+            if (schema == JsonSchema.FalseSchema)
+            {
+                errors.Add((name, Errors.BooleanSchemaFailed(JsonUtility.GetSourceInfo(token), name)));
             }
         }
 
