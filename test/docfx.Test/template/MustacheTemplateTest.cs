@@ -11,13 +11,18 @@ namespace Microsoft.Docs.Build
         private readonly MustacheTemplate _template = new MustacheTemplate("data/mustache");
 
         [Theory]
-        [InlineData("test.html.primary.tmpl", "{'description':'hello','tags':[1,2],'page':{'value':3}}", "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]
+        [InlineData("section.tmpl", "{'section':{'value':'value','foo':'foo'}}", "<p>value</p>")]
+        [InlineData("section.tmpl", "{'section':false}", "")]
+        [InlineData(
+            "include.tmpl",
+            "{'description':'hello','tags':[1,2],'page':{'value':3}}",
+            "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]
         public void RenderMustacheTemplate(string name, string json, string html)
         {
             var model = JToken.Parse(json.Replace('\'', '"'));
 
             Assert.Equal(
-                TestUtility.NormalizeHtml(html),
+                TestUtility.NormalizeHtml(html).Replace('\'', '"'),
                 TestUtility.NormalizeHtml(_template.Render(name, model)));
         }
     }
