@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Jint.Parser;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -497,7 +495,7 @@ namespace Microsoft.Docs.Build
 
         internal sealed class ClassWithReadOnlyField
         {
-            public readonly string B;
+            public readonly string B = "";
         }
 
         internal sealed class ClassWithMoreMembers : BasicClass

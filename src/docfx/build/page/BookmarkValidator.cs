@@ -26,10 +26,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
 
-            // only validate against markdown files
-            if (reference.ContentType == ContentType.Page &&
-                reference.FilePath.EndsWith(".md", PathUtility.PathComparison) &&
-                !string.IsNullOrEmpty(fragment))
+            if (reference.ContentType == ContentType.Page && !string.IsNullOrEmpty(fragment))
             {
                 var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
