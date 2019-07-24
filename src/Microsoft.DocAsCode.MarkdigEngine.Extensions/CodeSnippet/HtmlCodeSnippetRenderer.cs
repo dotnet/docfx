@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -12,6 +13,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Helpers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
@@ -188,6 +191,47 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             renderer.Write("</code></pre>");
         }
 
+        private string GetNoteBookContent(string content, string tagName, CodeSnippet obj)
+        {
+            JObject contentObject = null;
+            try
+            {
+                contentObject = JObject.Parse(content);
+            }
+            catch (JsonReaderException ex)
+            {
+                _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex.ToString(), obj);
+                return string.Empty;
+            }
+
+            string sourceJsonPath = string.Format("$..cells[?(@.metadata.name=='{0}')].source", tagName);
+            JToken sourceObject = null;
+            try
+            {
+                sourceObject = contentObject.SelectToken(sourceJsonPath);
+            }
+            catch (JsonException)
+            {
+                _context.LogError("mutiple-tags-with-same-name", string.Format("The name '{0}' is not unique in the notebook file.", tagName), obj);
+                return string.Empty;
+            }
+
+            if (sourceObject == null)
+            {
+                _context.LogError("source-code-notfound", string.Format("The name '{0}' is not present in the notebook file.", tagName), obj);
+                return string.Empty;
+            }
+
+            StringBuilder showCode = new StringBuilder();
+            string[] lines = ((JArray)sourceObject).ToObject<string[]>();
+            for (int i = 0; i < lines.Length; i++)
+            {
+                showCode.Append(lines[i]);
+            }
+
+            return showCode.ToString();
+        }
+
         private string GetContent(string content, CodeSnippet obj)
         {
             var allLines = ReadAllLines(content).ToArray();
@@ -196,6 +240,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (!string.IsNullOrEmpty(obj.TagName))
             {
                 var lang = obj.Language ?? Path.GetExtension(obj.CodePath);
+
+                if (obj.IsNotebookCode)
+                {
+                    return GetNoteBookContent(content, obj.TagName, obj);
+                }
+
                 if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtrator> extrators))
                 {
                     _context.LogError(
