@@ -477,3 +477,49 @@ outputs:
   docs/a.raw.page.json:
   .errors.log: |
     {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"date_time":"*","origin":"fallback"}
+---
+# Replace empty content with <div></div>
+commands:
+  - build --legacy
+inputs:
+  docfx.yml:
+  a.md:
+  b.yml: '#YamlMime:TestPage'
+  _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
+  _themes/ContentTemplate/TestPage.html.primary.tmpl:
+outputs:
+  a.mta.json:
+  a.raw.page.json: '{"content": "<div></div>"}'
+  b.mta.json:
+  b.raw.page.json: '{"content": "<div></div>"}'
+---
+# Add data-linktype to urls
+commands:
+  - build --legacy
+inputs:
+  docfx.yml:
+  a.md: '[](https://github.com)'
+  b.yml: |
+    #YamlMime:TestPage
+    link: https://docs.com
+    markdown: '[](a.md)'
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": {
+        "markdown": { "contentType": "markdown" }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <a href="https://github.com"></a>
+    <a href='{{link}}'></a>
+    {{{markdown}}}
+outputs:
+  a.mta.json:
+  a.raw.page.json: |
+    { "content": "<p><a data-linktype='external' href='https://github.com'></a></p>" }
+  b.mta.json:
+  b.raw.page.json: |
+    { "content": "
+        <a data-linktype='external' href='https://github.com'></a>
+        <a data-linktype='external' href='https://docs.com'></a>
+        <p><a data-linktype='relative-path' href='a'></a></p>" }
