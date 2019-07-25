@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -87,7 +87,10 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            errors.AddRange(_schemaValidator.Validate(result));
+            if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime))
+            {
+                errors.AddRange(_schemaValidator.Validate(result));
+            }
 
             var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
 
