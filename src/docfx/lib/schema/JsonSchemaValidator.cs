@@ -489,7 +489,7 @@ namespace Microsoft.Docs.Build
                 return new Error(
                     !additionalError.Severity.HasValue ? baseError.Level : additionalError.Severity.Value,
                     string.IsNullOrEmpty(additionalError.Code) ? baseError.Code : additionalError.Code,
-                    string.IsNullOrEmpty(additionalError.Message) ? baseError.Message : $"{baseError.Message}. {additionalError.Message}",
+                    string.IsNullOrEmpty(additionalError.Message) ? baseError.Message : $"{baseError.Message}{(baseError.Message.EndsWith('.') ? string.Empty : ".")} {additionalError.Message}",
                     baseError.FilePath,
                     baseError.Line,
                     baseError.Column,
