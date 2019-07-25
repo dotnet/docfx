@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<(string name, Error)>();
             Validate(schema, "", token, errors);
-            return errors.Select(info => OverwriteError(_schema, info.name, info.Item2)).ToList();
+            return errors.Select(info => GetAdditionalError(_schema, info.name, info.Item2)).ToList();
         }
 
         private void Validate(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
@@ -482,14 +482,14 @@ namespace Microsoft.Docs.Build
             return (name, 0);
         }
 
-        private Error OverwriteError(JsonSchema schema, string name, Error baseError)
+        private Error GetAdditionalError(JsonSchema schema, string name, Error baseError)
         {
-            if (!string.IsNullOrEmpty(name) && schema.OverwriteErrors.TryGetValue(name, out var attributeOverwriteErrors) && attributeOverwriteErrors.TryGetValue(baseError.Code, out var overwriteError))
+            if (!string.IsNullOrEmpty(name) && schema.AdditionalErrors.TryGetValue(name, out var attributeAdditionalErrors) && attributeAdditionalErrors.TryGetValue(baseError.Code, out var additionalError))
             {
                 return new Error(
-                    !overwriteError.Severity.HasValue ? baseError.Level : overwriteError.Severity.Value,
-                    string.IsNullOrEmpty(overwriteError.Code) ? baseError.Code : overwriteError.Code,
-                    string.IsNullOrEmpty(overwriteError.Message) ? baseError.Message : overwriteError.Message,
+                    !additionalError.Severity.HasValue ? baseError.Level : additionalError.Severity.Value,
+                    string.IsNullOrEmpty(additionalError.Code) ? baseError.Code : additionalError.Code,
+                    string.IsNullOrEmpty(additionalError.Message) ? baseError.Message : $"{baseError.Message}. {additionalError.Message}",
                     baseError.FilePath,
                     baseError.Line,
                     baseError.Column,
