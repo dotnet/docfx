@@ -272,7 +272,7 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint($"{file.Mime.Value ?? "Conceptual"}.mta.json.js", pageModel);
+            var templateMetadata = context.TemplateEngine.RunJint(file.IsConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
             if (TemplateEngine.IsLandingData(file.Mime))
             {
                 templateMetadata["_op_layout"] = "LandingPage";
@@ -305,7 +305,7 @@ namespace Microsoft.Docs.Build
 
         private static string CreateContent(Context context, Document file, JObject pageModel)
         {
-            if (string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
+            if (file.IsConceptual)
             {
                 return pageModel.Value<string>("conceptual");
             }
