@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
 
             void DrainCore()
             {
-                while (!_drainTcs.Task.IsCompleted && _exception != null)
+                while (!_drainTcs.Task.IsCompleted)
                 {
                     if (!_queue.TryPeek(out var item))
                     {
