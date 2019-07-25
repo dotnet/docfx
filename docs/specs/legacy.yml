@@ -511,7 +511,7 @@ inputs:
     }
   _themes/ContentTemplate/TestPage.html.primary.tmpl: |
     <a href="https://github.com"></a>
-    <a href='{{link}}'></a>
+    <img src='{{link}}'></img>
     {{{markdown}}}
 outputs:
   a.mta.json:
@@ -521,5 +521,5 @@ outputs:
   b.raw.page.json: |
     { "content": "
         <a data-linktype='external' href='https://github.com'></a>
-        <a data-linktype='external' href='https://docs.com'></a>
+        <img data-linktype='external' src='https://docs.com'></img>
         <p><a data-linktype='relative-path' href='a'></a></p>" }
