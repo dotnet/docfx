@@ -241,9 +241,6 @@ namespace Microsoft.Docs.Build
 
             switch (schema.Format)
             {
-                case JsonSchemaStringFormat.None:
-                    break;
-
                 case JsonSchemaStringFormat.DateTime:
                     if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
                         errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.DateTime)));
@@ -258,9 +255,6 @@ namespace Microsoft.Docs.Build
                     if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.NoCurrentDateDefault, out var time) || time.Date != default)
                         errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Time)));
                     break;
-
-                default:
-                    throw new NotSupportedException($"JsonSchema: format '{schema.Format}'");
             }
         }
 
