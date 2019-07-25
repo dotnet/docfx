@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -317,14 +317,14 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['yyy','tabs']}",
             "['warning','invalid-value','Invalid value for 'key1[0]': 'yyy'','file',1,15]")]
 
-        // overwrite errors
-        [InlineData("{'required': ['author'], 'overwriteErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
-            "['suggestion','author-missing','Add a valid GitHub ID.','file',1,1]")]
-        [InlineData("{'required': ['author'], 'overwriteErrors': {'author': {'missing-attribute': {'severity': null, 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
-            "['warning','author-missing','Add a valid GitHub ID.','file',1,1]")]
-        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'overwriteErrors': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated', 'message': null}}}}", "{'key1': 1}",
+        // additional errors
+        [InlineData("{'required': ['author'], 'additionalErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
+            "['suggestion','author-missing','Missing required attribute: 'author'. Add a valid GitHub ID.','file',1,1]")]
+        [InlineData("{'required': ['author'], 'additionalErrors': {'author': {'missing-attribute': {'severity': null, 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
+            "['warning','author-missing','Missing required attribute: 'author'. Add a valid GitHub ID.','file',1,1]")]
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'additionalErrors': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated', 'message': null}}}}", "{'key1': 1}",
             "['suggestion','key1-attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
-        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'overwriteErrors': {'key1': {'precluded-attributes': {'severity': 'error', 'code': null, 'message': null}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'additionalErrors': {'key1': {'precluded-attributes': {'severity': 'error', 'code': null, 'message': null}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "['error','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
