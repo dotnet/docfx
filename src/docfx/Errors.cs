@@ -414,6 +414,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema", source);
 
         /// <summary>
+        /// Error when JSON boolean schema failed.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error BooleanSchemaFailed(SourceInfo source, string propName)
+            => new Error(ErrorLevel.Warning, "boolean-schema-failed", $"Boolean schema validation failed for '{propName}'", source);
+
+        /// <summary>
         /// Object property count not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌

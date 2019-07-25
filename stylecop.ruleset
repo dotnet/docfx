@@ -147,4 +147,12 @@
     <Rule Id="CA2242" Action="Warning" />
     <Rule Id="CA5351" Action="Warning" />
   </Rules>
+  <Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">
+    <!-- TODO: Enable these rules after we've fixed all the problems -->
+    <Rule Id="MEN002" Action="None" />
+    <Rule Id="MEN003" Action="None" />
+    <Rule Id="MEN008" Action="None" />
+    <Rule Id="MEN012" Action="None" />
+    <Rule Id="MEN013" Action="None" />
+  </Rules>
 </RuleSet>
