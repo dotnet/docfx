@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -250,7 +250,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaStringFormat.Date:
-                    if (!Regex.IsMatch(str, @"^(\d{4})-(\d{2})-(\d{2})$"))
+                    if (!DateTime.TryParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
                         errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Date)));
                     break;
 

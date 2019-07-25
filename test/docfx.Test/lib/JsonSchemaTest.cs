@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -162,6 +162,8 @@ namespace Microsoft.Docs.Build
             "['warning','format-invalid','String 'invalid' is not a valid 'DateTime'','file',1,9]")]
 
         [InlineData("{'type': ['string'], 'format': 'date'}", "'1963-06-19'", "")]
+        [InlineData("{'type': ['string'], 'format': 'date'}", "'1963-13-99'",
+            "['warning','format-invalid','String '1963-13-99' is not a valid 'Date'','file',1,12]")]
         [InlineData("{'type': ['string'], 'format': 'date'}", "'1963-06-19T08:30:06Z'",
             "['warning','format-invalid','String '1963-06-19T08:30:06Z' is not a valid 'Date'','file',1,22]")]
 
