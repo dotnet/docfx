@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -182,7 +183,7 @@ namespace Microsoft.Docs.Build
         /// The line should always be 2 since the file should always start with "---"
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error YamlHeaderNotObject(bool isArray, string file)
+        public static Error YamlHeaderNotObject(bool isArray, FilePath file)
             => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", new SourceInfo(file, 2, 1));
 
         /// <summary>
@@ -197,7 +198,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error YamlHeaderSyntaxError(Error error)
-            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.File, error.Line, error.Column, error.EndLine, error.EndColumn);
+            => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.FilePath, error.Line, error.Column, error.EndLine, error.EndColumn);
 
         /// <summary>
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
@@ -243,7 +244,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error HeadingNotFound(Document file)
-            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.ToString());
+            => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.FilePath);
 
         /// <summary>
         /// Can't find a file referenced by configuration, or user writes a non-existing link.
@@ -411,6 +412,13 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error ArrayContainsFailed(SourceInfo source, string propName)
             => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema", source);
+
+        /// <summary>
+        /// Error when JSON boolean schema failed.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error BooleanSchemaFailed(SourceInfo source, string propName)
+            => new Error(ErrorLevel.Warning, "boolean-schema-failed", $"Boolean schema validation failed for '{propName}'", source);
 
         /// <summary>
         /// Object property count not within min and max.
@@ -586,8 +594,8 @@ namespace Microsoft.Docs.Build
         /// Example:
         ///   - user want their 404.md to be built and shown as their 404 page of the website.
         /// </summary>
-        public static Error Custom404Page(string file)
-            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file);
+        public static Error Custom404Page(Document file)
+            => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
 
         private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
         {

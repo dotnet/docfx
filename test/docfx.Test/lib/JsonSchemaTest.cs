@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -14,10 +15,8 @@ namespace Microsoft.Docs.Build
         // Test against a subset of JSON schema test suite: https://github.com/json-schema-org/JSON-Schema-Test-Suite
         private static readonly string[] s_notSupportedSuites =
         {
-            "additionalItems",
             "allOf",
             "anyOf",
-            "boolean_schema",
             "definitions",
             "if-then-else",
             "not",
@@ -27,10 +26,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly string[] s_notSupportedTests =
         {
-            "an array of schemas for items",
-            "items and subitems",
-            "with boolean schema",
-
             //dependencies
             "dependencies with boolean subschemas",
             "multiple dependencies subschema",
@@ -41,8 +36,6 @@ namespace Microsoft.Docs.Build
             "relative pointer ref to array",
             "escaped pointer ref",
             "remote ref, containing refs itself",
-            "$ref to boolean schema true",
-            "$ref to boolean schema false",
             "Recursive references between schemas",
             "refs with quote",
         };
@@ -60,7 +53,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var schema in JArray.Parse(File.ReadAllText(file)))
                 {
-                    var schemaText = schema["schema"].ToString();
+                    var schemaText = schema["schema"].ToString(Formatting.None);
                     foreach (var test in schema["tests"])
                     {
                         var description = $"{(schema["description"])}/{(test["description"])}";
@@ -79,7 +72,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(GetJsonSchemaTestSuite))]
         public void TestJsonSchemaConfirmance(string description, string schemaText, string testText)
         {
-            var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, "");
+            var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, new FilePath(""));
             var test = JObject.Parse(testText);
             var errors = new JsonSchemaValidator(schema).Validate(test["data"]);
 
@@ -223,11 +216,24 @@ namespace Microsoft.Docs.Build
         [InlineData("{'contains': {'const': 1}}", "[2]",
             @"['warning','array-contains-failed','Array '' should contain at least one item that matches JSON schema','file',1,1]")]
 
+        // additionalItems validation
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': true}", "[1]", "")]
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': false}", "[1]", "")]
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': false}", "[1, 2]",
+            "['warning','array-length-invalid','Array '' length should be <= 1','file',1,1]")]
+        [InlineData("{'items': [{'const': 1}], 'additionalItems': {'const': 2}}", "[1, 3]",
+            "['warning','invalid-value','Invalid value for '': '3'','file',1,5]")]
+
         // required validation
         [InlineData("{'required': []}", "{}", "")]
         [InlineData("{'required': ['a']}", "{'a': 1}", "")]
         [InlineData("{'required': ['a']}", "{'b': 1}",
             "['warning','missing-attribute','Missing required attribute: 'a'','file',1,1]")]
+
+        // boolean schema
+        [InlineData("true", "[]", "")]
+        [InlineData("false", "[]",
+            "['warning','boolean-schema-failed','Boolean schema validation failed for ''','file',1,1]")]
 
         // dependencies validation
         [InlineData("{'dependencies': {}}", "{}", "")]
@@ -292,12 +298,24 @@ namespace Microsoft.Docs.Build
             "['warning','attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
 
         // enum dependencies validation
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer'}", "")]
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
-            "['warning','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,1]")]
-        [InlineData("{'properties': {'key1': {'type': 'string', 'enum': ['.net', 'yammer']}, 'key2': {'type': 'string'}}, 'enumDependencies': { 'key2': { 'key1': { '.net': ['', 'csharp', 'devlang'], 'yammer': ['', 'tabs', 'vba']}}}}", "{'key2': 'tabs'}",
-            "['warning','missing-paired-attribute','Missing attribute: 'key1'. If you specify 'key2', you must also specify 'key1'','file',1,1]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': null, 'yammer': null}}}", "{'key1': 'yammer'}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yyy', 'key2': 'tabs'}",
+            "['warning','invalid-value','Invalid value for 'key1': 'yyy'','file',1,14]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1[0]': {'.net': {'key2[0]': {'csharp': null, 'devlang': null}}, 'yammer': {'key2[0]': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yyy', 'key2': 'tabs'}",
+            "['warning','invalid-value','Invalid value for 'key1': 'yyy'','file',1,14]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
+            "['warning','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,32]")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1[0]': {'.net': {'key2[0]': {'csharp': null, 'devlang': null}}, 'yammer': {'key2[0]': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
+            "['warning','invalid-paired-attribute','Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'','file',1,32]")]
+        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['yammer','abc']}",
+            "['warning','invalid-paired-attribute','Invalid value for 'key1[1]': 'abc' is not valid with 'key1[0]' value 'yammer'','file',1,24]")]
+        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': {'key1[2]': {'vst': null, 'yiu': null}}, 'vba': null}}}}}", "{'key1': ['yammer','tabs','vst']}", "")]
+        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': {'key1[2]': {'vst': null, 'yiu': null}}, 'vba': null}}}}}", "{'key1': ['yammer','tabs','abc']}",
+            "['warning','invalid-paired-attribute','Invalid value for 'key1[2]': 'abc' is not valid with 'key1[1]' value 'tabs'','file',1,31]")]
+        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['yyy','tabs']}",
+            "['warning','invalid-value','Invalid value for 'key1[0]': 'yyy'','file',1,15]")]
 
         // overwrite errors
         [InlineData("{'required': ['author'], 'overwriteErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'message': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
@@ -311,7 +329,7 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
-            var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), "file");
+            var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), new FilePath("file"));
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');

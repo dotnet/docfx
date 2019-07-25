@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-
 using Stubble.Core.Builders;
 using Stubble.Core.Interfaces;
 using Stubble.Core.Settings;
@@ -24,17 +24,6 @@ namespace Microsoft.Docs.Build
             _templateDir = templateDir;
             _renderer = new StubbleBuilder().Configure(
                 settings => UseJson(settings).SetPartialTemplateLoader(new PartialLoader(templateDir))).Build();
-
-            RendererSettingsBuilder UseJson(RendererSettingsBuilder settings)
-            {
-                return settings.AddValueGetter(typeof(JObject), (value, key, ignoreCase) =>
-                {
-                    var token = (JObject)value;
-                    var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
-
-                    return childToken is JValue scalar ? scalar.Value : childToken;
-                });
-            }
         }
 
         public string Render(string templateFileName, JToken model)
@@ -52,6 +41,26 @@ namespace Microsoft.Docs.Build
                 })).Value;
 
             return _renderer.Render(template, model);
+        }
+
+        private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings)
+        {
+            // JObject implements IEnumerable, stubble treats IEnumerable as array,
+            // need to put it to section blacklist and overwride the truthy check method.
+            var sectionBlacklist = RendererSettingsDefaults.DefaultSectionBlacklistTypes();
+            sectionBlacklist.Add(typeof(JObject));
+
+            return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
+                           .AddTruthyCheck<JObject>(value => value != null)
+                           .SetSectionBlacklistTypes(sectionBlacklist);
+
+            object GetJObjectValue(object value, string key, bool ignoreCase)
+            {
+                var token = (JObject)value;
+                var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+
+                return childToken is JValue scalar ? scalar.Value : childToken;
+            }
         }
 
         private class PartialLoader : IStubbleLoader

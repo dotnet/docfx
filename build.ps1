@@ -18,7 +18,6 @@ function test() {
 
         Remove-Item ./TestResults -Force -Recurse -ErrorAction Ignore
 
-        exec "dotnet test -c Debug"
         exec "dotnet test -c Release"
         exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
 

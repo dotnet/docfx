@@ -13,14 +13,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static SourceInfo ToSourceInfo(this MarkdownObject obj, int? line = null, string file = null, int columnOffset = 0)
+        public static SourceInfo ToSourceInfo(this MarkdownObject obj, int? line = null, Document file = null, int columnOffset = 0)
         {
             // Line info in markdown object is zero based, turn it into one based.
             if (obj != null)
-                return new SourceInfo(file ?? InclusionContext.File?.ToString(), obj.Line + 1, obj.Column + columnOffset + 1);
+                return new SourceInfo(file?.FilePath ?? (InclusionContext.File as Document)?.FilePath, obj.Line + 1, obj.Column + columnOffset + 1);
 
             if (line != null)
-                return new SourceInfo(file ?? InclusionContext.File?.ToString(), line.Value + 1, 0);
+                return new SourceInfo(file?.FilePath ?? (InclusionContext.File as Document)?.FilePath, line.Value + 1, 0);
 
             return default;
         }

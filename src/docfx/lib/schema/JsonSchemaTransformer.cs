@@ -64,8 +64,8 @@ namespace Microsoft.Docs.Build
                     case JArray array:
                         foreach (var item in array)
                         {
-                            if (schema.Items != null)
-                                xrefSpecs.AddRange(LoadXrefSpecs(schema.Items, item));
+                            if (schema.Items.schema != null)
+                                xrefSpecs.AddRange(LoadXrefSpecs(schema.Items.schema, item));
                         }
                         break;
                 }
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
                         var newArray = new JArray();
                         foreach (var item in array)
                         {
-                            var (arrayErrors, newItem) = TransformToken(file, context, schema.Items, item);
+                            var (arrayErrors, newItem) = TransformToken(file, context, schema.Items.schema, item);
                             errors.AddRange(arrayErrors);
                             newArray.Add(newItem);
                         }

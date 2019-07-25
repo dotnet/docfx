@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                             };
                             if (!docset.Config.Output.CopyResources)
                             {
-                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath));
+                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.Path));
                             }
                             output.ResourceOutput = resourceOutput;
                         }

@@ -30,7 +30,9 @@ namespace Microsoft.Docs.Build
         {
             if (string.Equals(schemaName, "LandingData"))
                 return true;
-            return File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
+
+            return File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.tmpl"))
+                || File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
         }
 
         private (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore(string schemaDir, string schemaName)
@@ -50,7 +52,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), schemaFilePath);
+            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
             return (new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
         }
     }

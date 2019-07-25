@@ -8,8 +8,19 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonConverter(typeof(JsonSchemaConverter))]
     internal class JsonSchema
     {
+        /// <summary>
+        /// `true` is a valid boolean JSON schema. A `true` JSON schema is deserialized into this instance.
+        /// </summary>
+        public static readonly JsonSchema TrueSchema = new JsonSchema();
+
+        /// <summary>
+        /// `false` is a valid boolean JSON schema. A `false` JSON schema is deserialized into this instance.
+        /// </summary>
+        public static readonly JsonSchema FalseSchema = new JsonSchema();
+
         // A core subset of JSON schema
         //-------------------------------------------
 
@@ -46,8 +57,7 @@ namespace Microsoft.Docs.Build
         ///     - boolean: allow/disallow additional properties
         ///     - object: the schema for the additional properties
         /// </summary>
-        [JsonConverter(typeof(ValueOrObjectConverter))]
-        public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
+        public JsonSchema AdditionalProperties { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to property names.
@@ -67,7 +77,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
-        public JsonSchema Items { get; set; }
+        [JsonConverter(typeof(UnionTypeConverter))]
+        public (JsonSchema schema, JsonSchema[] schemas) Items { get; set; }
+
+        /// <summary>
+        /// The JSON schema that applies to additional items of an array.
+        /// </summary>
+        public JsonSchema AdditionalItems { get; set; }
 
         /// <summary>
         /// Whether an array contains this element.
@@ -218,9 +234,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Properties that are used to indicate the value relationship between two fields
-        /// Mapping relationship: enumDependencies --> <field-name> --> <dependent-field-name> --> <dependent-field-value> --> <allowed-field-values>
         /// </summary>
-        public Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>> EnumDependencies { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>>();
+        public EnumDependenciesSchema EnumDependencies { get; set; }
 
         /// <summary>
         /// Properties that are used to validate microsoft alias

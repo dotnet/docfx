@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
+            ValidateBooleanSchema(schema, name, token, errors);
             ValidateDeprecated(schema, name, token, errors);
             ValidateConst(schema, name, token, errors);
             ValidateEnum(schema, name, token, errors);
@@ -100,13 +101,7 @@ namespace Microsoft.Docs.Build
             if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
                 errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {schema.MinItems}")));
 
-            if (schema.Items != null)
-            {
-                foreach (var item in array)
-                {
-                    Validate(schema.Items, name, item, errors);
-                }
-            }
+            ValidateItems(schema, name, array, errors);
 
             if (schema.UniqueItems && array.Distinct(JsonUtility.DeepEqualsComparer).Count() != array.Count)
             {
@@ -119,13 +114,45 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private void ValidateItems(JsonSchema schema, string name, JArray array, List<(string name, Error)> errors)
+        {
+            var (items, eachItem) = schema.Items;
+
+            if (items != null)
+            {
+                foreach (var item in array)
+                {
+                    Validate(items, name, item, errors);
+                }
+            }
+            else if (eachItem != null)
+            {
+                for (var i = 0; i < array.Count; i++)
+                {
+                    if (i < eachItem.Length)
+                    {
+                        Validate(eachItem[i], name, array[i], errors);
+                    }
+                    else if (schema.AdditionalItems == JsonSchema.FalseSchema)
+                    {
+                        errors.Add((name, Errors.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $"<= {eachItem.Length}")));
+                        break;
+                    }
+                    else if (schema.AdditionalItems != null && schema.AdditionalItems != JsonSchema.FalseSchema)
+                    {
+                        Validate(schema.AdditionalItems, name, array[i], errors);
+                    }
+                }
+            }
+        }
+
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<(string name, Error)> errors)
         {
             ValidateRequired(schema, map, errors);
             ValidateDependencies(schema, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
-            ValidateEnumDependencies(schema, map, errors);
+            ValidateEnumDependencies(schema.EnumDependencies, string.Empty, string.Empty, null, null, map, errors);
             ValidateProperties(schema, name, map, errors);
         }
 
@@ -169,17 +196,25 @@ namespace Microsoft.Docs.Build
                 }
 
                 // additionalProperties
-                if (isAdditonalProperty)
+                if (isAdditonalProperty && schema.AdditionalProperties != null)
                 {
-                    if (schema.AdditionalProperties.schema != null)
-                    {
-                        Validate(schema.AdditionalProperties.schema, name, value, errors);
-                    }
-                    else if (!schema.AdditionalProperties.value)
+                    if (schema.AdditionalProperties == JsonSchema.FalseSchema)
                     {
                         errors.Add((name, Errors.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString())));
                     }
+                    else if (schema.AdditionalProperties != JsonSchema.TrueSchema)
+                    {
+                        Validate(schema.AdditionalProperties, name, value, errors);
+                    }
                 }
+            }
+        }
+
+        private void ValidateBooleanSchema(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
+        {
+            if (schema == JsonSchema.FalseSchema)
+            {
+                errors.Add((name, Errors.BooleanSchemaFailed(JsonUtility.GetSourceInfo(token), name)));
             }
         }
 
@@ -381,29 +416,70 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateEnumDependencies(JsonSchema schema, JObject map, List<(string name, Error)> errors)
+        private void ValidateEnumDependencies(EnumDependenciesSchema enumDependencies, string dependentFieldNameWithIndex, string dependentFieldName, JToken dependentFieldRawValue, JToken dependentFieldValue, JObject map, List<(string name, Error)> errors)
         {
-            foreach (var (fieldName, enumDependencyRules) in schema.EnumDependencies)
+            if (enumDependencies == null)
             {
-                if (map.TryGetValue(fieldName, out var fieldValue))
+                return;
+            }
+
+            foreach (var (fieldNameWithIndex, allowList) in enumDependencies)
+            {
+                var (fieldName, fieldIndex) = GetFieldNameAndIndex(fieldNameWithIndex);
+                if (map.TryGetValue(fieldName, out var fieldRawValue))
                 {
-                    foreach (var (dependentFieldName, allowLists) in enumDependencyRules)
+                    var fieldValue = fieldRawValue is JArray array ? (fieldIndex < array.Count ? array[fieldIndex] : null) : fieldRawValue;
+
+                    if (fieldValue == null)
                     {
-                        if (map.TryGetValue(dependentFieldName, out var dependentFieldValue))
+                        return;
+                    }
+
+                    if (allowList.TryGetValue(fieldValue, out var nextEnumDependencies))
+                    {
+                        ValidateEnumDependencies(nextEnumDependencies, fieldNameWithIndex, fieldName, fieldRawValue, fieldValue, map, errors);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(dependentFieldNameWithIndex))
                         {
-                            if (allowLists.TryGetValue(dependentFieldValue, out var allowList) &&
-                                Array.IndexOf(allowList, fieldValue) == -1)
-                            {
-                                errors.Add((dependentFieldName, Errors.InvalidPairedAttribute(JsonUtility.GetSourceInfo(map), fieldName, fieldValue, dependentFieldName, dependentFieldValue)));
-                            }
+                            errors.Add((fieldName, Errors.InvalidValue(
+                                JsonUtility.GetSourceInfo(fieldValue),
+                                fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
+                                fieldValue)));
                         }
                         else
                         {
-                            errors.Add((fieldName, Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), fieldName, dependentFieldName)));
+                            errors.Add((dependentFieldName, Errors.InvalidPairedAttribute(
+                                JsonUtility.GetSourceInfo(fieldValue),
+                                fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
+                                fieldValue,
+                                dependentFieldRawValue.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                                dependentFieldValue)));
                         }
                     }
                 }
             }
+        }
+
+        // For string type: name = 'topic', output = ('topic', 0) or name = 'topic[0]', output = ('topic', 0)
+        // For array type: name = 'topic[0]', output = ('topic', 0) or name = 'topic[1]', output = ('topic', 1) or ...
+        private (string, int) GetFieldNameAndIndex(string name)
+        {
+            if (name.Contains('[') && name.Contains(']'))
+            {
+                var match = Regex.Match(name, @"\[\d+\]$");
+
+                if (match.Success)
+                {
+                    if (int.TryParse(match.Value.Substring(1, match.Value.Length - 2), out var index))
+                    {
+                        return (name.Substring(0, name.Length - match.Value.Length), index);
+                    }
+                }
+            }
+
+            return (name, 0);
         }
 
         private Error OverwriteError(JsonSchema schema, string name, Error baseError)
@@ -414,7 +490,7 @@ namespace Microsoft.Docs.Build
                     !overwriteError.Severity.HasValue ? baseError.Level : overwriteError.Severity.Value,
                     string.IsNullOrEmpty(overwriteError.Code) ? baseError.Code : overwriteError.Code,
                     string.IsNullOrEmpty(overwriteError.Message) ? baseError.Message : overwriteError.Message,
-                    baseError.File,
+                    baseError.FilePath,
                     baseError.Line,
                     baseError.Column,
                     baseError.EndLine,

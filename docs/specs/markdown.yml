@@ -260,6 +260,21 @@ outputs:
       "metaKey": "metaValue"
     }
 ---
+# title from yaml header is null
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title:
+    ---
+    # Title has value
+outputs:
+  docs/a.json: |
+    {
+      "title": "Title has value",
+      "rawTitle": "<h1 id=\"title-has-value\">Title has value</h1>",
+    }
+---
 # Errors from one file does not affect another file
 inputs:
   docfx.yml:
@@ -536,27 +551,4 @@ inputs:
     [some text](#)
 outputs:
   docs/a.json:
----
-# invalid file link should be outputted as relative path
-inputs:
-  docfx.yml:
-  docs/1/a.md: |
-    [non-existed file](~/c.md)
-    [non-existed file](../2/b.md)
-    [non-existed resource](../c.png)
-    [non-existed index page](../3/index.md)
-outputs:
-  docs/1/a.json: |
-    conceptual: |
-      <p>
-        <a href="../../c" data-linktype="relative-path">non-existed file</a>
-        <a href="../2/b" data-linktype="relative-path">non-existed file</a>
-        <a href="../c.png" data-linktype="relative-path">non-existed resource</a>
-        <a href="../3/" data-linktype="relative-path">non-existed index page</a>
-      </p>
-  .errors.log: |
-    ["warning","file-not-found","Invalid file link: '~/c.md'.","docs/1/a.md",1,1]
-    ["warning","file-not-found","Invalid file link: '../2/b.md'.","docs/1/a.md",2,1]
-    ["warning","file-not-found","Invalid file link: '../c.png'.","docs/1/a.md",3,1]
-    ["warning","file-not-found","Invalid file link: '../3/index.md'.","docs/1/a.md",4,1]
 

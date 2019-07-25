@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
             _globalMetadata = docset.Config.GlobalMetadata;
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputMetadata))
+                .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
                 .Concat(docset.MetadataSchema.Reserved)
                 .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
                 .ToHashSet();
@@ -63,7 +64,7 @@ namespace Microsoft.Docs.Build
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
             {
-                if (glob(file.FilePath))
+                if (glob(file.FilePath.Path))
                 {
                     // Assign a JToken to a property erases line info, so clone here.
                     // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055
@@ -118,24 +119,24 @@ namespace Microsoft.Docs.Build
             {
                 using (var reader = new StreamReader(file.ReadStream()))
                 {
-                    return ExtractYamlHeader.Extract(reader, file.FilePath);
+                    return ExtractYamlHeader.Extract(reader, file);
                 }
             }
 
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return LoadSchemaDocumentMetadata(_cache.LoadYamlFile(file), file.FilePath);
+                return LoadSchemaDocumentMetadata(_cache.LoadYamlFile(file), file);
             }
 
             if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                return LoadSchemaDocumentMetadata(_cache.LoadJsonFile(file), file.FilePath);
+                return LoadSchemaDocumentMetadata(_cache.LoadJsonFile(file), file);
             }
 
             return (new List<Error>(), new JObject());
         }
 
-        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentMetadata((List<Error>, JToken) document, string file)
+        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentMetadata((List<Error>, JToken) document, Document file)
         {
             var (errors, token) = document;
             var metadata = token is JObject tokenObj ? tokenObj["metadata"] : null;
@@ -147,7 +148,7 @@ namespace Microsoft.Docs.Build
                     return (errors, obj);
                 }
 
-                errors.Add(Errors.YamlHeaderNotObject(isArray: metadata is JArray, file));
+                errors.Add(Errors.YamlHeaderNotObject(isArray: metadata is JArray, file.FilePath));
             }
 
             return (errors, new JObject());
