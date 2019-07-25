@@ -77,7 +77,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
-        public JsonSchema Items { get; set; }
+        [JsonConverter(typeof(UnionTypeConverter))]
+        public (JsonSchema schema, JsonSchema[] schemas) Items { get; set; }
+
+        /// <summary>
+        /// The JSON schema that applies to additional items of an array.
+        /// </summary>
+        public JsonSchema AdditionalItems { get; set; }
 
         /// <summary>
         /// Whether an array contains this element.
@@ -231,9 +237,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Properties that are used to indicate the value relationship between two fields
-        /// Mapping relationship: enumDependencies --> <field-name> --> <dependent-field-name> --> <dependent-field-value> --> <allowed-field-values>
         /// </summary>
-        public Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>> EnumDependencies { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>>();
+        public EnumDependenciesSchema EnumDependencies { get; set; }
 
         /// <summary>
         /// Properties that are used to validate microsoft alias
