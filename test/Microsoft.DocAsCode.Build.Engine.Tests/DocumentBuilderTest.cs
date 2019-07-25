@@ -325,11 +325,11 @@ tagRules : [
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(Path.Combine(_outputFolder, "xrefmap.yml"));
                     Assert.Equal(71, xrefMap.References.Count);
 
-                    var xref1 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef1"));
+                    var xref1 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef1")).ToList();
                     Assert.Single(xref1);
                     Assert.Equal(Path.ChangeExtension(conceptualFile3, "html").ToNormalizedPath(), xref1.First()?.Href);
 
-                    var xref2 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef2"));
+                    var xref2 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef2")).ToList();
                     Assert.Single(xref2);
                     Assert.Equal(Path.ChangeExtension(conceptualFile2, "html").ToNormalizedPath(), xref2.First()?.Href);
                 }
