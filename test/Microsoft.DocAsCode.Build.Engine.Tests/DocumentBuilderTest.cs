@@ -327,11 +327,11 @@ tagRules : [
 
                     var xref1 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef1")).ToList();
                     Assert.Single(xref1);
-                    Assert.Equal(Path.ChangeExtension(conceptualFile3, "html").ToNormalizedPath(), xref1.First()?.Href);
+                    Assert.Equal(Path.ChangeExtension(conceptualFile3, "html").ToNormalizedPath(), xref1[0]?.Href);
 
                     var xref2 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef2")).ToList();
                     Assert.Single(xref2);
-                    Assert.Equal(Path.ChangeExtension(conceptualFile2, "html").ToNormalizedPath(), xref2.First()?.Href);
+                    Assert.Equal(Path.ChangeExtension(conceptualFile2, "html").ToNormalizedPath(), xref2[0]?.Href);
                 }
             }
             finally
