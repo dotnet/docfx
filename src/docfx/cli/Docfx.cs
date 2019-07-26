@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -34,6 +34,9 @@ namespace Microsoft.Docs.Build
                 catch
                 {
                 }
+
+                // An exit code of 0 means docfx completed successfully, including user errors.
+                // A non zero exit code means docfx encountered expected errors due to a bug.
                 return 1;
             }
             finally
@@ -96,7 +99,7 @@ namespace Microsoft.Docs.Build
                 {
                     Log.Write(dex);
                     errorLog.Write(dex.Error, isException: true);
-                    return 1;
+                    return 0;
                 }
             }
         }
