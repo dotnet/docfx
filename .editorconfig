@@ -14,7 +14,6 @@ insert_final_newline = true
 # Code files
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
-charset = utf-8-bom
 
 # XML project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
