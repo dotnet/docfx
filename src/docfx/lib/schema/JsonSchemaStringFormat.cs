@@ -11,5 +11,9 @@ namespace Microsoft.Docs.Build
 
         [EnumMember(Value = "date-time")]
         DateTime,
+
+        Date,
+
+        Time,
     }
 }

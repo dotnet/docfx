@@ -33,6 +33,7 @@ namespace Microsoft.Docs.Build
             "remote ref, containing refs itself",
             "Recursive references between schemas",
             "refs with quote",
+            "Location-independent identifier",
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
@@ -154,6 +155,16 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': ['string', 'number'], 'format': 'date-time'}", "1", "")]
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'invalid'",
             "['warning','format-invalid','String 'invalid' is not a valid 'DateTime'','file',1,9]")]
+
+        [InlineData("{'type': ['string'], 'format': 'date'}", "'1963-06-19'", "")]
+        [InlineData("{'type': ['string'], 'format': 'date'}", "'1963-13-99'",
+            "['warning','format-invalid','String '1963-13-99' is not a valid 'Date'','file',1,12]")]
+        [InlineData("{'type': ['string'], 'format': 'date'}", "'1963-06-19T08:30:06Z'",
+            "['warning','format-invalid','String '1963-06-19T08:30:06Z' is not a valid 'Date'','file',1,22]")]
+
+        [InlineData("{'type': ['string'], 'format': 'time'}", "'08:30:06Z'", "")]
+        [InlineData("{'type': ['string'], 'format': 'time'}", "'1963-06-19T08:30:06Z'",
+            "['warning','format-invalid','String '1963-06-19T08:30:06Z' is not a valid 'Time'','file',1,22]")]
 
         // properties validation
         [InlineData("{'properties': {'key': {'type': 'string'}}}", "{'key': 'value'}", "")]
