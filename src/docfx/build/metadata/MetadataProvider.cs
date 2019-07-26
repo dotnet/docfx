@@ -87,6 +87,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            // Only validate markdown files
             if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime))
             {
                 errors.AddRange(_schemaValidator.Validate(result));
