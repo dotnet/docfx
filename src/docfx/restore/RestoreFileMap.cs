@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.FileNotFound(url).ToException();
             }
 
-            var filePath = RestoreFile.GetRestoreContentPath(url);
+            var filePath = RestoreFile.GetRestorePathFromUrl(url);
             if (!File.Exists(filePath))
             {
                 throw Errors.NeedRestore(url).ToException();
@@ -48,21 +48,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetRestoredFilePath(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
+        public static string GetRestoredFilePath(Docset docset, SourceInfo<string> url)
         {
             var fromUrl = UrlUtility.IsHttp(url);
             if (!fromUrl)
             {
                 // directly return the relative path
-                var fullPath = Path.Combine(docsetPath, url);
+                var fullPath = Path.Combine(docset.DocsetPath, url);
                 if (File.Exists(fullPath))
                 {
                     return fullPath;
                 }
 
-                if (!string.IsNullOrEmpty(fallbackDocset))
+                if (!string.IsNullOrEmpty(docset.FallbackDocset?.DocsetPath))
                 {
-                    fullPath = Path.Combine(fallbackDocset, url);
+                    fullPath = Path.Combine(docset.FallbackDocset?.DocsetPath, url);
                     if (File.Exists(fullPath))
                     {
                         return fullPath;
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.FileNotFound(url).ToException();
             }
 
-            var filePath = RestoreFile.GetRestoreContentPath(url);
+            var filePath = RestoreFile.GetRestorePathFromUrl(url);
             if (!File.Exists(filePath))
             {
                 throw Errors.NeedRestore(url).ToException();

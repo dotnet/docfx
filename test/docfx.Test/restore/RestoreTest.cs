@@ -140,7 +140,7 @@ monikerDefinition: {url}");
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
 
             // run restore again
-            var filePath = RestoreFile.GetRestoreContentPath(url);
+            var filePath = RestoreFile.GetRestorePathFromUrl(url);
             var etagPath = RestoreFile.GetRestoreEtagPath(url);
 
             File.Delete(etagPath);
