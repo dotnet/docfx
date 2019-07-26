@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void ImageTestBlockGeneral()
         {
-            var source = @":::image data-attrib=""extra"" id=""exampleId"" source=""example.jpg"" alt-text=""example"" :::Lorem Ipsum Image Test.:::image-end:::
+            var source = @":::image data-attrib=""extra"" id=""exampleId"" source=""example.jpg"" alt-text=""example"":::Lorem Ipsum Image Test.:::image-end:::
 ";
 
             var expected = @"<img src=""example.jpg"" alt=""example"" aria-describedby=""exampleId""><div id=""exampleId"" class=""visually-hidden"">

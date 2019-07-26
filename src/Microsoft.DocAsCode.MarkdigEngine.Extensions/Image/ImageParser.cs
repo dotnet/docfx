@@ -12,9 +12,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class ImageParser : BlockParser
     {
-        private const string StartString = "image";
+        private const string ExtensionName = "image";
         private const string EndString = "image-end:::";
         private const char Colon = ':';
+        private const char DoubleQuote = '"';
 
         private readonly MarkdownContext _context;
 
@@ -35,6 +36,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var column = processor.Column;
             var sourcePosition = processor.Start;
             var colonCount = 0;
+            Action<string> logWarning = (string message) => _context.LogWarning(
+            $"invalid-{ExtensionName}",
+            $"Invalid {ExtensionName} on line {processor.LineIndex}. \"{slice.Text}\" is invalid. {message}",
+            null,
+            line: processor.LineIndex);
+
             ExtensionsHelper.SkipSpaces(ref slice);
 
             var src = StringBuilderCache.Local();
@@ -53,12 +60,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
+            if (!ExtensionsHelper.MatchStart(ref slice, ExtensionName, false))
             {
                 return BlockState.None;
             }
 
-            while (slice.CurrentChar != ':')
+            while (slice.CurrentChar != Colon)
             {
                 ExtensionsHelper.SkipSpaces(ref slice);
 
@@ -66,14 +73,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     c = slice.CurrentChar;
 
-                    while (c != '"')
+                    while (c != DoubleQuote)
                     {
                         src.Append(c);
                         c = slice.NextChar();
                     }
-
                     if (!ExtensionsHelper.MatchStart(ref slice, "\"", false))
                     {
+                        logWarning("Attribute Values must be terminated with a double quote.");
                         return BlockState.None;
                     }
                 }
@@ -81,14 +88,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     c = slice.CurrentChar;
 
-                    while (c != '"')
+                    while (c != DoubleQuote)
                     {
                         alt.Append(c);
                         c = slice.NextChar();
                     }
-
                     if (!ExtensionsHelper.MatchStart(ref slice, "\"", false))
                     {
+                        logWarning("Attribute Values must be terminated with a double quote.");
                         return BlockState.None;
                     }
                 }
@@ -96,51 +103,49 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     c = slice.CurrentChar;
 
-                    while (c != '"')
+                    while (c != DoubleQuote)
                     {
                         id.Append(c);
                         c = slice.NextChar();
                     }
-
                     if (!ExtensionsHelper.MatchStart(ref slice, "\"", false))
                     {
+                        logWarning("Attribute Values must be terminated with a double quote.");
                         return BlockState.None;
                     }
                 }
                 else
                 {
-                    if (slice.CurrentChar != ':')
+                    if (slice.CurrentChar != Colon)
                     {
                         c = slice.NextChar();
                     }
                 }
+            }
 
-            };
-
-            var idExplicitySet = id.ToString();
-            if (string.IsNullOrEmpty(idExplicitySet))
+            var Id = id.ToString();
+            if (string.IsNullOrEmpty(Id))
             {
-                idExplicitySet = src.ToString();
-                if (idExplicitySet.IndexOf('/') > -1)
+                Id = src.ToString();
+                if (Id.IndexOf('/') > -1)
                 {
-                    idExplicitySet = idExplicitySet.Split('/').Last();
+                    Id = Id.Split('/').Last();
                 }
-                if (idExplicitySet.IndexOf('.') > -1)
+                if (Id.IndexOf('.') > -1)
                 {
+                    //If the user does not have the id attribute set,
+                    //then use src filename with randomly generated id to be unique.
                     Random random = new Random();
                     const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
                     var generated = new string(Enumerable.Repeat(chars, 8)
                       .Select(s => s[random.Next(s.Length)]).ToArray());
-                    idExplicitySet = $"{idExplicitySet.Split('.')[0]}-{generated}";
+                    Id = $"{Id.Split('.').First()}-{generated}";
                 }
-            }
-            while (c.IsSpace())
-            {
-                c = slice.NextChar();
             }
 
             if (!ExtensionsHelper.MatchStart(ref slice, ":::", false))
             {
+                logWarning($"Must have ending :::{EndString}");
                 return BlockState.None;
             }
 
@@ -149,7 +154,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Line = processor.LineIndex,
                 Src = src.ToString(),
                 Alt = alt.ToString(),
-                Id = idExplicitySet,
+                Id = Id,
                 ColonCount = colonCount,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
