@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             string locale,
             CommandLineOptions options,
             ErrorLog errorLog,
-            RestoreMap restoreMap,
+            RestoreGitMap restoreMap,
             Repository fallbackRepo = null)
         {
             var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (RestoreMap restoreMap, Repository fallbackRepository) LoadRestoreMap(
+        private static (RestoreGitMap restoreMap, Repository fallbackRepository) LoadRestoreMap(
             string docsetPath,
             string locale,
             Repository repository,
@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
 
             var dependencyLock = DependencyLock.Load(docsetPath, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock) ?? new DependencyLockModel();
-            var restoreMap = RestoreMap.Create(dependencyLock);
+            var restoreMap = RestoreGitMap.Create(dependencyLock);
 
             if (LocalizationUtility.TryGetSourceRepository(repository, out var remote, out string branch, out _))
             {

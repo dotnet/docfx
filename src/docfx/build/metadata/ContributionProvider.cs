@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
         private readonly GitHubUserCache _gitHubUserCache;
 
         // TODO: support CRR and multiple repositories
-        // TODO: support live SXS branch
         private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
 
         private readonly GitCommitProvider _gitCommitProvider;

@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch)
+        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreGitMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));

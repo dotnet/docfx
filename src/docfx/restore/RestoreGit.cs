@@ -117,10 +117,10 @@ namespace Microsoft.Docs.Build
                             throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
                         }
 
-                        var (workTreePath, gitSlot) = RestoreMap.TryGetGitRestorePath(remote, branch, headCommit);
+                        var (workTreePath, gitSlot) = RestoreGitMap.TryGetGitRestorePath(remote, branch, headCommit);
                         if (workTreePath is null)
                         {
-                            (workTreePath, gitSlot) = RestoreMap.AcquireExclusiveGit(remote, branch, headCommit);
+                            (workTreePath, gitSlot) = RestoreGitMap.AcquireExclusiveGit(remote, branch, headCommit);
                             workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
                             var restored = true;
 
@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
                             }
                             finally
                             {
-                                RestoreMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
+                                RestoreGitMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                             }
                         }
 

@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the dependency repos/file mappings
         /// </summary>
-        public RestoreMap RestoreMap { get; }
+        public RestoreGitMap RestoreMap { get; }
 
         /// <summary>
         /// Gets the site base path
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            RestoreMap restoreMap,
+            RestoreGitMap restoreMap,
             Repository repository = null,
             Repository fallbackRepo = default,
             Docset localizedDocset = null,
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            RestoreMap restoreMap,
+            RestoreGitMap restoreMap,
             Repository repository = null,
             Docset fallbackDocset = null,
             Docset localizedDocset = null)
@@ -219,14 +219,14 @@ namespace Microsoft.Docs.Build
             var token = new JObject();
             foreach (var metadataSchema in config.MetadataSchema)
             {
-                var content = RestoreMap.GetRestoredFileContent(this, metadataSchema);
+                var content = RestoreFileMap.GetRestoredFileContent(this, metadataSchema);
                 JsonUtility.Merge(token, JsonUtility.Parse(content, new FilePath(metadataSchema)).value as JObject);
             }
             return JsonUtility.ToObject<JsonSchema>(token).value;
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreMap restoreMap, CommandLineOptions options)
+            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);

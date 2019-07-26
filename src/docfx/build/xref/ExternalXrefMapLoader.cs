@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    var content = RestoreMap.GetRestoredFileContent(docset, url);
+                    var content = RestoreFileMap.GetRestoredFileContent(docset, url);
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
                     foreach (var spec in xrefMap.References)
                     {
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     // TODO: It is very easy to forget passing fallbackDocsetPath, the RestoreMap interface needs improvement
-                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+                    var filePath = RestoreFileMap.GetRestoredFilePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
                     foreach (var (uid, spec) in Load(filePath))
                     {
                         // for same uid with multiple specs, we should respect the order of the list
