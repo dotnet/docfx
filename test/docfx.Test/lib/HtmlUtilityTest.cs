@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Globalization;
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<iframe src='//codepen.io/a' />", "<iframe src='//codepen.io/a&rerun-position=hidden&' />")]
 
         // Strip tags
-        [InlineData("<style href='a'>", "<div></div>")]
+        [InlineData("<style href='a'>", "")]
         [InlineData("<div style='a'></div>", "<div></div>")]
         [InlineData("<div><style href='a'></div>", "<div></div>")]
         [InlineData("<div><link href='a'></div>", "<div></div>")]
