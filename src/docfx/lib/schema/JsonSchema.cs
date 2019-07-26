@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -8,8 +8,19 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonConverter(typeof(JsonSchemaConverter))]
     internal class JsonSchema
     {
+        /// <summary>
+        /// `true` is a valid boolean JSON schema. A `true` JSON schema is deserialized into this instance.
+        /// </summary>
+        public static readonly JsonSchema TrueSchema = new JsonSchema();
+
+        /// <summary>
+        /// `false` is a valid boolean JSON schema. A `false` JSON schema is deserialized into this instance.
+        /// </summary>
+        public static readonly JsonSchema FalseSchema = new JsonSchema();
+
         // A core subset of JSON schema
         //-------------------------------------------
 
@@ -46,8 +57,7 @@ namespace Microsoft.Docs.Build
         ///     - boolean: allow/disallow additional properties
         ///     - object: the schema for the additional properties
         /// </summary>
-        [JsonConverter(typeof(ValueOrObjectConverter))]
-        public (bool value, JsonSchema schema) AdditionalProperties { get; set; } = (true, null);
+        public JsonSchema AdditionalProperties { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to property names.
@@ -67,7 +77,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
-        public JsonSchema Items { get; set; }
+        [JsonConverter(typeof(UnionTypeConverter))]
+        public (JsonSchema schema, JsonSchema[] schemas) Items { get; set; }
+
+        /// <summary>
+        /// The JSON schema that applies to additional items of an array.
+        /// </summary>
+        public JsonSchema AdditionalItems { get; set; }
 
         /// <summary>
         /// Whether an array contains this element.
@@ -100,6 +116,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JToken[] Enum { get; set; }
 
+        /// <summary>
+        /// The string format for the current value.
+        /// </summary>
         public JsonSchemaStringFormat Format { get; set; }
 
         /// <summary>
@@ -150,7 +169,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to indicate the dependencies between fields
         /// </summary>
-        public Dictionary<string, string[]> Dependencies { get; set; } = new Dictionary<string, string[]>();
+        [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
+        public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
+         = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
 
         // JSON schema custom validation extensions
         //-------------------------------------------
@@ -218,9 +239,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Properties that are used to indicate the value relationship between two fields
-        /// Mapping relationship: enumDependencies --> <field-name> --> <dependent-field-name> --> <dependent-field-value> --> <allowed-field-values>
         /// </summary>
-        public Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>> EnumDependencies { get; set; } = new Dictionary<string, Dictionary<string, Dictionary<JToken, JValue[]>>>();
+        public EnumDependenciesSchema EnumDependencies { get; set; }
 
         /// <summary>
         /// Properties that are used to validate microsoft alias
@@ -231,8 +251,8 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// This field is used to provide overwrite error information and only can be set in root level of schema
+        /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
-        public Dictionary<string, Dictionary<string, OverwriteErrorSchema>> OverwriteErrors { get; set; } = new Dictionary<string, Dictionary<string, OverwriteErrorSchema>>();
+        public Dictionary<string, Dictionary<string, AdditionalErrorSchema>> AdditionalErrors { get; set; } = new Dictionary<string, Dictionary<string, AdditionalErrorSchema>>();
     }
 }

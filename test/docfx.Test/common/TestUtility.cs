@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Linq;
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                     // Treat value as html if it looks like: <blablabla>
                     if (expectedString.StartsWith('<') && expectedString.EndsWith('>'))
                     {
-                        Assert.Equal(NormalizeHtml(expectedString), NormalizeHtml(actualString));
+                        AssertHtmlEquals(expectedString, actualString);
                     }
                     // Treat value negate if it looks like: !blablabla
                     else if (expectedString.StartsWith('!'))
@@ -76,6 +76,20 @@ namespace Microsoft.Docs.Build
                     Assert.Equal(expectedValue, actualValue);
                 }
             }
+        }
+
+        public static void AssertHtmlEquals(string expected, string actual)
+        {
+            var expectedHtml = NormalizeHtml(expected);
+            var actualHtml = NormalizeHtml(actual);
+
+            // Compare data-linktype only if the expectation contains data-linktype
+            if (!expectedHtml.Contains("data-linktype"))
+            {
+                actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");
+            }
+
+            Assert.Equal(expectedHtml, actualHtml);
         }
 
         public static string NormalizeHtml(string html)
@@ -112,12 +126,10 @@ namespace Microsoft.Docs.Build
                         Indent(level);
                         sb.Append("<");
                         sb.Append(node.Name);
+
                         foreach (var attr in node.Attributes.OrderBy(a => a.Name))
                         {
-                            if (attr.Name != "data-linktype")
-                            {
-                                sb.Append($" {attr.Name}=\"{TrimWhiteSpace(attr.Value)}\"");
-                            }
+                            sb.Append($" {attr.Name}=\"{TrimWhiteSpace(attr.Value)}\"");
                         }
                         sb.Append(">\n");
 

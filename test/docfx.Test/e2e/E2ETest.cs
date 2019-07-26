@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -423,12 +423,14 @@ namespace Microsoft.Docs.Build
                         TestUtility.VerifyJsonContainEquals(JToken.Parse(expected[i]), JToken.Parse(actual[i]));
                     }
                     break;
+
                 case ".json":
                     TestUtility.VerifyJsonContainEquals(
                         // Test expectation can use YAML for readability
                         content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
                         JToken.Parse(File.ReadAllText(file)));
                     break;
+
                 case ".log":
                     expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
                     actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
@@ -440,12 +442,13 @@ namespace Microsoft.Docs.Build
                     {
                         Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
                     }
+                    VerifyLogsHasLineInfo(actual);
                     break;
+
                 case ".html":
-                    Assert.Equal(
-                        TestUtility.NormalizeHtml(content),
-                        TestUtility.NormalizeHtml(File.ReadAllText(file)));
+                    TestUtility.AssertHtmlEquals(content, File.ReadAllText(file));
                     break;
+
                 default:
                     Assert.Equal(
                         content?.Trim() ?? "",
@@ -459,11 +462,14 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyLogsHasLineInfo(string[] logs)
         {
-            foreach (var log in Array.ConvertAll(logs, JArray.Parse))
+            if (logs.Length > 0 && logs[0].StartsWith("["))
             {
-                if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 5)
+                foreach (var log in Array.ConvertAll(logs, JArray.Parse))
                 {
-                    Assert.True(false, $"Error code {log[1].ToString()} must have line info");
+                    if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 5)
+                    {
+                        Assert.True(false, $"Error code {log[1].ToString()} must have line info");
+                    }
                 }
             }
         }

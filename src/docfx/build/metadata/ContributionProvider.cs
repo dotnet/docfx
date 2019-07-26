@@ -43,10 +43,11 @@ namespace Microsoft.Docs.Build
 
             var excludes = document.Docset.Config.Contribution.ExcludedContributors;
 
+            Contributor authorFromCommits = null;
             var contributors = new List<Contributor>();
             var errors = new List<Error>();
-            var emails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var userIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var contributorsGroupByEmail = new Dictionary<string, Contributor>(StringComparer.OrdinalIgnoreCase);
+            var contributorIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var updatedDateTime = GetUpdatedAt(document, commits);
             var contributionInfo = updatedDateTime != default
                 ? new ContributionInfo
@@ -70,13 +71,18 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var commit in contributionCommits)
                 {
-                    if (!emails.Add(commit.AuthorEmail))
-                        continue;
-
-                    var contributor = await GetContributor(commit);
-                    if (contributor != null && !excludes.Contains(contributor.Name) && userIds.Add(contributor.Id))
+                    if (!contributorsGroupByEmail.TryGetValue(commit.AuthorEmail, out var contributor))
                     {
-                        contributors.Add(contributor);
+                        contributorsGroupByEmail[commit.AuthorEmail] = contributor = await GetContributor(commit);
+                    }
+
+                    if (contributor != null && !excludes.Contains(contributor.Name))
+                    {
+                        authorFromCommits = contributor;
+                        if (contributorIds.Add(contributor.Id))
+                        {
+                            contributors.Add(contributor);
+                        }
                     }
                 }
             }
@@ -117,19 +123,9 @@ namespace Microsoft.Docs.Build
                     errors.AddIfNotNull(error);
                     return result?.ToContributor();
                 }
-                else if (contributors.Count > 0)
-                {
-                    // When author name is not specified, last contributor is author
-                    for (var i = contributionCommits.Count - 1; i >= 0; i--)
-                    {
-                        var user = await GetContributor(contributionCommits[i]);
-                        if (user != null && !excludes.Contains(user.Name))
-                        {
-                            return user;
-                        }
-                    }
-                }
-                return null;
+
+                // When author name is not specified, last contributor is author
+                return authorFromCommits;
             }
 
             List<GitCommit> GetContributionCommits()

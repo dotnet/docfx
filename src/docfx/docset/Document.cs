@@ -28,6 +28,11 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> Mime { get; }
 
         /// <summary>
+        /// Gets whether this document is conceptual document (or LandingData).
+        /// </summary>
+        public bool IsConceptual => string.IsNullOrEmpty(Mime) || TemplateEngine.IsLandingData(Mime);
+
+        /// <summary>
         /// Gets the source file path relative to docset folder that is:
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>

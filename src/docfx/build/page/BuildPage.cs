@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -29,8 +29,8 @@ namespace Microsoft.Docs.Build
             errors.AddRange(outputMetadataErrors);
 
             var (output, metadata) = file.IsPage
-            ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
-            : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
+                ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
+                : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(output, publishItem.Path);
                 }
 
-                if (file.Docset.Legacy && metadata != null)
+                if (file.Docset.Legacy && file.IsPage)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadata, metadataPath);
@@ -157,8 +157,7 @@ namespace Microsoft.Docs.Build
             return (errors, outputMetadata);
         }
 
-        private static async Task<(List<Error> errors, JObject model)>
-            Load(Context context, Document file)
+        private static async Task<(List<Error> errors, JObject model)> Load(Context context, Document file)
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
@@ -173,8 +172,7 @@ namespace Microsoft.Docs.Build
             return await LoadJson(context, file);
         }
 
-        private static (List<Error> errors, JObject model)
-            LoadMarkdown(Context context, Document file)
+        private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
             var content = file.ReadText();
@@ -212,16 +210,14 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel);
         }
 
-        private static async Task<(List<Error> errors, JObject model)>
-            LoadYaml(Context context, Document file)
+        private static async Task<(List<Error> errors, JObject model)> LoadYaml(Context context, Document file)
         {
             var (errors, token) = YamlUtility.Parse(file, context);
 
             return await LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, JObject model)>
-            LoadJson(Context context, Document file)
+        private static async Task<(List<Error> errors, JObject model)> LoadJson(Context context, Document file)
         {
             var (errors, token) = JsonUtility.Parse(file, context);
 
@@ -268,10 +264,15 @@ namespace Microsoft.Docs.Build
 
         private static (TemplateModel model, JObject metadata) CreateTemplateModel(Context context, JObject pageModel, Document file)
         {
-            var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
-            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
+            var content = CreateContent(context, file, pageModel);
 
-            var templateMetadata = context.TemplateEngine.RunJint(isConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            // Hosting layers treats empty content as 404, so generate an empty <div></div>
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                content = "<div></div>";
+            }
+
+            var templateMetadata = context.TemplateEngine.RunJint(file.IsConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
             if (TemplateEngine.IsLandingData(file.Mime))
             {
                 templateMetadata["_op_layout"] = "LandingPage";
@@ -280,12 +281,6 @@ namespace Microsoft.Docs.Build
 
                 templateMetadata.Remove("_op_gitContributorInformation");
                 templateMetadata.Remove("_op_allContributorsStr");
-            }
-
-            if (!isConceptual)
-            {
-                var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
-                conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
             }
 
             // content for *.mta.json
@@ -299,13 +294,31 @@ namespace Microsoft.Docs.Build
             // content for *.raw.page.json
             var model = new TemplateModel
             {
-                Content = conceptual,
+                Content = content,
                 RawMetadata = templateMetadata,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
             };
 
             return (model, metadata);
+        }
+
+        private static string CreateContent(Context context, Document file, JObject pageModel)
+        {
+            if (file.IsConceptual)
+            {
+                return pageModel.Value<string>("conceptual");
+            }
+
+            // Generate SDP content
+            var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
+
+            var htmlDom = HtmlUtility.LoadHtml(content);
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+
+            return HtmlUtility.AddLinkType(htmlDom, file.Docset.Locale).WriteTo();
         }
     }
 }
