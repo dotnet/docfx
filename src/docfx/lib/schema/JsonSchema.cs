@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -116,6 +116,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JToken[] Enum { get; set; }
 
+        /// <summary>
+        /// The string format for the current value.
+        /// </summary>
         public JsonSchemaStringFormat Format { get; set; }
 
         /// <summary>
@@ -166,7 +169,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to indicate the dependencies between fields
         /// </summary>
-        public Dictionary<string, string[]> Dependencies { get; set; } = new Dictionary<string, string[]>();
+        [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
+        public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
+         = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
 
         // JSON schema custom validation extensions
         //-------------------------------------------
@@ -246,8 +251,8 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// This field is used to provide overwrite error information and only can be set in root level of schema
+        /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
-        public Dictionary<string, Dictionary<string, OverwriteErrorSchema>> OverwriteErrors { get; set; } = new Dictionary<string, Dictionary<string, OverwriteErrorSchema>>();
+        public Dictionary<string, Dictionary<string, AdditionalErrorSchema>> AdditionalErrors { get; set; } = new Dictionary<string, Dictionary<string, AdditionalErrorSchema>>();
     }
 }
