@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -248,7 +248,8 @@ namespace Microsoft.Docs.Build
                 var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
                 errors.AddRange(metadataErrors);
 
-                var landingData = pageModel.ToObject<LandingData>();
+                var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
+                errors.AddRange(deserializeErrors);
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
