@@ -5,17 +5,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Helpers;
     using Markdig.Parsers;
+    using Markdig.Renderers.Html;
     using Markdig.Syntax;
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
 
     public class ImageParser : BlockParser
     {
-        private const string ExtensionName = "image";
         private const string EndString = "image-end:::";
         private const char Colon = ':';
         private const char DoubleQuote = '"';
+        private const char SingleQuote = '\'';
+        private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
 
         private readonly MarkdownContext _context;
 
@@ -31,7 +35,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return BlockState.Continue;
             }
-
+            string ExtensionName = "image";
+            IDictionary<string, string> attributes;
+            IDictionary<string, string> renderProperties;
+            HtmlAttributes htmlAttributes;
             var slice = processor.Line;
             var column = processor.Column;
             var sourcePosition = processor.Start;
@@ -44,9 +51,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            var src = StringBuilderCache.Local();
-            var alt = new StringBuilder();
-            var id = new StringBuilder();
+            var src = string.Empty;
+            var alt = string.Empty;
+            var id = string.Empty;
 
             var c = slice.CurrentChar;
 
@@ -60,101 +67,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, ExtensionName, false))
+            if (!TryMatchIdentifier(ref slice, out ExtensionName)
+                || !TryMatchAttributes(ref slice, out attributes, ExtensionName, logWarning)
+                || !TryProcessAttributes(attributes, out htmlAttributes, out renderProperties, logWarning))
             {
                 return BlockState.None;
             }
 
-            while (slice.CurrentChar != Colon)
-            {
-                ExtensionsHelper.SkipSpaces(ref slice);
-
-                if (ExtensionsHelper.MatchStart(ref slice, "source=\"", false))
-                {
-                    c = slice.CurrentChar;
-
-                    while (c != DoubleQuote)
-                    {
-                        src.Append(c);
-                        c = slice.NextChar();
-                    }
-                    if (!ExtensionsHelper.MatchStart(ref slice, "\"", false))
-                    {
-                        logWarning("Attribute Values must be terminated with a double quote.");
-                        return BlockState.None;
-                    }
-                }
-                else if (ExtensionsHelper.MatchStart(ref slice, "alt-text=\"", false))
-                {
-                    c = slice.CurrentChar;
-
-                    while (c != DoubleQuote)
-                    {
-                        alt.Append(c);
-                        c = slice.NextChar();
-                    }
-                    if (!ExtensionsHelper.MatchStart(ref slice, "\"", false))
-                    {
-                        logWarning("Attribute Values must be terminated with a double quote.");
-                        return BlockState.None;
-                    }
-                }
-                else if (ExtensionsHelper.MatchStart(ref slice, "id=\"", false))
-                {
-                    c = slice.CurrentChar;
-
-                    while (c != DoubleQuote)
-                    {
-                        id.Append(c);
-                        c = slice.NextChar();
-                    }
-                    if (!ExtensionsHelper.MatchStart(ref slice, "\"", false))
-                    {
-                        logWarning("Attribute Values must be terminated with a double quote.");
-                        return BlockState.None;
-                    }
-                }
-                else
-                {
-                    if (slice.CurrentChar != Colon)
-                    {
-                        c = slice.NextChar();
-                    }
-                }
-            }
-
-            var Id = id.ToString();
-            if (string.IsNullOrEmpty(Id))
-            {
-                Id = src.ToString();
-                if (Id.IndexOf('/') > -1)
-                {
-                    Id = Id.Split('/').Last();
-                }
-                if (Id.IndexOf('.') > -1)
-                {
-                    //If the user does not have the id attribute set,
-                    //then use src filename with randomly generated id to be unique.
-                    Random random = new Random();
-                    const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-                    var generated = new string(Enumerable.Repeat(chars, 8)
-                      .Select(s => s[random.Next(s.Length)]).ToArray());
-                    Id = $"{Id.Split('.').First()}-{generated}";
-                }
-            }
-
-            if (!ExtensionsHelper.MatchStart(ref slice, ":::", false))
-            {
-                logWarning($"Must have ending :::{EndString}");
-                return BlockState.None;
-            }
-
+            id = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "aria-describedby").Value;
+            src = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "src").Value;
+            alt = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "alt").Value;
+            
             processor.NewBlocks.Push(new ImageBlock(this)
             {
                 Line = processor.LineIndex,
-                Src = src.ToString(),
-                Alt = alt.ToString(),
-                Id = Id,
+                Src = src,
+                Alt = alt,
+                Id = id,
                 ColonCount = colonCount,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, slice.End),
@@ -197,6 +126,160 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             block.UpdateSpanEnd(slice.End);
 
             return BlockState.BreakDiscard;
+        }
+
+        private bool TryMatchIdentifier(ref StringSlice slice, out string name)
+        {
+            name = string.Empty;
+            var c = slice.CurrentChar;
+            if (c.IsAlpha())
+            {
+                var b = StringBuilderCache.Local();
+                do
+                {
+                    b.Append(c);
+                    c = slice.NextChar();
+                } while (c.IsAlphaNumeric() || c == '-');
+                name = b.ToString().ToLower();
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryMatchAttributeValue(ref StringSlice slice, out string value, string extensionName, string attributeName, Action<string> logError)
+        {
+            value = string.Empty;
+            var c = slice.CurrentChar;
+            if (c != '"')
+            {
+                logError($"Invalid attribute \"{attributeName}\". Values must be enclosed in double quotes.");
+                return false;
+            }
+            var b = StringBuilderCache.Local();
+            c = slice.NextChar();
+            while (c != '"')
+            {
+                if (c.IsZero())
+                {
+                    logError($"Invalid attribute \"{attributeName}\". Values must be terminated with a double quote.");
+                    return false;
+                }
+                b.Append(c);
+                c = slice.NextChar();
+            }
+            slice.NextChar();
+            value = b.ToString();
+            return true;
+        }
+
+        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, Action<string> logError)
+        {
+            attributes = EmptyAttributes;
+            while (true)
+            {
+                ExtensionsHelper.SkipSpaces(ref slice);
+                if (ExtensionsHelper.MatchStart(ref slice, ":::"))
+                {
+                    logError($"starting :::{extensionName} must have a matching end set ::: to hold the attributes.");
+                    return true;
+                }
+                string attributeName;
+                if (!TryMatchIdentifier(ref slice, out attributeName))
+                {
+                    logError($"Invalid attribute.");
+                    return false;
+                }
+                if (attributes.ContainsKey(attributeName))
+                {
+                    logError($"Attribute \"{attributeName}\" specified multiple times.");
+                    return false;
+                }
+
+                var value = string.Empty;
+
+                ExtensionsHelper.SkipSpaces(ref slice);
+                if (slice.CurrentChar == '=')
+                {
+                    slice.NextChar();
+                    ExtensionsHelper.SkipSpaces(ref slice);
+                    if (!TryMatchAttributeValue(ref slice, out value, extensionName, attributeName, logError))
+                    {
+                        return false;
+                    }
+                }
+
+                if (attributes == EmptyAttributes)
+                {
+                    attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                }
+                attributes.Add(attributeName, value);
+            }
+        }
+
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError)
+        {
+            htmlAttributes = null;
+            renderProperties = new Dictionary<string, string>();
+            var src = string.Empty;
+            var alt = string.Empty;
+            var id = string.Empty;
+            foreach (var attribute in attributes)
+            {
+                var name = attribute.Key;
+                var value = attribute.Value;
+                switch (name)
+                {
+                    case "alt-text":
+                        alt = value;
+                        break;
+                    case "source":
+                        src = value;
+                        break;
+                    case "id":
+                        id = value;
+                        break;
+                    default:
+                        logError($"Unexpected attribute \"{name}\".");
+                        return false;
+                }
+            }
+
+            if (alt == string.Empty)
+            {
+                logError($"alt-text must be specified.");
+                return false;
+            }
+            if (src == string.Empty)
+            {
+                logError($"source must be specified.");
+                return false;
+            }
+            var Id = id;
+            if (string.IsNullOrEmpty(id))
+            {
+                Id = src;
+                if (Id.IndexOf('/') > -1)
+                {
+                    Id = Id.Split('/').Last();
+                }
+                if (Id.IndexOf('.') > -1)
+                {
+                    //If the user does not have the id attribute set,
+                    //then use src filename with randomly generated id to be unique.
+                    Random random = new Random();
+                    const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+                    var generated = new string(Enumerable.Repeat(chars, 8)
+                      .Select(s => s[random.Next(s.Length)]).ToArray());
+                    Id = $"{Id.Split('.').First()}-{generated}";
+                }
+            }
+
+            htmlAttributes = new HtmlAttributes();
+            htmlAttributes.AddProperty("aria-describedby", Id);
+            htmlAttributes.AddProperty("src", src);
+            htmlAttributes.AddProperty("alt", alt);
+
+            return true;
         }
     }
 }
