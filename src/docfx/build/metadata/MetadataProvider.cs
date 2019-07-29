@@ -109,7 +109,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var schemaValidator in _schemaValidators)
             {
-                errors.AddRange(schemaValidator.Validate(result));
+               // Only validate markdown files
+               if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime))
+               {
+                    errors.AddRange(schemaValidator.Validate(result));
+               }
             }
 
             var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
