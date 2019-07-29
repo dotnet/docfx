@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -446,9 +446,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case ".html":
-                    Assert.Equal(
-                        TestUtility.NormalizeHtml(content),
-                        TestUtility.NormalizeHtml(File.ReadAllText(file)));
+                    TestUtility.AssertHtmlEquals(content, File.ReadAllText(file));
                     break;
 
                 default:

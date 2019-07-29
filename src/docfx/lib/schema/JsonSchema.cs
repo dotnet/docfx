@@ -116,6 +116,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JToken[] Enum { get; set; }
 
+        /// <summary>
+        /// The string format for the current value.
+        /// </summary>
         public JsonSchemaStringFormat Format { get; set; }
 
         /// <summary>
@@ -166,7 +169,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to indicate the dependencies between fields
         /// </summary>
-        public Dictionary<string, string[]> Dependencies { get; set; } = new Dictionary<string, string[]>();
+        [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
+        public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
+         = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
 
         // JSON schema custom validation extensions
         //-------------------------------------------

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -149,7 +150,7 @@ namespace Microsoft.Docs.Build
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<(string name, Error)> errors)
         {
             ValidateRequired(schema, map, errors);
-            ValidateDependencies(schema, map, errors);
+            ValidateDependencies(schema, name, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
             ValidateEnumDependencies(schema.EnumDependencies, string.Empty, string.Empty, null, null, map, errors);
@@ -241,8 +242,18 @@ namespace Microsoft.Docs.Build
             switch (schema.Format)
             {
                 case JsonSchemaStringFormat.DateTime:
-                    if (!DateTime.TryParse(str, out var _))
+                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
                         errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.DateTime)));
+                    break;
+
+                case JsonSchemaStringFormat.Date:
+                    if (!DateTime.TryParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
+                        errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Date)));
+                    break;
+
+                case JsonSchemaStringFormat.Time:
+                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.NoCurrentDateDefault, out var time) || time.Date != default)
+                        errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Time)));
                     break;
             }
         }
@@ -285,18 +296,25 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDependencies(JsonSchema schema, JObject map, List<(string name, Error)> errors)
+        private void ValidateDependencies(JsonSchema schema, string name, JObject map, List<(string name, Error)> errors)
         {
-            foreach (var (key, value) in schema.Dependencies)
+            foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
             {
                 if (map.ContainsKey(key))
                 {
-                    foreach (var otherKey in value)
+                    if (propertyNames != null)
                     {
-                        if (!map.ContainsKey(otherKey))
+                        foreach (var otherKey in propertyNames)
                         {
-                            errors.Add((key, Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), key, otherKey)));
+                            if (!map.ContainsKey(otherKey))
+                            {
+                                errors.Add((key, Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), key, otherKey)));
+                            }
                         }
+                    }
+                    else if (subschema != null)
+                    {
+                        Validate(subschema, name, map, errors);
                     }
                 }
             }
