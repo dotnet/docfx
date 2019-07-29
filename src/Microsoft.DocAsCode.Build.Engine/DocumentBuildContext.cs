@@ -486,7 +486,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentException("Only relative href path is supported");
             }
-            XRefSpecMap[xrefSpec.Uid] = xrefSpec;
+            XRefSpecMap.AddOrUpdate(
+                xrefSpec.Uid,
+                xrefSpec,
+                (_, old) =>
+                {
+                    Logger.LogWarning($"Uid({xrefSpec.Uid}) has already been defined in {((RelativePath)xrefSpec.Href).RemoveWorkingFolder()}.", 
+                        code: WarningCodes.Build.DuplicateUids);
+                    return FilePathComparer.OSPlatformSensitiveStringComparer.Compare(old.Href, xrefSpec.Href) > 0 ? xrefSpec : old;
+                });
         }
 
         public void RegisterInternalXrefSpecBookmark(string uid, string bookmark)
