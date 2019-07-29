@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void ImageTestBlockGeneral()
         {
-            var source = @":::image source=""example.jpg"" alt-text=""example"":::Lorem Ipsum Image Test.:::image-end:::
+            var source = @":::image id=""exampleId"" source=""example.jpg"" alt-text=""example""::::::image-end:::
 ";
 
             var expected = @"<img src=""example.jpg"" alt=""example"" aria-describedby=""exampleId""><div id=""exampleId"" class=""visually-hidden"">
@@ -35,5 +35,51 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             }
             Logger.UnregisterListener(listener);
         }
+
+        [Fact]
+        public void ImageBlockTestBlockClosed()
+        {
+            var source = @":::image id=""exampleId"" source=""example.jpg"" alt-text=""example"":::
+:::image-end:::";
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(LoggerPhase))
+            {
+                var service = TestUtility.CreateMarkdownService();
+                var document = service.Parse(source, "fakepath.md");
+
+                var imageBlock = document.OfType<ImageBlock>().FirstOrDefault();
+                Assert.NotNull(imageBlock);
+                Assert.True(imageBlock.Closed);
+            }
+            Logger.UnregisterListener(listener);
+        }
+
+        [Fact]
+        public void ImageTestNotImageBlock()
+        {
+            var source = @":::row:::
+:::column:::
+    This is where your content goes.
+:::column-end:::
+:::row-end:::
+";
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
+
+            Logger.RegisterListener(listener);
+            using (new LoggerPhaseScope(LoggerPhase))
+            {
+                var service = TestUtility.CreateMarkdownService();
+                var document = service.Parse(source, "fakepath.md");
+
+                var imageBlock = document.OfType<ImageBlock>().FirstOrDefault();
+                Assert.Null(imageBlock);
+            }
+            Logger.UnregisterListener(listener);
+        }
+
     }
 }

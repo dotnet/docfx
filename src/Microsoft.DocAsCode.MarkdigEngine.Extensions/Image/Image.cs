@@ -16,5 +16,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public string Src { get; set; }
         public string Alt { get; set; }
         public string Id { get; set; }
+        public bool Closed { get; set; }
     }
 }

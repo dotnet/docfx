@@ -15,10 +15,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class ImageParser : BlockParser
     {
+        private string ExtensionName = "image";
         private const string EndString = "image-end:::";
         private const char Colon = ':';
-        private const char DoubleQuote = '"';
-        private const char SingleQuote = '\'';
         private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
 
         private readonly MarkdownContext _context;
@@ -35,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return BlockState.Continue;
             }
-            string ExtensionName = "image";
+            
             IDictionary<string, string> attributes;
             IDictionary<string, string> renderProperties;
             HtmlAttributes htmlAttributes;
@@ -51,10 +50,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            var src = string.Empty;
-            var alt = string.Empty;
-            var id = string.Empty;
-
             var c = slice.CurrentChar;
 
             while (c == Colon)
@@ -67,16 +62,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!TryMatchIdentifier(ref slice, out ExtensionName)
-                || !TryMatchAttributes(ref slice, out attributes, ExtensionName, logWarning)
+            if (!ExtensionsHelper.MatchStart(ref slice, ExtensionName, false))
+            {
+                return BlockState.None;
+            }
+
+            if (!TryMatchAttributes(ref slice, out attributes, ExtensionName, logWarning)
                 || !TryProcessAttributes(attributes, out htmlAttributes, out renderProperties, logWarning))
             {
                 return BlockState.None;
             }
 
-            id = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "aria-describedby").Value;
-            src = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "src").Value;
-            alt = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "alt").Value;
+            var id = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "aria-describedby").Value;
+            var src = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "src").Value;
+            var alt = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "alt").Value;
             
             processor.NewBlocks.Push(new ImageBlock(this)
             {
@@ -100,11 +99,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var slice = processor.Line;
-            var NestedColumn = (ImageBlock)block;
+            var ImageBlock = (ImageBlock)block;
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', NestedColumn.ColonCount)))
+            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', ImageBlock.ColonCount)))
             {
                 return BlockState.Continue;
             }
@@ -120,10 +119,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-nested-column", $"NestedColumn have some invalid chars in the ending.", block);
+                _context.LogWarning(
+                    $"invalid-{ExtensionName}",
+                    $"Invalid {ExtensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {ExtensionName}-end\": \"{c}\"",
+                    block);
             }
 
             block.UpdateSpanEnd(slice.End);
+            block.IsOpen = false;
+            (block as ImageBlock).Closed = true;
 
             return BlockState.BreakDiscard;
         }
@@ -180,7 +184,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 ExtensionsHelper.SkipSpaces(ref slice);
                 if (ExtensionsHelper.MatchStart(ref slice, ":::"))
                 {
-                    logError($"starting :::{extensionName} must have a matching end set ::: to hold the attributes.");
                     return true;
                 }
                 string attributeName;
@@ -216,7 +219,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logWarning)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
@@ -239,19 +242,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         id = value;
                         break;
                     default:
-                        logError($"Unexpected attribute \"{name}\".");
+                        logWarning($"Unexpected attribute \"{name}\".");
                         return false;
                 }
             }
 
             if (alt == string.Empty)
             {
-                logError($"alt-text must be specified.");
+                logWarning($"alt-text must be specified.");
                 return false;
             }
             if (src == string.Empty)
             {
-                logError($"source must be specified.");
+                logWarning($"source must be specified.");
                 return false;
             }
             var Id = id;
@@ -264,14 +267,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 if (Id.IndexOf('.') > -1)
                 {
-                    //If the user does not have the id attribute set,
-                    //then use src filename with randomly generated id to be unique.
-                    Random random = new Random();
-                    const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-                    var generated = new string(Enumerable.Repeat(chars, 8)
-                      .Select(s => s[random.Next(s.Length)]).ToArray());
-                    Id = $"{Id.Split('.').First()}-{generated}";
+                    Id = Id.Split('.').First();
                 }
+                //If the user does not have the id attribute set,
+                //then use src filename with randomly generated id to be unique.
+                Random random = new Random();
+                const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+                var generated = new string(Enumerable.Repeat(chars, 8)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+                Id = $"{Id}-{generated}";
             }
 
             htmlAttributes = new HtmlAttributes();
