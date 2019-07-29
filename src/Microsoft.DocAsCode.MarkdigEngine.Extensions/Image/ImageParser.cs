@@ -110,23 +110,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, $"{ExtensionName}-end", false))
+            if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
             {
                 return BlockState.Continue;
             }
 
             var c = ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', ImageBlock.ColonCount)))
-            {
-                return BlockState.Continue;
-            }
-
             if (!c.IsZero())
             {
                 _context.LogWarning(
                     $"invalid-{ExtensionName}",
-                    $"Invalid {ExtensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {ExtensionName}-end\": \"{c}\"",
+                    $"Invalid {ExtensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \":::{EndString}\", \"{c}\"",
                     block);
             }
 
