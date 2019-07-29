@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -21,12 +21,6 @@ namespace Microsoft.Docs.Build
             html = html.StripTags();
             html = html.AddLinkType(culture.Name.ToLowerInvariant())
                        .RemoveRerunCodepenIframes();
-
-            // Hosting layers treats empty content as 404, so generate an empty <div></div>
-            if (string.IsNullOrWhiteSpace(html.OuterHtml))
-            {
-                return "<div></div>";
-            }
 
             return LocalizationUtility.AddLeftToRightMarker(culture, html.OuterHtml);
         }
@@ -260,20 +254,23 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static string Encode(string s)
+        public static HtmlNode AddLinkType(this HtmlNode html, string locale)
+        {
+            AddLinkType(html, "a", "href", locale);
+            AddLinkType(html, "img", "src", locale);
+            return html;
+        }
+
+        /// <summary>
+        /// Special HTML encode logic designed only for <see cref="CreateHtmlMetaTags"/>.
+        /// </summary>
+        internal static string Encode(string s)
         {
             return s.Replace("&", "&amp;")
                     .Replace("<", "&lt;")
                     .Replace(">", "&gt;")
                     .Replace("\"", "&quot;")
                     .Replace("'", "&#39;");
-        }
-
-        private static HtmlNode AddLinkType(this HtmlNode html, string locale)
-        {
-            AddLinkType(html, "a", "href", locale);
-            AddLinkType(html, "img", "src", locale);
-            return html;
         }
 
         private static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)

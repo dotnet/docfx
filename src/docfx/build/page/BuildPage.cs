@@ -248,7 +248,8 @@ namespace Microsoft.Docs.Build
                 var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
                 errors.AddRange(metadataErrors);
 
-                var landingData = pageModel.ToObject<LandingData>();
+                var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
+                errors.AddRange(deserializeErrors);
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
@@ -264,10 +265,15 @@ namespace Microsoft.Docs.Build
 
         private static (TemplateModel model, JObject metadata) CreateTemplateModel(Context context, JObject pageModel, Document file)
         {
-            var isConceptual = string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime);
-            var conceptual = isConceptual ? pageModel.Value<string>("conceptual") : string.Empty;
+            var content = CreateContent(context, file, pageModel);
 
-            var templateMetadata = context.TemplateEngine.RunJint(isConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            // Hosting layers treats empty content as 404, so generate an empty <div></div>
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                content = "<div></div>";
+            }
+
+            var templateMetadata = context.TemplateEngine.RunJint(file.IsConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
             if (TemplateEngine.IsLandingData(file.Mime))
             {
                 templateMetadata["_op_layout"] = "LandingPage";
@@ -276,15 +282,6 @@ namespace Microsoft.Docs.Build
 
                 templateMetadata.Remove("_op_gitContributorInformation");
                 templateMetadata.Remove("_op_allContributorsStr");
-            }
-
-            if (!isConceptual)
-            {
-                var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
-                conceptual = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
-
-                var bookmarks = HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(conceptual));
-                context.BookmarkValidator.AddBookmarks(file, bookmarks);
             }
 
             // content for *.mta.json
@@ -298,13 +295,31 @@ namespace Microsoft.Docs.Build
             // content for *.raw.page.json
             var model = new TemplateModel
             {
-                Content = conceptual,
+                Content = content,
                 RawMetadata = templateMetadata,
                 PageMetadata = pageMetadata,
                 ThemesRelativePathToOutputRoot = "_themes/",
             };
 
             return (model, metadata);
+        }
+
+        private static string CreateContent(Context context, Document file, JObject pageModel)
+        {
+            if (file.IsConceptual)
+            {
+                return pageModel.Value<string>("conceptual");
+            }
+
+            // Generate SDP content
+            var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
+
+            var htmlDom = HtmlUtility.LoadHtml(content);
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+
+            return HtmlUtility.AddLinkType(htmlDom, file.Docset.Locale).WriteTo();
         }
     }
 }
