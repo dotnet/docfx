@@ -110,12 +110,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
+            if (!ExtensionsHelper.MatchStart(ref slice, $"{ExtensionName}-end", false))
             {
                 return BlockState.Continue;
             }
 
             var c = ExtensionsHelper.SkipSpaces(ref slice);
+
+            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', ImageBlock.ColonCount)))
+            {
+                return BlockState.Continue;
+            }
 
             if (!c.IsZero())
             {
