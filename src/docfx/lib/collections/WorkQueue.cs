@@ -89,12 +89,6 @@ namespace Microsoft.Docs.Build
                         break;
                     }
 
-                    if (_exception != null)
-                    {
-                        OnComplete();
-                        break;
-                    }
-
                     Interlocked.Increment(ref _parallelism);
 
                     ThreadPool.QueueUserWorkItem(Run, item, preferLocal: true);
@@ -146,8 +140,6 @@ namespace Microsoft.Docs.Build
                     _exception = exception;
                 }
 
-                DrainCore();
-
                 if (Interlocked.Decrement(ref _remainingCount) == 0)
                 {
                     if (_exception is null)
@@ -158,6 +150,10 @@ namespace Microsoft.Docs.Build
                     {
                         _drainTcs.SetException(_exception);
                     }
+                }
+                else
+                {
+                    DrainCore();
                 }
             }
         }
