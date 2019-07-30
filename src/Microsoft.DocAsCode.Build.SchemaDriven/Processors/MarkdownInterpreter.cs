@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
+    using HtmlAgilityPack;
     public class MarkdownInterpreter : IInterpreter
     {
         public bool CanInterpret(BaseSchema schema)
@@ -38,7 +39,21 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             (context.FileLinkSources).Merge(mr.FileLinkSources);
             (context.UidLinkSources).Merge(mr.UidLinkSources);
             (context.Dependency).UnionWith(mr.Dependency);
-            return mr.Html;
+
+            HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(mr.Html);
+            foreach (var node in htmlDocument.DocumentNode.Descendants())
+            {
+                if (!node.HasAttributes)
+                {
+                    continue;
+                }
+                //if the node have this attribute, it's markdown content and add new attribute
+                if (!node.GetAttributeValue("sourceStartLineNumber", false))
+                    node.SetAttributeValue("jsonPath", path);
+            }
+
+            return htmlDocument.ToString();
         }
     }
 }
