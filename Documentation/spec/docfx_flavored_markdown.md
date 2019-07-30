@@ -568,6 +568,27 @@ Tab content-b for 2.
 When select `tabid-1` in tab group 1, you can get content-a or content-b for 1 in group 2.\
 When select `tabid-2` in tab group 1, you can get content-a or content-b for 2 in group 2.
 
+## Video
+
+Allows you to add videos to your topics.
+
+Syntax:
+```md
+> [!Video embed_link]
+```
+
+> [!NOTE]
+> You must provide the **embed** uri of the video you wish to add to your topic.
+
+Example:
+```md
+> [!Video https://www.youtube.com/embed/TAaG0nUUy6A]
+```
+
+Result:
+
+> [!Video https://www.youtube.com/embed/TAaG0nUUy6A]
+
 ## Differences introduced by DFM syntax
 
 > [!Warning]
