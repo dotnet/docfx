@@ -41,14 +41,7 @@ jobs:
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-
-  # Publish code coverage results
-  - task: PublishCodeCoverageResults@1
-    inputs:
-      codeCoverageTool: 'cobertura'
-      summaryFileLocation: '**/coverage.cobertura.xml'
-      reportDirectory: '**/TestResults/cobertura'
-      failIfCoverageEmpty: true
+      CODECOV_TOKEN: $(CODECOV_TOKEN)
 
   # Push to sandbox MyGet feed
   - task: NuGetCommand@2

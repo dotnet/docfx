@@ -19,8 +19,7 @@ _site
 
 TestResults
 
-coverage.json
-coverage.cobertura.xml
+coverage.*
 
 # Carried from DocFX v2
 artifacts
