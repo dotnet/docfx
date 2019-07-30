@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -52,6 +51,7 @@ namespace Microsoft.Docs.Build
 
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
                            .AddTruthyCheck<JObject>(value => value != null)
+                           .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
                            .SetSectionBlacklistTypes(sectionBlacklist);
 
             object GetJObjectValue(object value, string key, bool ignoreCase)
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
-                return childToken is JValue scalar ? scalar.Value : childToken;
+                return childToken is JValue scalar ? scalar.Value ?? JValue.CreateNull() : childToken;
             }
         }
 
