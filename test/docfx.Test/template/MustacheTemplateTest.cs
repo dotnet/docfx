@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("section.tmpl", "{'section':{'value':'value','foo':'foo'}}", "<p>value</p>")]
         [InlineData("section.tmpl", "{'value': 'abc', 'section':{'value':null}}", "<p></p>")]
+        [InlineData("section.tmpl", "{'value': 'abc', 'label':{'value':null}}", "")]
         [InlineData("section.tmpl", "{'section':false}", "")]
         [InlineData("section.tmpl", "{'section':true}", "<p></p>")]
         [InlineData("section.tmpl", "{'section':{}}", "<p></p>")]
