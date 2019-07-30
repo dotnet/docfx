@@ -16,14 +16,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _templateDir;
         private readonly IStubbleRenderer _renderer;
-        private readonly RenderSettings _renderSettings;
         private readonly ConcurrentDictionary<string, Lazy<string>> _templates = new ConcurrentDictionary<string, Lazy<string>>();
 
         public MustacheTemplate(string templateDir)
         {
             _templateDir = templateDir;
-            _renderSettings = RenderSettings.GetDefaultRenderSettings();
-            _renderSettings.SkipRecursiveLookup = true;
             _renderer = new StubbleBuilder().Configure(
                 settings => UseJson(settings).SetPartialTemplateLoader(new PartialLoader(templateDir))).Build();
         }
@@ -42,7 +39,7 @@ namespace Microsoft.Docs.Build
                     return File.ReadAllText(fileName);
                 })).Value;
 
-            return _renderer.Render(template, model, _renderSettings);
+            return _renderer.Render(template, model);
         }
 
         private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings)
@@ -61,7 +58,17 @@ namespace Microsoft.Docs.Build
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
-                return childToken is JValue scalar ? scalar.Value : childToken;
+                if (childToken is JValue scalar)
+                {
+                    if (scalar.Value is null)
+                    {
+                        return JValue.CreateNull();
+                    }
+
+                    return scalar.Value;
+                }
+
+                return childToken;
             }
         }
 
