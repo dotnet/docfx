@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
                            .AddTruthyCheck<JObject>(value => value != null)
-                           .AddTruthyCheck<JValue>(value => value.Type == JTokenType.Null)
+                           .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
                            .SetSectionBlacklistTypes(sectionBlacklist);
 
             object GetJObjectValue(object value, string key, bool ignoreCase)
