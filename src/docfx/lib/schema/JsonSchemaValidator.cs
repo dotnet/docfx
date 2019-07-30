@@ -448,7 +448,7 @@ namespace Microsoft.Docs.Build
                 {
                     var fieldValue = fieldRawValue is JArray array ? (fieldIndex < array.Count ? array[fieldIndex] : null) : fieldRawValue;
 
-                    if (fieldValue == null)
+                    if (fieldValue == null || fieldValue.Type == JTokenType.Null)
                     {
                         return;
                     }
