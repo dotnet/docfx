@@ -27,7 +27,6 @@ namespace Microsoft.Docs.Build
                     return null;
 
                 case JsonToken.StartObject:
-                case JsonToken.StartArray:
                     var result = Activator.CreateInstance(objectType);
                     serializer.Populate(reader, result);
                     return result;
