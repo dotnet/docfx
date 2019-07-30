@@ -51,6 +51,7 @@ namespace Microsoft.Docs.Build
 
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
                            .AddTruthyCheck<JObject>(value => value != null)
+                           .AddTruthyCheck<JValue>(value => value.Type == JTokenType.Null)
                            .SetSectionBlacklistTypes(sectionBlacklist);
 
             object GetJObjectValue(object value, string key, bool ignoreCase)
@@ -58,17 +59,7 @@ namespace Microsoft.Docs.Build
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
-                if (childToken is JValue scalar)
-                {
-                    if (scalar.Value is null)
-                    {
-                        return JValue.CreateNull();
-                    }
-
-                    return scalar.Value;
-                }
-
-                return childToken;
+                return childToken is JValue scalar ? scalar.Value ?? JValue.CreateNull() : childToken;
             }
         }
 
