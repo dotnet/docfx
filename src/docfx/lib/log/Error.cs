@@ -49,6 +49,19 @@ namespace Microsoft.Docs.Build
             EndColumn = endColumn;
         }
 
+        public Error WithCustomError(CustomError customError)
+        {
+            return new Error(
+                customError.Severity ?? Level,
+                string.IsNullOrEmpty(customError.Code) ? Code : customError.Code,
+                string.IsNullOrEmpty(customError.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customError.AdditionalMessage}",
+                FilePath,
+                Line,
+                Column,
+                EndLine,
+                EndColumn);
+        }
+
         public override string ToString() => ToString(Level);
 
         public string ToString(ErrorLevel level)
