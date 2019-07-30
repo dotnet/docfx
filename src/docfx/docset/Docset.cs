@@ -68,11 +68,6 @@ namespace Microsoft.Docs.Build
         public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
-        /// Gets the metadata JSON schema
-        /// </summary>
-        public JsonSchema MetadataSchema { get; }
-
-        /// <summary>
         /// Gets the dependency repos/file mappings
         /// </summary>
         public RestoreMap RestoreMap { get; }
@@ -154,7 +149,6 @@ namespace Microsoft.Docs.Build
             FallbackDocset = fallbackDocset;
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
-            MetadataSchema = LoadMetadataSchema(Config);
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
@@ -212,17 +206,6 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.LocaleInvalid(locale).ToException();
             }
-        }
-
-        private JsonSchema LoadMetadataSchema(Config config)
-        {
-            var token = new JObject();
-            foreach (var metadataSchema in config.MetadataSchema)
-            {
-                var content = RestoreMap.GetRestoredFileContent(this, metadataSchema);
-                JsonUtility.Merge(token, JsonUtility.Parse(content, new FilePath(metadataSchema)).value as JObject);
-            }
-            return JsonUtility.ToObject<JsonSchema>(token).value;
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
