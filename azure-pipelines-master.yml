@@ -1,0 +1,65 @@
+pool:
+  name: Hosted Windows 2019 with VS2019
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 8.x'
+  inputs:
+    versionSpec: 8.x
+
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.3.0'
+
+- task: CmdLine@1
+  displayName: 'npm install'
+  inputs:
+    filename: npm
+    arguments: install
+    workingFolder: tools/Deployment
+
+- task: CmdLine@1
+  displayName: 'tsc compile'
+  inputs:
+    filename: node
+    arguments: '.\node_modules\typescript\bin\tsc'
+    workingFolder: tools/Deployment
+
+- task: CmdLine@1
+  displayName: 'gulp build'
+  inputs:
+    filename: node
+    arguments: '.\node_modules\gulp\bin\gulp.js master:build'
+    workingFolder: tools/Deployment
+
+- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
+  displayName: 'ESRP CodeSigning'
+  inputs:
+    ConnectedServiceName: nuget
+    FolderPath: 'artifacts\Release'
+    Pattern: '*.nupkg'
+    signConfigType: inlineSignParams
+    inlineOperation: |
+     [
+             {
+                 "KeyCode" : "CP-401405",
+                 "OperationSetCode" : "NuGetSign",
+                 "Parameters" : [],
+                 "ToolName" : "sign",
+                 "ToolVersion" : "1.0"
+             },
+             {
+                 "KeyCode" : "CP-401405",
+                 "OperationSetCode" : "NuGetVerify",
+                 "Parameters" : [],
+                 "ToolName" : "sign",
+                 "ToolVersion" : "1.0"
+             }
+      ]
+     
+    SessionTimeout: 20
+
+- task: CmdLine@1
+  displayName: 'gulp release'
+  inputs:
+    filename: node
+    arguments: '.\node_modules\gulp\bin\gulp.js master:release'
+    workingFolder: tools/Deployment
