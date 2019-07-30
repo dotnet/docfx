@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -17,11 +16,14 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _templateDir;
         private readonly IStubbleRenderer _renderer;
+        private readonly RenderSettings _renderSettings;
         private readonly ConcurrentDictionary<string, Lazy<string>> _templates = new ConcurrentDictionary<string, Lazy<string>>();
 
         public MustacheTemplate(string templateDir)
         {
             _templateDir = templateDir;
+            _renderSettings = RenderSettings.GetDefaultRenderSettings();
+            _renderSettings.SkipRecursiveLookup = true;
             _renderer = new StubbleBuilder().Configure(
                 settings => UseJson(settings).SetPartialTemplateLoader(new PartialLoader(templateDir))).Build();
         }
@@ -40,7 +42,7 @@ namespace Microsoft.Docs.Build
                     return File.ReadAllText(fileName);
                 })).Value;
 
-            return _renderer.Render(template, model);
+            return _renderer.Render(template, model, _renderSettings);
         }
 
         private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings)
