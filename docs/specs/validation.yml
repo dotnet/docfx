@@ -88,6 +88,28 @@ outputs:
     ["warning","missing-attribute","Missing required attribute: 'a'","a.md",2,1]
     ["warning","unexpected-type","Expected type 'String' but got 'Array'","a.md",2,6]
 ---
+# Validate each metadata schema individually for multiple metadata schema definitions
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema1.json
+      - schema2.json
+  schema1.json: |
+    { "required": ["a"], "properties": { "key": { "type": "string" } } }
+  schema2.json: |
+    { "required": ["b"], "properties": { "key": { "type": "array" } } }
+  a.md: |
+    ---
+    key: 1
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    ["warning","missing-attribute","Missing required attribute: 'a'","a.md",2,1]
+    ["warning","unexpected-type","Expected type 'String' but got 'Integer'","a.md",2,6]
+    ["warning","missing-attribute","Missing required attribute: 'b'","a.md",2,1]
+    ["warning","unexpected-type","Expected type 'Array' but got 'Integer'","a.md",2,6]
+---
 # Json schema microsoft alias rule: Metu error, when no connection with Graph API
 inputs:
   docfx.yml: |
