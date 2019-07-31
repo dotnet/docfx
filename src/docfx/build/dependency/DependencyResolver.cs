@@ -125,7 +125,10 @@ namespace Microsoft.Docs.Build
                 {
                     queries["view"] = moniker;
                 }
-                resolvedHref = UrlUtility.MergeUrl(resolvedHref, "?" + string.Join('&', queries), fragment.Length == 0 ? "" : fragment.Substring(1));
+                resolvedHref = UrlUtility.MergeUrl(
+                    resolvedHref,
+                    queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
+                    fragment.Length == 0 ? "" : fragment.Substring(1));
             }
 
             return (error, resolvedHref, display, xrefSpec);
