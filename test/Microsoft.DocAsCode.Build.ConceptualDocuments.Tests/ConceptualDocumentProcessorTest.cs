@@ -300,6 +300,59 @@ Some content";
             Assert.Equal("This is title", title);
         }
 
+        [Fact]
+        public void TitleOverwriteH1InMetadataCanOverwriteTitleFromH1()
+        {
+            // arrange
+            var metadata = new Dictionary<string, object> { ["titleOverwriteH1"] = "this title overwrites title from H1" };
+            var fileName = "title.md";
+            var content = @"
+# This is title from H1
+
+Some content";
+            var file = _fileCreator.CreateFile(content, fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // act
+            BuildDocument(files, metadata);
+
+            // assert
+            var outputRawModelPath = GetRawModelFilePath(file);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.True(model.TryGetValue("title", out var title));
+            Assert.Equal("this title overwrites title from H1", title);
+        }
+
+        [Fact]
+        public void TitleOverwriteH1InMetadataCannotOverwriteTitleFromYamlHeader()
+        {
+            // arrange
+            var metadata = new Dictionary<string, object> { ["titleOverwriteH1"] = "this title overwrites title from H1" };
+            var fileName = "title.md";
+            var content = @"---
+title: This is title from YAML header
+---
+
+# This is title from H1
+
+Some content";
+            var file = _fileCreator.CreateFile(content, fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+
+            // act
+            BuildDocument(files, metadata);
+
+            // assert
+            var outputRawModelPath = GetRawModelFilePath(file);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.True(model.TryGetValue("title", out var title));
+            Assert.Equal("This is title from YAML header", title);
+        }
+
         #region Private Helpers
         private string GetRawModelFilePath(string fileName)
         {
@@ -311,17 +364,14 @@ Some content";
             return Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(fileName, "html")));
         }
 
-        private void BuildDocument(FileCollection files)
+        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null)
         {
             var parameters = new DocumentBuildParameters
             {
                 Files = files,
                 OutputBaseDir = _outputFolder,
                 ApplyTemplateSettings = _applyTemplateSettings,
-                Metadata = new Dictionary<string, object>
-                {
-                    ["meta"] = "Hello world!",
-                }.ToImmutableDictionary(),
+                Metadata = (metadata ?? new Dictionary<string, object> { ["meta"] = "Hello world!" }).ToImmutableDictionary(),
                 TemplateManager = _templateManager
             };
 
