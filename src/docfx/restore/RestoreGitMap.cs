@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class RestoreGitMap
+    internal class RestoreGitMap : IDisposable
     {
         private readonly IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
 
@@ -60,7 +61,7 @@ namespace Microsoft.Docs.Build
             return (path, new RestoreGitMap(_acquiredGits) { DependencyLock = gitVersion });
         }
 
-        public bool Release()
+        public void Dispose()
         {
             var released = true;
             foreach (var (k, v) in _acquiredGits)
@@ -69,8 +70,6 @@ namespace Microsoft.Docs.Build
             }
 
             Debug.Assert(released);
-
-            return released;
         }
 
         /// <summary>
