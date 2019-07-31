@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetSourceRepository(repo, out var sourceRemote, out var sourceBranch, out _))
+            if (LocalizationUtility.TryGetFallbackRepository(repo, out var sourceRemote, out var sourceBranch, out _))
             {
                 // fallback to master
                 if (sourceBranch != "master" &&

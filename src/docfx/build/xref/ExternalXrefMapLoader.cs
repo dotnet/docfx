@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    var content = RestoreFileMap.GetRestoredFileContent(docset, url);
+                    var content = docset.RestoreFileMap.GetRestoredFileContent(url);
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
                     foreach (var spec in xrefMap.References)
                     {
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    var filePath = RestoreFileMap.GetRestoredFilePath(docset, url);
+                    var filePath = docset.RestoreFileMap.GetRestoredFilePath(url);
                     foreach (var (uid, spec) in Load(filePath))
                     {
                         // for same uid with multiple specs, we should respect the order of the list

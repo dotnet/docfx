@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -18,15 +18,15 @@ namespace Microsoft.Docs.Build
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
-            var (restoreMap, fallbackRepo) = LoadRestoreMap(docsetPath, locale, repository, options);
+            var (restoreGitMap, fallbackRepo) = LoadRestoreMap(docsetPath, locale, repository, options);
 
             try
             {
-                await Run(docsetPath, repository, locale, options, errorLog, restoreMap, fallbackRepo);
+                await Run(docsetPath, repository, locale, options, errorLog, restoreGitMap, fallbackRepo);
             }
             finally
             {
-                restoreMap.Release();
+                restoreGitMap.Release();
             }
         }
 
@@ -164,16 +164,16 @@ namespace Microsoft.Docs.Build
             var dependencyLock = DependencyLock.Load(docsetPath, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock) ?? new DependencyLockModel();
             var restoreMap = RestoreGitMap.Create(dependencyLock);
 
-            if (LocalizationUtility.TryGetSourceRepository(repository, out var remote, out string branch, out _))
+            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (dependencyLock.GetGitLock(remote, branch) == null && dependencyLock.GetGitLock(remote, "master") != null)
+                if (dependencyLock.GetGitLock(fallbackRemote, fallbackBranch) == null && dependencyLock.GetGitLock(fallbackRemote, "master") != null)
                 {
                     // fallback to master branch
-                    branch = "master";
+                    fallbackBranch = "master";
                 }
 
-                var (fallbackRepoPath, fallbackRestoreMap) = restoreMap.GetGitRestorePath(remote, branch, docsetPath);
-                var fallbackRepository = Repository.Create(fallbackRepoPath, branch, remote);
+                var (fallbackRepoPath, fallbackRestoreMap) = restoreMap.GetGitRestorePath(fallbackRemote, fallbackBranch, docsetPath);
+                var fallbackRepository = Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
 
                 if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
                 {
