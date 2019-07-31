@@ -8,6 +8,11 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
+    /// <summary>
+    /// Enables shorthand JSON form for complex object types.
+    /// E.g., if an object has a constructor with a string parameter, the JSON could be written as both a string or an object,
+    /// when it is written as string, the string constructor is called to construct the object.
+    /// </summary>
     internal class ShortHandConverter : JsonConverter
     {
         private static readonly ConcurrentDictionary<Type, Type> s_shortHandType = new ConcurrentDictionary<Type, Type>();
