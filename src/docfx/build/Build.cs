@@ -60,13 +60,10 @@ namespace Microsoft.Docs.Build
 
                 context.BookmarkValidator.Validate();
 
-                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var xrefMapModel = context.XrefMap.ToXrefMapModel(context);
 
-                context.Output.WriteJson(xrefMapModel, "xrefmap.json");
-                context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
+                var fileManifests = context.PublishModelBuilder.Build(context, docset.Legacy);
 
                 if (options.Legacy)
                 {
@@ -81,6 +78,8 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
+                context.XrefMap.Save(context, docset);
+                context.PublishModelBuilder.Save(context);
                 context.GitHubUserCache.Save();
                 context.MicrosoftGraphCache.Save();
                 context.ContributionProvider.Save();

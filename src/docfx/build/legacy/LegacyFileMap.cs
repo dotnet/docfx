@@ -43,12 +43,20 @@ namespace Microsoft.Docs.Build
                     });
 
                 var fileMapItems = listBuilder.ToList();
-                Convert(docset, context, fileMapItems);
+                var fileMapOutputPath = PathUtility.NormalizeFile(Path.Combine(docset.SiteBasePath, "filemap.json"));
+                Convert(docset, context, fileMapItems, fileMapOutputPath);
+
+                context.PublishModelBuilder.AddExtendPublishItem(new PublishItem
+                {
+                    Url = "/" + PathUtility.NormalizeFile(Path.Combine(docset.SiteBasePath, "filemap.json")),
+                    Path = fileMapOutputPath,
+                    Locale = docset.Locale,
+                });
                 LegacyAggregatedFileMap.Convert(docset, context, fileMapItems, dependencyMap);
             }
         }
 
-        public static void Convert(Docset docset, Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
+        public static void Convert(Docset docset, Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items, string fileMapOutputPath)
         {
             context.Output.WriteJson(
                 new
@@ -72,7 +80,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.SiteBasePath, "filemap.json"));
+                fileMapOutputPath);
         }
     }
 }

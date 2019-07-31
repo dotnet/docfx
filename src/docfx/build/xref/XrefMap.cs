@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -45,13 +46,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public XrefMapModel ToXrefMapModel(Context context)
+        public void Save(Context context, Docset docset)
         {
             var references = _internalXrefMap.Values
                 .Select(xref => xref.ToExternalXrefSpec(context, forXrefMapOutput: true))
                 .OrderBy(xref => xref.Uid).ToArray();
 
-            return new XrefMapModel { References = references };
+            context.Output.WriteJson(new XrefMapModel { References = references }, "xrefmap.json");
+            context.PublishModelBuilder.AddExtendPublishItem(new PublishItem
+            {
+                Url = "/" + PathUtility.NormalizeFile(Path.Combine(docset.SiteBasePath, "xrefmap.json")),
+                Path = "xrefmap.json",
+                Locale = docset.Locale,
+            });
         }
 
         private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(

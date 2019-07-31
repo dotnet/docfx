@@ -14,6 +14,7 @@ repos:
         metadataSchema: schema.json
         gitHub:
           resolveUsers: true
+        baseUrl: https://docs.com/docs
       c.md: |
         ---
         api_name:
@@ -52,10 +53,10 @@ cache:
       ]
     }
 outputs:
-  a.raw.page.json:
-  a.mta.json: |
+  docs/a.raw.page.json:
+  docs/a.mta.json: |
     { "locale": "en-us", "redirect_url": "/b" }
-  c.raw.page.json: |
+  docs/c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
       "rawMetadata": {
@@ -83,14 +84,24 @@ outputs:
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
-  c.mta.json: |
+  docs/c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
-  toc.json:
-  toc.mta.json:
-  .manifest.json:
-  filemap.json:
+  docs/toc.json:
+  docs/toc.mta.json:
+  docs/.manifest.json:
+  docs/filemap.json:
   op_aggregated_file_map_info.json:
-  .publish.json:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/docs/d.png", "path": "../d.png" },
+        { "url": "/docs/a", "path": "docs/a.raw.page.json" },
+        { "url": "/docs/c", "path": "docs/c.raw.page.json" },
+        { "url": "/docs/toc.json", "path": "docs/toc.json" },
+        { "url": "/docs/xrefmap.json", "path": "xrefmap.json" },
+        { "url": "/docs/filemap.json", "path": "docs/filemap.json" }
+      ]
+    }
   xrefmap.json:
   server-side-dependent-list.txt:
   full-dependent-list.txt:
@@ -142,76 +153,79 @@ outputs:
   rawmetadata/toc.json:
   rawmetadata/index.json:
   .publish.json: |
-    {"files": [
-      {
-        "url": "/rawmetadata/a",
-        "redirect_url": "/b"
-      }, 
-      {
-        "url": "/rawmetadata/c",
-        "path": "rawmetadata/c.json",
-        "source_path": "c.md",
-        "locale": "en-us",
-        "api_name": [
-          "API Name"
-        ],
-        "ms.author": "bob",
-        "author": "bob",
-        "_tocRel": "toc.json",
-        "canonical_url": "https://docs.com/en-us/rawmetadata/c",
-        "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
-        "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
-        "_op_gitContributorInformation": {
-          "update_at": "10/30/2018",
-          "contributors": [
-            {
+    {
+      "files": [
+        {
+          "url": "/rawmetadata/a",
+          "redirect_url": "/b"
+        }, 
+        {
+          "url": "/rawmetadata/c",
+          "path": "rawmetadata/c.json",
+          "source_path": "c.md",
+          "locale": "en-us",
+          "api_name": [
+            "API Name"
+          ],
+          "ms.author": "bob",
+          "author": "bob",
+          "_tocRel": "toc.json",
+          "canonical_url": "https://docs.com/en-us/rawmetadata/c",
+          "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
+          "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
+          "_op_gitContributorInformation": {
+            "update_at": "10/30/2018",
+            "contributors": [
+              {
+                "name": "charlie",
+                "profile_url": "https://github.com/charlie",
+                "display_name": "Charlie",
+                "id": "3"
+              }
+            ],
+            "author": {
+              "name": "bob",
+              "profile_url": "https://github.com/bob",
+              "display_name": "Bob",
+              "id": "2"
+            }
+          },
+          "updated_at": "2018-10-30 12:00 AM",
+          "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
+          "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
+          "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
+          "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
+          "site_name": "Docs",
+          "depot_name": ".",
+          "search.ms_docsetname": "",
+          "search.ms_product": "",
+          "search.ms_sitename": "Docs",
+          "_path": "c.json",
+          "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/"
+        },
+        {
+          "url": "/rawmetadata/d.png"
+        },
+        {
+          "url": "/rawmetadata/",
+          "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
+          "_path": "index.json",
+          "_op_gitContributorInformation": {
+            "update_at": "10/30/2018",
+            "author": {
               "name": "charlie",
               "profile_url": "https://github.com/charlie",
               "display_name": "Charlie",
               "id": "3"
-            }
-          ],
-          "author": {
-            "name": "bob",
-            "profile_url": "https://github.com/bob",
-            "display_name": "Bob",
-            "id": "2"
-          }
-        },
-        "updated_at": "2018-10-30 12:00 AM",
-        "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
-        "site_name": "Docs",
-        "depot_name": ".",
-        "search.ms_docsetname": "",
-        "search.ms_product": "",
-        "search.ms_sitename": "Docs",
-        "_path": "c.json",
-        "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/"
-      },
-      {
-        "url": "/rawmetadata/d.png"
-      },
-      {
-        "url": "/rawmetadata/",
-        "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
-        "_path": "index.json",
-        "_op_gitContributorInformation": {
-          "update_at": "10/30/2018",
-          "author": {
-            "name": "charlie",
-            "profile_url": "https://github.com/charlie",
-            "display_name": "Charlie",
-            "id": "3"
+            },
+            "!contributors": null
           },
-          "!contributors": null
-      },
-      },
-      {
-        "url": "/rawmetadata/toc.json"
-      }]
+        },
+        {
+          "url": "/rawmetadata/toc.json"
+        },
+        { "url": "/rawmetadata/xrefmap.json", "path": "xrefmap.json" },
+      ]
     }
   .errors.log:
 ---
@@ -338,7 +352,11 @@ inputs:
   a.png:
 outputs:
   .publish.json: |
-    {"files":[{"url":"/a.png","path":"../a.png"}]}
+    {"files":[
+      {"url":"/a.png","path":"../a.png"},
+      {"url":"/xrefmap.json","path":"xrefmap.json"},
+      {"url":"/filemap.json","path":"filemap.json"}
+    ]}
   .manifest.json: |
     {"files":[{"asset_id":"/a.png","output":{"resource":{"is_raw_page":false,"relative_path":"a.png"}}}]}
 ---

@@ -17,7 +17,8 @@ outputs:
         { "url": "/docs/a", "path": "docs/a.json", "source_path": "docs/a.md" },
         { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json", "source_path": "docs/folder/b~$.md" },
         { "url": "/docs/", "path": "docs/index.json", "source_path": "docs/index.md" },
-        { "url": "/docs/toc.json", "path": "docs/toc.json", "source_path": "docs/TOC.md" }
+        { "url": "/docs/toc.json", "path": "docs/toc.json", "source_path": "docs/TOC.md" },
+        { "url": "/xrefmap.json", "path": "xrefmap.json" }
       ]
     }
 ---
@@ -32,7 +33,8 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/a.png", "path": "../a.png", "source_path": "a.png" }
+        { "url": "/a.png", "path": "../a.png", "source_path": "a.png" },
+        { "url": "/xrefmap.json", "path": "xrefmap.json" }
       ]
     }
 ---
@@ -44,7 +46,10 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null, "source_path": "a.md", "!hash": null }]
+      "files": [
+        { "url": "/a", "redirect_url": "/b", "!path": null, "source_path": "a.md", "!hash": null },
+        { "url": "/xrefmap.json", "path": "xrefmap.json" }
+      ]
     }
 ---
 # Publish manifest for articles contains custom metadata
@@ -58,7 +63,10 @@ outputs:
   a.json:
   .publish.json: |
     {
-      "files": [{ "url": "/a", "ms.my": 1 }]
+      "files": [
+        { "url": "/a", "ms.my": 1 },
+        { "url": "/xrefmap.json", "path": "xrefmap.json" }
+      ]
     }
 ---
 # Manifest contains Toc dependencies
@@ -253,7 +261,8 @@ outputs:
           "url": "/docs/a",
           "locale": "en-us",
           "has_error": true
-        }
+        },
+        { "url": "/xrefmap.json", "path": "xrefmap.json" }
       ]
     }
   .errors.log: |

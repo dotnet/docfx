@@ -109,7 +109,8 @@ outputs:
         { "url": "/a", "path": "a.json" },
         { "url": "/b", "path": "b.json" },
         { "url": "/c", "path": "c.json" },
-        { "url": "/media/image.png", "path": "media/image.png" }
+        { "url": "/media/image.png", "path": "media/image.png" },
+        { "url": "/xrefmap.json", "path": "xrefmap.json" }
       ]
     }
   .dependencymap.json: |

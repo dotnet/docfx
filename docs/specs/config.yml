@@ -509,15 +509,10 @@ outputs:
   .publish.json: |
     {
         "files": [
-            {
-                "url": "/a"
-            },
-            {
-                "url": "/b"
-            },
-            {
-                "url": "/docs/path1"
-            }
+            { "url": "/a" },
+            { "url": "/b" },
+            { "url": "/docs/path1" },
+            { "url": "/xrefmap.json", "path": "xrefmap.json" }
         ]
     }
   docs/path1.json: |

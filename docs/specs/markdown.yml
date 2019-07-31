@@ -434,7 +434,8 @@ outputs:
     {
       "files":[
         { "url": "/docs/a.experimental", "path": "docs/a.experimental.json" },
-        { "url": "/docs/a", "path": "docs/a.json" }
+        { "url": "/docs/a", "path": "docs/a.json" },
+        { "url": "/xrefmap.json", "path": "xrefmap.json" }
       ]
     }
 ---

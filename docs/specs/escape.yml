@@ -37,6 +37,8 @@ outputs:
       path: a++.png
     - url: /links
       path: links.json
+    - url: /xrefmap.json
+      path: xrefmap.json
   'a b.json': |
     canonical_url: https://docs.com/en-us/a b
     gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a b.md

@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
+        private readonly ConcurrentBag<PublishItem> _extendPublishItems = new ConcurrentBag<PublishItem>();
         private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
 
         public void MarkError(Document file)
@@ -51,7 +52,9 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context, bool legacy)
+        public void AddExtendPublishItem(PublishItem item) => _extendPublishItems.Add(item);
+
+        public Dictionary<Document, PublishItem> Build(Context context, bool legacy)
         {
             // Handle publish url conflicts
             // TODO: Report more detail info for url conflict
@@ -105,7 +108,11 @@ namespace Microsoft.Docs.Build
                     HandleFileWithError(context, file, legacy);
                 }
             }
+            return _publishItems.ToDictionary(item => item.Key, item => item.Value);
+        }
 
+        public void Save(Context context)
+        {
             var model = new PublishModel
             {
                 Files = _publishItems.Values
@@ -114,6 +121,7 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.Url)
                     .ThenBy(item => item.RedirectUrl)
                     .ThenBy(item => item.MonikerGroup)
+                    .Concat(_extendPublishItems)
                     .ToArray(),
                 MonikerGroups = new SortedDictionary<string, List<string>>(_publishItems.Values
                     .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
@@ -121,9 +129,7 @@ namespace Microsoft.Docs.Build
                     .ToDictionary(g => g.Key, g => g.First().Monikers)),
             };
 
-            var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
-
-            return (model, fileManifests);
+            context.Output.WriteJson(model, ".publish.json");
         }
 
         private void HandleFileWithError(Context context, Document file, bool legacy)

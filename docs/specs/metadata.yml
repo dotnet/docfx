@@ -178,7 +178,8 @@ outputs:
               "path": "partner-center-sdk/agreement-metadata-resources.json",
               "source_path": "develop/agreement-metadata-resources.md",
               "locale": "en-us"
-          }
+          },
+          { "url": "/partner-center-sdk/xrefmap.json", "path": "xrefmap.json" }
       ]
     }
 ---
