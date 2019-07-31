@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
 
         public void MarkError(Document file)
         {
+            // TODO: If Error has a Document identifier, we can retrieve files with errors from
+            //       error log without explicitly call PublishModelBuilder.MarkError
             _filesWithErrors.Add(file);
         }
 
