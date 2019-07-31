@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
                 var colonIndex = link.IndexOf(':');
                 if (colonIndex > 0
                     && link.IndexOfAny(s_queryFragmentLeadingChars) is var queryOrFragmentIndex
-                    && (queryOrFragmentIndex < 0 || link.IndexOf(':') < queryOrFragmentIndex))
+                    && (queryOrFragmentIndex < 0 || colonIndex < queryOrFragmentIndex))
                     return LinkType.External;
             }
 
