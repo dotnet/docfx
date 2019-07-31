@@ -247,11 +247,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var key in keyInFallbackOrder)
             {
                 var keyWithSuffix = key + suffix;
-                if (spec.TryGetStringValue(keyWithSuffix, out var suffixedValue))
+                if (spec.TryGetXrefStringValue(keyWithSuffix, out var suffixedValue))
                 {
                     return suffixedValue;
                 }
-                if (spec.TryGetStringValue(key, out var value))
+                if (spec.TryGetXrefStringValue(key, out var value))
                 {
                     return value;
                 }
