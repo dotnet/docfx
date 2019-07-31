@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                     node.SetAttributeValue("jsonPath", path);
             }
 
-            return htmlDocument.ToString();
+            return htmlDocument.DocumentNode.InnerHtml;
         }
     }
 }
