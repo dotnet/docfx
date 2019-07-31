@@ -984,7 +984,7 @@ outputs:
 ---
 # resolve UID with unknown query
 repos:
-  https://docs.com/test#live:
+  https://docs.com/unkown-query#live:
     - files:
         docfx.yml:
         docs/a.md: |
