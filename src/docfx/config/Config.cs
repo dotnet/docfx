@@ -119,9 +119,9 @@ namespace Microsoft.Docs.Build
         public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
 
         /// <summary>
-        /// Gets the rules for error levels by error code.
+        /// Gets allow custom error code, severity and message.
         /// </summary>
-        public readonly Dictionary<string, ErrorLevel> Rules = new Dictionary<string, ErrorLevel>();
+        public readonly Dictionary<string, CustomError> CustomErrors = new Dictionary<string, CustomError>();
 
         /// <summary>
         /// Gets the authorization keys for required resources access

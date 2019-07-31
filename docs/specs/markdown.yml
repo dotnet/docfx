@@ -356,7 +356,7 @@ outputs:
 # do not output file if external-bookmark-not-found is treated as error
 inputs:
   docfx.yml: |
-    rules:
+    customErrors:
       external-bookmark-not-found: error
   docs/a.md: |
     [link to b](b.md#bookmark)
