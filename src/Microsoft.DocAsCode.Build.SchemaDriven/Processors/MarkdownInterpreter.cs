@@ -42,17 +42,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(mr.Html);
-            foreach (var node in htmlDocument.DocumentNode.Descendants())
-            {
-                if (!node.HasAttributes)
-                {
-                    continue;
-                }
-                //if the node have this attribute, it's markdown content and add new attribute
-                if (!node.GetAttributeValue("sourceStartLineNumber", false))
-                    node.SetAttributeValue("jsonPath", path);
-            }
 
+            //if the node have this attribute, it's markdown content and add new attribute
+            if (!htmlDocument.DocumentNode.FirstChild.GetAttributeValue("sourceStartLineNumber", false))
+                htmlDocument.DocumentNode.FirstChild.SetAttributeValue("jsonPath", path);
+                       
             return htmlDocument.DocumentNode.InnerHtml;
         }
     }
