@@ -159,7 +159,7 @@ outputs:
     {
       "conceptual":"<p>
                         Link to <a href=\"a.json\">test.test</a>
-                        Link to <a href=\"a.json\">test</a>
+                        Link to <a href=\"a.json??displayProperty=fullName\">test</a>
                         Link to <a href=\"a.json\">test.test</a>
                         Link to <a href=\"a.json\">test</a>??displayProperty=fullName
                         Link to <a href=\"a.json\">test</a></p>"
@@ -981,3 +981,20 @@ outputs:
   docs/a.json:
   xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
+---
+# resolve UID with unknown query
+repos:
+  https://docs.com/test#live:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          Link to @a?displayname=xxx
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    conceptual: <p>Link to <a href="a?displayname=xxx" data-linktype="relative-path">Title from yaml header a</a></p>

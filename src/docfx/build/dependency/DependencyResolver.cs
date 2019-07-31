@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -106,8 +106,10 @@ namespace Microsoft.Docs.Build
             {
                 queries = HttpUtility.ParseQueryString(query);
                 moniker = queries?["view"];
+                queries?.Remove("view");
             }
             var displayProperty = queries?["displayProperty"];
+            queries?.Remove("displayProperty");
 
             // need to url decode uid from input content
             var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, declaringFile);
@@ -119,8 +121,11 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(resolvedHref))
             {
-                var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-                resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+                if (!string.IsNullOrEmpty(moniker))
+                {
+                    queries["view"] = moniker;
+                }
+                resolvedHref = UrlUtility.MergeUrl(resolvedHref, "?" + string.Join('&', queries), fragment.Length == 0 ? "" : fragment.Substring(1));
             }
 
             return (error, resolvedHref, display, xrefSpec);

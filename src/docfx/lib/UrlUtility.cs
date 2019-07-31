@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(targetPath))
                 return targetUrl;
 
-            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery.Substring(1));
+            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
             var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
             foreach (var key in sourceQueryParameters.AllKeys)
