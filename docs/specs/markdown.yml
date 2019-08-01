@@ -324,10 +324,12 @@ inputs:
     <h2 id="html-title">title</h2>
     [!include[](d.md)]
     <a id="##special-chars"></a>### title with custom id
+    <a id="with:colon">bookmark with colon</a>
   docs/b.md: |
     [link to title 2](a.md#title-2)
     [link to title 3](a.md#title-3)
     [link to title with custom id](a.md###special-chars)
+    [link to bookmark with colon](a.md#with:colon)
   docs/c.yml: |
     #YamlMime:LandingData
     title: test
