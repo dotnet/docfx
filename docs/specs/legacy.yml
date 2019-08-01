@@ -296,24 +296,6 @@ outputs:
     ["warning","attribute-reserved","Attribute content_type is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",3,16]
     ["warning","attribute-reserved","Attribute ms.contentlang is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
 ---
-# Support metadata at root level for landing data
-commands:
-  - build --legacy
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.yml: |
-    #YamlMime:LandingData
-    title: my title
-    key1: value1
-    metadata:
-      key2: value2
-outputs:
-  docs/a.mta.json:
-  docs/a.raw.page.json: |
-    {"rawMetadata": {"key1":"value1","key2":"value2"}}
-  docs/a.mta.json:
----
 # Context object type is TOC
 commands:
   - build --legacy
