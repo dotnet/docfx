@@ -239,7 +239,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
+        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false, bool isFallback = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(docset, filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
+            var mime = type == ContentType.Page ? ReadMimeFromFile(docset, filePath, Path.Combine(docset.DocsetPath, filePath), isFallback) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
+            return new Document(docset, CreateFilePath(filePath, isFallback), sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
         }
 
         /// <summary>
@@ -511,7 +511,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static SourceInfo<string> ReadMimeFromFile(Docset docset, string pathToDocset, string filePath)
+        private static SourceInfo<string> ReadMimeFromFile(Docset docset, string pathToDocset, string filePath, bool isFallback)
         {
             SourceInfo<string> mime = default;
 
@@ -521,7 +521,7 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = JsonUtility.ReadMime(reader, CreateFilePath(pathToDocset, docset));
+                        mime = JsonUtility.ReadMime(reader, CreateFilePath(pathToDocset, isFallback));
                     }
                 }
             }
@@ -531,7 +531,7 @@ namespace Microsoft.Docs.Build
                 {
                     using (var reader = new StreamReader(filePath))
                     {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(CreateFilePath(pathToDocset, docset), 1, 1));
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(CreateFilePath(pathToDocset, isFallback), 1, 1));
                     }
                 }
             }

@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, content, child) = TryResolveContent(declaringFile, path);
 
-            _dependencyMapBuilder.AddDependencyItem(declaringFile, child, dependencyType);
+            _dependencyMapBuilder.AddDependencyItem(declaringFile, child, dependencyType, _buildScope.FallbackDocset);
 
             return (error, content, child);
         }
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             var isSelfBookmark = linkType == LinkType.SelfBookmark || relativeToFile == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, file, UrlUtility.FragmentToDependencyType(fragment));
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, file, UrlUtility.FragmentToDependencyType(fragment), _buildScope.FallbackDocset);
                 _bookmarkValidator.AddBookmarkReference(declaringFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
 
             if (xrefSpec?.DeclaringFile != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclaringFile, DependencyType.UidInclusion);
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclaringFile, DependencyType.UidInclusion, _buildScope.FallbackDocset);
             }
 
             if (!string.IsNullOrEmpty(resolvedHref))
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
 
             if (file is null)
             {
-                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
+                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, pathToDocset, _templateEngine);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
+                file = TryResolveResourceFromHistory(_gitCommitProvider, pathToDocset, _templateEngine);
                 if (file is null)
                 {
                     return (error, href, fragment, linkType, null, false);
@@ -301,7 +301,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        private Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -322,7 +322,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        private (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {

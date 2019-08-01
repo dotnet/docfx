@@ -275,7 +275,7 @@ namespace Microsoft.Docs.Build
                     if (tocHrefType == TocHrefType.RelativeFolder)
                     {
                         var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
-                        context.DependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.Link);
+                        context.DependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.Link, context.BuildScope.FallbackDocset);
                         return (default, default, nestedTocFirstItem);
                     }
 
