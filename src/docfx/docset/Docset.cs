@@ -51,11 +51,6 @@ namespace Microsoft.Docs.Build
         public Repository Repository { get; }
 
         /// <summary>
-        /// Gets the dependency repos/files locked version
-        /// </summary>
-        public DependencyLockModel DependencyLock { get; }
-
-        /// <summary>
         /// Gets the site base path
         /// </summary>
         public string SiteBasePath { get; }
@@ -153,14 +148,14 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreMap, CommandLineOptions options)
+            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreGitMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                var (dir, subRestoreMap) = restoreMap.GetGitRestorePath(remote, branch, docsetPath);
+                var (dir, subRestoreMap) = restoreGitMap.GetGitRestorePath(remote, branch, docsetPath);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children

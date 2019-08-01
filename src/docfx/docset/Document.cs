@@ -279,7 +279,7 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, Docset fallbackDocset = null)
+        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, Docset fallbackDocset)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
@@ -289,7 +289,7 @@ namespace Microsoft.Docs.Build
 
             if (TryResolveDocset(docset, fallbackDocset, pathToDocset, out var resolvedDocset))
             {
-                return Create(resolvedDocset, pathToDocset, templateEngine);
+                return Create(resolvedDocset, pathToDocset, templateEngine, isFallback: resolvedDocset == fallbackDocset);
             }
 
             // resolve from dependent docsets
@@ -303,7 +303,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine);
+                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, fallbackDocset: null);
                 if (dependencyFile != null)
                 {
                     return dependencyFile;

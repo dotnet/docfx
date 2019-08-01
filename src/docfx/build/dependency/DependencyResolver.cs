@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(_buildScope.Docset, pathToDocset, _templateEngine, _buildScope.FallbackDocset);
+                    var file = Document.CreateFromFile(GetDocset(declaringFile), pathToDocset, _templateEngine, GetFallbackDocset(declaringFile));
 
                     // for LandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(_buildScope.Docset, pathToDocset, _templateEngine, _buildScope.FallbackDocset);
+                            file = Document.CreateFromFile(GetDocset(declaringFile), pathToDocset, _templateEngine, GetFallbackDocset(declaringFile));
                         }
 
                         // Do not report error for landing page
@@ -283,6 +283,26 @@ namespace Microsoft.Docs.Build
                 default:
                     return default;
             }
+        }
+
+        private Docset GetDocset(Document declaringFile)
+        {
+            if (declaringFile.Docset == _buildScope.FallbackDocset)
+            {
+                return _buildScope.Docset;
+            }
+
+            return declaringFile.Docset;
+        }
+
+        private Docset GetFallbackDocset(Document declaringFile)
+        {
+            if (declaringFile.Docset == _buildScope.Docset)
+            {
+                return _buildScope.FallbackDocset;
+            }
+
+            return null;
         }
 
         private string ResolveToDocsetRelativePath(string path, Document declaringFile)

@@ -30,25 +30,26 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(configErrors))
                     return;
 
-                var (docset, fallbackDocset) = GetDocsets();
+                var gitMap = fallbackRestoreGitMap ?? restoreGitMap;
+                var (docset, fallbackDocset) = GetDocsetWithFallback();
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-                await Run(docset, fallbackDocset, fallbackRestoreGitMap ?? restoreGitMap, options, errorLog, outputPath);
+                await Run(docset, fallbackDocset, gitMap, options, errorLog, outputPath);
 
-                (Docset docset, Docset fallbackDocset) GetDocsets()
+                (Docset docset, Docset fallbackDocset) GetDocsetWithFallback()
                 {
-                    var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, fallbackRestoreGitMap ?? restoreGitMap, repository);
+                    var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
                     if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
                     {
                         if (fallbackRepo != null)
                         {
-                            return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, fallbackRestoreGitMap, fallbackRepo));
+                            return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
                         }
 
-                        if (LocalizationUtility.TryGetLocalizedDocsetPath(currentDocset, restoreGitMap, config, currentDocset.Locale, out var localizationDocsetPath, out var localizationBranch))
+                        if (LocalizationUtility.TryGetLocalizedDocsetPath(currentDocset, gitMap, config, currentDocset.Locale, out var localizationDocsetPath, out var localizationBranch))
                         {
                             var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                            return (new Docset(errorLog, localizationDocsetPath, currentDocset.Locale, config, options, restoreGitMap, repo), currentDocset);
+                            return (new Docset(errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
                         }
                     }
 
@@ -154,7 +155,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return file.Docset != context.BuildScope.FallbackDocset || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => file.Docset != context.BuildScope.FallbackDocset));
+                    return file.Docset != context.BuildScope.FallbackDocset || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => toc.Docset != context.BuildScope.FallbackDocset));
                 }
 
                 return file.Docset != context.BuildScope.FallbackDocset;

@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (glob(file))
                     {
-                        files.Add(Document.CreateFromFile(docset, file, _templateEngine));
+                        files.Add(Document.Create(docset, file, _templateEngine, isFallback: docset == FallbackDocset));
                     }
                 });
 
