@@ -81,7 +81,13 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject, JsonUtility.ToJObject(outputMetadata));
 
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+            if (string.IsNullOrEmpty(file.Mime))
+            {
+                JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+            }
+            {
+                JsonUtility.Merge(pageModel, sourceModel, new JObject { ["metadata"] = mergedMetadata });
+            }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
