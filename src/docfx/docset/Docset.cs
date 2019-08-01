@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
             Routes = NormalizeRoutes(config.Routes);
-            Culture = CreateCultureInfo(locale);
+            Culture = CreateCultureInfo(Locale);
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
