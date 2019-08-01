@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
                 Assert.Equal("world", rawModel["metadata"]["hello"].ToString());
                 Assert.Equal("Hello world!", rawModel["meta"].ToString());
                 Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
-                Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonpath=\"/sections/1/children/0/content\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
+                Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/sections/1/children/0/content\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
                                 , rawModel["sections"][1]["children"][0]["content"].ToString());
             }
         }
@@ -126,7 +126,7 @@ searchScope:
                 Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
                 Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].Value<string>());
                 Assert.Equal("../a b/toc.md", rawModel["toc_rel"].Value<string>());
-                Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonpath=\"/file_include\"><a href=\"~/{inputFile}\" data-raw-source=\"[root](../co/active.yml)\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">root</a></p>\n",
+                Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/file_include\"><a href=\"~/{inputFile}\" data-raw-source=\"[root](../co/active.yml)\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">root</a></p>\n",
                     rawModel["file_include"].Value<string>());
                 Assert.Equal("../../a b/toc.md", rawModel["file_include2"].Value<string>());
                 Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].Value<string>());

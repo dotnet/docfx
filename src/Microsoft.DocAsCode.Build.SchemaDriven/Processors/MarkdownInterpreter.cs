@@ -40,14 +40,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             (context.UidLinkSources).Merge(mr.UidLinkSources);
             (context.Dependency).UnionWith(mr.Dependency);
 
-            HtmlDocument htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(mr.Html);
-
-            //Add attribute 'jsonPath' into debugInfo
             if (mr.Html.StartsWith(@"<p"))
-                mr.Html = mr.Html.Insert(mr.Html.IndexOf(@">"), " jsonpath=\"" + path + "\"");
-            //htmlDocument.DocumentNode.FirstChild.SetAttributeValue("jsonPath", path);
-
+                mr.Html = mr.Html.Insert(mr.Html.IndexOf(@">"), " jsonPath=\"" + path + "\"");
             return mr.Html;
         }
     }
