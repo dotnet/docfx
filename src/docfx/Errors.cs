@@ -475,8 +475,8 @@ namespace Microsoft.Docs.Build
         /// An attribute does't conform to date format.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error DateFormatInvalid(SourceInfo source, string name, string value, string format)
-            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
+        public static Error DateFormatInvalid(SourceInfo source, string name, string value)
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid date format for '{name}': '{value}'.", source);
 
         /// <summary>
         /// Date out of range.
