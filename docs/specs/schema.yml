@@ -11,7 +11,7 @@ outputs:
   docs/a.json: |
     {
       "title": "my title",
-      "key": "value"
+      "metadata": { "key": "value" }
     }
 ---
 # Support schema documents in JSON format
@@ -27,7 +27,7 @@ outputs:
   docs/a.json: |
     { 
       "title": "my title",
-      "key": "value" 
+      "metadata": { "key": "value" }
     }
 ---
 # Throw error when schema is not specified

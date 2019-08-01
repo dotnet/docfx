@@ -81,7 +81,14 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject, JsonUtility.ToJObject(outputMetadata));
 
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+            if (string.IsNullOrEmpty(file.Mime))
+            {
+                JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+            }
+            else
+            {
+                JsonUtility.Merge(pageModel, sourceModel, new JObject { ["metadata"] = mergedMetadata });
+            }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
@@ -254,9 +261,7 @@ namespace Microsoft.Docs.Build
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
                     Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).HtmlPostProcess(file.Docset.Culture),
-                    Title = inputMetadata.Title ?? obj?.Value<string>("title"),
-                    RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
-                    ExtensionData = landingData.ExtensionData,
+                    ExtensionData = pageModel,
                 });
             }
 
@@ -273,15 +278,11 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint(file.IsConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            var templateMetadata = context.TemplateEngine.RunJint(string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+
             if (TemplateEngine.IsLandingData(file.Mime))
             {
-                templateMetadata["_op_layout"] = "LandingPage";
-                templateMetadata["layout"] = "LandingPage";
-                templateMetadata["page_type"] = "landingdata";
-
-                templateMetadata.Remove("_op_gitContributorInformation");
-                templateMetadata.Remove("_op_allContributorsStr");
+                templateMetadata.Remove("conceptual");
             }
 
             // content for *.mta.json
@@ -306,7 +307,7 @@ namespace Microsoft.Docs.Build
 
         private static string CreateContent(Context context, Document file, JObject pageModel)
         {
-            if (file.IsConceptual)
+            if (string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
             {
                 return pageModel.Value<string>("conceptual");
             }
