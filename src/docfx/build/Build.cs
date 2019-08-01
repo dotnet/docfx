@@ -29,14 +29,14 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(configErrors))
                     return;
 
+                var outputPath = Path.Combine(docsetPath, config.Output.Path);
                 var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, fallbackRestoreGitMap ?? restoreGitMap, repository, fallbackRepo));
-                await Run(docset, options, errorLog);
+                await Run(docset, options, errorLog, outputPath);
             }
         }
 
-        private static async Task Run(Docset docset, CommandLineOptions options, ErrorLog errorLog)
+        private static async Task Run(Docset docset, CommandLineOptions options, ErrorLog errorLog, string outputPath)
         {
-            var outputPath = Path.Combine(docset.DocsetPath, docset.Config.Output.Path);
             using (var context = new Context(outputPath, errorLog, docset, BuildFile))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(sourceDocset != null);
 
-            return sourceDocset.LocalizationDocset ?? sourceDocset;
+            return sourceDocset.LocalizedDocset ?? sourceDocset;
         }
     }
 }

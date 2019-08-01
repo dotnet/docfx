@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the localization docset, it will be set when the current build locale is different with default locale
         /// </summary>
-        public Docset LocalizationDocset { get; private set; }
+        public Docset LocalizedDocset { get; private set; }
 
         /// <summary>
         /// Gets the fallback docset, usually is English docset. It will be set when the current docset is localization docset.
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreGitMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreGitMap, repo, fallbackDocset: this);
+                    LocalizedDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreGitMap, repo, fallbackDocset: this);
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
             Locale = locale.ToLowerInvariant();
             Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(locale);
-            LocalizationDocset = localizedDocset;
+            LocalizedDocset = localizedDocset;
             FallbackDocset = fallbackDocset;
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 

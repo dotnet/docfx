@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -154,11 +154,9 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool IsFallback(this Docset docset) => docset.LocalizationDocset != null;
+        public static bool IsFallback(this Docset docset) => docset.LocalizedDocset != null;
 
         public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
-
-        public static bool IsLocalizedBuild(this Docset docset) => docset.FallbackDocset != null || docset.LocalizationDocset != null;
 
         public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
         {

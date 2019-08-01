@@ -494,9 +494,9 @@ namespace Microsoft.Docs.Build
         private static bool TryResolveDocset(Docset docset, string file, out Docset resolvedDocset)
         {
             // resolve from localization docset
-            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
+            if (docset.LocalizedDocset != null && File.Exists(Path.Combine(docset.LocalizedDocset.DocsetPath, file)))
             {
-                resolvedDocset = docset.LocalizationDocset;
+                resolvedDocset = docset.LocalizedDocset;
                 return true;
             }
 
