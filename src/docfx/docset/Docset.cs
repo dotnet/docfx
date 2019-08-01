@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -68,9 +68,14 @@ namespace Microsoft.Docs.Build
         public DependencyLockModel DependencyLock { get; }
 
         /// <summary>
-        /// Gets the dependency repos/file mappings
+        /// Gets the dependency git repository mappings
         /// </summary>
-        public RestoreMap RestoreMap { get; }
+        public RestoreGitMap RestoreGitMap { get; }
+
+        /// <summary>
+        /// Gets the dependency file mappings
+        /// </summary>
+        public RestoreFileMap RestoreFileMap { get; }
 
         /// <summary>
         /// Gets the site base path
@@ -98,15 +103,15 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            RestoreMap restoreMap,
+            RestoreGitMap restoreGitMap,
             Repository repository = null,
             Repository fallbackRepo = default,
             Docset localizedDocset = null,
             Docset fallbackDocset = null,
             bool isDependency = false)
-            : this(errorLog, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, restoreMap, repository, fallbackDocset, localizedDocset)
+            : this(errorLog, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, restoreGitMap, repository, fallbackDocset, localizedDocset)
         {
-            Debug.Assert(restoreMap != null);
+            Debug.Assert(restoreGitMap != null);
 
             if (!isDependency && !string.Equals(Locale, Config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
@@ -114,12 +119,12 @@ namespace Microsoft.Docs.Build
                 // source docset configuration will be overwritten by build locale overwrite configuration
                 if (fallbackRepo != default)
                 {
-                    FallbackDocset = new Docset(_errorLog, fallbackRepo.Path, Locale, Config, _options, RestoreMap, fallbackRepo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_errorLog, fallbackRepo.Path, Locale, Config, _options, RestoreGitMap, fallbackRepo, localizedDocset: this, isDependency: true);
                 }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
+                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreGitMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreMap, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreGitMap, repo, fallbackDocset: this, isDependency: true);
                 }
             }
         }
@@ -130,7 +135,7 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            RestoreMap restoreMap,
+            RestoreGitMap restoreGitMap,
             Repository repository = null,
             Docset fallbackDocset = null,
             Docset localizedDocset = null)
@@ -139,7 +144,6 @@ namespace Microsoft.Docs.Build
 
             _options = options;
             _errorLog = errorLog;
-            RestoreMap = restoreMap;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = locale.ToLowerInvariant();
@@ -151,9 +155,12 @@ namespace Microsoft.Docs.Build
 
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
 
+            RestoreGitMap = restoreGitMap;
+            RestoreFileMap = new RestoreFileMap(this);
+
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, RestoreMap, _options);
+                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, RestoreGitMap, _options);
                 _errorLog.Write(errors);
                 return dependencies;
             });
@@ -209,7 +216,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreMap restoreMap, CommandLineOptions options)
+            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
