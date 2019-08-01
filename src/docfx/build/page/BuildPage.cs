@@ -85,6 +85,7 @@ namespace Microsoft.Docs.Build
             {
                 JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
             }
+            else
             {
                 JsonUtility.Merge(pageModel, sourceModel, new JObject { ["metadata"] = mergedMetadata });
             }
