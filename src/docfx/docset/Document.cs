@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
             var filePath = PathUtility.NormalizeFile(path);
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(docset, filePath, Path.Combine(docset.DocsetPath, filePath), isFallback) : default;
+            var mime = type == ContentType.Page ? ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath), isFallback) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
@@ -511,7 +511,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static SourceInfo<string> ReadMimeFromFile(Docset docset, string pathToDocset, string filePath, bool isFallback)
+        private static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath, bool isFallback)
         {
             SourceInfo<string> mime = default;
 
