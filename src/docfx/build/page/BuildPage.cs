@@ -260,8 +260,6 @@ namespace Microsoft.Docs.Build
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
                     Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).HtmlPostProcess(file.Docset.Culture),
-                    Title = inputMetadata.Title ?? obj?.Value<string>("title"),
-                    RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
                     ExtensionData = pageModel,
                 });
             }
