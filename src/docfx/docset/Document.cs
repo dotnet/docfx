@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private Document(
             Docset docset,
-            string filePath,
+            FilePath filePath,
             string sitePath,
             string siteUrl,
             string canonicalUrlWithoutLocale,
@@ -123,11 +123,11 @@ namespace Microsoft.Docs.Build
             bool isFromHistory = false,
             bool isPage = true)
         {
-            Debug.Assert(!Path.IsPathRooted(filePath));
+            Debug.Assert(!Path.IsPathRooted(filePath.Path));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
 
             Docset = docset;
-            FilePath = CreateFilePath(filePath, docset);
+            FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
             CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;
@@ -279,7 +279,7 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, Docset fallbackDocset = null)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
+            if (TryResolveDocset(docset, fallbackDocset, pathToDocset, out var resolvedDocset))
             {
                 return Create(resolvedDocset, pathToDocset, templateEngine);
             }
@@ -491,15 +491,8 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
-        private static bool TryResolveDocset(Docset docset, string file, out Docset resolvedDocset)
+        private static bool TryResolveDocset(Docset docset, Docset fallbackDocset, string file, out Docset resolvedDocset)
         {
-            // resolve from localization docset
-            if (docset.LocalizedDocset != null && File.Exists(Path.Combine(docset.LocalizedDocset.DocsetPath, file)))
-            {
-                resolvedDocset = docset.LocalizedDocset;
-                return true;
-            }
-
             // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, file)))
             {
@@ -508,9 +501,9 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from fallback docset
-            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
+            if (fallbackDocset != null && File.Exists(Path.Combine(fallbackDocset.DocsetPath, file)))
             {
-                resolvedDocset = docset.FallbackDocset;
+                resolvedDocset = fallbackDocset;
                 return true;
             }
 
@@ -546,7 +539,7 @@ namespace Microsoft.Docs.Build
             return mime;
         }
 
-        private static FilePath CreateFilePath(string path, Docset docset)
-            => new FilePath(path, docset != null && docset.IsFallback() ? FileOrigin.Fallback : FileOrigin.Current);
+        private static FilePath CreateFilePath(string path, bool isFallback)
+            => new FilePath(path, isFallback ? FileOrigin.Fallback : FileOrigin.Current);
     }
 }

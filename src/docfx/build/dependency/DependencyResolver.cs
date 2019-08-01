@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
+                    var file = Document.CreateFromFile(_buildScope.Docset, pathToDocset, _templateEngine, _buildScope.FallbackDocset);
 
                     // for LandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
+                            file = Document.CreateFromFile(_buildScope.Docset, pathToDocset, _templateEngine, _buildScope.FallbackDocset);
                         }
 
                         // Do not report error for landing page
@@ -301,7 +301,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        private Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -309,10 +309,10 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
-            var fallbackDocset = GetFallbackDocset(docset);
+            var fallbackDocset = _buildScope.FallbackDocset;
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
             {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
+                var (repo, _, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
                     return Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true);
@@ -322,7 +322,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        private (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
-            var fallbackDocset = GetFallbackDocset(docset);
+            var fallbackDocset = _buildScope.FallbackDocset;
             if (fallbackDocset != null)
             {
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
@@ -349,24 +349,6 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
-        }
-
-        private static Docset GetFallbackDocset(Docset docset)
-        {
-            if (docset.IsLocalized())
-            {
-                // source docset in loc build
-                return docset;
-            }
-
-            if (docset.IsLocalized())
-            {
-                // localized docset in loc build
-                return docset.FallbackDocset;
-            }
-
-            // source docset in source build
-            return null;
         }
 
         private static Dictionary<string, string> LoadResolveAlias(Config config)

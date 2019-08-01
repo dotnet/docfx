@@ -25,17 +25,24 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Docset docset, TemplateEngine templateEngine)
+        public Docset Docset { get; }
+
+        public Docset FallbackDocset { get; }
+
+        public BuildScope(ErrorLog errorLog, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
         {
             var config = docset.Config;
+
+            Docset = docset;
+            FallbackDocset = fallbackDocset;
 
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
 
             var (fileNames, files) = GetFiles(docset, _glob);
 
-            var fallbackFiles = docset.FallbackDocset != null
-                ? GetFiles(docset.FallbackDocset, CreateGlob(docset.FallbackDocset.Config)).files
+            var fallbackFiles = fallbackDocset != null
+                ? GetFiles(fallbackDocset, CreateGlob(fallbackDocset.Config)).files
                 : Enumerable.Empty<Document>();
 
             _fileNames = fileNames;

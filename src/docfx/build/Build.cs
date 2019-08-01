@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -29,15 +30,36 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(configErrors))
                     return;
 
+                var (docset, fallbackDocset) = GetDocsets();
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
-                var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, fallbackRestoreGitMap ?? restoreGitMap, repository, fallbackRepo));
-                await Run(docset, options, errorLog, outputPath);
+
+                await Run(docset, fallbackDocset, fallbackRestoreGitMap ?? restoreGitMap, options, errorLog, outputPath);
+
+                (Docset docset, Docset fallbackDocset) GetDocsets()
+                {
+                    var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, fallbackRestoreGitMap ?? restoreGitMap, repository);
+                    if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+                    {
+                        if (fallbackRepo != null)
+                        {
+                            return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, fallbackRestoreGitMap, fallbackRepo));
+                        }
+
+                        if (LocalizationUtility.TryGetLocalizedDocsetPath(currentDocset, restoreGitMap, config, currentDocset.Locale, out var localizationDocsetPath, out var localizationBranch))
+                        {
+                            var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                            return (new Docset(errorLog, localizationDocsetPath, currentDocset.Locale, config, options, restoreGitMap, repo), currentDocset);
+                        }
+                    }
+
+                    return (currentDocset, default);
+                }
             }
         }
 
-        private static async Task Run(Docset docset, CommandLineOptions options, ErrorLog errorLog, string outputPath)
+        private static async Task Run(Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, CommandLineOptions options, ErrorLog errorLog, string outputPath)
         {
-            using (var context = new Context(outputPath, errorLog, docset, BuildFile))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap, BuildFile))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -132,10 +154,10 @@ namespace Microsoft.Docs.Build
                     }
 
                     // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return !file.Docset.IsFallback() || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => !toc.Docset.IsFallback()));
+                    return file.Docset != context.BuildScope.FallbackDocset || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => file.Docset != context.BuildScope.FallbackDocset));
                 }
 
-                return !file.Docset.IsFallback();
+                return file.Docset != context.BuildScope.FallbackDocset;
             }
         }
 
@@ -196,13 +218,6 @@ namespace Microsoft.Docs.Build
             }
 
             return ConfigLoader.Load(fallbackRepo.Path, options, locale);
-        }
-
-        private static Docset GetBuildDocset(Docset sourceDocset)
-        {
-            Debug.Assert(sourceDocset != null);
-
-            return sourceDocset.LocalizedDocset ?? sourceDocset;
         }
     }
 }

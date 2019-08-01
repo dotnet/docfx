@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine TemplateEngine;
+        public readonly RestoreFileMap RestoreFileMap;
 
         public XrefMap XrefMap => _xrefMap.Value;
 
@@ -35,7 +36,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<XrefMap> _xrefMap;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<Context, Document, Task> buildFile)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, Func<Context, Document, Task> buildFile)
         {
             _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
@@ -44,11 +45,12 @@ namespace Microsoft.Docs.Build
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
-            TemplateEngine = TemplateEngine.Create(docset);
-            BuildScope = new BuildScope(errorLog, docset, TemplateEngine);
+            RestoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
+            TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
+            BuildScope = new BuildScope(errorLog, docset, fallbackDocset, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache);
-            MonikerProvider = new MonikerProvider(docset, MetadataProvider);
+            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache, RestoreFileMap);
+            MonikerProvider = new MonikerProvider(docset, MetadataProvider, RestoreFileMap);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();

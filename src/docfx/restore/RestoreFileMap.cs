@@ -8,17 +8,19 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreFileMap
     {
-        private readonly Docset _docset;
+        private readonly string _docsetPath;
+        private readonly string _fallbackDocsetPath;
 
-        public RestoreFileMap(Docset docset)
+        public RestoreFileMap(string docsetPath, string fallbackDocsetPath = null)
         {
-            Debug.Assert(docset != null);
-            _docset = docset;
+            Debug.Assert(docsetPath != null);
+            _docsetPath = docsetPath;
+            _fallbackDocsetPath = fallbackDocsetPath;
         }
 
         public string GetRestoredFileContent(SourceInfo<string> url)
         {
-            return GetRestoredFileContent(_docset.DocsetPath, url, _docset.FallbackDocset?.DocsetPath);
+            return GetRestoredFileContent(_docsetPath, url, _fallbackDocsetPath);
         }
 
         public string GetRestoredFilePath(SourceInfo<string> url)
@@ -27,15 +29,15 @@ namespace Microsoft.Docs.Build
             if (!fromUrl)
             {
                 // directly return the relative path
-                var fullPath = Path.Combine(_docset.DocsetPath, url);
+                var fullPath = Path.Combine(_docsetPath, url);
                 if (File.Exists(fullPath))
                 {
                     return fullPath;
                 }
 
-                if (!string.IsNullOrEmpty(_docset.FallbackDocset?.DocsetPath))
+                if (!string.IsNullOrEmpty(_fallbackDocsetPath))
                 {
-                    fullPath = Path.Combine(_docset.FallbackDocset?.DocsetPath, url);
+                    fullPath = Path.Combine(_fallbackDocsetPath, url);
                     if (File.Exists(fullPath))
                     {
                         return fullPath;

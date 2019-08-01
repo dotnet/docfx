@@ -154,10 +154,6 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool IsFallback(this Docset docset) => docset.LocalizedDocset != null;
-
-        public static bool IsLocalized(this Docset docset) => docset.FallbackDocset != null;
-
         public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
         {
             Debug.Assert(!string.IsNullOrEmpty(theme));
