@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -105,26 +105,32 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             RestoreGitMap restoreGitMap,
             Repository repository = null,
-            Repository fallbackRepo = default,
-            Docset localizedDocset = null,
-            Docset fallbackDocset = null,
-            bool isDependency = false)
-            : this(errorLog, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, restoreGitMap, repository, fallbackDocset, localizedDocset)
+            Repository fallbackRepo = default)
+            : this(
+                  errorLog,
+                  docsetPath,
+                  !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale,
+                  config,
+                  options,
+                  restoreGitMap,
+                  repository,
+                  fallbackDocset: null,
+                  localizedDocset: null)
         {
             Debug.Assert(restoreGitMap != null);
 
-            if (!isDependency && !string.Equals(Locale, Config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(Locale, Config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 // localization/fallback docset will share the same context, config, build locale and options with source docset
                 // source docset configuration will be overwritten by build locale overwrite configuration
                 if (fallbackRepo != default)
                 {
-                    FallbackDocset = new Docset(_errorLog, fallbackRepo.Path, Locale, Config, _options, RestoreGitMap, fallbackRepo, localizedDocset: this, isDependency: true);
+                    FallbackDocset = new Docset(_errorLog, fallbackRepo.Path, Locale, Config, _options, RestoreGitMap, fallbackRepo, localizedDocset: this);
                 }
                 else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreGitMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreGitMap, repo, fallbackDocset: this, isDependency: true);
+                    LocalizationDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreGitMap, repo, fallbackDocset: this);
                 }
             }
         }
@@ -230,7 +236,7 @@ namespace Microsoft.Docs.Build
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap, fallbackDocset: null));
             }
             return (errors, result);
         }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -21,29 +21,22 @@ namespace Microsoft.Docs.Build
             using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
             {
                 var (fallbackRepo, fallbackRestoreGitMap) = GetFallbackRepository(docsetPath, repository, restoreGitMap);
-                await Run(docsetPath, repository, locale, options, errorLog, fallbackRestoreGitMap ?? restoreGitMap, fallbackRepo);
+
+                var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
+                errorLog.Configure(config);
+
+                // just return if config loading has errors
+                if (errorLog.Write(configErrors))
+                    return;
+
+                var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, fallbackRestoreGitMap ?? restoreGitMap, repository, fallbackRepo));
+                await Run(docset, options, errorLog);
             }
         }
 
-        private static async Task Run(
-            string docsetPath,
-            Repository repository,
-            string locale,
-            CommandLineOptions options,
-            ErrorLog errorLog,
-            RestoreGitMap restoreMap,
-            Repository fallbackRepo = null)
+        private static async Task Run(Docset docset, CommandLineOptions options, ErrorLog errorLog)
         {
-            var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
-            errorLog.Configure(config);
-
-            // just return if config loading has errors
-            if (errorLog.Write(configErrors))
-                return;
-
-            var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
-            var outputPath = Path.Combine(docsetPath, config.Output.Path);
-
+            var outputPath = Path.Combine(docset.DocsetPath, docset.Config.Output.Path);
             using (var context = new Context(outputPath, errorLog, docset, BuildFile))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
@@ -65,7 +58,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Legacy)
                 {
-                    if (config.Output.Json)
+                    if (docset.Config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
                         Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
