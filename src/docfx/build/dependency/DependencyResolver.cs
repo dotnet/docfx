@@ -353,13 +353,13 @@ namespace Microsoft.Docs.Build
 
         private static Docset GetFallbackDocset(Docset docset)
         {
-            if (docset.LocalizedDocset != null)
+            if (docset.IsLocalized())
             {
                 // source docset in loc build
                 return docset;
             }
 
-            if (docset.FallbackDocset != null)
+            if (docset.IsLocalized())
             {
                 // localized docset in loc build
                 return docset.FallbackDocset;
