@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System;
 using System.Diagnostics;
@@ -140,7 +140,7 @@ monikerDefinition: {url}");
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
 
             // run restore again
-            var filePath = RestoreFile.GetRestoreContentPath(url);
+            var filePath = RestoreFile.GetRestorePathFromUrl(url);
             var etagPath = RestoreFile.GetRestoreEtagPath(url);
 
             File.Delete(etagPath);

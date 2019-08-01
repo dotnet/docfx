@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null),
             new CommandLineOptions(),
-            new RestoreMap());
+            new RestoreGitMap());
 
         [Theory]
         // same level

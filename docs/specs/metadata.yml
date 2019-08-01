@@ -368,9 +368,9 @@ inputs:
     documentType: LandingData
 outputs:
   articles/active-directory-b2c/index.json: |
-    { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}
+    {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
   articles/active-directory-b2c/test.json: |
-    { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}
+    {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
 ---
 # index.yml's document id also follows the redirection rules
 # trailing 'index' redirect-to will be trimmed
@@ -389,7 +389,7 @@ inputs:
     documentType: LandingData
 outputs:
   azure/app-service/index.json: |
-    { "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}
+    {"metadata":{ "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}}
 ---
 # Generate canonical URL
 inputs:

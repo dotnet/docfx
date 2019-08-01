@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -26,11 +26,6 @@ namespace Microsoft.Docs.Build
         /// Gets the MIME type specifed in YAML header or JSON $schema.
         /// </summary>
         public SourceInfo<string> Mime { get; }
-
-        /// <summary>
-        /// Gets whether this document is conceptual document (or LandingData).
-        /// </summary>
-        public bool IsConceptual => string.IsNullOrEmpty(Mime) || TemplateEngine.IsLandingData(Mime);
 
         /// <summary>
         /// Gets the source file path relative to docset folder that is:

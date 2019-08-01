@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var content = RestoreMap.GetRestoredFileContent(docset, dependencyLockPath);
+            var content = RestoreFileMap.GetRestoredFileContent(docset, dependencyLockPath, fallbackDocset: null);
 
             return JsonUtility.Deserialize<DependencyLockModel>(content, new FilePath(dependencyLockPath));
         }
@@ -69,8 +69,6 @@ namespace Microsoft.Docs.Build
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 ProcessUtility.WriteFile(path, content);
             }
-
-            // todo: upload to remote file directly
         }
     }
 }

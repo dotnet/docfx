@@ -101,13 +101,15 @@ namespace Microsoft.Docs.Build
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
-            NameValueCollection queries = null;
+            var queries = new NameValueCollection();
             if (!string.IsNullOrEmpty(query))
             {
                 queries = HttpUtility.ParseQueryString(query);
-                moniker = queries?["view"];
+                moniker = queries["view"];
+                queries.Remove("view");
             }
-            var displayProperty = queries?["displayProperty"];
+            var displayProperty = queries["displayProperty"];
+            queries.Remove("displayProperty");
 
             // need to url decode uid from input content
             var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, declaringFile);
@@ -119,8 +121,14 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(resolvedHref))
             {
-                var monikerQuery = !string.IsNullOrEmpty(moniker) ? $"view={moniker}" : "";
-                resolvedHref = UrlUtility.MergeUrl(resolvedHref, monikerQuery, fragment.Length == 0 ? "" : fragment.Substring(1));
+                if (!string.IsNullOrEmpty(moniker))
+                {
+                    queries["view"] = moniker;
+                }
+                resolvedHref = UrlUtility.MergeUrl(
+                    resolvedHref,
+                    queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
+                    fragment.Length == 0 ? "" : fragment.Substring(1));
             }
 
             return (error, resolvedHref, display, xrefSpec);
