@@ -27,7 +27,6 @@ namespace Microsoft.Docs.Build
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine TemplateEngine;
-        public readonly RestoreFileMap RestoreFileMap;
 
         public XrefMap XrefMap => _xrefMap.Value;
 
@@ -38,19 +37,20 @@ namespace Microsoft.Docs.Build
 
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, Func<Context, Document, Task> buildFile)
         {
-            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset));
+            var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
+
+            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset, restoreFileMap));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
 
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
-            RestoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
             TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
             BuildScope = new BuildScope(errorLog, docset, fallbackDocset, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache, RestoreFileMap);
-            MonikerProvider = new MonikerProvider(docset, MetadataProvider, RestoreFileMap);
+            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache, restoreFileMap);
+            MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
