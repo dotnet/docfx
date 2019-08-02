@@ -264,8 +264,7 @@ namespace Microsoft.Docs.Build
             // get metadata before transforming
             var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(metadataErrors);
-            if (inputMetadata.RawJObject.Count > 0)
-                obj["metadata"] = inputMetadata.RawJObject;
+            obj["metadata"] = inputMetadata.RawJObject;
 
             // validate via json schema
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
