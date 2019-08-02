@@ -27,6 +27,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.8.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.8.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="2.8.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
     <PackageReference Include="NuGet.Packaging.Core.Types" Version="3.5.0" />
