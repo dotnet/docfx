@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -22,7 +23,7 @@ namespace Microsoft.Docs.Build
 
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
-            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            var (inputMetaErrors, inputMetadata) = GetMetadata(context, file, sourceModel);
             errors.AddRange(inputMetaErrors);
 
             var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
@@ -68,6 +69,25 @@ namespace Microsoft.Docs.Build
             }
 
             return errors;
+        }
+
+        private static (List<Error>, InputMetadata) GetMetadata(Context context, Document file, JObject sourceModel)
+        {
+            if (string.IsNullOrEmpty(file.Mime))
+            {
+                // conceptual metadata is retrieved from input file
+                return context.MetadataProvider.GetMetadata(file);
+            }
+
+            if (sourceModel.TryGetValue<JObject>("metadata", out var sourceMedatata))
+            {
+                // sdp metadata is retrieved from transfromed token
+                var (toObjectErrors, inputMeatdata) = JsonUtility.ToObject<InputMetadata>(sourceMedatata);
+                inputMeatdata.RawJObject = sourceMedatata;
+                return (toObjectErrors, inputMeatdata);
+            }
+
+            return (new List<Error>(), new InputMetadata());
         }
 
         private static (object output, JObject metadata) CreatePageOutput(
@@ -241,6 +261,12 @@ namespace Microsoft.Docs.Build
                 throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
+            // get metadata before transforming
+            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(metadataErrors);
+            if (inputMetadata.RawJObject.Count > 0)
+                obj["metadata"] = inputMetadata.RawJObject;
+
             // validate via json schema
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
@@ -252,9 +278,6 @@ namespace Microsoft.Docs.Build
             var pageModel = (JObject)transformedToken;
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
-                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-                errors.AddRange(metadataErrors);
-
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);
 
