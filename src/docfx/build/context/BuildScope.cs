@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _fileNames;
         private readonly Func<string, bool> _glob;
         private readonly TemplateEngine _templateEngine;
+        private readonly Docset _fallbackDocset;
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -27,15 +28,13 @@ namespace Microsoft.Docs.Build
 
         public Docset Docset { get; }
 
-        public Docset FallbackDocset { get; }
-
         public BuildScope(ErrorLog errorLog, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
             Docset = docset;
-            FallbackDocset = fallbackDocset;
 
+            _fallbackDocset = fallbackDocset;
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
 
@@ -60,10 +59,10 @@ namespace Microsoft.Docs.Build
         }
 
         public Docset GetFallbackDocset(Docset docset)
-            => docset == Docset || IsFallbackDocset(docset) ? FallbackDocset : null;
+            => docset == Docset || IsFallbackDocset(docset) ? _fallbackDocset : null;
 
         public bool IsFallbackDocset(Docset docset)
-            => docset == FallbackDocset;
+            => docset == _fallbackDocset;
 
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(Docset docset, Func<string, bool> glob)
         {
@@ -80,7 +79,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (glob(file))
                     {
-                        files.Add(Document.Create(docset, file, _templateEngine, isFallback: docset == FallbackDocset));
+                        files.Add(Document.Create(docset, file, _templateEngine, isFallback: docset == _fallbackDocset));
                     }
                 });
 
