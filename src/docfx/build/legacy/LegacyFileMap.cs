@@ -58,6 +58,7 @@ namespace Microsoft.Docs.Build
                     base_path = $"/{docset.SiteBasePath}",
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
+                    from_docfx_v3 = true,
                     file_mapping = items.OrderBy(item => item.path).ToDictionary(
                         (item) =>
                         {

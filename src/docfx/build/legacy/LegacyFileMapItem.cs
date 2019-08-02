@@ -28,9 +28,6 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "monikers")]
         public List<string> Monikers { get; set; } = new List<string>();
 
-        [JsonProperty(PropertyName = "from_docfx_v3")]
-        public bool FromDocfxV3 { get; set; } = true;
-
         public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
 
         public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version, List<string> monikers)
