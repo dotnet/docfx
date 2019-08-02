@@ -279,7 +279,7 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, Docset fallbackDocset)
+        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, BuildScope buildScope)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
@@ -287,9 +287,9 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (TryResolveDocset(docset, fallbackDocset, pathToDocset, out var resolvedDocset))
+            if (TryResolveDocset(docset, buildScope, pathToDocset, out var resolvedDocset))
             {
-                return Create(resolvedDocset, pathToDocset, templateEngine, isFallback: resolvedDocset == fallbackDocset);
+                return Create(resolvedDocset, pathToDocset, templateEngine, isFallback: buildScope?.IsFallbackDocset(resolvedDocset) ?? false);
             }
 
             // resolve from dependent docsets
@@ -303,7 +303,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, fallbackDocset: null);
+                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, buildScope: null);
                 if (dependencyFile != null)
                 {
                     return dependencyFile;
@@ -491,8 +491,11 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
-        private static bool TryResolveDocset(Docset docset, Docset fallbackDocset, string file, out Docset resolvedDocset)
+        private static bool TryResolveDocset(Docset docset, BuildScope buildScope, string file, out Docset resolvedDocset)
         {
+            docset = buildScope?.IsFallbackDocset(docset) ?? false ? buildScope?.Docset : docset;
+            var fallbackDocset = buildScope?.GetFallbackDocset(docset);
+
             // resolve from current docset
             if (File.Exists(Path.Combine(docset.DocsetPath, file)))
             {

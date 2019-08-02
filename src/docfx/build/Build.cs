@@ -155,10 +155,10 @@ namespace Microsoft.Docs.Build
                     }
 
                     // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return file.Docset != context.BuildScope.FallbackDocset || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => toc.Docset != context.BuildScope.FallbackDocset));
+                    return !context.BuildScope.IsFallbackDocset(file.Docset) || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => !context.BuildScope.IsFallbackDocset(toc.Docset)));
                 }
 
-                return file.Docset != context.BuildScope.FallbackDocset;
+                return !context.BuildScope.IsFallbackDocset(file.Docset);
             }
         }
 

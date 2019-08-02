@@ -59,6 +59,12 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
+        public Docset GetFallbackDocset(Docset docset)
+            => docset == Docset || IsFallbackDocset(docset) ? FallbackDocset : null;
+
+        public bool IsFallbackDocset(Docset docset)
+            => docset == FallbackDocset;
+
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(Docset docset, Func<string, bool> glob)
         {
             using (Progress.Start("Globbing files"))
