@@ -492,6 +492,7 @@ inputs:
     fileMetadata:
       href:
         c.yml: b.md
+    template: {APP_BASE_PATH}data/template
   a.yml: |
     #YamlMime:TestData
     metadata:
@@ -499,7 +500,6 @@ inputs:
   b.md:
   c.yml: |
     #YamlMime: TestData
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
   a.json: |
     {"metadata": {"href": "b"}}
