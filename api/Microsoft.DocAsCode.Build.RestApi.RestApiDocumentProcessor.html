@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class RestApiDocumentProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.43.3.0">
+    <meta name="generator" content="docfx 2.43.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -88,35 +88,14 @@
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
-    <div class="level1"><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html">DisposableDocumentProcessor</a></div>
-    <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html">ReferenceDocumentProcessorBase</a></div>
-    <div class="level3"><span class="xref">RestApiDocumentProcessor</span></div>
-  </div>
-  <div classs="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Load_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">ReferenceDocumentProcessorBase.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a>
-    </div>
-    <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadOverwrite_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">ReferenceDocumentProcessorBase.LoadOverwrite(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a>
-    </div>
-    <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Dispose">DisposableDocumentProcessor.Dispose()</a>
-    </div>
-    <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_UpdateHref_FileModel_IDocumentBuildContext_">DisposableDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a>
-    </div>
+    <div class="level1"><span class="xref">RestApiDocumentProcessor</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.RestApi.html">Microsoft.DocAsCode.Build.RestApi</a></h6>
   <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Build.RestApi.dll</h6>
   <h5 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Export(typeof(IDocumentProcessor))]
-public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase, IDisposable</code></pre>
+public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase</code></pre>
   </div>
   <h3 id="fields">Fields
   </h3>
@@ -125,7 +104,7 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase, IDisposa
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_SystemKeys.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.SystemKeys%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L44">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L44">View Source</a>
   </span>
   <h4 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_SystemKeys" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.SystemKeys">SystemKeys</h4>
   <div class="markdown level1 summary"></div>
@@ -156,7 +135,7 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase, IDisposa
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_BuildSteps.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.BuildSteps%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L74">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L74">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_BuildSteps_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.BuildSteps*"></a>
   <h4 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_BuildSteps" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.BuildSteps">BuildSteps</h4>
@@ -182,14 +161,12 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_BuildSteps">DisposableDocumentProcessor.BuildSteps</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L77">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L77">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_Name_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Name*"></a>
   <h4 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_Name" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Name">Name</h4>
@@ -214,14 +191,12 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Name">DisposableDocumentProcessor.Name</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_ProcessedDocumentType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.ProcessedDocumentType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L125">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L125">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_ProcessedDocumentType_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.ProcessedDocumentType*"></a>
   <h4 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_ProcessedDocumentType" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.ProcessedDocumentType">ProcessedDocumentType</h4>
@@ -246,8 +221,6 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_ProcessedDocumentType">ReferenceDocumentProcessorBase.ProcessedDocumentType</a></div>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
@@ -255,7 +228,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_GetProcessingPriority_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.GetProcessingPriority(FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L79">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L79">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_GetProcessingPriority_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.GetProcessingPriority*"></a>
   <h4 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_GetProcessingPriority_FileAndType_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.GetProcessingPriority(FileAndType)">GetProcessingPriority(FileAndType)</h4>
@@ -302,7 +275,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_LoadArticle_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.LoadArticle(FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L127">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L127">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_LoadArticle_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.LoadArticle*"></a>
   <h4 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_LoadArticle_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.LoadArticle(FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">LoadArticle(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
@@ -354,7 +327,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_Save_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Save(FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L101">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L101">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_Save_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Save*"></a>
   <h4 id="Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor_Save_FileModel_" data-uid="Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Save(FileModel)">Save(FileModel)</h4>
@@ -396,10 +369,6 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       </tr>
     </tbody>
   </table>
-  <h3 id="implements">Implements</h3>
-  <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">System.IDisposable</a>
-  </div>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
@@ -421,7 +390,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_RestApi_RestApiDocumentProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L26" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.RestApi/RestApiDocumentProcessor.cs/#L26" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>
