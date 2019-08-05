@@ -24,17 +24,18 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void MaxErrors()
         {
+            var maxErrors = 1000;
             using (var errorLog = new ErrorLog("MaxErrors"))
             {
-                for (var i = 0; i < OutputConfig.DefaultMaxErrors; i++)
+                for (var i = 0; i < maxErrors; i++)
                 {
                     errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
                 }
 
-                Assert.Equal(OutputConfig.DefaultMaxErrors, errorLog.ErrorCount);
+                Assert.Equal(maxErrors, errorLog.ErrorCount);
 
                 errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
-                Assert.Equal(OutputConfig.DefaultMaxErrors, errorLog.ErrorCount);
+                Assert.Equal(maxErrors, errorLog.ErrorCount);
             }
         }
     }
