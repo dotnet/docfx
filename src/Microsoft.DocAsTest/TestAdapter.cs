@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -49,12 +50,15 @@ namespace Microsoft.DocAsTest
 
         public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)
         {
-            DiscoverTests(sources, testCase => discoverySink.SendTestCase(testCase));
+            DiscoverTests(
+                sources,
+                testCase => discoverySink.SendTestCase(testCase),
+                message => logger.SendMessage(TestMessageLevel.Informational, message));
         }
 
         public void Cancel() => _canceled = true;
 
-        public void DiscoverTests(IEnumerable<string> sources, Action<TestCase> sendTestCase)
+        public void DiscoverTests(IEnumerable<string> sources, Action<TestCase> sendTestCase, Action<string> log)
         {
             // Looking for public methods in public types
             foreach (var source in sources)
@@ -71,8 +75,11 @@ namespace Microsoft.DocAsTest
 
                         for (var i = 0; i < attributes.Length; i++)
                         {
-                            DiscoverTests((ITestAttribute)attributes[i], sourcePath, data =>
-                                sendTestCase(CreateTestCase(data, fullyQualifiedName, source, i)));
+                            DiscoverTests(
+                                (ITestAttribute)attributes[i],
+                                sourcePath,
+                                data => sendTestCase(CreateTestCase(data, fullyQualifiedName, source, i)),
+                                log);
                         }
                     }
                 }
@@ -92,13 +99,16 @@ namespace Microsoft.DocAsTest
 
             var filterExpression = runContext.GetTestCaseFilter(s_filteringProperties, null);
 
-            new TestAdapter().DiscoverTests(sources, test =>
-            {
-                if (filterExpression == null || filterExpression.MatchTestCase(test, name => GetPropertyValue(test, name)))
+            new TestAdapter().DiscoverTests(
+                sources,
+                test =>
                 {
-                    testRuns.Add(RunTest(frameworkHandle, test));
-                }
-            });
+                    if (filterExpression == null || filterExpression.MatchTestCase(test, name => GetPropertyValue(test, name)))
+                    {
+                        testRuns.Add(RunTest(frameworkHandle, test));
+                    }
+                },
+                message => frameworkHandle.SendMessage(TestMessageLevel.Informational, message));
 
             Task.WhenAll(testRuns).GetAwaiter().GetResult();
         }
@@ -187,17 +197,21 @@ namespace Microsoft.DocAsTest
             }
         }
 
-        private static void DiscoverTests(ITestAttribute attribute, string sourcePath, Action<TestData> report)
+        private static void DiscoverTests(ITestAttribute attribute, string sourcePath, Action<TestData> report, Action<string> log)
         {
-            var glob = attribute.Glob ?? ".";
+            var glob = attribute.Glob ?? "**";
             if (glob.StartsWith("~/") || glob.StartsWith("~\\"))
             {
-                glob = Path.Combine(s_repositoryRoot.Value ?? ".", glob.Substring(2));
+                glob = glob.Substring(2);
             }
 
-            var files = Glob.Files(sourcePath, glob, GlobOptions.CaseInsensitive);
+            sourcePath = s_repositoryRoot.Value ?? sourcePath;
 
-            Parallel.ForEach(files, file => attribute.DiscoverTests(file, report));
+            var files = Glob.Files(sourcePath, glob, GlobOptions.CaseInsensitive).ToArray();
+
+            log($"Found {files.Length} file(s) using glob pattern '{glob}' in directory '{sourcePath}'");
+
+            Parallel.ForEach(files, file => attribute.DiscoverTests(Path.Combine(sourcePath, file), report));
         }
 
         private Task RunTest(TestCase test)
