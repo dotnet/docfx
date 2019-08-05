@@ -249,12 +249,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (alt == string.Empty)
             {
-                logWarning($"alt-text must be specified.");
+                logWarning($"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
                 return false;
             }
             if (src == string.Empty)
             {
-                logWarning($"source must be specified.");
+                logWarning($"source is a required attribute. Please ensure you have specified a source attribute");
                 return false;
             }
             var Id = id;
