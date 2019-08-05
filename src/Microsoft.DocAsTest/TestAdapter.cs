@@ -162,7 +162,7 @@ namespace Microsoft.DocAsTest
                 Source = source,
                 ExecutorUri = new Uri("executor://docastest"),
                 Id = CreateGuid($"{attributeIndex}/{data.FilePath}/{data.Ordinal}/{data.Summary}"),
-                DisplayName = $"{data.Ordinal:D2}: {data.Summary}",
+                DisplayName = $"{Path.GetFileName(data.FilePath)}/{data.Ordinal:D2}: {data.Summary}",
                 CodeFilePath = data.FilePath,
                 LineNumber = data.LineNumber,
             };
