@@ -180,11 +180,11 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return Volatile.Read(ref _errorCount) > _config.Output.MaxErrors;
+                    return Volatile.Read(ref _errorCount) >= _config.Output.MaxErrors;
                 case ErrorLevel.Warning:
-                    return Volatile.Read(ref _warningCount) > _config.Output.MaxWarnings;
+                    return Volatile.Read(ref _warningCount) >= _config.Output.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return Volatile.Read(ref _suggestionCount) > _config.Output.MaxSuggestions;
+                    return Volatile.Read(ref _suggestionCount) >= _config.Output.MaxSuggestions;
                 default:
                     return false;
             }
