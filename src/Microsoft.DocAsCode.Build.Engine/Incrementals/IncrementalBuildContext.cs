@@ -106,8 +106,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv)
             {
-                IsTemplateUpdated = (cb.TemplateHash != lb?.TemplateHash)
+                IsTemplateUpdated = cb.TemplateHash != lb?.TemplateHash
             };
+            if (context.IsTemplateUpdated)
+            {
+                Logger.LogVerbose("Cannot build incrementally in link phase because template changed. Will apply templates and post process all files", code: InfoCodes.FullBuildReason.TemplateChanged);
+            }
             context.InitDependency();
             context.InitFileAttributes();
             context.InitChanges();
@@ -124,7 +128,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             LastBuildVersionInfo = lbv;
             IncrementalInfo = new IncrementalInfo();
             CanVersionIncremental = GetCanVersionIncremental(buildInfoIncrementalStatus);
-
         }
 
         #endregion
