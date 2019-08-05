@@ -158,11 +158,11 @@ namespace Microsoft.DocAsTest
             var result = new TestCase
             {
                 LocalExtensionData = data,
-                FullyQualifiedName = fullyQualifiedName,
+                FullyQualifiedName = $"{fullyQualifiedName}({Path.GetFileName(data.FilePath).Replace('.', '-')})",
                 Source = source,
                 ExecutorUri = new Uri("executor://docastest"),
                 Id = CreateGuid($"{attributeIndex}/{data.FilePath}/{data.Ordinal}/{data.Summary}"),
-                DisplayName = data.GetDisplayName(),
+                DisplayName = $"{data.Ordinal:D2}: {data.Summary}",
                 CodeFilePath = data.FilePath,
                 LineNumber = data.LineNumber,
             };
@@ -259,6 +259,11 @@ namespace Microsoft.DocAsTest
 
         private static (Type type, MethodInfo method) GetMethodInfo(string source, string fullyQualifiedName)
         {
+            var i = fullyQualifiedName.IndexOf('(');
+            if (i >= 0)
+            {
+                fullyQualifiedName = fullyQualifiedName.Substring(0, i);
+            }
             return s_methodInfo.GetOrAdd((source, fullyQualifiedName), GetMethodInfoCore);
         }
 

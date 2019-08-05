@@ -36,15 +36,5 @@ namespace Microsoft.DocAsTest
         /// Gets the content of this data fragment.
         /// <summary>
         public string Content { get; set; }
-
-        /// <summary>
-        /// Gets the display name of that contains FilePath, Ordinal and Summary.
-        /// <summary>
-        public string GetDisplayName(int maxLength = 0)
-        {
-            var result = Path.Combine(Path.GetFileName(FilePath), $"{Ordinal:D2}: {Summary}").Replace('\\', '/');
-
-            return maxLength > 0 && result.Length > maxLength ? result.Substring(0, maxLength) : result;
-        }
     }
 }

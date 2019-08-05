@@ -64,6 +64,7 @@ namespace Microsoft.Docs.Build
         }
 
         [YamlTest("~/docs/specs")]
+        [MarkdownTest("~/docs/designs")]
         public static async Task Run(TestData test, DocfxTestSpec spec)
         {
             var (docsetPath, cachePath, outputPath, repos) = CreateDocset(test, spec);

@@ -13,6 +13,8 @@ namespace Microsoft.DocAsTest
     [AttributeUsage(AttributeTargets.Method)]
     public class MarkdownTestAttribute : Attribute, ITestAttribute
     {
+        private static readonly char[] s_summaryTrimChars = { '#', '-', ' ', '\t' };
+
         /// <summary>
         /// Gets or sets the directory to search for files.
         /// </summary>
@@ -29,9 +31,9 @@ namespace Microsoft.DocAsTest
         public string FenceTip { get; set; }
 
         /// <summary>
-        /// Gets or sets the minimum number of opening fence chars (`) to match. The default is 3.
+        /// Gets or sets the minimum number of opening fence chars (`) to match. The default is 6.
         /// </summary>
-        public int MinFenceChar { get; set; } = 3;
+        public int MinFenceChar { get; set; } = 6;
 
         public MarkdownTestAttribute(string path = null)
         {
@@ -49,7 +51,7 @@ namespace Microsoft.DocAsTest
         {
             using (var reader = File.OpenText(path))
             {
-                var state = MarkdownReadState.Fence;
+                var state = MarkdownReadState.Markdown;
                 var indent = 0;
                 var ordinal = 0;
                 var lineNumber = 0;
@@ -78,8 +80,9 @@ namespace Microsoft.DocAsTest
                             break;
 
                         case MarkdownReadState.Fence when ReadEndFence(line, indent):
-                            data.Ordinal = ordinal++;
+                            data.Ordinal = ++ordinal;
                             data.Content = content.ToString();
+                            data.Summary = data.Summary.Trim(s_summaryTrimChars);
                             data.FilePath = path;
                             report(data);
                             data = new TestData();

@@ -13,6 +13,8 @@ namespace Microsoft.DocAsTest
     [AttributeUsage(AttributeTargets.Method)]
     public class YamlTestAttribute : Attribute, ITestAttribute
     {
+        private static readonly char[] s_summaryTrimChars = { '#', ' ', '\t' };
+
         /// <summary>
         /// Gets or sets the directory to search for files.
         /// </summary>
@@ -48,7 +50,7 @@ namespace Microsoft.DocAsTest
                     {
                         if (content.Length > 0)
                         {
-                            data.Ordinal = ordinal++;
+                            data.Ordinal = ++ordinal;
                             data.Content = content.ToString();
                             data.FilePath = path;
 
@@ -67,7 +69,7 @@ namespace Microsoft.DocAsTest
                     {
                         if (line.StartsWith("#") && data.Summary is null)
                         {
-                            data.Summary = line.Trim('#', ' ', '\t');
+                            data.Summary = line.Trim(s_summaryTrimChars);
                         }
 
                         content.Append(line);
