@@ -10,11 +10,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="YamlDotNet" Version="6.1.2" />
+    <PackageReference Include="YamlDotNet" Version="5.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="../../shared/YamlUtility.cs" />
+    <Compile Include="../shared/YamlUtility.cs" />
   </ItemGroup>
 
 </Project>

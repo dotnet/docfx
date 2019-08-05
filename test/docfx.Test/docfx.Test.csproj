@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="../../shared/TestUtility.cs" />
+    <Compile Include="../../src/shared/TestUtility.cs" />
   </ItemGroup>
 
   <ItemGroup>
