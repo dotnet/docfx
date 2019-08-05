@@ -7,9 +7,7 @@ namespace Microsoft.DocAsTest
 {
     internal interface ITestAttribute
     {
-        string Path { get; }
-
-        string SearchPattern { get; }
+        string Glob { get; }
 
         void DiscoverTests(string path, Action<TestData> report);
     }

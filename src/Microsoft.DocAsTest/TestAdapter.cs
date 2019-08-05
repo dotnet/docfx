@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using GlobExpressions;
 using Microsoft.Docs.Build;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -188,19 +189,13 @@ namespace Microsoft.DocAsTest
 
         private static void DiscoverTests(ITestAttribute attribute, string sourcePath, Action<TestData> report)
         {
-            var path = attribute.Path ?? ".";
-            if (path.StartsWith("~/") || path.StartsWith("~\\"))
+            var glob = attribute.Glob ?? ".";
+            if (glob.StartsWith("~/") || glob.StartsWith("~\\"))
             {
-                path = Path.Combine(s_repositoryRoot.Value ?? ".", path.Substring(2));
+                glob = Path.Combine(s_repositoryRoot.Value ?? ".", glob.Substring(2));
             }
 
-            var basePath = Path.GetFullPath(Path.Combine(sourcePath, path));
-            if (!Directory.Exists(basePath))
-            {
-                return;
-            }
-
-            var files = Directory.GetFiles(basePath, attribute.SearchPattern ?? "*", SearchOption.AllDirectories);
+            var files = Glob.Files(sourcePath, glob, GlobOptions.CaseInsensitive);
 
             Parallel.ForEach(files, file => attribute.DiscoverTests(file, report));
         }

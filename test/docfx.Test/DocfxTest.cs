@@ -63,8 +63,8 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        [YamlTest("~/docs/specs")]
-        [MarkdownTest("~/docs/designs")]
+        [YamlTest("~/docs/specs/**/*.yml")]
+        [MarkdownTest("~/docs/designs/**/*.md")]
         public static async Task Run(TestData test, DocfxTestSpec spec)
         {
             var (docsetPath, cachePath, outputPath, repos) = CreateDocset(test, spec);
@@ -76,11 +76,11 @@ namespace Microsoft.Docs.Build
 
                 if (OsMatches(spec.OS))
                 {
-                    await RunCore(docsetPath, outputPath, spec);
+                    await RunCore(test, docsetPath, outputPath, spec);
                 }
                 else
                 {
-                    await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(docsetPath, outputPath, spec));
+                    await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(test, docsetPath, outputPath, spec));
                 }
             }
             finally
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             return (docsetPath, cachePath, outputPath, repos);
         }
 
-        private async static Task RunCore(string docsetPath, string outputPath, DocfxTestSpec spec)
+        private async static Task RunCore(TestData test, string docsetPath, string outputPath, DocfxTestSpec spec)
         {
             if (spec.Watch)
             {
@@ -142,7 +142,10 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            await RunBuild(docsetPath, outputPath, spec, spec.Locale);
+            if (!test.Summary.Contains("[from loc]", StringComparison.OrdinalIgnoreCase))
+            {
+                await RunBuild(docsetPath, outputPath, spec, spec.Locale);
+            }
 
             // Verify build from localization docset also work
             if (spec.Locale != null)

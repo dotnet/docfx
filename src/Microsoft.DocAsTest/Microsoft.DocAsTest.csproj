@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Glob" Version="1.1.3" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="YamlDotNet" Version="5.4.0" />

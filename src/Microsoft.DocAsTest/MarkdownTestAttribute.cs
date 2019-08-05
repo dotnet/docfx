@@ -16,14 +16,9 @@ namespace Microsoft.DocAsTest
         private static readonly char[] s_summaryTrimChars = { '#', '-', ' ', '\t' };
 
         /// <summary>
-        /// Gets or sets the directory to search for files.
+        /// Gets or sets the glob pattern to search for files.
         /// </summary>
-        public string Path { get; set; }
-
-        /// <summary>
-        /// Gets or sets the search pattern.
-        /// </summary>
-        public string SearchPattern { get; set; }
+        public string Glob { get; set; }
 
         /// <summary>
         /// Gets or sets the markdown fenced code tip to match. The default is to match all.
@@ -35,11 +30,7 @@ namespace Microsoft.DocAsTest
         /// </summary>
         public int MinFenceChar { get; set; } = 6;
 
-        public MarkdownTestAttribute(string path = null)
-        {
-            Path = path;
-            SearchPattern = "*.md";
-        }
+        public MarkdownTestAttribute(string glob = null) => Glob = glob;
 
         private enum MarkdownReadState
         {

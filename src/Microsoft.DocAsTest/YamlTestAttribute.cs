@@ -16,20 +16,11 @@ namespace Microsoft.DocAsTest
         private static readonly char[] s_summaryTrimChars = { '#', ' ', '\t' };
 
         /// <summary>
-        /// Gets or sets the directory to search for files.
+        /// Gets or sets the glob pattern to search for files.
         /// </summary>
-        public string Path { get; set; }
+        public string Glob { get; set; }
 
-        /// <summary>
-        /// Gets or sets the search pattern.
-        /// </summary>
-        public string SearchPattern { get; set; }
-
-        public YamlTestAttribute(string path = null)
-        {
-            Path = path;
-            SearchPattern = "*.yml";
-        }
+        public YamlTestAttribute(string glob = null) => Glob = glob;
 
         void ITestAttribute.DiscoverTests(string path, Action<TestData> report)
         {
