@@ -56,6 +56,5 @@ namespace Microsoft.Docs.Build
         /// There are may be too many suggestion messages so increase the limit.
         /// </summary>
         public readonly int MaxSuggestions = 10000;
-
     }
 }
