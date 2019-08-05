@@ -12,8 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        private static IEnumerable<Error> metadataTransformedError;
-
         public static async Task<List<Error>> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
