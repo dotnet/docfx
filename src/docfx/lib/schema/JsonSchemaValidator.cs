@@ -150,6 +150,7 @@ namespace Microsoft.Docs.Build
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<(string name, Error)> errors)
         {
             ValidateRequired(schema, map, errors);
+            ValidateStrictRequired(schema, map, errors);
             ValidateDependencies(schema, name, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
@@ -325,6 +326,19 @@ namespace Microsoft.Docs.Build
             foreach (var key in schema.Required)
             {
                 if (!map.ContainsKey(key))
+                {
+                    errors.Add((key, Errors.MissingAttribute(JsonUtility.GetSourceInfo(map), key)));
+                }
+            }
+        }
+
+        private void ValidateStrictRequired(JsonSchema schema, JObject map, List<(string name, Error)> errors)
+        {
+            foreach (var key in schema.StrictRequired)
+            {
+                if (!map.TryGetValue(key, out var value)
+                    || value.Type == JTokenType.Null
+                    || (value.Type == JTokenType.String && string.IsNullOrWhiteSpace((string)value)))
                 {
                     errors.Add((key, Errors.MissingAttribute(JsonUtility.GetSourceInfo(map), key)));
                 }
