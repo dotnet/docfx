@@ -19,7 +19,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     {
         private readonly string _outputFolder;
         private TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("validate_bookmark.ValidateBookmark");
-        private readonly string _dateWarning = " NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.";
 
         public ValidateBookmarkTest()
         {
@@ -87,8 +86,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Tuple.Create(@"Illegal link: `[link with source info](a.md#b2)` -- missing bookmark. The file a.md doesn't contain a bookmark named b2.", "b.md"),
                 Tuple.Create(@"Illegal link: `[link in token file](a.md#b3)` -- missing bookmark. The file a.md doesn't contain a bookmark named b3.", "token.md"),
                 Tuple.Create(@"Illegal link: `<a href=""a.md#b4"">link without source info</a>` -- missing bookmark. The file a.md doesn't contain a bookmark named b4.", "b.md"),
-                Tuple.Create(@"Illegal link: `<a href=""#b1"">Test local link</a>` -- missing bookmark. The file f.md doesn't contain a bookmark named b1." + _dateWarning, "f.md"),
-                Tuple.Create(@"Illegal link: `[local link in token file](#b3)` -- missing bookmark. The file g.md doesn't contain a bookmark named b3." + _dateWarning, "token.md"),
+                Tuple.Create(@"Invalid link: '<a href=""#b1"">Test local link</a>'. The file f.md doesn't contain a bookmark named 'b1'.", "f.md"),
+                Tuple.Create(@"Invalid link: '[local link in token file](#b3)'. The file g.md doesn't contain a bookmark named 'b3'.", "token.md"),
             };
             var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
@@ -132,7 +131,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Equal(1, logs.Count);
             var expected = new[]
             {
-                Tuple.Create("Illegal link: `<a href=\"#invalid\">test</a>` -- missing bookmark. The file test.md doesn't contain a bookmark named invalid." + _dateWarning, "test.md"),
+                Tuple.Create("Invalid link: '<a href=\"#invalid\">test</a>'. The file test.md doesn't contain a bookmark named 'invalid'.", "test.md"),
             };
             var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
