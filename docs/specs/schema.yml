@@ -501,10 +501,8 @@ inputs:
     #YamlMime: TestData
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
       "properties": {
         "metadata": {
-          "type": "object",
           "properties": {
             "href": {
               "type": "string",

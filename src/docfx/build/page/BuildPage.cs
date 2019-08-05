@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
 
             var errors = new List<Error>();
 
-            var (sysMetadataErrors, sysMetadata) = await CreateSystemMetadata(context, file);
-            errors.AddRange(sysMetadataErrors);
+            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file);
+            errors.AddRange(systemMetadataErrors);
 
             var (loadErrors, sourceModel) = await Load(context, file);
             errors.AddRange(loadErrors);
@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
             var (output, metadata) = file.IsPage
-                ? CreatePageOutput(context, file, sourceModel, JsonUtility.ToJObject(sysMetadata))
-                : CreateDataOutput(context, file, sourceModel, JsonUtility.ToJObject(sysMetadata));
+                ? CreatePageOutput(context, file, sourceModel, JsonUtility.ToJObject(systemMetadata))
+                : CreateDataOutput(context, file, sourceModel, JsonUtility.ToJObject(systemMetadata));
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
