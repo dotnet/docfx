@@ -5,8 +5,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class OutputConfig
     {
-        public const int DefaultMaxErrors = 1000;
-
         /// <summary>
         /// Gets the build output directory. Could be absolute or relative.
         /// </summary>
@@ -44,12 +42,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the maximum errors to output.
         /// </summary>
-        public readonly int MaxErrors = DefaultMaxErrors;
+        public readonly int MaxErrors = 1000;
 
         /// <summary>
         /// Gets the maximum warnings to output.
         /// </summary>
-        public readonly int MaxWarnings = DefaultMaxErrors;
+        public readonly int MaxWarnings = 1000;
 
         /// <summary>
         /// Gets the maximum suggestions to output.
