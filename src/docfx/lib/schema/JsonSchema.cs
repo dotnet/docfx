@@ -208,6 +208,11 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// Properties that are used to indicate some attitudes are required and the value of them can't be null
+        /// </summary>
+        public string[] RequiredAndNotNull { get; set; } = Array.Empty<string>();
+
+        /// <summary>
         /// Properties that are used to realize either logic
         /// </summary>
         public string[][] Either { get; set; } = Array.Empty<string[]>();

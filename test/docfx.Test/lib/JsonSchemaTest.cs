@@ -339,6 +339,13 @@ namespace Microsoft.Docs.Build
             "['suggestion','key1-attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'customErrors': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "['error','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
+
+        // required and no null validation
+        [InlineData("{'requiredAndNotNull': ['key1']}", "{'key1': 'a'}", "")]
+        [InlineData("{'requiredAndNotNull': ['key1']}", "{}",
+            "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
+        [InlineData("{'requiredAndNotNull': ['key1']}", "{'key1': null}",
+            "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
