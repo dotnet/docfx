@@ -42,8 +42,20 @@ namespace Microsoft.Docs.Build
         public readonly bool CopyResources = true;
 
         /// <summary>
-        /// Gets the maximum errors or warnings to output.
+        /// Gets the maximum errors to output.
         /// </summary>
         public readonly int MaxErrors = DefaultMaxErrors;
+
+        /// <summary>
+        /// Gets the maximum warnings to output.
+        /// </summary>
+        public readonly int MaxWarnings = DefaultMaxErrors;
+
+        /// <summary>
+        /// Gets the maximum suggestions to output.
+        /// There are may be too many suggestion messages so increase the limit.
+        /// </summary>
+        public readonly int MaxSuggestions = 10000;
+
     }
 }
