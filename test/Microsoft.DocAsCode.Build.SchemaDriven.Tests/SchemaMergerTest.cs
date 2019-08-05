@@ -373,7 +373,7 @@ Nice
                 Assert.Equal($"<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"8\">Nice</p>\n", rawModel["summary"].Value<string>());
                 Assert.Equal("src.html", rawModel["href"].Value<string>());
                 Assert.Equal("uid1", rawModel["xref"].Value<string>());
-                Assert.Equal($"<p sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><a href=\"~/{inputFile}\" data-raw-source=\"[overwrite](../src/src.yml)\" sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">overwrite</a></p>\n", rawModel["reference"].Value<string>());
+                Assert.Equal($"<p sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/reference\"><a href=\"~/{inputFile}\" data-raw-source=\"[overwrite](../src/src.yml)\" sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">overwrite</a></p>\n", rawModel["reference"].Value<string>());
 
                 var outputFile = GetOutputFilePath(inputFileName);
                 Assert.Equal("<a class=\"xref\" href=\"src.html\">uid1</a>", File.ReadAllText(outputFile));
