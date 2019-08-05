@@ -442,8 +442,7 @@ outputs:
       </div>
 ---
 # Validate bookmark against content HTML after applying template for SDP 
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml:
   a.yml: |

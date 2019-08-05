@@ -364,19 +364,18 @@ outputs:
     ["error","locale-invalid","Invalid locale: 'wrong/wrong'."]
 ---
 # branch overwrite config
-repo: https://github.com/docascode/docfx-test-dependencies#master
-inputs:
-  docfx.yml: |
-    files: a.md
-    "branches: [master]":
-      files: b.md
-  a.md:
+repos:
+  https://docs.com/branch-overwrite:
+  - files:
+      docfx.yml: |
+        files: a.md
+        "branches: [master]":
+          files: b.md
+      a.md:
 outputs:
 ---
 # locale overwrite config
-commands:
-  - restore --locale zh-cn
-  - build --locale zh-cn
+locale: zh-cn
 inputs:
   docfx.yml: |
     files: a.md
@@ -389,45 +388,44 @@ inputs:
 outputs:
 ---
 # branch | locale overwrite config
-commands:
-  - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#master
-inputs:
-  docfx.yml: |
-    localization:
-      defaultLocale: "zh-cn"
-    files: a.md
-    "locales: [zh-cn]":
-      files:
-        - b.md
-        - c.md
-    "branches: [master,live]":
-      exclude:
-        - b.md
-  a.md:
-  b.md:
-  c.md:
+locale: zh-cn
+repos:
+  https://docs.com/branch-or-locale-overwrite:
+  - files:
+      docfx.yml: |
+        localization:
+          defaultLocale: "zh-cn"
+        files: a.md
+        "locales: [zh-cn]":
+          files:
+            - b.md
+            - c.md
+        "branches: [master,live]":
+          exclude:
+            - b.md
+      a.md:
+      b.md:
+      c.md:
 outputs:
   c.json:
 ---
 # branch & locale overwrite config
-commands:
-  - build --locale zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#master
-inputs:
-  docfx.yml: |
-    localization:
-      defaultLocale: "zh-cn"
-    files: a.md
-    "locales: [zh-cn, de-de] branches: [live]":
-      files: b.md
-  a.md:
+locale: zh-cn
+repos:
+  https://docs.com/branch-and-locale-overwrite:
+  - files:
+      docfx.yml: |
+        localization:
+          defaultLocale: "zh-cn"
+        files: a.md
+        "locales: [zh-cn, de-de] branches: [live]":
+          files: b.md
+      a.md:
 outputs:
   a.json:
 ---
 # branch & locale overwrite with null
-commands:
-  - build --locale zh-cn
+locale: zh-cn
 repo: https://github.com/docascode/docfx-test-dependencies#master
 inputs:
   docfx.yml: |
@@ -448,8 +446,7 @@ outputs:
   b.png:
 ---
 # invalid overwrite config
-commands:
-  - build --locale zh-cn
+locale: zh-cn
 inputs:
   docfx.yml: |
     localization:
