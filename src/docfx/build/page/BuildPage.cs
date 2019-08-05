@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,8 +18,8 @@ namespace Microsoft.Docs.Build
 
             var errors = new List<Error>();
 
-            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file);
-            errors.AddRange(outputMetadataErrors);
+            var (sysMetadataErrors, sysMetadata) = await CreateSystemMetadata(context, file);
+            errors.AddRange(sysMetadataErrors);
 
             var (loadErrors, sourceModel) = await Load(context, file);
             errors.AddRange(loadErrors);
@@ -31,8 +30,8 @@ namespace Microsoft.Docs.Build
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
             var (output, metadata) = file.IsPage
-                ? CreatePageOutput(context, file, sourceModel, JsonUtility.ToJObject(outputMetadata))
-                : CreateDataOutput(context, file, sourceModel, JsonUtility.ToJObject(outputMetadata));
+                ? CreatePageOutput(context, file, sourceModel, JsonUtility.ToJObject(sysMetadata))
+                : CreateDataOutput(context, file, sourceModel, JsonUtility.ToJObject(sysMetadata));
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
@@ -76,28 +75,28 @@ namespace Microsoft.Docs.Build
             Context context,
             Document file,
             JObject sourceModel,
-            JObject outputMetadata)
+            JObject systemMetadata)
         {
-            var pageRawMetadata = new JObject();
-            var pageRawModel = new JObject();
+            var outputMetadata = new JObject();
+            var outputModel = new JObject();
             if (string.IsNullOrEmpty(file.Mime))
             {
                 // conceptual raw metadata and raw model
                 var inputMetadata = context.MetadataProvider.GetMetadata(file).metadata.RawJObject;
-                JsonUtility.Merge(pageRawMetadata, inputMetadata, outputMetadata);
-                JsonUtility.Merge(pageRawModel, inputMetadata, sourceModel, outputMetadata);
+                JsonUtility.Merge(outputMetadata, inputMetadata, systemMetadata);
+                JsonUtility.Merge(outputModel, inputMetadata, sourceModel, systemMetadata);
             }
             else
             {
-                (pageRawModel, pageRawMetadata) = CreateSdpRawOutput(sourceModel, outputMetadata);
+                (outputModel, outputMetadata) = CreateSdpOutput(sourceModel, systemMetadata);
             }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (pageRawModel, SortProperties(pageRawMetadata));
+                return (outputModel, SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(pageRawModel), file);
+            var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(outputModel), file);
             if (file.Docset.Config.Output.Json)
             {
                 return (templateModel, SortProperties(templateMetadata));
@@ -111,28 +110,28 @@ namespace Microsoft.Docs.Build
         }
 
         private static (object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel, JObject outputMetadata)
+            CreateDataOutput(Context context, Document file, JObject sourceModel, JObject systemMetadata)
         {
-            var (sdpRawModel, _) = CreateSdpRawOutput(sourceModel, outputMetadata);
-            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sdpRawModel), null);
+            var (outputModel, _) = CreateSdpOutput(sourceModel, systemMetadata);
+            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", outputModel), null);
         }
 
-        private static (JObject sdpModel, JObject sdpMetadata) CreateSdpRawOutput(JObject sourceModel, JObject outputMetadata)
+        private static (JObject model, JObject metadata) CreateSdpOutput(JObject sourceModel, JObject systemMetadata)
         {
-            var sdpRawMetadata = new JObject();
-            var sdpRawModel = new JObject();
+            var metadata = new JObject();
+            var model = new JObject();
 
-            sdpRawMetadata = sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject();
-            JsonUtility.Merge(sdpRawMetadata, outputMetadata);
-            JsonUtility.Merge(sdpRawModel, sourceModel, new JObject { ["metadata"] = sdpRawMetadata });
+            metadata = sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject();
+            JsonUtility.Merge(metadata, systemMetadata);
+            JsonUtility.Merge(model, sourceModel, new JObject { ["metadata"] = metadata });
 
-            return (sdpRawModel, sdpRawMetadata);
+            return (model, metadata);
         }
 
-        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file)
+        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file)
         {
             var errors = new List<Error>();
-            var outputMetadata = new OutputMetadata();
+            var systemMetadata = new SystemMetadata();
 
             var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
             errors.AddRange(inputMetaErrors);
@@ -141,40 +140,40 @@ namespace Microsoft.Docs.Build
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(file, inputMetadata.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
-                outputMetadata.BreadcrumbPath = breadcrumbPath;
+                systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
 
-            outputMetadata.Locale = file.Docset.Locale;
-            outputMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
-            outputMetadata.CanonicalUrl = file.CanonicalUrl;
-            outputMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
-            outputMetadata.SiteName = file.Docset.Config.SiteName;
+            systemMetadata.Locale = file.Docset.Locale;
+            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+            systemMetadata.CanonicalUrl = file.CanonicalUrl;
+            systemMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
+            systemMetadata.SiteName = file.Docset.Config.SiteName;
 
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
-            outputMetadata.Monikers = monikers;
+            systemMetadata.Monikers = monikers;
 
-            (outputMetadata.DocumentId, outputMetadata.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (outputMetadata.ContentGitUrl, outputMetadata.OriginalContentGitUrl, outputMetadata.OriginalContentGitUrlTemplate, outputMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
+            (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate, systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, outputMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
-            outputMetadata.Author = outputMetadata.ContributionInfo?.Author?.Name;
-            outputMetadata.UpdatedAt = outputMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
+            (contributorErrors, systemMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
+            systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-            outputMetadata.SearchProduct = file.Docset.Config.Product;
-            outputMetadata.SearchDocsetName = file.Docset.Config.Name;
+            systemMetadata.SearchProduct = file.Docset.Config.Product;
+            systemMetadata.SearchDocsetName = file.Docset.Config.Name;
 
-            outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
-            outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
+            systemMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
+            systemMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{systemMetadata.Locale}/{file.Docset.SiteBasePath}/";
 
             if (file.Docset.Config.Output.Pdf)
-                outputMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{outputMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+                systemMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{systemMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
 
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            return (errors, outputMetadata);
+            return (errors, systemMetadata);
         }
 
         private static async Task<(List<Error> errors, JObject model)> Load(Context context, Document file)
