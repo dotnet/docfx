@@ -971,16 +971,17 @@ outputs:
 repos:
   https://docs.com/test#live:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          baseUrl: https://docs.com/base_path
         docs/a.md: |
           ---
           title: Title from yaml header a
           uid: a
           ---
 outputs:
-  docs/a.json:
+  base_path/docs/a.json:
   xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}]}
 ---
 # resolve UID with unknown query
 repos:
