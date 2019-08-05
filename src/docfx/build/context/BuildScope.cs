@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly Func<string, bool> _glob;
         private readonly TemplateEngine _templateEngine;
         private readonly Docset _fallbackDocset;
+        private readonly Docset _docset;
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -26,14 +27,11 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public Docset Docset { get; }
-
         public BuildScope(ErrorLog errorLog, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
-            Docset = docset;
-
+            _docset = docset;
             _fallbackDocset = fallbackDocset;
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
@@ -58,8 +56,11 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
+        public Docset GetDocset(Docset docset)
+            => docset == _fallbackDocset ? _docset : null;
+
         public Docset GetFallbackDocset(Docset docset)
-            => docset == Docset || IsFallbackDocset(docset) ? _fallbackDocset : null;
+            => docset == _docset || IsFallbackDocset(docset) ? _fallbackDocset : null;
 
         public bool IsFallbackDocset(Docset docset)
             => docset == _fallbackDocset;

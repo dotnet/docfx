@@ -493,7 +493,7 @@ namespace Microsoft.Docs.Build
 
         private static bool TryResolveDocset(Docset docset, BuildScope buildScope, string file, out Docset resolvedDocset)
         {
-            docset = buildScope?.IsFallbackDocset(docset) ?? false ? buildScope?.Docset : docset;
+            docset = buildScope?.GetDocset(docset) ?? docset;
             var fallbackDocset = buildScope?.GetFallbackDocset(docset);
 
             // resolve from current docset
