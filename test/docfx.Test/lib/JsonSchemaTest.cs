@@ -340,7 +340,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'customErrors': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "['error','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
 
-        // required and no null validation
+        // strict required validation
         [InlineData("{'strictRequired': ['key1']}", "{'key1': 'a'}", "")]
         [InlineData("{'strictRequired': ['key1']}", "{}",
             "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
