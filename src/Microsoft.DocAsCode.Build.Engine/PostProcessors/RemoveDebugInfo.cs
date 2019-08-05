@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             "sourceFile",
             "sourceStartLineNumber",
             "sourceEndLineNumber",
+            "jsonPath",
             "data-raw-source",
             "nocheck",
         };

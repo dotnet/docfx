@@ -1,5 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.netstandard.props" />
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.16.0" />
   </ItemGroup>

@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Common
 
     public static class XrefUtility
     {
-        public static bool TryGetStringValue(this XRefSpec spec, string key, out string value)
+        public static bool TryGetXrefStringValue(this XRefSpec spec, string key, out string value)
         {
 
             if (spec.TryGetValue(key, out var objValue) && objValue != null)
