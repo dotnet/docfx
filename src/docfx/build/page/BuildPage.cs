@@ -17,21 +17,22 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, sourceModel) = await Load(context, file);
+            var errors = new List<Error>();
+
+            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file);
+            errors.AddRange(outputMetadataErrors);
+
+            var (loadErrors, sourceModel) = await Load(context, file);
+            errors.AddRange(loadErrors);
+
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
-            var (inputMetaErrors, inputMetadata) = GetMetadata(context, file, sourceModel);
-            errors.AddRange(inputMetaErrors);
-
-            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
-            errors.AddRange(outputMetadataErrors);
-
             var (output, metadata) = file.IsPage
-                ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
-                : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
+                ? CreatePageOutput(context, file, sourceModel, JsonUtility.ToJObject(outputMetadata))
+                : CreateDataOutput(context, file, sourceModel, JsonUtility.ToJObject(outputMetadata));
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
@@ -71,78 +72,70 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (List<Error>, InputMetadata) GetMetadata(Context context, Document file, JObject sourceModel)
-        {
-            if (string.IsNullOrEmpty(file.Mime))
-            {
-                // conceptual metadata is retrieved from input file
-                return context.MetadataProvider.GetMetadata(file);
-            }
-
-            if (sourceModel.TryGetValue<JObject>("metadata", out var sourceMedatata))
-            {
-                // sdp metadata is retrieved from transfromed token
-                var (toObjectErrors, inputMeatdata) = JsonUtility.ToObject<InputMetadata>(sourceMedatata);
-                inputMeatdata.RawJObject = sourceMedatata;
-                return (toObjectErrors, inputMeatdata);
-            }
-
-            return (new List<Error>(), new InputMetadata());
-        }
-
         private static (object output, JObject metadata) CreatePageOutput(
             Context context,
             Document file,
             JObject sourceModel,
-            InputMetadata inputMetadata,
-            OutputMetadata outputMetadata)
+            JObject outputMetadata)
         {
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject, JsonUtility.ToJObject(outputMetadata));
-
-            var pageModel = new JObject();
+            var pageRawMetadata = new JObject();
+            var pageRawModel = new JObject();
             if (string.IsNullOrEmpty(file.Mime))
             {
-                JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+                // conceptual raw metadata and raw model
+                var inputMetadata = context.MetadataProvider.GetMetadata(file).metadata.RawJObject;
+                JsonUtility.Merge(pageRawMetadata, inputMetadata, outputMetadata);
+                JsonUtility.Merge(pageRawModel, inputMetadata, sourceModel, outputMetadata);
             }
             else
             {
-                JsonUtility.Merge(pageModel, sourceModel, new JObject { ["metadata"] = mergedMetadata });
+                (pageRawModel, pageRawMetadata) = CreateSdpRawOutput(sourceModel, outputMetadata);
             }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (pageModel, SortProperties(mergedMetadata));
+                return (pageRawModel, SortProperties(pageRawMetadata));
             }
 
-            var (templateModel, metadata) = CreateTemplateModel(context, SortProperties(pageModel), file);
+            var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(pageRawModel), file);
             if (file.Docset.Config.Output.Json)
             {
-                return (templateModel, SortProperties(metadata));
+                return (templateModel, SortProperties(templateMetadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (html, SortProperties(metadata));
+            return (html, SortProperties(templateMetadata));
 
             JObject SortProperties(JObject obj)
                 => new JObject(obj.Properties().OrderBy(p => p.Name));
         }
 
         private static (object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel, InputMetadata inputMetadata, OutputMetadata outputMetadata)
+            CreateDataOutput(Context context, Document file, JObject sourceModel, JObject outputMetadata)
         {
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
-            sourceModel["metadata"] = mergedMetadata;
-            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
+            var (sdpRawModel, _) = CreateSdpRawOutput(sourceModel, outputMetadata);
+            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sdpRawModel), null);
         }
 
-        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata)
+        private static (JObject sdpModel, JObject sdpMetadata) CreateSdpRawOutput(JObject sourceModel, JObject outputMetadata)
+        {
+            var sdpRawMetadata = new JObject();
+            var sdpRawModel = new JObject();
+
+            sdpRawMetadata = sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject();
+            JsonUtility.Merge(sdpRawMetadata, outputMetadata);
+            JsonUtility.Merge(sdpRawModel, sourceModel, new JObject { ["metadata"] = sdpRawMetadata });
+
+            return (sdpRawModel, sdpRawMetadata);
+        }
+
+        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file)
         {
             var errors = new List<Error>();
-
             var outputMetadata = new OutputMetadata();
+
+            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(inputMetaErrors);
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {

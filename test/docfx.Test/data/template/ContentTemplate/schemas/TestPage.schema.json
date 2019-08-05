@@ -22,13 +22,7 @@
         "type": "string"
       },
       "metadata": {
-        "type": "object",
-        "properties": {
-          "href": {
-            "type": "string",
-            "contentType": "Href"
-          }
-        }
+        "type": "object"
       }
     }
   }
