@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch)
+        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreGitMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -94,10 +94,10 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public static bool TryGetSourceRepository(Repository repository, out string sourceRemote, out string sourceBranch, out string locale)
+        public static bool TryGetFallbackRepository(Repository repository, out string fallbackRemote, out string fallbackBranch, out string locale)
         {
-            sourceRemote = null;
-            sourceBranch = null;
+            fallbackRemote = null;
+            fallbackBranch = null;
             locale = null;
 
             if (repository is null || string.IsNullOrEmpty(repository.Remote))
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return TryGetSourceRepository(repository.Remote, repository.Branch, out sourceRemote, out sourceBranch, out locale);
+            return TryGetFallbackRepository(repository.Remote, repository.Branch, out fallbackRemote, out fallbackBranch, out locale);
         }
 
         public static string GetLocale(string remote, string branch, CommandLineOptions options)
@@ -189,10 +189,10 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static bool TryGetSourceRepository(string remote, string branch, out string sourceRemote, out string sourceBranch, out string locale)
+        private static bool TryGetFallbackRepository(string remote, string branch, out string fallbackRemote, out string fallbackBranch, out string locale)
         {
-            sourceRemote = null;
-            sourceBranch = null;
+            fallbackRemote = null;
+            fallbackBranch = null;
             locale = null;
 
             if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
@@ -200,18 +200,18 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (TryRemoveLocale(remote, out sourceRemote, out locale))
+            if (TryRemoveLocale(remote, out fallbackRemote, out locale))
             {
-                sourceBranch = branch;
+                fallbackBranch = branch;
                 if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
                 {
-                    sourceBranch = branchWithoutLocale;
+                    fallbackBranch = branchWithoutLocale;
                     locale = branchLocale;
                 }
 
-                if (TryGetContributionBranch(sourceBranch, out var contributionBranch))
+                if (TryGetContributionBranch(fallbackBranch, out var contributionBranch))
                 {
-                    sourceBranch = contributionBranch;
+                    fallbackBranch = contributionBranch;
                 }
 
                 return true;
@@ -230,34 +230,34 @@ namespace Microsoft.Docs.Build
             return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
         }
 
-        private static string GetLocalizationBranch(LocalizationMapping mapping, string sourceBranch, string locale, string defaultLocale)
+        private static string GetLocalizationBranch(LocalizationMapping mapping, string branch, string locale, string defaultLocale)
         {
             if (mapping != LocalizationMapping.Branch)
             {
-                return sourceBranch;
+                return branch;
             }
 
-            if (string.IsNullOrEmpty(sourceBranch))
+            if (string.IsNullOrEmpty(branch))
             {
-                return sourceBranch;
+                return branch;
             }
 
             if (string.IsNullOrEmpty(locale))
             {
-                return sourceBranch;
+                return branch;
             }
 
             if (string.Equals(locale, defaultLocale))
             {
-                return sourceBranch;
+                return branch;
             }
 
-            if (sourceBranch.EndsWith(locale, StringComparison.OrdinalIgnoreCase))
+            if (branch.EndsWith(locale, StringComparison.OrdinalIgnoreCase))
             {
-                return sourceBranch;
+                return branch;
             }
 
-            return $"{sourceBranch}.{locale}";
+            return $"{branch}.{locale}";
         }
 
         private static string GetLocalizationName(LocalizationMapping mapping, string name, string locale, string defaultLocale)

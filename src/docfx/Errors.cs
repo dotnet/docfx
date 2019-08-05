@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -351,7 +350,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error InternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
+        {
+            var dateWarning = "NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.";
+            return new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'? {dateWarning}" : $". {dateWarning}")}", source);
+        }
 
         // Behavior: ✔️ Message: ❌
         public static Error NullArrayValue(SourceInfo source, string name)
@@ -473,8 +475,8 @@ namespace Microsoft.Docs.Build
         /// An attribute does't conform to date format.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error DateFormatInvalid(SourceInfo source, string name, string value, string format)
-            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
+        public static Error DateFormatInvalid(SourceInfo source, string name, string value)
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid date format for '{name}': '{value}'.", source);
 
         /// <summary>
         /// Date out of range.

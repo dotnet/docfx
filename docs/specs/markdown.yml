@@ -324,10 +324,12 @@ inputs:
     <h2 id="html-title">title</h2>
     [!include[](d.md)]
     <a id="##special-chars"></a>### title with custom id
+    <a id="with:colon">bookmark with colon</a>
   docs/b.md: |
     [link to title 2](a.md#title-2)
     [link to title 3](a.md#title-3)
     [link to title with custom id](a.md###special-chars)
+    [link to bookmark with colon](a.md#with:colon)
   docs/c.yml: |
     #YamlMime:LandingData
     title: test
@@ -340,7 +342,7 @@ outputs:
   docs/d.json:
   .errors.log: |
     ["warning","external-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/b.md",2,1]
-    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/a.md",4,1]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'? NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.","docs/a.md",4,1]
     ["warning","external-bookmark-not-found","Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","docs/d.md",1,1]
 ---
 # only validate bookmarks when the referenced file existed
@@ -356,7 +358,7 @@ outputs:
 # do not output file if external-bookmark-not-found is treated as error
 inputs:
   docfx.yml: |
-    rules:
+    customErrors:
       external-bookmark-not-found: error
   docs/a.md: |
     [link to b](b.md#bookmark)
@@ -531,8 +533,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
-    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'. NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.","docs/a.md",2,1]
+    ["suggestion","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'. NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.","docs/a.md",2,2]
 ---
 # custom 404 page is not supported
 inputs:

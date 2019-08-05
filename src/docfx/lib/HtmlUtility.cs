@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string CreateHtmlMetaTags(JObject metadata, (HashSet<string> htmlMetaHidden, Dictionary<string, string> htmlMetaNames) htmlMetaConfigs)
+        public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
         {
             var result = new StringBuilder();
 
@@ -220,13 +220,13 @@ namespace Microsoft.Docs.Build
             {
                 var key = property.Name;
                 var value = property.Value;
-                if (value is JObject || htmlMetaConfigs.htmlMetaHidden.Contains(key))
+                if (value is JObject || htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }
 
                 var content = "";
-                var name = htmlMetaConfigs.htmlMetaNames.TryGetValue(key, out var diplayName) ? diplayName : key;
+                var name = htmlMetaNames.TryGetValue(key, out var diplayName) ? diplayName : key;
 
                 if (value is JArray arr)
                 {

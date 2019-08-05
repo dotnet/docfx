@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -81,7 +81,14 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject, JsonUtility.ToJObject(outputMetadata));
 
             var pageModel = new JObject();
-            JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+            if (string.IsNullOrEmpty(file.Mime))
+            {
+                JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+            }
+            else
+            {
+                JsonUtility.Merge(pageModel, sourceModel, new JObject { ["metadata"] = mergedMetadata });
+            }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
@@ -248,14 +255,13 @@ namespace Microsoft.Docs.Build
                 var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
                 errors.AddRange(metadataErrors);
 
-                var landingData = pageModel.ToObject<LandingData>();
+                var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
+                errors.AddRange(deserializeErrors);
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
                     Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).HtmlPostProcess(file.Docset.Culture),
-                    Title = inputMetadata.Title ?? obj?.Value<string>("title"),
-                    RawTitle = $"<h1>{obj?.Value<string>("title")}</h1>",
-                    ExtensionData = landingData.ExtensionData,
+                    ExtensionData = pageModel,
                 });
             }
 
@@ -272,15 +278,11 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint(file.IsConceptual ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            var templateMetadata = context.TemplateEngine.RunJint(string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+
             if (TemplateEngine.IsLandingData(file.Mime))
             {
-                templateMetadata["_op_layout"] = "LandingPage";
-                templateMetadata["layout"] = "LandingPage";
-                templateMetadata["page_type"] = "landingdata";
-
-                templateMetadata.Remove("_op_gitContributorInformation");
-                templateMetadata.Remove("_op_allContributorsStr");
+                templateMetadata.Remove("conceptual");
             }
 
             // content for *.mta.json
@@ -289,7 +291,7 @@ namespace Microsoft.Docs.Build
                 ["is_dynamic_rendering"] = true,
             };
 
-            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.TemplateEngine.HtmlMetaConfigs);
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.MetadataProvider.HtmlMetaHidden, context.MetadataProvider.HtmlMetaNames);
 
             // content for *.raw.page.json
             var model = new TemplateModel
@@ -305,7 +307,7 @@ namespace Microsoft.Docs.Build
 
         private static string CreateContent(Context context, Document file, JObject pageModel)
         {
-            if (file.IsConceptual)
+            if (string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
             {
                 return pageModel.Value<string>("conceptual");
             }
