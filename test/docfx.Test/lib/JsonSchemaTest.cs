@@ -341,10 +341,12 @@ namespace Microsoft.Docs.Build
             "['error','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
 
         // required and no null validation
-        [InlineData("{'requiredAndNotNull': ['key1']}", "{'key1': 'a'}", "")]
-        [InlineData("{'requiredAndNotNull': ['key1']}", "{}",
+        [InlineData("{'strictRequired': ['key1']}", "{'key1': 'a'}", "")]
+        [InlineData("{'strictRequired': ['key1']}", "{}",
             "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
-        [InlineData("{'requiredAndNotNull': ['key1']}", "{'key1': null}",
+        [InlineData("{'strictRequired': ['key1']}", "{'key1': null}",
+            "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
+        [InlineData("{'strictRequired': ['key1']}", "{'key1': ''}",
             "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {

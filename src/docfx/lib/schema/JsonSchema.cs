@@ -208,9 +208,9 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Properties that are used to indicate some attitudes are required and the value of them can't be null
+        /// Properties that are used to indicate some attitudes are required and the value of them can't be null or white space for string type
         /// </summary>
-        public string[] RequiredAndNotNull { get; set; } = Array.Empty<string>();
+        public string[] StrictRequired { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Properties that are used to realize either logic
