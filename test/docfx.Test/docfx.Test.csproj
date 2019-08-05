@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="../../src/shared/TestUtility.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Codecov" Version="1.7.0" />
     <PackageReference Include="coverlet.msbuild" Version="2.5.1" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.0" />

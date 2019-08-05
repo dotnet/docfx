@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="../shared/YamlUtility.cs" />
+    <Compile Include="../docfx/lib/json/YamlUtility.Shared.cs" />
   </ItemGroup>
 
 </Project>
