@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['yyy','tabs']}",
             "['warning','invalid-value','Invalid value for 'key1[0]': 'yyy'','file',1,15]")]
 
-        // additional errors
+        // custom errors
         [InlineData("{'required': ['author'], 'customErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
             "['suggestion','author-missing','Missing required attribute: 'author'. Add a valid GitHub ID.','file',1,1]")]
         [InlineData("{'required': ['author'], 'customErrors': {'author': {'missing-attribute': {'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
