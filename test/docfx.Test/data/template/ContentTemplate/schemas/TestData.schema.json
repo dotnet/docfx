@@ -82,6 +82,9 @@
             "items": {
                 "type": "string"
             }
+        },
+        "metadata": {
+            "type": "object"
         }
     },
     "xrefProperties": [
