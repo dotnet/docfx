@@ -189,12 +189,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 string attributeName;
                 if (!TryMatchIdentifier(ref slice, out attributeName))
                 {
-                    logError($"Invalid attribute.");
+                    logError($"No attributes exist. source, and alt-text attributes are required. id is optional.");
                     return false;
                 }
                 if (attributes.ContainsKey(attributeName))
                 {
-                    logError($"Attribute \"{attributeName}\" specified multiple times.");
+                    logError($"Attribute \"{attributeName}\" has been specified multiple times.");
                     return false;
                 }
 
