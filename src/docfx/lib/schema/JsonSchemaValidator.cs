@@ -383,7 +383,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add((name, Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, dateString, schema.DateFormat)));
+                    errors.Add((name, Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, dateString)));
                 }
             }
         }

@@ -33,7 +33,10 @@
             "type": "string"
         },
         "$schema": {
-            "type": "string"
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
         }
     }
 }
