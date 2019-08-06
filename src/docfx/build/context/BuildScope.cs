@@ -56,14 +56,33 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        public Docset GetDocset(Docset docset)
-            => docset == _fallbackDocset ? _docset : null;
-
         public Docset GetFallbackDocset(Docset docset)
-            => docset == _docset || IsFallbackDocset(docset) ? _fallbackDocset : null;
+            => docset == _docset || docset == _fallbackDocset ? _fallbackDocset : null;
 
-        public bool IsFallbackDocset(Docset docset)
-            => docset == _fallbackDocset;
+        public bool TryResolveDocset(Docset docset, string file, out (Docset resolvedDocset, FileOrigin fileOrigin) resolved)
+        {
+            docset = docset == _fallbackDocset ? _docset : docset;
+            var fallbackDocset = GetFallbackDocset(docset);
+            resolved = default;
+
+            // resolve from current docset
+            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
+            {
+                resolved.resolvedDocset = docset;
+                resolved.fileOrigin = FileOrigin.Current;
+                return true;
+            }
+
+            // resolve from fallback docset
+            if (fallbackDocset != null && File.Exists(Path.Combine(fallbackDocset.DocsetPath, file)))
+            {
+                resolved.resolvedDocset = fallbackDocset;
+                resolved.fileOrigin = FileOrigin.Fallback;
+                return true;
+            }
+
+            return false;
+        }
 
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(Docset docset, Func<string, bool> glob)
         {
@@ -80,13 +99,16 @@ namespace Microsoft.Docs.Build
                 {
                     if (glob(file))
                     {
-                        files.Add(Document.Create(docset, file, _templateEngine, isFallback: docset == _fallbackDocset));
+                        files.Add(Document.Create(docset, file, _templateEngine, GetOrigin(docset)));
                     }
                 });
 
                 return (fileNames, files.ToList());
             }
         }
+
+        private FileOrigin GetOrigin(Docset docset)
+            => docset == _fallbackDocset ? FileOrigin.Fallback : FileOrigin.Current;
 
         private static Func<string, bool> CreateGlob(Config config)
         {

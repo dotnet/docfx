@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new ConcurrentHashSet<DependencyItem>();
 
-        public void AddDependencyItem(Document from, Document to, DependencyType type, BuildScope buildScope)
+        public void AddDependencyItem(Document from, Document to, DependencyType type)
         {
             Debug.Assert(from != null);
 
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (buildScope.IsFallbackDocset(from.Docset))
+            if (from.FilePath.Origin == FileOrigin.Fallback)
             {
                 return;
             }

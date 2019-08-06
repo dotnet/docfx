@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, content, child) = TryResolveContent(declaringFile, path);
 
-            _dependencyMapBuilder.AddDependencyItem(declaringFile, child, dependencyType, _buildScope);
+            _dependencyMapBuilder.AddDependencyItem(declaringFile, child, dependencyType);
 
             return (error, content, child);
         }
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             var isSelfBookmark = linkType == LinkType.SelfBookmark || relativeToFile == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, file, UrlUtility.FragmentToDependencyType(fragment), _buildScope);
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(declaringFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
 
             if (xrefSpec?.DeclaringFile != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclaringFile, DependencyType.UidInclusion, _buildScope);
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclaringFile, DependencyType.UidInclusion);
             }
 
             if (!string.IsNullOrEmpty(resolvedHref))
@@ -315,7 +315,7 @@ namespace Microsoft.Docs.Build
                 var (repo, _, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
-                    return Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true);
+                    return Document.Create(fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true);
                 }
             }
 
@@ -342,7 +342,7 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            return (content, Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true));
+                            return (content, Document.Create(fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true));
                         }
                     }
                 }

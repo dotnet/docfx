@@ -239,19 +239,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false, bool isFallback = false)
+        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, FileOrigin origin = FileOrigin.Current, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
-            var filePath = PathUtility.NormalizeFile(path);
-            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
-            var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(filePath, Path.Combine(docset.DocsetPath, filePath), isFallback) : default;
+            var filePath = new FilePath(PathUtility.NormalizeFile(path), origin);
+            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath.Path, PathUtility.PathComparer);
+            var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath.Path);
+            var mime = type == ContentType.Page ? ReadMimeFromFile(docset.DocsetPath, filePath) : default;
             var isPage = templateEngine.IsPage(mime);
-            var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
+            var isExperimental = Path.GetFileNameWithoutExtension(filePath.Path).EndsWith(".experimental", PathUtility.PathComparison);
+            var routedFilePath = ApplyRoutes(filePath.Path, docset.Routes, docset.SiteBasePath);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, CreateFilePath(filePath, isFallback), sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
+            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
         }
 
         /// <summary>
@@ -287,9 +287,14 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (TryResolveDocset(docset, buildScope, pathToDocset, out var resolvedDocset))
+            if (buildScope != null && buildScope.TryResolveDocset(docset, pathToDocset, out var resolved))
             {
-                return Create(resolvedDocset, pathToDocset, templateEngine, isFallback: buildScope?.IsFallbackDocset(resolvedDocset) ?? false);
+                return Create(resolved.resolvedDocset, pathToDocset, templateEngine, resolved.fileOrigin);
+            }
+
+            if (File.Exists(Path.Combine(docset.DocsetPath, pathToDocset)))
+            {
+                return Create(docset, pathToDocset, templateEngine, FileOrigin.Current);
             }
 
             // resolve from dependent docsets
@@ -491,58 +496,33 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
-        private static bool TryResolveDocset(Docset docset, BuildScope buildScope, string file, out Docset resolvedDocset)
-        {
-            docset = buildScope?.GetDocset(docset) ?? docset;
-            var fallbackDocset = buildScope?.GetFallbackDocset(docset);
-
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
-            {
-                resolvedDocset = docset;
-                return true;
-            }
-
-            // resolve from fallback docset
-            if (fallbackDocset != null && File.Exists(Path.Combine(fallbackDocset.DocsetPath, file)))
-            {
-                resolvedDocset = fallbackDocset;
-                return true;
-            }
-
-            resolvedDocset = null;
-            return false;
-        }
-
-        private static SourceInfo<string> ReadMimeFromFile(string pathToDocset, string filePath, bool isFallback)
+        private static SourceInfo<string> ReadMimeFromFile(string docsetPath, FilePath filePath)
         {
             SourceInfo<string> mime = default;
 
-            if (filePath.EndsWith(".json", PathUtility.PathComparison))
+            var fullPath = Path.Combine(docsetPath, filePath.Path);
+            if (fullPath.EndsWith(".json", PathUtility.PathComparison))
             {
-                if (File.Exists(filePath))
+                if (File.Exists(fullPath))
                 {
-                    using (var reader = new StreamReader(filePath))
+                    using (var reader = new StreamReader(fullPath))
                     {
-                        mime = JsonUtility.ReadMime(reader, CreateFilePath(pathToDocset, isFallback));
+                        mime = JsonUtility.ReadMime(reader, filePath);
                     }
                 }
             }
-            else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
+            else if (fullPath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                if (File.Exists(filePath))
+                if (File.Exists(fullPath))
                 {
-                    using (var reader = new StreamReader(filePath))
+                    using (var reader = new StreamReader(fullPath))
                     {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(CreateFilePath(pathToDocset, isFallback), 1, 1));
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
                     }
                 }
             }
 
             return mime;
         }
-
-        private static FilePath CreateFilePath(string path, bool isFallback)
-            => new FilePath(path, isFallback ? FileOrigin.Fallback : FileOrigin.Current);
     }
 }
