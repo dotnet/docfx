@@ -23,7 +23,6 @@ namespace Microsoft.Docs.Build
         private int _errorCount;
         private int _warningCount;
         private int _suggestionCount;
-        private int _infoCount;
 
         private int _maxExceeded;
 
@@ -93,17 +92,12 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Error error, bool isException = false)
         {
-            var level = error.Level;
-
-            if (isException)
+            if (_config != null && _config.CustomErrors.TryGetValue(error.Code, out var customError))
             {
-                level = ErrorLevel.Error;
-            }
-            else if (_config != null && _config.Rules.TryGetValue(error.Code, out var overrideLevel))
-            {
-                level = overrideLevel;
+                error = error.WithCustomError(customError);
             }
 
+            var level = isException ? ErrorLevel.Error : error.Level;
             if (level == ErrorLevel.Off)
             {
                 return false;
@@ -114,50 +108,19 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
-            var maxErrors = _config?.Output.MaxErrors ?? OutputConfig.DefaultMaxErrors;
-            if (ReachMaxErrors())
+            if (ExceedMaxErrors(level))
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(maxErrors, level), level);
+                    WriteCore(Errors.ExceedMaxErrors(GetMaxCount(level), level), level);
                 }
             }
-            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors())
+            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(level))
             {
                 WriteCore(error, level);
             }
 
             return level == ErrorLevel.Error;
-
-            bool ReachMaxErrors()
-            {
-                switch (level)
-                {
-                    case ErrorLevel.Error:
-                        return Volatile.Read(ref _errorCount) >= maxErrors;
-                    case ErrorLevel.Warning:
-                        return Volatile.Read(ref _warningCount) >= maxErrors;
-                    case ErrorLevel.Suggestion:
-                        return Volatile.Read(ref _suggestionCount) >= maxErrors;
-                    default:
-                        return Volatile.Read(ref _infoCount) >= maxErrors;
-                }
-            }
-
-            bool IncrementExceedMaxErrors()
-            {
-                switch (level)
-                {
-                    case ErrorLevel.Error:
-                        return Interlocked.Increment(ref _errorCount) > maxErrors;
-                    case ErrorLevel.Warning:
-                        return Interlocked.Increment(ref _warningCount) > maxErrors;
-                    case ErrorLevel.Suggestion:
-                        return Interlocked.Increment(ref _suggestionCount) > maxErrors;
-                    default:
-                        return Interlocked.Increment(ref _infoCount) > maxErrors;
-                }
-            }
         }
 
         public void Dispose()
@@ -185,6 +148,66 @@ namespace Microsoft.Docs.Build
             }
 
             ConsoleLog(level, error);
+        }
+
+        private int GetMaxCount(ErrorLevel level)
+        {
+            if (_config == null)
+            {
+                return int.MaxValue;
+            }
+
+            switch (level)
+            {
+                case ErrorLevel.Error:
+                    return _config.Output.MaxErrors;
+                case ErrorLevel.Warning:
+                    return _config.Output.MaxWarnings;
+                case ErrorLevel.Suggestion:
+                    return _config.Output.MaxSuggestions;
+                default:
+                    return int.MaxValue;
+            }
+        }
+
+        private bool ExceedMaxErrors(ErrorLevel level)
+        {
+            if (_config == null)
+            {
+                return false;
+            }
+
+            switch (level)
+            {
+                case ErrorLevel.Error:
+                    return Volatile.Read(ref _errorCount) >= _config.Output.MaxErrors;
+                case ErrorLevel.Warning:
+                    return Volatile.Read(ref _warningCount) >= _config.Output.MaxWarnings;
+                case ErrorLevel.Suggestion:
+                    return Volatile.Read(ref _suggestionCount) >= _config.Output.MaxSuggestions;
+                default:
+                    return false;
+            }
+        }
+
+        private bool IncrementExceedMaxErrors(ErrorLevel level)
+        {
+            if (_config == null)
+            {
+                return false;
+            }
+
+            switch (level)
+            {
+                case ErrorLevel.Error:
+                    return Interlocked.Increment(ref _errorCount) > _config.Output.MaxErrors;
+                case ErrorLevel.Warning:
+                    return Interlocked.Increment(ref _warningCount) > _config.Output.MaxWarnings;
+                case ErrorLevel.Suggestion:
+                    return Interlocked.Increment(ref _suggestionCount) > _config.Output.MaxSuggestions;
+                default:
+                    return false;
+            }
         }
 
         private static string LegacyReport(Error error, ErrorLevel level)

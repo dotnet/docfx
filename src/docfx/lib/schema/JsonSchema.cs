@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -208,6 +208,11 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// Properties that are used to indicate some attitudes are required and the value of them can't be null or white space for string type
+        /// </summary>
+        public string[] StrictRequired { get; set; } = Array.Empty<string>();
+
+        /// <summary>
         /// Properties that are used to realize either logic
         /// </summary>
         public string[][] Either { get; set; } = Array.Empty<string[]>();
@@ -253,6 +258,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
-        public Dictionary<string, Dictionary<string, AdditionalErrorSchema>> AdditionalErrors { get; set; } = new Dictionary<string, Dictionary<string, AdditionalErrorSchema>>();
+        public Dictionary<string, Dictionary<string, CustomError>> CustomErrors { get; } = new Dictionary<string, Dictionary<string, CustomError>>();
     }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         {
             Console.WriteLine($"Downloading '{url}'");
 
-            var filePath = GetRestoreContentPath(url);
+            var filePath = GetRestorePathFromUrl(url);
             var etagPath = GetRestoreEtagPath(url);
             var existingEtag = default(EntityTagHeaderValue);
 
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetRestoreContentPath(string url)
+        public static string GetRestorePathFromUrl(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(UrlUtility.IsHttp(url));

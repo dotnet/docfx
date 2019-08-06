@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<(string name, Error)>();
             Validate(schema, "", token, errors);
-            return errors.Select(info => GetAdditionalError(_schema, info.name, info.Item2)).ToList();
+            return errors.Select(info => GetError(_schema, info.name, info.Item2)).ToList();
         }
 
         private void Validate(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
@@ -150,6 +150,7 @@ namespace Microsoft.Docs.Build
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<(string name, Error)> errors)
         {
             ValidateRequired(schema, map, errors);
+            ValidateStrictRequired(schema, map, errors);
             ValidateDependencies(schema, name, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
@@ -331,6 +332,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private void ValidateStrictRequired(JsonSchema schema, JObject map, List<(string name, Error)> errors)
+        {
+            foreach (var key in schema.StrictRequired)
+            {
+                if (!map.TryGetValue(key, out var value)
+                    || value.Type == JTokenType.Null
+                    || (value.Type == JTokenType.String && string.IsNullOrWhiteSpace((string)value)))
+                {
+                    errors.Add((key, Errors.MissingAttribute(JsonUtility.GetSourceInfo(map), key)));
+                }
+            }
+        }
+
         private void ValidateEither(JsonSchema schema, JObject map, List<(string name, Error)> errors)
         {
             foreach (var keys in schema.Either)
@@ -383,7 +397,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add((name, Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, dateString, schema.DateFormat)));
+                    errors.Add((name, Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, dateString)));
                 }
             }
         }
@@ -448,7 +462,7 @@ namespace Microsoft.Docs.Build
                 {
                     var fieldValue = fieldRawValue is JArray array ? (fieldIndex < array.Count ? array[fieldIndex] : null) : fieldRawValue;
 
-                    if (fieldValue == null)
+                    if (fieldValue == null || fieldValue.Type == JTokenType.Null)
                     {
                         return;
                     }
@@ -500,22 +514,16 @@ namespace Microsoft.Docs.Build
             return (name, 0);
         }
 
-        private Error GetAdditionalError(JsonSchema schema, string name, Error baseError)
+        private Error GetError(JsonSchema schema, string name, Error error)
         {
-            if (!string.IsNullOrEmpty(name) && schema.AdditionalErrors.TryGetValue(name, out var attributeAdditionalErrors) && attributeAdditionalErrors.TryGetValue(baseError.Code, out var additionalError))
+            if (!string.IsNullOrEmpty(name) &&
+                schema.CustomErrors.TryGetValue(name, out var attributeCustomErrors) &&
+                attributeCustomErrors.TryGetValue(error.Code, out var customError))
             {
-                return new Error(
-                    !additionalError.Severity.HasValue ? baseError.Level : additionalError.Severity.Value,
-                    string.IsNullOrEmpty(additionalError.Code) ? baseError.Code : additionalError.Code,
-                    string.IsNullOrEmpty(additionalError.Message) ? baseError.Message : $"{baseError.Message}{(baseError.Message.EndsWith('.') ? string.Empty : ".")} {additionalError.Message}",
-                    baseError.FilePath,
-                    baseError.Line,
-                    baseError.Column,
-                    baseError.EndLine,
-                    baseError.EndColumn);
+                return error.WithCustomError(customError);
             }
 
-            return baseError;
+            return error;
         }
 
         private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)
