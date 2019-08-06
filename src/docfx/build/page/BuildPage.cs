@@ -253,20 +253,23 @@ namespace Microsoft.Docs.Build
                 throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
-            // get metadata before transforming
-            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-            errors.AddRange(metadataErrors);
-            obj["metadata"] = inputMetadata.RawJObject;
-
             // validate via json schema
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
-            // transform via json schema
+            // transform metadata via json schema
+            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
+            errors.AddRange(metadataErrors);
+            errors.AddRange(metadataTransformedErrors);
+
+            // transform model via json schema
             var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
             errors.AddRange(schemaTransformError);
 
             var pageModel = (JObject)transformedToken;
+            pageModel["metadata"] = ((JObject)transformedMetadata)["metadata"];
+
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
