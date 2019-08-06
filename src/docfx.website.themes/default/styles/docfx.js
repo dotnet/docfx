@@ -144,14 +144,14 @@ $(function () {
     //Adjust the position of search box in navbar
     function renderSearchBox() {
       autoCollapse();
-      $(window).on('resize', autoCollapse);
       $(document).on('click', '.navbar-collapse.in', function (e) {
         if ($(e.target).is('a')) {
           $(this).collapse('hide');
         }
-      });
-
-      function autoCollapse() {
+      });      
+    }
+    
+    function autoCollapse() {
         var navbar = $('#autocollapse');
         if (navbar.height() === null) {
           setTimeout(autoCollapse, 300);
@@ -161,7 +161,6 @@ $(function () {
           navbar.addClass(collapsed);
         }
       }
-    }
 
     // Search factory
     function localSearch() {
@@ -1141,10 +1140,12 @@ $(function () {
         // scroll to the anchor if present, offset by the header
         scrollToCurrent();
     });
+    $(window).on('resize', autoCollapse);
 
     $(document).ready(function () {
         // Exclude tabbed content case
         $('a:not([data-tab])').click(function (e) { delegateAnchors(e); });
+        autoCollapse();
     });
   }
 });
