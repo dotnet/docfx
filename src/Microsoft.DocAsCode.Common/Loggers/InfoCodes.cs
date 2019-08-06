@@ -20,6 +20,10 @@ namespace Microsoft.DocAsCode.Common
             public const string NoAvailableGroupCache = "NoAvailableGroupCache";
             public const string ConfigChanged = "ConfigChanged";
             public const string ForceRebuild = "ForceRebuild";
+        }
+
+        public static class IncrementalBuildReason
+        {
             public const string TemplateChanged = "TemplateChanged";
         }
     }
