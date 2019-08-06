@@ -89,6 +89,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             HrefUpdated = true;
         }
 
+        [YamlIgnore]
+        [JsonIgnore]
         public bool IsEmbeddedRedirections => false;
 
         public IEnumerable<XRefMapRedirection> GetRedirections() =>
