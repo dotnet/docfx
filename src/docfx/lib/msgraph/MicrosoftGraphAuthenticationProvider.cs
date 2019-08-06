@@ -13,17 +13,20 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAuthenticationProvider : IAuthenticationProvider, IDisposable
     {
-        private static string resource = "https://graph.microsoft.com/.default";
-        private static string[] scopes = new string[] { resource };
+        private static readonly string[] scopes = { "https://graph.microsoft.com/.default" };
 
-        private readonly ConfidentialClientApplication cca;
-        private AuthenticationResult authenticationResult;
-        private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        private readonly IConfidentialClientApplication _cca;
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
+        private AuthenticationResult _authenticationResult;
 
         public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientSecret)
         {
-            var authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
-            this.cca = new ConfidentialClientApplication(clientId, authority, "http://www.microsoft.com", new ClientCredential(clientSecret), null, null);
+            _cca = ConfidentialClientApplicationBuilder.Create(clientId)
+                .WithClientSecret(clientSecret)
+                .WithAuthority(new Uri($"https://login.microsoftonline.com/{tenantId}/v2.0"))
+                .WithRedirectUri("http://www.microsoft.com")
+                .Build();
         }
 
         public async Task AuthenticateRequestAsync(HttpRequestMessage request)
@@ -34,23 +37,23 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            semaphore.Dispose();
+            _semaphore.Dispose();
         }
 
         private async Task<string> GetAccessTokenAsync()
         {
             try
             {
-                await semaphore.WaitAsync();
-                if (authenticationResult == null || authenticationResult.ExpiresOn.UtcDateTime < DateTime.UtcNow)
+                await _semaphore.WaitAsync();
+                if (_authenticationResult == null || _authenticationResult.ExpiresOn.UtcDateTime < DateTime.UtcNow.AddMinutes(-1))
                 {
-                    authenticationResult = await cca.AcquireTokenForClientAsync(scopes);
+                    _authenticationResult = await _cca.AcquireTokenForClient(scopes).ExecuteAsync();
                 }
-                return authenticationResult.AccessToken;
+                return _authenticationResult.AccessToken;
             }
             finally
             {
-                semaphore.Release();
+                _semaphore.Release();
             }
         }
     }
