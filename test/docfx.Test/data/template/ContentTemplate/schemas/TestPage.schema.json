@@ -20,6 +20,9 @@
       },
       "$schema": {
         "type": "string"
+      },
+      "metadata": {
+        "type": "object"
       }
     }
   }

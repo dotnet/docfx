@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 MetadataSchemas,
                 schema => new JsonSchemaValidator(schema, microsoftGraphCache));
 
-            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputMetadata))
+            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
                 .Concat(MetadataSchemas.SelectMany(schema => schema.Reserved))
                 .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))

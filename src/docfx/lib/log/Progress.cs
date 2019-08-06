@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
 
             public void Dispose()
             {
-                t_scope.Value = t_scope.Value.Pop(out var scope);
+                t_scope.Value = t_scope.Value.Pop(out _);
 
                 var elapsedMs = Stopwatch.ElapsedMilliseconds;
                 if (Log.Verbose || elapsedMs > ProgressDelayMs)

@@ -14,22 +14,7 @@ In general, DocFX uses standard HTTP request methods to access resources, so tha
 - `GET`: to fetch resource
 - `PUT`: to upload resource
 
-DocFX need to embed the credential information in the HTTP request. URL query and request header can be the right place.
-
-### URL query
-
-URL can embed the credential in itself query string. e.g.
-```
-https://contoso.com/path/file?sig={token}
-```
-
-It can be configured in `docfx.yml`:
-```yml
-referenceToAResource: "https://contoso.com/path/file"
-http:
-  https://contoso.com/path/file:
-    query: "?sig={token}"
-```
+DocFX need to embed the credential information in the HTTP request. Request header can be the right place.
 
 ### Request header
 

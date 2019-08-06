@@ -8,7 +8,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class OutputMetadata
+    public class SystemMetadata
     {
         public string Locale { get; set; }
 

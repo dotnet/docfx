@@ -98,21 +98,23 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var response = await HttpClientUtility.GetAsync(url, config, existingEtag);
-                if (response.StatusCode == HttpStatusCode.NotModified)
+                using (var response = await HttpClientUtility.GetAsync(url, config, existingEtag))
                 {
-                    return (null, existingEtag);
-                }
+                    if (response.StatusCode == HttpStatusCode.NotModified)
+                    {
+                        return (null, existingEtag);
+                    }
 
-                Directory.CreateDirectory(AppData.DownloadsRoot);
-                var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(AppData.DownloadsRoot);
+                    var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
 
-                using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
-                using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await stream.CopyToAsync(file);
+                    using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
+                    using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        await stream.CopyToAsync(file);
+                    }
+                    return (tempFile, response.Headers.ETag);
                 }
-                return (tempFile, response.Headers.ETag);
             }
             catch (Exception ex)
             {

@@ -31,16 +31,19 @@ namespace Microsoft.Docs.Build
                 context.Items["model"] = model;
             });
 
-            var body = new StreamReader(httpContext.Response.Body).ReadToEnd();
-            var statusCode = httpContext.Response.StatusCode;
-
-            if (statusCode != 200)
+            using (var reader = new StreamReader(httpContext.Response.Body))
             {
-                var message = $"Render '{template}' failed with status code {statusCode}:\n{body}";
-                throw new InvalidOperationException(message);
-            }
+                var body = reader.ReadToEnd();
+                var statusCode = httpContext.Response.StatusCode;
 
-            return body;
+                if (statusCode != 200)
+                {
+                    var message = $"Render '{template}' failed with status code {statusCode}:\n{body}";
+                    throw new InvalidOperationException(message);
+                }
+
+                return body;
+            }
         }
 
         private static TestServer StartServer()

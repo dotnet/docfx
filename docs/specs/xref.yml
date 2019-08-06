@@ -971,16 +971,17 @@ outputs:
 repos:
   https://docs.com/test#live:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          baseUrl: https://docs.com/base_path
         docs/a.md: |
           ---
           title: Title from yaml header a
           uid: a
           ---
 outputs:
-  docs/a.json:
+  base_path/docs/a.json:
   xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/docs/a"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}]}
 ---
 # resolve UID with unknown query
 repos:
@@ -998,3 +999,69 @@ outputs:
   docs/a.json:
   docs/b.json: |
     conceptual: <p>Link to <a href="a?displayname=xxx" data-linktype="relative-path">Title from yaml header a</a></p>
+---
+# respects content type when loading xref specs
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    children:
+      - uid: child1
+        xref: a
+      - uid: child2
+        xref: child1
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "children": {
+          "type": "array",
+          "items":{
+            "properties": {
+              "uid": {
+                "type": "string",
+                "contentType": "uid"
+              },
+              "xref": {
+                "type": "string",
+                "contentType": "xref"
+              }
+            } 
+          }
+        }
+      }
+    }
+outputs:
+  docs/a.json: |
+    {
+       "uid":"a",
+       "children":[
+          {
+             "uid":"child1",
+             "xref":null
+          },
+          {
+             "uid":"child2",
+             "xref":{
+                "uid":"child1",
+                "href":"a.json#child1"
+             }
+          }
+       ]
+    }
+  .errors.log: |
+    ["warning","xref-not-found","Cross reference not found: 'a'","docs/a.yml",5,11]
+  xrefmap.json: |
+    {
+       "references":[
+          {
+             "uid":"child1"
+          },
+          {
+             "uid":"child2"
+          }
+       ]
+    }
