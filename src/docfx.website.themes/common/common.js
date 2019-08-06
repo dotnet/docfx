@@ -90,9 +90,13 @@ var gitUrlPatternItems = {
     },
     'vso': {
         // HTTPS form: https://{account}@dev.azure.com/{account}/{project}/_git/{repo}
+        // HTTPS form: https://{user}.visualstudio.com/{org}/_git/{repo}
         // SSH form: git@ssh.dev.azure.com:v3/{account}/{project}/{repo}
+        // SSH form: ssh://{user}@{user}.visualstudio.com:22/{org}/_git/{repo}
         // generated URL under branch: https://{account}@dev.azure.com/{account}/{project}/_git/{repo}?version=GB{branch}
-        'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+\.)?dev\.azure\.com(\/|:).*/i,
+        // generated URL under branch: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GB{branch}
+        // generated URL under detached HEAD: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GC{commit}
+        'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+@)?(\S+\.)?(dev\.azure|visualstudio)\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
             var branchPrefix = /[0-9a-fA-F]{40}/.test(gitInfo.branch) ? 'GC' : 'GB';
