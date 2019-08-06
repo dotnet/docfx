@@ -43,9 +43,14 @@ namespace Microsoft.Docs.Build
                 switch (node)
                 {
                     case JObject obj:
-                        var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
 
-                        if (uid is null)
+                        if (!schema.Properties.TryGetValue("uid", out var uidSchema) || uidSchema.ContentType != JsonSchemaContentType.Uid)
+                        {
+                            TraverseObjectXref(obj);
+                            break;
+                        }
+
+                        if (!obj.TryGetValue<JValue>("uid", out var uidValue) || !(uidValue.Value is string uid))
                         {
                             TraverseObjectXref(obj);
                             break;
@@ -62,6 +67,7 @@ namespace Microsoft.Docs.Build
 
                         break;
                     case JArray array:
+
                         foreach (var item in array)
                         {
                             if (schema.Items.schema != null)
