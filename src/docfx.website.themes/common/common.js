@@ -88,30 +88,11 @@ var gitUrlPatternItems = {
             return url;
         }
     },
-    'devops': {
+    'vso': {
         // HTTPS form: https://{account}@dev.azure.com/{account}/{project}/_git/{repo}
         // SSH form: git@ssh.dev.azure.com:v3/{account}/{project}/{repo}
         // generated URL under branch: https://{account}@dev.azure.com/{account}/{project}/_git/{repo}?version=GB{branch}
         'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+\.)?dev\.azure\.com(\/|:).*/i,
-        'generateUrl': function (gitInfo) {
-            var url = normalizeGitUrlToHttps(gitInfo.repo);
-            var branchPrefix = /[0-9a-fA-F]{40}/.test(gitInfo.branch) ? 'GC' : 'GB';
-            url += '?path=' + gitInfo.path + '&version=' + branchPrefix + gitInfo.branch;
-            if (gitInfo.startLine && gitInfo.startLine > 0) {
-                url += '&line=' + gitInfo.startLine;
-            }
-            return url;
-        },
-        'generateNewFileUrl': function (gitInfo, uid) {
-            return '';
-        }
-    },
-    'vso': {
-        // HTTPS form: https://{user}.visualstudio.com/{org}/_git/{repo}
-        // SSH form: ssh://{user}@{user}.visualstudio.com:22/{org}/_git/{repo}
-        // generated URL under branch: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GB{branch}
-        // generated URL under detached HEAD: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GC{commit}
-        'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+\.)?visualstudio\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
             var branchPrefix = /[0-9a-fA-F]{40}/.test(gitInfo.branch) ? 'GC' : 'GB';
