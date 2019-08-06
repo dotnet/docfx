@@ -144,6 +144,7 @@ namespace Microsoft.Docs.Build
                 {
                     // transform array and object is not supported yet
                     case JArray array:
+
                         var newArray = new JArray();
                         foreach (var item in array)
                         {
@@ -155,6 +156,7 @@ namespace Microsoft.Docs.Build
                         return (errors, newArray);
 
                     case JObject obj:
+
                         var newObject = new JObject();
                         foreach (var (key, value) in obj)
                         {
@@ -172,6 +174,7 @@ namespace Microsoft.Docs.Build
                         return (errors, newObject);
 
                     case JValue value:
+
                         return TransformScalar(schema, file, context, value);
 
                     default:
@@ -194,12 +197,14 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
+
                     var (error, link, _) = context.DependencyResolver.ResolveRelativeLink(file, content, file);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;
 
                 case JsonSchemaContentType.Markdown:
+
                     var (markupErrors, html) = MarkdownUtility.ToHtml(
                         context,
                         content,
@@ -211,6 +216,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.InlineMarkdown:
+
                     var (inlineMarkupErrors, inlineHtml) = MarkdownUtility.ToHtml(
                         context,
                         content,
@@ -223,6 +229,7 @@ namespace Microsoft.Docs.Build
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
+
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
                         var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveRelativeLink(
