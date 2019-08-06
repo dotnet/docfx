@@ -338,8 +338,8 @@ namespace Microsoft.Docs.Build
                             }
                         }
                         return default;
-                    case TocHrefType.TocFile:
 
+                    case TocHrefType.TocFile:
                         var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(href, filePath, DependencyType.TocInclusion);
                         errors.AddIfNotNull(error);
 
@@ -350,6 +350,7 @@ namespace Microsoft.Docs.Build
                         }
 
                         return (referencedTocContent, referencedToc);
+
                     default:
                         return default;
                 }
