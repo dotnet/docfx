@@ -22,16 +22,20 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<Document, List<Document>> _tocReferences;
 
+        private readonly MonikerProvider _monikerProvider;
+
         public TableOfContentsMap(
             List<Document> tocs,
             List<Document> experimentalTocs,
             Dictionary<Document, HashSet<Document>> documentToTocs,
-            Dictionary<Document, List<Document>> tocReferences)
+            Dictionary<Document, List<Document>> tocReferences,
+            MonikerProvider monikerProvider = null)
         {
             _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
             _experimentalTocs = new HashSet<Document>(experimentalTocs ?? throw new ArgumentNullException(nameof(experimentalTocs)));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
             _tocReferences = tocReferences ?? throw new ArgumentNullException(nameof(tocReferences));
+            _monikerProvider = monikerProvider;
         }
 
         public bool TryGetTocReferences(Document toc, out List<Document> tocs)
@@ -77,7 +81,7 @@ namespace Microsoft.Docs.Build
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
-                return CompareTocCandidate(minCandidate, nextCandidate) <= 0 ? minCandidate : nextCandidate;
+                return CompareTocCandidate(minCandidate, nextCandidate, file) <= 0 ? minCandidate : nextCandidate;
             })?.Toc;
         }
 
@@ -89,12 +93,12 @@ namespace Microsoft.Docs.Build
                 var tocFiles = context.BuildScope.Files.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
-                    return builder.Build();
+                    return builder.Build(context.MonikerProvider);
                 }
 
                 ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), Progress.Update);
 
-                return builder.Build();
+                return builder.Build(context.MonikerProvider);
             }
 
             void BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
@@ -120,7 +124,7 @@ namespace Microsoft.Docs.Build
             GetRelativeDirectoryInfo(Document file, Document toc)
         {
             var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.FilePath.Path, toc.FilePath.Path)));
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.SitePath, toc.SitePath)));
             if (string.IsNullOrEmpty(relativePath))
             {
                 return default;
@@ -164,25 +168,25 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Compare two toc candidate relative to target file.
         /// Return negative if x is closer than y, possitive if x is farer than y, 0 if x equals y.
-        /// 1. sub nearest
-        /// 2. parent nearest
-        /// 4. sub-name lexicographical nearest
+        /// 1. sub nearest(based on site path)
+        /// 2. parent nearest(based on site path)
+        /// 3. moniker intersection
+        /// 4. file path
         /// </summary>
-        private static int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
+        private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY, Document file)
         {
-            var subDirCompareResult = candidateX.SubDirectoryCount - candidateY.SubDirectoryCount;
-            if (subDirCompareResult != 0)
+            var result = candidateX.SubDirectoryCount - candidateY.SubDirectoryCount;
+            if (result == 0)
+                result = candidateX.ParentDirectoryCount - candidateY.ParentDirectoryCount;
+            if (result == 0 && _monikerProvider != null)
             {
-                return subDirCompareResult;
+                var fileMonikers = _monikerProvider.GetFileLevelMonikers(file).monikers;
+                result = _monikerProvider.GetFileLevelMonikers(candidateY.Toc).monikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).Count() -
+                         _monikerProvider.GetFileLevelMonikers(candidateX.Toc).monikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).Count();
             }
-
-            var parentDirCompareResult = candidateX.ParentDirectoryCount - candidateY.ParentDirectoryCount;
-            if (parentDirCompareResult != 0)
-            {
-                return parentDirCompareResult;
-            }
-
-            return candidateX.Toc.CompareTo(candidateY.Toc);
+            if (result == 0)
+                result = candidateX.Toc.CompareTo(candidateY.Toc);
+            return result;
         }
     }
 }

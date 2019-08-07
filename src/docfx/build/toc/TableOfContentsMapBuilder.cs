@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         /// Build toc map including all tocs and reversed toc mapping(document -> toc)
         /// </summary>
         /// <returns>The toc map</returns>
-        public TableOfContentsMap Build()
+        public TableOfContentsMap Build(MonikerProvider monikerProvider = null)
         {
             var documentToTocs = new Dictionary<Document, HashSet<Document>>();
 
@@ -75,7 +75,8 @@ namespace Microsoft.Docs.Build
                 allTocs,
                 experimentalTocs,
                 documentToTocs,
-                tocReferences.ToDictionary(k => k.Key, v => v.Value.tocs));
+                tocReferences.ToDictionary(k => k.Key, v => v.Value.tocs),
+                monikerProvider);
         }
     }
 }
