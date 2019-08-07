@@ -1,21 +1,19 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// A docset is a collection of documents in the folder identified by `docfx.yml/docfx.json`.
     /// </summary>
-    internal class Docset
+    internal class Docset : IEquatable<Docset>, IComparable<Docset>
     {
         /// <summary>
         /// Gets the absolute path to folder containing `docfx.yml/docfx.json`, it is not necessarily the path to git repository.
@@ -43,16 +41,6 @@ namespace Microsoft.Docs.Build
         public bool Legacy => _options.Legacy;
 
         /// <summary>
-        /// Gets the localization docset, it will be set when the current build locale is different with default locale
-        /// </summary>
-        public Docset LocalizationDocset { get; private set; }
-
-        /// <summary>
-        /// Gets the fallback docset, usually is English docset. It will be set when the current docset is localization docset.
-        /// </summary>
-        public Docset FallbackDocset { get; private set; }
-
-        /// <summary>
         /// Gets the reversed <see cref="Config.Routes"/> for faster lookup.
         /// </summary>
         public IReadOnlyDictionary<string, string> Routes { get; }
@@ -61,21 +49,6 @@ namespace Microsoft.Docs.Build
         /// Gets the root repository of docset
         /// </summary>
         public Repository Repository { get; }
-
-        /// <summary>
-        /// Gets the dependency repos/files locked version
-        /// </summary>
-        public DependencyLockModel DependencyLock { get; }
-
-        /// <summary>
-        /// Gets the dependency git repository mappings
-        /// </summary>
-        public RestoreGitMap RestoreGitMap { get; }
-
-        /// <summary>
-        /// Gets the dependency file mappings
-        /// </summary>
-        public RestoreFileMap RestoreFileMap { get; }
 
         /// <summary>
         /// Gets the site base path
@@ -104,63 +77,22 @@ namespace Microsoft.Docs.Build
             Config config,
             CommandLineOptions options,
             RestoreGitMap restoreGitMap,
-            Repository repository = null,
-            Repository fallbackRepo = default,
-            Docset localizedDocset = null,
-            Docset fallbackDocset = null,
-            bool isDependency = false)
-            : this(errorLog, docsetPath, !string.IsNullOrEmpty(locale) ? locale : config.Localization.DefaultLocale, config, options, restoreGitMap, repository, fallbackDocset, localizedDocset)
+            Repository repository = null)
         {
-            Debug.Assert(restoreGitMap != null);
-
-            if (!isDependency && !string.Equals(Locale, Config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
-            {
-                // localization/fallback docset will share the same context, config, build locale and options with source docset
-                // source docset configuration will be overwritten by build locale overwrite configuration
-                if (fallbackRepo != default)
-                {
-                    FallbackDocset = new Docset(_errorLog, fallbackRepo.Path, Locale, Config, _options, RestoreGitMap, fallbackRepo, localizedDocset: this, isDependency: true);
-                }
-                else if (LocalizationUtility.TryGetLocalizedDocsetPath(this, restoreGitMap, Config, Locale, out var localizationDocsetPath, out var localizationBranch))
-                {
-                    var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    LocalizationDocset = new Docset(_errorLog, localizationDocsetPath, Locale, Config, _options, RestoreGitMap, repo, fallbackDocset: this, isDependency: true);
-                }
-            }
-        }
-
-        private Docset(
-            ErrorLog errorLog,
-            string docsetPath,
-            string locale,
-            Config config,
-            CommandLineOptions options,
-            RestoreGitMap restoreGitMap,
-            Repository repository = null,
-            Docset fallbackDocset = null,
-            Docset localizedDocset = null)
-        {
-            Debug.Assert(fallbackDocset is null || localizedDocset is null);
-
             _options = options;
             _errorLog = errorLog;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
-            Locale = locale.ToLowerInvariant();
+            Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
             Routes = NormalizeRoutes(config.Routes);
-            Culture = CreateCultureInfo(locale);
-            LocalizationDocset = localizedDocset;
-            FallbackDocset = fallbackDocset;
+            Culture = CreateCultureInfo(Locale);
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
 
-            RestoreGitMap = restoreGitMap;
-            RestoreFileMap = new RestoreFileMap(this);
-
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, RestoreGitMap, _options);
+                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, restoreGitMap, _options);
                 _errorLog.Write(errors);
                 return dependencies;
             });
@@ -216,21 +148,21 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreMap, CommandLineOptions options)
+            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreGitMap, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                var (dir, subRestoreMap) = restoreMap.GetGitRestorePath(remote, branch, docsetPath);
+                var (dir, subRestoreMap) = restoreGitMap.GetGitRestorePath(remote, branch, docsetPath);
 
                 // get dependent docset config or default config
                 // todo: what parent config should be pass on its children
                 var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
                 errors.AddRange(loadErrors);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap, isDependency: true));
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap));
             }
             return (errors, result);
         }
@@ -249,6 +181,41 @@ namespace Microsoft.Docs.Build
                 hostName = $"{uriResult.Scheme}://{uriResult.Host}";
             }
             return (hostName, siteBasePath);
+        }
+
+        public int CompareTo(Docset other)
+        {
+            return PathUtility.PathComparer.Compare(DocsetPath, other.DocsetPath);
+        }
+
+        public override int GetHashCode()
+        {
+            return PathUtility.PathComparer.GetHashCode(DocsetPath);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Docset);
+        }
+
+        public bool Equals(Docset other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return PathUtility.PathComparer.Equals(DocsetPath, other.DocsetPath);
+        }
+
+        public static bool operator ==(Docset obj1, Docset obj2)
+        {
+            return Equals(obj1, obj2);
+        }
+
+        public static bool operator !=(Docset obj1, Docset obj2)
+        {
+            return !Equals(obj1, obj2);
         }
     }
 }

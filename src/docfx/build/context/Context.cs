@@ -35,20 +35,22 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<XrefMap> _xrefMap;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Func<Context, Document, Task> buildFile)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, Func<Context, Document, Task> buildFile)
         {
-            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset));
+            var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
+
+            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset, restoreFileMap));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
 
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
-            TemplateEngine = TemplateEngine.Create(docset);
-            BuildScope = new BuildScope(errorLog, docset, TemplateEngine);
+            TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
+            BuildScope = new BuildScope(errorLog, docset, fallbackDocset, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache);
-            MonikerProvider = new MonikerProvider(docset, MetadataProvider);
+            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache, restoreFileMap);
+            MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
