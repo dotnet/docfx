@@ -163,16 +163,18 @@ description: Learn how to develop ASP.NET and ASP.NET web applications. Get docu
 ``````yml
 inputs:
   docfx.yml:
-  _themes/ContentTemplate/schemas/TestData.schema.json: |
+  _themes/ContentTemplate/TestPage.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
         "properties": {
-            "summary": { "contentType": "markdown" }
+            "summary": { "contentType": "markdown" },
+            "uid": { "contentType": "uid" }
         },
         "xrefProperties": ["summary"]
     }
   a.json: |
     {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestPage.json",
       "uid": "a",
       "summary": "Hello `docfx`!"
     }
