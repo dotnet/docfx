@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _fileNames;
         private readonly Func<string, bool> _glob;
         private readonly TemplateEngine _templateEngine;
+        private readonly Docset _fallbackDocset;
+        private readonly Docset _docset;
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -25,17 +27,19 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Docset docset, TemplateEngine templateEngine)
+        public BuildScope(ErrorLog errorLog, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
+            _docset = docset;
+            _fallbackDocset = fallbackDocset;
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
 
             var (fileNames, files) = GetFiles(docset, _glob);
 
-            var fallbackFiles = docset.FallbackDocset != null
-                ? GetFiles(docset.FallbackDocset, CreateGlob(docset.FallbackDocset.Config)).files
+            var fallbackFiles = fallbackDocset != null
+                ? GetFiles(fallbackDocset, CreateGlob(fallbackDocset.Config)).files
                 : Enumerable.Empty<Document>();
 
             _fileNames = fileNames;
@@ -50,6 +54,34 @@ namespace Microsoft.Docs.Build
         public bool GetActualFileName(string fileName, out string actualFileName)
         {
             return _fileNames.TryGetValue(fileName, out actualFileName);
+        }
+
+        public Docset GetFallbackDocset(Docset docset)
+            => docset == _docset || docset == _fallbackDocset ? _fallbackDocset : null;
+
+        public bool TryResolveDocset(Docset docset, string file, out (Docset resolvedDocset, FileOrigin fileOrigin) resolved)
+        {
+            docset = docset == _fallbackDocset ? _docset : docset;
+            var fallbackDocset = GetFallbackDocset(docset);
+            resolved = default;
+
+            // resolve from current docset
+            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
+            {
+                resolved.resolvedDocset = docset;
+                resolved.fileOrigin = FileOrigin.Current;
+                return true;
+            }
+
+            // resolve from fallback docset
+            if (fallbackDocset != null && File.Exists(Path.Combine(fallbackDocset.DocsetPath, file)))
+            {
+                resolved.resolvedDocset = fallbackDocset;
+                resolved.fileOrigin = FileOrigin.Fallback;
+                return true;
+            }
+
+            return false;
         }
 
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(Docset docset, Func<string, bool> glob)
@@ -67,13 +99,16 @@ namespace Microsoft.Docs.Build
                 {
                     if (glob(file))
                     {
-                        files.Add(Document.CreateFromFile(docset, file, _templateEngine));
+                        files.Add(Document.Create(docset, file, _templateEngine, GetOrigin(docset)));
                     }
                 });
 
                 return (fileNames, files.ToList());
             }
         }
+
+        private FileOrigin GetOrigin(Docset docset)
+            => docset == _fallbackDocset ? FileOrigin.Fallback : FileOrigin.Current;
 
         private static Func<string, bool> CreateGlob(Config config)
         {

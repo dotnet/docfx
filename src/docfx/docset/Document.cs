@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private Document(
             Docset docset,
-            string filePath,
+            FilePath filePath,
             string sitePath,
             string siteUrl,
             string canonicalUrlWithoutLocale,
@@ -123,11 +123,11 @@ namespace Microsoft.Docs.Build
             bool isFromHistory = false,
             bool isPage = true)
         {
-            Debug.Assert(!Path.IsPathRooted(filePath));
+            Debug.Assert(!Path.IsPathRooted(filePath.Path));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
 
             Docset = docset;
-            FilePath = CreateFilePath(filePath, docset);
+            FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
             CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;
@@ -239,19 +239,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
+        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, FileOrigin origin = FileOrigin.Current, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
-            var filePath = PathUtility.NormalizeFile(path);
-            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath, PathUtility.PathComparer);
-            var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(docset, filePath, Path.Combine(docset.DocsetPath, filePath)) : default;
+            var filePath = new FilePath(PathUtility.NormalizeFile(path), origin);
+            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath.Path, PathUtility.PathComparer);
+            var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath.Path);
+            var mime = type == ContentType.Page ? ReadMimeFromFile(docset.DocsetPath, filePath) : default;
             var isPage = templateEngine.IsPage(mime);
-            var isExperimental = Path.GetFileNameWithoutExtension(filePath).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(filePath, docset.Routes, docset.SiteBasePath);
+            var isExperimental = Path.GetFileNameWithoutExtension(filePath.Path).EndsWith(".experimental", PathUtility.PathComparison);
+            var routedFilePath = ApplyRoutes(filePath.Path, docset.Routes, docset.SiteBasePath);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
@@ -279,7 +279,7 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, BuildScope buildScope)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
@@ -287,9 +287,14 @@ namespace Microsoft.Docs.Build
 
             pathToDocset = PathUtility.NormalizeFile(pathToDocset);
 
-            if (TryResolveDocset(docset, pathToDocset, out var resolvedDocset))
+            if (buildScope != null && buildScope.TryResolveDocset(docset, pathToDocset, out var resolved))
             {
-                return Create(resolvedDocset, pathToDocset, templateEngine);
+                return Create(resolved.resolvedDocset, pathToDocset, templateEngine, resolved.fileOrigin);
+            }
+
+            if (File.Exists(Path.Combine(docset.DocsetPath, pathToDocset)))
+            {
+                return Create(docset, pathToDocset, templateEngine, FileOrigin.Current);
             }
 
             // resolve from dependent docsets
@@ -303,7 +308,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine);
+                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, buildScope: null);
                 if (dependencyFile != null)
                 {
                     return dependencyFile;
@@ -491,62 +496,33 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
-        private static bool TryResolveDocset(Docset docset, string file, out Docset resolvedDocset)
-        {
-            // resolve from localization docset
-            if (docset.LocalizationDocset != null && File.Exists(Path.Combine(docset.LocalizationDocset.DocsetPath, file)))
-            {
-                resolvedDocset = docset.LocalizationDocset;
-                return true;
-            }
-
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
-            {
-                resolvedDocset = docset;
-                return true;
-            }
-
-            // resolve from fallback docset
-            if (docset.FallbackDocset != null && File.Exists(Path.Combine(docset.FallbackDocset.DocsetPath, file)))
-            {
-                resolvedDocset = docset.FallbackDocset;
-                return true;
-            }
-
-            resolvedDocset = null;
-            return false;
-        }
-
-        private static SourceInfo<string> ReadMimeFromFile(Docset docset, string pathToDocset, string filePath)
+        private static SourceInfo<string> ReadMimeFromFile(string docsetPath, FilePath filePath)
         {
             SourceInfo<string> mime = default;
 
-            if (filePath.EndsWith(".json", PathUtility.PathComparison))
+            var fullPath = Path.Combine(docsetPath, filePath.Path);
+            if (fullPath.EndsWith(".json", PathUtility.PathComparison))
             {
-                if (File.Exists(filePath))
+                if (File.Exists(fullPath))
                 {
-                    using (var reader = new StreamReader(filePath))
+                    using (var reader = new StreamReader(fullPath))
                     {
-                        mime = JsonUtility.ReadMime(reader, CreateFilePath(pathToDocset, docset));
+                        mime = JsonUtility.ReadMime(reader, filePath);
                     }
                 }
             }
-            else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
+            else if (fullPath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                if (File.Exists(filePath))
+                if (File.Exists(fullPath))
                 {
-                    using (var reader = new StreamReader(filePath))
+                    using (var reader = new StreamReader(fullPath))
                     {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(CreateFilePath(pathToDocset, docset), 1, 1));
+                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
                     }
                 }
             }
 
             return mime;
         }
-
-        private static FilePath CreateFilePath(string path, Docset docset)
-            => new FilePath(path, docset != null && docset.IsFallback() ? FileOrigin.Fallback : FileOrigin.Current);
     }
 }

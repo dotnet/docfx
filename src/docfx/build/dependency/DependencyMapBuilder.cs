@@ -24,8 +24,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var isLocalizedBuild = from.Docset.IsLocalizedBuild() || to.Docset.IsLocalizedBuild();
-            if (isLocalizedBuild && !from.Docset.IsLocalized())
+            if (from.FilePath.Origin == FileOrigin.Fallback)
             {
                 return;
             }

@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
 
             if (file is null)
             {
-                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
+                var (content, fileFromHistory) = TryResolveContentFromHistory(declaringFile, _gitCommitProvider, pathToDocset, _templateEngine);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                file = TryResolveResourceFromHistory(_gitCommitProvider, declaringFile.Docset, pathToDocset, _templateEngine);
+                file = TryResolveResourceFromHistory(declaringFile, _gitCommitProvider, pathToDocset, _templateEngine);
                 if (file is null)
                 {
                     return (error, href, fragment, linkType, null, false);
@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
+                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope);
 
                     // for LandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine);
+                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope);
                         }
 
                         // Do not report error for landing page
@@ -301,7 +301,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private static Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        private Document TryResolveResourceFromHistory(Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -309,20 +309,20 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
-            var fallbackDocset = GetFallbackDocset(docset);
+            var fallbackDocset = _buildScope.GetFallbackDocset(declaringFile.Docset);
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
             {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
+                var (repo, _, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
-                    return Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true);
+                    return Document.Create(fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true);
                 }
             }
 
             return default;
         }
 
-        private static (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine)
+        private (string content, Document file) TryResolveContentFromHistory(Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
-            var fallbackDocset = GetFallbackDocset(docset);
+            var fallbackDocset = _buildScope.GetFallbackDocset(declaringFile.Docset);
             if (fallbackDocset != null)
             {
                 var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
@@ -342,31 +342,13 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            return (content, Document.Create(fallbackDocset, pathToDocset, templateEngine, isFromHistory: true));
+                            return (content, Document.Create(fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true));
                         }
                     }
                 }
             }
 
             return default;
-        }
-
-        private static Docset GetFallbackDocset(Docset docset)
-        {
-            if (docset.LocalizationDocset != null)
-            {
-                // source docset in loc build
-                return docset;
-            }
-
-            if (docset.FallbackDocset != null)
-            {
-                // localized docset in loc build
-                return docset.FallbackDocset;
-            }
-
-            // source docset in source build
-            return null;
         }
 
         private static Dictionary<string, string> LoadResolveAlias(Config config)

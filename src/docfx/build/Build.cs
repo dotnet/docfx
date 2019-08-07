@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -21,30 +21,45 @@ namespace Microsoft.Docs.Build
             using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
             {
                 var (fallbackRepo, fallbackRestoreGitMap) = GetFallbackRepository(docsetPath, repository, restoreGitMap);
-                await Run(docsetPath, repository, locale, options, errorLog, fallbackRestoreGitMap ?? restoreGitMap, fallbackRepo);
+
+                var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
+                errorLog.Configure(config);
+
+                // just return if config loading has errors
+                if (errorLog.Write(configErrors))
+                    return;
+
+                var gitMap = fallbackRestoreGitMap ?? restoreGitMap;
+                var (docset, fallbackDocset) = GetDocsetWithFallback();
+                var outputPath = Path.Combine(docsetPath, config.Output.Path);
+
+                await Run(docset, fallbackDocset, gitMap, options, errorLog, outputPath);
+
+                (Docset docset, Docset fallbackDocset) GetDocsetWithFallback()
+                {
+                    var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
+                    if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+                    {
+                        if (fallbackRepo != null)
+                        {
+                            return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
+                        }
+
+                        if (LocalizationUtility.TryGetLocalizedDocsetPath(currentDocset, gitMap, config, currentDocset.Locale, out var localizationDocsetPath, out var localizationBranch))
+                        {
+                            var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                            return (new Docset(errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
+                        }
+                    }
+
+                    return (currentDocset, default);
+                }
             }
         }
 
-        private static async Task Run(
-            string docsetPath,
-            Repository repository,
-            string locale,
-            CommandLineOptions options,
-            ErrorLog errorLog,
-            RestoreGitMap restoreMap,
-            Repository fallbackRepo = null)
+        private static async Task Run(Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, CommandLineOptions options, ErrorLog errorLog, string outputPath)
         {
-            var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
-            errorLog.Configure(config);
-
-            // just return if config loading has errors
-            if (errorLog.Write(configErrors))
-                return;
-
-            var docset = GetBuildDocset(new Docset(errorLog, docsetPath, locale, config, options, restoreMap, repository, fallbackRepo));
-            var outputPath = Path.Combine(docsetPath, config.Output.Path);
-
-            using (var context = new Context(outputPath, errorLog, docset, BuildFile))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap, BuildFile))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -65,7 +80,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Legacy)
                 {
-                    if (config.Output.Json)
+                    if (docset.Config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
                         Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
@@ -139,10 +154,10 @@ namespace Microsoft.Docs.Build
                     }
 
                     // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return !file.Docset.IsFallback() || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => !toc.Docset.IsFallback()));
+                    return file.FilePath.Origin != FileOrigin.Fallback || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
                 }
 
-                return !file.Docset.IsFallback();
+                return file.FilePath.Origin != FileOrigin.Fallback;
             }
         }
 
@@ -203,13 +218,6 @@ namespace Microsoft.Docs.Build
             }
 
             return ConfigLoader.Load(fallbackRepo.Path, options, locale);
-        }
-
-        private static Docset GetBuildDocset(Docset sourceDocset)
-        {
-            Debug.Assert(sourceDocset != null);
-
-            return sourceDocset.LocalizationDocset ?? sourceDocset;
         }
     }
 }

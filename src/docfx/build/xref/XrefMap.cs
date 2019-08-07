@@ -17,10 +17,10 @@ namespace Microsoft.Docs.Build
 
         private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
 
-        public XrefMap(Context context, Docset docset)
+        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap)
         {
             _internalXrefMap = InternalXrefMapBuilder.Build(context);
-            _externalXrefMap = ExternalXrefMapLoader.Load(docset);
+            _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
         }
 
         public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo)
