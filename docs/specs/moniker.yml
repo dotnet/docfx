@@ -320,6 +320,9 @@ inputs:
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
+  docs/v1/toc.yml: |
+    - name: A
+      href: a.md
   monikerDefinition.json: |
     {
       "monikers": [
@@ -331,6 +334,7 @@ inputs:
     }
 outputs:
   docs/v1/a.json:
+  docs/v1/toc.json:
   .errors.log: |
     ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
 ---

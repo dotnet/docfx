@@ -577,8 +577,8 @@ namespace Microsoft.Docs.Build
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerConfigMissing()
-            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.");
+        public static Error MonikerConfigMissing(Document file)
+            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", file.FilePath);
 
         /// <summary>
         /// Config's monikerRange and monikerRange defined in yaml header has no intersection,
