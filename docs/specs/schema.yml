@@ -364,7 +364,7 @@ outputs:
   a.json: |
     {"prop": "value"}
 ---
-# Data-transform's input should have both system and user metadata
+# Data-model output should only contains input(or transformed input)
 inputs:
   docfx.yml: |
     globalMetadata:
@@ -383,13 +383,14 @@ outputs:
     {
       "prop": "value",
       "metadata": {
-        "globalMta": "global",
-        "fileMta": "file",
         "userMta": "user",
-        "locale": "en-us",
-        "document_id": "*"
+        "!globalMta": null,
+        "!fileMta": null,
+        "!locale": null
       }
     }
+  .publish.json: |
+    {"files":[{"path":"a.json", "locale":"en-us"}]}
 ---
 # Throw error when content is not an object
 inputs:
@@ -511,6 +512,10 @@ inputs:
           }
         }
       }
+    }
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
     }
 outputs:
   a.json: |
