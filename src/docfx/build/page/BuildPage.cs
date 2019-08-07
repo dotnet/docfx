@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
             var (output, metadata) = file.IsPage
                 ? CreatePageOutput(context, file, sourceModel, JsonUtility.ToJObject(systemMetadata))
-                : CreateDataOutput(context, file, sourceModel, JsonUtility.ToJObject(systemMetadata));
+                : CreateDataOutput(context, file, sourceModel);
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
@@ -88,7 +88,8 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                (outputModel, outputMetadata) = CreateSdpOutput(sourceModel, systemMetadata);
+                JsonUtility.Merge(outputMetadata, sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(), systemMetadata);
+                JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
@@ -110,22 +111,9 @@ namespace Microsoft.Docs.Build
         }
 
         private static (object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel, JObject systemMetadata)
+            CreateDataOutput(Context context, Document file, JObject sourceModel)
         {
-            var (outputModel, _) = CreateSdpOutput(sourceModel, systemMetadata);
-            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", outputModel), null);
-        }
-
-        private static (JObject model, JObject metadata) CreateSdpOutput(JObject sourceModel, JObject systemMetadata)
-        {
-            var metadata = new JObject();
-            var model = new JObject();
-
-            metadata = sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject();
-            JsonUtility.Merge(metadata, systemMetadata);
-            JsonUtility.Merge(model, sourceModel, new JObject { ["metadata"] = metadata });
-
-            return (model, metadata);
+            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
         private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file)
@@ -257,18 +245,20 @@ namespace Microsoft.Docs.Build
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
-            // transform metadata via json schema
-            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-            var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
-            errors.AddRange(metadataErrors);
-            errors.AddRange(metadataTransformedErrors);
-
             // transform model via json schema
             var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
             errors.AddRange(schemaTransformError);
-
             var pageModel = (JObject)transformedToken;
-            pageModel["metadata"] = ((JObject)transformedMetadata)["metadata"];
+
+            if (file.IsPage)
+            {
+                // transform metadata via json schema
+                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+                var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
+                errors.AddRange(metadataErrors);
+                errors.AddRange(metadataTransformedErrors);
+                pageModel["metadata"] = ((JObject)transformedMetadata)["metadata"];
+            }
 
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
