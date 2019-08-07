@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -18,9 +19,6 @@ namespace Microsoft.Docs.Build
 
             var errors = new List<Error>();
 
-            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file);
-            errors.AddRange(systemMetadataErrors);
-
             var (loadErrors, sourceModel) = await Load(context, file);
             errors.AddRange(loadErrors);
 
@@ -29,9 +27,10 @@ namespace Microsoft.Docs.Build
 
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
-            var (output, metadata) = file.IsPage
-                ? CreatePageOutput(context, file, sourceModel, JsonUtility.ToJObject(systemMetadata))
+            var (outputErrors, output, metadata) = file.IsPage
+                ? await CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
+            errors.AddRange(outputErrors);
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
@@ -71,58 +70,61 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (object output, JObject metadata) CreatePageOutput(
+        private static async Task<(List<Error> errors, object output, JObject metadata)> CreatePageOutput(
             Context context,
             Document file,
-            JObject sourceModel,
-            JObject systemMetadata)
+            JObject sourceModel)
         {
+            var errors = new List<Error>();
             var outputMetadata = new JObject();
             var outputModel = new JObject();
+
+            var (inputMetadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(inputMetadataErrors);
+            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, inputMetadata);
+            errors.AddRange(systemMetadataErrors);
+            var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
+
             if (string.IsNullOrEmpty(file.Mime))
             {
                 // conceptual raw metadata and raw model
-                var inputMetadata = context.MetadataProvider.GetMetadata(file).metadata.RawJObject;
-                JsonUtility.Merge(outputMetadata, inputMetadata, systemMetadata);
-                JsonUtility.Merge(outputModel, inputMetadata, sourceModel, systemMetadata);
+                JsonUtility.Merge(outputMetadata, inputMetadata.RawJObject, systemMetadataJObject);
+                JsonUtility.Merge(outputModel, inputMetadata.RawJObject, sourceModel, systemMetadataJObject);
             }
             else
             {
-                JsonUtility.Merge(outputMetadata, sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(), systemMetadata);
+                JsonUtility.Merge(outputMetadata, sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(), systemMetadataJObject);
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (outputModel, SortProperties(outputMetadata));
+                return (errors, outputModel, SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(outputModel), file);
             if (file.Docset.Config.Output.Json)
             {
-                return (templateModel, SortProperties(templateMetadata));
+                return (errors, templateModel, SortProperties(templateMetadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (html, SortProperties(templateMetadata));
+            return (errors, html, SortProperties(templateMetadata));
 
             JObject SortProperties(JObject obj)
                 => new JObject(obj.Properties().OrderBy(p => p.Name));
         }
 
-        private static (object output, JObject metadata)
+        private static (List<Error> errors, object output, JObject metadata)
             CreateDataOutput(Context context, Document file, JObject sourceModel)
         {
-            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
+            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file)
+        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file, InputMetadata inputMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
-
-            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-            errors.AddRange(inputMetaErrors);
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
