@@ -170,8 +170,9 @@ namespace Microsoft.Docs.Build
         /// Return negative if x is closer than y, possitive if x is farer than y, 0 if x equals y.
         /// 1. sub nearest(based on site path)
         /// 2. parent nearest(based on site path)
-        /// 3. moniker intersection
-        /// 4. file path
+        /// 3. site path
+        /// 4. moniker intersection
+        /// 5. file path
         /// </summary>
         private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY, Document file)
         {
@@ -179,13 +180,15 @@ namespace Microsoft.Docs.Build
             if (result == 0)
                 result = candidateX.ParentDirectoryCount - candidateY.ParentDirectoryCount;
             if (result == 0)
-                result = candidateX.Toc.CompareTo(candidateY.Toc);
+                result = string.Compare(candidateX.Toc.SitePath, candidateY.Toc.SitePath, PathUtility.PathComparison);
             if (result == 0 && _monikerProvider != null)
             {
                 var fileMonikers = _monikerProvider.GetFileLevelMonikers(file).monikers;
                 result = _monikerProvider.GetFileLevelMonikers(candidateY.Toc).monikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).Count() -
                          _monikerProvider.GetFileLevelMonikers(candidateX.Toc).monikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).Count();
             }
+            if (result == 0)
+                result = candidateX.Toc.FilePath.CompareTo(candidateY.Toc.FilePath);
             return result;
         }
     }

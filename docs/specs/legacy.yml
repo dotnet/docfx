@@ -402,6 +402,7 @@ inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
     monikerRange:
+      'docs/**': 'netcore-2.0'
       'docs/v1/**': 'netcore-1.0'
       'docs/v2/**': 'netcore-2.0'
     baseUrl: https://docs.com/docs
@@ -410,10 +411,13 @@ inputs:
       docs/v1/: .
       docs/v2/: .
     monikerDefinition: monikerDefinition.json
-  docs/v1/TOC.md:
+  docs/v1/TOC.md: |
+    # [link](../c.md)
   docs/v1/f1/a.md:
-  docs/v2/TOC.md:
+  docs/v2/TOC.md: |
+    # [link](../c.md)
   docs/v2/f1/a.md:
+  docs/c.md:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -432,11 +436,17 @@ outputs:
   docs/4667fedf/f1/a.mta.json:
   docs/4667fedf/f1/a.raw.page.json: |
     {"rawMetadata":{"_tocRel": "../toc.json"}}
+  docs/4667fedf/c.mta.json:
+  docs/4667fedf/c.raw.page.json: |
+    {"rawMetadata":{"_tocRel": "toc.json"}}
   docs/.manifest.json:
   docs/filemap.json:
   full-dependent-list.txt: |
     {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
     {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
+    {"dependency_type":"metadata","from_file_path":"*docs\\c.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
+    {"dependency_type":"file","from_file_path":"*docs\\v1\\TOC.md*","to_file_path":"*docs\\c.md*","version":"netcore-1.0"}
+    {"dependency_type":"file","from_file_path":"*docs\\v2\\TOC.md*","to_file_path":"*docs\\c.md*","version":"netcore-2.0"}
 ---
 # legacy errors from source repo [repo mapping]
 commands:
