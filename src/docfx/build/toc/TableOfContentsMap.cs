@@ -147,8 +147,6 @@ namespace Microsoft.Docs.Build
 
         private sealed class TocCandidate
         {
-            private Document _referencedFile;
-
             private Lazy<(int subDirectoryCount, int parentDirectoryCount)> _fileDirInfo;
 
             public (int subCount, int parentCount) SiteDirInfo { get; }
@@ -161,8 +159,7 @@ namespace Microsoft.Docs.Build
             {
                 SiteDirInfo = siteDirInfo;
                 Toc = toc;
-                _referencedFile = referencedFile;
-                _fileDirInfo = new Lazy<(int, int)>(() => GetRelativeDirectoryInfo(_referencedFile.FilePath.Path, Toc.FilePath.Path));
+                _fileDirInfo = new Lazy<(int, int)>(() => GetRelativeDirectoryInfo(referencedFile.FilePath.Path, Toc.FilePath.Path));
             }
         }
 
