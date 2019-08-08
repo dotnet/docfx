@@ -1,7 +1,5 @@
 # Build with --legacy
-commands:
-  - restore --legacy
-  - build --legacy
+legacy: true
 repos:
   https://docs.com/legacy:
   - author: Charlie
@@ -249,8 +247,7 @@ outputs:
   b.json:
 ---
 # Produce deterministic result when redirection and file share the same publish url
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
@@ -261,8 +258,7 @@ outputs:
   .errors.log:
 ---
 # Redirection file href shouldn't have extension
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
@@ -297,8 +293,7 @@ outputs:
     ["warning","attribute-reserved","Attribute ms.contentlang is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
 ---
 # Context object type is TOC
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
@@ -310,8 +305,7 @@ outputs:
     {"files":[{"asset_id":"/docs/a.json","original":"docs/a.yml","source_relative_path":"docs/a.yml","original_type":"Conceptual","type":"Toc"}]}
 ---
 # Do not copy resource when the copyResources is false
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml: |
     files: a.png
@@ -320,13 +314,12 @@ inputs:
   a.png:
 outputs:
   .publish.json: |
-    {"files":[{"url":"/a.png","path":"../a.png"}]}
+    {"files":[{"url":"/a.png","path":"../inputs/a.png"}]}
   .manifest.json: |
     {"files":[{"asset_id":"/a.png","output":{"resource":{"is_raw_page":false,"relative_path":"a.png"}}}]}
 ---
 # Build versioning repository
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
@@ -396,8 +389,7 @@ outputs:
 ---
 # Orphan file, with multiple toc of same site path, look up by filepath
 os: windows
-commands:
-  - build --legacy # only legacy has toc dependency for orphan file
+legacy: true # only legacy has toc dependency for orphan file
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
@@ -439,9 +431,8 @@ outputs:
     {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
 ---
 # legacy errors from source repo [repo mapping]
-commands:
-  - restore --locale zh-cn --legacy
-  - build --locale zh-cn --legacy
+locale: zh-cn
+legacy: true
 repos:
   https://docs.com/error-from-source-legacy#test:
     - files:
@@ -461,8 +452,7 @@ outputs:
     {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"date_time":"*","origin":"fallback"}
 ---
 # Replace empty content with <div></div>
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml:
   a.md:
@@ -476,8 +466,7 @@ outputs:
   b.raw.page.json: '{"content": "<div></div>"}'
 ---
 # Add data-linktype to urls
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml:
   a.md: '[](https://github.com)'

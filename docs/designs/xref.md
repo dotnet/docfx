@@ -160,22 +160,35 @@ description: Learn how to develop ASP.NET and ASP.NET web applications. Get docu
 ```
 
 - Xref property can also contain `markdown` content, whose output would be transformed in the xref map output. The example below shows that `summary` contains `markdown` content.
-```yml
+``````yml
 inputs:
   docfx.yml:
-  docs/a.json: |
+  _themes/ContentTemplate/TestPage.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+        "properties": {
+            "summary": { "contentType": "markdown" },
+            "uid": { "contentType": "uid" }
+        },
+        "xrefProperties": ["summary"]
+    }
+  a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestPage.json",
       "uid": "a",
-      "summary": "    Hello `docfx`!"
+      "summary": "Hello `docfx`!"
     }
 outputs:
-  docs/a.json:
-  .xrefmap.json: | 
-    {"references":[{"uid":"a","href":"docs/a.json","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
-```
+  a.json:
+  xrefmap.json: | 
+    {
+        "references":[
+            { "uid": "a", "summary": "<p>Hello <code>docfx</code>!</p>\n" }
+        ]
+    }
+``````
 Since the xref map would be outputted for external reference, if markdown contains a linking url, should it be resolved to an absolute url? It is resolved as relative url for now as below:
-```yaml
+```yml
 inputs:
   docfx.yml:
   docs/a.json: |
@@ -210,6 +223,7 @@ outputs:
             {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
         .errors.log: |
             ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/c.md'"]
+    ```
 - UID defined both in a file without versioning and a file with versioning. Since we will throw `publish-url-conflict` error to user when same file without versioning and with versioning defined, this UID definition case is disallowed at the same time.
 ## Output xref map
 Docfx will output a JSON file named `.xrefmap.json`. In V2, docfx used to output `xrefmap.yml`, it took much longer to be de-serialized compared to JSON format.

@@ -366,7 +366,7 @@ outputs:
       "updated_at": "!2018-10-30 12:00 AM"
     }
 ---
-# Support git submodule
+# [skip] Support git submodule
 repo: https://github.com/docascode/docfx-test-dependencies#c70a63e
 outputs:
   readme.json: |
@@ -381,24 +381,22 @@ outputs:
     }
 ---
 # Throw committish-not-found when try to resolve commit id by none-existing branch name
-commands:
-  - restore --locale zh-cn
-  - build --locale zh-cn
+locale: zh-cn
 repos: 
   https://github.com/git/repo#live:
     - files:
         docfx.yml: |
           localization:
             bilingual: true
-  https://github.com/git/repo.zh-cn#live-none-existing:
+  https://github.com/git/repo.zh-cn#live-sxs:
     - files:
         a.md:
-  https://github.com/git/repo.zh-cn#live-sxs:
+  https://github.com/git/repo.zh-cn#live-none-existing:
     - files:
         a.md:
 outputs:
   .errors.log: |
-    ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *github.com+git+repo.zh-cn*.","a.md"]
+    ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *","a.md"]
 ---
 # Use current repo's branch when edit branch isn't specified in contribution config,
 # and contribution config's repository equals to current repo's

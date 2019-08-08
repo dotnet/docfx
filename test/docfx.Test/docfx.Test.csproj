@@ -1,10 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>false</IsPackable>
     <LangVersion>Latest</LangVersion>
-    <RootNamespace>Microsoft.Docs.Build</RootNamespace>
     <Exclude>[xunit.*]*,[*.Views]*</Exclude>
   </PropertyGroup>
 
@@ -18,16 +17,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../../docs/specs/**/*.yml" LinkBase="specs" CopyToOutputDirectory="PreserveNewest" />
     <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.yml" CopyToOutputDirectory="PreserveNewest" />
-
     <!-- Workaround https://github.com/aspnet/Razor/issues/2162 -->
     <None Include="../../src/docfx/bin/$(Configuration)/$(TargetFramework)/docfx.deps.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../../src/Microsoft.DocAsTest/Microsoft.DocAsTest.csproj" />
     <ProjectReference Include="../../src/docfx/docfx.csproj" />
   </ItemGroup>
 
