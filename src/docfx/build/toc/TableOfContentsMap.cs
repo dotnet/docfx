@@ -178,14 +178,14 @@ namespace Microsoft.Docs.Build
             var result = candidateX.SubDirectoryCount - candidateY.SubDirectoryCount;
             if (result == 0)
                 result = candidateX.ParentDirectoryCount - candidateY.ParentDirectoryCount;
+            if (result == 0)
+                result = candidateX.Toc.CompareTo(candidateY.Toc);
             if (result == 0 && _monikerProvider != null)
             {
                 var fileMonikers = _monikerProvider.GetFileLevelMonikers(file).monikers;
                 result = _monikerProvider.GetFileLevelMonikers(candidateY.Toc).monikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).Count() -
                          _monikerProvider.GetFileLevelMonikers(candidateX.Toc).monikers.Intersect(fileMonikers, StringComparer.OrdinalIgnoreCase).Count();
             }
-            if (result == 0)
-                result = candidateX.Toc.CompareTo(candidateY.Toc);
             return result;
         }
     }
