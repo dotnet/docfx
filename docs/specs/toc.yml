@@ -1129,27 +1129,25 @@ outputs:
   docs/dir1/dir2/file-with-toc.json: |
     {"_tocRel": "../toc.json"}
 ---
-# File referenced by multiple toc with same parent and subdir count of site path, use order alphabetical. For other tests, reference build/TocTest.
+# File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
-  docfx.yml: |
-    routes:
-      c/: b
-  a/TOC.yml: |
+  docfx.yml: 
+  docs/dir1/a/TOC.yml: |
     - name: TOC Ref
       href: ../c/file1.md
-  b/TOC.yml: |
+  docs/dir1/b/TOC.yml: |
     - name: TOC Ref
       href: ../c/file1.md
-  aa/TOC.yml: |
+  docs/dir1/aa/TOC.yml: |
     - name: TOC Ref
       href: ../c/file1.md
-  c/file1.md:
+  docs/dir1/c/file1.md:
 outputs:
-  a/toc.json:
-  b/toc.json:
-  aa/toc.json:
-  b/file1.json: |
-    {"_tocRel": "toc.json"}
+  docs/dir1/a/toc.json:
+  docs/dir1/b/toc.json:
+  docs/dir1/aa/toc.json:
+  docs/dir1/c/file1.json: |
+    {"_tocRel": "../a/toc.json"}
 ---
 # Bad Toc markdown
 inputs:
