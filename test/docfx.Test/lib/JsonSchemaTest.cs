@@ -247,6 +247,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1}",
             "['warning','missing-paired-attribute','Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,1]")]
+        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : '1', 'key2': null}",
+            "['warning','missing-paired-attribute','Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,1]")]
+        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : '1', 'key2': ''}",
+            "['warning','missing-paired-attribute','Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,1]")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
             "['warning','missing-paired-attribute','Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file',1,11]")]
@@ -263,6 +267,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'either': [['key1', 'key2']]}", "{'key1': 1, 'key2': 2}", "")]
         [InlineData("{'either': [['key1', 'key2']]}", "{}",
             "['warning','missing-either-attribute','One of the following attributes is required: 'key1', 'key2'','file',1,1]")]
+        [InlineData("{'either': [['key1', 'key2']]}", "{'key1': null}",
+            "['warning','missing-either-attribute','One of the following attributes is required: 'key1', 'key2'','file',1,1]")]
+        [InlineData("{'either': [['key1', 'key2']]}", "{'key1': ''}",
+            "['warning','missing-either-attribute','One of the following attributes is required: 'key1', 'key2'','file',1,1]")]
         [InlineData("{'either': [['key1', 'key2', 'key3']]}", "{}",
             "['warning','missing-either-attribute','One of the following attributes is required: 'key1', 'key2', 'key3'','file',1,1]")]
         [InlineData("{'either': [['key1', 'key2'], ['key3', 'key4']]}", "{}",
@@ -277,6 +285,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'precludes': []}", "{}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': 1}", "")]
+        [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': '1', 'key2': null}", "")]
+        [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': '1', 'key2': ''}", "")]
         [InlineData("{'precludes': [['key1', 'key2']]}", "{'key1': 1, 'key2': 2}",
             "['warning','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,1]")]
         [InlineData("{'precludes': [['key1', 'key2', 'key3']]}", "{'key1': 1, 'key2': 2, 'key3': 3}",
@@ -291,6 +301,8 @@ namespace Microsoft.Docs.Build
 
         // date format validation
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{}", "")]
+        [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': null}", "")]
+        [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': ''}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': '04/26/2019'}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': 'Dec 5 2018'}",
             "['warning','date-format-invalid','Invalid date format for 'key1': 'Dec 5 2018'.','file',1,21]")]
@@ -304,6 +316,8 @@ namespace Microsoft.Docs.Build
 
         // deprecated validation
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key': null}", "")]
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key': ''}", "")]
         [InlineData("{'properties': {'key1': {'replacedBy': ''}}}", "{'key1': 1}",
             "['warning','attribute-deprecated','Deprecated attribute: 'key1'.','file',1,10]")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
