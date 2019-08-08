@@ -52,6 +52,8 @@
     <Rule Id="CA1001" Action="Warning" />
     <Rule Id="CA1009" Action="Warning" />
     <Rule Id="CA1016" Action="Warning" />
+    <!-- CA1031: Do not catch general exception types -->
+    <Rule Id="CA1031" Action="None" />
     <!-- CA1064: Implement standard exception constructors -->
     <Rule Id="CA1032" Action="None" />
     <Rule Id="CA1033" Action="Warning" />
@@ -76,6 +78,8 @@
     <Rule Id="CA1307" Action="None" />
     <!-- CA1308: Normalize strings to uppercase -->
     <Rule Id="CA1308" Action="None" />
+    <!-- CA1303: Do not pass literals as localized parameters -->
+    <Rule Id="CA1303" Action="None" />
     <Rule Id="CA1400" Action="Warning" />
     <Rule Id="CA1401" Action="Warning" />
     <Rule Id="CA1403" Action="Warning" />

@@ -7,8 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class HttpConfig
     {
-        public readonly string Query = string.Empty;
-
         public readonly Dictionary<string, string> Headers = new Dictionary<string, string>();
     }
 }

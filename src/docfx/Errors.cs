@@ -102,8 +102,8 @@ namespace Microsoft.Docs.Build
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error GitHubApiFailed(string api, string exMessage)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API '{api}' failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
+        public static Error GitHubApiFailed(string exMessage)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -475,8 +475,8 @@ namespace Microsoft.Docs.Build
         /// An attribute does't conform to date format.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error DateFormatInvalid(SourceInfo source, string name, string value, string format)
-            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid format for '{name}': '{value}'. Dates must be specified as '{format}'", source);
+        public static Error DateFormatInvalid(SourceInfo source, string name, string value)
+            => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid date format for '{name}': '{value}'.", source);
 
         /// <summary>
         /// Date out of range.

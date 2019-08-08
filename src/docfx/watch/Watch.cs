@@ -14,9 +14,11 @@ namespace Microsoft.Docs.Build
     {
         public static Task Run(string docsetPath, CommandLineOptions options)
         {
-            var cts = new CancellationTokenSource();
-            Console.CancelKeyPress += (sender, e) => cts.Cancel();
-            return CreateWebServer(docsetPath, options).Build().RunAsync(cts.Token);
+            using (var cts = new CancellationTokenSource())
+            {
+                Console.CancelKeyPress += (sender, e) => cts.Cancel();
+                return CreateWebServer(docsetPath, options).Build().RunAsync(cts.Token);
+            }
         }
 
         public static IWebHostBuilder CreateWebServer(string docsetPath, CommandLineOptions options)

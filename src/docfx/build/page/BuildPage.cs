@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -16,21 +17,20 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var (errors, sourceModel) = await Load(context, file);
+            var errors = new List<Error>();
+
+            var (loadErrors, sourceModel) = await Load(context, file);
+            errors.AddRange(loadErrors);
+
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
 
-            var (inputMetaErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-            errors.AddRange(inputMetaErrors);
-
-            var (outputMetadataErrors, outputMetadata) = await CreateOutputMetadata(context, file, inputMetadata);
-            errors.AddRange(outputMetadataErrors);
-
-            var (output, metadata) = file.IsPage
-                ? CreatePageOutput(context, file, sourceModel, inputMetadata, outputMetadata)
-                : CreateDataOutput(context, file, sourceModel, inputMetadata, outputMetadata);
+            var (outputErrors, output, metadata) = file.IsPage
+                ? await CreatePageOutput(context, file, sourceModel)
+                : CreateDataOutput(context, file, sourceModel);
+            errors.AddRange(outputErrors);
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
@@ -70,98 +70,100 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (object output, JObject metadata) CreatePageOutput(
+        private static async Task<(List<Error> errors, object output, JObject metadata)> CreatePageOutput(
             Context context,
             Document file,
-            JObject sourceModel,
-            InputMetadata inputMetadata,
-            OutputMetadata outputMetadata)
+            JObject sourceModel)
         {
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject, JsonUtility.ToJObject(outputMetadata));
+            var errors = new List<Error>();
+            var outputMetadata = new JObject();
+            var outputModel = new JObject();
 
-            var pageModel = new JObject();
+            var (inputMetadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            errors.AddRange(inputMetadataErrors);
+            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, inputMetadata);
+            errors.AddRange(systemMetadataErrors);
+            var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
+
             if (string.IsNullOrEmpty(file.Mime))
             {
-                JsonUtility.Merge(pageModel, inputMetadata.RawJObject, sourceModel, JsonUtility.ToJObject(outputMetadata));
+                // conceptual raw metadata and raw model
+                JsonUtility.Merge(outputMetadata, inputMetadata.RawJObject, systemMetadataJObject);
+                JsonUtility.Merge(outputModel, inputMetadata.RawJObject, sourceModel, systemMetadataJObject);
             }
             else
             {
-                JsonUtility.Merge(pageModel, sourceModel, new JObject { ["metadata"] = mergedMetadata });
+                JsonUtility.Merge(outputMetadata, sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(), systemMetadataJObject);
+                JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
             {
-                return (pageModel, SortProperties(mergedMetadata));
+                return (errors, outputModel, SortProperties(outputMetadata));
             }
 
-            var (templateModel, metadata) = CreateTemplateModel(context, SortProperties(pageModel), file);
+            var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(outputModel), file);
             if (file.Docset.Config.Output.Json)
             {
-                return (templateModel, SortProperties(metadata));
+                return (errors, templateModel, SortProperties(templateMetadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (html, SortProperties(metadata));
+            return (errors, html, SortProperties(templateMetadata));
 
             JObject SortProperties(JObject obj)
                 => new JObject(obj.Properties().OrderBy(p => p.Name));
         }
 
-        private static (object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel, InputMetadata inputMetadata, OutputMetadata outputMetadata)
+        private static (List<Error> errors, object output, JObject metadata)
+            CreateDataOutput(Context context, Document file, JObject sourceModel)
         {
-            var mergedMetadata = new JObject();
-            JsonUtility.Merge(mergedMetadata, inputMetadata.RawJObject);
-            JsonUtility.Merge(mergedMetadata, JsonUtility.ToJObject(outputMetadata));
-            sourceModel["metadata"] = mergedMetadata;
-            return (context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
+            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static async Task<(List<Error>, OutputMetadata)> CreateOutputMetadata(Context context, Document file, InputMetadata inputMetadata)
+        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file, InputMetadata inputMetadata)
         {
             var errors = new List<Error>();
-
-            var outputMetadata = new OutputMetadata();
+            var systemMetadata = new SystemMetadata();
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(file, inputMetadata.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
-                outputMetadata.BreadcrumbPath = breadcrumbPath;
+                systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
 
-            outputMetadata.Locale = file.Docset.Locale;
-            outputMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
-            outputMetadata.CanonicalUrl = file.CanonicalUrl;
-            outputMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
-            outputMetadata.SiteName = file.Docset.Config.SiteName;
+            systemMetadata.Locale = file.Docset.Locale;
+            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+            systemMetadata.CanonicalUrl = file.CanonicalUrl;
+            systemMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
+            systemMetadata.SiteName = file.Docset.Config.SiteName;
 
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
-            outputMetadata.Monikers = monikers;
+            systemMetadata.Monikers = monikers;
 
-            (outputMetadata.DocumentId, outputMetadata.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (outputMetadata.ContentGitUrl, outputMetadata.OriginalContentGitUrl, outputMetadata.OriginalContentGitUrlTemplate, outputMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
+            (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate, systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(context, file);
 
             List<Error> contributorErrors;
-            (contributorErrors, outputMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
-            outputMetadata.Author = outputMetadata.ContributionInfo?.Author?.Name;
-            outputMetadata.UpdatedAt = outputMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
+            (contributorErrors, systemMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(context, file, inputMetadata.Author);
+            systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
+            systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-            outputMetadata.SearchProduct = file.Docset.Config.Product;
-            outputMetadata.SearchDocsetName = file.Docset.Config.Name;
+            systemMetadata.SearchProduct = file.Docset.Config.Product;
+            systemMetadata.SearchDocsetName = file.Docset.Config.Name;
 
-            outputMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
-            outputMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{outputMetadata.Locale}/{file.Docset.SiteBasePath}/";
+            systemMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
+            systemMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{systemMetadata.Locale}/{file.Docset.SiteBasePath}/";
 
             if (file.Docset.Config.Output.Pdf)
-                outputMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{outputMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+                systemMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{systemMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
 
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
 
-            return (errors, outputMetadata);
+            return (errors, systemMetadata);
         }
 
         private static async Task<(List<Error> errors, JObject model)> Load(Context context, Document file)
@@ -245,16 +247,23 @@ namespace Microsoft.Docs.Build
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
-            // transform via json schema
+            // transform model via json schema
             var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
             errors.AddRange(schemaTransformError);
-
             var pageModel = (JObject)transformedToken;
+
+            if (file.IsPage)
+            {
+                // transform metadata via json schema
+                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+                var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
+                errors.AddRange(metadataErrors);
+                errors.AddRange(metadataTransformedErrors);
+                pageModel["metadata"] = ((JObject)transformedMetadata)["metadata"];
+            }
+
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
-                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-                errors.AddRange(metadataErrors);
-
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);
 

@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': '04/26/2019'}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': 'Dec 5 2018'}",
-            "['warning','date-format-invalid','Invalid format for 'key1': 'Dec 5 2018'. Dates must be specified as 'M/d/yyyy'','file',1,21]")]
+            "['warning','date-format-invalid','Invalid date format for 'key1': 'Dec 5 2018'.','file',1,21]")]
 
         // date range validation
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-10000000:00:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}", "")]
@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['yyy','tabs']}",
             "['warning','invalid-value','Invalid value for 'key1[0]': 'yyy'','file',1,15]")]
 
-        // additional errors
+        // custom errors
         [InlineData("{'required': ['author'], 'customErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
             "['suggestion','author-missing','Missing required attribute: 'author'. Add a valid GitHub ID.','file',1,1]")]
         [InlineData("{'required': ['author'], 'customErrors': {'author': {'missing-attribute': {'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
@@ -339,6 +339,15 @@ namespace Microsoft.Docs.Build
             "['suggestion','key1-attribute-deprecated','Deprecated attribute: 'key1', use 'key2' instead','file',1,10]")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'customErrors': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "['error','precluded-attributes','Only one of the following attributes can exist: 'key1', 'key2'','file',1,11]")]
+
+        // strict required validation
+        [InlineData("{'strictRequired': ['key1']}", "{'key1': 'a'}", "")]
+        [InlineData("{'strictRequired': ['key1']}", "{}",
+            "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
+        [InlineData("{'strictRequired': ['key1']}", "{'key1': null}",
+            "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
+        [InlineData("{'strictRequired': ['key1']}", "{'key1': ''}",
+            "['warning','missing-attribute','Missing required attribute: 'key1'','file',1,1]")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);

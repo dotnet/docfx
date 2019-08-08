@@ -383,20 +383,21 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var json = new JsonTextReader(reader);
-
-                if (json.Read() && json.TokenType == JsonToken.StartObject)
+                using (var json = new JsonTextReader(reader))
                 {
-                    if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
+                    if (json.Read() && json.TokenType == JsonToken.StartObject)
                     {
-                        if (json.Read() && json.Value is string schema)
+                        if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
                         {
-                            var lineInfo = (IJsonLineInfo)json;
-                            return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+                            if (json.Read() && json.Value is string schema)
+                            {
+                                var lineInfo = (IJsonLineInfo)json;
+                                return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+                            }
                         }
                     }
+                    return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
                 }
-                return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
             }
             catch (JsonReaderException)
             {

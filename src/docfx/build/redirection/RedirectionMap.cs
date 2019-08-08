@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    Document redirect = Document.Create(docset, pathToDocset, templateEngine, mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
+                    var redirect = Document.Create(docset, pathToDocset, templateEngine, redirectionUrl: mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
                     if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
                     {
                         errorLog.Write(Errors.RedirectionUrlConflict(redirectUrl));
