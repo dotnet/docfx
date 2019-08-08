@@ -316,8 +316,8 @@ namespace Microsoft.Docs.Build
 
         // deprecated validation
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
-        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key': null}", "")]
-        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key': ''}", "")]
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': null}", "")]
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': ''}", "")]
         [InlineData("{'properties': {'key1': {'replacedBy': ''}}}", "{'key1': 1}",
             "['warning','attribute-deprecated','Deprecated attribute: 'key1'.','file',1,10]")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
