@@ -320,7 +320,7 @@ inputs:
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
-  docs/v1/toc.yml: |
+  docs/v1/TOC.yml: |
     - name: A
       href: a.md
   monikerDefinition.json: |
