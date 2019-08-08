@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             // User should not define it in moniker zone
             if (fileLevelMonikers.Count == 0)
             {
-                return (Errors.MonikerConfigMissing(), new List<string>());
+                return (Errors.MonikerConfigMissing(file), new List<string>());
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
                 // user should not define it in file metadata
                 if (configMonikers.Count == 0)
                 {
-                    return (Errors.MonikerConfigMissing(), configMonikers);
+                    return (Errors.MonikerConfigMissing(file), configMonikers);
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
