@@ -22,20 +22,16 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<Document, List<Document>> _tocReferences;
 
-        private readonly MonikerProvider _monikerProvider;
-
         public TableOfContentsMap(
             List<Document> tocs,
             List<Document> experimentalTocs,
             Dictionary<Document, HashSet<Document>> documentToTocs,
-            Dictionary<Document, List<Document>> tocReferences,
-            MonikerProvider monikerProvider = null)
+            Dictionary<Document, List<Document>> tocReferences)
         {
             _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
             _experimentalTocs = new HashSet<Document>(experimentalTocs ?? throw new ArgumentNullException(nameof(experimentalTocs)));
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
             _tocReferences = tocReferences ?? throw new ArgumentNullException(nameof(tocReferences));
-            _monikerProvider = monikerProvider;
         }
 
         public bool TryGetTocReferences(Document toc, out List<Document> tocs)
@@ -81,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
-                return CompareTocCandidate(minCandidate, nextCandidate, file) <= 0 ? minCandidate : nextCandidate;
+                return CompareTocCandidate(minCandidate, nextCandidate) <= 0 ? minCandidate : nextCandidate;
             })?.Toc;
         }
 
@@ -93,12 +89,12 @@ namespace Microsoft.Docs.Build
                 var tocFiles = context.BuildScope.Files.Where(f => f.ContentType == ContentType.TableOfContents);
                 if (!tocFiles.Any())
                 {
-                    return builder.Build(context.MonikerProvider);
+                    return builder.Build();
                 }
 
                 ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), Progress.Update);
 
-                return builder.Build(context.MonikerProvider);
+                return builder.Build();
             }
 
             void BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
@@ -178,7 +174,7 @@ namespace Microsoft.Docs.Build
         /// 3. sub nearest(based on file path)
         /// 4. parent nearest(based on file path)
         /// </summary>
-        private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY, Document file)
+        private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
         {
             var result = candidateX.SiteDirInfo.subCount - candidateY.SiteDirInfo.subCount;
             if (result == 0)
@@ -186,7 +182,7 @@ namespace Microsoft.Docs.Build
             if (result == 0)
                 result = candidateX.FileDirInfo.subCount - candidateY.FileDirInfo.subCount;
             if (result == 0)
-                result = candidateX.FileDirInfo.parentCount- candidateY.FileDirInfo.parentCount;
+                result = candidateX.FileDirInfo.parentCount - candidateY.FileDirInfo.parentCount;
             if (result == 0)
                 result = candidateX.Toc.FilePath.CompareTo(candidateY.Toc.FilePath);
             return result;
