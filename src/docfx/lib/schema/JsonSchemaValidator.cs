@@ -301,13 +301,13 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
             {
-                if (map.ContainsKey(key))
+                if (IsStrictContain(map, key))
                 {
                     if (propertyNames != null)
                     {
                         foreach (var otherKey in propertyNames)
                         {
-                            if (!map.ContainsKey(otherKey))
+                            if (!IsStrictContain(map, otherKey))
                             {
                                 errors.Add((key, Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), key, otherKey)));
                             }
@@ -336,14 +336,18 @@ namespace Microsoft.Docs.Build
         {
             foreach (var key in schema.StrictRequired)
             {
-                if (!map.TryGetValue(key, out var value)
-                    || value.Type == JTokenType.Null
-                    || (value.Type == JTokenType.String && string.IsNullOrWhiteSpace((string)value)))
+                if (!IsStrictContain(map, key))
                 {
                     errors.Add((key, Errors.MissingAttribute(JsonUtility.GetSourceInfo(map), key)));
                 }
             }
         }
+
+        private bool IsStrictHaveValue(JToken value) =>
+            value != null && value.Type != JTokenType.Null && (value.Type != JTokenType.String || !string.IsNullOrWhiteSpace((string)value));
+
+        private bool IsStrictContain(JObject map, string key) =>
+            map.TryGetValue(key, out var value) && IsStrictHaveValue(value);
 
         private void ValidateEither(JsonSchema schema, JObject map, List<(string name, Error)> errors)
         {
@@ -357,7 +361,7 @@ namespace Microsoft.Docs.Build
                 var result = false;
                 foreach (var key in keys)
                 {
-                    if (map.ContainsKey(key))
+                    if (IsStrictContain(map, key))
                     {
                         result = true;
                         break;
@@ -378,7 +382,7 @@ namespace Microsoft.Docs.Build
                 var existNum = 0;
                 foreach (var key in keys)
                 {
-                    if (map.ContainsKey(key) && ++existNum > 1)
+                    if (IsStrictContain(map, key) && ++existNum > 1)
                     {
                         errors.Add((keys[0], Errors.PrecludedAttributes(JsonUtility.GetSourceInfo(map), keys)));
                         break;
@@ -389,7 +393,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDateFormat(JsonSchema schema, string name, JValue scalar, string dateString, List<(string name, Error)> errors)
         {
-            if (!string.IsNullOrEmpty(schema.DateFormat))
+            if (!string.IsNullOrEmpty(schema.DateFormat) && !string.IsNullOrWhiteSpace(dateString))
             {
                 if (DateTime.TryParseExact(dateString, schema.DateFormat, null, System.Globalization.DateTimeStyles.None, out var date))
                 {
@@ -404,7 +408,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateMicrosoftAlias(JsonSchema schema, string name, JValue scalar, string alias, List<(string name, Error)> errors)
         {
-            if (schema.MicrosoftAlias != null)
+            if (schema.MicrosoftAlias != null && !string.IsNullOrWhiteSpace(alias))
             {
                 if (Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1)
                 {
@@ -442,7 +446,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDeprecated(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
         {
-            if (schema.ReplacedBy != null)
+            if (IsStrictHaveValue(token) && schema.ReplacedBy != null)
             {
                 errors.Add((name, Errors.AttributeDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy)));
             }
@@ -462,7 +466,7 @@ namespace Microsoft.Docs.Build
                 {
                     var fieldValue = fieldRawValue is JArray array ? (fieldIndex < array.Count ? array[fieldIndex] : null) : fieldRawValue;
 
-                    if (fieldValue == null || fieldValue.Type == JTokenType.Null)
+                    if (!IsStrictHaveValue(fieldValue))
                     {
                         return;
                     }
