@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         {
             Console.WriteLine($"Downloading '{url}'");
 
-            var filePath = GetRestoreContentPath(url);
+            var filePath = GetRestorePathFromUrl(url);
             var etagPath = GetRestoreEtagPath(url);
             var existingEtag = default(EntityTagHeaderValue);
 
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetRestoreContentPath(string url)
+        public static string GetRestorePathFromUrl(string url)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
             Debug.Assert(UrlUtility.IsHttp(url));
@@ -98,21 +98,23 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var response = await HttpClientUtility.GetAsync(url, config, existingEtag);
-                if (response.StatusCode == HttpStatusCode.NotModified)
+                using (var response = await HttpClientUtility.GetAsync(url, config, existingEtag))
                 {
-                    return (null, existingEtag);
-                }
+                    if (response.StatusCode == HttpStatusCode.NotModified)
+                    {
+                        return (null, existingEtag);
+                    }
 
-                Directory.CreateDirectory(AppData.DownloadsRoot);
-                var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(AppData.DownloadsRoot);
+                    var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
 
-                using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
-                using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await stream.CopyToAsync(file);
+                    using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
+                    using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        await stream.CopyToAsync(file);
+                    }
+                    return (tempFile, response.Headers.ETag);
                 }
-                return (tempFile, response.Headers.ETag);
             }
             catch (Exception ex)
             {

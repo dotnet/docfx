@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
         private readonly GitHubUserCache _gitHubUserCache;
 
         // TODO: support CRR and multiple repositories
-        // TODO: support live SXS branch
         private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
 
         private readonly GitCommitProvider _gitCommitProvider;
@@ -30,7 +29,7 @@ namespace Microsoft.Docs.Build
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
-        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
+        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Context context, Document document, SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -131,7 +130,7 @@ namespace Microsoft.Docs.Build
             List<GitCommit> GetContributionCommits()
             {
                 var result = commits;
-                var bilingual = document.Docset.IsLocalized() && document.Docset.Config.Localization.Bilingual;
+                var bilingual = context.BuildScope.GetFallbackDocset(document.Docset) != null && document.Docset.Config.Localization.Bilingual;
                 var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
@@ -154,7 +153,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
-            GetGitUrls(Document document)
+            GetGitUrls(Context context, Document document)
         {
             Debug.Assert(document != null);
 
@@ -190,7 +189,7 @@ namespace Microsoft.Docs.Build
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
-                    if (document.Docset.IsLocalized())
+                    if (context.BuildScope.GetFallbackDocset(document.Docset) != null)
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
                                                     document.Docset.Config.Localization.Mapping,

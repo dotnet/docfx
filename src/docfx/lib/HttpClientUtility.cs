@@ -16,20 +16,23 @@ namespace Microsoft.Docs.Build
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         });
 
-        public static async Task<HttpResponseMessage> GetAsync(string requestUri, Config config, EntityTagHeaderValue etag = null)
+        public static async Task<HttpResponseMessage> GetAsync(string url, Config config, EntityTagHeaderValue etag = null)
         {
             return await RetryUtility.Retry(
                 () =>
                 {
                     // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
                     // "The request message was already sent. Cannot send the same request message multiple times."
-                    var message = CreateHttpRequestMessage(requestUri, config);
-                    message.Method = HttpMethod.Get;
-                    if (etag != null)
+                    using (var message = new HttpRequestMessage(HttpMethod.Get, url))
                     {
-                        message.Headers.IfNoneMatch.Add(etag);
+                        AddAuthorizationHeader(url, message, config);
+
+                        if (etag != null)
+                        {
+                            message.Headers.IfNoneMatch.Add(etag);
+                        }
+                        return s_httpClient.SendAsync(message);
                     }
-                    return s_httpClient.SendAsync(message);
                 },
                 NeedRetry);
 
@@ -41,25 +44,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static HttpRequestMessage CreateHttpRequestMessage(string requestUri, Config config)
+        private static void AddAuthorizationHeader(string url, HttpRequestMessage message, Config config)
         {
-            var message = new HttpRequestMessage();
-
             foreach (var (baseUrl, rule) in config.Http)
             {
-                if (requestUri.StartsWith(baseUrl))
+                if (url.StartsWith(baseUrl))
                 {
-                    message.RequestUri = new Uri(UrlUtility.MergeUrl(requestUri, rule.Query, null));
                     foreach (var header in rule.Headers)
                     {
                         message.Headers.Add(header.Key, header.Value);
                     }
-                    return message;
+                    break;
                 }
             }
-
-            message.RequestUri = new Uri(requestUri);
-            return message;
         }
     }
 }

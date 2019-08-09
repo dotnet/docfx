@@ -13,21 +13,10 @@ function test() {
         return
     }
 
-    try {
-        pushd test/docfx.Test
+    exec "dotnet test -c Release --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
 
-        Remove-Item ./TestResults -Force -Recurse -ErrorAction Ignore
-
-        exec "dotnet test -c Release"
-        exec "dotnet reportgenerator -reports:coverage.cobertura.xml -reporttypes:HtmlInline_AzurePipelines -targetdir:TestResults/cobertura"
-
-        # Check test coverage
-        $coverage = Select-Xml -Path 'coverage.cobertura.xml' -XPath "//package[@name='docfx']" | select -exp Node | select -exp line-rate
-        if ($coverage -lt 0.9) {
-            throw ("Test code coverage MUST be > 0.9, but is now only $coverage")
-        }
-    } finally {
-        popd
+    if ($env:CODECOV_TOKEN) {
+        exec "$env:USERPROFILE\.nuget\packages\codecov\1.7.0\tools\codecov.exe -f ./test/docfx.Test/coverage.opencover.xml"
     }
 }
 

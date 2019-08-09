@@ -20,7 +20,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
-# Restore dependencies azure repos with their children
+# [Skip]Restore dependencies azure repos with their children
 repos:
   https://docascode.visualstudio.com/project/_git/a:
     - files:
@@ -74,6 +74,7 @@ outputs:
     { "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
 ---
 # Restore empty files
+build: false
 inputs:
   docfx.yml: |
     extend: config.json
@@ -101,6 +102,7 @@ outputs:
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
 ---
 # Show error when download failed
+build: false
 inputs:
   docfx.yml: |
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
@@ -118,8 +120,7 @@ outputs:
     ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies."]
 ---
 # Show error when dependent repo can't be found
-commands:
-  - build
+restore: false
 inputs:
   docfx.yml: |
     dependencies:
@@ -131,8 +132,7 @@ outputs:
     ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?","docs/a.md"]
 ---
 # Show error when dependent URL can't be found
-commands:
-  - build
+restore: false
 inputs:
   docfx.yml: |
     monikerDefinition: https://docs.microsoft.com/bad-url
@@ -252,7 +252,7 @@ outputs:
        "!downloads": null
     }
 ---
-# restore with wrong dependency version
+# [skip] restore with wrong dependency version
 repos:
   https://docs.com/wrong/a#master:
     - files:

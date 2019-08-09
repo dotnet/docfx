@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -20,6 +20,8 @@ namespace Microsoft.Docs.Build
             new Regex(
                 @"^(https|http):\/\/((?<account1>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account2>[^\/\s]+)\/)+(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly char[] s_queryFragmentLeadingChars = new char[] { '#', '?' };
 
         /// <summary>
         /// Split href to path, fragement and query
@@ -73,7 +75,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(targetPath))
                 return targetUrl;
 
-            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery.Length == 0 ? "" : targetQuery.Substring(1));
+            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
             var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
             foreach (var key in sourceQueryParameters.AllKeys)
@@ -208,15 +210,19 @@ namespace Microsoft.Docs.Build
                 return LinkType.External;
             }
 
-            // Uri.TryCreate does not handle some common errors like http:docs.com, so specialize them here
-            if (char.IsLetter(ch) && link.Contains(':'))
-            {
-                return LinkType.External;
-            }
-
             if (ch == '#')
             {
                 return LinkType.SelfBookmark;
+            }
+
+            // Uri.TryCreate does not handle some common errors like http:docs.com, so specialize them here
+            if (char.IsLetter(ch))
+            {
+                var colonIndex = link.IndexOf(':');
+                if (colonIndex > 0
+                    && link.IndexOfAny(s_queryFragmentLeadingChars) is var queryOrFragmentIndex
+                    && (queryOrFragmentIndex < 0 || colonIndex < queryOrFragmentIndex))
+                    return LinkType.External;
             }
 
             return LinkType.RelativePath;

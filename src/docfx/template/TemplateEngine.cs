@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
-        public (HashSet<string> htmlMetaHidden, Dictionary<string, string> htmlMetaNames) HtmlMetaConfigs { get; }
-
         private const string DefaultTemplateDir = "_themes";
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
 
@@ -26,7 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
 
-        private TemplateEngine(string templateDir, JsonSchema metadataSchema)
+        private TemplateEngine(string templateDir)
         {
             _templateDir = templateDir;
             _contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
@@ -37,12 +35,6 @@ namespace Microsoft.Docs.Build
             _liquid = new LiquidTemplate(_contentTemplateDir);
             _js = new JavascriptEngine(_contentTemplateDir, _global);
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
-
-            HtmlMetaConfigs = (
-                metadataSchema.HtmlMetaHidden.ToHashSet(),
-                metadataSchema.Properties
-                .Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName))
-                .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName));
         }
 
         public bool IsPage(string mime)
@@ -139,20 +131,20 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        public static TemplateEngine Create(Docset docset)
+        public static TemplateEngine Create(Docset docset, RestoreGitMap restoreGitMap)
         {
             Debug.Assert(docset != null);
 
             if (string.IsNullOrEmpty(docset.Config.Template))
             {
-                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir), new JsonSchema());
+                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeRestoreMap) = docset.RestoreMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
+            var (themePath, themeRestoreMap) = restoreGitMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
 
-            return new TemplateEngine(themePath, docset.MetadataSchema);
+            return new TemplateEngine(themePath);
         }
 
         private JObject LoadGlobalTokens()

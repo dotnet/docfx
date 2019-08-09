@@ -10,10 +10,11 @@ using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class YamlUtility
+    internal static partial class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
 
@@ -96,18 +97,11 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                JToken result = null;
-
                 var errors = new List<Error>();
-                var parser = new Parser(new StringReader(input));
-                parser.Expect<StreamStart>();
-                if (!parser.Accept<StreamEnd>())
-                {
-                    parser.Expect<DocumentStart>();
-                    result = ParseAsJToken(parser, file, errors);
-                    parser.Expect<DocumentEnd>();
-                }
-                parser.Expect<StreamEnd>();
+                var result = ToJToken(
+                    input,
+                    onKeyDuplicate: key => errors.Add(Errors.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
+                    onConvert: (token, node) => JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file)));
 
                 return (errors, result);
             }
@@ -120,103 +114,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JToken ParseAsJToken(IParser parser, FilePath file, List<Error> errors)
+        private static SourceInfo ToSourceInfo(ParsingEvent node, FilePath file)
         {
-            switch (parser.Expect<NodeEvent>())
-            {
-                case Scalar scalar:
-                    if (scalar.Style == ScalarStyle.Plain)
-                    {
-                        return SetSourceInfo(ParseScalar(scalar.Value), scalar, file);
-                    }
-                    return SetSourceInfo(new JValue(scalar.Value), scalar, file);
-
-                case SequenceStart seq:
-                    var array = new JArray();
-                    while (!parser.Accept<SequenceEnd>())
-                    {
-                        array.Add(ParseAsJToken(parser, file, errors));
-                    }
-                    parser.Expect<SequenceEnd>();
-                    return SetSourceInfo(array, seq, file);
-
-                case MappingStart map:
-                    var obj = new JObject();
-                    while (!parser.Accept<MappingEnd>())
-                    {
-                        var key = parser.Expect<Scalar>();
-                        var value = ParseAsJToken(parser, file, errors);
-
-                        if (obj.ContainsKey(key.Value))
-                        {
-                            var source = new SourceInfo(file, key.Start.Line, key.Start.Column, key.End.Line, key.End.Column);
-                            errors.Add(Errors.YamlDuplicateKey(source, key.Value));
-                        }
-
-                        obj[key.Value] = value;
-                        SetSourceInfo(obj.Property(key.Value), key, file);
-                    }
-                    parser.Expect<MappingEnd>();
-                    return SetSourceInfo(obj, map, file);
-
-                default:
-                    throw new NotSupportedException($"Yaml node '{parser.Current.GetType().Name}' is not supported");
-            }
-        }
-
-        private static JToken ParseScalar(string value)
-        {
-            // https://yaml.org/spec/1.2/2009-07-21/spec.html
-            //
-            //  Regular expression       Resolved to tag
-            //
-            //    null | Null | NULL | ~                          tag:yaml.org,2002:null
-            //    /* Empty */                                     tag:yaml.org,2002:null
-            //    true | True | TRUE | false | False | FALSE      tag:yaml.org,2002:bool
-            //    [-+]?[0 - 9]+                                   tag:yaml.org,2002:int(Base 10)
-            //    0o[0 - 7] +                                     tag:yaml.org,2002:int(Base 8)
-            //    0x[0 - 9a - fA - F] +                           tag:yaml.org,2002:int(Base 16)
-            //    [-+] ? ( \. [0-9]+ | [0-9]+ ( \. [0-9]* )? ) ( [eE][-+]?[0 - 9]+ )?   tag:yaml.org,2002:float (Number)
-            //    [-+]? ( \.inf | \.Inf | \.INF )                 tag:yaml.org,2002:float (Infinity)
-            //    \.nan | \.NaN | \.NAN                           tag:yaml.org,2002:float (Not a number)
-            //    *                                               tag:yaml.org,2002:str(Default)
-            if (string.IsNullOrEmpty(value) || value == "~" || value.Equals("null", StringComparison.OrdinalIgnoreCase))
-            {
-                return JValue.CreateNull();
-            }
-            if (bool.TryParse(value, out var b))
-            {
-                return new JValue(b);
-            }
-            if (long.TryParse(value, out var l))
-            {
-                return new JValue(l);
-            }
-            if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var d) &&
-                !double.IsNaN(d) && !double.IsPositiveInfinity(d) && !double.IsNegativeInfinity(d))
-            {
-                return new JValue(d);
-            }
-            if (value.Equals(".nan", StringComparison.OrdinalIgnoreCase))
-            {
-                return new JValue(double.NaN);
-            }
-            if (value.Equals(".inf", StringComparison.OrdinalIgnoreCase) || value.Equals("+.inf", StringComparison.OrdinalIgnoreCase))
-            {
-                return new JValue(double.PositiveInfinity);
-            }
-            if (value.Equals("-.inf", StringComparison.OrdinalIgnoreCase))
-            {
-                return new JValue(double.NegativeInfinity);
-            }
-            return new JValue(value);
-        }
-
-        private static JToken SetSourceInfo(JToken token, ParsingEvent node, FilePath file)
-        {
-            return JsonUtility.SetSourceInfo(
-                token,
-                new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column));
+            return new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column);
         }
     }
 }

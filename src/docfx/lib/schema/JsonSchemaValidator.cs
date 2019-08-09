@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<(string name, Error)>();
             Validate(schema, "", token, errors);
-            return errors.Select(info => GetAdditionalError(_schema, info.name, info.Item2)).ToList();
+            return errors.Select(info => GetError(_schema, info.name, info.Item2)).ToList();
         }
 
         private void Validate(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
@@ -150,6 +150,7 @@ namespace Microsoft.Docs.Build
         private void ValidateObject(JsonSchema schema, string name, JObject map, List<(string name, Error)> errors)
         {
             ValidateRequired(schema, map, errors);
+            ValidateStrictRequired(schema, map, errors);
             ValidateDependencies(schema, name, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
@@ -300,13 +301,13 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
             {
-                if (map.ContainsKey(key))
+                if (IsStrictContain(map, key))
                 {
                     if (propertyNames != null)
                     {
                         foreach (var otherKey in propertyNames)
                         {
-                            if (!map.ContainsKey(otherKey))
+                            if (!IsStrictContain(map, otherKey))
                             {
                                 errors.Add((key, Errors.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), key, otherKey)));
                             }
@@ -331,6 +332,23 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private void ValidateStrictRequired(JsonSchema schema, JObject map, List<(string name, Error)> errors)
+        {
+            foreach (var key in schema.StrictRequired)
+            {
+                if (!IsStrictContain(map, key))
+                {
+                    errors.Add((key, Errors.MissingAttribute(JsonUtility.GetSourceInfo(map), key)));
+                }
+            }
+        }
+
+        private bool IsStrictHaveValue(JToken value) =>
+            value != null && value.Type != JTokenType.Null && (value.Type != JTokenType.String || !string.IsNullOrWhiteSpace((string)value));
+
+        private bool IsStrictContain(JObject map, string key) =>
+            map.TryGetValue(key, out var value) && IsStrictHaveValue(value);
+
         private void ValidateEither(JsonSchema schema, JObject map, List<(string name, Error)> errors)
         {
             foreach (var keys in schema.Either)
@@ -343,7 +361,7 @@ namespace Microsoft.Docs.Build
                 var result = false;
                 foreach (var key in keys)
                 {
-                    if (map.ContainsKey(key))
+                    if (IsStrictContain(map, key))
                     {
                         result = true;
                         break;
@@ -364,7 +382,7 @@ namespace Microsoft.Docs.Build
                 var existNum = 0;
                 foreach (var key in keys)
                 {
-                    if (map.ContainsKey(key) && ++existNum > 1)
+                    if (IsStrictContain(map, key) && ++existNum > 1)
                     {
                         errors.Add((keys[0], Errors.PrecludedAttributes(JsonUtility.GetSourceInfo(map), keys)));
                         break;
@@ -375,7 +393,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDateFormat(JsonSchema schema, string name, JValue scalar, string dateString, List<(string name, Error)> errors)
         {
-            if (!string.IsNullOrEmpty(schema.DateFormat))
+            if (!string.IsNullOrEmpty(schema.DateFormat) && !string.IsNullOrWhiteSpace(dateString))
             {
                 if (DateTime.TryParseExact(dateString, schema.DateFormat, null, System.Globalization.DateTimeStyles.None, out var date))
                 {
@@ -383,14 +401,14 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add((name, Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, dateString, schema.DateFormat)));
+                    errors.Add((name, Errors.DateFormatInvalid(JsonUtility.GetSourceInfo(scalar), name, dateString)));
                 }
             }
         }
 
         private void ValidateMicrosoftAlias(JsonSchema schema, string name, JValue scalar, string alias, List<(string name, Error)> errors)
         {
-            if (schema.MicrosoftAlias != null)
+            if (schema.MicrosoftAlias != null && !string.IsNullOrWhiteSpace(alias))
             {
                 if (Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1)
                 {
@@ -428,7 +446,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDeprecated(JsonSchema schema, string name, JToken token, List<(string name, Error)> errors)
         {
-            if (schema.ReplacedBy != null)
+            if (IsStrictHaveValue(token) && schema.ReplacedBy != null)
             {
                 errors.Add((name, Errors.AttributeDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy)));
             }
@@ -448,7 +466,7 @@ namespace Microsoft.Docs.Build
                 {
                     var fieldValue = fieldRawValue is JArray array ? (fieldIndex < array.Count ? array[fieldIndex] : null) : fieldRawValue;
 
-                    if (fieldValue == null)
+                    if (!IsStrictHaveValue(fieldValue))
                     {
                         return;
                     }
@@ -500,22 +518,16 @@ namespace Microsoft.Docs.Build
             return (name, 0);
         }
 
-        private Error GetAdditionalError(JsonSchema schema, string name, Error baseError)
+        private Error GetError(JsonSchema schema, string name, Error error)
         {
-            if (!string.IsNullOrEmpty(name) && schema.AdditionalErrors.TryGetValue(name, out var attributeAdditionalErrors) && attributeAdditionalErrors.TryGetValue(baseError.Code, out var additionalError))
+            if (!string.IsNullOrEmpty(name) &&
+                schema.CustomErrors.TryGetValue(name, out var attributeCustomErrors) &&
+                attributeCustomErrors.TryGetValue(error.Code, out var customError))
             {
-                return new Error(
-                    !additionalError.Severity.HasValue ? baseError.Level : additionalError.Severity.Value,
-                    string.IsNullOrEmpty(additionalError.Code) ? baseError.Code : additionalError.Code,
-                    string.IsNullOrEmpty(additionalError.Message) ? baseError.Message : $"{baseError.Message}{(baseError.Message.EndsWith('.') ? string.Empty : ".")} {additionalError.Message}",
-                    baseError.FilePath,
-                    baseError.Line,
-                    baseError.Column,
-                    baseError.EndLine,
-                    baseError.EndColumn);
+                return error.WithCustomError(customError);
             }
 
-            return baseError;
+            return error;
         }
 
         private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)

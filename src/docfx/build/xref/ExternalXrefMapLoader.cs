@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private static byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset, RestoreFileMap restoreFileMap)
         {
             var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    var content = RestoreMap.GetRestoredFileContent(docset, url);
+                    var content = restoreFileMap.GetRestoredFileContent(url);
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
                     foreach (var spec in xrefMap.References)
                     {
@@ -30,8 +30,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    // TODO: It is very easy to forget passing fallbackDocsetPath, the RestoreMap interface needs improvement
-                    var filePath = RestoreMap.GetRestoredFilePath(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
+                    var filePath = restoreFileMap.GetRestoredFilePath(url);
                     foreach (var (uid, spec) in Load(filePath))
                     {
                         // for same uid with multiple specs, we should respect the order of the list

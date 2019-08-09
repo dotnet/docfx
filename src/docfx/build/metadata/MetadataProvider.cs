@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Cache _cache;
-        private readonly JsonSchemaValidator _schemaValidator;
+        private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
@@ -21,17 +21,37 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)> _metadataCache
                    = new ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)>();
 
-        public MetadataProvider(Docset docset, Cache cache, MicrosoftGraphCache microsoftGraphCache)
+        public JsonSchema[] MetadataSchemas { get; }
+
+        public ICollection<string> HtmlMetaHidden { get; }
+
+        public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
+
+        public MetadataProvider(Docset docset, Cache cache, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
         {
             _cache = cache;
-            _schemaValidator = new JsonSchemaValidator(docset.MetadataSchema, microsoftGraphCache);
             _globalMetadata = docset.Config.GlobalMetadata;
 
-            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(OutputMetadata))
+            MetadataSchemas = Array.ConvertAll(
+                docset.Config.MetadataSchema,
+                schema => JsonUtility.Deserialize<JsonSchema>(
+                    restoreFileMap.GetRestoredFileContent(schema), schema.Source.File));
+
+            _schemaValidators = Array.ConvertAll(
+                MetadataSchemas,
+                schema => new JsonSchemaValidator(schema, microsoftGraphCache));
+
+            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
-                .Concat(docset.MetadataSchema.Reserved)
+                .Concat(MetadataSchemas.SelectMany(schema => schema.Reserved))
                 .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
                 .ToHashSet();
+
+            HtmlMetaHidden = MetadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
+
+            HtmlMetaNames = MetadataSchemas.SelectMany(
+                schema => schema.Properties.Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName)))
+                    .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
 
             foreach (var (key, item) in docset.Config.FileMetadata)
             {
@@ -87,7 +107,14 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            errors.AddRange(_schemaValidator.Validate(result));
+            foreach (var schemaValidator in _schemaValidators)
+            {
+               // Only validate conceptual files
+               if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime) && !result.ContainsKey("layout"))
+               {
+                    errors.AddRange(schemaValidator.Validate(result));
+               }
+            }
 
             var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
 

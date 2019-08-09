@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,13 +9,13 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class RestoreMap
+    internal class RestoreGitMap : IDisposable
     {
         private readonly IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
 
         public DependencyLockModel DependencyLock { get; private set; }
 
-        public RestoreMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits = null)
+        public RestoreGitMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits = null)
         {
             _acquiredGits = acquiredGits ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
         }
@@ -22,14 +23,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, RestoreMap subRestoreMap) GetGitRestorePath(string remote, string branch, string docsetPath)
+        public (string path, RestoreGitMap subRestoreMap) GetGitRestorePath(string remote, string branch, string docsetPath)
         {
             if (!UrlUtility.IsHttp(remote))
             {
                 var fullPath = Path.Combine(docsetPath, remote);
                 if (Directory.Exists(fullPath))
                 {
-                    return (fullPath, new RestoreMap(_acquiredGits));
+                    return (fullPath, new RestoreGitMap(_acquiredGits));
                 }
 
                 // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
@@ -57,10 +58,10 @@ namespace Microsoft.Docs.Build
             var path = Path.Combine(AppData.GetGitDir(remote), gitInfo.path);
             Debug.Assert(Directory.Exists(path));
 
-            return (path, new RestoreMap(_acquiredGits) { DependencyLock = gitVersion });
+            return (path, new RestoreGitMap(_acquiredGits) { DependencyLock = gitVersion });
         }
 
-        public bool Release()
+        public void Dispose()
         {
             var released = true;
             foreach (var (k, v) in _acquiredGits)
@@ -69,89 +70,13 @@ namespace Microsoft.Docs.Build
             }
 
             Debug.Assert(released);
-
-            return released;
-        }
-
-        public static string GetRestoredFileContent(Docset docset, SourceInfo<string> url)
-        {
-            return GetRestoredFileContent(docset.DocsetPath, url, docset.FallbackDocset?.DocsetPath);
-        }
-
-        public static string GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
-        {
-            var fromUrl = UrlUtility.IsHttp(url);
-            if (!fromUrl)
-            {
-                // directly return the relative path
-                var fullPath = Path.Combine(docsetPath, url);
-                if (File.Exists(fullPath))
-                {
-                    return File.ReadAllText(fullPath);
-                }
-
-                if (!string.IsNullOrEmpty(fallbackDocset))
-                {
-                    fullPath = Path.Combine(fallbackDocset, url);
-                    if (File.Exists(fullPath))
-                    {
-                        return File.ReadAllText(fullPath);
-                    }
-                }
-
-                throw Errors.FileNotFound(url).ToException();
-            }
-
-            var filePath = RestoreFile.GetRestoreContentPath(url);
-            if (!File.Exists(filePath))
-            {
-                throw Errors.NeedRestore(url).ToException();
-            }
-
-            using (InterProcessMutex.Create(filePath))
-            {
-                return File.ReadAllText(filePath);
-            }
-        }
-
-        public static string GetRestoredFilePath(string docsetPath, SourceInfo<string> url, string fallbackDocset = null)
-        {
-            var fromUrl = UrlUtility.IsHttp(url);
-            if (!fromUrl)
-            {
-                // directly return the relative path
-                var fullPath = Path.Combine(docsetPath, url);
-                if (File.Exists(fullPath))
-                {
-                    return fullPath;
-                }
-
-                if (!string.IsNullOrEmpty(fallbackDocset))
-                {
-                    fullPath = Path.Combine(fallbackDocset, url);
-                    if (File.Exists(fullPath))
-                    {
-                        return fullPath;
-                    }
-                }
-
-                throw Errors.FileNotFound(url).ToException();
-            }
-
-            var filePath = RestoreFile.GetRestoreContentPath(url);
-            if (!File.Exists(filePath))
-            {
-                throw Errors.NeedRestore(url).ToException();
-            }
-
-            return filePath;
         }
 
         /// <summary>
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static RestoreMap Create(DependencyLockModel dependencyLock)
+        public static RestoreGitMap Create(DependencyLockModel dependencyLock)
         {
             var acquired = new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
@@ -203,7 +128,7 @@ namespace Microsoft.Docs.Build
         public static bool ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
             => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
 
-        private static RestoreMap CreateCore(
+        private static RestoreGitMap CreateCore(
             DependencyLockModel dependencyLock,
             Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired)
         {
@@ -218,10 +143,12 @@ namespace Microsoft.Docs.Build
                     acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
                 }
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 CreateCore(gitVersion.Value, acquired);
+#pragma warning restore CA2000 // Dispose objects before losing scope
             }
 
-            return new RestoreMap(acquired)
+            return new RestoreGitMap(acquired)
             {
                 DependencyLock = dependencyLock,
             };

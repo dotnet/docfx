@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 {
     public static class Docfx
     {
-        public static async Task<int> Main(params string[] args)
+        internal static async Task<int> Main(params string[] args)
         {
             try
             {
