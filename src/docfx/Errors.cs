@@ -350,9 +350,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error InternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-        {
-            return new Error(ErrorLevel.Warning, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
-        }
+            => new Error(ErrorLevel.Warning, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
         // Behavior: ✔️ Message: ❌
         public static Error NullArrayValue(SourceInfo source, string name)

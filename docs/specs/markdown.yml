@@ -533,8 +533,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'.","docs/a.md",2,1]
-    ["warning","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'.","docs/a.md",2,2]
+    ["warning","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
+    ["warning","internal-bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]
 ---
 # custom 404 page is not supported
 inputs:
