@@ -47,6 +47,12 @@ namespace Microsoft.DocAsTest
 -'!a'
 +'a'")]
 
+        // ignore null
+        [InlineData("{'ignore-null': null}", "{'ignore-null': 'a'}", "")]
+        [InlineData("{'ignore-null': null}", "{'ignore-null': true}", "")]
+        [InlineData("{'ignore-null': null}", "{}", @"
+-  'ignore-null': null")]
+
         // wildcard
         [InlineData("'a*b'", "'a123b'", "")]
         [InlineData("'a*b'", "'ab'", "")]
@@ -95,6 +101,7 @@ namespace Microsoft.DocAsTest
         public static void Run(string expected, string actual, string diff)
         {
             var jsonDiff = new JsonDiffBuilder()
+                .UseIgnoreNull((e, a, name) => name == "ignore-null")
                 .UseNegate()
                 .UseRegex()
                 .UseWildcard()

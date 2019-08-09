@@ -18,7 +18,7 @@ namespace Microsoft.DocAsTest
                 throw new ArgumentNullException(nameof(builder));
 
             return builder.Use(predicate, (expected, actual, name, diff) =>
-                expected.Type == JTokenType.Null ? (expected, expected) : (expected, actual));
+                expected.Type == JTokenType.Null && actual.Type != JTokenType.Undefined ? (expected, expected) : (expected, actual));
         }
 
         public static JsonDiffBuilder UseNegate(this JsonDiffBuilder builder)
