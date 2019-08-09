@@ -610,12 +610,12 @@ outputs:
           {
              "name":"name1",
              "href":"/f1/a",
-             "!homepage": null
+             "homepage": undefined
           },
           {
              "name":"name2",
              "href":"/f2/b",
-             "!homepage": null
+             "homepage": undefined
           }
        ]
     }
@@ -1046,7 +1046,7 @@ outputs:
   docs/index.json: |
     {"_tocRel": "f1/toc.json"}
   docs/a.json: |
-    {"!_tocRel": null}
+    {"_tocRel": undefined}
   docs/f1/toc.json:
   docs/f1/toc.experimental.json:
 ---
@@ -1091,7 +1091,7 @@ outputs:
   docs/f1/a.json:
   docs/f1/b.json:
   docs/toc.json: |
-    { "items":[{ "!tocHref": null }] }
+    { "items":[{ "tocHref": undefined }] }
 ---
 # Toc with violation
 inputs:
@@ -1125,7 +1125,7 @@ inputs:
 outputs:
   docs/dir1/toc.json:
   docs/file-with-no-toc.json: |
-    {"!_tocRel": null}
+    {"_tocRel": undefined}
   docs/dir1/dir2/file-with-toc.json: |
     {"_tocRel": "../toc.json"}
 ---
@@ -1180,7 +1180,7 @@ inputs:
 outputs:
   docs/test.json:
   .errors.log: |
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",2,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",2,1]
 ---
 # Skip-level Toc markdown
 inputs:
@@ -1268,8 +1268,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name": "link to title 1", "href": "a#title-1", "!monikers":null },
-        { "name": "link to title 2", "href": "a#title-2", "!monikers":null }
+        { "name": "link to title 1", "href": "a#title-1", "monikers": undefined },
+        { "name": "link to title 2", "href": "a#title-2", "monikers": undefined }
       ]
     }
   .errors.log: |
@@ -1290,7 +1290,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Title","href":"a#bookmark", "!monikers":null }
+        { "name":"Title","href":"a#bookmark", "monikers": undefined }
       ]
     }
 ---
@@ -1310,7 +1310,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Uid Ref","href":"a","!monikers":null }
+        { "name":"Uid Ref","href":"a","monikers": undefined }
       ]
     }
 ---
@@ -1336,8 +1336,8 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Uid Ref","href":"a","!monikers":null },
-        { "name":"Uid Not Found","href":"b","!monikers":null }
+        { "name":"Uid Ref","href":"a","monikers": undefined },
+        { "name":"Uid Not Found","href":"b","monikers": undefined }
       ]
     }
   .errors.log: |
@@ -1390,7 +1390,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Title A","href":"a","!monikers":null }
+        { "name":"Title A","href":"a","monikers": undefined }
       ]
     }
   docs/a.json:
@@ -1445,7 +1445,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json: |
-    {"items":[{"name":"TOC Ref","items":[{"name":"Uid Ref","href":"a","!monikers":null}],"!monikers":null}]}
+    {"items":[{"name":"TOC Ref","items":[{"name":"Uid Ref","href":"a","monikers": undefined}], "monikers": undefined}]}
 ---
 # markdown toc using bad syntax(multiple inlines for one heading block)
 inputs:
@@ -1473,14 +1473,14 @@ outputs:
   docs/a.json:
   docs/b.json:
   .errors.log: |
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",1,1]
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",2,1]
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",3,1]
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",4,1]
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",5,1]
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",6,1]
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",7,1]
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",8,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",1,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",2,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",3,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",4,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",5,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",6,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",7,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",8,1]
 ---
 # more than 6 leading count of `#`
 inputs:
@@ -1491,7 +1491,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/toc.json: |
-    {"items":[{"name":"19 leading count","href":"a","items":[{"name":"20 leading count","href":"a","!monikers":null}]}]}
+    {"items":[{"name":"19 leading count","href":"a","items":[{"name":"20 leading count","href":"a","monikers": undefined}]}]}
   docs/a.json:
 ---
 # toc with some unknown fields
@@ -1506,7 +1506,7 @@ inputs:
   docs/a.md:
 outputs:
   docs/toc.json: |
-    {"items":[{"name":"test","href":"a"}],"!ms.contentlocale":null,"!ms.translationtype":null }
+    {"items":[{"name":"test","href":"a"}],"ms.contentlocale": undefined,"ms.translationtype": undefined }
   docs/a.json:
 ---
 # respects user input _tocRel
@@ -1592,12 +1592,12 @@ outputs:
             {
                 "name": "item with children",
                 "href": "/a",
-                "!monikers": null,
+                "monikers": undefined,
                 "items": [
                     {
                         "name": "item with monikers",
                         "href": "/b",
-                        "!monikers": null
+                        "monikers": undefined
                     }
                 ]
             },

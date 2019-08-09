@@ -155,7 +155,7 @@ outputs:
       {
         "author": 
           { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-        "!contributors": null
+        "contributors": undefined
       }
     }
 ---
@@ -179,7 +179,7 @@ cache:
       { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
 outputs:
   docs/index.json: |
-    { "_op_gitContributorInformation": { "!author": null } }
+    { "_op_gitContributorInformation": { "author": undefined } }
 ---
 # Use the earliest contributor as author if author not specified in YAML header
 repos:
@@ -285,10 +285,7 @@ cache:
       { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
 outputs:
   docs/index.json: |
-    {
-      "!author": null,
-      "!contributors": null
-    }
+    { "author": undefined, "contributors": undefined }
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repos:
@@ -591,10 +588,9 @@ cache:
 outputs:
   docs/index.json: |
     {
-      "_op_gitContributorInformation": 
-      {
-        "!author_info": null,
-        "!contributors": null,
+      "_op_gitContributorInformation": {
+        "author_info": undefined,
+        "contributors": undefined
       },
       "updated_at": "2018-10-30 12:00 AM"
     }
