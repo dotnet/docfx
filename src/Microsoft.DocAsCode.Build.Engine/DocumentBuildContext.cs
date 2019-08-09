@@ -126,10 +126,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string BuildOutputFolder { get; }
 
-        [Obsolete("use GroupInfo")]
         public string VersionName { get; }
 
-        [Obsolete("use GroupInfo")]
         public string VersionFolder { get; }
 
         public GroupInfo GroupInfo { get; }

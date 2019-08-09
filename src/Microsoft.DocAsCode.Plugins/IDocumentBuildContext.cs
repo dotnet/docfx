@@ -79,13 +79,11 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Current context's version name
         /// </summary>
-        [Obsolete("use GroupInfo")]
         string VersionName { get; }
 
         /// <summary>
         /// Current context's version root output path from ~ ROOT
         /// </summary>
-        [Obsolete("use GroupInfo")]
         string VersionFolder { get; }
 
         /// <summary>

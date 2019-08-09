@@ -22,7 +22,6 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("is_incremental")]
         public bool IsIncremental { get; set; }
 
-        [Obsolete("use group")]
         [JsonProperty("version")]
         public string Version { get; set; }
 

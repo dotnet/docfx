@@ -144,7 +144,6 @@ namespace Microsoft.DocAsCode
         [JsonProperty("customLinkResolver")]
         public string CustomLinkResolver { get; set; }
 
-        [Obsolete]
         [JsonProperty("versions")]
         public Dictionary<string, GroupConfig> Versions
         {
