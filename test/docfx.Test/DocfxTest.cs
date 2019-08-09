@@ -172,11 +172,11 @@ namespace Microsoft.Docs.Build
 
             if (spec.Restore)
             {
-                await Docfx.Run(new[] { "restore", docsetPath, "--output", outputPath }.Concat(options).ToArray());
+                Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath, "--output", outputPath }.Concat(options).ToArray()));
             }
             if (spec.Build)
             {
-                await Docfx.Run(new[] { "build", docsetPath, "--output", outputPath }.Concat(options).ToArray());
+                Assert.Equal(0, await Docfx.Run(new[] { "build", docsetPath, "--output", outputPath }.Concat(options).ToArray()));
             }
 
             // Verify output
