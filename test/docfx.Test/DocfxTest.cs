@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(test, docsetPath, outputPath, spec));
+                    await Assert.ThrowsAnyAsync<Exception>(() => RunCore(test, docsetPath, outputPath, spec));
                 }
             }
             finally
