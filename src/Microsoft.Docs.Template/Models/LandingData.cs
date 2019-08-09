@@ -83,6 +83,7 @@ namespace Microsoft.Docs.Build
         Table,
         Markdown,
         Text,
+        Grid,
     }
 
     public sealed class LandingDataSection
