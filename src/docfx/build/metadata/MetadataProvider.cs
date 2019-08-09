@@ -109,8 +109,8 @@ namespace Microsoft.Docs.Build
 
             foreach (var schemaValidator in _schemaValidators)
             {
-               // Only validate markdown files
-               if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime))
+               // Only validate conceptual files
+               if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime) && !result.ContainsKey("layout"))
                {
                     errors.AddRange(schemaValidator.Validate(result));
                }
