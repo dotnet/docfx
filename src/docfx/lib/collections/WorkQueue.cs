@@ -13,16 +13,10 @@ namespace Microsoft.Docs.Build
     {
         private static readonly int s_maxParallelism = Math.Max(8, Environment.ProcessorCount * 2);
 
-        private readonly Func<T, Task> _run;
         private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
         private readonly ConcurrentHashSet<T> _duplicationDetector = new ConcurrentHashSet<T>();
 
         private readonly TaskCompletionSource<int> _drainTcs = new TaskCompletionSource<int>();
-
-        public WorkQueue(Func<T, Task> run)
-        {
-            _run = run;
-        }
 
         // For progress reporting
         private int _totalCount = 0;
@@ -54,13 +48,18 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
+            if (_drainTcs.Task.IsCompleted)
+            {
+                throw new InvalidOperationException("Cannot enqueue new items after the queue is drained");
+            }
+
             _queue.Enqueue(item);
 
             Interlocked.Increment(ref _totalCount);
             Interlocked.Increment(ref _remainingCount);
         }
 
-        public Task Drain(Action<int, int> progress = null)
+        public Task Drain(Func<T, Task> run, Action<int, int> progress = null)
         {
             if (_queue.Count == 0)
             {
@@ -107,7 +106,7 @@ namespace Microsoft.Docs.Build
 
                 try
                 {
-                    task = _run(item);
+                    task = run(item);
                 }
                 catch (Exception ex)
                 {
