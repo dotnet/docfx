@@ -21,8 +21,8 @@ outputs:
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"a?a=b&amp;c=d#e\">a</a></p>" }
   .errors.log: |
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md",1,9]
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md",1,9]
+    ["warning","bookmark-not-found","Cannot find bookmark '#e' in 'docs/a.md'","docs/b.md",1,9]
+    ["warning","bookmark-not-found","Cannot find bookmark '#a?b=c' in 'docs/b.md'","docs/a.md",1,9]
 ---
 # Links to URLs are preserved as is
 inputs:
@@ -75,9 +75,9 @@ outputs:
         <p>Link to <a href=\"a#heading3\">invalid self</a></p>"
     }
   .errors.log: |
-    ["warning","internal-bookmark-not-found","Cannot find bookmark '#heading3' in 'docs/a.md', did you mean '#heading'?","docs/a.md",3,9]
-    ["warning","internal-bookmark-not-found","Cannot find bookmark '#heading2' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",5,9]
-    ["warning","internal-bookmark-not-found","Cannot find bookmark '#heading1' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",4,9]
+    ["warning","bookmark-not-found","Cannot find bookmark '#heading3' in 'docs/a.md', did you mean '#heading'?","docs/a.md",3,9]
+    ["warning","bookmark-not-found","Cannot find bookmark '#heading2' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",5,9]
+    ["warning","bookmark-not-found","Cannot find bookmark '#heading1' in 'docs/includes/b.md', did you mean '#heading'?","docs/includes/b.md",4,9]
 ---
 # Links to bookmarks in index.md
 inputs:
@@ -258,7 +258,7 @@ outputs:
     {"conceptual":"<p><a href=\"#self\"></a></p>"}
   .errors.log: |
     ["warning","link-out-of-scope","File 'c.md' referenced by link '../c.md' will not be built because it is not included in build scope","docs/a.md",1,9]
-    ["warning","internal-bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md",1,1]
+    ["warning","bookmark-not-found","Cannot find bookmark '#self' in 'c.md'","c.md",1,1]
 ---
 # Don't show warning if link to a resource outside build scope
 inputs:
