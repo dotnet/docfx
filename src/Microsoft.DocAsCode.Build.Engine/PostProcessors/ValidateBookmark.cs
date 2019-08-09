@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             content = $"<a href=\"{link}\">{title}</a>";
                         }
 
-                        string errorCode, errorMessage = string.Empty;
+                        string errorCode, errorMessage;
                         if (internalBookmark)
                         {
                             errorCode = WarningCodes.Build.InvalidInternalBookmark;
