@@ -1129,7 +1129,25 @@ outputs:
   docs/dir1/dir2/file-with-toc.json: |
     {"_tocRel": "../toc.json"}
 ---
-# File referenced by multiple toc with same parent and subdir count, use order alphabetical. For other tests, reference build/TocTest.
+# File referenced by multiple toc, _tocRel uses relative site path first
+inputs:
+  docfx.yml: |
+    routes:
+      dir2/path/: .
+  dir1/TOC.md: |
+    # [link](../a.md)
+  dir2/path/TOC.md: |
+    # [link](../../a.md)
+  a.md:
+outputs:
+  toc.json:
+  dir1/toc.json:
+  a.json: |
+    {"_tocRel": "toc.json"}
+  .dependencymap.json: |
+    {}
+---
+# File referenced by multiple toc with same relative site and file path, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
   docfx.yml: 
   docs/dir1/a/TOC.yml: |

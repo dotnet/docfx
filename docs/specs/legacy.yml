@@ -387,7 +387,7 @@ outputs:
       }
     }
 ---
-# Orphan file, with multiple toc of same site path, look up by filepath
+# Orphan file, with multiple toc of same site path, look up by file path(sub then parent)
 os: windows
 legacy: true # only legacy has toc dependency for orphan file
 inputs:

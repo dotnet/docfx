@@ -13,11 +13,10 @@ namespace Microsoft.Docs.Build
 
         public LegacyVersionProvider(Docset docset)
         {
-            foreach (var (key, monikerRange) in docset.Config.MonikerRange)
+            foreach (var (key, monikerRange) in docset.Config.MonikerRange.Reverse())
             {
                 _versionConfigs.Add(GlobUtility.CreateGlobMatcher(key), monikerRange);
             }
-            _versionConfigs.Reverse();
         }
 
         public string GetLegacyVersion(Document file)
