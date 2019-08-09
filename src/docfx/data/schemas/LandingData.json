@@ -53,7 +53,8 @@
                         "list",
                         "table",
                         "markdown",
-                        "text"
+                        "text",
+                        "grid"
                     ]
                 },
                 "text": {
