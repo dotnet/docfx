@@ -340,11 +340,17 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
 
         /// <summary>
+        /// Defined refrence with by #bookmark fragment between articles, which doesn't exist.
+        /// </summary>
+        public static Error ExternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Warning, "external-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
+
+        /// <summary>
         /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error BookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
+        public static Error InternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            => new Error(ErrorLevel.Warning, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
         // Behavior: ✔️ Message: ❌
         public static Error NullArrayValue(SourceInfo source, string name)

@@ -476,9 +476,9 @@ inputs:
     <h2 id="{{heading}}"></h2>{{{description}}}
 outputs:
   .errors.log: |
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4,"date_time":"*"}
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3,"date_time":"*"}
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7,"date_time":"*"}
+    {"message_severity":"warning","log_item_type":"user","code":"internal-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4,"date_time":"*"}
+    {"message_severity":"warning","log_item_type":"user","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3,"date_time":"*"}
+    {"message_severity":"warning","log_item_type":"user","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7,"date_time":"*"}
   a.mta.json:
   a.raw.page.json:
   b.mta.json:
