@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -16,15 +16,16 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor : IDisposable
     {
-        private static readonly Uri _url = new Uri("https://api.github.com/graphql");
+        private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
         private readonly HttpClient _httpClient = new HttpClient();
-        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
-        private volatile Error _rateLimitError;
-        private volatile Error _unauthorizedError;
+        private readonly ConcurrentHashSet<string> _loginApiCalls = new ConcurrentHashSet<string>();
+        private readonly ConcurrentHashSet<string> _emailApiCalls = new ConcurrentHashSet<string>();
 
-        public GitHubAccessor(string token = null)
+        private volatile Error _error;
+
+        public GitHubAccessor(string token)
         {
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
             if (!string.IsNullOrEmpty(token))
@@ -38,15 +39,14 @@ namespace Microsoft.Docs.Build
 
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
         {
-            if (_rateLimitError != null)
+            // Stop calling GitHub whenever any error is returned from github
+            if (_error != null)
             {
-                return (_rateLimitError, null);
+                return (_error, default);
             }
 
-            if (_unauthorizedError != null)
-            {
-                return default;
-            }
+            Log.Write($"Calling GitHub user API to resolve {login}");
+            Debug.Assert(_loginApiCalls.TryAdd(login));
 
             var query = @"
 query ($login: String!) {
@@ -58,87 +58,35 @@ query ($login: String!) {
   }
 }";
 
-            try
+            var (error, data) = await Query(
+                query,
+                new { login },
+                new { user = new { name = "", email = "", login = "", databaseId = 0 } });
+
+            if (error != null)
             {
-                var (error, response) = await Query(query, new
-                {
-                    login,
-                });
-
-                if (error != null)
-                {
-                    return (error, null);
-                }
-
-                var grahpApiResponse = JsonConvert.DeserializeAnonymousType(response, new
-                {
-                    errors = new[]
-                    {
-                        new
-                        {
-                            type = "",
-                            path = Array.Empty<string>(),
-                            message = "",
-                        },
-                    },
-                    data = new
-                    {
-                        user = new
-                        {
-                            name = "",
-                            email = "",
-                            login = "",
-                            databaseId = 0,
-                        },
-                    },
-                });
-
-                if (grahpApiResponse.errors != null && grahpApiResponse.errors.Length != 0)
-                {
-                    var notFoundError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "NOT_FOUND" && e.path.Contains("user"));
-                    if (notFoundError != null)
-                        return default;
-
-                    var rateLimitError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "MAX_NODE_LIMIT_EXCEEDED" || e.type == "RATE_LIMITED");
-                    if (rateLimitError != null)
-                    {
-                        _rateLimitError = Errors.GitHubApiFailed(rateLimitError.message);
-                    }
-
-                    return (Errors.GitHubApiFailed(rateLimitError?.message ?? grahpApiResponse.errors.First().message), null);
-                }
-
-                return (null, new GitHubUser
-                {
-                    Id = grahpApiResponse.data.user.databaseId,
-                    Login = grahpApiResponse.data.user.login,
-                    Name = string.IsNullOrEmpty(grahpApiResponse.data.user.name) ? grahpApiResponse.data.user.login : grahpApiResponse.data.user.name,
-                    Emails = !string.IsNullOrEmpty(grahpApiResponse.data.user.email) ? new[] { grahpApiResponse.data.user.email } : Array.Empty<string>(),
-                });
+                return (error, null);
             }
-            catch (Exception ex)
+
+            return (null, new GitHubUser
             {
-                Log.Write(ex);
-                return (Errors.GitHubApiFailed(ex.InnerException?.Message ?? ex.Message), null);
-            }
+                Id = data.user.databaseId,
+                Login = data.user.login,
+                Name = string.IsNullOrEmpty(data.user.name) ? data.user.login : data.user.name,
+                Emails = new[] { data.user.email }.Where(email => !string.IsNullOrEmpty(email)).ToArray(),
+            });
         }
 
-        public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit)
+        public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
         {
-            if (_rateLimitError != null)
+            // Stop calling GitHub whenever any error is returned from github
+            if (_error != null)
             {
-                return default;
+                return (_error, default);
             }
 
-            if (_unauthorizedError != null)
-            {
-                return default;
-            }
-
-            if (_unknownRepos.Contains((owner, name)))
-            {
-                return default;
-            }
+            Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
+            Debug.Assert(_emailApiCalls.TryAdd(authorEmail));
 
             var query = @"
 query ($owner: String!, $name: String!, $commit: String!) {
@@ -162,127 +110,85 @@ query ($owner: String!, $name: String!, $commit: String!) {
   }
 }";
 
+            var user = new { name = "", email = "", login = "", databaseId = 0 };
+            var history = new { nodes = new[] { new { author = new { email = "", user } } } };
+
+            var (error, data) = await Query(
+                query,
+                new { owner, name, commit },
+                new { repository = new { @object = new { history } } });
+
+            if (error != null)
+            {
+                return (error, null);
+            }
+
+            var githubUsers = new List<GitHubUser>();
+
+            if (data?.repository?.@object?.history?.nodes == null)
+            {
+                foreach (var node in data.repository.@object.history.nodes)
+                {
+                    if (node.author?.user != null)
+                    {
+                        githubUsers.Add(new GitHubUser
+                        {
+                            Id = node.author.user.databaseId,
+                            Login = node.author.user.login,
+                            Name = string.IsNullOrEmpty(node.author.user.name) ? node.author.user.login : node.author.user.name,
+                            Emails = new[] { node.author.email, node.author.user.email }
+                                .Where(email => !string.IsNullOrEmpty(email)).ToArray(),
+                        });
+                    }
+                }
+            }
+
+            return (null, githubUsers);
+        }
+
+        private async Task<(Error error, T data)> Query<T>(string query, object variables, T dataType)
+        {
+            Debug.Assert(dataType != null);
+
+            var request = JsonUtility.Serialize(new { query, variables });
+
             try
             {
-                var (error, response) = await Query(query, new
+                using (var response = await RetryUtility.Retry(
+                       () => _httpClient.PostAsync(s_url, new StringContent(request, Encoding.UTF8, "application/json")),
+                       ex =>
+                        (ex.InnerException ?? ex) is OperationCanceledException ||
+                        (ex.InnerException ?? ex) is System.IO.IOException))
                 {
-                    owner,
-                    name,
-                    commit,
-                });
+                    var content = await response.Content.ReadAsStringAsync();
 
-                if (error != null)
-                {
-                    return (error, null);
-                }
-
-                var grahpApiResponse = JsonConvert.DeserializeAnonymousType(response, new
-                {
-                    errors = new[]
+                    if (!response.IsSuccessStatusCode)
                     {
-                        new
-                        {
-                            type = "",
-                            path = Array.Empty<string>(),
-                            message = "",
-                        },
-                    },
-                    data = new
-                    {
-                        repository = new
-                        {
-                            @object = new
-                            {
-                                history = new
-                                {
-                                    nodes = new[]
-                                    {
-                                        new
-                                        {
-                                            author = new
-                                            {
-                                                email = "",
-                                                user = new
-                                                {
-                                                    databaseId = 0,
-                                                    login = "",
-                                                    name = "",
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                });
-
-                if (grahpApiResponse.errors != null && grahpApiResponse.errors.Length != 0)
-                {
-                    var notFoundError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "NOT_FOUND" && e.path.Contains("repository"));
-                    if (notFoundError != null)
-                    {
-                        // owner/repo doesn't exist or you don't have access to the repo
-                        _unknownRepos.TryAdd((owner, name));
+                        _error = Errors.GitHubApiFailed(response.StatusCode.ToString());
+                        return (_error, default);
                     }
 
-                    var rateLimitError = grahpApiResponse.errors.FirstOrDefault(e => e.type == "MAX_NODE_LIMIT_EXCEEDED" || e.type == "RATE_LIMITED");
-                    if (rateLimitError != null)
+                    // https://graphql.github.io/graphql-spec/June2018/#sec-Response-Format
+                    // 7.1: If the operation encountered any errors, the response map must contain an entry with key `errors`
+                    if (content.Contains("\"errors\":"))
                     {
-                        _rateLimitError = Errors.GitHubApiFailed(rateLimitError.message);
-                    }
+                        var body = JsonConvert.DeserializeAnonymousType(content, new { errors = new[] { new { message = "" } } });
 
-                    return (Errors.GitHubApiFailed(notFoundError?.message ?? rateLimitError?.message ?? grahpApiResponse.errors.First().message), null);
-                }
-
-                var githubUsers = new List<GitHubUser>();
-                if (grahpApiResponse.data?.repository?.@object?.history?.nodes != null)
-                {
-                    foreach (var node in grahpApiResponse.data?.repository?.@object?.history?.nodes)
-                    {
-                        if (node.author != null)
+                        if (body.errors != null && body.errors.Length > 0)
                         {
-                            githubUsers.Add(new GitHubUser
-                            {
-                                Id = node.author.user?.databaseId,
-                                Login = node.author.user?.login,
-                                Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
-                                Emails = new[] { node.author.email },
-                            });
+                            _error = Errors.GitHubApiFailed(body.errors[0].message);
+                            return (_error, default);
                         }
                     }
-                }
 
-                return (null, githubUsers);
+                    return (null, JsonConvert.DeserializeAnonymousType(content, new { data = default(T) }).data);
+                }
             }
             catch (Exception ex)
             {
-                Log.Write(ex);
-                return (Errors.GitHubApiFailed(ex.InnerException?.Message ?? ex.Message), null);
-            }
-        }
-
-        private async Task<(Error, string)> Query(string query, object variables)
-        {
-            var request = JsonUtility.Serialize(new { query, variables });
-
-            using (var response = await RetryUtility.Retry(
-                   () => _httpClient.PostAsync(_url, new StringContent(request, Encoding.UTF8, "application/json")),
-                   ex =>
-                    (ex.InnerException ?? ex) is OperationCanceledException ||
-                    (ex.InnerException ?? ex) is System.IO.IOException))
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                if (!response.IsSuccessStatusCode)
-                {
-                    if (response.StatusCode == (HttpStatusCode)401)
-                    {
-                        _unauthorizedError = Errors.GitHubApiFailed(content);
-                    }
-                    return (Errors.GitHubApiFailed(content), null);
-                }
-
-                return (null, content);
+                _error = Errors.GitHubApiFailed(ex.Message);
+                Log.Write(_error.ToException(ex));
+                return (_error, default);
             }
         }
     }
