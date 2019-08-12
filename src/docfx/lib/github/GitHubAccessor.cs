@@ -160,13 +160,13 @@ query ($owner: String!, $name: String!, $commit: String!) {
                         (ex.InnerException ?? ex) is OperationCanceledException ||
                         (ex.InnerException ?? ex) is System.IO.IOException))
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-
                     if (!response.IsSuccessStatusCode)
                     {
                         _error = Errors.GitHubApiFailed(response.StatusCode.ToString());
                         return (_error, default);
                     }
+
+                    var content = await response.Content.ReadAsStringAsync();
 
                     // https://graphql.github.io/graphql-spec/June2018/#sec-Response-Format
                     // 7.1: If the operation encountered any errors, the response map must contain an entry with key `errors`
