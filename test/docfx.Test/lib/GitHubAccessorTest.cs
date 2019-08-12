@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build
     public class GitHubAccessorTest
     {
         private readonly static string _token = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
-        private readonly static GitHubAccessor _github = new GitHubAccessor(_token);
 
         [Theory]
         [InlineData("OsmondJiang", 19990166, "Osmond Jiang", "OsmondJiang")]
@@ -20,15 +19,18 @@ namespace Microsoft.Docs.Build
         [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null, null, null)]
         public async Task GetUserByLogin(string login, int? expectedId, string expectedName, string expectedLogin)
         {
-            var (error, profile) = await _github.GetUserByLogin(login);
-
-            // skip check if the machine exceeds the GitHub API rate limit
-            if (!string.IsNullOrEmpty(_token))
+            using (var github = new GitHubAccessor(_token))
             {
-                Assert.Null(error?.Message);
-                Assert.Equal(expectedId, profile?.Id);
-                Assert.Equal(expectedName, profile?.Name);
-                Assert.Equal(expectedLogin, profile?.Login);
+                var (error, profile) = await github.GetUserByLogin(login);
+
+                // skip check if the machine exceeds the GitHub API rate limit
+                if (!string.IsNullOrEmpty(_token))
+                {
+                    Assert.Null(error?.Message);
+                    Assert.Equal(expectedId, profile?.Id);
+                    Assert.Equal(expectedName, profile?.Name);
+                    Assert.Equal(expectedLogin, profile?.Login);
+                }
             }
         }
 
@@ -41,21 +43,24 @@ namespace Microsoft.Docs.Build
         [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", true, null, null, null, null)]
         public async Task GetUserByCommit(string repoOwner, string repoName, string commit, bool hasError, string login, int? id, string name, string[] emails)
         {
-            var (error, users) = await _github.GetUsersByCommit(repoOwner, repoName, commit);
-
-            // skip check if the machine exceeds the GitHub API rate limit
-            if (!string.IsNullOrEmpty(_token))
+            using (var github = new GitHubAccessor(_token))
             {
-                if (hasError)
-                    Assert.NotNull(error?.Message);
-                else
-                    Assert.Null(error?.Message);
+                var (error, users) = await github.GetUsersByCommit(repoOwner, repoName, commit);
 
-                var user = users?.FirstOrDefault();
-                Assert.Equal(login, user?.Login);
-                Assert.Equal(id, user?.Id);
-                Assert.Equal(name, user?.Name);
-                Assert.Equal(emails, user?.Emails);
+                // skip check if the machine exceeds the GitHub API rate limit
+                if (!string.IsNullOrEmpty(_token))
+                {
+                    if (hasError)
+                        Assert.NotNull(error?.Message);
+                    else
+                        Assert.Null(error?.Message);
+
+                    var user = users?.FirstOrDefault();
+                    Assert.Equal(login, user?.Login);
+                    Assert.Equal(id, user?.Id);
+                    Assert.Equal(name, user?.Name);
+                    Assert.Equal(emails, user?.Emails);
+                }
             }
         }
     }

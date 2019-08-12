@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             }
 
             Log.Write($"Calling GitHub user API to resolve {login}");
-            Debug.Assert(_loginApiCalls.TryAdd(login));
+            Debug.Assert(_loginApiCalls.TryAdd(login ?? ""));
 
             var query = @"
 query ($login: String!) {
@@ -86,7 +86,7 @@ query ($login: String!) {
             }
 
             Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
-            Debug.Assert(_emailApiCalls.TryAdd(authorEmail));
+            Debug.Assert(_emailApiCalls.TryAdd(authorEmail ?? ""));
 
             var query = @"
 query ($owner: String!, $name: String!, $commit: String!) {
