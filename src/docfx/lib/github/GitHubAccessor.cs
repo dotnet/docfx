@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentHashSet<string> _loginApiCalls = new ConcurrentHashSet<string>();
         private readonly ConcurrentHashSet<string> _emailApiCalls = new ConcurrentHashSet<string>();
 
-        private volatile Error _noneTransientError;
+        private volatile Error _nonTransientError;
 
         public GitHubAccessor(string token)
         {
@@ -43,9 +43,9 @@ namespace Microsoft.Docs.Build
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
         {
             // Stop calling GitHub whenever any non-transient error is returned from github
-            if (_noneTransientError != null)
+            if (_nonTransientError != null)
             {
-                return (_noneTransientError, default);
+                return (_nonTransientError, default);
             }
 
             Log.Write($"Calling GitHub user API to resolve {login}");
@@ -83,9 +83,9 @@ query ($login: String!) {
         public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
         {
             // Stop calling GitHub whenever any error is returned from github
-            if (_noneTransientError != null)
+            if (_nonTransientError != null)
             {
-                return (_noneTransientError, default);
+                return (_nonTransientError, default);
             }
 
             Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
@@ -166,8 +166,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     if (response.StatusCode == HttpStatusCode.Unauthorized ||
                         response.StatusCode == HttpStatusCode.Forbidden)
                     {
-                        _noneTransientError = Errors.GitHubApiFailed(response.StatusCode.ToString());
-                        return (_noneTransientError, default);
+                        _nonTransientError = Errors.GitHubApiFailed(response.StatusCode.ToString());
+                        return (_nonTransientError, default);
                     }
 
                     var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
@@ -180,8 +180,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
                         if (body.errors != null && body.errors.Length > 0)
                         {
-                            _noneTransientError = Errors.GitHubApiFailed(body.errors[0].message);
-                            return (_noneTransientError, default);
+                            _nonTransientError = Errors.GitHubApiFailed(body.errors[0].message);
+                            return (_nonTransientError, default);
                         }
                     }
 
