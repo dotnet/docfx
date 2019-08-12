@@ -43,9 +43,13 @@ namespace Microsoft.Docs.Build
                 switch (node)
                 {
                     case JObject obj:
-                        var uid = obj.TryGetValue("uid", out var uidValue) && uidValue is JValue uidJValue && uidJValue.Value is string uidStr ? uidStr : null;
+                        if (!schema.Properties.TryGetValue("uid", out var uidSchema) || uidSchema.ContentType != JsonSchemaContentType.Uid)
+                        {
+                            TraverseObjectXref(obj);
+                            break;
+                        }
 
-                        if (uid is null)
+                        if (!obj.TryGetValue<JValue>("uid", out var uidValue) || !(uidValue.Value is string uid))
                         {
                             TraverseObjectXref(obj);
                             break;
@@ -229,7 +233,6 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.Xref:
-
                     var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveAbsoluteXref(content, file);
 
                     if (xrefSpec is InternalXrefSpec internalSpec)

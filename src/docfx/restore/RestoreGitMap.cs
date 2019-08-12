@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -143,7 +143,9 @@ namespace Microsoft.Docs.Build
                     acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
                 }
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 CreateCore(gitVersion.Value, acquired);
+#pragma warning restore CA2000 // Dispose objects before losing scope
             }
 
             return new RestoreGitMap(acquired)

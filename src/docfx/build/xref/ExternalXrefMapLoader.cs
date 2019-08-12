@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private static byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset, RestoreFileMap restoreFileMap)
         {
             var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    var content = docset.RestoreFileMap.GetRestoredFileContent(url);
+                    var content = restoreFileMap.GetRestoredFileContent(url);
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
                     foreach (var spec in xrefMap.References)
                     {
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    var filePath = docset.RestoreFileMap.GetRestoredFilePath(url);
+                    var filePath = restoreFileMap.GetRestoredFilePath(url);
                     foreach (var (uid, spec) in Load(filePath))
                     {
                         // for same uid with multiple specs, we should respect the order of the list

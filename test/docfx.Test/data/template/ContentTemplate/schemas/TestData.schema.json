@@ -12,7 +12,8 @@
                     "type": "string"
                 },
                 "uid": {
-                    "type": "string"
+                    "type": "string",
+                    "contentType":  "uid"
                 },
                 "child.c": {
                     "type": "string"
@@ -49,8 +50,9 @@
             "type": "string",
             "contentType": "InlineMarkdown"
         },
-        "uid": {
-            "type": "string"
+      "uid": {
+          "type": "string",
+          "contentType": "uid"
         },
         "xref": {
             "type": "string",

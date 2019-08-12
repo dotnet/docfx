@@ -102,8 +102,8 @@ namespace Microsoft.Docs.Build
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error GitHubApiFailed(string api, string exMessage)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API '{api}' failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
+        public static Error GitHubApiFailed(string exMessage)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -350,10 +350,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error InternalBookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-        {
-            var dateWarning = "NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.";
-            return new Error(ErrorLevel.Suggestion, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'? {dateWarning}" : $". {dateWarning}")}", source);
-        }
+            => new Error(ErrorLevel.Warning, "internal-bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
         // Behavior: ✔️ Message: ❌
         public static Error NullArrayValue(SourceInfo source, string name)
@@ -577,8 +574,8 @@ namespace Microsoft.Docs.Build
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerConfigMissing()
-            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.");
+        public static Error MonikerConfigMissing(Document file)
+            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", file.FilePath);
 
         /// <summary>
         /// Config's monikerRange and monikerRange defined in yaml header has no intersection,

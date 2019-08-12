@@ -364,7 +364,7 @@ outputs:
   a.json: |
     {"prop": "value"}
 ---
-# Data-transform's input should have both system and user metadata
+# Data-model output should only contains input(or transformed input)
 inputs:
   docfx.yml: |
     globalMetadata:
@@ -383,13 +383,14 @@ outputs:
     {
       "prop": "value",
       "metadata": {
-        "globalMta": "global",
-        "fileMta": "file",
         "userMta": "user",
-        "locale": "en-us",
-        "document_id": "*"
+        "!globalMta": null,
+        "!fileMta": null,
+        "!locale": null
       }
     }
+  .publish.json: |
+    {"files":[{"path":"a.json", "locale":"en-us"}]}
 ---
 # Throw error when content is not an object
 inputs:
@@ -442,8 +443,7 @@ outputs:
       </div>
 ---
 # Validate bookmark against content HTML after applying template for SDP 
-commands:
-  - build --legacy
+legacy: true
 inputs:
   docfx.yml:
   a.yml: |
@@ -476,9 +476,9 @@ inputs:
     <h2 id="{{heading}}"></h2>{{{description}}}
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"internal-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'? NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.","file":"b.yml","line":4,"date_time":"*"}
-    {"message_severity":"warning","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3,"date_time":"*"}
-    {"message_severity":"warning","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7,"date_time":"*"}
+    {"message_severity":"warning","log_item_type":"user","code":"internal-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4,"date_time":"*"}
+    {"message_severity":"warning","log_item_type":"user","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3,"date_time":"*"}
+    {"message_severity":"warning","log_item_type":"user","code":"external-bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7,"date_time":"*"}
   a.mta.json:
   a.raw.page.json:
   b.mta.json:
@@ -511,6 +511,10 @@ inputs:
           }
         }
       }
+    }
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
     }
 outputs:
   a.json: |

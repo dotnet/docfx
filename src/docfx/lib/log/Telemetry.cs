@@ -29,8 +29,8 @@ namespace Microsoft.Docs.Build
 
         public static void SetRepository(string repo, string branch)
         {
-            s_repo = repo ?? "<null>";
-            s_branch = branch ?? "<null>";
+            s_repo = string.IsNullOrEmpty(repo) ? "<null>" : repo;
+            s_branch = string.IsNullOrEmpty(branch) ? "<null>" : branch;
         }
 
         public static void TrackOperationTime(string name, TimeSpan duration)

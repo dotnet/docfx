@@ -6,6 +6,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+#pragma warning disable CA1819 // Properties should not return arrays
+#pragma warning disable SA1402 // File may only contain a single type
+
     public class LandingData
     {
         public string Title { get; set; }
@@ -80,6 +83,7 @@ namespace Microsoft.Docs.Build
         Table,
         Markdown,
         Text,
+        Grid,
     }
 
     public sealed class LandingDataSection
@@ -147,5 +151,4 @@ namespace Microsoft.Docs.Build
 
         public LandingDataImage Image { get; set; }
     }
-
 }

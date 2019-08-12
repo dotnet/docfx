@@ -32,7 +32,7 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/a.png", "path": "../a.png", "source_path": "a.png" }
+        { "url": "/a.png", "path": "../inputs/a.png", "source_path": "a.png" }
       ]
     }
 ---

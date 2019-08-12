@@ -71,9 +71,9 @@ namespace Microsoft.Docs.Build
             var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
 
             var tocCandidates = from toc in filteredTocs
-                                let dirInfo = GetRelativeDirectoryInfo(file, toc)
+                                let dirInfo = GetRelativeDirectoryInfo(file.SitePath, toc.SitePath)
                                 where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
-                                select new TocCandidate(dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount, toc);
+                                select new TocCandidate((dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount), toc, file);
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
@@ -117,10 +117,10 @@ namespace Microsoft.Docs.Build
         }
 
         private static (int subDirectoryCount, int parentDirectoryCount)
-            GetRelativeDirectoryInfo(Document file, Document toc)
+            GetRelativeDirectoryInfo(string pathA, string pathB)
         {
             var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(file.FilePath.Path, toc.FilePath.Path)));
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)));
             if (string.IsNullOrEmpty(relativePath))
             {
                 return default;
@@ -147,42 +147,42 @@ namespace Microsoft.Docs.Build
 
         private sealed class TocCandidate
         {
-            public int SubDirectoryCount { get; }
+            private Lazy<(int subDirectoryCount, int parentDirectoryCount)> _fileDirInfo;
 
-            public int ParentDirectoryCount { get; }
+            public (int subCount, int parentCount) SiteDirInfo { get; }
+
+            public (int subCount, int parentCount) FileDirInfo => _fileDirInfo.Value;
 
             public Document Toc { get; }
 
-            public TocCandidate(int subDirectoryCount, int parentDirectoryCount, Document toc)
+            public TocCandidate((int, int) siteDirInfo, Document toc, Document referencedFile)
             {
-                SubDirectoryCount = subDirectoryCount;
-                ParentDirectoryCount = parentDirectoryCount;
+                SiteDirInfo = siteDirInfo;
                 Toc = toc;
+                _fileDirInfo = new Lazy<(int, int)>(() => GetRelativeDirectoryInfo(referencedFile.FilePath.Path, Toc.FilePath.Path));
             }
         }
 
         /// <summary>
         /// Compare two toc candidate relative to target file.
         /// Return negative if x is closer than y, possitive if x is farer than y, 0 if x equals y.
-        /// 1. sub nearest
-        /// 2. parent nearest
-        /// 4. sub-name lexicographical nearest
+        /// 1. sub nearest(based on site path)
+        /// 2. parent nearest(based on site path)
+        /// 3. sub nearest(based on file path)
+        /// 4. parent nearest(based on file path)
         /// </summary>
-        private static int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
+        private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
         {
-            var subDirCompareResult = candidateX.SubDirectoryCount - candidateY.SubDirectoryCount;
-            if (subDirCompareResult != 0)
-            {
-                return subDirCompareResult;
-            }
-
-            var parentDirCompareResult = candidateX.ParentDirectoryCount - candidateY.ParentDirectoryCount;
-            if (parentDirCompareResult != 0)
-            {
-                return parentDirCompareResult;
-            }
-
-            return candidateX.Toc.CompareTo(candidateY.Toc);
+            var result = candidateX.SiteDirInfo.subCount - candidateY.SiteDirInfo.subCount;
+            if (result == 0)
+                result = candidateX.SiteDirInfo.parentCount - candidateY.SiteDirInfo.parentCount;
+            if (result == 0)
+                result = candidateX.FileDirInfo.subCount - candidateY.FileDirInfo.subCount;
+            if (result == 0)
+                result = candidateX.FileDirInfo.parentCount - candidateY.FileDirInfo.parentCount;
+            if (result == 0)
+                result = candidateX.Toc.FilePath.CompareTo(candidateY.Toc.FilePath);
+            return result;
         }
     }
 }
