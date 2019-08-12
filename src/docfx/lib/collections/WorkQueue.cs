@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
         {
             if (Interlocked.CompareExchange(ref _drained, 1, 0) == 1)
             {
-                throw new InvalidOperationException("Cannot drain twice");
+                throw new InvalidOperationException("Can only drain once");
             }
 
             DrainCore();
