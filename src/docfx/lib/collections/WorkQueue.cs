@@ -33,6 +33,8 @@ namespace Microsoft.Docs.Build
         // Limit parallelism so we don't starve the thread pool.
         private int _parallelism;
 
+        private int _drained;
+
         public void Enqueue(IEnumerable<T> items)
         {
             foreach (var item in items)
@@ -61,9 +63,9 @@ namespace Microsoft.Docs.Build
 
         public Task Drain(Func<T, Task> run, Action<int, int> progress = null)
         {
-            if (_queue.Count == 0)
+            if (Interlocked.CompareExchange(ref _drained, 1, 0) == 1)
             {
-                return Task.CompletedTask;
+                throw new InvalidOperationException("Cannot drain twice");
             }
 
             DrainCore();
