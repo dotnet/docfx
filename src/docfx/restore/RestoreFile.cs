@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -6,13 +6,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
     internal static class RestoreFile
     {
+        private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+        });
+
         public static Task Restore(List<string> urls, Config config)
         {
             return ParallelUtility.ForEach(
@@ -98,7 +106,11 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                using (var response = await HttpClientUtility.GetAsync(url, config, existingEtag))
+                using (var response = await HttpPolicyExtensions
+                    .HandleTransientHttpError()
+                    .Or<OperationCanceledException>()
+                    .RetryAsync(3)
+                    .ExecuteAsync(() => GetAsync(url, config, existingEtag)))
                 {
                     if (response.StatusCode == HttpStatusCode.NotModified)
                     {
@@ -119,6 +131,37 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 throw Errors.DownloadFailed(url).ToException(ex);
+            }
+        }
+
+        private static Task<HttpResponseMessage> GetAsync(string url, Config config, EntityTagHeaderValue etag = null)
+        {
+            // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
+            // "The request message was already sent. Cannot send the same request message multiple times."
+            using (var message = new HttpRequestMessage(HttpMethod.Get, url))
+            {
+                AddAuthorizationHeader(url, message, config);
+
+                if (etag != null)
+                {
+                    message.Headers.IfNoneMatch.Add(etag);
+                }
+                return s_httpClient.SendAsync(message);
+            }
+        }
+
+        private static void AddAuthorizationHeader(string url, HttpRequestMessage message, Config config)
+        {
+            foreach (var (baseUrl, rule) in config.Http)
+            {
+                if (url.StartsWith(baseUrl))
+                {
+                    foreach (var header in rule.Headers)
+                    {
+                        message.Headers.Add(header.Key, header.Value);
+                    }
+                    break;
+                }
             }
         }
     }

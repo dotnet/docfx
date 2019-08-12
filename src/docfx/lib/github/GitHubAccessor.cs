@@ -6,11 +6,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
@@ -154,19 +157,20 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
             try
             {
-                using (var response = await RetryUtility.Retry(
-                       () => _httpClient.PostAsync(s_url, new StringContent(request, Encoding.UTF8, "application/json")),
-                       ex =>
-                        (ex.InnerException ?? ex) is OperationCanceledException ||
-                        (ex.InnerException ?? ex) is System.IO.IOException))
+                using (var response = await HttpPolicyExtensions
+                    .HandleTransientHttpError()
+                    .Or<OperationCanceledException>()
+                    .RetryAsync(3)
+                    .ExecuteAsync(() => _httpClient.PostAsync(s_url, new StringContent(request, Encoding.UTF8, "application/json"))))
                 {
-                    if (!response.IsSuccessStatusCode)
+                    if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                        response.StatusCode == HttpStatusCode.Forbidden)
                     {
                         _error = Errors.GitHubApiFailed(response.StatusCode.ToString());
                         return (_error, default);
                     }
 
-                    var content = await response.Content.ReadAsStringAsync();
+                    var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
                     // https://graphql.github.io/graphql-spec/June2018/#sec-Response-Format
                     // 7.1: If the operation encountered any errors, the response map must contain an entry with key `errors`
@@ -186,9 +190,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
             }
             catch (Exception ex)
             {
-                _error = Errors.GitHubApiFailed(ex.Message);
-                Log.Write(_error.ToException(ex));
-                return (_error, default);
+                Log.Write(ex);
+                return (Errors.GitHubApiFailed(ex.Message), default);
             }
         }
     }
