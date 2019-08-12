@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             var isGitHubRepo = UrlUtility.TryParseGitHubUrl(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
                 UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName);
 
-            if (!document.Docset.Config.GitHub.ResolveUsers || string.IsNullOrEmpty(document.Docset.Config.GitHub.AuthToken))
+            if (!document.Docset.Config.GitHub.ResolveUsers)
             {
                 return (errors, contributionInfo);
             }

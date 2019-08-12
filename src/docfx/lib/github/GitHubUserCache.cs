@@ -37,9 +37,12 @@ namespace Microsoft.Docs.Build
             _cachePath = AppData.GitHubUserCachePath;
             _expirationInHours = config.GitHub.UserCacheExpirationInHours;
 
-            _githubAccessor = new GitHubAccessor(config.GitHub.AuthToken);
-            _getUserByLoginFromGitHub = _githubAccessor.GetUserByLogin;
-            _getUsersByCommitFromGitHub = _githubAccessor.GetUsersByCommit;
+            if (!string.IsNullOrEmpty(config.GitHub.AuthToken))
+            {
+                _githubAccessor = new GitHubAccessor(config.GitHub.AuthToken);
+                _getUserByLoginFromGitHub = _githubAccessor.GetUserByLogin;
+                _getUsersByCommitFromGitHub = _githubAccessor.GetUsersByCommit;
+            }
 
             if (File.Exists(_cachePath))
             {
@@ -78,7 +81,12 @@ namespace Microsoft.Docs.Build
 
                 Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
 
-                var (error, user) = await _getUserByLoginFromGitHub(login);
+                if (_getUserByLoginFromGitHub == null)
+                {
+                    return default;
+                }
+
+                var (error, user) = await _getUserByLoginFromGitHub.Invoke(login);
                 if (error is null)
                 {
                     if (user is null)
@@ -111,6 +119,11 @@ namespace Microsoft.Docs.Build
                 }
 
                 Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
+
+                if (_getUsersByCommitFromGitHub == null)
+                {
+                    return default;
+                }
 
                 var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, authorEmail);
 
@@ -148,7 +161,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            _githubAccessor.Dispose();
+            _githubAccessor?.Dispose();
             _syncRoot.Dispose();
         }
 
