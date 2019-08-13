@@ -24,20 +24,34 @@
 
 ### Details
 - Get `Input Metadata` from file(`yml header` or `metadata section`) & config(`global/file metadata`)
+
+  *markdown example:*
   ```md
   ---
   ms.author: docfx
   author: docfx
-  ms.updated_at: 8/13/2019
+  ms.updated_at: "8/13/2019"
   ---
 
+  # title
   markdown content
   ```
 
+  *yml example:*
+  ```yml
+  metadata: 
+    ms.author: docfx
+    author: docfx
+    ms.updated_at: "8/13/2019"
+  xref: uid
+  ```
+
 - Create `System Metadata` (including `document_id`, `git_content_url`...) based on `Input Metadata`
+
+  *system metadata example:*
   ```json
   {
-      "document_id": "abc",
+      "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
       "git_content_url": "https://github.com/dotnet/docfx/docs/build-page.md",
       "locale": "en-us",
       "canonical_url": "https://docs.microsoft.com/docfx/build-page"
@@ -48,6 +62,20 @@
 - [SDP] Transform `Input Metadata` based on `Schema`
 
 - Merge `System Metadata` into `Input Metadata` to create `Output Metadata`
+ 
+  *system metadata example:*
+  ```json
+  {
+    "ms.author": "docfx",
+    "ms.updated_at": "8/13/2019",
+    "author": "docfx",
+    "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
+    "git_content_url": "https://github.com/dotnet/docfx/docs/build-page.md",
+    "locale": "en-us",
+    "canonical_url": "https://docs.microsoft.com/docfx/build-page"
+    ...
+  }
+  ```
 
 ## Build Model
 
@@ -59,6 +87,8 @@
 
 ### Details
 - [Conceptual] Markup markdown content to create `Intermediate Model`
+
+  *conceptual intermediate model example:*
   ```json
   {
       "conceptual": "html content",
@@ -69,12 +99,15 @@
   ```
 
 - [SDP] Transform `Input Model` based on `Schema` to create `Intermediate Model`
+
+  *sdp intermediate model example:*
   ```json
   {
       "metadata": 
       {
+          "ms.author": "docfx",
+          "author": "author",
           "title": "title",
-          "summary": "summary",
       },
       "xref":
       {
@@ -89,6 +122,8 @@
     - `Intermediate Model`
 
     - `Output Metadata`
+
+  > Merge order: `Output Metadata` -> overwrite -> `Intermediate Model`
 
 ## Outputs
 
@@ -113,11 +148,13 @@
 ### Details
 
 - Create `Template Intermediate Metadata` from running `Conceptual/{MIME}.mta.json.js` against to `Output Model`
+
+  *template intermediate metadata example:*
   ```json
   {
     "titile": "title",
     "author": "docfx",
-    "document_id": "abc",
+    "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
     "_op_raw_title": "internal raw title",
     "_op_gitContributorInformation": {
       "updated_at": "8/13/2019",
@@ -132,11 +169,13 @@
   ```
 
 - Create `Template Metadata` based on `Template Intermediate Metadata`(filter out internal only metadata)
+
+  *template output metadata(.mta.json) example:*
   ```json
   {
     "title": "title",
     "author": "docfx",
-    "document_id": "abc"
+    "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e"
   }
   ```
 
@@ -147,13 +186,15 @@
 - Create `Template Model` based on:
   - `Template Metadata`(processed)
   - `Template Html Content`
+
+  *template output model(.raw.page.json) example:*
   ```json
   {
       "content": "template html content",
       "RawMetadata": {
         "titile": "title",
         "author": "docfx",
-        "document_id": "abc",
+        "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
         "_op_raw_title": "internal raw title",
         "_op_gitContributorInformation": {
           "updated_at": "8/13/2019",
