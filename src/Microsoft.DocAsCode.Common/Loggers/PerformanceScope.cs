@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Common
     public sealed class PerformanceScope : IDisposable
     {
         private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly AggregatedPerformanceScope _aggregatedPerformanceLogger = null;
         private readonly Action<TimeSpan> _logger;
 
         public PerformanceScope(string content, LogLevel level) : this(s => Logger.Log(level, GetContent(content, s)))
@@ -20,8 +21,13 @@ namespace Microsoft.DocAsCode.Common
         {
         }
 
-        public PerformanceScope(Action<TimeSpan> logger = null)
+        public PerformanceScope(string content, LogLevel level, AggregatedPerformanceScope logger) : this(content, level)
         {
+            _aggregatedPerformanceLogger = logger;
+        }
+
+        public PerformanceScope(Action<TimeSpan> logger = null)
+        { 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _stopwatch.Restart();
         }
@@ -30,6 +36,7 @@ namespace Microsoft.DocAsCode.Common
         {
             _stopwatch.Stop();
             _logger(_stopwatch.Elapsed);
+            _aggregatedPerformanceLogger?.Log(LoggerPhaseScope.GetPhaseName(), _stopwatch.Elapsed);
         }
 
         private static string GetContent(string content, TimeSpan span)

@@ -107,12 +107,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void Prebuild(HostService hostService)
         {
-            BuildPhaseUtility.RunBuildSteps(
+            using (var aggregatedPerformanceScope = new AggregatedPerformanceScope())
+            {
+                BuildPhaseUtility.RunBuildSteps(
                 hostService.Processor.BuildSteps,
                 buildStep =>
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
-                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
+                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose, aggregatedPerformanceScope))
                     {
                         var models = buildStep.Prebuild(hostService.Models, hostService);
                         if (!object.ReferenceEquals(models, hostService.Models))
@@ -122,29 +124,33 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                 });
+            }
         }
 
         private static void BuildArticle(HostService hostService, int maxParallelism)
         {
-            hostService.Models.RunAll(
-                m =>
-                {
-                    using (new LoggerFileScope(m.LocalPathFromRoot))
+            using (var aggregatedPerformanceScope = new AggregatedPerformanceScope())
+            {
+                hostService.Models.RunAll(
+                    m =>
                     {
-                        Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
-                        BuildPhaseUtility.RunBuildSteps(
-                            hostService.Processor.BuildSteps,
-                            buildStep =>
-                            {
-                                Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
-                                using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic))
+                        using (new LoggerFileScope(m.LocalPathFromRoot))
+                        {
+                            Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
+                            BuildPhaseUtility.RunBuildSteps(
+                                hostService.Processor.BuildSteps,
+                                buildStep =>
                                 {
-                                    buildStep.Build(m, hostService);
-                                }
-                            });
-                    }
-                },
-                maxParallelism);
+                                    Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
+                                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic, aggregatedPerformanceScope))
+                                    {
+                                        buildStep.Build(m, hostService);
+                                    }
+                                });
+                        }
+                    },
+                    maxParallelism);
+            }
         }
 
         #endregion

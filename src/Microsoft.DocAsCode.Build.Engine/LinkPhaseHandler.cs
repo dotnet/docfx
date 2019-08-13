@@ -54,7 +54,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void Postbuild(List<HostService> hostServices, int maxParallelism)
         {
-            hostServices.RunAll(
+            using (var aggregatedPerformanceScope = new AggregatedPerformanceScope())
+            {
+                hostServices.RunAll(
                 hostService =>
                 {
                     using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
@@ -62,11 +64,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
                         using (new LoggerPhaseScope("Postbuild", LogLevel.Verbose))
                         {
-                            Postbuild(hostService);
+                            Postbuild(hostService, aggregatedPerformanceScope);
                         }
                     }
                 },
                 maxParallelism);
+            }
         }
 
         private void Save(List<HostService> hostServices, int maxParallelism)
@@ -221,14 +224,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
         }
 
-        private static void Postbuild(HostService hostService)
+        private static void Postbuild(HostService hostService, AggregatedPerformanceScope aggregatedPerformanceScope)
         {
             BuildPhaseUtility.RunBuildSteps(
                 hostService.Processor.BuildSteps,
                 buildStep =>
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
+                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose, aggregatedPerformanceScope))
                     {
                         buildStep.Postbuild(hostService.Models, hostService);
                     }
