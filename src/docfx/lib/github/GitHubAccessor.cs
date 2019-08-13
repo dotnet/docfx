@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,12 +20,12 @@ namespace Microsoft.Docs.Build
     {
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
+        private static readonly string[] s_fatelErrorCodes = { "MAX_NODE_LIMIT_EXCEEDED", "RATE_LIMITED" };
+        private static readonly HttpStatusCode[] s_fatelStatusCodes = { HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden };
+
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private readonly ConcurrentHashSet<string> _loginApiCalls = new ConcurrentHashSet<string>();
-        private readonly ConcurrentHashSet<string> _emailApiCalls = new ConcurrentHashSet<string>();
-
-        private volatile Error _nonTransientError;
+        private volatile Error _fatelError;
 
         public GitHubAccessor(string token)
         {
@@ -43,13 +42,12 @@ namespace Microsoft.Docs.Build
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
         {
             // Stop calling GitHub whenever any non-transient error is returned from github
-            if (_nonTransientError != null)
+            if (_fatelError != null)
             {
-                return (_nonTransientError, default);
+                return (_fatelError, default);
             }
 
             Log.Write($"Calling GitHub user API to resolve {login}");
-            Debug.Assert(_loginApiCalls.TryAdd(login ?? ""));
 
             var query = @"
 query ($login: String!) {
@@ -66,7 +64,7 @@ query ($login: String!) {
                 new { login },
                 new { user = new { name = "", email = "", login = "", databaseId = 0 } });
 
-            if (error != null)
+            if (error != null || data?.user is null)
             {
                 return (error, null);
             }
@@ -83,13 +81,12 @@ query ($login: String!) {
         public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
         {
             // Stop calling GitHub whenever any error is returned from github
-            if (_nonTransientError != null)
+            if (_fatelError != null)
             {
-                return (_nonTransientError, default);
+                return (_fatelError, default);
             }
 
             Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
-            Debug.Assert(_emailApiCalls.TryAdd(authorEmail ?? ""));
 
             var query = @"
 query ($owner: String!, $name: String!, $commit: String!) {
@@ -128,7 +125,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
             var githubUsers = new List<GitHubUser>();
 
-            if (data?.repository?.@object?.history?.nodes == null)
+            if (data?.repository?.@object?.history?.nodes != null)
             {
                 foreach (var node in data.repository.@object.history.nodes)
                 {
@@ -163,29 +160,27 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     .RetryAsync(3)
                     .ExecuteAsync(() => _httpClient.PostAsync(s_url, new StringContent(request, Encoding.UTF8, "application/json"))))
                 {
-                    if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                        response.StatusCode == HttpStatusCode.Forbidden)
+                    if (s_fatelStatusCodes.Contains(response.StatusCode))
                     {
-                        _nonTransientError = Errors.GitHubApiFailed(response.StatusCode.ToString());
-                        return (_nonTransientError, default);
+                        Log.Write(await response.Content.ReadAsStringAsync());
+                        _fatelError = Errors.GitHubApiFailed(response.StatusCode.ToString());
+                        return (_fatelError, default);
                     }
 
                     var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
-                    // https://graphql.github.io/graphql-spec/June2018/#sec-Response-Format
-                    // 7.1: If the operation encountered any errors, the response map must contain an entry with key `errors`
-                    if (content.Contains("\"errors\":"))
-                    {
-                        var body = JsonConvert.DeserializeAnonymousType(content, new { errors = new[] { new { message = "" } } });
+                    var body = JsonConvert.DeserializeAnonymousType(
+                        content,
+                        new { data = default(T), errors = new[] { new { type = "", message = "" } } });
 
-                        if (body.errors != null && body.errors.Length > 0)
-                        {
-                            _nonTransientError = Errors.GitHubApiFailed(body.errors[0].message);
-                            return (_nonTransientError, default);
-                        }
+                    var fatelError = body.errors?.FirstOrDefault(error => s_fatelErrorCodes.Contains(error.type));
+                    if (fatelError != null)
+                    {
+                        _fatelError = Errors.GitHubApiFailed($"[{fatelError.type}] {fatelError.message}");
+                        return (_fatelError, default);
                     }
 
-                    return (null, JsonConvert.DeserializeAnonymousType(content, new { data = default(T) }).data);
+                    return (null, body.data);
                 }
             }
             catch (Exception ex)
