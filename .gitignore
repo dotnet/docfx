@@ -12,6 +12,7 @@ obj
 *.vspx
 *.vsps
 *.vsp
+*.diagsession
 
 *.DS_Store
 
