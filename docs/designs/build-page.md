@@ -113,8 +113,32 @@
 ### Details
 
 - Create `Template Intermediate Metadata` from running `Conceptual/{MIME}.mta.json.js` against to `Output Model`
+  ```json
+  {
+    "titile": "title",
+    "author": "docfx",
+    "document_id": "abc",
+    "_op_raw_title": "internal raw title",
+    "_op_gitContributorInformation": {
+      "updated_at": "8/13/2019",
+      "contributors": [
+        {
+          "name": "docfx",
+          "email": "docfx@microsoft.com"
+        }
+      ]
+    }  
+  }
+  ```
 
 - Create `Template Metadata` based on `Template Intermediate Metadata`(filter out internal only metadata)
+  ```json
+  {
+    "title": "title",
+    "author": "docfx",
+    "document_id": "abc"
+  }
+  ```
 
 - [Conceptual] Get `Template Html Content` from `Output Model`(`markup result`)
 
@@ -126,7 +150,21 @@
   ```json
   {
       "content": "template html content",
-      "RawMetadata": "template intermediate metadata",
-      "PageMetadata": "template metadata tags",
+      "RawMetadata": {
+        "titile": "title",
+        "author": "docfx",
+        "document_id": "abc",
+        "_op_raw_title": "internal raw title",
+        "_op_gitContributorInformation": {
+          "updated_at": "8/13/2019",
+          "contributors": [
+            {
+              "name": "docfx",
+              "email": "docfx@microsoft.com"
+            }
+          ]
+        }  
+      },
+      "PageMetadata": "html metadata",
   }
   ```
