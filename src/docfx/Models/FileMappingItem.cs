@@ -78,7 +78,6 @@ namespace Microsoft.DocAsCode
         public string DestinationFolder { get; set; }
 
         [JsonProperty("version")]
-        [Obsolete("use GroupName")]
         public string VersionName
         {
             get
