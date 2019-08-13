@@ -131,18 +131,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             content = $"<a href=\"{link}\">{title}</a>";
                         }
 
-                        string errorCode, dateWarning = string.Empty;
-                        if (internalBookmark)
-                        {
-                            errorCode = WarningCodes.Build.InvalidInternalBookmark;
-                            dateWarning = " NOTE: This Suggestion will be elevated to a Warning on 8/26/2019. Please fix invalid bookmarks as soon as possible.";
-                        }
-                        else
-                        {
-                            errorCode = WarningCodes.Build.InvalidExternalBookmark;
-                        }
-                        
-                        Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.{dateWarning}",
+                        string errorCode = internalBookmark ? WarningCodes.Build.InvalidInternalBookmark : WarningCodes.Build.InvalidExternalBookmark;
+                        Logger.LogWarning($"Invalid link: '{content}'. The file {linkedToFileSrc} doesn't contain a bookmark named '{bookmark}'.",
                             null,
                             currentFileSrc,
                             linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null,

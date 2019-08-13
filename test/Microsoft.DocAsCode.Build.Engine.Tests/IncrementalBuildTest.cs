@@ -1974,7 +1974,7 @@ tagRules : [
                         templateFolder: templateFolder,
                         intermediateFolder: intermediateFolder);
                     Assert.Equal(2, Listener.Items.Count);
-                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark")));
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Invalid link: '[link](#invalid)'.")));
                     ClearListener();
 
                     // update conceptualFile2
@@ -1991,7 +1991,7 @@ tagRules : [
                         templateFolder: templateFolder,
                         intermediateFolder: intermediateFolder);
                     Assert.Equal(2, Listener.Items.Count);
-                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark")));
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Invalid link: '[link](#invalid)'.")));
                     ClearListener();
 
                     // update conceptualFile2
@@ -2008,7 +2008,7 @@ tagRules : [
                         templateFolder: templateFolder,
                         intermediateFolder: intermediateFolder);
                     Assert.Equal(2, Listener.Items.Count);
-                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark")));
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Invalid link: '[link](#invalid)'.")));
                     ClearListener();
                 }
             }
