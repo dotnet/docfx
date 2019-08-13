@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -19,9 +20,6 @@ namespace Microsoft.Docs.Build
     internal sealed class GitHubAccessor : IDisposable
     {
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
-
-        private static readonly string[] s_fatelErrorCodes = { "MAX_NODE_LIMIT_EXCEEDED", "RATE_LIMITED" };
-        private static readonly HttpStatusCode[] s_fatelStatusCodes = { HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden };
 
         private readonly HttpClient _httpClient = new HttpClient();
 
@@ -100,6 +98,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
               user {
                 databaseId
                 name
+                email
                 login
               }
             }
@@ -157,10 +156,11 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 using (var response = await HttpPolicyExtensions
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
+                    .Or<IOException>()
                     .RetryAsync(3)
                     .ExecuteAsync(() => _httpClient.PostAsync(s_url, new StringContent(request, Encoding.UTF8, "application/json"))))
                 {
-                    if (s_fatelStatusCodes.Contains(response.StatusCode))
+                    if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
                     {
                         Log.Write(await response.Content.ReadAsStringAsync());
                         _fatelError = Errors.GitHubApiFailed(response.StatusCode.ToString());
@@ -173,11 +173,24 @@ query ($owner: String!, $name: String!, $commit: String!) {
                         content,
                         new { data = default(T), errors = new[] { new { type = "", message = "" } } });
 
-                    var fatelError = body.errors?.FirstOrDefault(error => s_fatelErrorCodes.Contains(error.type));
-                    if (fatelError != null)
+                    if (body.errors != null)
                     {
-                        _fatelError = Errors.GitHubApiFailed($"[{fatelError.type}] {fatelError.message}");
-                        return (_fatelError, default);
+                        foreach (var error in body.errors)
+                        {
+                            switch (error.type)
+                            {
+                                case "NOT_FOUND":
+                                    break;
+
+                                case "MAX_NODE_LIMIT_EXCEEDED":
+                                case "RATE_LIMITED":
+                                    _fatelError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
+                                    return (_fatelError, default);
+
+                                default:
+                                    return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), default);
+                            }
+                        }
                     }
 
                     return (null, body.data);

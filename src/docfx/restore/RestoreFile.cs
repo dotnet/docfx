@@ -109,6 +109,7 @@ namespace Microsoft.Docs.Build
                 using (var response = await HttpPolicyExtensions
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
+                    .Or<IOException>()
                     .RetryAsync(3)
                     .ExecuteAsync(() => GetAsync(url, config, existingEtag)))
                 {
