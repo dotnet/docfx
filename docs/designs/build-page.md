@@ -4,7 +4,7 @@
 
 - markdown file (conceptual)
   - markdown content
-  - metadata defined in yml header
+  - metadata defined in `yml header`
 
 - yml/json file (schema driven)
   - input model
@@ -93,3 +93,34 @@
   ![build-output-workflow](./images/build-pipeline-output.png)
 
 ## Apply Template
+
+### Interfaces
+
+- `{}.mta.json.js` is to process `Output Model` to generate `Template Metadata`
+
+- `{}.html.primary.js` and `{}.html.primary.tmpl` is to process `Output Model` to generate `Template Html Content`
+
+### Workflow
+
+  ![build-pipeline-template-output](./images/build-pipeline-template-output.png)
+
+### Details
+
+- [Conceptual] Get `Template Html Content` from `Output Model`(`markup result`)
+
+- [SDP] Create `Template Html Content` from running `{MIME}.html.primary.js` and `{MIME}.html.primary.tmpl` against to `Output Model`.
+
+- Create `Template Intermediate Metadata` from running `Conceptual/{MIME}.mta.json.js` against to `Output Model`
+
+- Create `Template Metadata` based on `Template Intermediate Metadata`(filter out internal only metadata)
+
+- Create `Template Model` based on:
+  - `Template Metadata`(processed)
+  - `Template Html Content`
+  ```json
+  {
+      "content": "template html content",
+      "RawMetadata": "template intermediate metadata",
+      "PageMetadata": "template metadata tags",
+  }
+  ```
