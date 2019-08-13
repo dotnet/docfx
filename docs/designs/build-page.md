@@ -1,19 +1,26 @@
 # Build page pipeline workflow
 
-## Build page pipeline input
+## Input
 
-- markdown files (conceptual)
+- markdown file (conceptual)
   - markdown content
   - metadata defined in yml header
 
-- yml/json files (schema driven)
+- yml/json file (schema driven)
   - input model
   - metadata defined in `metadata` section
 
-- config file (global metadata + file metadata)
+- config file
+  - global metadata
+  - file metadata
 
 ## Build Metadata
 
+### Workflow
+  
+  ![build-metadata-workflow](./images/build-pipeline-output-metadata.png)
+
+### Details
 - Get `Input Metadata` from file(`yml header` or `metadata section`) & config(`global/file metadata`)
   ```md
   ---
@@ -40,10 +47,13 @@
 
 - Merge `System Metadata` into `Input Metadata` to create `Output Metadata`
 
-  ![build-metadata-workflow](./images/build-pipeline-output-metadata.png)
+## Build Model
 
-## Build Page
+### Workflow
 
+  ![build-output-model-workflow](./images/build-pipeline-output-model.png)
+
+### Details
 - [Conceptual] Markup markdown files to create `Intermediate Model`
   ```json
   {
@@ -76,9 +86,9 @@
 
     - `Output Metadata`
 
-  ![build-output-model-workflow](./images/build-pipeline-output-model.png)
+## Build Outputs
 
-# Build output workflow
+### Worlflow
 
   ![build-output-workflow](./images/build-pipeline-output.png)
 
