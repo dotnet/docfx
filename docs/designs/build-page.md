@@ -58,7 +58,7 @@
   ![build-output-model-workflow](./images/build-pipeline-output-model.png)
 
 ### Details
-- [Conceptual] Markup markdown files to create `Intermediate Model`
+- [Conceptual] Markup markdown content to create `Intermediate Model`
   ```json
   {
       "conceptual": "html content",
@@ -112,13 +112,13 @@
 
 ### Details
 
-- [Conceptual] Get `Template Html Content` from `Output Model`(`markup result`)
-
-- [SDP] Create `Template Html Content` from running `{MIME}.html.primary.js` and `{MIME}.html.primary.tmpl` against to `Output Model`.
-
 - Create `Template Intermediate Metadata` from running `Conceptual/{MIME}.mta.json.js` against to `Output Model`
 
 - Create `Template Metadata` based on `Template Intermediate Metadata`(filter out internal only metadata)
+
+- [Conceptual] Get `Template Html Content` from `Output Model`(`markup result`)
+
+- [SDP] Create `Template Html Content` from running `{MIME}.html.primary.js` and `{MIME}.html.primary.tmpl` against to `Output Model`.
 
 - Create `Template Model` based on:
   - `Template Metadata`(processed)
