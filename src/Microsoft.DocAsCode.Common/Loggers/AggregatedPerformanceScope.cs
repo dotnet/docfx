@@ -10,8 +10,8 @@ namespace Microsoft.DocAsCode.Common
 
     public sealed class AggregatedPerformanceScope : IDisposable
     {
-        private readonly ConcurrentDictionary<string, Lazy<AggregatedPerformance>> _aggregatedPerformanceByScope = new ConcurrentDictionary<string, Lazy<AggregatedPerformance>>();
-        private readonly LogLevel _logLevel = LogLevel.Info;
+        private readonly ConcurrentDictionary<string, Lazy<AggregatedPerformance>> _aggregatedPerformanceByPhase = new ConcurrentDictionary<string, Lazy<AggregatedPerformance>>();
+        private readonly LogLevel _logLevel = LogLevel.Verbose;
 
         public AggregatedPerformanceScope(LogLevel? logLevel = null)
         {
@@ -21,18 +21,25 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        public void Log(string phaseName, TimeSpan elapsedTime)
+        public void Log(TimeSpan elapsedTime)
         {
-            var performanceByPhase = _aggregatedPerformanceByScope.GetOrAdd(phaseName, _ => new Lazy<AggregatedPerformance>(() => new AggregatedPerformance())).Value;
+            var phaseName = LoggerPhaseScope.GetPhaseName();
+            if (string.IsNullOrEmpty(phaseName))
+            {
+                return;
+            }
 
-            performanceByPhase.Log(elapsedTime.TotalMilliseconds);
+            var aggregatedPerformanceByPhase = _aggregatedPerformanceByPhase.GetOrAdd(phaseName, _ => new Lazy<AggregatedPerformance>(() => new AggregatedPerformance())).Value;
+
+            aggregatedPerformanceByPhase.Log(elapsedTime.TotalMilliseconds);
         }
 
         public void Dispose()
         {
-            foreach (var perf in _aggregatedPerformanceByScope.OrderBy(kvp => kvp.Key))
+            foreach (var aggregatedPerformanceByPhase in _aggregatedPerformanceByPhase.OrderBy(kvp => kvp.Key))
             {
-                Logger.Log(_logLevel, $"Phase {perf.Key} runs {perf.Value.Value.Occurrence} times with average time of {perf.Value.Value.TotalTimeInMilliseconds / perf.Value.Value.Occurrence} milliseconds.");
+                var aggregatedPerformance = aggregatedPerformanceByPhase.Value.Value;
+                Logger.Log(_logLevel, $"Phase '{aggregatedPerformanceByPhase.Key}' runs {aggregatedPerformance.Occurrence} times with average time of {aggregatedPerformance.TotalTimeInMilliseconds / aggregatedPerformance.Occurrence} milliseconds.");
             }
         }
 

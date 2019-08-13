@@ -21,9 +21,9 @@ namespace Microsoft.DocAsCode.Common
         {
         }
 
-        public PerformanceScope(string content, LogLevel level, AggregatedPerformanceScope logger) : this(content, level)
+        public PerformanceScope(string content, LogLevel level, AggregatedPerformanceScope aggregatedPerformanceLogger) : this(content, level)
         {
-            _aggregatedPerformanceLogger = logger;
+            _aggregatedPerformanceLogger = aggregatedPerformanceLogger;
         }
 
         public PerformanceScope(Action<TimeSpan> logger = null)
@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Common
         {
             _stopwatch.Stop();
             _logger(_stopwatch.Elapsed);
-            _aggregatedPerformanceLogger?.Log(LoggerPhaseScope.GetPhaseName(), _stopwatch.Elapsed);
+            _aggregatedPerformanceLogger?.Log(_stopwatch.Elapsed);
         }
 
         private static string GetContent(string content, TimeSpan span)

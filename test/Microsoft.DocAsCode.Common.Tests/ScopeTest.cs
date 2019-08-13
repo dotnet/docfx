@@ -224,15 +224,15 @@ namespace Microsoft.DocAsCode.Common.Tests
 
                 var itemOfA = listener.Items[13];
                 Assert.Equal(Logger.LogLevelThreshold, itemOfA.LogLevel);
-                Assert.Contains("Phase A runs 1 times with average time of", itemOfA.Message);
+                Assert.Contains("Phase 'A' runs 1 times with average time of", itemOfA.Message);
 
                 var itemOfAB = listener.Items[14];
                 Assert.Equal(Logger.LogLevelThreshold, itemOfAB.LogLevel);
-                Assert.Contains("Phase A.B runs 2 times with average time of", itemOfAB.Message);
+                Assert.Contains("Phase 'A.B' runs 2 times with average time of", itemOfAB.Message);
 
                 var itemOfAC = listener.Items[15];
                 Assert.Equal(Logger.LogLevelThreshold, itemOfAC.LogLevel);
-                Assert.Contains("Phase A.C runs 10 times with average time of", itemOfAC.Message);
+                Assert.Contains("Phase 'A.C' runs 10 times with average time of", itemOfAC.Message);
             }
             finally
             {
