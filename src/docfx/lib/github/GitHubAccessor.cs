@@ -129,14 +129,14 @@ query ($owner: String!, $name: String!, $commit: String!) {
             {
                 foreach (var node in data.repository.@object.history.nodes)
                 {
-                    if (node.author?.user != null)
+                    if (node.author != null)
                     {
                         githubUsers.Add(new GitHubUser
                         {
-                            Id = node.author.user.databaseId,
-                            Login = node.author.user.login,
-                            Name = string.IsNullOrEmpty(node.author.user.name) ? node.author.user.login : node.author.user.name,
-                            Emails = new[] { node.author.email, node.author.user.email }
+                            Id = node.author?.user.databaseId,
+                            Login = node.author?.user.login,
+                            Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
+                            Emails = new[] { node.author.email, node.author.user?.email }
                                 .Where(email => !string.IsNullOrEmpty(email)).ToArray(),
                         });
                     }
