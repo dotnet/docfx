@@ -63,9 +63,14 @@ namespace Microsoft.Docs.Build
 
         public Task Drain(Func<T, Task> run, Action<int, int> progress = null)
         {
-            if (Interlocked.CompareExchange(ref _drained, 1, 0) == 1)
+            if (Interlocked.Exchange(ref _drained, 1) == 1)
             {
                 throw new InvalidOperationException("Can only drain once");
+            }
+
+            if (_queue.Count == 0)
+            {
+                return Task.CompletedTask;
             }
 
             DrainCore();
