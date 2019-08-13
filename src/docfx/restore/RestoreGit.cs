@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Identity.Client;
 
 namespace Microsoft.Docs.Build
 {
@@ -131,6 +132,7 @@ namespace Microsoft.Docs.Build
                                     // re-use existing work tree
                                     // checkout to {headCommit}, no need to fetch
                                     Debug.Assert(!GitUtility.IsDirty(workTreePath));
+                                    Log.Write($"Reusing existing worktree: {workTreePath}");
                                     GitUtility.Checkout(workTreePath, headCommit);
                                 }
                                 else
@@ -149,6 +151,7 @@ namespace Microsoft.Docs.Build
                                         }
 
                                         Debug.Assert(!Directory.Exists(workTreePath));
+                                        Log.Write($"Create new worktree: {workTreePath}");
                                         GitUtility.PruneWorkTree(repoPath);
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
@@ -167,6 +170,10 @@ namespace Microsoft.Docs.Build
                             {
                                 RestoreGitMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                             }
+                        }
+                        else
+                        {
+                            Log.Write($"Worktree already exists: {workTreePath}");
                         }
 
                         Debug.Assert(workTreePath != null);

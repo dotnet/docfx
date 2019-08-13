@@ -326,7 +326,7 @@ namespace Microsoft.Docs.Build
             Telemetry.TrackCacheTotalCount(TelemetryName.GitRepositoryCache);
             if (git_remote_create(out var remote, repo, "origin", url) == 0)
             {
-                Log.Write($"Using existing repository '{path}' for '{url}'");
+                Log.Write($"Using new repository '{path}' for '{url}'");
                 Telemetry.TrackCacheMissCount(TelemetryName.GitRepositoryCache);
                 git_remote_free(remote);
             }
