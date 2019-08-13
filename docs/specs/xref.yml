@@ -844,22 +844,22 @@ outputs:
             },
             {
                 "uid": "child",
-                "href": "https://docs.com/docs/a.json#child",
+                "href": "https://docs.com/docs/a.json",
                 "a": "child aaaaa",
                 "child.c": "child.c cccccc"
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children_a"
+                "href": "https://docs.com/docs/a.json"
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children_b",
+                "href": "https://docs.com/docs/a.json",
                 "a": "children.b aaaaa"
             },
             {
                 "uid": "children.c",
-                "href": "https://docs.com/docs/a.json#children_c",
+                "href": "https://docs.com/docs/a.json",
                 "child.c": "children.c cccccc"
             }
         ]
