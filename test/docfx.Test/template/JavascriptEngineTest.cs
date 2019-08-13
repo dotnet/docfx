@@ -10,7 +10,11 @@ namespace Microsoft.Docs.Build
 {
     public class JavascriptEngineTest
     {
-        private readonly JavascriptEngine _js = new JavascriptEngine("data/javascript");
+        private readonly IJavascriptEngine[] _engines = new IJavascriptEngine[]
+        {
+            new JintJsEngine("data/javascript"),
+            new ChakraCoreJsEngine("data/javascript"),
+        };
 
         [Theory]
         [InlineData("{'scalar':'hello','tags':[1,2],'page':{'value':3}}", "{'scalar':'hello','tags':[1,2],'page':{'value':3}}")]
@@ -18,9 +22,13 @@ namespace Microsoft.Docs.Build
         public void RunJavascript(string input, string output)
         {
             var inputJson = JObject.Parse(input.Replace('\'', '"'));
-            var outputJson = _js.Run("index.js", "main", inputJson);
-            (outputJson as JObject)?.Property("__global")?.Remove();
-            Assert.Equal(output.Replace('\'', '"'), outputJson.ToString(Formatting.None));
+
+            foreach (var engine in _engines)
+            {
+                var outputJson = engine.Run("index.js", "main", inputJson);
+                (outputJson as JObject)?.Property("__global")?.Remove();
+                Assert.Equal(output.Replace('\'', '"'), outputJson.ToString(Formatting.None));
+            }
         }
 
         [Theory]
@@ -28,11 +36,15 @@ namespace Microsoft.Docs.Build
         public void RunJavascriptError(string input, string errors)
         {
             var inputJson = JObject.Parse(input.Replace('\'', '"'));
-            var exception = Assert.ThrowsAny<Exception>(() => _js.Run("index.js", "main", inputJson));
 
-            foreach (var error in errors.Split('|'))
+            foreach (var engine in _engines)
             {
-                Assert.Contains(error.Trim(), exception.ToString());
+                var exception = Assert.ThrowsAny<Exception>(() => engine.Run("index.js", "main", inputJson));
+
+                foreach (var error in errors.Split('|'))
+                {
+                    Assert.Contains(error.Trim(), exception.ToString());
+                }
             }
         }
     }

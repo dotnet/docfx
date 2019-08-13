@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class JavascriptEngine
+    internal class JintJsEngine : IJavascriptEngine
     {
         /// <summary>
         /// A private exception type just to include javascript stack trace.
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, ThreadLocal<JsValue>> _scripts
                    = new ConcurrentDictionary<string, ThreadLocal<JsValue>>();
 
-        public JavascriptEngine(string scriptDir, JObject global = null)
+        public JintJsEngine(string scriptDir, JObject global = null)
         {
             _scriptDir = scriptDir;
             _global = ToJsValue(global ?? new JObject());

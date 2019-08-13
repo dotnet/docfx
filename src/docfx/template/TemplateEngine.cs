@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly string _contentTemplateDir;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
-        private readonly JavascriptEngine _js;
+        private readonly JintJsEngine _js;
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             _global = LoadGlobalTokens();
             _schemas = LoadSchemas(schemaDir, _contentTemplateDir);
             _liquid = new LiquidTemplate(_contentTemplateDir);
-            _js = new JavascriptEngine(_contentTemplateDir, _global);
+            _js = new JintJsEngine(_contentTemplateDir, _global);
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
         }
 
