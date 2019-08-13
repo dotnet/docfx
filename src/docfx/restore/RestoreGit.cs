@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
                                     // re-use existing work tree
                                     // checkout to {headCommit}, no need to fetch
                                     Debug.Assert(!GitUtility.IsDirty(workTreePath));
-                                    Log.Write($"Reusing existing worktree: {workTreePath}");
+                                    Log.Write($"Reuse existing worktree: {workTreePath}");
                                     GitUtility.Checkout(workTreePath, headCommit);
                                 }
                                 else
