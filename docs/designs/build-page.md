@@ -40,6 +40,8 @@
 
 - Merge `System Metadata` into `Input Metadata` to create `Output Metadata`
 
+  ![build-metadata-workflow](./images/build-pipeline-output-metadata.png)
+
 ## Build Page
 
 - [Conceptual] Markup markdown files to create `Intermediate Model`
@@ -73,5 +75,11 @@
     - `Intermediate Model`
 
     - `Output Metadata`
+
+  ![build-output-model-workflow](./images/build-pipeline-output-model.png)
+
+# Build output workflow
+
+  ![build-output-workflow](./images/build-pipeline-output.png)
 
 ## Apply Template
