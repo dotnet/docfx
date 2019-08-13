@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
+    using System.Runtime.InteropServices.ComTypes;
     using System.Threading;
 
     public sealed class AggregatedPerformanceScope : IDisposable
@@ -55,7 +56,16 @@ namespace Microsoft.DocAsCode.Common
             public void Log(double elapsedTimeInMilliSeconds)
             {
                 Interlocked.Increment(ref _occurrence);
-                Interlocked.Exchange(ref _totalTimeInMilliseconds, _totalTimeInMilliseconds + elapsedTimeInMilliSeconds);
+
+                while (true)
+                {
+                    var currentTotalTime = _totalTimeInMilliseconds;
+                    var updatedTotalTime = currentTotalTime + elapsedTimeInMilliSeconds;
+                    if (Interlocked.CompareExchange(ref _totalTimeInMilliseconds, updatedTotalTime, currentTotalTime) == currentTotalTime)
+                    {
+                        break;
+                    }
+                }
             }
         }
     }
