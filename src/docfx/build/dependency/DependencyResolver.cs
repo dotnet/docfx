@@ -101,18 +101,21 @@ namespace Microsoft.Docs.Build
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
+            string text = null;
             var queries = new NameValueCollection();
             if (!string.IsNullOrEmpty(query))
             {
                 queries = HttpUtility.ParseQueryString(query);
                 moniker = queries["view"];
                 queries.Remove("view");
+                text = queries["text"];
+                queries.Remove("text");
             }
             var displayProperty = queries["displayProperty"];
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, declaringFile);
+            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, text, declaringFile);
 
             if (xrefSpec?.DeclaringFile != null)
             {

@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
         }
 
-        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo)
+        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, string text, Document relativeTo)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName);
+                return ResolveCore(uid, href, displayPropertyName, text);
             }
             finally
             {
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href, string displayPropertyName)
+            string uid, SourceInfo<string> href, string displayPropertyName, string text)
         {
             var spec = ResolveXrefSpec(uid);
             if (spec is null)
@@ -70,8 +70,10 @@ namespace Microsoft.Docs.Build
             var displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
 
             // fallback order:
-            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
+            // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+            var display = !string.IsNullOrEmpty(text)
+                ? text
+                : (!string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid));
             return (null, resolvedHref, display, spec);
         }
 
