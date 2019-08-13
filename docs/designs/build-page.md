@@ -16,6 +16,8 @@
 
 ## Build Metadata
 
+> `Rectangle parts` represent build outputs(metadata)
+
 ### Workflow
   
   ![build-metadata-workflow](./images/build-pipeline-output-metadata.png)
@@ -48,6 +50,8 @@
 - Merge `System Metadata` into `Input Metadata` to create `Output Metadata`
 
 ## Build Model
+
+> `Rectangle parts` represent build outputs(model)
 
 ### Workflow
 
@@ -87,6 +91,8 @@
     - `Output Metadata`
 
 ## Outputs
+
+> `Rectangle parts` represent outputs(metadata + model)
 
 ### Worlflow
 
