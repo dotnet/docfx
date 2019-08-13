@@ -1,4 +1,4 @@
-# Build page pipeline workflow
+# Build page workflow
 
 ## Input
 
@@ -86,7 +86,7 @@
 
     - `Output Metadata`
 
-## Build Outputs
+## Outputs
 
 ### Worlflow
 
