@@ -83,9 +83,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Equal(2, logs.Where(l => l.Code == WarningCodes.Build.InvalidInternalBookmark).Count());
             var expected = new[]
             {
-                Tuple.Create(@"Illegal link: `[link with source info](a.md#b2)` -- missing bookmark. The file a.md doesn't contain a bookmark named b2.", "b.md"),
-                Tuple.Create(@"Illegal link: `[link in token file](a.md#b3)` -- missing bookmark. The file a.md doesn't contain a bookmark named b3.", "token.md"),
-                Tuple.Create(@"Illegal link: `<a href=""a.md#b4"">link without source info</a>` -- missing bookmark. The file a.md doesn't contain a bookmark named b4.", "b.md"),
+                Tuple.Create(@"Invalid link: '[link with source info](a.md#b2)'. The file a.md doesn't contain a bookmark named 'b2'.", "b.md"),
+                Tuple.Create(@"Invalid link: '[link in token file](a.md#b3)'. The file a.md doesn't contain a bookmark named 'b3'.", "token.md"),
+                Tuple.Create(@"Invalid link: '<a href=""a.md#b4"">link without source info</a>'. The file a.md doesn't contain a bookmark named 'b4'.", "b.md"),
                 Tuple.Create(@"Invalid link: '<a href=""#b1"">Test local link</a>'. The file f.md doesn't contain a bookmark named 'b1'.", "f.md"),
                 Tuple.Create(@"Invalid link: '[local link in token file](#b3)'. The file g.md doesn't contain a bookmark named 'b3'.", "token.md"),
             };
