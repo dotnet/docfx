@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         private readonly HttpClient _httpClient = new HttpClient();
 
-        private volatile Error _fatelError;
+        private volatile Error _fatalError;
 
         public GitHubAccessor(string token)
         {
@@ -39,10 +39,9 @@ namespace Microsoft.Docs.Build
 
         public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
         {
-            // Stop calling GitHub whenever any non-transient error is returned from github
-            if (_fatelError != null)
+            if (_fatalError != null)
             {
-                return (_fatelError, default);
+                return (_fatalError, default);
             }
 
             Log.Write($"Calling GitHub user API to resolve {login}");
@@ -78,10 +77,9 @@ query ($login: String!) {
 
         public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
         {
-            // Stop calling GitHub whenever any error is returned from github
-            if (_fatelError != null)
+            if (_fatalError != null)
             {
-                return (_fatelError, default);
+                return (_fatalError, default);
             }
 
             Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
@@ -163,8 +161,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
                     {
                         Log.Write(await response.Content.ReadAsStringAsync());
-                        _fatelError = Errors.GitHubApiFailed(response.StatusCode.ToString());
-                        return (_fatelError, default);
+                        _fatalError = Errors.GitHubApiFailed(response.StatusCode.ToString());
+                        return (_fatalError, default);
                     }
 
                     var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
@@ -184,8 +182,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
                                 case "MAX_NODE_LIMIT_EXCEEDED":
                                 case "RATE_LIMITED":
-                                    _fatelError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
-                                    return (_fatelError, default);
+                                    _fatalError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
+                                    return (_fatalError, default);
 
                                 default:
                                     return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), default);
