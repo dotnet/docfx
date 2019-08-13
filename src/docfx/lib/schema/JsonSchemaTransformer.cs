@@ -100,15 +100,12 @@ namespace Microsoft.Docs.Build
                     {
                         Uid = uid,
                         Source = JsonUtility.GetSourceInfo(obj),
-                        Href = obj.Parent is null ? file.SiteUrl : $"{file.SiteUrl}#{GetBookmarkFromUid(uid)}",
+                        Href = obj.Parent is null ? file.SiteUrl : $"{file.SiteUrl}",
                         DeclaringFile = file,
                     };
                     xref.ExtensionData.AddRange(xrefProperties);
                     return xref;
                 }
-
-                string GetBookmarkFromUid(string uid)
-                    => Regex.Replace(uid, @"\W", "_");
 
                 void TraverseObjectXref(JObject obj, Func<JsonSchema, string, JToken, bool> action = null)
                 {
