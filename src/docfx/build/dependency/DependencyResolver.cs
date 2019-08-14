@@ -199,6 +199,8 @@ namespace Microsoft.Docs.Build
                 {
                     return (error, query + fragment, fragment, linkType, null, false);
                 }
+
+                // https://tools.ietf.org/html/rfc2396#section-4.2
                 var selfUrl = Document.PathToRelativeUrl(
                     Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null, false);
@@ -228,11 +230,7 @@ namespace Microsoft.Docs.Build
 
         private (Error error, Document file, string query, string fragment, LinkType linkType, string pathToDocset) TryResolveFile(Document declaringFile, SourceInfo<string> href)
         {
-            if (string.IsNullOrEmpty(href))
-            {
-                return default;
-            }
-
+            href = href.Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
 
             switch (UrlUtility.GetLinkType(href))
@@ -244,6 +242,11 @@ namespace Microsoft.Docs.Build
                     return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath, null);
 
                 case LinkType.RelativePath:
+                    if (string.IsNullOrEmpty(path))
+                    {
+                        return (null, declaringFile, query, fragment, LinkType.RelativePath, null);
+                    }
+
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, declaringFile);
 
