@@ -131,12 +131,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                             content = $"<a href=\"{link}\">{title}</a>";
                         }
 
-                        string errorCode = internalBookmark ? WarningCodes.Build.InvalidInternalBookmark : WarningCodes.Build.InvalidExternalBookmark;
                         Logger.LogWarning($"Invalid link: '{content}'. The file {linkedToFileSrc} doesn't contain a bookmark named '{bookmark}'.",
                             null,
                             currentFileSrc,
                             linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null,
-                            code: errorCode);
+                            code: WarningCodes.Build.InvalidBookmark);
                     }
                 }
             }
