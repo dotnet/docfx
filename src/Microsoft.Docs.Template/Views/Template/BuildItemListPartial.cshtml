@@ -3,7 +3,22 @@
 
 @using Microsoft.Docs.Build;
 @using Newtonsoft.Json.Linq;
+@using System.Text.RegularExpressions;
 @model LandingDataItem
+
+@functions
+{
+    private string removeTags(string html) {
+        string oldHtml;
+        while (true) {
+            oldHtml = html;
+            html = Regex.Replace(html, @"<(?:!--(?:(?:-*[^->])*--+|-?)|script\b(?:[^""'>]|""[^""]*""|'[^']*')*>[\s\S] *?<\/ script\s *| style\b(?:[^""'>]|""[^""]*""|'[^']*')*>[\s\S]*?<\/style\s*|\/?[a-z](?:[^""'>]|""[^""]*""|'[^']*')*)>", " ", RegexOptions.IgnoreCase);
+            if (oldHtml == html) break;
+        }
+        html = Regex.Replace(html, @"(\r\n|\n|\r)", " ", RegexOptions.Multiline);
+        return Regex.Replace(html, @"<", "&lt;");
+    }
+}
 
 @if (@Model.Style == "unordered")
 {
@@ -101,7 +116,7 @@ else if (Model.Style == "cards")
                                     }
                                     else if (!string.IsNullOrEmpty(listItem.Html))
                                     {
-                                        <p>@Html.Raw(listItem.Html)</p>
+                                        <p>@Html.Raw(removeTags(listItem.Html))</p>
                                     }
                                 </div>
                             }
