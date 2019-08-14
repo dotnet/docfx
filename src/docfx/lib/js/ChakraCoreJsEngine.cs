@@ -2,7 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using ChakraHost.Hosting;
 using Newtonsoft.Json.Linq;
@@ -51,6 +53,67 @@ namespace Microsoft.Docs.Build
                     throw new JavaScriptScriptException(ex.ErrorCode, ex.Error, $"Javascript error:\n{ToJToken(ex.Error)}");
                 }
             }
+        }
+
+        public JToken Run(string scriptPath, string methodName, JToken arg)
+        {
+            return default;
+        }
+
+        public JavaScriptValue Run(string scriptPath)
+        {
+            var runtime = JavaScriptRuntime.Create();
+
+            var context = runtime.CreateContext();
+
+            var modules = new Dictionary<string, JavaScriptValue>();
+
+            return RunCore(scriptPath);
+
+            JavaScriptValue RunCore(string path)
+            {
+                var fullPath = Path.GetFullPath(path);
+                if (modules.TryGetValue(fullPath, out var module))
+                {
+                    return module;
+                }
+
+                var exports = modules[fullPath] = JavaScriptValue.CreateObject();
+                var sourceCode = File.ReadAllText(fullPath);
+
+                // add process to input to get the correct file path while running script inside docs-ui
+                var script = $@"
+;(function (module, exports, __dirname, require, process) {{
+{sourceCode}
+}})
+";
+                var dirname = Path.GetDirectoryName(fullPath);
+                var require = JavaScriptValue.CreateFunction(Require);
+
+                try
+                {
+                    return JavaScriptContext.RunScript(script, s_currentSourceContext++, fullPath).CallFunction(
+                        JavaScriptValue.CreateObject(),
+                        exports,
+                        JavaScriptValue.FromString(dirname),
+                        require,
+                        JavaScriptValue.CreateObject());
+                }
+                catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
+                {
+                    throw new JavaScriptScriptException(ex.ErrorCode, ex.Error, $"Javascript error:\n{ToJToken(ex.Error)}");
+                }
+            }
+        }
+
+        private static JavaScriptValue Require(
+            JavaScriptValue callee,
+            [MarshalAs(UnmanagedType.U1)] bool isConstructCall,
+            [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] JavaScriptValue[] arguments,
+            ushort argumentCount,
+            IntPtr callbackData)
+        {
+            return default;
         }
 
         private static JavaScriptValue ToJavaScriptValue(JToken token)
