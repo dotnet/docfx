@@ -130,8 +130,8 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     {
                         githubUsers.Add(new GitHubUser
                         {
-                            Id = node.author?.user.databaseId,
-                            Login = node.author?.user.login,
+                            Id = node.author.user?.databaseId,
+                            Login = node.author.user?.login,
                             Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
                             Emails = new[] { node.author.email, node.author.user?.email }
                                 .Where(email => !string.IsNullOrEmpty(email)).ToArray(),
