@@ -28,7 +28,8 @@ namespace Microsoft.DocAsCode
             var expandedFileMapping = new FileMapping();
             foreach (var item in fileMapping.Items)
             {
-                var src = Path.Combine(baseDirectory, item.SourceFolder ?? string.Empty);
+                string expandedSourceFolder = Environment.ExpandEnvironmentVariables(item.SourceFolder ?? string.Empty);
+                var src =  Path.IsPathRooted(expandedSourceFolder) ? expandedSourceFolder : Path.Combine(baseDirectory, expandedSourceFolder);
                 var options = GetMatchOptionsFromItem(item);
                 var fileItems = new FileItems(FileGlob.GetFiles(src, item.Files, item.Exclude, options));
                 if (fileItems.Count == 0)
