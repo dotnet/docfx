@@ -195,8 +195,7 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == declaringFile)
             {
-                // https://tools.ietf.org/html/rfc2396#section-4.2
-                if (linkType == LinkType.SelfBookmark || string.IsNullOrEmpty(href) || href.Value[0] == '?')
+                if (linkType == LinkType.SelfBookmark)
                 {
                     return (error, query + fragment, fragment, linkType, null, false);
                 }
@@ -245,7 +244,9 @@ namespace Microsoft.Docs.Build
                 case LinkType.RelativePath:
                     if (string.IsNullOrEmpty(path))
                     {
-                        return (null, declaringFile, query, fragment, LinkType.RelativePath, null);
+                        // https://tools.ietf.org/html/rfc2396#section-4.2
+                        // a hack way to process empty href
+                        return (null, declaringFile, query, fragment, LinkType.SelfBookmark, null);
                     }
 
                     // Resolve path relative to docset
