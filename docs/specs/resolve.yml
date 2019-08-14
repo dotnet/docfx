@@ -442,7 +442,7 @@ inputs:
 outputs:
   docs/a.json: |
     { 
-      "conceptual": "<p>Link to <a href=\"a\">self</a></p>" 
+      "conceptual": "<p>Link to <a href=\"\">self</a></p>" 
     }
   docs/b.json: |
-    { "conceptual": "<p>Link to <a href=\"b?locale=en-us\">self</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"?locale=en-us\">self</a></p>" }

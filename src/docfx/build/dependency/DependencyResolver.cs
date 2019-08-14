@@ -195,15 +195,7 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == declaringFile)
             {
-                if (linkType == LinkType.SelfBookmark)
-                {
-                    return (error, query + fragment, fragment, linkType, null, false);
-                }
-
-                // https://tools.ietf.org/html/rfc2396#section-4.2
-                var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
-                return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null, false);
+                return (error, query + fragment, fragment, linkType, null, false);
             }
 
             // Link to dependent repo, don't build the file, leave href as is
