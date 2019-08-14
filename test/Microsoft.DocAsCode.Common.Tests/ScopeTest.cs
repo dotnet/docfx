@@ -10,6 +10,9 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Tests.Common;
+    using System.Threading.Tasks;
+    using System.Linq;
+    using System.Threading;
 
     [Trait("Owner", "vwxyzh")]
     [Collection("docfx STA")]
@@ -217,22 +220,40 @@ namespace Microsoft.DocAsCode.Common.Tests
 
                     using (new LoggerPhaseScope("B", logLevel, aggregatedPerformanceScope))
                     {
+                        Parallel.ForEach(
+                            Enumerable.Range(0, 100),
+                            _ =>
+                            {
+                                using (new LoggerPhaseScope("E", logLevel, aggregatedPerformanceScope))
+                                {
+                                    Thread.Sleep(10);
+                                } // exit scope E.
+                            });
                     } // exit scope B.
                 } // exit scope A.
 
-                Assert.Equal(16, listener.Items.Count);
+                var allItems = listener.Items.ToList();
+                Assert.Equal(117, allItems.Count);
+                Assert.Equal(10, allItems.Count(item => item.Phase == "A.C"));
+                Assert.Equal(100, allItems.Count(item => item.Phase == "A.B.E"));
 
-                var itemOfA = listener.Items[13];
-                Assert.Equal(Logger.LogLevelThreshold, itemOfA.LogLevel);
-                Assert.Contains("Phase 'A' runs 1 times with average time of", itemOfA.Message);
+                allItems.Reverse();
 
-                var itemOfAB = listener.Items[14];
+                var itemOfAC = TakeFirstLogItemAndRemove(allItems);
+                Assert.Equal(Logger.LogLevelThreshold, itemOfAC.LogLevel);
+                Assert.Contains("Phase 'A.C' runs 10 times with average time of", itemOfAC.Message);
+
+                var itemOfABE = TakeFirstLogItemAndRemove(allItems);
+                Assert.Equal(Logger.LogLevelThreshold, itemOfABE.LogLevel);
+                Assert.Contains("Phase 'A.B.E' runs 100 times with average time of", itemOfABE.Message);
+
+                var itemOfAB = TakeFirstLogItemAndRemove(allItems);
                 Assert.Equal(Logger.LogLevelThreshold, itemOfAB.LogLevel);
                 Assert.Contains("Phase 'A.B' runs 2 times with average time of", itemOfAB.Message);
 
-                var itemOfAC = listener.Items[15];
-                Assert.Equal(Logger.LogLevelThreshold, itemOfAC.LogLevel);
-                Assert.Contains("Phase 'A.C' runs 10 times with average time of", itemOfAC.Message);
+                var itemOfA = TakeFirstLogItemAndRemove(allItems);
+                Assert.Equal(Logger.LogLevelThreshold, itemOfA.LogLevel);
+                Assert.Contains("Phase 'A' runs 1 times with average time of", itemOfA.Message);
             }
             finally
             {
