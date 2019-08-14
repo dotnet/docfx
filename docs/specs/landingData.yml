@@ -1,5 +1,5 @@
 ---
-# Tag in the sections item with cardsM className should be remove
+# Tags and comments in the sections item with cardsM className should be remove
 legacy: true
 inputs:
   docfx.yml:
@@ -14,7 +14,7 @@ inputs:
           columns: 1
           items:
           - href: /a
-            html: <p>Test html</p>
+            html: <p>Test html</p><!-- comment -->
             image:
               src: ./a.png
 outputs:
