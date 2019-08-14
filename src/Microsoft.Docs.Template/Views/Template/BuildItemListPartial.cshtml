@@ -28,7 +28,7 @@
         // TODO: add timespan for regex
         while (true) {
             oldHtml = html;
-            html = Regex.Replace(html, tagOrCommentRegex, " ", RegexOptions.IgnoreCase);
+            html = Regex.Replace(html, tagOrCommentRegex, string.Empty, RegexOptions.IgnoreCase);
             if (oldHtml == html) break;
         }
         html = Regex.Replace(html, @"(\r\n|\n|\r)", " ", RegexOptions.Multiline);
