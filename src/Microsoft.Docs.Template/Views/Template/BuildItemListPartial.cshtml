@@ -8,11 +8,27 @@
 
 @functions
 {
-    private string removeTags(string html) {
+    private string removeTagsAndComments(string html) {
+        string tagBody = @"(?:[^""\'>]|""[^""]*""|\'[^\']*\')*";
+        string tagOrCommentRegex =
+            "<(?:"
+            // Comment body.
+            +
+            "!--(?:(?:-*[^->])*--+|-?)"
+            // Special "raw text" elements whose content should be elided.
+            +
+            "|script\\b' + tagBody + '>[\\s\\S]*?</script\\s*" +
+            "|style\\b' + tagBody + '>[\\s\\S]*?</style\\s*"
+            // Regular name
+            +
+            "|/?[a-z]" +
+            tagBody +
+            ")>";
         string oldHtml;
+        // TODO: add timespan for regex
         while (true) {
             oldHtml = html;
-            html = Regex.Replace(html, @"<(?:!--(?:(?:-*[^->])*--+|-?)|script\b(?:[^""'>]|""[^""]*""|'[^']*')*>[\s\S] *?<\/ script\s *| style\b(?:[^""'>]|""[^""]*""|'[^']*')*>[\s\S]*?<\/style\s*|\/?[a-z](?:[^""'>]|""[^""]*""|'[^']*')*)>", " ", RegexOptions.IgnoreCase);
+            html = Regex.Replace(html, tagOrCommentRegex, " ", RegexOptions.IgnoreCase);
             if (oldHtml == html) break;
         }
         html = Regex.Replace(html, @"(\r\n|\n|\r)", " ", RegexOptions.Multiline);
@@ -116,7 +132,7 @@ else if (Model.Style == "cards")
                                     }
                                     else if (!string.IsNullOrEmpty(listItem.Html))
                                     {
-                                        <p>@Html.Raw(removeTags(listItem.Html))</p>
+                                        <p>@Html.Raw(removeTagsAndComments(listItem.Html))</p>
                                     }
                                 </div>
                             }
