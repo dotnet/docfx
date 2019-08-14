@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +23,7 @@ namespace Microsoft.Docs.Build
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
         private readonly HttpClient _httpClient = new HttpClient();
+        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
 
         private volatile Error _fatalError;
 
@@ -41,7 +43,7 @@ namespace Microsoft.Docs.Build
         {
             if (_fatalError != null)
             {
-                return (_fatalError, default);
+                return default;
             }
 
             Log.Write($"Calling GitHub user API to resolve {login}");
@@ -56,7 +58,7 @@ query ($login: String!) {
   }
 }";
 
-            var (error, data) = await Query(
+            var (error, data, _) = await Query(
                 query,
                 new { login },
                 new { user = new { name = "", email = "", login = "", databaseId = 0 } });
@@ -77,9 +79,14 @@ query ($login: String!) {
 
         public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
         {
+            if (_unknownRepos.Contains((owner, name)))
+            {
+                return default;
+            }
+
             if (_fatalError != null)
             {
-                return (_fatalError, default);
+                return default;
             }
 
             Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
@@ -110,7 +117,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
             var user = new { name = "", email = "", login = "", databaseId = 0 };
             var history = new { nodes = new[] { new { author = new { email = "", user } } } };
 
-            var (error, data) = await Query(
+            var (error, data, notFound) = await Query(
                 query,
                 new { owner, name, commit },
                 new { repository = new { @object = new { history } } });
@@ -118,6 +125,11 @@ query ($owner: String!, $name: String!, $commit: String!) {
             if (error != null)
             {
                 return (error, null);
+            }
+
+            if (notFound)
+            {
+                _unknownRepos.TryAdd((owner, name));
             }
 
             var githubUsers = new List<GitHubUser>();
@@ -143,7 +155,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
             return (null, githubUsers);
         }
 
-        private async Task<(Error error, T data)> Query<T>(string query, object variables, T dataType)
+        private async Task<(Error error, T data, bool notFound)> Query<T>(string query, object variables, T dataType)
         {
             Debug.Assert(dataType != null);
 
@@ -162,7 +174,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                     {
                         Log.Write(await response.Content.ReadAsStringAsync());
                         _fatalError = Errors.GitHubApiFailed(response.StatusCode.ToString());
-                        return (_fatalError, default);
+                        return (_fatalError, default, default);
                     }
 
                     var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
@@ -178,26 +190,26 @@ query ($owner: String!, $name: String!, $commit: String!) {
                             switch (error.type)
                             {
                                 case "NOT_FOUND":
-                                    break;
+                                    return (default, default, default);
 
                                 case "MAX_NODE_LIMIT_EXCEEDED":
                                 case "RATE_LIMITED":
                                     _fatalError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
-                                    return (_fatalError, default);
+                                    return (_fatalError, default, default);
 
                                 default:
-                                    return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), default);
+                                    return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), default, default);
                             }
                         }
                     }
 
-                    return (null, body.data);
+                    return (null, body.data, default);
                 }
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
-                return (Errors.GitHubApiFailed(ex.Message), default);
+                return (Errors.GitHubApiFailed(ex.Message), default, default);
             }
         }
     }
