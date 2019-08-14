@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
-    using System.Runtime.InteropServices.ComTypes;
     using System.Threading;
 
     public sealed class AggregatedPerformanceScope : IDisposable
@@ -40,7 +39,7 @@ namespace Microsoft.DocAsCode.Common
             foreach (var aggregatedPerformanceByPhase in _aggregatedPerformanceByPhase.OrderBy(kvp => kvp.Key))
             {
                 var aggregatedPerformance = aggregatedPerformanceByPhase.Value.Value;
-                Logger.Log(_logLevel, $"Phase '{aggregatedPerformanceByPhase.Key}' runs {aggregatedPerformance.Occurrence} times with average time of {aggregatedPerformance.TotalTimeInMilliseconds / aggregatedPerformance.Occurrence} milliseconds.");
+                Logger.Log(_logLevel, $"Phase '{aggregatedPerformanceByPhase.Key}' runs {aggregatedPerformance.Occurrence} times with average time of {aggregatedPerformance.AverageTimeInMilliseconds} milliseconds.");
             }
         }
 
@@ -53,8 +52,15 @@ namespace Microsoft.DocAsCode.Common
 
             public double TotalTimeInMilliseconds => _totalTimeInMilliseconds;
 
+            public double AverageTimeInMilliseconds => _occurrence == 0 ? 0 : _totalTimeInMilliseconds / _occurrence;
+
             public void Log(double elapsedTimeInMilliSeconds)
             {
+                if (elapsedTimeInMilliSeconds < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(elapsedTimeInMilliSeconds), "elapsed time in milliseconds must be greater than 0.");
+                }
+
                 Interlocked.Increment(ref _occurrence);
 
                 while (true)

@@ -107,14 +107,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void Prebuild(HostService hostService)
         {
-            using (var aggregatedPerformanceScope = new AggregatedPerformanceScope())
-            {
-                BuildPhaseUtility.RunBuildSteps(
+            BuildPhaseUtility.RunBuildSteps(
                 hostService.Processor.BuildSteps,
                 buildStep =>
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
-                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose, aggregatedPerformanceScope))
+                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
                     {
                         var models = buildStep.Prebuild(hostService.Models, hostService);
                         if (!object.ReferenceEquals(models, hostService.Models))
@@ -124,7 +122,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                 });
-            }
         }
 
         private static void BuildArticle(HostService hostService, int maxParallelism)
