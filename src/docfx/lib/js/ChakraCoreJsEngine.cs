@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
     internal class ChakraCoreJsEngine : IJavascriptEngine
     {
         private static readonly JavaScriptPropertyId s_lengthProperty = JavaScriptPropertyId.FromString("length");
+        private static readonly JavaScriptPropertyId s_globalProperty = JavaScriptPropertyId.FromString("__global");
 
         private static readonly JavaScriptNativeFunction s_requireFunction = new JavaScriptNativeFunction(Require);
 
@@ -27,10 +28,12 @@ namespace Microsoft.Docs.Build
         private static JavaScriptSourceContext s_currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
         private readonly string _scriptDir;
+        private readonly JObject _global;
 
         public ChakraCoreJsEngine(string scriptDir, JObject global = null)
         {
             _scriptDir = scriptDir;
+            _global = global;
         }
 
         public JToken Run(string scriptPath, string methodName, JToken arg)
@@ -47,6 +50,9 @@ namespace Microsoft.Docs.Build
                     var exports = Run(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
                     var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
                     var input = ToJavaScriptValue(arg);
+
+                    input.SetProperty(s_globalProperty, ToJavaScriptValue(_global), useStrictRules: true);
+
                     var output = method.CallFunction(JavaScriptValue.Undefined, input);
 
                     return ToJToken(output);
@@ -74,7 +80,7 @@ namespace Microsoft.Docs.Build
             var sourceCode = File.ReadAllText(scriptPath);
 
             // add `process` to input to get the correct file path while running script inside docs-ui
-            var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}}})";
+            var script = $@"(function (module, exports, __dirname, __global, require, process) {{{sourceCode}}})";
             var dirname = Path.GetDirectoryName(scriptPath);
 
             t_dirnames.Value.Push(dirname);
