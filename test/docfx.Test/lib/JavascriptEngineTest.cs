@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var engine in _engines)
             {
-                var exception = Assert.ThrowsAny<Exception>(() => engine.Run("index.js", "main", inputJson));
+                Assert.ThrowsAny<Exception>(() => engine.Run("index.js", "main", inputJson));
             }
         }
     }

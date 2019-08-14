@@ -16,8 +16,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ChakraCoreJsEngine : IJavascriptEngine
     {
-        private static readonly JavaScriptPropertyId s_lengthProperty = JavaScriptPropertyId.FromString("length");
-        private static readonly JavaScriptPropertyId s_globalProperty = JavaScriptPropertyId.FromString("__global");
+        private static readonly ThreadLocal<JavaScriptRuntime> t_runtime = new ThreadLocal<JavaScriptRuntime>(
+            () => JavaScriptRuntime.Create());
 
         private static readonly JavaScriptNativeFunction s_requireFunction = new JavaScriptNativeFunction(Require);
 
@@ -38,8 +38,7 @@ namespace Microsoft.Docs.Build
 
         public JToken Run(string scriptPath, string methodName, JToken arg)
         {
-            var runtime = JavaScriptRuntime.Create();
-            var context = runtime.CreateContext();
+            var context = t_runtime.Value.CreateContext();
 
             using (new JavaScriptContext.Scope(context))
             {
@@ -51,7 +50,10 @@ namespace Microsoft.Docs.Build
                     var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
                     var input = ToJavaScriptValue(arg);
 
-                    input.SetProperty(s_globalProperty, ToJavaScriptValue(_global), useStrictRules: true);
+                    if (_global != null)
+                    {
+                        input.SetProperty(JavaScriptPropertyId.FromString("__global"), ToJavaScriptValue(_global), useStrictRules: true);
+                    }
 
                     var output = method.CallFunction(JavaScriptValue.Undefined, input);
 
@@ -80,7 +82,7 @@ namespace Microsoft.Docs.Build
             var sourceCode = File.ReadAllText(scriptPath);
 
             // add `process` to input to get the correct file path while running script inside docs-ui
-            var script = $@"(function (module, exports, __dirname, __global, require, process) {{{sourceCode}}})";
+            var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}}})";
             var dirname = Path.GetDirectoryName(scriptPath);
 
             t_dirnames.Value.Push(dirname);
@@ -116,23 +118,10 @@ namespace Microsoft.Docs.Build
                 return JavaScriptValue.CreateObject();
             }
 
-            try
-            {
-                var dirname = t_dirnames.Value.Peek();
-                var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
+            var dirname = t_dirnames.Value.Peek();
+            var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
 
-                return Run(scriptPath);
-            }
-            catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
-            {
-                JavaScriptContext.SetException(ex.Error);
-                return JavaScriptValue.CreateObject();
-            }
-            catch (Exception ex)
-            {
-                JavaScriptContext.SetException(JavaScriptValue.CreateError(JavaScriptValue.FromString(ex.Message)));
-                return JavaScriptValue.CreateObject();
-            }
+            return Run(scriptPath);
         }
 
         private static JavaScriptValue ToJavaScriptValue(JToken token)
@@ -203,7 +192,7 @@ namespace Microsoft.Docs.Build
 
                 case JavaScriptValueType.Array:
                     var arr = new JArray();
-                    var arrLength = value.GetProperty(s_lengthProperty).ToInt32();
+                    var arrLength = value.GetProperty(JavaScriptPropertyId.FromString("length")).ToInt32();
                     for (var i = 0; i < arrLength; i++)
                     {
                         arr.Add(ToJToken(value.GetIndexedProperty(JavaScriptValue.FromInt32(i))));
@@ -214,7 +203,7 @@ namespace Microsoft.Docs.Build
                 case JavaScriptValueType.Error:
                     var obj = new JObject();
                     var names = value.GetOwnPropertyNames();
-                    var namesLength = names.GetProperty(s_lengthProperty).ToInt32();
+                    var namesLength = names.GetProperty(JavaScriptPropertyId.FromString("length")).ToInt32();
                     for (var i = 0; i < namesLength; i++)
                     {
                         var name = names.GetIndexedProperty(JavaScriptValue.FromInt32(i)).ToString();
