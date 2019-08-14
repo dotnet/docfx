@@ -16,13 +16,13 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ChakraCoreJsEngine : IJavascriptEngine
     {
-        private static readonly ThreadLocal<JavaScriptRuntime> t_runtimes = new ThreadLocal<JavaScriptRuntime>(
-            () =>
-            {
-                return JavaScriptRuntime.Create();
-            });
-
         private static readonly JavaScriptPropertyId s_lengthProperty = JavaScriptPropertyId.FromString("length");
+
+        private static readonly JavaScriptNativeFunction s_requireFunction = new JavaScriptNativeFunction(Require);
+
+        private static readonly ThreadLocal<Stack<string>> t_dirnames = new ThreadLocal<Stack<string>>(() => new Stack<string>());
+
+        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>>();
 
         private static JavaScriptSourceContext s_currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
@@ -36,73 +36,64 @@ namespace Microsoft.Docs.Build
         public JToken Run(string scriptPath, string methodName, JToken arg)
         {
             var runtime = JavaScriptRuntime.Create();
-
             var context = runtime.CreateContext();
 
             using (new JavaScriptContext.Scope(context))
             {
-                var sourceName = Path.GetFullPath(Path.Combine(_scriptDir, scriptPath));
-                var script = File.ReadAllText(sourceName);
-
                 try
                 {
-                    return ToJToken(JavaScriptContext.RunScript(script, s_currentSourceContext++, sourceName));
+                    t_modules.Value = new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer);
+
+                    var exports = Run(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
+                    var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
+                    var input = ToJavaScriptValue(arg);
+                    var output = method.CallFunction(JavaScriptValue.Undefined, input);
+
+                    return ToJToken(output);
                 }
                 catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
                 {
-                    throw new JavaScriptScriptException(ex.ErrorCode, ex.Error, $"Javascript error:\n{ToJToken(ex.Error)}");
+                    throw new JavaScriptScriptException(ex.ErrorCode, ex.Error, $"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
+                }
+                finally
+                {
+                    t_modules.Value = null;
                 }
             }
         }
 
-        public JToken Run(string scriptPath, string methodName, JToken arg)
+        private static JavaScriptValue Run(string scriptPath)
         {
-            return default;
-        }
-
-        public JavaScriptValue Run(string scriptPath)
-        {
-            var runtime = JavaScriptRuntime.Create();
-
-            var context = runtime.CreateContext();
-
-            var modules = new Dictionary<string, JavaScriptValue>();
-
-            return RunCore(scriptPath);
-
-            JavaScriptValue RunCore(string path)
+            var modules = t_modules.Value;
+            if (modules.TryGetValue(scriptPath, out var module))
             {
-                var fullPath = Path.GetFullPath(path);
-                if (modules.TryGetValue(fullPath, out var module))
-                {
-                    return module;
-                }
+                return module;
+            }
 
-                var exports = modules[fullPath] = JavaScriptValue.CreateObject();
-                var sourceCode = File.ReadAllText(fullPath);
+            var exports = modules[scriptPath] = JavaScriptValue.CreateObject();
+            var sourceCode = File.ReadAllText(scriptPath);
 
-                // add process to input to get the correct file path while running script inside docs-ui
-                var script = $@"
-;(function (module, exports, __dirname, require, process) {{
-{sourceCode}
-}})
-";
-                var dirname = Path.GetDirectoryName(fullPath);
-                var require = JavaScriptValue.CreateFunction(Require);
+            // add `process` to input to get the correct file path while running script inside docs-ui
+            var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}}})";
+            var dirname = Path.GetDirectoryName(scriptPath);
 
-                try
-                {
-                    return JavaScriptContext.RunScript(script, s_currentSourceContext++, fullPath).CallFunction(
-                        JavaScriptValue.CreateObject(),
-                        exports,
-                        JavaScriptValue.FromString(dirname),
-                        require,
-                        JavaScriptValue.CreateObject());
-                }
-                catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
-                {
-                    throw new JavaScriptScriptException(ex.ErrorCode, ex.Error, $"Javascript error:\n{ToJToken(ex.Error)}");
-                }
+            t_dirnames.Value.Push(dirname);
+
+            try
+            {
+                JavaScriptContext.RunScript(script, s_currentSourceContext++, scriptPath).CallFunction(
+                    JavaScriptValue.Undefined, // this pointer
+                    JavaScriptValue.CreateObject(),
+                    exports,
+                    JavaScriptValue.FromString(dirname),
+                    JavaScriptValue.CreateFunction(s_requireFunction),
+                    JavaScriptValue.CreateObject());
+
+                return exports;
+            }
+            finally
+            {
+                t_dirnames.Value.Pop();
             }
         }
 
@@ -113,7 +104,29 @@ namespace Microsoft.Docs.Build
             ushort argumentCount,
             IntPtr callbackData)
         {
-            return default;
+            // First argument is this pointer
+            if (argumentCount < 2)
+            {
+                return JavaScriptValue.CreateObject();
+            }
+
+            try
+            {
+                var dirname = t_dirnames.Value.Peek();
+                var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
+
+                return Run(scriptPath);
+            }
+            catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
+            {
+                JavaScriptContext.SetException(ex.Error);
+                return JavaScriptValue.CreateObject();
+            }
+            catch (Exception ex)
+            {
+                JavaScriptContext.SetException(JavaScriptValue.CreateError(JavaScriptValue.FromString(ex.Message)));
+                return JavaScriptValue.CreateObject();
+            }
         }
 
         private static JavaScriptValue ToJavaScriptValue(JToken token)
@@ -171,21 +184,23 @@ namespace Microsoft.Docs.Build
                 case JavaScriptValueType.Null:
                     return JValue.CreateNull();
 
-                case JavaScriptValueType.Number:
-                    return value.ToDouble();
+                case JavaScriptValueType.Undefined:
+                    return JValue.CreateUndefined();
 
                 case JavaScriptValueType.String:
                     return value.ToString();
 
-                case JavaScriptValueType.Undefined:
-                    return JValue.CreateUndefined();
+                case JavaScriptValueType.Number:
+                    var intNumber = value.ToInt32();
+                    var doubleNumber = value.ToDouble();
+                    return intNumber == doubleNumber ? (JValue)intNumber : (JValue)doubleNumber;
 
                 case JavaScriptValueType.Array:
                     var arr = new JArray();
                     var arrLength = value.GetProperty(s_lengthProperty).ToInt32();
                     for (var i = 0; i < arrLength; i++)
                     {
-                        arr[i] = ToJToken(value.GetIndexedProperty(JavaScriptValue.FromInt32(i)));
+                        arr.Add(ToJToken(value.GetIndexedProperty(JavaScriptValue.FromInt32(i))));
                     }
                     return arr;
 
