@@ -115,16 +115,7 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (error, resolvedHref, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, declaringFile);
-
-            var name = xrefSpec?.GetXrefPropertyValue("name");
-            var displayPropertyValue = xrefSpec?.GetXrefPropertyValue(displayProperty);
-
-            // fallback order:
-            // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(text)
-                ? text
-                : (!string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid));
+            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, text, declaringFile);
 
             if (xrefSpec?.DeclaringFile != null)
             {

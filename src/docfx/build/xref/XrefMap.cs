@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
         }
 
-        public (Error error, string href, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo)
+        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, string text, Document relativeTo)
         {
             if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
             {
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href);
+                return ResolveCore(uid, href, displayPropertyName, text);
             }
             finally
             {
@@ -54,19 +54,27 @@ namespace Microsoft.Docs.Build
             return new XrefMapModel { References = references };
         }
 
-        private (Error error, string href, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href)
+        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
+            string uid, SourceInfo<string> href, string displayPropertyName, string text)
         {
             var spec = ResolveXrefSpec(uid);
             if (spec is null)
             {
-                return (Errors.XrefNotFound(href), null, null);
+                return (Errors.XrefNotFound(href), null, null, null);
             }
 
             var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
             var resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
 
-            return (null, resolvedHref, spec);
+            var name = spec.GetXrefPropertyValue("name");
+            var displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
+
+            // fallback order:
+            // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+            var display = !string.IsNullOrEmpty(text)
+                ? text
+                : (!string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid));
+            return (null, resolvedHref, display, spec);
         }
 
         private IXrefSpec ResolveXrefSpec(string uid)
