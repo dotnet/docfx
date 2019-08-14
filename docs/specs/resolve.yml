@@ -151,19 +151,19 @@ outputs:
   a.json: |
     { "conceptual": "<p>Link to <a href=\"/en-us/a\">absolute path</a></p>" }
 ---
-# Show warning if the link is empty, missing
+# Show warning if the link is missing
 inputs:
   docfx.yml: |
     exclude: '*'
   docs/a.md: |
-    [Empty]() [Invalid](a<>b.md) [!INCLUDE[](../b.md)]
+    [Invalid](a<>b.md) [!INCLUDE[](../b.md)]
   b.md: |
     [Missing](c.md)
 outputs:
   docs/a.json: |
-    { "conceptual": "<p><a href=\"\">Empty</a><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
+    { "conceptual": "<p><a href=\"a%3C%3Eb.md\">Invalid</a><a href=\"c.md\">Missing</a></p>" }
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: 'a<>b.md'.","docs/a.md",1,11]
+    ["warning","file-not-found","Invalid file link: 'a<>b.md'.","docs/a.md",1,1]
     ["warning","file-not-found","Invalid file link: 'c.md'.","b.md",1,1]
 ---
 # Show warning if the link points to absolute file path
@@ -431,3 +431,18 @@ outputs:
     { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>" }
   .errors.log: |
     ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md",1,1]
+---
+# Links to self with empty href or query string only
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    Link to [self]()
+  docs/b.md: |
+    Link to [self](?locale=en-us)
+outputs:
+  docs/a.json: |
+    { 
+      "conceptual": "<p>Link to <a href=\"\">self</a></p>" 
+    }
+  docs/b.json: |
+    { "conceptual": "<p>Link to <a href=\"?locale=en-us\">self</a></p>" }
