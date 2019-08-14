@@ -70,6 +70,7 @@ namespace Microsoft.DocAsCode.Common.Git
             return null;
         }
 
+        [Obsolete("Docfx parses repoUrl in template preprocessor. This method is never used.")]
         public static GitRepoInfo Parse(string repoUrl)
         {
             if (string.IsNullOrEmpty(repoUrl))

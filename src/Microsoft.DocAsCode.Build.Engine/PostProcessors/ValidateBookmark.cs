@@ -132,7 +132,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
 
                         string errorCode = internalBookmark ? WarningCodes.Build.InvalidInternalBookmark : WarningCodes.Build.InvalidExternalBookmark;
-                        Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.",
+                        Logger.LogWarning($"Invalid link: '{content}'. The file {linkedToFileSrc} doesn't contain a bookmark named '{bookmark}'.",
                             null,
                             currentFileSrc,
                             linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null,

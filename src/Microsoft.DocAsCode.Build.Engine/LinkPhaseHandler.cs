@@ -194,19 +194,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!string.IsNullOrWhiteSpace(spec?.Uid))
                 {
-                    if (Context.XRefSpecMap.TryGetValue(spec.Uid, out XRefSpec xref))
-                    {
-                        Logger.LogWarning(
-                            $"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.",
-                            null,
-                            null,
-                            null,
-                            WarningCodes.Build.DuplicateUids);
-                    }
-                    else
-                    {
-                        Context.RegisterInternalXrefSpec(spec);
-                    }
+                    Context.RegisterInternalXrefSpec(spec);
                 }
             }
             foreach (var spec in result.ExternalXRefSpecs)

@@ -12,28 +12,37 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
+    using Newtonsoft.Json.Serialization;
+    using Newtonsoft.Json;
 
     public class XRefMap : IXRefContainer
     {
         [YamlMember(Alias = "sorted")]
+        [JsonProperty("sorted")]
         public bool? Sorted { get; set; }
 
         [YamlMember(Alias = "hrefUpdated")]
+        [JsonProperty("hrefUpdated")]
         public bool? HrefUpdated { get; set; }
 
         [YamlMember(Alias = "baseUrl")]
+        [JsonProperty("baseUrl")]
         public string BaseUrl { get; set; }
 
         [YamlMember(Alias = "tags")]
+        [JsonProperty("tags")]
         public List<string> Tags { get; set; }
 
         [YamlMember(Alias = "redirections")]
+        [JsonProperty("redirections")]
         public List<XRefMapRedirection> Redirections { get; set; }
 
         [YamlMember(Alias = "references")]
+        [JsonProperty("references")]
         public List<XRefSpec> References { get; set; }
 
         [ExtensibleMember]
+        [JsonExtensionData]
         public Dictionary<string, object> Others { get; set; } = new Dictionary<string, object>();
 
         public void Sort()
@@ -80,6 +89,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             HrefUpdated = true;
         }
 
+        [YamlIgnore]
+        [JsonIgnore]
         public bool IsEmbeddedRedirections => false;
 
         public IEnumerable<XRefMapRedirection> GetRedirections() =>

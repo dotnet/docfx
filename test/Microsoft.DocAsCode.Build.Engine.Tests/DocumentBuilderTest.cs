@@ -127,7 +127,32 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "test",
                 },
                 _inputFolder);
-
+            var conceptualFile3 = CreateFile("check-xrefmap.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test xrefmap with duplicate uid in different files: XRef1 should be recorded with file check-xrefmap.md"
+                },
+                _inputFolder);
+            var conceptualFile4 = CreateFile("test/verify-xrefmap.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test xrefmap with duplicate uid in different fiels: XRef2 should be recorded with file test/test.md"
+                },
+                _inputFolder);
             File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
 rules : [
     ""foo"",
@@ -144,7 +169,7 @@ tagRules : [
 }");
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2, conceptualFile3, conceptualFile4 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
@@ -248,7 +273,7 @@ tagRules : [
                             "<!-- I'm not title-->",
                             "<!-- Raw title is in the line below -->",
                             "",
-                            "<p>Test XRef: <a class=\"xref\" href=\"test.html\">Hello World</a>",
+                            "<p>Test XRef: <a class=\"xref\" href=\"check-xrefmap.html\">Hello World</a>",
                             "Test link: <a href=\"test/test.html\">link text</a>",
                             "Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\">link text 2</a>",
                             "Test link style xref: <a class=\"xref\" href=\"test/test.html\" title=\"title\">link text 3</a>",
@@ -292,6 +317,21 @@ tagRules : [
                     var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
                     Assert.Single(meta);
                     Assert.True(!meta.ContainsKey("meta"));
+                }
+
+                {
+                    // check xrefmap
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, "xrefmap.yml")));
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(Path.Combine(_outputFolder, "xrefmap.yml"));
+                    Assert.Equal(71, xrefMap.References.Count);
+
+                    var xref1 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef1")).ToList();
+                    Assert.Single(xref1);
+                    Assert.Equal(Path.ChangeExtension(conceptualFile3, "html").ToNormalizedPath(), xref1[0]?.Href);
+
+                    var xref2 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef2")).ToList();
+                    Assert.Single(xref2);
+                    Assert.Equal(Path.ChangeExtension(conceptualFile2, "html").ToNormalizedPath(), xref2[0]?.Href);
                 }
             }
             finally
