@@ -1,5 +1,7 @@
 # Build page workflow
 
+> It doesn't include the build workflow for Data Model(like `ContextObject`), docfx treat Data Model as resource, the output of Data Model is the transformed input.
+
 ## Input
 
 - markdown file (conceptual)
@@ -209,3 +211,7 @@
       "PageMetadata": "html metadata",
   }
   ```
+## Open Questions
+
+- To create `System Metadata` for SDP files, do we use transformed `Input Metadata` or original `Input Metadata` ?
+  For example, if the metadata `title` content type is `markdown` defined in the schema, The generated `title` of `System Metadata` is marked up or not?
