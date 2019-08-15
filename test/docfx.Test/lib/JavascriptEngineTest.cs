@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -10,11 +11,9 @@ namespace Microsoft.Docs.Build
 {
     public class JavascriptEngineTest
     {
-        private readonly IJavaScriptEngine[] _engines = new IJavaScriptEngine[]
-        {
-            new JintJsEngine("data/javascript"),
-            new ChakraCoreJsEngine("data/javascript"),
-        };
+        private readonly IJavaScriptEngine[] _engines = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            ? new IJavaScriptEngine[] { new JintJsEngine("data/javascript"), new ChakraCoreJsEngine("data/javascript") }
+            : new IJavaScriptEngine[] { new JintJsEngine("data/javascript") };
 
         [Theory]
         [InlineData("{'scalar':'hello','tags':[1,2.123],'page':{'value':3}}", "{'scalar':'hello','tags':[1,2.123],'page':{'value':3}}")]
