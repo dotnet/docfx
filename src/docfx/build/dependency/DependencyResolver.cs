@@ -101,18 +101,21 @@ namespace Microsoft.Docs.Build
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
+            string text = null;
             var queries = new NameValueCollection();
             if (!string.IsNullOrEmpty(query))
             {
                 queries = HttpUtility.ParseQueryString(query);
                 moniker = queries["view"];
                 queries.Remove("view");
+                text = queries["text"];
+                queries.Remove("text");
             }
             var displayProperty = queries["displayProperty"];
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, declaringFile);
+            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, text, declaringFile);
 
             if (xrefSpec?.DeclaringFile != null)
             {
@@ -196,8 +199,10 @@ namespace Microsoft.Docs.Build
                 {
                     return (error, query + fragment, fragment, linkType, null, false);
                 }
+
                 var selfUrl = Document.PathToRelativeUrl(
                     Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
+
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null, false);
             }
 
@@ -225,11 +230,7 @@ namespace Microsoft.Docs.Build
 
         private (Error error, Document file, string query, string fragment, LinkType linkType, string pathToDocset) TryResolveFile(Document declaringFile, SourceInfo<string> href)
         {
-            if (string.IsNullOrEmpty(href))
-            {
-                return default;
-            }
-
+            href = href.Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
 
             switch (UrlUtility.GetLinkType(href))
@@ -241,6 +242,13 @@ namespace Microsoft.Docs.Build
                     return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath, null);
 
                 case LinkType.RelativePath:
+                    if (string.IsNullOrEmpty(path))
+                    {
+                        // https://tools.ietf.org/html/rfc2396#section-4.2
+                        // a hack way to process empty href
+                        return (null, declaringFile, query, fragment, LinkType.SelfBookmark, null);
+                    }
+
                     // Resolve path relative to docset
                     var pathToDocset = ResolveToDocsetRelativePath(path, declaringFile);
 

@@ -1273,7 +1273,7 @@ outputs:
       ]
     }
   .errors.log: |
-    ["warning","external-bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/TOC.md",2,3]
+    ["warning","bookmark-not-found","Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","docs/TOC.md",2,3]
 ---
 # reference uid within link
 inputs:

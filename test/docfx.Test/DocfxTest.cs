@@ -159,15 +159,17 @@ namespace Microsoft.Docs.Build
             using (TestUtility.EnsureFilesNotChanged(docsetPath))
             {
                 var options = $"{(spec.Legacy ? "--legacy" : "")} {(locale != null ? $"--locale {locale}" : "")}"
-                    .Split(' ', StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Concat(new[] { "--output", outputPath })
+                    .ToArray();
 
                 if (spec.Restore)
                 {
-                    await Docfx.Run(new[] { "restore", docsetPath, "--output", outputPath }.Concat(options).ToArray());
+                    Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray()));
                 }
                 if (spec.Build)
                 {
-                    await Docfx.Run(new[] { "build", docsetPath, "--output", outputPath }.Concat(options).ToArray());
+                    Assert.Equal(0, await Docfx.Run(new[] { "build", docsetPath }.Concat(options).ToArray()));
                 }
             }
 
