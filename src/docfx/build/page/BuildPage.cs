@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -186,16 +187,14 @@ namespace Microsoft.Docs.Build
             var content = file.ReadText();
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
-            var (markupErrors, html) = MarkdownUtility.ToHtml(
+            var (markupErrors, htmlDom) = MarkdownUtility.ToHtml(
                 context,
                 content,
                 file,
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
-            var htmlDom = HtmlUtility.LoadHtml(html);
             var wordCount = HtmlUtility.CountWord(htmlDom);
-            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
 
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
@@ -207,13 +206,11 @@ namespace Microsoft.Docs.Build
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = HtmlUtility.HtmlPostProcess(htmlDom, file.Docset.Culture),
+                Conceptual = CreateContent(context, htmlDom, file),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
                 Title = inputMetadata.Title ?? title,
             });
-
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
             return (errors, pageModel);
         }
@@ -268,7 +265,7 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).HtmlPostProcess(file.Docset.Culture),
+                    Conceptual = CreateContent(context, HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).StripTags().RemoveRerunCodepenIframes(), file),
                     ExtensionData = pageModel,
                 });
             }
@@ -287,11 +284,6 @@ namespace Microsoft.Docs.Build
             }
 
             var templateMetadata = context.TemplateEngine.RunJint(string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
-
-            if (TemplateEngine.IsLandingData(file.Mime))
-            {
-                templateMetadata.Remove("conceptual");
-            }
 
             // content for *.mta.json
             var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
@@ -313,6 +305,16 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
+        private static string CreateContent(Context context, HtmlNode html, Document file)
+        {
+            // add bookmark validation
+            var bookmarks = HtmlUtility.GetBookmarks(html);
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+
+            // get conceptual from htmldom
+            return LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
+        }
+
         private static string CreateContent(Context context, Document file, JObject pageModel)
         {
             if (string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
@@ -325,10 +327,7 @@ namespace Microsoft.Docs.Build
             var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
 
             var htmlDom = HtmlUtility.LoadHtml(content);
-            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
-
-            return HtmlUtility.AddLinkType(htmlDom, file.Docset.Locale).WriteTo();
+            return CreateContent(context, htmlDom, file);
         }
     }
 }

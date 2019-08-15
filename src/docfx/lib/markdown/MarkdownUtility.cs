@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
+using HtmlAgilityPack;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (List<Error> errors, string html) ToHtml(
+        public static (List<Error> errors, HtmlNode html) ToHtml(
             Context context,
             string markdown,
             Document file,
@@ -64,8 +64,9 @@ namespace Microsoft.Docs.Build
                     t_status.Value.Push(status);
 
                     var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
+                    var htmlNode = HtmlUtility.LoadHtml(html);
 
-                    var htmlWithRelativeLink = HtmlUtility.TransformLinks(html, (href, _) =>
+                    var htmlNodeWithRelativeLink = HtmlUtility.TransformLinks(htmlNode, (href, _) =>
                     {
                         if (href.StartsWith(RelativeUrlMarker))
                         {
@@ -74,7 +75,7 @@ namespace Microsoft.Docs.Build
                         return href;
                     });
 
-                    return (status.Errors, htmlWithRelativeLink);
+                    return (status.Errors, htmlNodeWithRelativeLink.StripTags().RemoveRerunCodepenIframes());
                 }
                 finally
                 {

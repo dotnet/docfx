@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
                         MarkdownPipelineType.Markdown);
 
                     errors.AddRange(markupErrors);
-                    content = new SourceInfo<string>(html, content);
+                    content = new SourceInfo<string>(html.WriteTo(), content);
                     break;
 
                 case JsonSchemaContentType.InlineMarkdown:
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
                         MarkdownPipelineType.InlineMarkdown);
 
                     errors.AddRange(inlineMarkupErrors);
-                    content = new SourceInfo<string>(inlineHtml, content);
+                    content = new SourceInfo<string>(inlineHtml.WriteTo(), content);
                     break;
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated

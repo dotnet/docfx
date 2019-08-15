@@ -1,7 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Globalization;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -9,8 +8,6 @@ namespace Microsoft.Docs.Build
     public class HtmlUtilityTest
     {
         [Theory]
-
-        // Add link type
         [InlineData("<a href='a.md' />", "<a href='a.md' data-linktype='relative-path' />")]
         [InlineData("<a href='(https://a)' />", "<a href='(https://a)' data-linktype='relative-path' />")]
         [InlineData("<a href='#aA' />", "<a href='#aA' data-linktype='self-bookmark' />")]
@@ -24,21 +21,33 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
         [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='external' />")]
+        public void HtmlAddLinkType(string input, string output)
+        {
+            var actual = HtmlUtility.LoadHtml(input).AddLinkType("zh-cn").WriteTo();
 
-        // Rerun codepen iframes
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
+        }
+
+        [Theory]
         [InlineData("<div></div>", "<div></div>")]
         [InlineData("<iframe></iframe>", "<iframe></iframe>")]
         [InlineData("<iframe src='//codepen.io/a' />", "<iframe src='//codepen.io/a&rerun-position=hidden&' />")]
+        public void HtmlRemoveRerunCodepenIframes(string input, string output)
+        {
+            var actual = HtmlUtility.LoadHtml(input).RemoveRerunCodepenIframes().WriteTo();
 
-        // Strip tags
+            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
+        }
+
+        [Theory]
         [InlineData("<style href='a'>", "")]
         [InlineData("<div style='a'></div>", "<div></div>")]
         [InlineData("<div><style href='a'></div>", "<div></div>")]
         [InlineData("<div><link href='a'></div>", "<div></div>")]
         [InlineData("<div><script></script></div>", "<div></div>")]
-        public void HtmlPostProcess(string input, string output)
+        public void HtmlStripTags(string input, string output)
         {
-            var actual = HtmlUtility.LoadHtml(input).HtmlPostProcess(new CultureInfo("zh-CN"));
+            var actual = HtmlUtility.LoadHtml(input).StripTags().WriteTo();
 
             Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
         }
