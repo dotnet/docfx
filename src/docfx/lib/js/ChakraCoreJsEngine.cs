@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ChakraCoreJsEngine : IJavascriptEngine
     {
+        private static readonly object s_lock = new object();
+
         private static readonly ThreadLocal<JavaScriptRuntime> t_runtime = new ThreadLocal<JavaScriptRuntime>(
             () => JavaScriptRuntime.Create());
 
@@ -38,34 +40,37 @@ namespace Microsoft.Docs.Build
 
         public JToken Run(string scriptPath, string methodName, JToken arg)
         {
-            var context = t_runtime.Value.CreateContext();
-
-            using (new JavaScriptContext.Scope(context))
+            lock (s_lock)
             {
-                try
+                var context = t_runtime.Value.CreateContext();
+
+                using (new JavaScriptContext.Scope(context))
                 {
-                    t_modules.Value = new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer);
-
-                    var exports = Run(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
-                    var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
-                    var input = ToJavaScriptValue(arg);
-
-                    if (_global != null)
+                    try
                     {
-                        input.SetProperty(JavaScriptPropertyId.FromString("__global"), ToJavaScriptValue(_global), useStrictRules: true);
+                        t_modules.Value = new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer);
+
+                        var exports = Run(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
+                        var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
+                        var input = ToJavaScriptValue(arg);
+
+                        if (_global != null)
+                        {
+                            input.SetProperty(JavaScriptPropertyId.FromString("__global"), ToJavaScriptValue(_global), useStrictRules: true);
+                        }
+
+                        var output = method.CallFunction(JavaScriptValue.Undefined, input);
+
+                        return ToJToken(output);
                     }
-
-                    var output = method.CallFunction(JavaScriptValue.Undefined, input);
-
-                    return ToJToken(output);
-                }
-                catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
-                {
-                    throw new JavaScriptScriptException(ex.ErrorCode, ex.Error, $"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
-                }
-                finally
-                {
-                    t_modules.Value = null;
+                    catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
+                    {
+                        throw new InvalidOperationException($"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
+                    }
+                    finally
+                    {
+                        t_modules.Value = null;
+                    }
                 }
             }
         }
@@ -82,7 +87,8 @@ namespace Microsoft.Docs.Build
             var sourceCode = File.ReadAllText(scriptPath);
 
             // add `process` to input to get the correct file path while running script inside docs-ui
-            var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}}})";
+            var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}
+}})";
             var dirname = Path.GetDirectoryName(scriptPath);
 
             t_dirnames.Value.Push(dirname);
@@ -138,6 +144,7 @@ namespace Microsoft.Docs.Build
                     return JavaScriptValue.FromBoolean(token.Value<bool>());
 
                 case JTokenType.String:
+                case JTokenType.Date:
                     return JavaScriptValue.FromString(token.Value<string>());
 
                 case JTokenType.Integer:
