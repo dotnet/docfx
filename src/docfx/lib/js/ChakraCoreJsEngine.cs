@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -203,8 +204,10 @@ namespace Microsoft.Docs.Build
                     return JavaScriptValue.FromBoolean(token.Value<bool>());
 
                 case JTokenType.String:
-                case JTokenType.Date:
                     return JavaScriptValue.FromString(token.Value<string>());
+
+                case JTokenType.Date:
+                    return JavaScriptValue.FromString(token.Value<DateTime>().ToString("o", CultureInfo.InvariantCulture));
 
                 case JTokenType.Integer:
                     return JavaScriptValue.FromInt32(token.Value<int>());
