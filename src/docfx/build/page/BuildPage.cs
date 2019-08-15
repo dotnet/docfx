@@ -194,6 +194,8 @@ namespace Microsoft.Docs.Build
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
+            // get bookmarks before extracting title
+            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
             var wordCount = HtmlUtility.CountWord(htmlDom);
 
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
@@ -206,7 +208,7 @@ namespace Microsoft.Docs.Build
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = CreateContent(context, htmlDom, file),
+                Conceptual = CreateContent(context, htmlDom, file, bookmarks),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
                 Title = inputMetadata.Title ?? title,
@@ -310,10 +312,10 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static string CreateContent(Context context, HtmlNode html, Document file)
+        private static string CreateContent(Context context, HtmlNode html, Document file, HashSet<string> bookmarks = null)
         {
             // add bookmark validation
-            var bookmarks = HtmlUtility.GetBookmarks(html);
+            bookmarks = bookmarks ?? HtmlUtility.GetBookmarks(html);
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
 
             // get conceptual from htmldom
