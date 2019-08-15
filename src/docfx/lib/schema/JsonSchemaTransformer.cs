@@ -205,6 +205,8 @@ namespace Microsoft.Docs.Build
                         MarkdownPipelineType.Markdown);
 
                     errors.AddRange(markupErrors);
+
+                    // todo: use BuildPage.CreateContent() when we only validate markdown properties' bookmarks
                     content = new SourceInfo<string>(html.WriteTo(), content);
                     break;
 
@@ -216,6 +218,8 @@ namespace Microsoft.Docs.Build
                         MarkdownPipelineType.InlineMarkdown);
 
                     errors.AddRange(inlineMarkupErrors);
+
+                    // todo: use BuildPage.CreateContent() when we only validate markdown properties' bookmarks
                     content = new SourceInfo<string>(inlineHtml.WriteTo(), content);
                     break;
 
