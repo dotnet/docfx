@@ -89,8 +89,11 @@ namespace Microsoft.Docs.Build
 
         private static JavaScriptContext CreateContext()
         {
-            var flags = JavaScriptRuntimeAttributes.DisableBackgroundWork | JavaScriptRuntimeAttributes.DisableEval;
-            return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.Version11).CreateContext();
+            var flags = JavaScriptRuntimeAttributes.DisableBackgroundWork |
+                        JavaScriptRuntimeAttributes.DisableEval |
+                        JavaScriptRuntimeAttributes.EnableIdleProcessing;
+
+            return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.VersionEdge).CreateContext();
         }
 
         private static JavaScriptValue GetScriptExports(JavaScriptContext context, string scriptPath)
