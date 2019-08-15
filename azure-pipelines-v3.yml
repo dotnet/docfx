@@ -99,6 +99,13 @@ jobs:
     clean: true
     path: docfx
 
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk 2.2.300'
+    inputs:
+      packageType: sdk
+      version: 2.2.401
+
   # Checkout Docs.Build
   - powershell: |
       function exec([string] $cmd) {
