@@ -14,6 +14,14 @@ jobs:
     vmImage: 'ubuntu-16.04'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
+
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk 2.2.300'
+    inputs:
+      packageType: sdk
+      version: 2.2.401
+
   - bash: ./build.sh
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
@@ -24,6 +32,14 @@ jobs:
     vmImage: 'macOS-10.13'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
+
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk 2.2.300'
+    inputs:
+      packageType: sdk
+      version: 2.2.401
+
   - bash: ./build.sh
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
@@ -34,6 +50,13 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
+
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk 2.2.300'
+    inputs:
+      packageType: sdk
+      version: 2.2.401
 
   # Build and test
   - powershell: ./build.ps1
