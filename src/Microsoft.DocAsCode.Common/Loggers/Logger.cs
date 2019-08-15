@@ -12,9 +12,8 @@ namespace Microsoft.DocAsCode.Common
         public static bool HasError { get; private set; }
         public static int WarningCount => _warningCount;
 
-        private static readonly object _sync = new object();
-        private static CompositeLogListener _syncListener = new CompositeLogListener();
-        private static AsyncLogListener _asyncListener = new AsyncLogListener();
+        private static readonly CompositeLogListener _syncListener = new CompositeLogListener();
+        private static readonly AsyncLogListener _asyncListener = new AsyncLogListener();
         private static int _warningCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
         public volatile static bool WarningsAsErrors = false;
