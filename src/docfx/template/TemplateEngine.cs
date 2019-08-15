@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly string _contentTemplateDir;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
-        private readonly IJavascriptEngine _js;
+        private readonly IJavaScriptEngine _js;
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
 
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             // TODO: remove JINT after Microsoft.CharkraCore NuGet package
             // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
             _js = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? (IJavascriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
+                ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
                 : new JintJsEngine(_contentTemplateDir, _global);
 
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);

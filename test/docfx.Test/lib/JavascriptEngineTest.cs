@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     public class JavascriptEngineTest
     {
-        private readonly IJavascriptEngine[] _engines = new IJavascriptEngine[]
+        private readonly IJavaScriptEngine[] _engines = new IJavaScriptEngine[]
         {
             new JintJsEngine("data/javascript"),
             new ChakraCoreJsEngine("data/javascript"),
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var engine in _engines)
             {
-                Assert.ThrowsAny<Exception>(() => engine.Run("index.js", "main", inputJson));
+                Assert.Throws<JavaScriptEngineException>(() => engine.Run("index.js", "main", inputJson));
             }
         }
     }
