@@ -34,6 +34,8 @@ namespace Microsoft.Docs.Build
 
         private static JavaScriptSourceContext s_currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
+        private readonly ConcurrentDictionary<JavaScriptContext, JavaScriptValue> _globals = new ConcurrentDictionary<JavaScriptContext, JavaScriptValue>();
+
         private readonly string _scriptDir;
         private readonly JObject _global;
 
@@ -45,30 +47,24 @@ namespace Microsoft.Docs.Build
 
         public JToken Run(string scriptPath, string methodName, JToken arg)
         {
-            return RunStatic(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)), methodName, arg, _global);
-        }
-
-        public static JToken RunStatic(string scriptPath, string methodName, JToken arg, JObject global)
-        {
             s_contextThrottler.Wait();
 
             try
             {
-                var context = s_contextPool.TryTake(out var existingContext)
-                    ? existingContext
-                    : JavaScriptRuntime.Create().CreateContext();
+                var context = s_contextPool.TryTake(out var existingContext) ? existingContext : CreateContext();
 
                 Native.ThrowIfError(Native.JsSetCurrentContext(context));
 
                 try
                 {
-                    var exports = GetScriptExport(context, scriptPath);
+                    var exports = GetScriptExports(context, Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
+                    var global = GetGlobal(context);
                     var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
                     var input = ToJavaScriptValue(arg);
 
-                    if (global != null)
+                    if (global.IsValid)
                     {
-                        input.SetProperty(JavaScriptPropertyId.FromString("__global"), ToJavaScriptValue(global), useStrictRules: true);
+                        input.SetProperty(JavaScriptPropertyId.FromString("__global"), global, useStrictRules: true);
                     }
 
                     var output = method.CallFunction(JavaScriptValue.Undefined, input);
@@ -91,7 +87,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JavaScriptValue GetScriptExport(JavaScriptContext context, string scriptPath)
+        private static JavaScriptContext CreateContext()
+        {
+            var flags = JavaScriptRuntimeAttributes.DisableBackgroundWork | JavaScriptRuntimeAttributes.DisableEval;
+            return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.Version11).CreateContext();
+        }
+
+        private static JavaScriptValue GetScriptExports(JavaScriptContext context, string scriptPath)
         {
             return s_scriptExports.GetOrAdd((context, scriptPath), key =>
             {
@@ -109,6 +111,23 @@ namespace Microsoft.Docs.Build
                 {
                     t_modules.Value = null;
                 }
+            });
+        }
+
+        private JavaScriptValue GetGlobal(JavaScriptContext context)
+        {
+            if (_global is null)
+            {
+                return JavaScriptValue.Invalid;
+            }
+
+            return _globals.GetOrAdd(context, key =>
+            {
+                var global = ToJavaScriptValue(_global);
+
+                // Avoid exports been GCed by javascript garbarge collector.
+                global.AddRef();
+                return global;
             });
         }
 
