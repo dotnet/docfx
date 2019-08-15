@@ -285,6 +285,11 @@ namespace Microsoft.Docs.Build
 
             var templateMetadata = context.TemplateEngine.RunJint(string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
 
+            if (TemplateEngine.IsLandingData(file.Mime))
+            {
+                templateMetadata.Remove("conceptual");
+            }
+
             // content for *.mta.json
             var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
             {
