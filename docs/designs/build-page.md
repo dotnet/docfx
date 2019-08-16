@@ -61,7 +61,7 @@
   }
   ```
 
-- [SDP] Transform `Input Metadata` based on `Schema`
+- [SDP] Transform `Input Metadata` based on `JSON Schema`
 
 - Merge `System Metadata` into `Input Metadata` to create `Output Metadata`
  
@@ -100,7 +100,33 @@
   }
   ```
 
-- [SDP] Transform `Input Model` based on `Schema` to create `Intermediate Model`
+- [SDP] Transform `Input Model` based on `JSON Schema` to create `Intermediate Model`
+
+  *sdp json schema example*:
+  ```json
+  {
+    "type": "object",
+    "properties":
+    {
+      "metadata":
+      {
+        "type": "object",
+        "properties": 
+        {
+          "title": 
+          {
+            "type": "string"
+          }
+        }
+      },
+      "xref":
+      {
+        "type": "string",
+        "contentType": "Xref"
+      }  
+    }    
+  }
+  ```
 
   *sdp intermediate model example:*
   ```json
@@ -149,7 +175,7 @@
 
 ### Details
 
-- Create `Template Intermediate Metadata` from running `Conceptual/{MIME}.mta.json.js` against to `Output Model`
+- Create `Template Intermediate Metadata` from running `Conceptual/{MIME}.mta.json.js` against `Output Model`
 
   *template intermediate metadata example:*
   ```json
@@ -183,7 +209,7 @@
 
 - [Conceptual] Get `Template Html Content` from `Output Model`(`markup result`)
 
-- [SDP] Create `Template Html Content` from running `{MIME}.html.primary.js` and `{MIME}.html.primary.tmpl` against to `Output Model`.
+- [SDP] Create `Template Html Content` from running `{MIME}.html.primary.js` and `{MIME}.html.primary.tmpl` against `Output Model`.
 
 - Create `Template Model` based on:
   - `Template Metadata`(processed)
