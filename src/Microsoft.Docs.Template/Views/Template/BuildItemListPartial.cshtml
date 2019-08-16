@@ -3,7 +3,38 @@
 
 @using Microsoft.Docs.Build;
 @using Newtonsoft.Json.Linq;
+@using System.Text.RegularExpressions;
 @model LandingDataItem
+
+@functions
+{
+    private string removeTagsAndComments(string html) {
+        string tagBody = @"(?:[^""\'>]|""[^""]*""|\'[^\']*\')*";
+        string tagOrCommentRegex =
+            "<(?:"
+            // Comment body.
+            +
+            "!--(?:(?:-*[^->])*--+|-?)"
+            // Special "raw text" elements whose content should be elided.
+            +
+            "|script\\b' + tagBody + '>[\\s\\S]*?</script\\s*" +
+            "|style\\b' + tagBody + '>[\\s\\S]*?</style\\s*"
+            // Regular name
+            +
+            "|/?[a-z]" +
+            tagBody +
+            ")>";
+        string oldHtml;
+        // TODO: add timespan for regex
+        while (true) {
+            oldHtml = html;
+            html = Regex.Replace(html, tagOrCommentRegex, string.Empty, RegexOptions.IgnoreCase);
+            if (oldHtml == html) break;
+        }
+        html = Regex.Replace(html, @"(\r\n|\n|\r)", " ", RegexOptions.Multiline);
+        return Regex.Replace(html, @"<", "&lt;");
+    }
+}
 
 @if (@Model.Style == "unordered")
 {
@@ -101,7 +132,7 @@ else if (Model.Style == "cards")
                                     }
                                     else if (!string.IsNullOrEmpty(listItem.Html))
                                     {
-                                        <p>@Html.Raw(listItem.Html)</p>
+                                        <p>@Html.Raw(removeTagsAndComments(listItem.Html))</p>
                                     }
                                 </div>
                             }

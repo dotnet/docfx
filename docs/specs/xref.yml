@@ -149,6 +149,7 @@ inputs:
       "description": "a.description"
     }
   docs/c.md: |
+    Link to <xref:a?text=some%20text&displayProperty=fullName>
     Link to <xref:a?displayProperty=fullName>
     Link to <xref:a??displayProperty=fullName>
     Link to @a?displayProperty=fullName
@@ -158,6 +159,7 @@ outputs:
   docs/c.json: | 
     {
       "conceptual":"<p>
+                        Link to <a href=\"a.json\">some text</a>
                         Link to <a href=\"a.json\">test.test</a>
                         Link to <a href=\"a.json??displayProperty=fullName\">test</a>
                         Link to <a href=\"a.json\">test.test</a>
