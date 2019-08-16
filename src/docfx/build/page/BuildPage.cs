@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = CreateContent(context, htmlDom, file, bookmarks),
+                Conceptual = CreateHtmlContent(context, htmlDom, file, bookmarks),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
                 Title = inputMetadata.Title ?? title,
@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = CreateContent(context, HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).StripTags().RemoveRerunCodepenIframes(), file),
+                    Conceptual = CreateHtmlContent(context, HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).StripTags().RemoveRerunCodepenIframes(), file),
                     ExtensionData = pageModel,
                 });
             }
@@ -312,7 +312,7 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static string CreateContent(Context context, HtmlNode html, Document file, HashSet<string> bookmarks = null)
+        private static string CreateHtmlContent(Context context, HtmlNode html, Document file, HashSet<string> bookmarks = null)
         {
             // add bookmark validation
             bookmarks = bookmarks ?? HtmlUtility.GetBookmarks(html);
@@ -326,6 +326,7 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
             {
+                // Conceptual and Landing Data
                 return pageModel.Value<string>("conceptual");
             }
 
@@ -334,7 +335,7 @@ namespace Microsoft.Docs.Build
             var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
 
             var htmlDom = HtmlUtility.LoadHtml(content);
-            return CreateContent(context, htmlDom, file);
+            return CreateHtmlContent(context, htmlDom, file);
         }
     }
 }
