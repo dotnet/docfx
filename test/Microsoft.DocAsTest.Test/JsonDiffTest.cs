@@ -99,7 +99,6 @@ namespace Microsoft.DocAsTest
         {
             var jsonDiff = new JsonDiffBuilder()
                 .UseAdditionalProperties()
-                .UseSortProperties()
                 .UseIgnoreNull((e, a, name) => name == "ignore-null")
                 .UseNegate()
                 .UseRegex()

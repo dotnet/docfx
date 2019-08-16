@@ -129,29 +129,6 @@ namespace Microsoft.DocAsTest
         }
 
         /// <summary>
-        /// Sort properties by name.
-        /// </summary>
-        /// <example>
-        /// Given the expectation { "a": 1, "b": 2 }, { "b": 2, "a": 1 } pass.
-        /// </example>
-        public static JsonDiffBuilder UseSortProperties(this JsonDiffBuilder builder, JsonDiffPredicate predicate = null)
-        {
-            if (builder is null)
-                throw new ArgumentNullException(nameof(builder));
-
-            return builder.Use(predicate, (expected, actual, name, diff) =>
-            {
-                if (expected is JObject expectedObj && actual is JObject actualObj)
-                {
-                    return (new JObject(expectedObj.Properties().OrderBy(p => p.Name)),
-                            new JObject(actualObj.Properties().OrderBy(p => p.Name)));
-                }
-
-                return (expected, actual);
-            });
-        }
-
-        /// <summary>
         /// Assert the actual value must be a JSON string that matches the expected JSON string.
         /// </summary>
         /// <example>
