@@ -58,10 +58,15 @@ query ($login: String!) {
   }
 }";
 
-            var (error, data, _) = await Query(
+            var (error, errorCode, data) = await Query(
                 query,
                 new { login },
                 new { user = new { name = "", email = "", login = "", databaseId = 0 } });
+
+            if (errorCode == "NOT_FOUND")
+            {
+                return default;
+            }
 
             if (error != null || data?.user is null)
             {
@@ -117,7 +122,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
             var user = new { name = "", email = "", login = "", databaseId = 0 };
             var history = new { nodes = new[] { new { author = new { email = "", user } } } };
 
-            var (error, data, notFound) = await Query(
+            var (error, errorCode, data) = await Query(
                 query,
                 new { owner, name, commit },
                 new { repository = new { @object = new { history } } });
@@ -127,9 +132,10 @@ query ($owner: String!, $name: String!, $commit: String!) {
                 return (error, null);
             }
 
-            if (notFound)
+            if (errorCode == "NOT_FOUND")
             {
                 _unknownRepos.TryAdd((owner, name));
+                return (error, null);
             }
 
             var githubUsers = new List<GitHubUser>();
@@ -155,7 +161,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
             return (null, githubUsers);
         }
 
-        private async Task<(Error error, T data, bool notFound)> Query<T>(string query, object variables, T dataType)
+        private async Task<(Error error, string errorCode, T data)> Query<T>(string query, object variables, T dataType)
         {
             Debug.Assert(dataType != null);
 
@@ -189,21 +195,18 @@ query ($owner: String!, $name: String!, $commit: String!) {
                         {
                             switch (error.type)
                             {
-                                case "NOT_FOUND":
-                                    return (default, default, default);
-
                                 case "MAX_NODE_LIMIT_EXCEEDED":
                                 case "RATE_LIMITED":
                                     _fatalError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
                                     return (_fatalError, default, default);
 
                                 default:
-                                    return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), default, default);
+                                    return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), error.type, default);
                             }
                         }
                     }
 
-                    return (null, body.data, default);
+                    return (null, null, body.data);
                 }
             }
             catch (Exception ex)

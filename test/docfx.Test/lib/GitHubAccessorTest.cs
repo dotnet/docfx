@@ -40,7 +40,6 @@ namespace Microsoft.Docs.Build
         [InlineData("docascode", "contribution-test", "0000000000000000000000000000000000000000", null, null, null, null)]
         [InlineData("docascode", "contribution-test", "b2b280fbc64790011c7a4d01bca5b84b6d98e386", null, null, null, new[] { "51308672+disabled-account-osmond@users.noreply.github.com" })]
         [InlineData("docascode", "contribution-test", "6d0e5bc3595e3841ac62dc545dfbb2c01fe64e7c", "yufeih", 511355, "Yufei Huang", new[] { "yufeih@live.com", "yufeih@microsoft.com" })]
-        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
         public static async Task GetUserByCommit(string repoOwner, string repoName, string commit, string login, int? id, string name, string[] emails)
         {
             var (error, users) = await s_github.GetUsersByCommit(repoOwner, repoName, commit);
@@ -55,6 +54,19 @@ namespace Microsoft.Docs.Build
                 Assert.Equal(id, user?.Id);
                 Assert.Equal(name, user?.Name);
                 Assert.Equal(emails, user?.Emails);
+            }
+        }
+
+        [Theory]
+        [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef")]
+        public static async Task GetUserByCommit_RepoNotFound(string repoOwner, string repoName, string commit)
+        {
+            var (error, users) = await s_github.GetUsersByCommit(repoOwner, repoName, commit);
+
+            // skip check if the machine exceeds the GitHub API rate limit
+            if (!string.IsNullOrEmpty(s_token))
+            {
+                Assert.NotNull(error);
             }
         }
     }
