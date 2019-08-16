@@ -122,7 +122,7 @@
       "xref":
       {
         "type": "string",
-        "contentType": "Xref"
+        "contentType": "xref"
       }  
     }    
   }
