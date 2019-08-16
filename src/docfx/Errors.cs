@@ -317,7 +317,7 @@ namespace Microsoft.Docs.Build
         public static Error InvalidMetadataType(SourceInfo source, string name)
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
-         /// <summary>
+        /// <summary>
         /// Failed to compute specific info of a commit.
         /// </summary>
         public static Error GitCloneIncomplete(string repoPath)

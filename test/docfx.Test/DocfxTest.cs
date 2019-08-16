@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
 
                 File.WriteAllText(markerPath, "");
             }
-            
+
             return (docsetPath, cachePath, outputPath, repos);
         }
 

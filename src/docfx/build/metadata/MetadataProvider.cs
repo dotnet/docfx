@@ -109,11 +109,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var schemaValidator in _schemaValidators)
             {
-               // Only validate conceptual files
-               if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime) && !result.ContainsKey("layout"))
-               {
+                // Only validate conceptual files
+                if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime) && !result.ContainsKey("layout"))
+                {
                     errors.AddRange(schemaValidator.Validate(result));
-               }
+                }
             }
 
             var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
