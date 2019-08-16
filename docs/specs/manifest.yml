@@ -44,7 +44,7 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "files": [{ "url": "/a", "redirect_url": "/b", "!path": null, "source_path": "a.md", "!hash": null }]
+      "files": [{ "url": "/a", "redirect_url": "/b", "path": undefined, "source_path": "a.md", "hash": undefined }]
     }
 ---
 # Publish manifest for articles contains custom metadata
@@ -389,29 +389,26 @@ outputs:
   docs/c.json:
   docs/d.json:
   .dependencymap.json: |
-    dependencies:
-      docs/d.md:
-        - source: docs/b.md
-          type: link
-      docs/c.md:
-        - source: docs/b.md
-          type: link
-        - source: docs/d.md
-          type: inclusion
-      docs/b.md:
-        - source: docs/b.md
-          type: link
-        - source: docs/c.md
-          type: inclusion
-        - source: docs/d.md
-          type: inclusion
-      docs/a.md:
-        - source: docs/b.md
-          type: link
-        - source: docs/b.md
-          type: inclusion
-        - source: docs/c.md
-          type: inclusion
-        - source: docs/d.md
-          type: inclusion
+    {
+      "dependencies": {
+        "docs/d.md": [
+          { "source": "docs/b.md", "type": "link"}
+        ],
+        "docs/c.md": [
+          { "source": "docs/b.md", "type": "link"},
+          { "source": "docs/d.md", "type": "inclusion"}
+        ],
+        "docs/b.md": [
+          { "source": "docs/b.md", "type": "link"},
+          { "source": "docs/c.md", "type": "inclusion"},
+          { "source": "docs/d.md", "type": "inclusion"}
+        ],
+        "docs/a.md": [
+          { "source": "docs/b.md", "type": "link"},
+          { "source": "docs/b.md", "type": "inclusion"},
+          { "source": "docs/c.md", "type": "inclusion"},
+          { "source": "docs/d.md", "type": "inclusion"}
+        ]
+      }
+    }
 ---
