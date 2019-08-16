@@ -61,7 +61,7 @@ outputs:
     }
   h4.json: |
     {
-      "!title": null,
+      "title": undefined,
       "rawTitle": "",
       "conceptual": "<h4 id=\"h4-title\">h4 title</h4>",
     }
@@ -77,7 +77,7 @@ inputs:
 outputs:
   h1toremove.json: |
     {
-      "conceptual":"",
+      "conceptual": "\n",
       "rawTitle": "<h1 id=\"h1-title\">h1 title</h1>"
     }
   h1tokeep.json: |
@@ -284,7 +284,7 @@ inputs:
 outputs:
   docs/b.json:
   .errors.log: |
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *",1,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",1,1]
 ---
 # do not allow custom js, styles and css
 inputs:
@@ -404,23 +404,25 @@ inputs:
     b
 outputs:
   docs/a.json: |
-    conceptual: |
-      <div class="tabGroup" id="tabgroup_CeZOj-G++Q">
-        <ul role="tablist">
-          <li role="presentation">
-            <a href="#tabpanel_CeZOj-G++Q_a" role="tab" aria-controls="tabpanel_CeZOj-G++Q_a" data-tab="a" tabindex="0" aria-selected="true">a</a>
-          </li>
-          <li role="presentation">
-            <a href="#tabpanel_CeZOj-G++Q_b" role="tab" aria-controls="tabpanel_CeZOj-G++Q_b" data-tab="b" tabindex="-1">b</a>
-          </li>
-        </ul>
-        <section id="tabpanel_CeZOj-G++Q_a" role="tabpanel" data-tab="a">
-          <p>a</p>
-        </section>
-        <section id="tabpanel_CeZOj-G++Q_b" role="tabpanel" data-tab="b" aria-hidden="true" hidden="hidden">
-          <p>b</p>
-        </section>
-      </div>
+    {
+      "conceptual": "
+        <div class='tabGroup' id='tabgroup_CeZOj-G++Q'>
+          <ul role='tablist'>
+            <li role='presentation'>
+              <a href='#tabpanel_CeZOj-G++Q_a' role='tab' aria-controls='tabpanel_CeZOj-G++Q_a' data-tab='a' tabindex='0' aria-selected='true'>a</a>
+            </li>
+            <li role='presentation'>
+              <a href='#tabpanel_CeZOj-G++Q_b' role='tab' aria-controls='tabpanel_CeZOj-G++Q_b' data-tab='b' tabindex='-1'>b</a>
+            </li>
+          </ul>
+          <section id='tabpanel_CeZOj-G++Q_a' role='tabpanel' data-tab='a'>
+            <p>a</p>
+          </section>
+          <section id='tabpanel_CeZOj-G++Q_b' role='tabpanel' data-tab='b' aria-hidden='true' hidden='hidden'>
+            <p>b</p>
+          </section>
+        </div>"
+    }
 ---
 # experimental pairs
 inputs:
@@ -495,15 +497,17 @@ inputs:
     ## c
 outputs:
   docs/a.json: |
-    conceptual: |
-      <ol>
-        <li>a
-          <ul><li><li></li></li></ul>
-        <li>b
-          <ul><li></li></ul></li>
-        </li>
-      </ol>
-      <h2 id="c">c</h2>
+    {
+      "conceptual": "
+        <ol>
+          <li>a
+            <ul><li><li></li></li></ul>
+          <li>b
+            <ul><li></li></ul></li>
+          </li>
+        </ol>
+        <h2 id='c'>c</h2>"
+    }
 ---
 # Empty YAML header
 inputs:

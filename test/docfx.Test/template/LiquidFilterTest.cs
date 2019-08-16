@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.DocAsTest;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -68,8 +69,8 @@ namespace Microsoft.Docs.Build
         public void TestExcludeNodes(string html, string nodesXPath, string expectedResult)
         {
             Assert.Equal(
-                TestUtility.NormalizeHtml(expectedResult),
-                TestUtility.NormalizeHtml(LiquidFilter.ExcludeNodes(html, nodesXPath)));
+                JsonDiff.NormalizeHtml(expectedResult),
+                JsonDiff.NormalizeHtml(LiquidFilter.ExcludeNodes(html, nodesXPath)));
         }
     }
 }
