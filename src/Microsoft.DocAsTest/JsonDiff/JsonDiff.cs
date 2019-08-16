@@ -15,6 +15,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.DocAsTest
 {
+    /// <summary>
+    /// Visualize test validation result by producing a JSON diff.
+    /// </summary>
     public class JsonDiff
     {
         private static readonly JsonSerializer s_serializer = new JsonSerializer
@@ -29,21 +32,34 @@ namespace Microsoft.DocAsTest
 
         internal JsonDiff(JsonDiffNormalize[] rules) => _rules = rules;
 
-        public void Verify(object expected, object actual, JsonDiffOptions options = default)
+        /// <summary>
+        /// Validate that the actual object matches expected object using the rules
+        /// configured in this <see cref="JsonDiff"/> object.
+        /// Throws <see cref="JsonDiffException"/> if the validation failed.
+        /// </summary>
+        public void Verify(object expected, object actual)
         {
-            var diff = Diff(expected, actual, options);
+            var diff = Diff(expected, actual);
             if (!string.IsNullOrEmpty(diff))
             {
                 throw new JsonDiffException(diff);
             }
         }
 
-        public string Diff(object expected, object actual, JsonDiffOptions options = default)
+        /// <summary>
+        /// Produces a diff from the JSON representation of expected object and
+        /// JSON representation of actual object using the rules
+        /// configured in this <see cref="JsonDiff"/> object.
+        /// </summary>
+        /// <returns>
+        /// An empty string if there is no difference.
+        /// </returns>
+        public string Diff(object expected, object actual)
         {
             var expectedJson = ToJToken(expected);
             var actualJson = ToJToken(actual);
 
-            var (expectedNorm, actualNorm) = Normalize(expectedJson, actualJson, options);
+            var (expectedNorm, actualNorm) = Normalize(expectedJson, actualJson);
             var expectedText = Prettify(expectedNorm);
             var actualText = Prettify(actualNorm);
 
@@ -76,11 +92,18 @@ namespace Microsoft.DocAsTest
             return hasDiff ? diffText.ToString() : "";
         }
 
-        public (JToken, JToken) Normalize(JToken expected, JToken actual, JsonDiffOptions options = null)
+        /// <summary>
+        /// Normalizes the expected <see cref="JToken"/> and actual <see cref="JToken"/>
+        /// before performing a text diff, using the rules configured in this <see cref="JsonDiff"/> object.
+        /// </summary>
+        public (JToken, JToken) Normalize(JToken expected, JToken actual)
         {
-            return NormalizeCore(expected, actual, "", options ?? JsonDiffOptions.Default);
+            return NormalizeCore(expected, actual, "");
         }
 
+        /// <summary>
+        /// Normalizes an HTML text into a diff friendly representation.
+        /// </summary>
         public static string NormalizeHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -91,12 +114,9 @@ namespace Microsoft.DocAsTest
             return sb.ToString().Trim();
         }
 
-        private (JToken, JToken) NormalizeCore(JToken expected, JToken actual, string name, JsonDiffOptions options = default)
+        private (JToken, JToken) NormalizeCore(JToken expected, JToken actual, string name)
         {
-            if (ApplyRules(expected, actual, name, out var expectedResult, out var actualResult))
-            {
-                return (expectedResult, actualResult);
-            }
+            ApplyRules(ref expected, ref actual, name);
 
             switch (expected)
             {
@@ -107,7 +127,7 @@ namespace Microsoft.DocAsTest
                     foreach (var prop in expectedObj)
                     {
                         var actualValue = actualObj.GetValue(prop.Key) ?? JValue.CreateUndefined();
-                        var (expectedProp, actualProp) = NormalizeCore(prop.Value, actualValue, prop.Key, options);
+                        var (expectedProp, actualProp) = NormalizeCore(prop.Value, actualValue, prop.Key);
 
                         if (expectedProp.Type != JTokenType.Undefined)
                         {
@@ -119,11 +139,6 @@ namespace Microsoft.DocAsTest
                         }
                     }
 
-                    if (options.AdditionalProperties)
-                    {
-                        return (new JObject(expectedProps), new JObject(actualProps));
-                    }
-
                     foreach (var additionalProperty in actualObj.Properties())
                     {
                         if (!expectedObj.TryGetValue(additionalProperty.Name, out _))
@@ -132,8 +147,7 @@ namespace Microsoft.DocAsTest
                         }
                     }
 
-                    return (new JObject(expectedProps.OrderBy(p => p.Name)),
-                            new JObject(actualProps.OrderBy(p => p.Name)));
+                    return (new JObject(expectedProps), new JObject(actualProps));
 
                 case JArray expectedArray when actual is JArray actualArray:
                     var expectedArrayResult = new JArray(expectedArray);
@@ -142,7 +156,7 @@ namespace Microsoft.DocAsTest
 
                     for (var i = 0; i < length; i++)
                     {
-                        var (expectedNorm, actualNorm) = NormalizeCore(expectedArray[i], actualArray[i], "", options);
+                        var (expectedNorm, actualNorm) = NormalizeCore(expectedArray[i], actualArray[i], "");
 
                         expectedArrayResult[i] = expectedNorm;
                         actualArrayResult[i] = actualNorm;
@@ -154,27 +168,12 @@ namespace Microsoft.DocAsTest
             }
         }
 
-        private bool ApplyRules(JToken expected, JToken actual, string name, out JToken expectedResult, out JToken actualResult)
+        private void ApplyRules(ref JToken expected, ref JToken actual, string name)
         {
-            var match = false;
-
-            expectedResult = default;
-            actualResult = default;
-
             foreach (var rule in _rules)
             {
-                (expectedResult, actualResult) = rule(expected, actual, name, this);
-
-                if (!ReferenceEquals(expectedResult, expected) || !ReferenceEquals(actualResult, actual))
-                {
-                    match = true;
-                }
-
-                expected = expectedResult ?? JValue.CreateNull();
-                actual = actualResult ?? JValue.CreateNull();
+                (expected, actual) = rule(expected, actual, name, this);
             }
-
-            return match;
         }
 
         private static string Prettify(JToken token)

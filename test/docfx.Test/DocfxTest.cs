@@ -181,12 +181,13 @@ namespace Microsoft.Docs.Build
             var outputs = Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories)
                                    .ToDictionary(file => file.Substring(outputPath.Length).Replace('\\', '/'), File.ReadAllText);
 
-            s_jsonDiff.Verify(spec.Outputs, outputs, new JsonDiffOptions(additionalProperties: true));
+            s_jsonDiff.Verify(spec.Outputs, outputs);
         }
 
         private static JsonDiff CreateJsonDiff()
         {
             return new JsonDiffBuilder()
+                .UseAdditionalProperties()
                 .UseNegate()
                 .UseRegex()
                 .UseWildcard()
@@ -254,8 +255,7 @@ namespace Microsoft.Docs.Build
                     {
                         var (e, a) = jsonDiff.Normalize(
                             JToken.Parse(expectedLines[i]),
-                            JToken.Parse(actualLines[i]),
-                            new JsonDiffOptions(additionalProperties: true));
+                            JToken.Parse(actualLines[i]));
 
                         expectedLines[i] = e.ToString(Formatting.Indented);
                         actualLines[i] = a.ToString(Formatting.Indented);

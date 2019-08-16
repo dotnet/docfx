@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
             {
                 var after = GetFileLastWriteTimes(path);
 
-                new JsonDiff().Verify(before, after, new JsonDiffOptions(additionalProperties: false));
+                new JsonDiff().Verify(before, after);
             });
 
             Dictionary<string, DateTime> GetFileLastWriteTimes(string dir)

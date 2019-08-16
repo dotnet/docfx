@@ -36,10 +36,7 @@ namespace Microsoft.DocAsTest
         [InlineData("{'a': 1, 'b': { 'c': 2 }}", "{'a': 1, 'b': { 'c': 3 }}", @"
 -    'c': 2
 +    'c': 3")]
-        [InlineData("{'a': 1}", "{'a': 1, 'b': 2}", @"
--  'a': 1
-+  'a': 1,
-+  'b': 2")]
+        [InlineData("{'a': 1}", "{'a': 1, 'b': 2}", "")]
 
         // negate
         [InlineData("'!a'", "'b'", "")]
@@ -101,6 +98,8 @@ namespace Microsoft.DocAsTest
         public static void Run(string expected, string actual, string diff)
         {
             var jsonDiff = new JsonDiffBuilder()
+                .UseAdditionalProperties()
+                .UseSortProperties()
                 .UseIgnoreNull((e, a, name) => name == "ignore-null")
                 .UseNegate()
                 .UseRegex()
@@ -111,8 +110,7 @@ namespace Microsoft.DocAsTest
 
             var actualDiff = jsonDiff.Diff(
                     JToken.Parse(expected.Replace('\'', '\"')),
-                    JToken.Parse(actual.Replace('\'', '\"')),
-                    new JsonDiffOptions(additionalProperties: false));
+                    JToken.Parse(actual.Replace('\'', '\"')));
 
             var actualChanges = actualDiff
                 .Replace("\r", "")

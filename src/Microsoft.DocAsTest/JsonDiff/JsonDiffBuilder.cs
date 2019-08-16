@@ -12,7 +12,7 @@ namespace Microsoft.DocAsTest
 
         public JsonDiffBuilder Use(JsonDiffNormalize normalize)
         {
-            if (normalize == null)
+            if (normalize is null)
                 throw new ArgumentNullException(nameof(normalize));
 
             _rules.Add(normalize);
@@ -21,16 +21,20 @@ namespace Microsoft.DocAsTest
 
         public JsonDiffBuilder Use(JsonDiffPredicate match, JsonDiffNormalize normalize)
         {
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
-
-            if (normalize == null)
+            if (normalize is null)
                 throw new ArgumentNullException(nameof(normalize));
 
-            _rules.Add((expected, actual, name, diff)
-                => match(expected, actual, name)
-                    ? normalize(expected, actual, name, diff)
-                    : (expected, actual));
+            if (match is null)
+            {
+                _rules.Add(normalize);
+            }
+            else
+            {
+                _rules.Add((expected, actual, name, diff)
+                    => match(expected, actual, name)
+                        ? normalize(expected, actual, name, diff)
+                        : (expected, actual));
+            }
 
             return this;
         }
