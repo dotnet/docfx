@@ -1,0 +1,55 @@
+---
+# note token text can be replaced by template
+repos:
+  https://docs.com/markdown-note:
+  - files:
+      docfx.yml: |
+        template: https://docs.com/template/token
+      docs/a.md: |
+        >[!NOTE]
+        >note
+  https://docs.com/template/token:
+  - files:
+      ContentTemplate/token.json: |
+        { "note": "<p>my note</p>" }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
+---
+# Run data-transform if provided, by default return {"content": "serialized json"}
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}
+---
+# Run data-transform if provided, and return raw object if content property is not serialized json object
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        result: model.prop + " has run js data transform",
+        content: "raw string"
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {
+      "result": "value has run js data transform",
+      "content": "raw string"
+    }

@@ -315,44 +315,6 @@ outputs:
   .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
 ---
-# Run data-transform if provided, by default return {"content": "serialized json"}
-inputs:
-  docfx.yml:
-  a.yml: |
-    #YamlMime:TestData
-    prop: value
-  _themes/ContentTemplate/TestData.json.js: |
-    exports.transform = function (model) {
-      return {
-        content: JSON.stringify({result: model.prop + " has run js data transform"})
-      }
-    }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
-outputs:
-  a.json: |
-    {"result": "value has run js data transform"}
----
-# Run data-transform if provided, and return raw object if content property is not serialized json object
-inputs:
-  docfx.yml:
-  a.yml: |
-    #YamlMime:TestData
-    prop: value
-  _themes/ContentTemplate/TestData.json.js: |
-    exports.transform = function (model) {
-      return {
-        result: model.prop + " has run js data transform",
-        content: "raw string"
-      }
-    }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
-outputs:
-  a.json: |
-    {
-      "result": "value has run js data transform",
-      "content": "raw string"
-    }
----
 # Don't run data-transform if corresponding js not provided
 inputs:
   docfx.yml:
