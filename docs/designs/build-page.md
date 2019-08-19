@@ -18,14 +18,15 @@
 
 ## Build Metadata
 
-> `Rectangle parts` represent build outputs(metadata)
+> `Rectangle parts` represent build outputs(metadata)  
+> `Schema Validation` including Template Json Schema and Validation Service Json Schema
 
 ### Workflow
   
   ![build-metadata-workflow](./images/build-pipeline-output-metadata.png)
 
 ### Details
-- Get `Input Metadata` from file(`yml header` or `metadata section`) & config(`global/file metadata`)
+- Get `User Metadata` from file(`yml header` or `metadata section`) & config(`global/file metadata`)
 
   *markdown example:*
   ```md
@@ -48,7 +49,7 @@
   xref: uid
   ```
 
-- Create `System Metadata` (including `document_id`, `git_content_url`...) based on `Input Metadata`
+- Create `System Metadata` (including `document_id`, `git_content_url`...) based on `User Metadata`
 
   *system metadata example:*
   ```json
@@ -61,9 +62,9 @@
   }
   ```
 
-- [SDP] Transform `Input Metadata` based on `JSON Schema`
+- [SDP] Transform `User Metadata` based on `JSON Schema`
 
-- Merge `System Metadata` into `Input Metadata` to create `Output Metadata`
+- Merge `System Metadata` into `User Metadata` to create `Output Metadata`
  
   *system metadata example:*
   ```json
@@ -88,9 +89,9 @@
   ![build-output-model-workflow](./images/build-pipeline-output-model.png)
 
 ### Details
-- [Conceptual] Markup markdown content to create `Intermediate Model`
+- [Conceptual] Markup markdown content to create `Source Model`
 
-  *conceptual intermediate model example:*
+  *conceptual source model example:*
   ```json
   {
       "conceptual": "html content",
@@ -100,7 +101,7 @@
   }
   ```
 
-- [SDP] Transform `Input Model` based on `JSON Schema` to create `Intermediate Model`
+- [SDP] Transform `Input Model` based on `JSON Schema` to create `Source Model`
 
   *sdp json schema example*:
   ```json
@@ -128,7 +129,7 @@
   }
   ```
 
-  *sdp intermediate model example:*
+  *sdp source model example:*
   ```json
   {
       "metadata": 
@@ -147,11 +148,11 @@
   ```
 - Create `Output Model` based on the merging of:
 
-    - `Intermediate Model`
+    - `Source Model`
 
     - `Output Metadata`
 
-  > Merge order: `Output Metadata` -> overwrite -> `Intermediate Model`
+  > Merge order: `Output Metadata` -> overwrite -> `Source Model`
 
 ## Outputs
 
@@ -175,9 +176,9 @@
 
 ### Details
 
-- Create `Template Intermediate Metadata` from running `Conceptual/{MIME}.mta.json.js` against `Output Model`
+- Create `Template Source Metadata` from running `Conceptual/{MIME}.mta.json.js` against `Output Model`
 
-  *template intermediate metadata example:*
+  *template source metadata example:*
   ```json
   {
     "titile": "title",
@@ -196,7 +197,7 @@
   }
   ```
 
-- Create `Template Metadata` based on `Template Intermediate Metadata`(filter out internal only metadata)
+- Create `Template Metadata` based on `Template Source Metadata`(filter out internal only metadata)
 
   *template output metadata(.mta.json) example:*
   ```json
@@ -237,7 +238,12 @@
       "PageMetadata": "html metadata",
   }
   ```
+## Overall
+
+![overall workflow](./images/build-pipeline-overall-1.png)
+![overall workflow](./images/build-pipeline-overall-2.png)
+
 ## Open Questions
 
-- To create `System Metadata` for SDP files, do we use transformed `Input Metadata` or original `Input Metadata` ?
+- To create `System Metadata` for SDP files, do we use transformed `User Metadata` or original `User Metadata` ?
   For example, if the metadata `title` content type is `markdown` defined in the schema, The generated `title` of `System Metadata` is marked up or not?
