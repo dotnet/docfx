@@ -241,7 +241,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            public Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string repoOwner, string repoName, string commitSha)
+            public Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string repoOwner, string repoName, string commitSha, string authorEmail)
             {
                 Interlocked.Increment(ref _getLoginByCommitCallCount);
                 switch ($"{repoOwner}/{repoName}/{commitSha}")

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.DocAsTest;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -25,7 +26,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.LoadHtml(input).AddLinkType("zh-cn").WriteTo();
 
-            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
+            Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
 
         [Theory]
@@ -36,7 +37,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.LoadHtml(input).RemoveRerunCodepenIframes().WriteTo();
 
-            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
+            Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
 
         [Theory]
@@ -49,7 +50,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.LoadHtml(input).StripTags().WriteTo();
 
-            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
+            Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
 
         [Theory]

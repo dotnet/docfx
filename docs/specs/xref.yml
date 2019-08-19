@@ -277,7 +277,7 @@ outputs:
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
     ["warning","xref-not-found","Cross reference not found: 'a'","docs/b.json",3,13]
   xrefmap.json: | 
-    {"!references":null}
+    {"references": undefined}
 ---
 # support multiple uids in the same array in one SDP
 inputs:
@@ -1000,7 +1000,7 @@ repos:
 outputs:
   docs/a.json:
   docs/b.json: |
-    conceptual: <p>Link to <a href="a?displayname=xxx" data-linktype="relative-path">Title from yaml header a</a></p>
+    { "conceptual": "<p>Link to <a href='a?displayname=xxx' data-linktype='relative-path'>Title from yaml header a</a></p>" }
 ---
 # respects content type when loading xref specs
 inputs:

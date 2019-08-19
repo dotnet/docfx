@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Graph;
+using Polly;
 
 namespace Microsoft.Docs.Build
 {
@@ -34,9 +35,10 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var users = await RetryUtility.Retry(
-                    () => _msGraphClient.Users.Request(options).GetAsync(),
-                    ex => ex is ServiceException);
+                var users = await Policy
+                    .Handle<ServiceException>()
+                    .RetryAsync(3)
+                    .ExecuteAsync(() => _msGraphClient.Users.Request(options).GetAsync());
 
                 return (null, users != null ? users.Count > 0 : false);
             }

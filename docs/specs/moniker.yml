@@ -40,14 +40,14 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null
+      "monikers": undefined
     }
   .publish.json: |
     {
       "files":[
         {"url":"/docs/a","moniker_group":"23d205a5"},
         {"url":"/docs/a","moniker_group":"9d4e15fd"},
-        {"url":"/docs/a","!moniker_group":null}
+        {"url":"/docs/a","moniker_group": undefined}
       ],
       "moniker_groups":{
         "23d205a5":["netcore-2.0","netcore-2.1"],
@@ -113,7 +113,7 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null,
+      "monikers": undefined,
     }
   218c13d0/docs/a.json: |
     {
@@ -130,7 +130,7 @@ outputs:
       "files": [
           { "url": "/docs/a", "path": "218c13d0/docs/a.json", "moniker_group": "218c13d0" },
           { "url": "/docs/a", "path": "4667fedf/docs/a.json", "moniker_group": "4667fedf" },
-          { "url": "/docs/a", "path": "docs/a.json", "!moniker_group": null },
+          { "url": "/docs/a", "path": "docs/a.json", "moniker_group": undefined },
       ],
       "moniker_groups":{
         "218c13d0":["netcore-1.1"],
@@ -451,12 +451,12 @@ outputs:
   docs/b.json: |
     {
       "conceptual": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore</a></p>",
-      "!monikers": null
+      "monikers": undefined
     }
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null
+      "monikers": undefined
     }
   218c13d0/docs/a.json: |
     {
@@ -551,12 +551,12 @@ outputs:
   docs/b.json: |
     {
       "conceptual": "<p>Link to <a href=\"a\">netcore</a></p>",
-      "!monikers": null
+      "monikers": undefined
     }
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null
+      "monikers": undefined
     }
   218c13d0/docs/a.json: |
     {
@@ -660,7 +660,7 @@ outputs:
   docs/b.json: |
     {
       "conceptual": "<p>Link <a href=\"a?view=netcore-1.0\">netcore</a></p>",
-      "!monikers": null
+      "monikers": undefined
     }
   218c13d0/docs/a.json: |
     {
@@ -719,12 +719,12 @@ outputs:
   docs/b.json: |
     {
       "conceptual": "<p>Link to <a href=\"a\">no version</a></p>",
-      "!monikers": null
+      "monikers": undefined
     }
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null
+      "monikers": undefined
     }
   218c13d0/docs/a.json: |
     {
@@ -791,12 +791,12 @@ outputs:
   docs/c.json: |
     {
       "conceptual": "<p>Link to <a href=\"a\" data-linktype=\"relative-path\">no version</a></p>",
-      "!monikers": null
+      "monikers": undefined
     }
   docs/a.json: |
     {
       "conceptual": "<p>No version</p>",
-      "!monikers": null
+      "monikers": undefined
     }
   218c13d0/docs/a.json: |
     {
@@ -918,8 +918,8 @@ inputs:
     # [A-1](../v1/a.md)
     # [A-2](../v2/a.md)
 outputs:
-  136a42ac/docs/a.json: |
-  4667fedf/docs/a.json: |
+  136a42ac/docs/a.json:
+  4667fedf/docs/a.json:
   e2dfe8fd/docs/toc.json: |
     {
       "items": [
@@ -1193,8 +1193,8 @@ outputs:
       "files": [
         { "url": "/docs/a", "path": "136a42ac/docs/a.json", "moniker_group": "136a42ac" },
         { "url": "/docs/c.png", "path": "9d4e15fd/docs/c.png", "moniker_group": "9d4e15fd" },
-        { "url": "/docs/a", "path": "docs/a.json", "!moniker_group": null },
-        { "url": "/docs/c.png", "path": "docs/c.png", "!moniker_group": null }
+        { "url": "/docs/a", "path": "docs/a.json", "moniker_group": undefined },
+        { "url": "/docs/c.png", "path": "docs/c.png", "moniker_group": undefined }
       ],
       "moniker_groups": {
         "136a42ac": ["netcore-1.0"],

@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
+        /// We only resolve github user when an <see cref="AuthToken"/> is provided.
         /// </summary>
-        public readonly bool ResolveUsers = false;
+        public readonly bool ResolveUsers = true;
     }
 }
