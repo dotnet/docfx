@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                         DeclaringFile = file,
                     };
                     xref.ExtensionData.AddRange(xrefProperties);
-                    xref.ContentTypeMapping.AddRange(contentTypeProperties);
+                    xref.PropertyContentTypeMapping.AddRange(contentTypeProperties);
                     return xref;
                 }
 

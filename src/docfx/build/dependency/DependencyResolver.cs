@@ -118,13 +118,16 @@ namespace Microsoft.Docs.Build
             var (error, resolvedHref, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href);
 
             var name = xrefSpec?.GetXrefPropertyValue("name");
-            if (xrefSpec is InternalXrefSpec internalSpec && internalSpec?.ContentTypeMapping.TryGetValue(displayProperty, out var contentType) == true)
+
+            // for internal UID, the display property can not be markdown or inline markdown
+            // because the display text should be plain text
+            string displayPropertyValue = null;
+            if (xrefSpec is InternalXrefSpec internalSpec
+                && !new JsonSchemaContentType[] { JsonSchemaContentType.Markdown, JsonSchemaContentType.InlineMarkdown }
+                .Contains(internalSpec.GetXrefPropertyContentType(displayProperty)))
             {
-                if (contentType != default && new JsonSchemaContentType[] { JsonSchemaContentType.InlineMarkdown, JsonSchemaContentType.Markdown }.Contains(contentType))
-                {
-                }
+                displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayProperty);
             }
-            var displayPropertyValue =  xrefSpec?.GetXrefPropertyValue(displayProperty);
 
             // fallback order:
             // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid

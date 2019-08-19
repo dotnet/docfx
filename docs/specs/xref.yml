@@ -554,43 +554,6 @@ outputs:
       }
     }
 ---
-# SDP non-cyclic xref reference should be resolved
-# whose display properties are plain text
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @b?displayProperty=inlineDescription",
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "inlineDescription": "description for b",
-      "summary": "Link to @a",
-    }
-outputs:
-  docs/a.json: |
-    {
-      "name": "name for a",
-      "summary": "<p>Link to <a href=\"b.json\">description for b</a></p>\n",
-      "inlineDescription": "description for a",
-      "uid": "a"
-    }
-  docs/b.json: |
-    {
-      "name": "name for b",
-      "summary": "<p>Link to <a href=\"a.json\">name for a</a></p>\n",
-      "inlineDescription": "description for b",
-      "uid": "b"
-    }
----
 # display property of markdown content type will be ignored
 inputs:
   docfx.yml: |
@@ -617,9 +580,21 @@ outputs:
       "uid": "a",
       "name": "name for a",
       "inlineDescription": "Link to <a href=\"b.json\">name for b</a>",
-      "summary": "<p>Link to <a href=\"b.json\">name for b</a></p>\n"
+      "summary": "
+          <p>
+            Link to <a href=\"b.json\">name for b</a>
+          </p>"
     }
-  docs/b.json:
+  docs/b.json: |
+    {
+      "name": "name for b",
+      "uid": "b",
+      "inlineDescription": "description for b",
+      "summary": "
+          <p>
+            Link to <a href=\"a.json\">name for a</a>
+          </p>"
+    }
 ---
 # input yml file is not object
 inputs:
