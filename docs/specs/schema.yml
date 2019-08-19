@@ -537,10 +537,7 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-        "markdown": {
-          "type": "string",
-          "contentType": "Markdown"
-        }
+        "markdown": {"contentType": "markdown"}
       }
     }
   _themes/ContentTemplate/TestData.html.primary.js: |
