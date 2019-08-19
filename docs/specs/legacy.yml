@@ -10,8 +10,6 @@ repos:
         redirections:
           a.md: /b
         metadataSchema: schema.json
-        gitHub:
-          resolveUsers: true
       c.md: |
         ---
         api_name:
@@ -104,8 +102,6 @@ repos:
         template: https://docs.com/template1
         redirections:
           a.md: /b
-        gitHub:
-          resolveUsers: true
         baseUrl: https://docs.com/rawmetadata
       c.md: |
         ---
@@ -180,7 +176,7 @@ outputs:
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/9ded2c661b9c6de62811c4954a8a03a7e24d4e52/c.md",
         "site_name": "Docs",
         "depot_name": ".",
         "search.ms_docsetname": "",
