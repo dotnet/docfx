@@ -194,10 +194,9 @@ namespace Microsoft.Docs.Build
                 MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
-            // get bookmarks before extracting title
-            var bookmarks = HtmlUtility.GetBookmarks(htmlDom);
             var wordCount = HtmlUtility.CountWord(htmlDom);
 
+            ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
                 errors.Add(Errors.HeadingNotFound(file));
@@ -208,7 +207,7 @@ namespace Microsoft.Docs.Build
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = CreateHtmlContent(context, htmlDom, file, bookmarks),
+                Conceptual = CreateHtmlContent(file, htmlDom),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
                 Title = inputMetadata.Title ?? title,
@@ -265,9 +264,11 @@ namespace Microsoft.Docs.Build
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);
 
+                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).StripTags().RemoveRerunCodepenIframes();
+                ValidateBookmarks(context, file, htmlDom);
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = CreateHtmlContent(context, HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).StripTags().RemoveRerunCodepenIframes(), file),
+                    Conceptual = CreateHtmlContent(file, htmlDom),
                     ExtensionData = pageModel,
                 });
             }
@@ -312,14 +313,13 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static string CreateHtmlContent(Context context, HtmlNode html, Document file, HashSet<string> bookmarks = null)
-        {
-            // add bookmark validation
-            bookmarks = bookmarks ?? HtmlUtility.GetBookmarks(html);
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+        private static string CreateHtmlContent(Document file, HtmlNode html)
+            => LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
 
-            // get conceptual from htmldom
-            return LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
+        private static void ValidateBookmarks(Context context, Document file, HtmlNode html)
+        {
+            var bookmarks = HtmlUtility.GetBookmarks(html);
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
         }
 
         private static string CreateContent(Context context, Document file, JObject pageModel)
@@ -335,7 +335,8 @@ namespace Microsoft.Docs.Build
             var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
 
             var htmlDom = HtmlUtility.LoadHtml(content);
-            return CreateHtmlContent(context, htmlDom, file);
+            ValidateBookmarks(context, file, htmlDom);
+            return CreateHtmlContent(file, htmlDom);
         }
     }
 }
