@@ -136,7 +136,9 @@ namespace Microsoft.Docs.Build
                 // set resolved href/document back
                 var newItem = new TableOfContentsItem(tocModelItem)
                 {
-                    Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
+                    Href = tocModelItem.TocHref != null || tocModelItem.Href != null || tocModelItem.Uid != null
+                           ? resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href)
+                           : default,
                     TocHref = resolvedTocHref,
                     Homepage = string.IsNullOrEmpty(tocModelItem.Href) && !string.IsNullOrEmpty(tocModelItem.TopicHref) ? resolvedTopicHref : default,
                     Name = tocModelItem.Name.Or(resolvedTopicName),

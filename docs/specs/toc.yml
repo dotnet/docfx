@@ -574,7 +574,7 @@ outputs:
         }
     }
 ---
-# Topic href can replace href
+# Only generate href when tocHref|href|uid exists
 inputs:
   docfx.yml:
   docs/TOC.yml: |
@@ -588,7 +588,6 @@ outputs:
        "items":[  
           {  
              "name":"File Reference",
-             "href":"f1/a",
              "homepage": "f1/a"
           }
        ]
