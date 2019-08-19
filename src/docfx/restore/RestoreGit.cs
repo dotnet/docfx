@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
         {
             None = 0,
             NoCheckout = 1 << 1,
-            DepthOne = 1 << 2,
         }
 
         public static async Task<IReadOnlyDictionary<string, DependencyLockModel>> Restore(
@@ -74,7 +73,6 @@ namespace Microsoft.Docs.Build
                 var subChildren = new ListBuilder<RestoreChild>();
                 var remote = group.Key;
                 var branches = group.Select(g => g.branch).ToArray();
-                var depthOne = group.All(g => (g.flags & GitFlags.DepthOne) != 0) && !(dependencyLock?.ContainsGitLock(remote) ?? false);
                 var branchesToFetch = new HashSet<string>(branches);
 
                 var repoDir = AppData.GetGitDir(remote);
@@ -88,7 +86,7 @@ namespace Microsoft.Docs.Build
                         try
                         {
                             Console.WriteLine($"Cloning '{remote}'");
-                            GitUtility.InitFetchBare(repoPath, remote, branchesToFetch, depthOne, config);
+                            GitUtility.InitFetchBare(repoPath, remote, branchesToFetch, config);
                         }
                         catch (Exception ex)
                         {
@@ -112,6 +110,8 @@ namespace Microsoft.Docs.Build
 
                         var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                         var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
+
+                        Log.Write($"Add worktree for `{remote}` `{headCommit}`");
                         if (string.IsNullOrEmpty(headCommit))
                         {
                             throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
@@ -131,6 +131,7 @@ namespace Microsoft.Docs.Build
                                     // re-use existing work tree
                                     // checkout to {headCommit}, no need to fetch
                                     Debug.Assert(!GitUtility.IsDirty(workTreePath));
+                                    Log.Write($"Reuse existing worktree: {workTreePath}");
                                     GitUtility.Checkout(workTreePath, headCommit);
                                 }
                                 else
@@ -149,6 +150,7 @@ namespace Microsoft.Docs.Build
                                         }
 
                                         Debug.Assert(!Directory.Exists(workTreePath));
+                                        Log.Write($"Create new worktree: {workTreePath}");
                                         GitUtility.PruneWorkTree(repoPath);
                                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                                     }
@@ -168,6 +170,10 @@ namespace Microsoft.Docs.Build
                                 RestoreGitMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
                             }
                         }
+                        else
+                        {
+                            Log.Write($"Worktree already exists: {workTreePath}");
+                        }
 
                         Debug.Assert(workTreePath != null);
                         subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, headCommit));
@@ -183,7 +189,7 @@ namespace Microsoft.Docs.Build
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
                 if (UrlUtility.IsHttp(url))
                 {
-                    yield return (remote, branch, GitFlags.DepthOne);
+                    yield return (remote, branch, GitFlags.None);
                 }
             }
 
@@ -191,7 +197,7 @@ namespace Microsoft.Docs.Build
             {
                 var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
 
-                yield return (remote, branch, GitFlags.DepthOne);
+                yield return (remote, branch, GitFlags.None);
             }
 
             foreach (var item in GetLocalizationGitDependencies(rootRepository, config, locale))

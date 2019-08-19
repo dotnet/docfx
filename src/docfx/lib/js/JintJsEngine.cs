@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 var sourceCode = File.ReadAllText(fullPath);
                 var parserOptions = new ParserOptions { Source = fullPath };
 
-            // add process to input to get the correct file path while running script inside docs-ui
+                // add process to input to get the correct file path while running script inside docs-ui
                 var script = $@"
 ;(function (module, exports, __dirname, require, process) {{
 {sourceCode}

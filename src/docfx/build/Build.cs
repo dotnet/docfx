@@ -59,13 +59,13 @@ namespace Microsoft.Docs.Build
 
         private static async Task Run(Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, CommandLineOptions options, ErrorLog errorLog, string outputPath)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap, BuildFile))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
                 using (Progress.Start("Building files"))
                 {
-                    await context.BuildQueue.Drain(Progress.Update);
+                    await context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
                 }
 
                 context.BookmarkValidator.Validate();

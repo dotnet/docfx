@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.DocAsTest;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -17,8 +18,8 @@ namespace Microsoft.Docs.Build
             var model = JObject.Parse(json.Replace('\'', '"'));
 
             Assert.Equal(
-                TestUtility.NormalizeHtml(html),
-                TestUtility.NormalizeHtml(_template.Render(name, model)));
+                JsonDiff.NormalizeHtml(html),
+                JsonDiff.NormalizeHtml(_template.Render(name, model)));
         }
     }
 }

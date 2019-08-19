@@ -104,16 +104,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void InitFetchCheckout(string path, string url, string committish, Config config = null)
         {
-            InitFetch(path, url, new[] { committish }, bare: false, depthOne: false, prune: true, config);
+            InitFetch(path, url, new[] { committish }, bare: false, prune: true, config);
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
         /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static void InitFetchBare(string path, string url, IEnumerable<string> committishes, bool depthOne, Config config = null)
+        public static void InitFetchBare(string path, string url, IEnumerable<string> committishes, Config config = null)
         {
-            InitFetch(path, url, committishes, bare: true, depthOne, prune: true, config);
+            InitFetch(path, url, committishes, bare: true, prune: true, config);
         }
 
         /// <summary>
@@ -121,16 +121,15 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void Fetch(string path, string url, string committishes, Config config)
         {
-            Fetch(path, url, new[] { committishes }, config, depthOne: false, prune: false);
+            Fetch(path, url, new[] { committishes }, config, prune: false);
         }
 
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static void Fetch(string path, string url, IEnumerable<string> committishes, Config config, bool depthOne, bool prune)
+        public static void Fetch(string path, string url, IEnumerable<string> committishes, Config config, bool prune)
         {
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
-            var depth = depthOne ? "--depth 1" : "--depth 9999999999";
             var pruneSwitch = prune ? "--prune" : "";
 
             // Allow test to proxy remotes to local folder
@@ -138,21 +137,19 @@ namespace Microsoft.Docs.Build
             {
                 url = GitRemoteProxy(url);
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                depth = "--depth 9999999999";
             }
 
             var (httpConfig, secrets) = GetGitCommandLineConfig(url, config);
 
             try
             {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
             }
             catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
-                depth = "--depth 9999999999";
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} {depth} \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
             }
         }
 
@@ -188,7 +185,7 @@ namespace Microsoft.Docs.Build
             {
                 return false;
             }
-       }
+        }
 
         /// <summary>
         /// Prune the worktree info
@@ -301,7 +298,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, bool depthOne, bool prune, Config config)
+        private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, bool prune, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -326,14 +323,14 @@ namespace Microsoft.Docs.Build
             Telemetry.TrackCacheTotalCount(TelemetryName.GitRepositoryCache);
             if (git_remote_create(out var remote, repo, "origin", url) == 0)
             {
-                Log.Write($"Using existing repository '{path}' for '{url}'");
+                Log.Write($"Using new repository '{path}' for '{url}'");
                 Telemetry.TrackCacheMissCount(TelemetryName.GitRepositoryCache);
                 git_remote_free(remote);
             }
 
             git_repository_free(repo);
 
-            Fetch(path, url, committishes, config, depthOne, prune);
+            Fetch(path, url, committishes, config, prune);
         }
 
         private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)

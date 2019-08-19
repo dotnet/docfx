@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.DocAsTest;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
@@ -19,27 +19,7 @@ namespace Microsoft.Docs.Build
 {
     public static class DocfxTest
     {
-        private static readonly Dictionary<string, string> s_variables = new Dictionary<string, string>
-        {
-            { "APP_BASE_PATH", AppContext.BaseDirectory },
-            { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
-            { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
-        };
-
-        private static readonly string[] s_errorCodesWithoutLineInfo =
-        {
-            "need-restore", "heading-not-found", "config-not-found", "committish-not-found", "custom-404-page", "json-syntax-error",
-
-            // can be removed
-            "moniker-config-missing",
-
-            // should have, maybe sometimes not
-            "download-failed", "locale-invalid",
-
-            // show multiple errors with line info
-            "publish-url-conflict", "output-path-conflict", "uid-conflict", "xref-property-conflict", "redirection-conflict",
-            "redirected-id-conflict", "circular-reference", "moniker-overlapping", "empty-monikers"
-        };
+        private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
 
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_cachePath = new AsyncLocal<string>();
@@ -50,6 +30,7 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
 
             Log.ForceVerbose = true;
+            TestUtility.MakeDebugAssertThrowException();
 
             AppData.GetCachePath = () => t_cachePath.Value;
             GitUtility.GitRemoteProxy = remote =>
@@ -80,7 +61,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    await Assert.ThrowsAnyAsync<XunitException>(() => RunCore(test, docsetPath, outputPath, spec));
+                    await Assert.ThrowsAnyAsync<Exception>(() => RunCore(test, docsetPath, outputPath, spec));
                 }
             }
             finally
@@ -93,14 +74,26 @@ namespace Microsoft.Docs.Build
         private static (string docsetPath, string cachePath, string outputPath, Dictionary<string, string> repos)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
-            var missingVariables = spec.Environments.Where(env => !s_variables.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
+            var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
+            var basePath = Path.GetFullPath(Path.Combine("docfx-test", testName));
+            var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs/"));
+            var cachePath = Path.Combine(basePath, "cache/");
+            var markerPath = Path.Combine(basePath, "marker");
+
+            var variables = new Dictionary<string, string>
+            {
+                { "APP_BASE_PATH", AppContext.BaseDirectory },
+                { "OUTPUT_PATH", outputPath },
+                { "CACHE_PATH", cachePath },
+                { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
+                { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
+            };
+
+            var missingVariables = spec.Environments.Where(env => !variables.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
             if (missingVariables.Any())
             {
                 throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
             }
-
-            var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = Path.GetFullPath(Path.Combine("docfx-test", testName));
 
             Directory.CreateDirectory(basePath);
 
@@ -113,24 +106,21 @@ namespace Microsoft.Docs.Build
                     remote => Path.Combine(basePath, "repos", remote.index.ToString()));
 
             var docsetPath = repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs");
-            var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs"));
-            var cachePath = Path.Combine(basePath, "cache");
-            var markerPath = Path.Combine(basePath, "marker");
 
             if (!File.Exists(markerPath))
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
                 {
                     var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                    TestUtility.CreateGitRepository(repos[remote], commits, remote, branch, s_variables);
+                    TestUtility.CreateGitRepository(repos[remote], commits, remote, branch, variables);
                 }
 
-                TestUtility.CreateFiles(docsetPath, spec.Inputs, s_variables);
-                TestUtility.CreateFiles(cachePath, spec.Cache, s_variables);
+                TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
+                TestUtility.CreateFiles(cachePath, spec.Cache, variables);
 
                 File.WriteAllText(markerPath, "");
             }
-            
+
             return (docsetPath, cachePath, outputPath, repos);
         }
 
@@ -138,8 +128,7 @@ namespace Microsoft.Docs.Build
         {
             if (spec.Watch)
             {
-                await RunWatch(docsetPath, spec);
-                return;
+                throw new TestSkippedException("Skip watch tests");
             }
 
             if (!test.Summary.Contains("[from loc]", StringComparison.OrdinalIgnoreCase))
@@ -167,145 +156,113 @@ namespace Microsoft.Docs.Build
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");
 
-            var options = $"{(spec.Legacy ? "--legacy" : "")} {(locale != null ? $"--locale {locale}" : "")}"
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                .Concat(new[] { "--output", outputPath })
-                .ToArray();
-
-            if (spec.Restore)
+            using (TestUtility.EnsureFilesNotChanged(docsetPath))
             {
-                Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray()));
-            }
-            if (spec.Build)
-            {
-                Assert.Equal(0, await Docfx.Run(new[] { "build", docsetPath }.Concat(options).ToArray()));
-            }
+                var options = $"{(spec.Legacy ? "--legacy" : "")} {(locale != null ? $"--locale {locale}" : "")}"
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Concat(new[] { "--output", outputPath })
+                    .ToArray();
 
-            // Verify output
-            Assert.True(Directory.Exists(outputPath), $"{outputPath} does not exist");
-
-            var outputs = Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories);
-            var outputFileNames = outputs.Select(file => file.Substring(outputPath.Length + 1).Replace('\\', '/')).ToList();
-
-            // Show .errors.log content if actual output has errors or warnings.
-            if (outputFileNames.Contains(".errors.log"))
-            {
-                Console.WriteLine($"{Path.GetFileName(docsetPath)}: {File.ReadAllText(Path.Combine(outputPath, ".errors.log"))}");
-            }
-
-            // These files output mostly contains empty content which e2e tests are not intrested in
-            // we can just skip the verification for them
-            foreach (var skippableItem in spec.SkippableOutputs)
-            {
-                if (!spec.Outputs.ContainsKey(skippableItem))
+                if (spec.Restore)
                 {
-                    outputFileNames.Remove(skippableItem);
+                    Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray()));
+                }
+                if (spec.Build)
+                {
+                    Assert.Equal(0, await Docfx.Run(new[] { "build", docsetPath }.Concat(options).ToArray()));
                 }
             }
 
-            // Verify output
-            Assert.Equal(spec.Outputs.Keys.Where(k => !k.StartsWith("~/")).OrderBy(_ => _), outputFileNames.OrderBy(_ => _));
-
-            foreach (var (filename, content) in spec.Outputs)
-            {
-                if (filename.StartsWith("~/"))
-                {
-                    VerifyFile(Path.GetFullPath(Path.Combine(docsetPath, filename.Substring(2))), content);
-                    continue;
-                }
-                VerifyFile(Path.GetFullPath(Path.Combine(outputPath, filename)), content);
-            }
+            VerifyOutput(outputPath, spec);
         }
 
-        private static async Task RunWatch(string docsetPath, DocfxTestSpec spec)
+        private static void VerifyOutput(string outputPath, DocfxTestSpec spec)
         {
-            using (var server = new TestServer(Watch.CreateWebServer(docsetPath, new CommandLineOptions())))
-            {
-                foreach (var (request, response) in spec.Http)
-                {
-                    var responseContext = await server.SendAsync(requestContext => requestContext.Request.Path = "/" + request);
-                    var body = new StreamReader(responseContext.Response.Body).ReadToEnd();
-                    var actualResponse = new JObject
-                    {
-                        ["status"] = responseContext.Response.StatusCode,
-                        ["body"] = body,
-                    };
-                    TestUtility.VerifyJsonContainEquals(response, actualResponse);
-                }
+            var outputs = Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories)
+                                   .ToDictionary(file => file.Substring(outputPath.Length).Replace('\\', '/'), File.ReadAllText);
 
-                // Verify no output in output directory
-                Assert.False(Directory.Exists(Path.Combine(docsetPath, "_site")));
-            }
+            s_jsonDiff.Verify(spec.Outputs, outputs);
         }
 
-        private static void VerifyFile(string file, string content)
+        private static JsonDiff CreateJsonDiff()
         {
-            if (string.IsNullOrEmpty(content))
-            {
-                return;
-            }
-
-            string[] actual, expected;
-            switch (Path.GetExtension(file.ToLowerInvariant()))
-            {
-                case ".txt":
-                    expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                    Assert.Equal(expected.Length, actual.Length);
-                    for (var i = 0; i < expected.Length; i++)
-                    {
-                        TestUtility.VerifyJsonContainEquals(JToken.Parse(expected[i]), JToken.Parse(actual[i]));
-                    }
-                    break;
-
-                case ".json":
-                    TestUtility.VerifyJsonContainEquals(
-                        // Test expectation can use YAML for readability
-                        content.StartsWith("{") ? JToken.Parse(content) : YamlUtility.Parse(content, null).Item2,
-                        JToken.Parse(File.ReadAllText(file)));
-                    break;
-
-                case ".log":
-                    expected = content.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).OrderBy(_ => _).ToArray();
-                    actual = File.ReadAllLines(file).OrderBy(_ => _).ToArray();
-                    if (expected.Any(str => str.Contains("*")))
-                    {
-                        Assert.Matches("^" + Regex.Escape(string.Join("\n", expected)).Replace("\\*", ".*") + "$", string.Join("\n", actual));
-                    }
-                    else
-                    {
-                        Assert.Equal(string.Join("\n", expected), string.Join("\n", actual));
-                    }
-                    VerifyLogsHasLineInfo(actual);
-                    break;
-
-                case ".html":
-                    TestUtility.AssertHtmlEquals(content, File.ReadAllText(file));
-                    break;
-
-                default:
-                    Assert.Equal(
-                        content?.Trim() ?? "",
-                        File.ReadAllText(file).Trim(),
-                        ignoreCase: false,
-                        ignoreLineEndingDifferences: true,
-                        ignoreWhiteSpaceDifferences: true);
-                    break;
-            }
+            return new JsonDiffBuilder()
+                .UseAdditionalProperties()
+                .UseNegate()
+                .UseRegex()
+                .UseWildcard()
+                .UseIgnoreNull(IsOutputFile)
+                .UseJson()
+                .UseHtml(IsHtml)
+                .Use(IsHtml, RemoveDataLinkType)
+                .UseLogFile()
+                .Build();
         }
 
-        private static void VerifyLogsHasLineInfo(string[] logs)
+        private static bool IsOutputFile(JToken expected, JToken actual, string name)
         {
-            if (logs.Length > 0 && logs[0].StartsWith("["))
+            return expected.Parent?.Parent == expected.Root;
+        }
+
+        private static bool IsHtml(JToken expected, JToken actual, string name)
+        {
+            if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (expected is JValue value && value.Value is string str &&
+                str.Trim() is string html && html.StartsWith('<') && html.EndsWith('>'))
             {
-                foreach (var log in Array.ConvertAll(logs, JArray.Parse))
-                {
-                    if (!s_errorCodesWithoutLineInfo.Contains(log[1].ToString()) && log.Count < 5)
-                    {
-                        Assert.True(false, $"Error code {log[1].ToString()} must have line info");
-                    }
-                }
+                return true;
             }
+
+            return false;
+        }
+
+        private static (JToken expected, JToken actual) RemoveDataLinkType(JToken expected, JToken actual, string name, JsonDiff diff)
+        {
+            // Compare data-linktype only if the expectation contains data-linktype
+            var expectedHtml = expected.Value<string>();
+            var actualHtml = actual.Value<string>();
+            if (!expectedHtml.Contains("data-linktype"))
+            {
+                actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");
+            }
+            return (expectedHtml, actualHtml);
+        }
+
+        private static JsonDiffBuilder UseLogFile(this JsonDiffBuilder builder)
+        {
+            return builder.Use(
+                (expected, actual, name) => name.EndsWith(".txt") || name.EndsWith(".log"),
+                (expected, actual, name, jsonDiff) =>
+                {
+                    if (expected.Type != JTokenType.String || actual.Type != JTokenType.String)
+                    {
+                        return (expected, actual);
+                    }
+
+                    var expectedLines = expected.Value<string>()
+                        .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                        .OrderBy(_ => _)
+                        .ToArray();
+
+                    var actualLines = actual.Value<string>()
+                        .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                        .OrderBy(_ => _)
+                        .ToArray();
+
+                    for (var i = 0; i < Math.Min(expectedLines.Length, actualLines.Length); i++)
+                    {
+                        var (e, a) = jsonDiff.Normalize(
+                            JToken.Parse(expectedLines[i]),
+                            JToken.Parse(actualLines[i]));
+
+                        expectedLines[i] = e.ToString(Formatting.Indented);
+                        actualLines[i] = a.ToString(Formatting.Indented);
+                    }
+
+                    return (string.Join('\n', expectedLines), string.Join('\n', actualLines));
+                });
         }
 
         private static bool OsMatches(string os)

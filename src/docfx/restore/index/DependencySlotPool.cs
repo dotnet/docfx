@@ -97,69 +97,69 @@ namespace Microsoft.Docs.Build
             string acquirer = null;
             using (InterProcessMutex.Create(url + "/index.json"))
             {
-                    var slots = GetSlots(restoreDir);
+                var slots = GetSlots(restoreDir);
 
-                    switch (type)
-                    {
-                        case LockType.Exclusive: // find an available slot or create a new slot for restoring
-                            var existed = false;
-                            foreach (var i in slots)
+                switch (type)
+                {
+                    case LockType.Exclusive: // find an available slot or create a new slot for restoring
+                        var existed = false;
+                        foreach (var i in slots)
+                        {
+                            if (!i.Restored || DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond))
                             {
-                                if (!i.Restored || DateTime.UtcNow - i.LastAccessDate > TimeSpan.FromSeconds(_defaultLockdownTimeInSecond))
-                                {
-                                    (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id));
-                                    if (acquired)
-                                    {
-                                        existed = true;
-                                        slot = i;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (slot is null)
-                            {
-                                // force to acquire new slot
-                                (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"), force: true);
+                                (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, i.Id));
                                 if (acquired)
                                 {
-                                    slot = new T() { Id = $"{slots.Count + 1}" };
+                                    existed = true;
+                                    slot = i;
+                                    break;
                                 }
                             }
+                        }
 
-                            Debug.Assert(slot != null && acquired && !string.IsNullOrEmpty(acquirer));
-
-                            // reset every property of rented slot
-                            slot.Url = url;
-                            slot.LastAccessDate = DateTime.MinValue;
-                            slot.Acquirer = acquirer;
-
-                            slot = updateExistingSlot(slot);
-                            if (!existed)
-                                slots.Add(slot);
-                            break;
-                        case LockType.Shared: // find an matched slot for building
-                            foreach (var i in slots)
+                        if (slot is null)
+                        {
+                            // force to acquire new slot
+                            (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(GetLockKey(url, $"{slots.Count + 1}"), force: true);
+                            if (acquired)
                             {
-                                if (matchExistingSlot(i) && i.Restored)
+                                slot = new T() { Id = $"{slots.Count + 1}" };
+                            }
+                        }
+
+                        Debug.Assert(slot != null && acquired && !string.IsNullOrEmpty(acquirer));
+
+                        // reset every property of rented slot
+                        slot.Url = url;
+                        slot.LastAccessDate = DateTime.MinValue;
+                        slot.Acquirer = acquirer;
+
+                        slot = updateExistingSlot(slot);
+                        if (!existed)
+                            slots.Add(slot);
+                        break;
+                    case LockType.Shared: // find an matched slot for building
+                        foreach (var i in slots)
+                        {
+                            if (matchExistingSlot(i) && i.Restored)
+                            {
+                                (acquired, acquirer) = ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id));
+                                if (acquired)
                                 {
-                                    (acquired, acquirer) = ProcessUtility.AcquireSharedLock(GetLockKey(url, i.Id));
-                                    if (acquired)
-                                    {
-                                        slot = i;
-                                        slot.Url = url;
-                                        slot.Acquirer = acquirer;
-                                        break;
-                                    }
+                                    slot = i;
+                                    slot.Url = url;
+                                    slot.Acquirer = acquirer;
+                                    break;
                                 }
                             }
-                            break;
-                        default:
-                            throw new NotSupportedException($"{type} is not supported");
-                    }
-
-                    WriteSlots(restoreDir, slots);
+                        }
+                        break;
+                    default:
+                        throw new NotSupportedException($"{type} is not supported");
                 }
+
+                WriteSlots(restoreDir, slots);
+            }
 
             if (slot != null)
             {
