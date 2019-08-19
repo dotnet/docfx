@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
 
-        public string GetXrefPropertyValue(string propertyName)
+        public string GetXrefPropertyValueAsString(string propertyName)
         {
             if (propertyName is null)
                 return null;
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             return PropertyContentTypeMapping.TryGetValue(propertyName, out var value) ? value : default;
         }
 
-        public string GetName() => GetXrefPropertyValue("name");
+        public string GetName() => GetXrefPropertyValueAsString("name");
 
         public ExternalXrefSpec ToExternalXrefSpec(Context context, bool forXrefMapOutput)
         {

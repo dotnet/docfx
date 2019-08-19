@@ -117,23 +117,29 @@ namespace Microsoft.Docs.Build
             // need to url decode uid from input content
             var (error, resolvedHref, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href);
 
-            var name = xrefSpec?.GetXrefPropertyValue("name");
+            var name = xrefSpec?.GetXrefPropertyValueAsString("name");
 
             // for internal UID, the display property can not be markdown or inline markdown
             // because the display text should be plain text
             string displayPropertyValue = null;
-            if (xrefSpec is InternalXrefSpec internalSpec
-                && !new JsonSchemaContentType[] { JsonSchemaContentType.Markdown, JsonSchemaContentType.InlineMarkdown }
-                .Contains(internalSpec.GetXrefPropertyContentType(displayProperty)))
+            if (xrefSpec is InternalXrefSpec internalSpec)
             {
-                displayPropertyValue = xrefSpec.GetXrefPropertyValue(displayProperty);
+                var contentType = internalSpec.GetXrefPropertyContentType(displayProperty);
+                if (contentType != JsonSchemaContentType.Markdown && contentType != JsonSchemaContentType.InlineMarkdown)
+                {
+                    displayPropertyValue = xrefSpec?.GetXrefPropertyValueAsString(displayProperty);
+                }
+            }
+            else
+            {
+                displayPropertyValue = xrefSpec?.GetXrefPropertyValueAsString(displayProperty);
             }
 
             // fallback order:
             // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid
             var display = !string.IsNullOrEmpty(text)
                 ? text
-                : (!string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid));
+                : displayPropertyValue ?? name ?? uid;
 
             if (xrefSpec?.DeclaringFile != null)
             {
