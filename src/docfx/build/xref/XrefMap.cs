@@ -9,7 +9,6 @@ namespace Microsoft.Docs.Build
 {
     internal class XrefMap
     {
-        // TODO: key could be uid+moniker+locale
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
         private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
 
@@ -19,18 +18,9 @@ namespace Microsoft.Docs.Build
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
         }
 
-        public (Error error, string href, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href)
+        public IXrefSpec Resolve(SourceInfo<string> uid)
         {
-            var spec = ResolveXrefSpec(uid);
-            if (spec is null)
-            {
-                return (Errors.XrefNotFound(href), null, null);
-            }
-
-            var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-            var resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
-
-            return (null, resolvedHref, spec);
+            return ResolveInternalXrefSpec(uid) ?? ResolveExternalXrefSpec(uid);
         }
 
         public XrefMapModel ToXrefMapModel(Context context)
@@ -40,11 +30,6 @@ namespace Microsoft.Docs.Build
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
-        }
-
-        private IXrefSpec ResolveXrefSpec(string uid)
-        {
-            return ResolveInternalXrefSpec(uid) ?? ResolveExternalXrefSpec(uid);
         }
 
         private IXrefSpec ResolveExternalXrefSpec(string uid)

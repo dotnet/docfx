@@ -28,15 +28,14 @@ namespace Microsoft.Docs.Build
             if (propertyName is null)
                 return null;
 
-            return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
-        }
-
-        public JsonSchemaContentType GetXrefPropertyContentType(string propertyName)
-        {
-            if (propertyName is null)
-                return default;
-
-            return PropertyContentTypeMapping.TryGetValue(propertyName, out var value) ? value : default;
+            // for internal UID, the display property can not be markdown or inline markdown
+            // because the display text should be plain text
+            var contentType = GetXrefPropertyContentType(propertyName);
+            if (contentType != JsonSchemaContentType.Markdown && contentType != JsonSchemaContentType.InlineMarkdown)
+            {
+                return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
+            }
+            return null;
         }
 
         public string GetName() => GetXrefPropertyValueAsString("name");
@@ -77,6 +76,14 @@ namespace Microsoft.Docs.Build
                 }
             }
             return spec;
+        }
+
+        private JsonSchemaContentType GetXrefPropertyContentType(string propertyName)
+        {
+            if (propertyName is null)
+                return default;
+
+            return PropertyContentTypeMapping.TryGetValue(propertyName, out var value) ? value : default;
         }
     }
 }
