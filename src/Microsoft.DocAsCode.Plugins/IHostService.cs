@@ -15,13 +15,11 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// current version's name, String.Empty for default version
         /// </summary>
-        [Obsolete("use GroupInfo")]
         string VersionName { get; }
 
         /// <summary>
         /// current version's output base folder
         /// </summary>
-        [Obsolete("use GroupInfo")]
         string VersionOutputFolder { get; }
 
         GroupInfo GroupInfo { get; }
