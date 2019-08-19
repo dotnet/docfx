@@ -146,7 +146,7 @@ inputs:
     monikerDefinition: a.json
 outputs:
   .errors.log: |
-    ["error","file-not-found","*",1,20]
+    ["error","file-not-found","*","docfx.yml",1,20]
 ---
 # Restore longpath repo
 inputs:
@@ -193,23 +193,10 @@ repos:
           dependencies:
             dep1: https://docs.com/lock1/b#master
             dep2: https://docs.com/lock1/c
-          dependencyLock: .lock.json
+          dependencyLock: '{CACHE_PATH}.lock.json'
         docs/a.md: |
           [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
-        .lock.json: |
-          {
-             "git":{
-                "https://docs.com/lock1/b":{
-                   "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f",
-                   "git":{
-                      "https://docs.com/lock1/c#master":{
-                         "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
-                      }
-                   }
-                }
-             }
-          }
   https://docs.com/lock1/b:
     - files:
         docs/dep1.md: |
@@ -230,27 +217,23 @@ repos:
         docs/dep2.md: "2333"
     - files:
         docs/dep2.md: "233333"
-outputs:
-  docs/a.json: |
-    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
-  ~/.lock.json: |
+cache:
+  .lock.json: |
     {
        "git":{
-          "https://docs.com/lock1/c#master":{
-             "commit":"c5969737496ff42854a019f982882d5fac486a56"
-          },
-          "https://docs.com/lock1/b#master":{
+          "https://docs.com/lock1/b":{
+             "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f",
              "git":{
                 "https://docs.com/lock1/c#master":{
                    "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
                 }
-             },
-             "!downloads": null,
-             "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f"
+             }
           }
-       },
-       "!downloads": null
+       }
     }
+outputs:
+  docs/a.json: |
+    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
 ---
 # [skip] restore with wrong dependency version
 repos:
@@ -285,26 +268,10 @@ repos:
           dependencies:
             dep1: https://docascode.visualstudio.com/lock/_git/b#master
             dep2: https://docascode.visualstudio.com/lock/_git/c
-          dependencyLock: .lock.json
+          dependencyLock: {CACHE_PATH}.lock.json
         docs/a.md: |
           [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
-        .lock.json: |
-          {  
-             "git":{  
-                "https://docascode.visualstudio.com/lock/_git/b":{
-                   "commit":"921c49b9f8d6889d36d8aadc570922462963348d",
-                   "git":{  
-                      "https://docascode.visualstudio.com/lock/_git/c#master":{
-                         "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
-                      }
-                   }
-                },
-                "https://docascode.visualstudio.com/lock/_git/c#master": {
-                  "commit": "c5969737496ff42854a019f982882d5fac486a56"
-                }
-             }
-          }
   https://docascode.visualstudio.com/lock/_git/b:
     - files:
         docs/dep1.md: |
@@ -325,27 +292,26 @@ repos:
         docs/dep2.md: "2333"
     - files:
         docs/dep2.md: "233333"
-outputs:
-  docs/a.json: |
-    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
-  ~/.lock.json: |
-    {
-       "git":{
-          "https://docascode.visualstudio.com/lock/_git/c#master":{
-             "commit":"c5969737496ff42854a019f982882d5fac486a56"
-          },
-          "https://docascode.visualstudio.com/lock/_git/b#master":{
-             "git":{
+cache:
+  .lock.json: |
+    {  
+       "git":{  
+          "https://docascode.visualstudio.com/lock/_git/b":{
+             "commit":"921c49b9f8d6889d36d8aadc570922462963348d",
+             "git":{  
                 "https://docascode.visualstudio.com/lock/_git/c#master":{
                    "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
                 }
-             },
-             "!downloads": null,
-             "commit":"921c49b9f8d6889d36d8aadc570922462963348d"
+             }
+          },
+          "https://docascode.visualstudio.com/lock/_git/c#master": {
+            "commit": "c5969737496ff42854a019f982882d5fac486a56"
           }
-       },
-       "!downloads": null
+       }
     }
+outputs:
+  docs/a.json: |
+    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
 ---
 # restore with sub dependency lock only, sub dependency lock doesn't work
 repos:
@@ -354,7 +320,7 @@ repos:
         docfx.yml: |
           dependencies:
             dep1: https://docs.com/lock2/b#master
-          dependencyLock: .non-exist.json
+          dependencyLock: '{CACHE_PATH}.non-exist.json'
         docs/a.md: |
           [!include[](~/dep1/docs/dep1.md)]
   https://docs.com/lock2/b:
@@ -365,15 +331,7 @@ repos:
         docfx.yml: |
           dependencies:
             dep2: https://docs.com/lock2/c
-          dependencyLock: .lock.json
-        .lock.json: |
-          {
-             "git":{
-                "https://docs.com/lock2/c#master":{
-                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
-                }
-             }
-          }
+          dependencyLock: '{CACHE_PATH}.lock.json'
     - files:
         docs/dep1.md: |
           "def"
@@ -386,24 +344,18 @@ repos:
         docs/dep2.md: "2333"
     - files:
         docs/dep2.md: "233333"
+cache:
+  .lock.json: |
+    {
+       "git":{
+          "https://docs.com/lock2/c#master":{
+             "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+          }
+       }
+    }
 outputs:
   docs/a.json: |
     {"conceptual":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
-  ~/.non-exist.json: |
-    {
-      "git": {
-        "https://docs.com/lock2/b#master": {
-          "git": {
-            "https://docs.com/lock2/c#master": {
-              "commit": "c5969737496ff42854a019f982882d5fac486a56"
-            }
-          },
-          "!downloads": null,
-          "commit": "71ac1c4ce676987be5f15bffb7c97515adec5450"
-        }
-      },
-      "!downloads": null
-    }
 ---
 # restore with root and sub dependency lock, root lock wins
 repos:
@@ -412,21 +364,9 @@ repos:
         docfx.yml: |
           dependencies:
             dep1: https://docs.com/lock3/b#master
-          dependencyLock: .lock.json
+          dependencyLock: '{CACHE_PATH}.lock.json'
         docs/a.md: |
           [!include[](~/dep1/docs/dep1.md)]
-        .lock.json: |
-          {  
-             "git":{  
-                "https://docs.com/lock3/b":{  
-                   "git":{  
-                      "https://docs.com/lock3/c#master":{  
-                         "commit":"c5969737496ff42854a019f982882d5fac486a56"
-                      }
-                   }
-                }
-             }
-          }
   https://docs.com/lock3/b:
     - files:
         docs/dep1.md: |
@@ -456,21 +396,19 @@ repos:
         docs/dep2.md: "2333"
     - files:
         docs/dep2.md: "233333"
+cache:
+  .lock.json: |
+    {  
+       "git":{  
+          "https://docs.com/lock3/b":{  
+             "git":{  
+                "https://docs.com/lock3/c#master":{  
+                   "commit":"c5969737496ff42854a019f982882d5fac486a56"
+                }
+             }
+          }
+       }
+    }
 outputs:
   docs/a.json: |
     {"conceptual":"<p>&quot;abc&quot;</p>\n<p>2333</p>"}
-  ~/.lock.json: |
-    {
-      "git": {
-        "https://docs.com/lock3/b#master": {
-          "git": {
-            "https://docs.com/lock3/c#master": {
-              "commit": "c5969737496ff42854a019f982882d5fac486a56"
-            },
-            "!downloads": null
-          },
-          "commit": "8b8e7ce24bfddb4ad489dd96ab00b10d0ba50bf3"
-        }
-      },
-      "!downloads": null
-    }

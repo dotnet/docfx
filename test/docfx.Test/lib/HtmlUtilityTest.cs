@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Globalization;
+using Microsoft.DocAsTest;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -40,7 +41,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.LoadHtml(input).HtmlPostProcess(new CultureInfo("zh-CN"));
 
-            Assert.Equal(TestUtility.NormalizeHtml(output), TestUtility.NormalizeHtml(actual));
+            Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
 
         [Theory]

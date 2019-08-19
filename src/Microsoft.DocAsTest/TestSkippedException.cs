@@ -10,10 +10,11 @@ namespace Microsoft.DocAsTest
     /// </summary>
     public class TestSkippedException : Exception
     {
-        public string Reason { get; set; }
+        public string Reason { get; private set; }
 
         public TestSkippedException() { }
 
-        public TestSkippedException(string reason) => Reason = reason;
+        public TestSkippedException(string reason)
+            : base(reason) => Reason = reason;
     }
 }

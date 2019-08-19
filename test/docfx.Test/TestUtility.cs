@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using LibGit2Sharp;
+using Microsoft.DocAsTest;
 
 namespace Microsoft.Docs.Build
 {
@@ -27,6 +28,20 @@ namespace Microsoft.Docs.Build
 
     internal partial class TestUtility
     {
+        public static void MakeDebugAssertThrowException()
+        {
+            // This only works for .NET core
+            // https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Diagnostics/Debug.cs
+            // https://github.com/dotnet/corefx/blob/8dbeee99ce48a46c3cee9d1b765c3b31af94e172/src/System.Diagnostics.Debug/tests/DebugTests.cs
+            var showDialogHook = typeof(Debug).GetField("s_ShowDialog", BindingFlags.Static | BindingFlags.NonPublic);
+            showDialogHook?.SetValue(null, new Action<string, string, string, string>(Throw));
+
+            void Throw(string stackTrace, string message, string detailMessage, string info)
+            {
+                throw new Exception($"Debug.Assert failed: {message} {detailMessage}\n{stackTrace}");
+            }
+        }
+
         public static void CreateFiles(
             string path,
             IEnumerable<KeyValuePair<string, string>> files,
@@ -100,6 +115,26 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static IDisposable EnsureFilesNotChanged(string path)
+        {
+            var before = GetFileLastWriteTimes(path);
+
+            return new Disposable(() =>
+            {
+                var after = GetFileLastWriteTimes(path);
+
+                new JsonDiff().Verify(before, after);
+            });
+
+            Dictionary<string, DateTime> GetFileLastWriteTimes(string dir)
+            {
+                return new DirectoryInfo(dir)
+                    .GetFiles("*", SearchOption.AllDirectories)
+                    .Where(file => !file.FullName.Contains(".git"))
+                    .ToDictionary(file => file.FullName, file => file.LastWriteTimeUtc);
+            }
+        }
+
         private static string ApplyVariables(string value, IEnumerable<KeyValuePair<string, string>> variables)
         {
             if (variables != null && value != null)
@@ -110,6 +145,15 @@ namespace Microsoft.Docs.Build
                 }
             }
             return value;
+        }
+
+        private class Disposable : IDisposable
+        {
+            private readonly Action _dispose;
+
+            public Disposable(Action dispose) => _dispose = dispose;
+
+            public void Dispose() => _dispose();
         }
     }
 }
