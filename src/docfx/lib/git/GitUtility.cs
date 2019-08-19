@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
             {
                 return false;
             }
-       }
+        }
 
         /// <summary>
         /// Prune the worktree info
