@@ -78,11 +78,13 @@ namespace Microsoft.Docs.Build
 
                 InternalXrefSpec GetXrefSpec(string uid, JObject obj)
                 {
+                    var contentTypeProperties = new Dictionary<string, JsonSchemaContentType>();
                     var xrefProperties = new Dictionary<string, Lazy<JToken>>();
                     TraverseObjectXref(obj, (propertySchema, key, value) =>
                     {
                         if (schema.XrefProperties.Contains(key))
                         {
+                            contentTypeProperties[key] = propertySchema.ContentType;
                             xrefProperties[key] = new Lazy<JToken>(
                                 () =>
                                 {
@@ -104,6 +106,7 @@ namespace Microsoft.Docs.Build
                         DeclaringFile = file,
                     };
                     xref.ExtensionData.AddRange(xrefProperties);
+                    xref.ContentTypeMapping.AddRange(contentTypeProperties);
                     return xref;
                 }
 

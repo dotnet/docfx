@@ -3,9 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,34 +13,24 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
         private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
 
-        private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
-
         public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap)
         {
             _internalXrefMap = InternalXrefMapBuilder.Build(context);
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
         }
 
-        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, string text, Document relativeTo)
+        public (Error error, string href, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href)
         {
-            if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
+            var spec = ResolveXrefSpec(uid);
+            if (spec is null)
             {
-                var referenceMap = t_recursionDetector.Value.Select(x => x.parent).ToList();
-                referenceMap.Reverse();
-                referenceMap.Add(relativeTo);
-                throw Errors.CircularReference(referenceMap).ToException();
+                return (Errors.XrefNotFound(href), null, null);
             }
 
-            try
-            {
-                t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName, text);
-            }
-            finally
-            {
-                Debug.Assert(t_recursionDetector.Value.Count > 0);
-                t_recursionDetector.Value.Pop();
-            }
+            var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
+            var resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
+
+            return (null, resolvedHref, spec);
         }
 
         public XrefMapModel ToXrefMapModel(Context context)
@@ -52,29 +40,6 @@ namespace Microsoft.Docs.Build
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
-        }
-
-        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href, string displayPropertyName, string text)
-        {
-            var spec = ResolveXrefSpec(uid);
-            if (spec is null)
-            {
-                return (Errors.XrefNotFound(href), null, null, null);
-            }
-
-            var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-            var resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
-
-            var name = spec.GetXrefPropertyValue("name");
-            var displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
-
-            // fallback order:
-            // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(text)
-                ? text
-                : (!string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid));
-            return (null, resolvedHref, display, spec);
         }
 
         private IXrefSpec ResolveXrefSpec(string uid)

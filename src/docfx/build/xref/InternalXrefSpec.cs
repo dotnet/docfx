@@ -21,6 +21,8 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
+        public Dictionary<string, JsonSchemaContentType> ContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
+
         public string GetXrefPropertyValue(string propertyName)
         {
             if (propertyName is null)

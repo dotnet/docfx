@@ -554,29 +554,6 @@ outputs:
       }
     }
 ---
-# Markdown and SDP non-cyclic xref reference
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.md: |
-    ---
-    title: Title from yaml header a
-    uid: a
-    ---
-    Link to @b?displayProperty=summary
-  docs/b.json: | 
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "description": "description for b",
-      "summary": "Link to @a?displayProperty=summary",
-    }
-outputs:
-  docs/a.json:
-  docs/b.json: |
-    { "name":"name for b","description":"description for b" }
----
 # SDP non-cyclic xref reference should be resolved
 # whose display properties are plain text
 inputs:
@@ -614,94 +591,7 @@ outputs:
       "uid": "b"
     }
 ---
-# SDP cyclic xref reference whose display properties referring to another uid
-# a.json -> b.json -> a.json && b.json -> a.json -> b.json
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @b?displayProperty=summary",
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "inlineDescription": "description for b",
-      "summary": "Link to @a?displayProperty=summary",
-    }
-  docs/c.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "c",
-      "name": "name for c",
-      "inlineDescription": "description for c",
-      "summary": "Link to @a",
-    }
-outputs:
-  docs/c.json: |
-    {"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}
-  .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
----
-# SDP cyclic xref reference whose display properties referring to another uid
-# b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @b?displayProperty=summary",
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "inlineDescription": "description for b",
-      "summary": "Link to @c?displayProperty=summary",
-    }
-  docs/c.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "c",
-      "name": "name for c",
-      "inlineDescription": "description for c",
-      "summary": "Link to @b?displayProperty=summary",
-    }
-outputs:
-  .errors.log: | 
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
----
-# SDP cyclic xref reference to itself
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @a?displayProperty=summary",
-    }
-outputs:
-  .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/a.json'","docs/a.json"]
----
-# SDP non-cyclic xref reference, whose property references can be resolved
+# display property of markdown content type will be ignored
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
@@ -712,17 +602,23 @@ inputs:
       "name": "name for a",
       "inlineDescription": "Link to @b?displayProperty=inlineDescription",
       "summary": "Link to @b?displayProperty=summary",
-    }
+    } 
   docs/b.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
       "name": "name for b",
-      "inlineDescription": "Link to @a?displayProperty=name",
-      "summary": "Link to @a?displayProperty=inlineDescription",
+      "uid": "b",
+      "inlineDescription": "description for b",
+      "summary": "Link to @a",
     }
 outputs:
-  docs/a.json:
+  docs/a.json: |
+    {
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "Link to <a href=\"b.json\">name for b</a>",
+      "summary": "<p>Link to <a href=\"b.json\">name for b</a></p>\n"
+    }
   docs/b.json:
 ---
 # input yml file is not object
