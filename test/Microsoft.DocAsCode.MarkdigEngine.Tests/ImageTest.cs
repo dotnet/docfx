@@ -19,10 +19,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void ImageTestBlockGeneral()
         {
-            var source = @":::image id=""exampleId"" source=""example.jpg"" alt-text=""example""::: :::image-end:::
+            var source = @":::image source=""example.jpg"" alt-text=""example""::: 
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+:::image-end:::
 ";
 
-            var expected = @"<img src=""example.jpg"" alt=""example"" aria-describedby=""exampleId""><div id=""exampleId"" class=""visually-hidden"">
+            var expected = @"<img src=""example.jpg"" alt=""example"" aria-describedby=""88850""><div id=""88850"" class=""visually-hidden"">
+<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 ".Replace("\r\n", "\n");
 
@@ -39,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void ImageBlockTestBlockClosed()
         {
-            var source = @":::image id=""exampleId"" source=""example.jpg"" alt-text=""example"":::
+            var source = @":::image source=""example.jpg"" alt-text=""example"":::Lorem Ipsum
 :::image-end:::";
 
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);

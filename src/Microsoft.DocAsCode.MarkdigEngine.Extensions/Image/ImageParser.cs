@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Security.Cryptography;
     using System.Text;
 
     public class ImageParser : BlockParser
@@ -73,7 +74,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-            var id = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "aria-describedby").Value;
+            var id = GetHtmlId(processor.LineIndex, processor.Column);
             var src = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "src").Value;
             var alt = htmlAttributes.Properties.FirstOrDefault(x => x.Key == "alt").Value;
             
@@ -105,6 +106,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!ExtensionsHelper.MatchStart(ref slice, new string(':', ImageBlock.ColonCount)))
             {
+                ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }
 
@@ -112,6 +114,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!ExtensionsHelper.MatchStart(ref slice, EndString, false))
             {
+                _context.LogWarning(
+                    $"invalid-{ExtensionName}",
+                    $"Invalid {ExtensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Missing ending \":::{EndString}\"",
+                    block);
                 return BlockState.Continue;
             }
 
@@ -189,7 +195,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 string attributeName;
                 if (!TryMatchIdentifier(ref slice, out attributeName))
                 {
-                    logError($"No attributes exist. source, and alt-text attributes are required. id is optional.");
                     return false;
                 }
                 if (attributes.ContainsKey(attributeName))
@@ -225,7 +230,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             renderProperties = new Dictionary<string, string>();
             var src = string.Empty;
             var alt = string.Empty;
-            var id = string.Empty;
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -238,52 +242,40 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     case "source":
                         src = value;
                         break;
-                    case "id":
-                        id = value;
-                        break;
                     default:
                         logWarning($"Unexpected attribute \"{name}\".");
                         return false;
                 }
             }
 
-            if (alt == string.Empty)
-            {
-                logWarning($"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
-                return false;
-            }
-            if (src == string.Empty)
+            if (string.IsNullOrEmpty(src))
             {
                 logWarning($"source is a required attribute. Please ensure you have specified a source attribute");
+            }
+            if (string.IsNullOrEmpty(alt))
+            {
+                logWarning($"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
+            }
+            if (string.IsNullOrEmpty(alt) || string.IsNullOrEmpty(src))
+            {
                 return false;
             }
-            var Id = id;
-            if (string.IsNullOrEmpty(id))
-            {
-                Id = src;
-                if (Id.IndexOf('/') > -1)
-                {
-                    Id = Id.Split('/').Last();
-                }
-                if (Id.IndexOf('.') > -1)
-                {
-                    Id = Id.Split('.').First();
-                }
-                //If the user does not have the id attribute set,
-                //then use src filename with randomly generated id to be unique.
-                Random random = new Random();
-                const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-                var generated = new string(Enumerable.Repeat(chars, 8)
-                    .Select(s => s[random.Next(s.Length)]).ToArray());
-                Id = $"{Id}-{generated}";
-            }
-
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("aria-describedby", Id);
             htmlAttributes.AddProperty("src", src);
             htmlAttributes.AddProperty("alt", alt);
 
             return true;
+        }
+
+        public static string GetHtmlId(int line, int column)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var id = $"{InclusionContext.File}-{line}-{column}";
+                var fileBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(id));
+
+                return new Guid(fileBytes).ToString("N").Substring(0, 5);
+            }
         }
     }
 }
