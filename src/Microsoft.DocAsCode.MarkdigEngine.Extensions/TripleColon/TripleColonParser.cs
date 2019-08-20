@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 _context.LogWarning(
                     $"invalid-{extensionName}",
-                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Missing ending \":::{extensionName}:::\"",
+                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Missing ending \":::{extensionName}-end:::\"",
                     block);
                 return BlockState.Continue;
             }
