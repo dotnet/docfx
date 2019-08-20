@@ -85,14 +85,20 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            Console.WriteLine($"Cloning '{remote}'");
-                            GitUtility.InitFetchBare(repoPath, remote, branchesToFetch, config);
+                            using (Progress.Start($"Fetch '{remote}'"))
+                            {
+                                GitUtility.InitFetchBare(repoPath, remote, branchesToFetch, config);
+                            }
                         }
                         catch (Exception ex)
                         {
                             throw Errors.GitCloneFailed(remote, branches).ToException(ex);
                         }
-                        AddWorkTrees();
+
+                        using (Progress.Start($"Manage worktree for '{remote}'"))
+                        {
+                            AddWorkTrees();
+                        }
                     }
                 }
 
@@ -131,8 +137,10 @@ namespace Microsoft.Docs.Build
                                     // re-use existing work tree
                                     // checkout to {headCommit}, no need to fetch
                                     Debug.Assert(!GitUtility.IsDirty(workTreePath));
-                                    Log.Write($"Reuse existing worktree: {workTreePath}");
-                                    GitUtility.Checkout(workTreePath, headCommit);
+                                    using (Progress.Start($"Checkout worktree {workTreePath} to {headCommit}"))
+                                    {
+                                        GitUtility.Checkout(workTreePath, headCommit);
+                                    }
                                 }
                                 else
                                 {
@@ -150,9 +158,11 @@ namespace Microsoft.Docs.Build
                                         }
 
                                         Debug.Assert(!Directory.Exists(workTreePath));
-                                        Log.Write($"Create new worktree: {workTreePath}");
-                                        GitUtility.PruneWorkTree(repoPath);
-                                        GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                        using (Progress.Start($"Create new worktree: {workTreePath}"))
+                                        {
+                                            GitUtility.PruneWorkTree(repoPath);
+                                            GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
