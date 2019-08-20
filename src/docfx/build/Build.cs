@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var xrefMapModel = context.XrefMap.ToXrefMapModel(context);
+                var xrefMapModel = context.XrefMap.ToXrefMapModel();
 
                 context.Output.WriteJson(xrefMapModel, "xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");

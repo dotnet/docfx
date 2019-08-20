@@ -23,10 +23,10 @@ namespace Microsoft.Docs.Build
             return ResolveInternalXrefSpec(uid) ?? ResolveExternalXrefSpec(uid);
         }
 
-        public XrefMapModel ToXrefMapModel(Context context)
+        public XrefMapModel ToXrefMapModel()
         {
             var references = _internalXrefMap.Values
-                .Select(xref => xref.ToExternalXrefSpec(context, forXrefMapOutput: true))
+                .Select(xref => xref.ToExternalXrefSpec(forXrefMapOutput: true))
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };

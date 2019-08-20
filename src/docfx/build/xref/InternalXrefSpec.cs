@@ -9,7 +9,6 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
-
         public SourceInfo Source { get; set; }
 
         public string Uid { get; set; }
@@ -40,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public string GetName() => GetXrefPropertyValueAsString("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(Context context, bool forXrefMapOutput)
+        public ExternalXrefSpec ToExternalXrefSpec(bool forXrefMapOutput)
         {
             var spec = new ExternalXrefSpec
             {

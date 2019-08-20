@@ -254,7 +254,7 @@ namespace Microsoft.Docs.Build
                         try
                         {
                             t_recursionDetector.Value.Push((content, file));
-                            xrefSpec = internalSpec.ToExternalXrefSpec(context, forXrefMapOutput: false);
+                            xrefSpec = internalSpec.ToExternalXrefSpec(forXrefMapOutput: false);
                         }
                         finally
                         {
