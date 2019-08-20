@@ -522,3 +522,28 @@ outputs:
   b.json:
   c.json: |
     {"metadata": {"href": "b"}}
+---
+# html post process for `markdown` properties
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    markdown: |
+      # h1
+      <script>alert(0);</script>
+      <link rel="stylesheet" href="https://a.com/b.css" />
+      <div style="display:hidden"></div>
+      <style>h1 {color:red;}</style>
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "markdown": {"contentType": "markdown"}
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+outputs:
+  a.json: |
+    {"markdown":"<h1 id=\"h1\">h1</h1><div></div>"}
