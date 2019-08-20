@@ -66,7 +66,16 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in ExtensionData)
             {
-                spec.ExtensionData[key] = value.Value;
+                try
+                {
+                    spec.ExtensionData[key] = value.Value;
+                }
+
+                // circular-reference is handled in JsonSchemaTransformer
+                // no need to throw it again for xref map output
+                catch (DocfxException ex) when (forXrefMapOutput && ex.Error.Code == "circular-reference")
+                {
+                }
             }
             return spec;
         }
