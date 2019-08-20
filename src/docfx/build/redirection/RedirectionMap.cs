@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,6 +12,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly IReadOnlyDictionary<string, Document> _redirectionsBySourcePath;
         private readonly IReadOnlyDictionary<string, Document> _redirectionsByRedirectionUrl;
+        private readonly IReadOnlyCollection<string> _conflictRedirectionUrls = new List<string>();
 
         public IEnumerable<Document> Files => _redirectionsBySourcePath.Values;
 
@@ -39,9 +41,10 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static RedirectionMap Create(ErrorLog errorLog, Docset docset, Func<string, bool> glob, TemplateEngine templateEngine)
+        public static RedirectionMap Create(ErrorLog errorLog, Docset docset, Func<string, bool> glob, TemplateEngine templateEngine, IReadOnlyCollection<Document> buildFiles)
         {
             var redirections = new HashSet<Document>();
+            var publishUrls = buildFiles.Select(file => file.SiteUrl).ToHashSet();
 
             // load redirections with document id
             AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
@@ -100,9 +103,17 @@ namespace Microsoft.Docs.Build
                     }
 
                     var redirect = Document.Create(docset, pathToDocset, templateEngine, redirectionUrl: mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
-                    if (redirectDocumentId && !redirectUrls.Add(redirect.RedirectionUrl))
+                    if (redirectDocumentId)
                     {
-                        errorLog.Write(Errors.RedirectionUrlConflict(redirectUrl));
+                        if (!publishUrls.Contains(redirect.RedirectionUrl))
+                        {
+                            errorLog.Write(Errors.RedirectionUrlNotExisted(redirectUrl));
+                            continue;
+                        }
+                        else if (!redirectUrls.Add(redirect.RedirectionUrl))
+                        {
+                            errorLog.Write(Errors.RedirectionUrlConflict(redirectUrl));
+                        }
                     }
 
                     if (!redirections.Add(redirect))
