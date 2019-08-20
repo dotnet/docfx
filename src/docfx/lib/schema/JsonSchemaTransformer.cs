@@ -91,9 +91,25 @@ namespace Microsoft.Docs.Build
                             xrefProperties[key] = new Lazy<JToken>(
                                 () =>
                                 {
-                                    var (transformErrors, transformedToken) = TransformToken(file, context, propertySchema, value);
-                                    context.ErrorLog.Write(transformErrors);
-                                    return transformedToken;
+                                    if (t_recursionDetector.Value.Contains((uid, file)))
+                                    {
+                                        var referenceMap = t_recursionDetector.Value.Select(x => x.declaringFile).ToList();
+                                        referenceMap.Insert(0, file);
+                                        throw Errors.CircularReference(referenceMap, file).ToException();
+                                    }
+
+                                    try
+                                    {
+                                        t_recursionDetector.Value.Push((uid, file));
+                                        var (transformErrors, transformedToken) = TransformToken(file, context, propertySchema, value);
+                                        context.ErrorLog.Write(transformErrors);
+                                        return transformedToken;
+                                    }
+                                    finally
+                                    {
+                                        Debug.Assert(t_recursionDetector.Value.Count > 0);
+                                        t_recursionDetector.Value.Pop();
+                                    }
                                 }, LazyThreadSafetyMode.PublicationOnly);
                             return true;
                         }
@@ -244,23 +260,7 @@ namespace Microsoft.Docs.Build
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {
-                        if (t_recursionDetector.Value.Contains((content, file)))
-                        {
-                            var referenceMap = t_recursionDetector.Value.Select(x => x.declaringFile).ToList();
-                            referenceMap.Insert(0, file);
-                            throw Errors.CircularReference(referenceMap).ToException();
-                        }
-
-                        try
-                        {
-                            t_recursionDetector.Value.Push((content, file));
-                            xrefSpec = internalSpec.ToExternalXrefSpec(forXrefMapOutput: false);
-                        }
-                        finally
-                        {
-                            Debug.Assert(t_recursionDetector.Value.Count > 0);
-                            t_recursionDetector.Value.Pop();
-                        }
+                        xrefSpec = internalSpec.ToExternalXrefSpec(forXrefMapOutput: false);
                     }
                     errors.AddIfNotNull(xrefError);
 

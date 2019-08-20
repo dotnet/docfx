@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             if (parents.Contains(file))
             {
                 parents.Add(file);
-                throw Errors.CircularReference(parents).ToException();
+                throw Errors.CircularReference(parents, file).ToException();
             }
 
             var (errors, model) = LoadTocModel(context, file, content);
