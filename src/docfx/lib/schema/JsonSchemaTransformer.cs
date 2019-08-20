@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -16,6 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _transformedProperties;
+        private static ThreadLocal<Stack<(string uid, Document declaringFile)>> t_recursionDetector
+            = new ThreadLocal<Stack<(string, Document)>>(() => new Stack<(string, Document)>());
 
         public JsonSchemaTransformer(JsonSchema schema)
         {
@@ -241,7 +244,23 @@ namespace Microsoft.Docs.Build
 
                     if (xrefSpec is InternalXrefSpec internalSpec)
                     {
-                        xrefSpec = internalSpec.ToExternalXrefSpec(context, forXrefMapOutput: false);
+                        if (t_recursionDetector.Value.Contains((content, file)))
+                        {
+                            var referenceMap = t_recursionDetector.Value.Select(x => x.declaringFile).ToList();
+                            referenceMap.Insert(0, file);
+                            throw Errors.CircularReference(referenceMap).ToException();
+                        }
+
+                        try
+                        {
+                            t_recursionDetector.Value.Push((content, file));
+                            xrefSpec = internalSpec.ToExternalXrefSpec(context, forXrefMapOutput: false);
+                        }
+                        finally
+                        {
+                            Debug.Assert(t_recursionDetector.Value.Count > 0);
+                            t_recursionDetector.Value.Pop();
+                        }
                     }
                     errors.AddIfNotNull(xrefError);
 
