@@ -3,12 +3,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
+        private static ThreadLocal<Stack<(string uid, Document parent)>> t_recursionDetector
+            = new ThreadLocal<Stack<(string, Document)>>(() => new Stack<(string, Document)>());
+
         public SourceInfo Source { get; set; }
 
         public string Uid { get; set; }
@@ -28,10 +34,10 @@ namespace Microsoft.Docs.Build
             if (propertyName is null)
                 return null;
 
-            // for internal UID, the display property can not be markdown or inline markdown
+            // for internal UID, the display property should only be plain text
             // because the display text should be plain text
             var contentType = GetXrefPropertyContentType(propertyName);
-            if (contentType != JsonSchemaContentType.Markdown && contentType != JsonSchemaContentType.InlineMarkdown)
+            if (contentType == JsonSchemaContentType.None)
             {
                 return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
             }
@@ -42,40 +48,55 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefSpec ToExternalXrefSpec(Context context, bool forXrefMapOutput)
         {
-            var spec = new ExternalXrefSpec
+            if (t_recursionDetector.Value.Contains((Uid, DeclaringFile)))
             {
-                Uid = Uid,
-                Monikers = Monikers,
-            };
-
-            if (forXrefMapOutput)
-            {
-                var (_, _, fragment) = UrlUtility.SplitUrl(Href);
-                var path = DeclaringFile.CanonicalUrlWithoutLocale;
-
-                // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
-                // output xref map with URL appending "?branch=master" for master branch
-                var query = DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
-                spec.Href = path + query + fragment;
-            }
-            else
-            {
-                // relative path for internal UID resolving
-                spec.Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href);
+                var referenceMap = t_recursionDetector.Value.Select(x => x.parent).ToList();
+                throw Errors.CircularReference(referenceMap).ToException();
             }
 
-            foreach (var (key, value) in ExtensionData)
+            try
             {
-                try
+                t_recursionDetector.Value.Push((Uid, DeclaringFile));
+                var spec = new ExternalXrefSpec
                 {
-                    spec.ExtensionData[key] = value.Value;
-                }
-                catch (DocfxException ex)
+                    Uid = Uid,
+                    Monikers = Monikers,
+                };
+
+                if (forXrefMapOutput)
                 {
-                    context.ErrorLog.Write(DeclaringFile, ex.Error);
+                    var (_, _, fragment) = UrlUtility.SplitUrl(Href);
+                    var path = DeclaringFile.CanonicalUrlWithoutLocale;
+
+                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var query = DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    spec.Href = path + query + fragment;
                 }
+                else
+                {
+                    // relative path for internal UID resolving
+                    spec.Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href);
+                }
+
+                foreach (var (key, value) in ExtensionData)
+                {
+                    try
+                    {
+                        spec.ExtensionData[key] = value.Value;
+                    }
+                    catch (DocfxException ex)
+                    {
+                        context.ErrorLog.Write(DeclaringFile, ex.Error);
+                    }
+                }
+                return spec;
             }
-            return spec;
+            finally
+            {
+                Debug.Assert(t_recursionDetector.Value.Count > 0);
+                t_recursionDetector.Value.Pop();
+            }
         }
 
         private JsonSchemaContentType GetXrefPropertyContentType(string propertyName)

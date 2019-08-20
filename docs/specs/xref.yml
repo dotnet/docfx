@@ -554,7 +554,106 @@ outputs:
       }
     }
 ---
-# display property of markdown content type will be ignored
+# circular reference within SDP UID definition a -> a
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    xref: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+          "uid": {
+            "type": "string",
+            "contentType": "uid"
+          },
+          "xref": {
+              "type": "string",
+              "contentType": "Xref"
+          }
+      },
+      "xrefProperties": [
+          "xref"
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.yml'","docs/a.yml"]
+---
+# circular reference within SDP UID definition a -> b -> a
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    xref: b
+  docs/b.yml: |
+    #YamlMime:TestData
+    uid: b
+    xref: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+          "uid": {
+            "type": "string",
+            "contentType": "uid"
+          },
+          "xref": {
+              "type": "string",
+              "contentType": "Xref"
+          }
+      },
+      "xrefProperties": [
+          "xref"
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.yml' --> 'docs/b.yml'","docs/a.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.yml' --> 'docs/a.yml'","docs/b.yml"]
+---
+# circular reference within SDP UID definition a -> b -> a -> c
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    xref: b
+    anotherXref: c
+  docs/b.yml: |
+    #YamlMime:TestData
+    uid: b
+    xref: a
+  docs/c.yml: |
+    #YamlMime:TestData
+    uid: c
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+          "uid": {
+            "type": "string",
+            "contentType": "uid"
+          },
+          "xref": {
+              "type": "string",
+              "contentType": "Xref"
+          },
+          "anotherXref": {
+              "type": "string",
+              "contentType": "Xref"
+          }
+      },
+      "xrefProperties": [
+          "xref"
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.yml' --> 'docs/b.yml'","docs/a.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.yml' --> 'docs/a.yml'","docs/b.yml"]
+---
+# display property of non-plain text content type will be ignored
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
