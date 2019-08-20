@@ -581,7 +581,7 @@ outputs:
   .errors.log: |
     ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.yml' --> 'docs/a.yml'","docs/a.yml"]
 ---
-# circular reference within SDP UID definition a -> b -> a
+# circular reference within SDP UID definition a -> b -> c -> a
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -591,6 +591,10 @@ inputs:
   docs/b.yml: |
     #YamlMime:TestData
     uid: b
+    xref: c
+  docs/c.yml: |
+    #YamlMime:TestData
+    uid: c
     xref: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
@@ -610,8 +614,9 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.yml' --> 'docs/b.yml' --> 'docs/a.yml'","docs/a.yml"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.yml' --> 'docs/a.yml' --> 'docs/b.yml'","docs/b.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.yml' --> 'docs/b.yml' --> 'docs/c.yml' --> 'docs/a.yml'","docs/a.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.yml' --> 'docs/c.yml' --> 'docs/a.yml' --> 'docs/b.yml'","docs/b.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/c.yml' --> 'docs/a.yml' --> 'docs/b.yml' --> 'docs/c.yml'","docs/c.yml"]
 ---
 # circular reference within SDP UID definition a -> b -> a -> c
 inputs:
