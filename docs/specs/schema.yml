@@ -346,9 +346,9 @@ outputs:
       "prop": "value",
       "metadata": {
         "userMta": "user",
-        "!globalMta": null,
-        "!fileMta": null,
-        "!locale": null
+        "globalMta": undefined,
+        "fileMta": undefined,
+        "locale": undefined
       }
     }
   .publish.json: |
@@ -438,9 +438,9 @@ inputs:
     <h2 id="{{heading}}"></h2>{{{description}}}
 outputs:
   .errors.log: |
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4,"date_time":"*"}
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3,"date_time":"*"}
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7,"date_time":"*"}
+    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4}
+    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3}
+    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7}
   a.mta.json:
   a.raw.page.json:
   b.mta.json:
@@ -484,3 +484,28 @@ outputs:
   b.json:
   c.json: |
     {"metadata": {"href": "b"}}
+---
+# html post process for `markdown` properties
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    markdown: |
+      # h1
+      <script>alert(0);</script>
+      <link rel="stylesheet" href="https://a.com/b.css" />
+      <div style="display:hidden"></div>
+      <style>h1 {color:red;}</style>
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "markdown": {"contentType": "markdown"}
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+outputs:
+  a.json: |
+    {"markdown":"<h1 id=\"h1\">h1</h1><div></div>"}

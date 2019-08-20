@@ -25,14 +25,6 @@ namespace Microsoft.Docs.Build
 
         public string[] Environments { get; set; } = Array.Empty<string>();
 
-        public string[] SkippableOutputs { get; set; } =
-        {
-            "xrefmap.json", ".publish.json", ".dependencymap.json",
-            // legacy
-            ".manifest.json", "filemap.json", "op_aggregated_file_map_info.json",
-            "server-side-dependent-list.txt", "full-dependent-list.txt"
-        };
-
         public Dictionary<string, TestGitCommit[]> Repos { get; set; } = new Dictionary<string, TestGitCommit[]>();
 
         public Dictionary<string, string> Inputs { get; set; } = new Dictionary<string, string>();

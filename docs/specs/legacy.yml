@@ -10,8 +10,6 @@ repos:
         redirections:
           a.md: /b
         metadataSchema: schema.json
-        gitHub:
-          resolveUsers: true
       c.md: |
         ---
         api_name:
@@ -58,7 +56,7 @@ outputs:
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
       "rawMetadata": {
         "ms.author": "yufeih",
-        "!robots": null,
+        "robots": undefined,
         "api_name": ["API Name"],
         "_op_gitContributorInformation": {
           "updated_at_date_time": "2018-10-30T00:00:00.0000000Z"
@@ -104,8 +102,6 @@ repos:
         template: https://docs.com/template1
         redirections:
           a.md: /b
-        gitHub:
-          resolveUsers: true
         baseUrl: https://docs.com/rawmetadata
       c.md: |
         ---
@@ -180,7 +176,7 @@ outputs:
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/5cb844f400525147e40455b6f1adf54646de2693/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/9ded2c661b9c6de62811c4954a8a03a7e24d4e52/c.md",
         "site_name": "Docs",
         "depot_name": ".",
         "search.ms_docsetname": "",
@@ -204,7 +200,7 @@ outputs:
             "display_name": "Charlie",
             "id": "3"
           },
-          "!contributors": null
+          "contributors": undefined
       },
       },
       {
@@ -449,7 +445,7 @@ outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"date_time":"*","origin":"fallback"}
+    {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"origin":"fallback"}
 ---
 # Replace empty content with <div></div>
 legacy: true

@@ -745,9 +745,6 @@ repos:
           localization:
             mapping: Branch
             bilingual: true
-          gitHub:
-            userCache: github-user.json
-            resolveUsers: true
   https://github.com/ss/b.loc#master-sxs.zh-cn:
     - files:
         docs/a.md: a
@@ -846,7 +843,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
   .dependencymap.json: |
-    {"dependencies": {"!docs/tokena.md": null}}
+    {"dependencies": {"docs/tokena.md": undefined}}
 ---
 # fallback to deleted resource
 locale: zh-cn
@@ -1191,7 +1188,7 @@ repos:
           Learn c#.
 outputs:
   docs/a.json: |
-    conceptual: <p>Learn c#&lrm;.</p>
+    { "conceptual": "<p>Learn c#&lrm;.</p>" }
 ---
 # VSTS localized repo with folder mapping
 locale: zh-cn
