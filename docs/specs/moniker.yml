@@ -177,13 +177,14 @@ inputs:
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
     redirections:
-      docs/v1/a-old.md: /docs/a1
+      docs/v1/a-old.md: /docs/b
     redirectionsWithoutId:
       docs/v2/a-old.md: /docs/a2
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
   docs/v2/a.md: |
     Moniker: netcore-1.2, netcore-1.3
+  docs/b.md:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -206,12 +207,14 @@ outputs:
       "conceptual": "<p>Moniker: netcore-1.2, netcore-1.3</p>",
       "monikers": ["netcore-1.2", "netcore-1.3"]
     }
+  docs/b.json:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a1", "moniker_group": "9d4e15fd" },
         { "url": "/docs/a-old", "redirect_url": "/docs/a2", "moniker_group": "f961cd88" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/b", "moniker_group": "9d4e15fd" },
         { "url": "/docs/a", "moniker_group": "9d4e15fd" },
+        { "url": "/docs/b" },
         { "url": "/docs/a", "moniker_group": "f961cd88" },
       ],
       "moniker_groups": {

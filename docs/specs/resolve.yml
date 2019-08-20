@@ -213,7 +213,7 @@ outputs:
 # Files redirected to an aboslute URL
 inputs:
   docfx.yml: |
-    redirections:
+    redirectionsWithoutId:
       docs/redirect.md: /absolute/path
   docs/a.md: |
     [redirect](redirect.md?a#b)
@@ -224,7 +224,7 @@ outputs:
 # Show error if inclusion is a redirection file
 inputs:
   docfx.yml: |
-    redirections:
+    redirectionsWithoutId:
       docs/redirect.md: /absolute/path
   docs/a.md: |
     Link to [!INCLUDE[](redirect.md)]
@@ -237,7 +237,7 @@ outputs:
 # Show warning if redirection file conflicts with existing file
 inputs:
   docfx.yml: |
-    redirections:
+    redirectionsWithoutId:
       docs/redirect.md: /absolute/path
   docs/redirect.md:
 outputs:
