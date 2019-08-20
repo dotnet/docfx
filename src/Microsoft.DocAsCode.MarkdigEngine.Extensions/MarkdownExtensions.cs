@@ -35,7 +35,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseNestedColumn(context)
                 .UseTripleColon(context)
                 .UseNoloc()
-                .UseImage(context)
                 .RemoveUnusedExtensions();
         }
 
@@ -142,12 +141,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder UseNoloc(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.AddIfNotAlready(new NolocExtension());
-            return pipeline;
-        }
-
-        public static MarkdownPipelineBuilder UseImage(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
-        {
-            pipeline.Extensions.Insert(0, new ImageExtension(context));
             return pipeline;
         }
     }

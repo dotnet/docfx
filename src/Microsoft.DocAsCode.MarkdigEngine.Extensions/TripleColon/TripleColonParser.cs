@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 || !_extensions.TryGetValue(extensionName, out extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
                 || !TryMatchAttributes(ref slice, out attributes, extensionName, extension.SelfClosing, logError)
-                || !extension.TryProcessAttributes(attributes, out htmlAttributes, out renderProperties, logError))
+                || !extension.TryProcessAttributes(attributes, out htmlAttributes, out renderProperties, logError, processor))
             {
                 return BlockState.None;
             }
@@ -73,6 +73,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             processor.NewBlocks.Push(block);
+
+            if (extension.EndingTripleColons)
+            {
+                return BlockState.ContinueDiscard;
+            }
 
             if (extension.SelfClosing)
             {
@@ -109,6 +114,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var c = ExtensionsHelper.SkipSpaces(ref slice);
+
+            var endingTripleColons = ((TripleColonBlock)block).Extension.EndingTripleColons;
+            if (endingTripleColons && !ExtensionsHelper.MatchStart(ref slice, ":::"))
+            {
+                _context.LogWarning(
+                    $"invalid-{extensionName}",
+                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Missing ending \":::{extensionName}:::\"",
+                    block);
+                return BlockState.Continue;
+            }
 
             if (!c.IsZero())
             {

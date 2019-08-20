@@ -24,7 +24,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image-end:::
 ";
 
-            var expected = @"<img src=""example.jpg"" alt=""example"" aria-describedby=""88850""><div id=""88850"" class=""visually-hidden"">
+            var expected = @"<img src=""example.jpg"" alt=""example"" aria-describedby=""88850"">
+<div id=""88850"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 ".Replace("\r\n", "\n");
@@ -53,7 +54,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
                 var service = TestUtility.CreateMarkdownService();
                 var document = service.Parse(source, "fakepath.md");
 
-                var imageBlock = document.OfType<ImageBlock>().FirstOrDefault();
+                var imageBlock = document.OfType<TripleColonBlock>().FirstOrDefault();
                 Assert.NotNull(imageBlock);
                 Assert.True(imageBlock.Closed);
             }
@@ -78,7 +79,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
                 var service = TestUtility.CreateMarkdownService();
                 var document = service.Parse(source, "fakepath.md");
 
-                var imageBlock = document.OfType<ImageBlock>().FirstOrDefault();
+                var imageBlock = document.OfType<TripleColonBlock>().FirstOrDefault();
                 Assert.Null(imageBlock);
             }
             Logger.UnregisterListener(listener);
