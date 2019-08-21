@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                 var dependencyMap = context.DependencyMapBuilder.Build();
                 var xrefMapModel = context.XrefMap.ToXrefMapModel(context);
 
-                context.Output.WriteJson(xrefMapModel, "xrefmap.json");
+                context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
 
