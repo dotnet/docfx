@@ -560,7 +560,7 @@ files              | **REQUIRED**. The file or file array, `glob` pattern is sup
 ~~name~~           | **Obsoleted**, please use `dest`.
 exclude            | The files to be excluded, `glob` pattern is supported.
 ~~cwd~~            | **Obsoleted**, please use `src`.
-src                | Specifies the source directory. If omitted, the directory of the config file will be used. Use this option when you want to refer to files in relative folders while want to keep folder structure. e.g. set `src` to `..`.
+src                | Specifies the source directory. If omitted, the directory of the config file will be used. It is possible to set this path relative or absolute. Use the relative path defintion when you want to refer to files in relative folders while want to keep folder structure. e.g. set `src` to `..`. When you prefere absolut path, maybe it is more meaningful to use System Enviroment variables.
 dest               | The folder name for the generated files.
 version            | Version name for the current file mapping. If not set, treat the current file-mapping item as in default version. Mappings with the same version name will be built together. Cross reference doesn't support cross different versions.
 caseSensitive      | **TOBEIMPLEMENTED**. Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.

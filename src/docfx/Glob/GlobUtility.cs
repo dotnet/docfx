@@ -28,12 +28,12 @@ namespace Microsoft.DocAsCode
             var expandedFileMapping = new FileMapping();
             foreach (var item in fileMapping.Items)
             {
-                var src = Path.Combine(baseDirectory, item.SourceFolder ?? string.Empty);
+                string expandedSourceFolder = Path.Combine(baseDirectory, Environment.ExpandEnvironmentVariables(item.SourceFolder ?? string.Empty));
                 var options = GetMatchOptionsFromItem(item);
-                var fileItems = new FileItems(FileGlob.GetFiles(src, item.Files, item.Exclude, options));
+                var fileItems = new FileItems(FileGlob.GetFiles(expandedSourceFolder, item.Files, item.Exclude, options));
                 if (fileItems.Count == 0)
                 {
-                    var currentSrcFullPath = string.IsNullOrEmpty(src) ? Directory.GetCurrentDirectory() : Path.GetFullPath(src);
+                    var currentSrcFullPath = string.IsNullOrEmpty(expandedSourceFolder) ? Directory.GetCurrentDirectory() : Path.GetFullPath(expandedSourceFolder);
                     Logger.LogInfo($"No files are found with glob pattern {StringExtension.ToDelimitedString(item.Files) ?? "<none>"}, excluding {StringExtension.ToDelimitedString(item.Exclude) ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
                     CheckPatterns(item.Files);
                 }
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode
                 expandedFileMapping.Add(
                     new FileMappingItem
                     {
-                        SourceFolder = src,
+                        SourceFolder = expandedSourceFolder,
                         Files = fileItems,
                         DestinationFolder = item.DestinationFolder
                     });
