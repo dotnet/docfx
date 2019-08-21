@@ -21,12 +21,12 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null)
+        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null, int? maxDegreeOfParallelism = null)
         {
             var done = 0;
             var total = source.Count();
 
-            Parallel.ForEach(source, item =>
+            Parallel.ForEach(source, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism ?? Math.Max(8, Environment.ProcessorCount * 2) }, item =>
             {
                 action(item);
                 progress?.Invoke(Interlocked.Increment(ref done), total);

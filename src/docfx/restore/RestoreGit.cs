@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
             // restore first level children
             ParallelUtility.ForEach(
-                gitDependencies,
+                gitDependencies.OrderBy(g => g.Key),
                 group =>
                 {
                     foreach (var child in RestoreGitRepo(group))
@@ -45,7 +45,8 @@ namespace Microsoft.Docs.Build
                         children.Add(child);
                     }
                 },
-                Progress.Update);
+                Progress.Update,
+                maxDegreeOfParallelism: 8);
 
             // fetch contribution branch
             if (rootRepository != null && LocalizationUtility.TryGetContributionBranch(rootRepository, out var contributionBranch))
