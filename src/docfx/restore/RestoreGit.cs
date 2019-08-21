@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private enum GitFlags
         {
             None = 0,
-            NoCheckout = 1 << 1,
+            NoCheckout = 0b0010,
         }
 
         public static async Task<IReadOnlyDictionary<string, DependencyLockModel>> Restore(
