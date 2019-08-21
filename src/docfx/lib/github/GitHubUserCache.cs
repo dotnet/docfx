@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         internal Func<string, Task<(Error, GitHubUser)>> _getUserByLoginFromGitHub;
 
         // calls GitHubAccessor.GetLoginByCommit, which ohly for private use, and tests can swap this out
-        internal Func<string, string, string, Task<(Error, IEnumerable<GitHubUser>)>> _getUsersByCommitFromGitHub;
+        internal Func<string, string, string, string, Task<(Error, IEnumerable<GitHubUser>)>> _getUsersByCommitFromGitHub;
 
         private bool _updated = false;
 
@@ -37,9 +37,12 @@ namespace Microsoft.Docs.Build
             _cachePath = AppData.GitHubUserCachePath;
             _expirationInHours = config.GitHub.UserCacheExpirationInHours;
 
-            _githubAccessor = new GitHubAccessor(config.GitHub.AuthToken);
-            _getUserByLoginFromGitHub = _githubAccessor.GetUserByLogin;
-            _getUsersByCommitFromGitHub = _githubAccessor.GetUsersByCommit;
+            if (!string.IsNullOrEmpty(config.GitHub.AuthToken))
+            {
+                _githubAccessor = new GitHubAccessor(config.GitHub.AuthToken);
+                _getUserByLoginFromGitHub = _githubAccessor.GetUserByLogin;
+                _getUsersByCommitFromGitHub = _githubAccessor.GetUsersByCommit;
+            }
 
             if (File.Exists(_cachePath))
             {
@@ -76,10 +79,14 @@ namespace Microsoft.Docs.Build
                     return (Errors.AuthorNotFound(login), null);
                 }
 
-                Log.Write($"Calling GitHub user API to resolve {login}");
                 Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
 
-                var (error, user) = await _getUserByLoginFromGitHub(login);
+                if (_getUserByLoginFromGitHub == null)
+                {
+                    return default;
+                }
+
+                var (error, user) = await _getUserByLoginFromGitHub.Invoke(login);
                 if (error is null)
                 {
                     if (user is null)
@@ -111,10 +118,14 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
                 Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
 
-                var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha);
+                if (_getUsersByCommitFromGitHub == null)
+                {
+                    return default;
+                }
+
+                var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, authorEmail);
 
                 // When GetUserByCommit failed, it could either the commit is not found or the user is not found,
                 // only mark the email as invalid when the user is not found
@@ -150,7 +161,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            _githubAccessor.Dispose();
+            _githubAccessor?.Dispose();
             _syncRoot.Dispose();
         }
 

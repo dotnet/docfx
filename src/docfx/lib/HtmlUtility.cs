@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -15,15 +14,6 @@ namespace Microsoft.Docs.Build
     {
         private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
             ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
-
-        public static string HtmlPostProcess(this HtmlNode html, CultureInfo culture)
-        {
-            html = html.StripTags();
-            html = html.AddLinkType(culture.Name.ToLowerInvariant())
-                       .RemoveRerunCodepenIframes();
-
-            return LocalizationUtility.AddLeftToRightMarker(culture, html.OuterHtml);
-        }
 
         public static HtmlNode LoadHtml(string html)
         {
@@ -68,6 +58,29 @@ namespace Microsoft.Docs.Build
             }
 
             return result;
+        }
+
+        public static HtmlNode TransformLinks(HtmlNode html, Func<string, int, string> transform)
+        {
+            var columnOffset = 0;
+            foreach (var node in html.Descendants())
+            {
+                var link = node.Name == "a" ? node.Attributes["href"]
+                    : node.Name == "img" ? node.Attributes["src"]
+                    : null;
+
+                if (link is null)
+                {
+                    continue;
+                }
+
+                var transformed = transform(HttpUtility.HtmlDecode(link.Value), columnOffset);
+
+                if (!string.IsNullOrEmpty(transformed))
+                    link.Value = HttpUtility.HtmlEncode(transformed);
+            }
+
+            return html;
         }
 
         public static string TransformLinks(string html, Func<string, int, string> transform)
@@ -273,7 +286,7 @@ namespace Microsoft.Docs.Build
                     .Replace("'", "&#39;");
         }
 
-        private static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
+        internal static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
             // the rerun button on codepen iframes isn't accessibile.
             // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
@@ -288,7 +301,7 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
-        private static HtmlNode StripTags(this HtmlNode html)
+        internal static HtmlNode StripTags(this HtmlNode html)
         {
             var nodesToRemove = new List<HtmlNode>();
 

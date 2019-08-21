@@ -745,9 +745,6 @@ repos:
           localization:
             mapping: Branch
             bilingual: true
-          gitHub:
-            userCache: github-user.json
-            resolveUsers: true
   https://github.com/ss/b.loc#master-sxs.zh-cn:
     - files:
         docs/a.md: a
