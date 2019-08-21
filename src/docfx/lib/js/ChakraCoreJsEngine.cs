@@ -192,33 +192,9 @@ namespace Microsoft.Docs.Build
 
         private static JavaScriptValue ToJavaScriptValue(JToken token)
         {
-            switch (token.Type)
+            switch (token)
             {
-                case JTokenType.Null:
-                    return JavaScriptValue.Null;
-
-                case JTokenType.Undefined:
-                    return JavaScriptValue.Undefined;
-
-                case JTokenType.Boolean:
-                    return JavaScriptValue.FromBoolean(token.Value<bool>());
-
-                case JTokenType.String:
-                    return JavaScriptValue.FromString(token.Value<string>());
-
-                case JTokenType.Date:
-                    var constructor = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("Date"));
-                    var args = new[] { JavaScriptValue.Undefined, JavaScriptValue.FromString(token.Value<DateTime>().ToString("o", CultureInfo.InvariantCulture)) };
-                    Native.ThrowIfError(Native.JsConstructObject(constructor, args, 2, out var date));
-                    return date;
-
-                case JTokenType.Integer:
-                    return JavaScriptValue.FromInt32(token.Value<int>());
-
-                case JTokenType.Float:
-                    return JavaScriptValue.FromDouble(token.Value<double>());
-
-                case JTokenType.Array when token is JArray arr:
+                case JArray arr:
                     var resultArray = JavaScriptValue.CreateArray((uint)arr.Count);
                     for (var i = 0; i < arr.Count; i++)
                     {
@@ -227,7 +203,7 @@ namespace Microsoft.Docs.Build
                     }
                     return resultArray;
 
-                case JTokenType.Object when token is JObject obj:
+                case JObject obj:
                     var resultObj = JavaScriptValue.CreateObject();
                     foreach (var (name, value) in obj)
                     {
@@ -236,9 +212,34 @@ namespace Microsoft.Docs.Build
                     }
                     return resultObj;
 
-                default:
-                    throw new NotSupportedException($"Cannot marshal JToken type '{token.Type}'");
+                case JValue scalar:
+                    switch (scalar.Value)
+                    {
+                        case null:
+                            return JavaScriptValue.Null;
+
+                        case bool aBool:
+                            return JavaScriptValue.FromBoolean(aBool);
+
+                        case string aString:
+                            return JavaScriptValue.FromString(aString);
+
+                        case DateTime aDate:
+                            var constructor = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("Date"));
+                            var args = new[] { JavaScriptValue.Undefined, JavaScriptValue.FromString(aDate.ToString("o", CultureInfo.InvariantCulture)) };
+                            Native.ThrowIfError(Native.JsConstructObject(constructor, args, 2, out var date));
+                            return date;
+
+                        case long aInt:
+                            return JavaScriptValue.FromInt32((int)aInt);
+
+                        case double aDouble:
+                            return JavaScriptValue.FromDouble(aDouble);
+                    }
+                    break;
             }
+
+            throw new NotSupportedException($"Cannot marshal JToken type '{token.Type}'");
         }
 
         private static JToken ToJToken(JavaScriptValue value)
