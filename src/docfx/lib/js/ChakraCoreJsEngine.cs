@@ -207,7 +207,10 @@ namespace Microsoft.Docs.Build
                     return JavaScriptValue.FromString(token.Value<string>());
 
                 case JTokenType.Date:
-                    return JavaScriptValue.FromString(token.Value<DateTime>().ToString("o", CultureInfo.InvariantCulture));
+                    var constructor = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("Date"));
+                    var args = new[] { JavaScriptValue.Undefined, JavaScriptValue.FromString(token.Value<DateTime>().ToString("o", CultureInfo.InvariantCulture)) };
+                    Native.ThrowIfError(Native.JsConstructObject(constructor, args, 2, out var date));
+                    return date;
 
                 case JTokenType.Integer:
                     return JavaScriptValue.FromInt32(token.Value<int>());
