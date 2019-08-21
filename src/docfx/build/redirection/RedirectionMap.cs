@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -56,7 +55,7 @@ namespace Microsoft.Docs.Build
 
             var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, PathUtility.PathComparer);
 
-            CheckInvalidRedrectUrl();
+            CheckInvalidRedrectUrl(errorLog, redirectionsWithDocumentId, redirections, buildFiles);
             return new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl);
 
             void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool redirectDocumentId = false)
@@ -113,22 +112,22 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
 
-            void CheckInvalidRedrectUrl()
+        private static void CheckInvalidRedrectUrl(ErrorLog errorLog, List<(SourceInfo<string> redirectUrl, Document redirect)> redirectionsWithDocumentId, HashSet<Document> redirections, IReadOnlyCollection<Document> buildFiles)
+        {
+            var redirectUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            var publishUrls = buildFiles.Select(file => file.SiteUrl).Concat(redirections.Select(redirection => redirection.SiteUrl)).ToHashSet();
+            foreach (var (redirectionUrl, redirect) in redirectionsWithDocumentId)
             {
-                var redirectUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-                var publishUrls = buildFiles.Select(file => file.SiteUrl).Union(redirections.Select(redirection => redirection.SiteUrl)).ToHashSet();
-                foreach (var (redirectionUrl, redirect) in redirectionsWithDocumentId)
+                if (!publishUrls.Contains(redirect.RedirectionUrl))
                 {
-                    if (!publishUrls.Contains(redirect.RedirectionUrl))
-                    {
-                        errorLog.Write(Errors.RedirectionUrlNotExisted(redirectionUrl));
-                    }
-                    else if (!redirectUrls.Add(redirect.RedirectionUrl))
-                    {
-                        errorLog.Write(Errors.RedirectionUrlConflict(redirectionUrl));
-                    }
+                    errorLog.Write(Errors.RedirectionUrlNotExisted(redirectionUrl));
+                }
+                else if (!redirectUrls.Add(redirect.RedirectionUrl))
+                {
+                    errorLog.Write(Errors.RedirectionUrlConflict(redirectionUrl));
                 }
             }
         }
