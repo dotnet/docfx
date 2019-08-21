@@ -87,7 +87,7 @@ outputs:
   filemap.json:
   op_aggregated_file_map_info.json:
   .publish.json:
-  xrefmap.json:
+  .xrefmap.json:
   server-side-dependent-list.txt:
   full-dependent-list.txt:
 ---
