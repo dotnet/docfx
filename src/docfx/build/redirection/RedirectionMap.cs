@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly IReadOnlyDictionary<string, Document> _redirectionsBySourcePath;
         private readonly IReadOnlyDictionary<string, Document> _redirectionsByRedirectionUrl;
-        private readonly IReadOnlyCollection<string> _conflictRedirectionUrls = new List<string>();
 
         public IEnumerable<Document> Files => _redirectionsBySourcePath.Values;
 
