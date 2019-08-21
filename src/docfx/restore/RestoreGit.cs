@@ -45,7 +45,8 @@ namespace Microsoft.Docs.Build
                         children.Add(child);
                     }
                 },
-                Progress.Update);
+                Progress.Update,
+                maxDegreeOfParallelism: 8);
 
             // fetch contribution branch
             if (rootRepository != null && LocalizationUtility.TryGetContributionBranch(rootRepository, out var contributionBranch))
