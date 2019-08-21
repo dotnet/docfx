@@ -23,6 +23,8 @@ namespace Microsoft.Docs.Build
 
         public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null, int? maxDegreeOfParallelism = null)
         {
+            Debug.Assert(maxDegreeOfParallelism == null || maxDegreeOfParallelism.Value > 0);
+
             var done = 0;
             var total = source.Count();
 
@@ -30,7 +32,8 @@ namespace Microsoft.Docs.Build
                 source,
                 new ParallelOptions
                 {
-                    MaxDegreeOfParallelism = maxDegreeOfParallelism ?? Math.Max(8, Environment.ProcessorCount * 2),
+                    // https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=netcore-2.2
+                    MaxDegreeOfParallelism = maxDegreeOfParallelism ?? -1,
                 },
                 item =>
                 {
