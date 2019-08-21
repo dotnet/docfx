@@ -21,17 +21,25 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
-        public string GetXrefPropertyValue(string propertyName)
+        public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
+
+        public string GetXrefPropertyValueAsString(string propertyName)
         {
             if (propertyName is null)
                 return null;
 
-            return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
+            // for internal UID, the display property should only be plain text
+            var contentType = GetXrefPropertyContentType(propertyName);
+            if (contentType == JsonSchemaContentType.None)
+            {
+                return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
+            }
+            return null;
         }
 
-        public string GetName() => GetXrefPropertyValue("name");
+        public string GetName() => GetXrefPropertyValueAsString("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(Context context, bool forXrefMapOutput)
+        public ExternalXrefSpec ToExternalXrefSpec(bool forXrefMapOutput)
         {
             var spec = new ExternalXrefSpec
             {
@@ -57,16 +65,17 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in ExtensionData)
             {
-                try
-                {
-                    spec.ExtensionData[key] = value.Value;
-                }
-                catch (DocfxException ex)
-                {
-                    context.ErrorLog.Write(DeclaringFile, ex.Error);
-                }
+                spec.ExtensionData[key] = value.Value;
             }
             return spec;
+        }
+
+        private JsonSchemaContentType GetXrefPropertyContentType(string propertyName)
+        {
+            if (propertyName is null)
+                return default;
+
+            return PropertyContentTypeMapping.TryGetValue(propertyName, out var value) ? value : default;
         }
     }
 }

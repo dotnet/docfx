@@ -21,9 +21,9 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
 
-        public string GetName() => GetXrefPropertyValue("name");
+        public string GetName() => GetXrefPropertyValueAsString("name");
 
-        public string GetXrefPropertyValue(string propertyName)
+        public string GetXrefPropertyValueAsString(string propertyName)
         {
             if (propertyName != null && ExtensionData.TryGetValue<JValue>(propertyName, out var v))
             {

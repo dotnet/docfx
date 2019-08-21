@@ -115,26 +115,36 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (error, resolvedHref, display, xrefSpec) = _xrefMap.Value.Resolve(Uri.UnescapeDataString(uid), href, displayProperty, text, declaringFile);
+            var xrefSpec = _xrefMap.Value.Resolve(new SourceInfo<string>(Uri.UnescapeDataString(uid), href.Source));
+            if (xrefSpec is null)
+            {
+                return (Errors.XrefNotFound(href), null, null, null);
+            }
+
+            var name = xrefSpec.GetXrefPropertyValueAsString("name");
+            var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
+
+            // fallback order:
+            // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid
+            var display = !string.IsNullOrEmpty(text)
+                ? text
+                : displayPropertyValue ?? name ?? uid;
 
             if (xrefSpec?.DeclaringFile != null)
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec?.DeclaringFile, DependencyType.UidInclusion);
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, xrefSpec.DeclaringFile, DependencyType.UidInclusion);
             }
 
-            if (!string.IsNullOrEmpty(resolvedHref))
+            if (!string.IsNullOrEmpty(moniker))
             {
-                if (!string.IsNullOrEmpty(moniker))
-                {
-                    queries["view"] = moniker;
-                }
-                resolvedHref = UrlUtility.MergeUrl(
-                    resolvedHref,
-                    queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
-                    fragment.Length == 0 ? "" : fragment.Substring(1));
+                queries["view"] = moniker;
             }
+            var resolvedHref = UrlUtility.MergeUrl(
+                xrefSpec.Href,
+                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
+                fragment.Length == 0 ? "" : fragment.Substring(1));
 
-            return (error, resolvedHref, display, xrefSpec);
+            return (null, resolvedHref, display, xrefSpec);
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document declaringFile, SourceInfo<string> href)

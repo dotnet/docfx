@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -14,6 +15,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
+        private static ThreadLocal<Stack<Document>> t_recursionDetector = new ThreadLocal<Stack<Document>>(() => new Stack<Document>());
 
         public static (List<Error> errors, TableOfContentsModel model, List<Document> referencedFiles, List<Document> referencedTocs)
             Load(Context context, Document file)
@@ -21,7 +23,7 @@ namespace Microsoft.Docs.Build
             var referencedFiles = new List<Document>();
             var referencedTocs = new List<Document>();
 
-            var (errors, model) = LoadInternal(context, file, file, referencedFiles, referencedTocs, new List<Document>());
+            var (errors, model) = LoadInternal(context, file, file, referencedFiles, referencedTocs);
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(error);
@@ -88,25 +90,32 @@ namespace Microsoft.Docs.Build
             Document rootPath,
             List<Document> referencedFiles,
             List<Document> referencedTocs,
-            List<Document> parents,
             string content = null)
         {
             // add to parent path
-            if (parents.Contains(file))
+            if (t_recursionDetector.Value.Contains(file))
             {
-                parents.Add(file);
-                throw Errors.CircularReference(parents).ToException();
+                var dependencyChain = t_recursionDetector.Value.Reverse().ToList();
+                dependencyChain.Add(file);
+                throw Errors.CircularReference(dependencyChain, file).ToException();
             }
 
             var (errors, model) = LoadTocModel(context, file, content);
 
             if (model.Items.Count > 0)
             {
-                parents.Add(file);
-                var (resolveErros, newItems) = ResolveTocModelItems(context, model.Items, parents, file, rootPath, referencedFiles, referencedTocs);
-                errors.AddRange(resolveErros);
-                model.Items = newItems;
-                parents.RemoveAt(parents.Count - 1);
+                try
+                {
+                    t_recursionDetector.Value.Push(file);
+                    var (resolveErros, newItems) = ResolveTocModelItems(context, model.Items, file, rootPath, referencedFiles, referencedTocs);
+                    errors.AddRange(resolveErros);
+                    model.Items = newItems;
+                }
+                finally
+                {
+                    Debug.Assert(t_recursionDetector.Value.Count > 0);
+                    t_recursionDetector.Value.Pop();
+                }
             }
 
             return (errors, model);
@@ -115,7 +124,6 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, List<TableOfContentsItem> items) ResolveTocModelItems(
             Context context,
             List<TableOfContentsItem> tocModelItems,
-            List<Document> parents,
             Document filePath,
             Document rootPath,
             List<Document> referencedFiles,
@@ -148,7 +156,7 @@ namespace Microsoft.Docs.Build
                 // resolve children
                 if (subChildren == null && tocModelItem.Items != null)
                 {
-                    var (subErrors, subItems) = ResolveTocModelItems(context, tocModelItem.Items, parents, filePath, rootPath, referencedFiles, referencedTocs);
+                    var (subErrors, subItems) = ResolveTocModelItems(context, tocModelItem.Items, filePath, rootPath, referencedFiles, referencedTocs);
                     newItem.Items = subItems;
                     errors.AddRange(subErrors);
                 }
@@ -269,7 +277,7 @@ namespace Microsoft.Docs.Build
                 var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(tocHrefType, new SourceInfo<string>(hrefPath, tocHref));
                 if (referencedTocContent != null)
                 {
-                    var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, referencedFiles, referencedTocs, parents, referencedTocContent);
+                    var (subErrors, nestedToc) = LoadInternal(context, referenceTocFilePath, rootPath, referencedFiles, referencedTocs, referencedTocContent);
                     errors.AddRange(subErrors);
 
                     if (tocHrefType == TocHrefType.RelativeFolder)
