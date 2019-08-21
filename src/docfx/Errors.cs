@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
         /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
         /// </summary>
         public static Error RedirectionUrlNotExisted(SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true", source);
+            => new Error(ErrorLevel.Warning, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true", source);
 
         /// <summary>
         /// Used invalid glob pattern in configuration.

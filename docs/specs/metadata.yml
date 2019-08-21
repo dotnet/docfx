@@ -230,8 +230,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["error","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",3,14]
-    ["error","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",4,14]
+    ["warning","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",3,14]
+    ["warning","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",4,14]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})
