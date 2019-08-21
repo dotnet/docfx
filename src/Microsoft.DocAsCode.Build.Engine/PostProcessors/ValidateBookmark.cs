@@ -23,12 +23,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// bookmarks mapping from output file -> bookmarks
         /// </summary>
-        private OSPlatformSensitiveDictionary<HashSet<string>> _registeredBookmarks =
+        private readonly OSPlatformSensitiveDictionary<HashSet<string>> _registeredBookmarks =
             new OSPlatformSensitiveDictionary<HashSet<string>>();
         /// <summary>
         /// file mapping from output file -> src file
         /// </summary>
-        private OSPlatformSensitiveDictionary<string> _fileMapping =
+        private readonly OSPlatformSensitiveDictionary<string> _fileMapping =
             new OSPlatformSensitiveDictionary<string>();
         private OSPlatformSensitiveDictionary<List<LinkItem>> _linksWithBookmark =
             new OSPlatformSensitiveDictionary<List<LinkItem>>();
@@ -41,16 +41,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return;
             }
-            var fileMapping = Deserialize<string>(context, nameof(_fileMapping));
-            if (fileMapping == null)
-            {
-                throw new BuildCacheException("File mappings are not found in html post processor.");
-            }
-            var registeredBookmarks = Deserialize<HashSet<string>>(context, nameof(_registeredBookmarks));
-            if (registeredBookmarks == null)
-            {
-                throw new BuildCacheException("Registered bookmarks are not found in html post processor.");
-            }
+            var fileMapping = Deserialize<string>(context, nameof(_fileMapping)) ?? new OSPlatformSensitiveDictionary<string>();
+            var registeredBookmarks = Deserialize<HashSet<string>>(context, nameof(_registeredBookmarks)) ?? new OSPlatformSensitiveDictionary<HashSet<string>>;
             var set = new HashSet<string>(
                 from sfi in context.PostProcessorHost.SourceFileInfos
                 where sfi.IsIncremental
@@ -98,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                  }).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
             if (manifestItem.Metadata.TryGetValue("rawTitle", out object rawTitleString))
-            {               
+            {
                 var rawTitle = new HtmlDocument();
                 rawTitle.LoadHtml(rawTitleString.ToString());
                 anchors = anchors.Concat(GetNodeAttribute(rawTitle, "id"));
