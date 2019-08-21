@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                                 {
                                     if (t_recursionDetector.Value.Contains((uid, file)))
                                     {
-                                        var referenceMap = t_recursionDetector.Value.Select(x => x.declaringFile).Reverse();
+                                        var referenceMap = t_recursionDetector.Value.Select(x => $"{uid} ({x.declaringFile})").Reverse();
                                         throw Errors.CircularReference(referenceMap, file).ToException();
                                     }
 
