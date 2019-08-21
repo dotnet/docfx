@@ -95,7 +95,8 @@ namespace Microsoft.Docs.Build
             // add to parent path
             if (t_recursionDetector.Value.Contains(file))
             {
-                var dependencyChain = t_recursionDetector.Value.Reverse();
+                var dependencyChain = t_recursionDetector.Value.Reverse().ToList();
+                dependencyChain.Add(file);
                 throw Errors.CircularReference(dependencyChain, file).ToException();
             }
 

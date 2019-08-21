@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error CircularReference<T>(IEnumerable<T> dependencyChain, Document declaringFile)
-            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{declaringFile}'", file: declaringFile.FilePath);
+            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}", file: declaringFile.FilePath);
 
         /// <summary>
         /// Didn't run `docfx restore` before running `docfx build`.
