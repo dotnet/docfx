@@ -11,22 +11,40 @@ namespace Microsoft.Docs.Build
     {
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
         private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
+        private readonly DependencyMapBuilder _dependencyMapBuilder;
 
-        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap)
+        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
         {
             _internalXrefMap = InternalXrefMapBuilder.Build(context);
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
+            _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public IXrefSpec Resolve(SourceInfo<string> uid)
+        public (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document declaringFile)
         {
-            return ResolveInternalXrefSpec(uid) ?? ResolveExternalXrefSpec(uid);
+            var xrefSpec = ResolveInternalXrefSpec(uid, declaringFile) ?? ResolveExternalXrefSpec(uid);
+            if (xrefSpec is null)
+            {
+                return (Errors.XrefNotFound(uid), null);
+            }
+            return (null, xrefSpec);
         }
 
         public XrefMapModel ToXrefMapModel()
         {
             var references = _internalXrefMap.Values
-                .Select(xref => xref.ToExternalXrefSpec(forXrefMapOutput: true))
+                .Select(xref =>
+                {
+                    var xrefSpec = xref.ToExternalXrefSpec();
+
+                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
+                    var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
+                    var query = xref.DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    xrefSpec.Href = path + query + fragment;
+                    return xrefSpec;
+                })
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
@@ -37,9 +55,17 @@ namespace Microsoft.Docs.Build
             return _externalXrefMap.TryGetValue(uid, out var result) ? result.Value : null;
         }
 
-        private IXrefSpec ResolveInternalXrefSpec(string uid)
+        private IXrefSpec ResolveInternalXrefSpec(string uid, Document declaringFile)
         {
-            return _internalXrefMap.TryGetValue(uid, out var spec) ? spec : null;
+            if (!_internalXrefMap.TryGetValue(uid, out var spec))
+            {
+                return null;
+            }
+            else
+            {
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, spec.DeclaringFile, DependencyType.UidInclusion);
+                return spec;
+            }
         }
     }
 }

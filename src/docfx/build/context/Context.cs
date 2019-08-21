@@ -38,8 +38,8 @@ namespace Microsoft.Docs.Build
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
-
-            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset, restoreFileMap));
+            DependencyMapBuilder = new DependencyMapBuilder();
+            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset, restoreFileMap, DependencyMapBuilder));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>();
 
@@ -55,7 +55,6 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(
                 docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap, TemplateEngine);
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);

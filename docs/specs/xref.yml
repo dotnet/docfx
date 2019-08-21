@@ -496,7 +496,7 @@ outputs:
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'c#bookmark'","docs/b.md",1,9]
+    ["warning","xref-not-found","Cross reference not found: 'c'","docs/b.md",1,9]
 ---
 # Markdown inclusion with xref reference
 inputs:
@@ -749,7 +749,7 @@ outputs:
     }
   docs/c.json:
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'd?action=xxx'","docs/a.md",2,5]
+    ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",2,5]
     ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",7,2]
 ---
 # support multiple uids with different xref properties
