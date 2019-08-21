@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
             // restore first level children
             ParallelUtility.ForEach(
-                gitDependencies.OrderBy(g => g.Key),
+                gitDependencies,
                 group =>
                 {
                     foreach (var child in RestoreGitRepo(group))

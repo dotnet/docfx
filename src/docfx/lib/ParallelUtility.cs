@@ -26,11 +26,17 @@ namespace Microsoft.Docs.Build
             var done = 0;
             var total = source.Count();
 
-            Parallel.ForEach(source, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism ?? Math.Max(8, Environment.ProcessorCount * 2) }, item =>
-            {
-                action(item);
-                progress?.Invoke(Interlocked.Increment(ref done), total);
-            });
+            Parallel.ForEach(
+                source,
+                new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = maxDegreeOfParallelism ?? Math.Max(8, Environment.ProcessorCount * 2),
+                },
+                item =>
+                {
+                    action(item);
+                    progress?.Invoke(Interlocked.Increment(ref done), total);
+                });
         }
 
         public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
