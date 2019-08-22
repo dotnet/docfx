@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return;
             }
             var fileMapping = Deserialize<string>(context, nameof(_fileMapping)) ?? new OSPlatformSensitiveDictionary<string>();
-            var registeredBookmarks = Deserialize<HashSet<string>>(context, nameof(_registeredBookmarks)) ?? new OSPlatformSensitiveDictionary<HashSet<string>>;
+            var registeredBookmarks = Deserialize<HashSet<string>>(context, nameof(_registeredBookmarks)) ?? new OSPlatformSensitiveDictionary<HashSet<string>>();
             var set = new HashSet<string>(
                 from sfi in context.PostProcessorHost.SourceFileInfos
                 where sfi.IsIncremental
