@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
                 var topicUid = tocModelItem.Uid;
 
                 var (resolvedTocHref, subChildren, subChildrenFirstItem) = ProcessTocHref(
-                    context, parents, filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
+                    context, filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(
                     context, filePath, rootPath, referencedFiles, topicUid, topicHref, errors);
 
@@ -266,7 +266,6 @@ namespace Microsoft.Docs.Build
         private static (SourceInfo<string> resolvedTocHref, TableOfContentsModel subChildren, TableOfContentsItem subChildrenFirstItem)
             ProcessTocHref(
             Context context,
-            List<Document> parents,
             Document filePath,
             Document rootPath,
             List<Document> referencedFiles,
