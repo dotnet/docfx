@@ -1,0 +1,1 @@
+This folder contains Chakra Core C# bindings. The files are copied from https://github.com/microsoft/Chakra-Samples as is.

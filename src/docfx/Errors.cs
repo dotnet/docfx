@@ -44,6 +44,12 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings", source);
 
         /// <summary>
+        /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
+        /// </summary>
+        public static Error RedirectionUrlNotExisted(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true", source);
+
+        /// <summary>
         /// Used invalid glob pattern in configuration.
         /// Examples:
         ///   - in build scope include/exclude files
@@ -73,8 +79,8 @@ namespace Microsoft.Docs.Build
         ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error CircularReference<T>(IEnumerable<T> dependencyChain)
-            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
+        public static Error CircularReference<T>(IEnumerable<T> dependencyChain, Document declaringFile)
+            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}", file: declaringFile.FilePath);
 
         /// <summary>
         /// Didn't run `docfx restore` before running `docfx build`.
