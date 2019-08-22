@@ -44,11 +44,11 @@ namespace Microsoft.Docs.Build
 
             _fileNames = fileNames;
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob, templateEngine);
+            Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path)))
-                         .Concat(Redirections.Files)
-                         .ToHashSet();
+            Redirections = RedirectionMap.Create(errorLog, docset, _glob, templateEngine, Files);
+
+            Files.UnionWith(Redirections.Files);
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)

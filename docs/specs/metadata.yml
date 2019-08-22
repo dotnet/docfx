@@ -216,6 +216,23 @@ outputs:
     ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml",3,7]
     ["error","redirection-is-empty","The key or value of redirection 'a.md: ' is null or empty","docfx.yml",4,8]
 ---
+# The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/b.md: "/docs/a"
+      docs/c.md: "/docs/g"
+      docs/e.md: "/docs/g"
+      docs/f.md: "/docs/b"
+    redirectionsWithoutId:
+      docs/d.md: "/docs/e"
+  docs/a.md:
+outputs:
+  docs/a.json:
+  .errors.log: |
+    ["warning","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",3,14]
+    ["warning","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",4,14]
+---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})
 # version_independent_id = hash({mapped_depot_name}|{file_path})
@@ -409,7 +426,7 @@ outputs:
 # redirection defined in markdown yaml metadata is not supported
 inputs:
   docfx.yml: |
-    redirections:
+    redirectionsWithoutId:
       docs/a.md: /a
   docs/a.md: |
     ---
