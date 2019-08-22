@@ -12,13 +12,15 @@ namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaValidator
     {
+        private readonly bool _forceError;
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphCache _microsoftGraphCache;
 
-        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphCache microsoftGraphCache = null)
+        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphCache microsoftGraphCache = null, bool forceError = false)
         {
             _schema = schema;
+            _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphCache = microsoftGraphCache;
         }
@@ -520,6 +522,11 @@ namespace Microsoft.Docs.Build
 
         private Error GetError(JsonSchema schema, string name, Error error)
         {
+            if (_forceError)
+            {
+                error = error.WithLevel(ErrorLevel.Error);
+            }
+
             if (!string.IsNullOrEmpty(name) &&
                 schema.CustomErrors.TryGetValue(name, out var attributeCustomErrors) &&
                 attributeCustomErrors.TryGetValue(error.Code, out var customError))

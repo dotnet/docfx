@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             }
 
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
-            return (new JsonSchemaValidator(jsonSchema), new JsonSchemaTransformer(jsonSchema));
+            return (new JsonSchemaValidator(jsonSchema, forceError: true), new JsonSchemaTransformer(jsonSchema));
         }
     }
 }
