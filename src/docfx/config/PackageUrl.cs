@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public readonly string Remote;
 
-        public readonly string Committish;
+        public readonly string Branch;
 
         public PackageUrl(string url)
             : this()
@@ -29,13 +29,21 @@ namespace Microsoft.Docs.Build
             if (UrlUtility.IsHttp(url))
             {
                 Type = PackageType.Git;
-                (Remote, Committish, _) = UrlUtility.SplitGitUrl(url);
+                (Remote, Branch, _) = UrlUtility.SplitGitUrl(url);
             }
             else
             {
                 Type = PackageType.Folder;
                 Path = url;
             }
+        }
+
+        public PackageUrl(string remote, string branch)
+        {
+            Type = PackageType.Git;
+            Remote = remote;
+            Branch = branch;
+            Path = null;
         }
 
         public override string ToString()
@@ -46,7 +54,7 @@ namespace Microsoft.Docs.Build
                     return Path;
 
                 case PackageType.Git:
-                    return $"{Remote}:{Committish}";
+                    return $"{Remote}#{Branch}";
 
                 default:
                     return Type.ToString();

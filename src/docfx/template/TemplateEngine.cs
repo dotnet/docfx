@@ -140,10 +140,9 @@ namespace Microsoft.Docs.Build
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(
-                docset.Config.Template.Remote, docset.Config.Template.Committish, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeRestoreMap) = restoreGitMap.GetGitRestorePath(themeRemote, themeBranch);
-            Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
+            var theme = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, themeRestoreMap) = restoreGitMap.GetGitRestorePath(theme, docset.DocsetPath);
+            Log.Write($"Using theme '{theme}' commit {themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
 
             return new TemplateEngine(themePath);
         }

@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                     throw Errors.FileNotFound(new SourceInfo<string>(url.Path)).ToException();
 
                 case PackageType.Git:
-                    return GetGitRestorePath(url.Remote, url.Committish);
+                    return GetGitRestorePath(url.Remote, url.Branch);
 
                 default:
                     throw new NotSupportedException($"Unknown package url: '{url}'");

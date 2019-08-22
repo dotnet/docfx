@@ -154,9 +154,22 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (string remote, string branch) GetLocalizedTheme(string remote, string branch, string locale, string defaultLocale)
+        public static PackageUrl GetLocalizedTheme(PackageUrl theme, string locale, string defaultLocale)
         {
-            return (GetLocalizationName(LocalizationMapping.Repository, remote, locale, defaultLocale), branch);
+            switch (theme.Type)
+            {
+                case PackageType.Folder:
+                    return new PackageUrl(
+                        GetLocalizationName(LocalizationMapping.Repository, theme.Path, locale, defaultLocale));
+
+                case PackageType.Git:
+                    return new PackageUrl(
+                        GetLocalizationName(LocalizationMapping.Repository, theme.Remote, locale, defaultLocale),
+                        theme.Branch);
+
+                default:
+                    return theme;
+            }
         }
 
         public static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)

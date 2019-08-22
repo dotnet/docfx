@@ -199,15 +199,17 @@ namespace Microsoft.Docs.Build
             {
                 if (dependency.Type == PackageType.Git)
                 {
-                    yield return (dependency.Remote, dependency.Committish, GitFlags.None);
+                    yield return (dependency.Remote, dependency.Branch, GitFlags.None);
                 }
             }
 
             if (config.Template.Type == PackageType.Git)
             {
-                var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Template.Remote, config.Template.Committish, locale, config.Localization.DefaultLocale);
-
-                yield return (remote, branch, GitFlags.None);
+                var localizedTemplate = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+                if (localizedTemplate.Type == PackageType.Git)
+                {
+                    yield return (localizedTemplate.Remote, localizedTemplate.Branch, GitFlags.None);
+                }
             }
 
             foreach (var item in GetLocalizationGitDependencies(rootRepository, config, locale))
