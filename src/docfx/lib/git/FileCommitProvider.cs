@@ -58,9 +58,7 @@ namespace Microsoft.Docs.Build
                 () => LoadCommitCache(_cacheFilePath));
         }
 
-        public List<GitCommit> GetCommitHistory(
-            string file,
-            string committish)
+        public List<GitCommit> GetCommitHistory(string file, string committish)
         {
             Debug.Assert(!file.Contains('\\'));
 
@@ -92,7 +90,7 @@ namespace Microsoft.Docs.Build
             foreach (var commit in commits)
             {
                 // Find and remove if this commit should be followed by the tree traversal.
-                if (!TryRemoveCommit(commit, out var blob))
+                if (!TryRemoveCommit(commit, commitsToFollow, out var blob))
                 {
                     continue;
                 }
@@ -145,22 +143,6 @@ namespace Microsoft.Docs.Build
 
             return result.Select(c => c.GitCommit).ToList();
 
-            bool TryRemoveCommit(Commit commit, out long blob)
-            {
-                blob = 0L;
-                for (var i = 0; i < commitsToFollow.Count; i++)
-                {
-                    var commitToCheck = commitsToFollow[i];
-                    if (commitToCheck.commit == commit)
-                    {
-                        blob = commitToCheck.blob;
-                        commitsToFollow.RemoveAt(i);
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             bool TryPopulateResultFromCache(Commit commit, long blob)
             {
                 lock (commitCache)
@@ -181,6 +163,22 @@ namespace Microsoft.Docs.Build
                     return false;
                 }
             }
+        }
+
+        private static bool TryRemoveCommit(Commit commit, List<(Commit commit, long blob)> commitsToFollow, out long blob)
+        {
+            blob = 0L;
+            for (var i = 0; i < commitsToFollow.Count; i++)
+            {
+                var commitToCheck = commitsToFollow[i];
+                if (commitToCheck.commit == commit)
+                {
+                    blob = commitToCheck.blob;
+                    commitsToFollow.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void SaveCache()
