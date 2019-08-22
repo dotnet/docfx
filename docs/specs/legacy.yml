@@ -7,7 +7,7 @@ repos:
     files:
       docfx.yml: |
         template: https://docs.com/theme
-        redirections:
+        redirectionsWithoutId:
           a.md: /b
         metadataSchema: schema.json
       c.md: |
@@ -258,7 +258,7 @@ legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
-    redirections:
+    redirectionsWithoutId:
       redirect.md: /redirect/to
   a.md: |
     [link](redirect.md)
