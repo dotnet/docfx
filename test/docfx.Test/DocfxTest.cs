@@ -178,10 +178,19 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyOutput(string outputPath, DocfxTestSpec spec)
         {
-            var outputs = Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories)
-                                   .ToDictionary(file => file.Substring(outputPath.Length).Replace('\\', '/'), File.ReadAllText);
+            var expectedOutputs = JObject.FromObject(spec.Outputs);
 
-            s_jsonDiff.Verify(spec.Outputs, outputs);
+            // Ensure no .errors.log file if there is no error
+            if (!spec.Outputs.ContainsKey(".errors.log"))
+            {
+                expectedOutputs[".errors.log"] = JValue.CreateUndefined();
+            }
+
+            var actualOutputs = Directory
+                .GetFiles(outputPath, "*", SearchOption.AllDirectories)
+                .ToDictionary(file => file.Substring(outputPath.Length).Replace('\\', '/'), File.ReadAllText);
+
+            s_jsonDiff.Verify(expectedOutputs, actualOutputs);
         }
 
         private static JsonDiff CreateJsonDiff()
