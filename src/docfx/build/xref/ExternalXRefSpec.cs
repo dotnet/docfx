@@ -33,7 +33,6 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public ExternalXrefSpec ToExternalXrefSpec()
-            => throw new NotSupportedException();
+        public ExternalXrefSpec ToExternalXrefSpec() => this;
     }
 }

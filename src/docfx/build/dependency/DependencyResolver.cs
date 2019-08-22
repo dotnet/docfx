@@ -85,19 +85,19 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document declaringFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document referenceFile)
         {
-            var (error, link, display, spec) = ResolveAbsoluteXref(href, declaringFile);
+            var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referenceFile);
 
-            if (spec?.DeclaringFile != null)
+            if (declaringFile != null)
             {
                 link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
             }
 
-            return (error, link, display, spec);
+            return (error, link, display, declaringFile);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveAbsoluteXref(SourceInfo<string> href, Document declaringFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referenceFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec) = _xrefMap.Value.Resolve(new SourceInfo<string>(Uri.UnescapeDataString(uid), href.Source), declaringFile);
+            var (xrefError, xrefSpec) = _xrefMap.Value.Resolve(new SourceInfo<string>(Uri.UnescapeDataString(uid), href.Source), referenceFile);
             if (xrefError != null)
             {
                 return (xrefError, null, null, null);
@@ -125,11 +125,8 @@ namespace Microsoft.Docs.Build
             var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
 
             // fallback order:
-            // text -> xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(text)
-                ? text
-                : displayPropertyValue ?? name ?? uid;
-
+            // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid
+            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? name ?? uid;
 
             if (!string.IsNullOrEmpty(moniker))
             {
@@ -140,7 +137,7 @@ namespace Microsoft.Docs.Build
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment.Substring(1));
 
-            return (null, resolvedHref, display, xrefSpec);
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
         private (Error error, string content, Document file) TryResolveContent(Document declaringFile, SourceInfo<string> href)
@@ -164,21 +161,21 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(Document declaringFile, SourceInfo<string> href)
+        private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(Document referenceFile, SourceInfo<string> href)
         {
             Debug.Assert(href != null);
 
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, xrefSpec) = ResolveAbsoluteXref(uid, declaringFile);
-                var xrefLinkType = xrefSpec?.DeclaringFile != null ? LinkType.RelativePath : LinkType.External;
+                var (uidError, uidHref, _, declaringFile) = ResolveAbsoluteXref(uid, referenceFile);
+                var xrefLinkType = declaringFile != null ? LinkType.RelativePath : LinkType.External;
 
-                return (uidError, uidHref, null, xrefLinkType, xrefSpec?.DeclaringFile, true);
+                return (uidError, uidHref, null, xrefLinkType, declaringFile, true);
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
-            var (error, file, query, fragment, linkType, pathToDocset) = TryResolveFile(declaringFile, decodedHref);
+            var (error, file, query, fragment, linkType, pathToDocset) = TryResolveFile(referenceFile, decodedHref);
 
             if (linkType == LinkType.WindowsAbsolutePath)
             {
@@ -188,7 +185,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                file = TryResolveResourceFromHistory(declaringFile, _gitCommitProvider, pathToDocset, _templateEngine);
+                file = TryResolveResourceFromHistory(referenceFile, _gitCommitProvider, pathToDocset, _templateEngine);
                 if (file is null)
                 {
                     return (error, href, fragment, linkType, null, false);
@@ -199,7 +196,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Self reference, don't build the file, leave href as is
-            if (file == declaringFile)
+            if (file == referenceFile)
             {
                 if (linkType == LinkType.SelfBookmark)
                 {
@@ -213,7 +210,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Link to dependent repo, don't build the file, leave href as is
-            if (declaringFile.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
+            if (referenceFile.Docset.DependencyDocsets.Values.Any(v => file.Docset == v))
             {
                 return (Errors.LinkIsDependency(href, file), href, fragment, linkType, null, false);
             }

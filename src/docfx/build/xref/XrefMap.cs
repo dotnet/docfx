@@ -20,9 +20,9 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document declaringFile)
+        public (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referenceFile)
         {
-            var xrefSpec = ResolveInternalXrefSpec(uid, declaringFile) ?? ResolveExternalXrefSpec(uid);
+            var xrefSpec = ResolveInternalXrefSpec(uid, referenceFile) ?? ResolveExternalXrefSpec(uid);
             if (xrefSpec is null)
             {
                 return (Errors.XrefNotFound(uid), null);
@@ -57,15 +57,12 @@ namespace Microsoft.Docs.Build
 
         private IXrefSpec ResolveInternalXrefSpec(string uid, Document declaringFile)
         {
-            if (!_internalXrefMap.TryGetValue(uid, out var spec))
-            {
-                return null;
-            }
-            else
+            if (_internalXrefMap.TryGetValue(uid, out var spec))
             {
                 _dependencyMapBuilder.AddDependencyItem(declaringFile, spec.DeclaringFile, DependencyType.UidInclusion);
                 return spec;
             }
+            return null;
         }
     }
 }
