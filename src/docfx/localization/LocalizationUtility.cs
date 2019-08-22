@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, _) = restoreMap.GetGitRestorePath(locRemote, locBranch, docset.DocsetPath);
+                        (localizationDocsetPath, _) = restoreMap.GetGitRestorePath(locRemote, locBranch);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -154,11 +154,8 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizedTheme(string remote, string branch, string locale, string defaultLocale)
         {
-            Debug.Assert(!string.IsNullOrEmpty(theme));
-            var (remote, branch, _) = UrlUtility.SplitGitUrl(theme);
-
             return (GetLocalizationName(LocalizationMapping.Repository, remote, locale, defaultLocale), branch);
         }
 
