@@ -156,5 +156,7 @@
     <Rule Id="MEN008" Action="None" />
     <Rule Id="MEN012" Action="None" />
     <Rule Id="MEN013" Action="None" />
+    <!-- Use a single return -->
+    <Rule Id="MEN007" Action="None" />
   </Rules>
 </RuleSet>
