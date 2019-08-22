@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec) = _xrefMap.Value.Resolve(new SourceInfo<string>(Uri.UnescapeDataString(uid), href.Source), referencingFile);
+            var (xrefError, xrefSpec) = _xrefMap.Value.Resolve(new SourceInfo<string>(uid, href.Source), referencingFile);
             if (xrefError != null)
             {
                 return (xrefError, null, null, null);

@@ -22,7 +22,8 @@ namespace Microsoft.Docs.Build
 
         public (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referenceFile)
         {
-            var xrefSpec = ResolveInternalXrefSpec(uid, referenceFile) ?? ResolveExternalXrefSpec(uid);
+            var unescapedUid = Uri.UnescapeDataString(uid);
+            var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referenceFile) ?? ResolveExternalXrefSpec(unescapedUid);
             if (xrefSpec is null)
             {
                 return (Errors.XrefNotFound(uid), null);
