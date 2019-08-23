@@ -29,9 +29,11 @@ namespace Microsoft.Docs.Build
 
         private static readonly JavaScriptNativeFunction s_requireFunction = new JavaScriptNativeFunction(Require);
 
-        private static readonly ThreadLocal<Stack<string>> t_dirnames = new ThreadLocal<Stack<string>>(() => new Stack<string>());
+        private static readonly ThreadLocal<Stack<(string scriptPath, JavaScriptValue exports)>> t_stack =
+                            new ThreadLocal<Stack<(string scriptPath, JavaScriptValue exports)>>(() => new Stack<(string, JavaScriptValue)>());
 
-        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>>();
+        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>> t_modules
+                          = new ThreadLocal<Dictionary<string, JavaScriptValue>>(() => new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer));
 
         private static JavaScriptSourceContext s_currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
@@ -54,32 +56,32 @@ namespace Microsoft.Docs.Build
             {
                 var context = s_contextPool.TryTake(out var existingContext) ? existingContext : CreateContext();
 
-                Native.ThrowIfError(Native.JsSetCurrentContext(context));
-
-                try
+                using (new JavaScriptContext.Scope(context))
                 {
-                    var exports = GetScriptExports(context, Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
-                    var global = GetGlobal(context);
-                    var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
-                    var input = ToJavaScriptValue(arg);
-
-                    if (global.IsValid)
+                    try
                     {
-                        input.SetProperty(JavaScriptPropertyId.FromString("__global"), global, useStrictRules: true);
+                        var exports = GetScriptExports(context, Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
+                        var global = GetGlobal(context);
+                        var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
+                        var input = ToJavaScriptValue(arg);
+
+                        if (global.IsValid)
+                        {
+                            input.SetProperty(JavaScriptPropertyId.FromString("__global"), global, useStrictRules: true);
+                        }
+
+                        var output = method.CallFunction(JavaScriptValue.Undefined, input);
+
+                        return ToJToken(output);
                     }
-
-                    var output = method.CallFunction(JavaScriptValue.Undefined, input);
-
-                    return ToJToken(output);
-                }
-                catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
-                {
-                    throw new JavaScriptEngineException($"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
-                }
-                finally
-                {
-                    Native.ThrowIfError(Native.JsSetCurrentContext(JavaScriptContext.Invalid));
-                    s_contextPool.Add(context);
+                    catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
+                    {
+                        throw new JavaScriptEngineException($"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
+                    }
+                    finally
+                    {
+                        s_contextPool.Add(context);
+                    }
                 }
             }
             finally
@@ -94,27 +96,29 @@ namespace Microsoft.Docs.Build
                         JavaScriptRuntimeAttributes.DisableEval |
                         JavaScriptRuntimeAttributes.EnableIdleProcessing;
 
-            return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.VersionEdge).CreateContext();
+            var context = JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.VersionEdge).CreateContext();
+
+            using (new JavaScriptContext.Scope(context))
+            {
+                JavaScriptValue.GlobalObject.SetProperty(
+                    JavaScriptPropertyId.FromString("process"), JavaScriptValue.CreateObject(), useStrictRules: true);
+
+                JavaScriptValue.GlobalObject.SetProperty(
+                    JavaScriptPropertyId.FromString("require"), JavaScriptValue.CreateFunction(s_requireFunction), useStrictRules: true);
+            }
+
+            return context;
         }
 
         private static JavaScriptValue GetScriptExports(JavaScriptContext context, string scriptPath)
         {
             return s_scriptExports.GetOrAdd((context, scriptPath), key =>
             {
-                t_modules.Value = new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer);
+                var exports = Run(key.scriptPath);
 
-                try
-                {
-                    var exports = Run(key.scriptPath);
-
-                    // Avoid exports been GCed by javascript garbarge collector.
-                    exports.AddRef();
-                    return exports;
-                }
-                finally
-                {
-                    t_modules.Value = null;
-                }
+                // Avoid exports been GCed by javascript garbarge collector.
+                exports.AddRef();
+                return exports;
             });
         }
 
@@ -143,31 +147,28 @@ namespace Microsoft.Docs.Build
                 return module;
             }
 
+            var script = File.ReadAllText(scriptPath);
             var exports = modules[scriptPath] = JavaScriptValue.CreateObject();
-            var sourceCode = File.ReadAllText(scriptPath);
 
-            // add `process` to input to get the correct file path while running script inside docs-ui
-            var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}
-}})";
-            var dirname = Path.GetDirectoryName(scriptPath);
+            t_stack.Value.Push((scriptPath, exports));
 
-            t_dirnames.Value.Push(dirname);
+            JavaScriptValue.GlobalObject.SetProperty(
+                JavaScriptPropertyId.FromString("exports"), exports, useStrictRules: true);
 
             try
             {
-                JavaScriptContext.RunScript(script, s_currentSourceContext++, scriptPath).CallFunction(
-                    JavaScriptValue.Undefined, // this pointer
-                    JavaScriptValue.CreateObject(),
-                    exports,
-                    JavaScriptValue.FromString(dirname),
-                    JavaScriptValue.CreateFunction(s_requireFunction),
-                    JavaScriptValue.CreateObject());
+                JavaScriptContext.RunScript(script, s_currentSourceContext++, scriptPath);
 
                 return exports;
             }
             finally
             {
-                t_dirnames.Value.Pop();
+                t_stack.Value.Pop();
+
+                var previousExports = t_stack.Value.TryPeek(out var top) ? top.exports : JavaScriptValue.Undefined;
+
+                JavaScriptValue.GlobalObject.SetProperty(
+                    JavaScriptPropertyId.FromString("exports"), previousExports, useStrictRules: true);
             }
         }
 
@@ -184,10 +185,10 @@ namespace Microsoft.Docs.Build
                 return JavaScriptValue.CreateObject();
             }
 
-            var dirname = t_dirnames.Value.Peek();
-            var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
+            var currentScriptPath = t_stack.Value.Peek().scriptPath;
+            var targetScriptPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(currentScriptPath), arguments[1].ToString()));
 
-            return Run(scriptPath);
+            return Run(targetScriptPath);
         }
 
         private static JavaScriptValue ToJavaScriptValue(JToken token)
