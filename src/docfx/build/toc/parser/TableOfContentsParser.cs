@@ -324,16 +324,16 @@ namespace Microsoft.Docs.Build
                 var (uidError, uidLink, display, declaringFile) = context.DependencyResolver.ResolveRelativeXref(rootPath, uid, filePath);
                 errors.AddIfNotNull(uidError);
 
-                    if (declaringFile != null)
-                    {
-                        referencedFiles.Add(declaringFile);
-                    }
-
-                    if (!string.IsNullOrEmpty(uidLink))
-                    {
-                        return (new SourceInfo<string>(uidLink, uid), new SourceInfo<string>(display, uid), declaringFile);
-                    }
+                if (declaringFile != null)
+                {
+                    referencedFiles.Add(declaringFile);
                 }
+
+                if (!string.IsNullOrEmpty(uidLink))
+                {
+                    return (new SourceInfo<string>(uidLink, uid), new SourceInfo<string>(display, uid), declaringFile);
+                }
+            }
 
             // process topicHref then
             if (string.IsNullOrEmpty(topicHref))

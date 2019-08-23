@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             var isSelfBookmark = linkType == LinkType.SelfBookmark || relativeToFile == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, file, UrlUtility.FragmentToDependencyType(fragment));
+                _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(
                     referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(
+        public (Error error, string href, string display, Document declaringFile) ResolveRelativeXref(
             Document relativeToFile, SourceInfo<string> href, Document referencingFile)
         {
             var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referencingFile);
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
             return (error, link, display, declaringFile);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveAbsoluteXref(
+        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(
             SourceInfo<string> href, Document referencingFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
