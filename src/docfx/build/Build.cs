@@ -38,17 +38,25 @@ namespace Microsoft.Docs.Build
                 (Docset docset, Docset fallbackDocset) GetDocsetWithFallback()
                 {
                     var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
-                    if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+                    if (!string.IsNullOrEmpty(currentDocset.Locale)
+                        && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
                     {
                         if (fallbackRepo != null)
                         {
                             return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
                         }
 
-                        if (LocalizationUtility.TryGetLocalizedDocsetPath(currentDocset, gitMap, config, currentDocset.Locale, out var localizationDocsetPath, out var localizationBranch))
+                        if (LocalizationUtility.TryGetLocalizedDocsetPath(
+                            currentDocset,
+                            gitMap,
+                            config,
+                            currentDocset.Locale,
+                            out var localizationDocsetPath,
+                            out var localizationBranch))
                         {
                             var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                            return (new Docset(errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
+                            return (new Docset(
+                                errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
                         }
                     }
 
@@ -57,7 +65,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task Run(Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, CommandLineOptions options, ErrorLog errorLog, string outputPath)
+        private static async Task Run(
+            Docset docset,
+            Docset fallbackDocset,
+            RestoreGitMap restoreGitMap,
+            CommandLineOptions options,
+            ErrorLog errorLog,
+            string outputPath)
         {
             using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap))
             {
@@ -154,7 +168,9 @@ namespace Microsoft.Docs.Build
                     }
 
                     // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return file.FilePath.Origin != FileOrigin.Fallback || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
+                    return file.FilePath.Origin != FileOrigin.Fallback
+                        || (context.TocMap.TryGetTocReferences(file, out var tocReferences)
+                            && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
                 }
 
                 return file.FilePath.Origin != FileOrigin.Fallback;
@@ -169,8 +185,10 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
+            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
+                ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var dependencyLock = DependencyLock.Load(docsetPath, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock) ?? new DependencyLockModel();
+            var dependencyLock = DependencyLock.Load(docsetPath, dependencyLockPath) ?? new DependencyLockModel();
             return RestoreGitMap.Create(dependencyLock);
         }
 
@@ -184,7 +202,8 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, fallbackBranch) == null && restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, "master") != null)
+                if (restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, fallbackBranch) == null
+                    && restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, "master") != null)
                 {
                     // fallback to master branch
                     fallbackBranch = "master";

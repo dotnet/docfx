@@ -57,7 +57,14 @@ namespace Microsoft.Docs.Build
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(
-                docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap, TemplateEngine);
+                docset.Config,
+                BuildScope,
+                BuildQueue,
+                GitCommitProvider,
+                BookmarkValidator,
+                DependencyMapBuilder,
+                _xrefMap,
+                TemplateEngine);
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
         }
 
