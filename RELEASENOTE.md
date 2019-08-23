@@ -1,14 +1,11 @@
 Version Notes (Current Version: v2.45)
 =======================================
 
-v2.45(Pre-Release)
+v2.45
 -----------
-
-v2.44
------------
-
-v2.43.3
------------
+1. Support linking to repository from dev.azure.com automatically. (#4493)
+2. Unify log code `InvalidInternalBookmark` and `InvalidExternalBookmark` into `InvalidBookMark`.
+3. Expand environment variables in metadata/build `src` section when looking for input files. (#4983)
 
 v2.43.2
 -----------
