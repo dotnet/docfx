@@ -127,7 +127,8 @@ namespace Microsoft.Docs.Build
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                     syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
-                    syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
+                    syntax.DefineOption(
+                        "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
                     syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
@@ -135,7 +136,8 @@ namespace Microsoft.Docs.Build
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-                    syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
+                    syntax.DefineOption(
+                        "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
@@ -144,7 +146,8 @@ namespace Microsoft.Docs.Build
                     // Watch command
                     syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
                     syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
-                    syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
+                    syntax.DefineOption(
+                        "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
                     syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
@@ -178,7 +181,8 @@ namespace Microsoft.Docs.Build
                                             : errorLog.WarningCount > 0 ? ConsoleColor.Yellow
                                             : ConsoleColor.Magenta;
                     Console.WriteLine();
-                    Console.WriteLine($"  {errorLog.ErrorCount} Error(s), {errorLog.WarningCount} Warning(s), {errorLog.SuggestionCount} Suggestion(s)");
+                    Console.WriteLine(
+                        $"  {errorLog.ErrorCount} Error(s), {errorLog.WarningCount} Warning(s), {errorLog.SuggestionCount} Suggestion(s)");
                 }
 
                 Console.ResetColor();
@@ -221,7 +225,8 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
 ";
             try
             {
-                var issueUrl = $"https://github.com/dotnet/docfx/issues/new?title={HttpUtility.UrlEncode(title)}&body={HttpUtility.UrlEncode(body)}";
+                var issueUrl =
+                    $"https://github.com/dotnet/docfx/issues/new?title={HttpUtility.UrlEncode(title)}&body={HttpUtility.UrlEncode(body)}";
 
                 Process.Start(new ProcessStartInfo { FileName = issueUrl, UseShellExecute = true });
             }
@@ -267,7 +272,8 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
         {
             try
             {
-                var process = Process.Start(new ProcessStartInfo { FileName = "dotnet", Arguments = "--version", RedirectStandardOutput = true });
+                var process = Process.Start(
+                    new ProcessStartInfo { FileName = "dotnet", Arguments = "--version", RedirectStandardOutput = true });
                 process.WaitForExit(2000);
                 return process.StandardOutput.ReadToEnd().Trim();
             }
@@ -281,7 +287,8 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
         {
             try
             {
-                var process = Process.Start(new ProcessStartInfo { FileName = "git", Arguments = "--version", RedirectStandardOutput = true });
+                var process = Process.Start(
+                    new ProcessStartInfo { FileName = "git", Arguments = "--version", RedirectStandardOutput = true });
                 process.WaitForExit(2000);
                 return process.StandardOutput.ReadToEnd().Trim();
             }

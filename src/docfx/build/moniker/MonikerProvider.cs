@@ -10,7 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerProvider
     {
-        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))> _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
+        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))>
+            _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
+
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
         private readonly ConcurrentDictionary<Document, (Error, List<string>)> _monikerCache

@@ -29,7 +29,8 @@ namespace Microsoft.Docs.Build
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
-        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Context context, Document document, SourceInfo<string> authorName)
+        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(
+            Context context, Document document, SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -52,7 +53,8 @@ namespace Microsoft.Docs.Build
                 ? new ContributionInfo
                 {
                     Contributors = contributors,
-                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    UpdateAt = updatedDateTime.ToString(
+                        document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
                     UpdatedAtDateTime = updatedDateTime,
                 }
                 : null;
@@ -104,7 +106,8 @@ namespace Microsoft.Docs.Build
             {
                 if (isGitHubRepo)
                 {
-                    var (error, githubUser) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
+                    var (error, githubUser) = await _gitHubUserCache.GetByCommit(
+                        commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     return githubUser?.ToContributor();
                 }
@@ -130,8 +133,10 @@ namespace Microsoft.Docs.Build
             List<GitCommit> GetContributionCommits()
             {
                 var result = commits;
-                var bilingual = context.BuildScope.GetFallbackDocset(document.Docset) != null && document.Docset.Config.Localization.Bilingual;
-                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                var bilingual = context.BuildScope.GetFallbackDocset(document.Docset) != null
+                    && document.Docset.Config.Localization.Bilingual;
+                var contributionBranch = bilingual
+                    && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
                     (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
@@ -145,7 +150,8 @@ namespace Microsoft.Docs.Build
         {
             if (fileCommits?.Count > 0)
             {
-                return _commitBuildTimeProvider != null && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)
+                return _commitBuildTimeProvider != null
+                    && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)
                     ? timeFromHistory
                     : fileCommits[0].Time.UtcDateTime;
             }
@@ -185,7 +191,8 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    var (contributionRemote, contributionBranch, hasRefSpec) = UrlUtility.SplitGitUrl(document.Docset.Config.Contribution.Repository);
+                    var (contributionRemote, contributionBranch, hasRefSpec) = UrlUtility.SplitGitUrl(
+                        document.Docset.Config.Contribution.Repository);
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
@@ -222,7 +229,8 @@ namespace Microsoft.Docs.Build
 
             if (UrlUtility.TryParseAzureReposUrl(remote, out _, out _))
             {
-                return ($"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents", $"{{repo}}/commit/{{commit}}?path=/{pathToRepo}&_a=contents");
+                return ($"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents",
+                    $"{{repo}}/commit/{{commit}}?path=/{pathToRepo}&_a=contents");
             }
 
             return default;

@@ -38,11 +38,13 @@ namespace Microsoft.Docs.Build
             return (depotName, mappedPathRelativeToSourceBasePath);
         }
 
-        private static (string value, string matchedDirectory) GetReversedMapping(Dictionary<string, string> mappings, string normalizedFilePathToSourceBasePath)
+        private static (string value, string matchedDirectory) GetReversedMapping(
+            Dictionary<string, string> mappings, string normalizedFilePathToSourceBasePath)
         {
             foreach (var (path, value) in mappings)
             {
-                var normalizedPath = path.EndsWith("/") || path.EndsWith("\\") ? PathUtility.NormalizeFolder(path) : PathUtility.NormalizeFile(path);
+                var normalizedPath = path.EndsWith("/")
+                    || path.EndsWith("\\") ? PathUtility.NormalizeFolder(path) : PathUtility.NormalizeFile(path);
                 var (match, isFileMatch, _) = PathUtility.Match(normalizedFilePathToSourceBasePath, normalizedPath);
                 if (match)
                 {
@@ -52,7 +54,8 @@ namespace Microsoft.Docs.Build
                     }
 
                     var lastSlashIndex = normalizedFilePathToSourceBasePath.LastIndexOf("/");
-                    var matchedDirectory = lastSlashIndex > 0 ? normalizedFilePathToSourceBasePath.Substring(0, lastSlashIndex) : string.Empty;
+                    var matchedDirectory = lastSlashIndex > 0
+                        ? normalizedFilePathToSourceBasePath.Substring(0, lastSlashIndex) : string.Empty;
                     return (value, matchedDirectory);
                 }
             }
