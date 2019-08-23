@@ -262,6 +262,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void ReadFile(string path, Action<Stream> read)
+        {
+            using (InterProcessMutex.Create(path))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+            {
+                read(fs);
+            }
+        }
+
         /// <summary>
         /// Reads the content of a file.
         /// When used together with <see cref="ReadFile(string)"/>, provides inter-process synchronized access to the file.

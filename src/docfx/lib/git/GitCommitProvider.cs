@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var p in _fileCommitProvidersByRepoPath.Values)
             {
-                p.SaveCache();
+                p.Save();
             }
         }
 
