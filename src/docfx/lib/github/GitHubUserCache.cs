@@ -108,38 +108,7 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
-            return Synchronized(GetByCommitCore);
-
-            async Task<(Error, GitHubUser)> GetByCommitCore()
-            {
-                Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
-
-                if (_usersByEmail.TryGetValue(authorEmail, out var existingUser)
-                    || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
-                {
-                    if (existingUser?.IsValid() ?? false)
-                        return (null, existingUser);
-                    return default;
-                }
-
-                Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
-
-                if (_getUsersByCommitFromGitHub == null)
-                {
-                    return default;
-                }
-
-                var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, authorEmail);
-
-                // When GetUserByCommit failed, it could either the commit is not found or the user is not found,
-                // only mark the email as invalid when the user is not found
-                if (users != null)
-                {
-                    UpdateUsers(users);
-                }
-
-                return (error, _usersByEmail.TryGetValue(authorEmail, out var user) && user.IsValid() ? user : null);
-            }
+            return Synchronized(() => GetByCommitCore(authorEmail, repoOwner, repoName, commitSha));
         }
 
         public void Save()
@@ -167,6 +136,38 @@ namespace Microsoft.Docs.Build
         {
             _githubAccessor?.Dispose();
             _syncRoot.Dispose();
+        }
+
+        private async Task<(Error error, GitHubUser user)> GetByCommitCore(
+            string authorEmail, string repoOwner, string repoName, string commitSha)
+        {
+            Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
+
+            if (_usersByEmail.TryGetValue(authorEmail, out var existingUser)
+                || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
+            {
+                if (existingUser?.IsValid() ?? false)
+                    return (null, existingUser);
+                return default;
+            }
+
+            Telemetry.TrackCacheMissCount(TelemetryName.GitHubUserCache);
+
+            if (_getUsersByCommitFromGitHub == null)
+            {
+                return default;
+            }
+
+            var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, authorEmail);
+
+            // When GetUserByCommit failed, it could either the commit is not found or the user is not found,
+            // only mark the email as invalid when the user is not found
+            if (users != null)
+            {
+                UpdateUsers(users);
+            }
+
+            return (error, _usersByEmail.TryGetValue(authorEmail, out var user) && user.IsValid() ? user : null);
         }
 
         /// <summary>

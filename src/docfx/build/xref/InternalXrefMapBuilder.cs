@@ -90,8 +90,8 @@ namespace Microsoft.Docs.Build
                 Href = file.SiteUrl,
                 DeclaringFile = file,
             };
-            xref.ExtensionData["name"] = new Lazy<JToken>(
-                () => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
+            xref.ExtensionData["name"] = new Lazy<JToken>(() =>
+                new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             xref.Monikers = monikers.ToHashSet();

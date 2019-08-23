@@ -103,26 +103,24 @@ namespace Microsoft.Docs.Build
         public Repository GetRepository(string filePath)
         {
             return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
+        }
 
-            Repository GetRepositoryInternal(string fullPath)
+        private Repository GetRepositoryInternal(string fullPath)
+        {
+            if (GitUtility.IsRepo(fullPath))
             {
-                if (GitUtility.IsRepo(fullPath))
+                if (string.Equals(fullPath, DocsetPath.Substring(0, DocsetPath.Length - 1), PathUtility.PathComparison))
                 {
-                    if (string.Equals(fullPath, DocsetPath.Substring(0, DocsetPath.Length - 1), PathUtility.PathComparison))
-                    {
-                        return Repository;
-                    }
-
-                    return Repository.Create(fullPath, branch: null);
+                    return Repository;
                 }
 
-                var parent = Path.GetDirectoryName(fullPath);
-                return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(
-                        PathUtility.NormalizeFile(parent),
-                        k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
-                    : null;
+                return Repository.Create(fullPath, branch: null);
             }
+
+            var parent = Path.GetDirectoryName(fullPath);
+            return !string.IsNullOrEmpty(parent)
+                ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
+                : null;
         }
 
         private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
