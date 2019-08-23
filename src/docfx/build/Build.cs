@@ -30,39 +30,47 @@ namespace Microsoft.Docs.Build
                     return;
 
                 var gitMap = fallbackRestoreGitMap ?? restoreGitMap;
-                var (docset, fallbackDocset) = GetDocsetWithFallback();
+                var (docset, fallbackDocset) = GetDocsetWithFallback(
+                    docsetPath, options, errorLog, repository, locale, fallbackRepo, config, gitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
                 await Run(docset, fallbackDocset, gitMap, options, errorLog, outputPath);
+            }
+        }
 
-                (Docset docset, Docset fallbackDocset) GetDocsetWithFallback()
+        private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
+            string docsetPath,
+            CommandLineOptions options,
+            ErrorLog errorLog,
+            Repository repository,
+            string locale,
+            Repository fallbackRepo,
+            Config config,
+            RestoreGitMap gitMap)
+        {
+            var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
+            if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+            {
+                if (fallbackRepo != null)
                 {
-                    var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
-                    if (!string.IsNullOrEmpty(currentDocset.Locale)
-                        && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
-                    {
-                        if (fallbackRepo != null)
-                        {
-                            return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
-                        }
+                    return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
+                }
 
-                        if (LocalizationUtility.TryGetLocalizedDocsetPath(
-                            currentDocset,
-                            gitMap,
-                            config,
-                            currentDocset.Locale,
-                            out var localizationDocsetPath,
-                            out var localizationBranch))
-                        {
-                            var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                            return (new Docset(
-                                errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
-                        }
-                    }
-
-                    return (currentDocset, default);
+                if (LocalizationUtility.TryGetLocalizedDocsetPath(
+                    currentDocset,
+                    gitMap,
+                    config,
+                    currentDocset.Locale,
+                    out var localizationDocsetPath,
+                    out var localizationBranch))
+                {
+                    var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                    return (new Docset(
+                        errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
                 }
             }
+
+            return (currentDocset, default);
         }
 
         private static async Task Run(
@@ -114,7 +122,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task BuildFile(Context context, Document file)
         {
-            if (!ShouldBuildFile())
+            if (!ShouldBuildFile(context, file))
             {
                 return;
             }
@@ -157,24 +165,24 @@ namespace Microsoft.Docs.Build
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
             }
+        }
 
-            bool ShouldBuildFile()
+        private static bool ShouldBuildFile(Context context, Document file)
+        {
+            if (file.ContentType == ContentType.TableOfContents)
             {
-                if (file.ContentType == ContentType.TableOfContents)
+                if (!context.TocMap.Contains(file))
                 {
-                    if (!context.TocMap.Contains(file))
-                    {
-                        return false;
-                    }
-
-                    // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return file.FilePath.Origin != FileOrigin.Fallback
-                        || (context.TocMap.TryGetTocReferences(file, out var tocReferences)
-                            && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
+                    return false;
                 }
 
-                return file.FilePath.Origin != FileOrigin.Fallback;
+                // if A toc includes B toc and only B toc is localized, then A need to be included and built
+                return file.FilePath.Origin != FileOrigin.Fallback
+                    || (context.TocMap.TryGetTocReferences(file, out var tocReferences)
+                        && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
             }
+
+            return file.FilePath.Origin != FileOrigin.Fallback;
         }
 
         private static RestoreGitMap GetRestoreGitMap(
