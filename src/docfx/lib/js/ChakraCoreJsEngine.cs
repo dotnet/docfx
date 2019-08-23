@@ -100,6 +100,7 @@ namespace Microsoft.Docs.Build
 
             using (new JavaScriptContext.Scope(context))
             {
+                // add `process` to input to get the correct file path while running script inside docs-ui
                 JavaScriptValue.GlobalObject.SetProperty(
                     JavaScriptPropertyId.FromString("process"), JavaScriptValue.CreateObject(), useStrictRules: true);
 
@@ -152,11 +153,11 @@ namespace Microsoft.Docs.Build
 
             t_stack.Value.Push((scriptPath, exports));
 
-            JavaScriptValue.GlobalObject.SetProperty(
-                JavaScriptPropertyId.FromString("exports"), exports, useStrictRules: true);
-
             try
             {
+                JavaScriptValue.GlobalObject.SetProperty(
+                    JavaScriptPropertyId.FromString("exports"), exports, useStrictRules: true);
+
                 JavaScriptContext.RunScript(script, s_currentSourceContext++, scriptPath);
 
                 return exports;
