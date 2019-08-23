@@ -43,7 +43,8 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
         }
 
-        public (Error error, string content, Document file) ResolveContent(SourceInfo<string> path, Document declaringFile, DependencyType dependencyType = DependencyType.Inclusion)
+        public (Error error, string content, Document file) ResolveContent(
+            SourceInfo<string> path, Document declaringFile, DependencyType dependencyType = DependencyType.Inclusion)
         {
             var (error, content, child) = TryResolveContent(declaringFile, path);
 
@@ -52,7 +53,8 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveRelativeLink(Document relativeToFile, SourceInfo<string> path, Document declaringFile)
+        public (Error error, string link, Document file) ResolveRelativeLink(
+            Document relativeToFile, SourceInfo<string> path, Document declaringFile)
         {
             var (error, link, file) = ResolveAbsoluteLink(path, declaringFile);
 
@@ -79,13 +81,15 @@ namespace Microsoft.Docs.Build
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
                 _dependencyMapBuilder.AddDependencyItem(declaringFile, file, UrlUtility.FragmentToDependencyType(fragment));
-                _bookmarkValidator.AddBookmarkReference(declaringFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
+                _bookmarkValidator.AddBookmarkReference(
+                    declaringFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(Document relativeToFile, SourceInfo<string> href, Document declaringFile)
+        public (Error error, string href, string display, IXrefSpec spec) ResolveRelativeXref(
+            Document relativeToFile, SourceInfo<string> href, Document declaringFile)
         {
             var (error, link, display, spec) = ResolveAbsoluteXref(href, declaringFile);
 
@@ -97,7 +101,8 @@ namespace Microsoft.Docs.Build
             return (error, link, display, spec);
         }
 
-        public (Error error, string href, string display, IXrefSpec spec) ResolveAbsoluteXref(SourceInfo<string> href, Document declaringFile)
+        public (Error error, string href, string display, IXrefSpec spec) ResolveAbsoluteXref(
+            SourceInfo<string> href, Document declaringFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -158,7 +163,8 @@ namespace Microsoft.Docs.Build
 
             if (file is null)
             {
-                var (content, fileFromHistory) = TryResolveContentFromHistory(declaringFile, _gitCommitProvider, pathToDocset, _templateEngine);
+                var (content, fileFromHistory) = TryResolveContentFromHistory(
+                    declaringFile, _gitCommitProvider, pathToDocset, _templateEngine);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -168,7 +174,8 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, file.ReadText(), file) : default;
         }
 
-        private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(Document declaringFile, SourceInfo<string> href)
+        private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(
+            Document declaringFile, SourceInfo<string> href)
         {
             Debug.Assert(href != null);
 
@@ -238,7 +245,8 @@ namespace Microsoft.Docs.Build
             return (error, file.SiteUrl + query + fragment, fragment, linkType, file, false);
         }
 
-        private (Error error, Document file, string query, string fragment, LinkType linkType, string pathToDocset) TryResolveFile(Document declaringFile, SourceInfo<string> href)
+        private (Error error, Document file, string query, string fragment, LinkType linkType, string pathToDocset) TryResolveFile(
+            Document declaringFile, SourceInfo<string> href)
         {
             href = href.Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -276,7 +284,8 @@ namespace Microsoft.Docs.Build
 
                     var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope);
 
-                    // for LandingPage should not be used, it is a hack to handle some specific logic for landing page based on the user input for now
+                    // for LandingPage should not be used,
+                    // it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
                     if (_templateEngine != null && TemplateEngine.IsLandingData(declaringFile.Mime))
                     {
@@ -293,7 +302,8 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath, pathToDocset);
+                        return (Errors.FileNotFound(
+                            new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
                     return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
@@ -319,7 +329,8 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private Document TryResolveResourceFromHistory(Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
+        private Document TryResolveResourceFromHistory(
+            Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -340,7 +351,8 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (string content, Document file) TryResolveContentFromHistory(Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
+        private (string content, Document file) TryResolveContentFromHistory(
+            Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -360,7 +372,8 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            return (content, Document.Create(fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true));
+                            return (content, Document.Create(
+                                fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true));
                         }
                     }
                 }

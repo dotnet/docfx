@@ -39,7 +39,12 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static RedirectionMap Create(ErrorLog errorLog, Docset docset, Func<string, bool> glob, TemplateEngine templateEngine, IReadOnlyCollection<Document> buildFiles)
+        public static RedirectionMap Create(
+            ErrorLog errorLog,
+            Docset docset,
+            Func<string, bool> glob,
+            TemplateEngine templateEngine,
+            IReadOnlyCollection<Document> buildFiles)
         {
             var redirections = new HashSet<Document>();
             var redirectionsWithDocumentId = new List<(SourceInfo<string> redirectUrl, Document redirect)>();
@@ -99,7 +104,8 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    var redirect = Document.Create(docset, pathToDocset, templateEngine, redirectionUrl: mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
+                    var redirect = Document.Create(
+                        docset, pathToDocset, templateEngine, redirectionUrl: mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
 
                     if (redirectDocumentId)
                     {
@@ -114,11 +120,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void CheckInvalidRedrectUrl(ErrorLog errorLog, List<(SourceInfo<string> redirectUrl, Document redirect)> redirectionsWithDocumentId, HashSet<Document> redirections, IReadOnlyCollection<Document> buildFiles)
+        private static void CheckInvalidRedrectUrl(
+            ErrorLog errorLog,
+            List<(SourceInfo<string> redirectUrl, Document redirect)> redirectionsWithDocumentId,
+            HashSet<Document> redirections,
+            IReadOnlyCollection<Document> buildFiles)
         {
             var redirectUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            var publishUrls = buildFiles.Select(file => file.SiteUrl).Concat(redirections.Select(redirection => redirection.SiteUrl)).ToHashSet();
+            var publishUrls = buildFiles.Select(file => file.SiteUrl)
+                .Concat(redirections.Select(redirection => redirection.SiteUrl)).ToHashSet();
             foreach (var (redirectionUrl, redirect) in redirectionsWithDocumentId)
             {
                 if (!publishUrls.Contains(redirect.RedirectionUrl))

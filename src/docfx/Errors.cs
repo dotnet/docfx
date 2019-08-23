@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("Layout", "MEN002", Justification = "Suppress MEN002 for Errors.cs")]
     internal static class Errors
     {
         /// <summary>
