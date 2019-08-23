@@ -115,6 +115,9 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void git_signature_free(git_signature* sig);
 
         [DllImport(LibName)]
+        public static unsafe extern git_oid* git_commit_id(IntPtr commit);
+
+        [DllImport(LibName)]
         public static unsafe extern git_oid* git_commit_parent_id(IntPtr commit, int n);
 
         [DllImport(LibName)]
@@ -178,8 +181,8 @@ namespace Microsoft.Docs.Build
 
             public DateTimeOffset ToDateTimeOffset()
             {
-                DateTimeOffset utcDateTime = s_epoch.AddSeconds(time);
-                TimeSpan timezone = TimeSpan.FromMinutes(offset);
+                var utcDateTime = s_epoch.AddSeconds(time);
+                var timezone = TimeSpan.FromMinutes(offset);
                 return new DateTimeOffset(utcDateTime.DateTime.Add(timezone), timezone);
             }
         }
@@ -203,7 +206,7 @@ namespace Microsoft.Docs.Build
             {
                 fixed (git_oid* p = &this)
                 {
-                    sbyte* str = stackalloc sbyte[40];
+                    var str = stackalloc sbyte[40];
                     git_oid_fmt(str, p);
                     return new string(str, 0, 40);
                 }
