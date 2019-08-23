@@ -63,6 +63,11 @@ namespace Microsoft.Docs.Build
                 EndColumn);
         }
 
+        public Error WithLevel(ErrorLevel level)
+        {
+            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn);
+        }
+
         public override string ToString() => ToString(Level);
 
         public string ToString(ErrorLevel level)

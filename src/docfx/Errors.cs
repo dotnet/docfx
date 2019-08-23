@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("Layout", "MEN002", Justification = "Suppress MEN002 for Errors.cs")]
     internal static class Errors
     {
         /// <summary>
@@ -574,8 +576,8 @@ namespace Microsoft.Docs.Build
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerConfigMissing(Document file)
-            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", file.FilePath);
+        public static Error MonikerConfigMissing(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
 
         /// <summary>
         /// Config's monikerRange and monikerRange defined in yaml header has no intersection,

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
@@ -22,12 +22,11 @@ namespace Microsoft.Docs.Build
 
                 var dictionaryBuilder = new DictionaryBuilder<string, List<string>>();
                 var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
-                Parallel.ForEach(
-                    fileManifests,
-                    fileManifest =>
+                Parallel.ForEach(fileManifests, fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value);
+                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
+                            docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var output = new LegacyManifestOutput
@@ -66,8 +65,7 @@ namespace Microsoft.Docs.Build
                             };
                         }
 
-                        if (document.ContentType == ContentType.Page ||
-                            document.ContentType == ContentType.Redirection)
+                        if (document.ContentType == ContentType.Page || document.ContentType == ContentType.Redirection)
                         {
                             if (document.IsPage)
                             {
@@ -123,7 +121,8 @@ namespace Microsoft.Docs.Build
                         version_folder = string.Empty,
                         xref_map = "xrefmap.yml",
                     },
-                    files = convertedItems.OrderBy(f => f.manifestItem.AssetId + f.manifestItem.SourceRelativePath).Select(f => f.manifestItem),
+                    files = convertedItems
+                        .OrderBy(f => f.manifestItem.AssetId + f.manifestItem.SourceRelativePath).Select(f => f.manifestItem),
                     is_already_processed = true,
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
