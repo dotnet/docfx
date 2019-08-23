@@ -41,7 +41,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Acquire a shared lock for input lock name
-        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
+        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info,
+        /// since the thread info may change in asynchronous programming model
         /// </summary>
         public static (bool acquired, string acquirer) AcquireSharedLock(string lockName)
         {
@@ -110,7 +111,8 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Acquire a exclusive lock for input lock name
-        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info, since the thread info may change in asynchronous programming model
+        /// The returned `acquirer` are used for tracking the acquired lock, instead of thread info,
+        /// since the thread info may change in asynchronous programming model
         /// </summary>
         public static (bool acquired, string acquirer) AcquireExclusiveLock(string lockName, bool force = false)
         {
@@ -183,7 +185,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
+        public static string Execute(
+            string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
         {
             var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
             Log.Write($"Running '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'");
@@ -209,7 +212,9 @@ namespace Microsoft.Docs.Build
 
             if (process.ExitCode != 0)
             {
-                throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
+                throw new InvalidOperationException(
+                    $"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \n" +
+                    $"STDOUT:'{result}'");
             }
 
             return result;

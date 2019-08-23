@@ -148,7 +148,8 @@ namespace Microsoft.Docs.Build
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themeRemote, themeBranch)
+                = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
             var (themePath, themeRestoreMap) = restoreGitMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
             Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
 
@@ -164,11 +165,14 @@ namespace Microsoft.Docs.Build
         private static IReadOnlyDictionary<string, Lazy<TemplateSchema>>
             LoadSchemas(string schemaDir, string contentTemplateDir)
         {
-            var schemas = Directory.Exists(schemaDir) ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
-                                                         let fileName = Path.GetFileName(k)
-                                                         select fileName.Substring(0, fileName.Length - ".schema.json".Length))
-                                                         .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
-                                                         : new Dictionary<string, Lazy<TemplateSchema>>();
+            var schemas = Directory.Exists(schemaDir)
+                ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
+                   let fileName = Path.GetFileName(k)
+                   select fileName.Substring(0, fileName.Length - ".schema.json".Length))
+                    .ToDictionary(
+                    schemaName => schemaName,
+                    schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
+                : new Dictionary<string, Lazy<TemplateSchema>>();
 
             schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));
             return schemas;

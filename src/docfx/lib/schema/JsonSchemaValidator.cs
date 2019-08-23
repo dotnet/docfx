@@ -73,7 +73,10 @@ namespace Microsoft.Docs.Build
             {
                 if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token.Type)))
                 {
-                    errors.Add((name, Errors.UnexpectedType(JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString())));
+                    errors.Add((name, Errors.UnexpectedType(
+                        JsonUtility.GetSourceInfo(token),
+                        string.Join(", ", schema.Type),
+                        token.Type.ToString())));
                     return false;
                 }
             }
@@ -255,7 +258,8 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaStringFormat.Time:
-                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.NoCurrentDateDefault, out var time) || time.Date != default)
+                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.NoCurrentDateDefault, out var time)
+                        || time.Date != default)
                         errors.Add((name, Errors.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Time)));
                     break;
             }
@@ -346,7 +350,8 @@ namespace Microsoft.Docs.Build
         }
 
         private bool IsStrictHaveValue(JToken value) =>
-            value != null && value.Type != JTokenType.Null && (value.Type != JTokenType.String || !string.IsNullOrWhiteSpace((string)value));
+            value != null && value.Type != JTokenType.Null
+            && (value.Type != JTokenType.String || !string.IsNullOrWhiteSpace((string)value));
 
         private bool IsStrictContain(JObject map, string key) =>
             map.TryGetValue(key, out var value) && IsStrictHaveValue(value);
@@ -436,11 +441,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDateRange(JsonSchema schema, string name, JValue scalar, DateTime date, string dateString, List<(string name, Error)> errors)
+        private void ValidateDateRange(
+            JsonSchema schema, string name, JValue scalar, DateTime date, string dateString, List<(string name, Error)> errors)
         {
             var diff = date - DateTime.UtcNow;
 
-            if ((schema.RelativeMinDate.HasValue && diff < schema.RelativeMinDate) || (schema.RelativeMaxDate.HasValue && diff > schema.RelativeMaxDate))
+            if ((schema.RelativeMinDate.HasValue && diff < schema.RelativeMinDate)
+                || (schema.RelativeMaxDate.HasValue && diff > schema.RelativeMaxDate))
             {
                 errors.Add((name, Errors.DateOutOfRange(JsonUtility.GetSourceInfo(scalar), name, dateString)));
             }
@@ -454,7 +461,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateEnumDependencies(EnumDependenciesSchema enumDependencies, string dependentFieldNameWithIndex, string dependentFieldName, JToken dependentFieldRawValue, JToken dependentFieldValue, JObject map, List<(string name, Error)> errors)
+        private void ValidateEnumDependencies(
+            EnumDependenciesSchema enumDependencies,
+            string dependentFieldNameWithIndex,
+            string dependentFieldName,
+            JToken dependentFieldRawValue,
+            JToken dependentFieldValue,
+            JObject map,
+            List<(string name, Error)> errors)
         {
             if (enumDependencies == null)
             {
@@ -475,7 +489,8 @@ namespace Microsoft.Docs.Build
 
                     if (allowList.TryGetValue(fieldValue, out var nextEnumDependencies))
                     {
-                        ValidateEnumDependencies(nextEnumDependencies, fieldNameWithIndex, fieldName, fieldRawValue, fieldValue, map, errors);
+                        ValidateEnumDependencies(
+                            nextEnumDependencies, fieldNameWithIndex, fieldName, fieldRawValue, fieldValue, map, errors);
                     }
                     else
                     {

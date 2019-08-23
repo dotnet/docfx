@@ -33,11 +33,20 @@ namespace Microsoft.Docs.Build
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
         { }
 
-        public Error(ErrorLevel level, string code, string message, FilePath file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
+        public Error(
+            ErrorLevel level,
+            string code,
+            string message,
+            FilePath file = null,
+            int line = 0,
+            int column = 0,
+            int endLine = 0,
+            int endColumn = 0)
         {
             // TODO: enable error code MUST have line info verification here
             Debug.Assert(!string.IsNullOrEmpty(code));
-            Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), $"Error code '{code}' should only contain dash and letters in lowercase");
+            Debug.Assert(
+                Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), $"Error code '{code}' should only contain dash and letters in lowercase");
             Debug.Assert(!string.IsNullOrEmpty(message));
 
             Level = level;
@@ -52,10 +61,14 @@ namespace Microsoft.Docs.Build
 
         public Error WithCustomError(CustomError customError)
         {
-            return new Error(
+            var message = string.IsNullOrEmpty(customError.AdditionalMessage)
+                ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customError.AdditionalMessage}";
+
+            return new
+                Error(
                 customError.Severity ?? Level,
                 string.IsNullOrEmpty(customError.Code) ? Code : customError.Code,
-                string.IsNullOrEmpty(customError.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customError.AdditionalMessage}",
+                message,
                 FilePath,
                 Line,
                 Column,
@@ -75,7 +88,8 @@ namespace Microsoft.Docs.Build
             object[] payload = { level, Code, Message, FilePath?.Path, Line, Column, FilePath?.Origin };
 
             var i = payload.Length - 1;
-            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Current)))
+            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "")
+                || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Current)))
             {
                 i--;
             }

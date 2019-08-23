@@ -450,7 +450,8 @@ namespace Microsoft.Docs.Build
                 if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException)
                 {
                     var state = t_status.Value.Peek();
-                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), ParseException(args.ErrorContext.Error).message));
+                    state.Errors.Add(
+                        Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), ParseException(args.ErrorContext.Error).message));
                     args.ErrorContext.Handled = true;
                 }
             }

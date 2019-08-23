@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
@@ -10,9 +10,15 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModelBuilder
     {
-        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts
+            = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
+
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl
+            = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
+
+        private readonly ConcurrentDictionary<string, Document> _filesByOutputPath
+            = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
+
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
 

@@ -23,7 +23,8 @@ namespace Microsoft.Docs.Build
             if (file.Docset.Config.Output.Pdf)
             {
                 var siteBasePath = file.Docset.SiteBasePath;
-                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, LegacyUtility.ChangeExtension(outputPath, ".pdf")));
+                var relativePath = PathUtility.NormalizeFile(
+                    Path.GetRelativePath(siteBasePath, LegacyUtility.ChangeExtension(outputPath, ".pdf")));
                 model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
             }
 

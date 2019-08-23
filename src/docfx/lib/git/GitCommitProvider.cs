@@ -9,12 +9,14 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitCommitProvider : IDisposable
     {
-        private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
+        private readonly ConcurrentDictionary<string, FileCommitProvider>
+            _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
 
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(Document document, string committish = null)
            => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath.Path), document.Repository, committish);
 
-        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(Docset docset, string filePath, string committish = null)
+        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(
+            Docset docset, string filePath, string committish = null)
         {
             var repo = docset.GetRepository(filePath);
             if (repo is null)
@@ -23,7 +25,8 @@ namespace Microsoft.Docs.Build
             return GetCommitHistory(Path.Combine(docset.DocsetPath, filePath), repo, committish);
         }
 
-        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(string fullPath, Repository repo, string committish = null)
+        public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(
+            string fullPath, Repository repo, string committish = null)
         {
             if (repo is null)
                 return default;

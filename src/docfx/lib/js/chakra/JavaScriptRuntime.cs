@@ -1,4 +1,4 @@
-﻿namespace ChakraHost.Hosting
+namespace ChakraHost.Hosting
 {
     using System;
 
@@ -101,7 +101,8 @@
         /// <param name="version">The version of the runtime to be created.</param>
         /// <param name="threadServiceCallback">The thread service for the runtime. Can be null.</param>
         /// <returns>The runtime created.</returns>
-        public static JavaScriptRuntime Create(JavaScriptRuntimeAttributes attributes, JavaScriptRuntimeVersion version, JavaScriptThreadServiceCallback threadServiceCallback)
+        public static JavaScriptRuntime Create(
+            JavaScriptRuntimeAttributes attributes, JavaScriptRuntimeVersion version, JavaScriptThreadServiceCallback threadServiceCallback)
         {
             JavaScriptRuntime handle;
             Native.ThrowIfError(Native.JsCreateRuntime(attributes, threadServiceCallback, out handle));

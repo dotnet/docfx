@@ -15,8 +15,11 @@ namespace Microsoft.Docs.Build
     {
         public IEnumerable<GitHubUser> Users => _usersByLogin.Values.Concat(_usersByEmail.Values).Distinct();
 
-        private readonly Dictionary<string, GitHubUser> _usersByLogin = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, GitHubUser> _usersByEmail = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, GitHubUser> _usersByLogin
+            = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
+
+        private readonly Dictionary<string, GitHubUser> _usersByEmail
+            = new Dictionary<string, GitHubUser>(StringComparer.OrdinalIgnoreCase);
 
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
 
@@ -111,7 +114,8 @@ namespace Microsoft.Docs.Build
             {
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
 
-                if (_usersByEmail.TryGetValue(authorEmail, out var existingUser) || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
+                if (_usersByEmail.TryGetValue(authorEmail, out var existingUser)
+                    || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
                 {
                     if (existingUser?.IsValid() ?? false)
                         return (null, existingUser);

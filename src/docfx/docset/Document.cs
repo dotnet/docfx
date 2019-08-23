@@ -239,21 +239,30 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, FileOrigin origin = FileOrigin.Current, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
+        public static Document Create(
+            Docset docset,
+            string path,
+            TemplateEngine templateEngine,
+            FileOrigin origin = FileOrigin.Current,
+            string redirectionUrl = null,
+            bool isFromHistory = false,
+            bool combineRedirectUrl = false)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
             Debug.Assert(!Path.IsPathRooted(path));
 
             var filePath = new FilePath(PathUtility.NormalizeFile(path), origin);
-            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath.Path, PathUtility.PathComparer);
+            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences())
+                .Contains(filePath.Path, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath.Path);
             var mime = type == ContentType.Page ? ReadMimeFromFile(docset.DocsetPath, filePath) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(filePath.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(filePath.Path, docset.Routes, docset.SiteBasePath);
 
-            var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
+            var sitePath = FilePathToSitePath(
+                routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
@@ -264,13 +273,28 @@ namespace Microsoft.Docs.Build
             if (redirectionUrl != null)
             {
                 contentType = ContentType.Redirection;
-                redirectionUrl = combineRedirectUrl ? PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl)) : redirectionUrl;
-                redirectionUrl = redirectionUrl.EndsWith("/index") ? redirectionUrl.Substring(0, redirectionUrl.Length - "index".Length) : redirectionUrl;
+                redirectionUrl = combineRedirectUrl
+                    ? PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl)) : redirectionUrl;
+                redirectionUrl = redirectionUrl.EndsWith("/index")
+                    ? redirectionUrl.Substring(0, redirectionUrl.Length - "index".Length) : redirectionUrl;
             }
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
-            var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
+            var canonicalUrlWithoutLocale = GetCanonicalUrl(
+                siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
+            return new Document(
+                docset,
+                filePath,
+                sitePath,
+                siteUrl,
+                canonicalUrlWithoutLocale,
+                canonicalUrl,
+                contentType,
+                mime,
+                isExperimental,
+                redirectionUrl,
+                isFromHistory,
+                isPage);
         }
 
         /// <summary>
@@ -308,7 +332,8 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, buildScope: null);
+                var dependencyFile = CreateFromFile(
+                    dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, buildScope: null);
                 if (dependencyFile != null)
                 {
                     return dependencyFile;
@@ -360,7 +385,8 @@ namespace Microsoft.Docs.Build
                         {
                             return Path.ChangeExtension(path, ".html");
                         }
-                        return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path), "index.html").Replace('\\', '/');
+                        return Path.Combine(
+                            Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path), "index.html").Replace('\\', '/');
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:
@@ -405,7 +431,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, string mime, bool isPage, bool withLocale = true)
+        private static string GetCanonicalUrl(
+            string siteUrl,
+            string sitePath,
+            Docset docset,
+            bool isExperimental,
+            ContentType contentType,
+            string mime,
+            bool isPage,
+            bool withLocale = true)
         {
             var config = docset.Config;
             if (isExperimental)

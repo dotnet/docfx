@@ -86,7 +86,8 @@ namespace Microsoft.Docs.Build
             return released;
         }
 
-        public static (string path, T slot) AcquireSlot(string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot)
+        public static (string path, T slot) AcquireSlot(
+            string url, LockType type, Func<T, T> updateExistingSlot, Func<T, bool> matchExistingSlot)
         {
             Debug.Assert(!string.IsNullOrEmpty(url));
 

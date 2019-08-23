@@ -15,9 +15,11 @@ namespace Microsoft.Docs.Build
 
         public DependencyLockModel DependencyLock { get; private set; }
 
-        public RestoreGitMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits = null)
+        public RestoreGitMap(
+            IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits = null)
         {
-            _acquiredGits = acquiredGits ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
+            _acquiredGits = acquiredGits
+                ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
         }
 
         /// <summary>
@@ -107,7 +109,9 @@ namespace Microsoft.Docs.Build
 
             var restoreDir = AppData.GetGitDir(remote);
 
-            var (path, slot) = DependencySlotPool<DependencyGit>.TryGetSlot(remote, gits => gits.Where(i => i.Branch == branch && i.Commit == commit).OrderByDescending(g => g.LastAccessDate).ToList());
+            var (path, slot) = DependencySlotPool<DependencyGit>.TryGetSlot(
+                remote,
+                gits => gits.Where(i => i.Branch == branch && i.Commit == commit).OrderByDescending(g => g.LastAccessDate).ToList());
 
             if (!string.IsNullOrEmpty(path))
                 path = Path.Combine(restoreDir, path);

@@ -13,9 +13,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocalizationUtility
     {
-        private static readonly HashSet<string> s_locales = new HashSet<string>(CultureInfo.GetCultures(CultureTypes.AllCultures).Except(CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }), StringComparer.OrdinalIgnoreCase);
-        private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
-        private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
+        private static readonly HashSet<string> s_locales = new HashSet<string>(
+            CultureInfo.GetCultures(CultureTypes.AllCultures)
+            .Except(CultureInfo.GetCultures(CultureTypes.NeutralCultures))
+            .Select(c => c.Name).Concat(new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }), StringComparer.OrdinalIgnoreCase);
+
+        private static readonly Regex s_nameWithLocale
+            = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+
+        private static readonly Regex s_lrmAdjustment
+            = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
         public static bool IsValidLocale(string locale)
             => s_locales.Contains(locale);
@@ -38,7 +45,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The loc repo remote and branch based on localization mapping<see cref="LocalizationMapping"/>
         /// </summary>
-        public static (string remote, string branch) GetLocalizedRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizedRepo(
+            LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
             var newRemote = GetLocalizationName(mapping, remote, locale, defaultLocale);
             var newBranch = bilingual
@@ -48,7 +56,13 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(Docset docset, RestoreGitMap restoreMap, Config config, string locale, out string localizationDocsetPath, out string localizationBranch)
+        public static bool TryGetLocalizedDocsetPath(
+            Docset docset,
+            RestoreGitMap restoreMap,
+            Config config,
+            string locale,
+            out string localizationDocsetPath,
+            out string localizationBranch)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -94,7 +108,8 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public static bool TryGetFallbackRepository(Repository repository, out string fallbackRemote, out string fallbackBranch, out string locale)
+        public static bool TryGetFallbackRepository(
+            Repository repository, out string fallbackRemote, out string fallbackBranch, out string locale)
         {
             fallbackRemote = null;
             fallbackBranch = null;
@@ -183,7 +198,8 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static bool TryGetFallbackRepository(string remote, string branch, out string fallbackRemote, out string fallbackBranch, out string locale)
+        private static bool TryGetFallbackRepository(
+            string remote, string branch, out string fallbackRemote, out string fallbackBranch, out string locale)
         {
             fallbackRemote = null;
             fallbackBranch = null;

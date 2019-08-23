@@ -118,7 +118,9 @@ namespace Microsoft.Docs.Build
 
                 var parent = Path.GetDirectoryName(fullPath);
                 return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
+                    ? _repositories.GetOrAdd(
+                        PathUtility.NormalizeFile(parent),
+                        k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
                     : null;
             }
         }

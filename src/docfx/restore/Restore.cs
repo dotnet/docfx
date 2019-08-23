@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -24,7 +24,8 @@ namespace Microsoft.Docs.Build
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
-                Task<DependencyLockModel> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLockModel dependencyLock = null)
+                Task<DependencyLockModel> RestoreDocset(
+                    string docset, bool root = true, Repository rootRepository = null, DependencyLockModel dependencyLock = null)
                 {
                     return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
@@ -90,7 +91,8 @@ namespace Microsoft.Docs.Build
                 // save dependency lock if it's root entry
                 if (root)
                 {
-                    var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock;
+                    var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock)
+                        ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock;
                     DependencyLock.Save(docset, dependencyLockFilePath, generatedLock);
                 }
 

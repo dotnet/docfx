@@ -59,7 +59,8 @@ namespace Microsoft.Docs.Build
                         .ConfigureApplicationPartManager(parts =>
                         {
                             // Ensure we only have one private TemplateController
-                            parts.FeatureProviders.Remove(parts.FeatureProviders.First(fp => fp is IApplicationFeatureProvider<ControllerFeature>));
+                            parts.FeatureProviders.Remove(
+                                parts.FeatureProviders.First(fp => fp is IApplicationFeatureProvider<ControllerFeature>));
                             parts.FeatureProviders.Add(new TemplateControllerProvider());
                         });
             }

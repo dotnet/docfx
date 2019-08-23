@@ -81,7 +81,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, InputMetadata metadata, Document file)
+        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(
+            Context context, InputMetadata metadata, Document file)
         {
             var xref = new InternalXrefSpec
             {
@@ -89,14 +90,16 @@ namespace Microsoft.Docs.Build
                 Href = file.SiteUrl,
                 DeclaringFile = file,
             };
-            xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
+            xref.ExtensionData["name"] = new Lazy<JToken>(
+                () => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             xref.Monikers = monikers.ToHashSet();
             return (error, xref, file);
         }
 
-        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)
+        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(
+            Context context, JToken token, Document file)
         {
             var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 

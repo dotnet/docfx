@@ -48,7 +48,8 @@ namespace Microsoft.DocAsTest
 
         private volatile bool _canceled = false;
 
-        public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)
+        public void DiscoverTests(
+            IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)
         {
             DiscoverTests(
                 sources,

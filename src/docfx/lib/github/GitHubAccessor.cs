@@ -23,7 +23,8 @@ namespace Microsoft.Docs.Build
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
         private readonly HttpClient _httpClient = new HttpClient();
-        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
+        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos
+            = new ConcurrentHashSet<(string owner, string name)>();
 
         private volatile Error _fatalError;
 
@@ -82,7 +83,8 @@ query ($login: String!) {
             });
         }
 
-        public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
+        public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(
+            string owner, string name, string commit, string authorEmail = null)
         {
             if (_unknownRepos.Contains((owner, name)))
             {

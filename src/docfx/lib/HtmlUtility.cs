@@ -159,7 +159,9 @@ namespace Microsoft.Docs.Build
                 var xref = HttpUtility.HtmlDecode(node.GetAttributeValue("href", ""));
 
                 var raw = HttpUtility.HtmlDecode(
-                    node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null) ?? $"<span class=\"xref\">{HttpUtility.HtmlEncode(UrlUtility.SplitUrl(xref).path)}</span>");
+                    node.GetAttributeValue("data-raw-html", null)
+                    ?? node.GetAttributeValue("data-raw-source", null)
+                    ?? $"<span class=\"xref\">{HttpUtility.HtmlEncode(UrlUtility.SplitUrl(xref).path)}</span>");
 
                 var isShorthand = raw.StartsWith("@");
 
@@ -225,7 +227,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
+        public static string CreateHtmlMetaTags(
+            JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
         {
             var result = new StringBuilder();
 

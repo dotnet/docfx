@@ -55,7 +55,8 @@ namespace Microsoft.Docs.Build
         {
             var nearestToc = GetNearestToc(file);
 
-            return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath)) : null;
+            return nearestToc != null
+                ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath)) : null;
         }
 
         /// <summary>
@@ -68,7 +69,8 @@ namespace Microsoft.Docs.Build
         public Document GetNearestToc(Document file)
         {
             var hasReferencedTocs = false;
-            var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
+            var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles))
+                ? referencedTocFiles : _tocs;
 
             var tocCandidates = from toc in filteredTocs
                                 let dirInfo = GetRelativeDirectoryInfo(file.SitePath, toc.SitePath)

@@ -21,7 +21,8 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
-        public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
+        public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; }
+            = new Dictionary<string, JsonSchemaContentType>();
 
         public string GetXrefPropertyValueAsString(string propertyName)
         {
@@ -32,7 +33,8 @@ namespace Microsoft.Docs.Build
             var contentType = GetXrefPropertyContentType(propertyName);
             if (contentType == JsonSchemaContentType.None)
             {
-                return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
+                return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue
+                    && propertyValue.Value is string internalStr ? internalStr : null;
             }
             return null;
         }
