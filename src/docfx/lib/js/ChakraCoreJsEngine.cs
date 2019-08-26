@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>>();
 
-        private static JavaScriptSourceContext s_currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
+        private static int s_currentSourceContext;
 
         private readonly ConcurrentDictionary<JavaScriptContext, JavaScriptValue> _globals = new ConcurrentDictionary<JavaScriptContext, JavaScriptValue>();
 
@@ -155,7 +155,9 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                JavaScriptContext.RunScript(script, s_currentSourceContext++, scriptPath).CallFunction(
+                var sourceContext = JavaScriptSourceContext.FromIntPtr((IntPtr)Interlocked.Increment(ref s_currentSourceContext));
+
+                JavaScriptContext.RunScript(script, sourceContext, scriptPath).CallFunction(
                     JavaScriptValue.Undefined, // this pointer
                     JavaScriptValue.CreateObject(),
                     exports,
