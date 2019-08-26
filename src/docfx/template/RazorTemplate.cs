@@ -56,6 +56,7 @@ namespace Microsoft.Docs.Build
             void ConfigureServices(IServiceCollection services)
             {
                 services.AddMvc()
+                        .AddRazorOptions(options => options.AllowRecompilingViewsOnFileChange = false)
                         .ConfigureApplicationPartManager(parts =>
                         {
                             // Ensure we only have one private TemplateController
