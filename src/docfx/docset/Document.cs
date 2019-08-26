@@ -350,7 +350,7 @@ namespace Microsoft.Docs.Build
             if (repo != null && commit != null)
             {
                 var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                return Create(docset, pathToDocset, templateEngine, FileOrigin.Current, isFromHistory: true, readText:
+                return Create(docset, pathToDocset, templateEngine, deleted ? FileOrigin.Fallback : FileOrigin.Current, isFromHistory: true, readText:
                     new Lazy<string>(() =>
                     {
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commit.Sha, out var content))
