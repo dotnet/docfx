@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
@@ -20,15 +22,53 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referenceFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveToLink(SourceInfo<string> href, Document referencingFile)
         {
-            var unescapedUid = Uri.UnescapeDataString(uid);
-            var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referenceFile) ?? ResolveExternalXrefSpec(unescapedUid);
-            if (xrefSpec is null)
+            var (uid, query, fragment) = UrlUtility.SplitUrl(href);
+            string moniker = null;
+            string text = null;
+            var queries = new NameValueCollection();
+            if (!string.IsNullOrEmpty(query))
             {
-                return (Errors.XrefNotFound(uid), null);
+                queries = HttpUtility.ParseQueryString(query);
+                moniker = queries["view"];
+                queries.Remove("view");
+                text = queries["text"];
+                queries.Remove("text");
             }
-            return (null, xrefSpec);
+            var displayProperty = queries["displayProperty"];
+            queries.Remove("displayProperty");
+
+            // need to url decode uid from input content
+            var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), referencingFile);
+            if (xrefError != null)
+            {
+                return (xrefError, null, null, null);
+            }
+
+            var name = xrefSpec.GetXrefPropertyValueAsString("name");
+            var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
+
+            // fallback order:
+            // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid
+            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? name ?? uid;
+
+            if (!string.IsNullOrEmpty(moniker))
+            {
+                queries["view"] = moniker;
+            }
+            var resolvedHref = UrlUtility.MergeUrl(
+                xrefSpec.Href,
+                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
+                fragment.Length == 0 ? "" : fragment.Substring(1));
+
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+        }
+
+        public (Error, ExternalXrefSpec) ResolveToXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        {
+            var (error, xrefSpec) = Resolve(uid, referencingFile);
+            return (error, xrefSpec?.ToExternalXrefSpec());
         }
 
         public XrefMapModel ToXrefMapModel()
@@ -49,6 +89,17 @@ namespace Microsoft.Docs.Build
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
+        }
+
+        private (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referencingFile)
+        {
+            var unescapedUid = Uri.UnescapeDataString(uid);
+            var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referencingFile) ?? ResolveExternalXrefSpec(unescapedUid);
+            if (xrefSpec is null)
+            {
+                return (Errors.XrefNotFound(uid), null);
+            }
+            return (null, xrefSpec);
         }
 
         private IXrefSpec ResolveExternalXrefSpec(string uid)

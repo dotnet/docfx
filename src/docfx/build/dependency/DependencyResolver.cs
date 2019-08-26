@@ -103,47 +103,7 @@ namespace Microsoft.Docs.Build
 
         public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(
             SourceInfo<string> href, Document referencingFile)
-        {
-            var (uid, query, fragment) = UrlUtility.SplitUrl(href);
-            string moniker = null;
-            string text = null;
-            var queries = new NameValueCollection();
-            if (!string.IsNullOrEmpty(query))
-            {
-                queries = HttpUtility.ParseQueryString(query);
-                moniker = queries["view"];
-                queries.Remove("view");
-                text = queries["text"];
-                queries.Remove("text");
-            }
-            var displayProperty = queries["displayProperty"];
-            queries.Remove("displayProperty");
-
-            // need to url decode uid from input content
-            var (xrefError, xrefSpec) = _xrefMap.Value.Resolve(new SourceInfo<string>(uid, href.Source), referencingFile);
-            if (xrefError != null)
-            {
-                return (xrefError, null, null, null);
-            }
-
-            var name = xrefSpec.GetXrefPropertyValueAsString("name");
-            var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
-
-            // fallback order:
-            // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? name ?? uid;
-
-            if (!string.IsNullOrEmpty(moniker))
-            {
-                queries["view"] = moniker;
-            }
-            var resolvedHref = UrlUtility.MergeUrl(
-                xrefSpec.Href,
-                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
-                fragment.Length == 0 ? "" : fragment.Substring(1));
-
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
-        }
+            => _xrefMap.Value.ResolveToLink(href, referencingFile);
 
         private (Error error, string content, Document file) TryResolveContent(Document referencingFile, SourceInfo<string> href)
         {
