@@ -172,10 +172,10 @@ namespace Microsoft.Docs.Build
         private static (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
         {
             var status = t_status.Value.Peek();
-            var (error, link, display, spec) = status.Context.DependencyResolver.ResolveAbsoluteXref(
+            var (error, link, display, declaringFile) = status.Context.DependencyResolver.ResolveAbsoluteXref(
                 href, (Document)InclusionContext.File);
 
-            if (spec?.DeclaringFile != null)
+            if (declaringFile != null)
             {
                 link = RelativeUrlMarker + link;
             }

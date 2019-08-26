@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,25 +13,93 @@ namespace Microsoft.Docs.Build
     {
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
         private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
+        private readonly DependencyMapBuilder _dependencyMapBuilder;
 
-        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap)
+        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
         {
             _internalXrefMap = InternalXrefMapBuilder.Build(context);
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
+            _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public IXrefSpec Resolve(SourceInfo<string> uid)
+        public (Error error, string href, string display, Document declaringFile) ResolveToLink(SourceInfo<string> href, Document referencingFile)
         {
-            return ResolveInternalXrefSpec(uid) ?? ResolveExternalXrefSpec(uid);
+            var (uid, query, fragment) = UrlUtility.SplitUrl(href);
+            string moniker = null;
+            string text = null;
+            var queries = new NameValueCollection();
+            if (!string.IsNullOrEmpty(query))
+            {
+                queries = HttpUtility.ParseQueryString(query);
+                moniker = queries["view"];
+                queries.Remove("view");
+                text = queries["text"];
+                queries.Remove("text");
+            }
+            var displayProperty = queries["displayProperty"];
+            queries.Remove("displayProperty");
+
+            // need to url decode uid from input content
+            var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), referencingFile);
+            if (xrefError != null)
+            {
+                return (xrefError, null, null, null);
+            }
+
+            var name = xrefSpec.GetXrefPropertyValueAsString("name");
+            var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
+
+            // fallback order:
+            // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid
+            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? name ?? uid;
+
+            if (!string.IsNullOrEmpty(moniker))
+            {
+                queries["view"] = moniker;
+            }
+            var resolvedHref = UrlUtility.MergeUrl(
+                xrefSpec.Href,
+                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
+                fragment.Length == 0 ? "" : fragment.Substring(1));
+
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+        }
+
+        public (Error, ExternalXrefSpec) ResolveToXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        {
+            var (error, xrefSpec) = Resolve(uid, referencingFile);
+            return (error, xrefSpec?.ToExternalXrefSpec());
         }
 
         public XrefMapModel ToXrefMapModel()
         {
             var references = _internalXrefMap.Values
-                .Select(xref => xref.ToExternalXrefSpec(forXrefMapOutput: true))
+                .Select(xref =>
+                {
+                    var xrefSpec = xref.ToExternalXrefSpec();
+
+                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
+                    var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
+                    var query = xref.DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    xrefSpec.Href = path + query + fragment;
+                    return xrefSpec;
+                })
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
+        }
+
+        private (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referencingFile)
+        {
+            var unescapedUid = Uri.UnescapeDataString(uid);
+            var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referencingFile) ?? ResolveExternalXrefSpec(unescapedUid);
+            if (xrefSpec is null)
+            {
+                return (Errors.XrefNotFound(uid), null);
+            }
+            return (null, xrefSpec);
         }
 
         private IXrefSpec ResolveExternalXrefSpec(string uid)
@@ -37,9 +107,14 @@ namespace Microsoft.Docs.Build
             return _externalXrefMap.TryGetValue(uid, out var result) ? result.Value : null;
         }
 
-        private IXrefSpec ResolveInternalXrefSpec(string uid)
+        private IXrefSpec ResolveInternalXrefSpec(string uid, Document declaringFile)
         {
-            return _internalXrefMap.TryGetValue(uid, out var spec) ? spec : null;
+            if (_internalXrefMap.TryGetValue(uid, out var spec))
+            {
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, spec.DeclaringFile, DependencyType.UidInclusion);
+                return spec;
+            }
+            return null;
         }
     }
 }
