@@ -232,6 +232,10 @@ namespace Microsoft.Docs.Build
             // Compare data-linktype only if the expectation contains data-linktype
             var expectedHtml = expected.Value<string>();
             var actualHtml = actual.Value<string>();
+            if (string.IsNullOrEmpty(expectedHtml) || string.IsNullOrEmpty(expectedHtml))
+            {
+                return (expectedHtml, actualHtml);
+            }
             if (!expectedHtml.Contains("data-linktype"))
             {
                 actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");
