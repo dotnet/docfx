@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -90,20 +91,20 @@ namespace Microsoft.Docs.Build
             var parents = new (NativeGitCommit commit, long blob)[8];
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
 
-            var headCommit = GetCommit(git_commit_id(pHead));
+            var headCommit = GetCommit(*git_commit_id(pHead));
             var headBlob = GetBlob(headCommit.Tree, pathSegments);
 
-            var visitedNodes = new HashSet<long> { headCommit.Sha.a };
+            var closeNodes = new HashSet<long> { headCommit.Sha.a };
 
-            var stack = new Stack<(NativeGitCommit commit, long blob)>();
-            stack.Push((headCommit, headBlob));
+            var openNodes = new Stack<(NativeGitCommit commit, long blob)>();
+            openNodes.Push((headCommit, headBlob));
 
-            while (stack.TryPop(out var node))
+            while (openNodes.TryPop(out var node))
             {
                 var (commit, blob) = node;
 
                 // Lookup and use cached commit history ONLY if there are no other commits to follow
-                if (stack.Count == 0 && commitCache.TryGetCommits(commit.Sha.a, blob, out var cachedIds))
+                if (openNodes.Count == 0 && commitCache.TryGetCommits(commit.Sha.a, blob, out var cachedIds))
                 {
                     // Only update cache when the cached result has changed.
                     updateCache = result.Count != 0;
@@ -133,9 +134,9 @@ namespace Microsoft.Docs.Build
                     {
                         // and it was TREESAME to one parent, follow only that parent.
                         // (Even if there are several TREESAME parents, follow only one of them.)
-                        if (visitedNodes.Add(parent.Sha.a))
+                        if (closeNodes.Add(parent.Sha.a))
                         {
-                            stack.Push((parent, blob));
+                            openNodes.Push((parent, blob));
                         }
                         singleParent = true;
                         break;
@@ -147,9 +148,9 @@ namespace Microsoft.Docs.Build
                     // Otherwise, follow all parents.
                     for (var i = 0; i < parentCount; i++)
                     {
-                        if (visitedNodes.Add(parents[i].commit.Sha.a))
+                        if (closeNodes.Add(parents[i].commit.Sha.a))
                         {
-                            stack.Push(parents[i]);
+                            openNodes.Push(parents[i]);
                         }
                     }
                 }
@@ -175,21 +176,17 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private unsafe NativeGitCommit GetCommit(git_oid commitId)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe NativeGitCommit GetCommit(in git_oid commitId)
         {
-            return GetCommit(&commitId);
+            return _commits.GetOrAdd(commitId.a, GetCommitCore, commitId);
         }
 
-        private unsafe NativeGitCommit GetCommit(git_oid* commitId)
+        private unsafe NativeGitCommit GetCommitCore(long _, git_oid commitId)
         {
-            if (_commits.TryGetValue(commitId->a, out var existingCommit))
+            if (git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */) != 0)
             {
-                return existingCommit;
-            }
-
-            if (git_object_lookup(out var commit, _repo, commitId, 1 /* GIT_OBJ_COMMIT */) != 0)
-            {
-                throw Errors.CommittishNotFound(_repoPath, commitId->ToString()).ToException();
+                throw Errors.CommittishNotFound(_repoPath, commitId.ToString()).ToException();
             }
 
             var author = git_commit_author(commit);
@@ -205,28 +202,26 @@ namespace Microsoft.Docs.Build
 
             var result = new NativeGitCommit
             {
-                Sha = *commitId,
+                Sha = commitId,
                 Tree = *git_commit_tree_id(commit),
                 Parents = parents,
                 GitCommit = new GitCommit
                 {
                     AuthorName = Marshal.PtrToStringUTF8(author->name),
                     AuthorEmail = Marshal.PtrToStringUTF8(author->email),
-                    Sha = commitId->ToString(),
+                    Sha = commitId.ToString(),
                     Time = time,
                 },
             };
 
-            return _commits[commitId->a] = result;
+            return result;
         }
 
-        private long GetBlob(git_oid treeId, int[] pathSegments)
+        private long GetBlob(git_oid blob, int[] pathSegments)
         {
-            var blob = treeId;
-
             for (var i = 0; i < pathSegments.Length; i++)
             {
-                var files = _trees.GetOrAdd(blob.a, _ => LoadTree(blob));
+                var files = _trees.GetOrAdd(blob.a, LoadTree, blob);
                 if (files is null || !files.TryGetValue(pathSegments[i], out blob))
                 {
                     return default;
@@ -236,7 +231,7 @@ namespace Microsoft.Docs.Build
             return blob.a;
         }
 
-        private unsafe Dictionary<int, git_oid> LoadTree(git_oid treeId)
+        private unsafe Dictionary<int, git_oid> LoadTree(long _, git_oid treeId)
         {
             if (git_object_lookup(out var tree, _repo, &treeId, 2 /* GIT_OBJ_TREE */) != 0)
             {
