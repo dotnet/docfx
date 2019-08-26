@@ -312,7 +312,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p>DEP</p>"}
 ---
-# Dependency can be a file system folder
+# [Skip] Dependency can be a file system folder
 inputs:
   docfx.yml: |
     dependencies:
