@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var singleParent = false;
-                var parentCount = commit.Parents.Length;
+                var parentCount = commit.ParentIds.Length;
                 if (parents.Length < parentCount)
                 {
                     Array.Resize(ref parents, parentCount);
@@ -132,7 +132,8 @@ namespace Microsoft.Docs.Build
 
                 for (var i = 0; i < parentCount; i++)
                 {
-                    var parent = GetCommit(commit.Parents[i]);
+                    // Build up the commit graph as we traverse the commits
+                    var parent = commit.Parents[i] ?? (commit.Parents[i] = GetCommit(commit.ParentIds[i]));
                     var parentBlob = GetBlob(parent.Tree, pathSegments);
                     parents[i] = (parent, parentBlob);
 
@@ -201,10 +202,10 @@ namespace Microsoft.Docs.Build
             var author = git_commit_author(commit);
             var parentCount = git_commit_parentcount(commit);
 
-            var parents = new git_oid[parentCount];
+            var parentIds = new git_oid[parentCount];
             for (var i = 0; i < parentCount; i++)
             {
-                parents[i] = *git_commit_parent_id(commit, i);
+                parentIds[i] = *git_commit_parent_id(commit, i);
             }
 
             var time = new git_time { time = git_commit_time(commit), offset = git_commit_time_offset(commit) }.ToDateTimeOffset();
@@ -213,7 +214,8 @@ namespace Microsoft.Docs.Build
             {
                 Sha = commitId,
                 Tree = *git_commit_tree_id(commit),
-                Parents = parents,
+                ParentIds = parentIds,
+                Parents = new NativeGitCommit[parentCount],
                 GitCommit = new GitCommit
                 {
                     AuthorName = Marshal.PtrToStringUTF8(author->name),
@@ -274,7 +276,9 @@ namespace Microsoft.Docs.Build
 
             public git_oid Tree;
 
-            public git_oid[] Parents;
+            public git_oid[] ParentIds;
+
+            public NativeGitCommit[] Parents;
 
             public GitCommit GitCommit;
         }
