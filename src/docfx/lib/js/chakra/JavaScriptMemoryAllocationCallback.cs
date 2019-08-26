@@ -1,4 +1,4 @@
-namespace ChakraHost.Hosting
+﻿namespace ChakraHost.Hosting
 {
     using System;
 
@@ -13,6 +13,5 @@ namespace ChakraHost.Hosting
     ///     allocation. Returning false indicates the allocation request is rejected. The return value
     ///     is ignored for other allocation events.
     /// </returns>
-    public delegate bool JavaScriptMemoryAllocationCallback(
-        IntPtr callbackState, JavaScriptMemoryEventType allocationEvent, UIntPtr allocationSize);
+    public delegate bool JavaScriptMemoryAllocationCallback(IntPtr callbackState, JavaScriptMemoryEventType allocationEvent, UIntPtr allocationSize);
 }

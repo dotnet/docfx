@@ -1,4 +1,4 @@
-namespace ChakraHost.Hosting
+﻿namespace ChakraHost.Hosting
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -40,21 +40,19 @@ namespace ChakraHost.Hosting
         /// <summary>
         ///     Using Eval or Function constructor will throw an exception.
         /// </summary>
-        [SuppressMessage(
-            "StyleCop.CSharp.DocumentationRules",
-            "SA1650:ElementDocumentationMustBeSpelledCorrectly",
-            Justification = "Eval is a valid function name.")]
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Eval is a valid function name.")]
         DisableEval = 0x00000010,
 
         /// <summary>
         ///     Runtime will enable all experimental features.
         /// </summary>
+        /// 
         EnableExperimentalFeatures = 0x00000020,
 
         /// <summary>
         ///     Calling <c>JsSetException</c> will also dispatch the exception to the script debugger
         ///     (if any) giving the debugger a chance to break on the exception.
         /// </summary>
-        DispatchSetExceptionsToDebugger = 0x00000040,
+        DispatchSetExceptionsToDebugger = 0x00000040
     }
 }
