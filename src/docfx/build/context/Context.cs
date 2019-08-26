@@ -58,6 +58,7 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(
                 docset.Config,
+                Cache,
                 BuildScope,
                 BuildQueue,
                 GitCommitProvider,

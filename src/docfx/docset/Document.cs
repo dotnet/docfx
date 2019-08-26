@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,8 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal class Document : IEquatable<Document>, IComparable<Document>
     {
-        private static ConcurrentDictionary<(Docset docset, string pathToDocset), Document> s_dependentDocuments = new ConcurrentDictionary<(Docset docset, string pathToDocset), Document>();
-
         /// <summary>
         /// Gets the owning docset of this document. A document can only belong to one docset.
         /// TODO: Split data and behaviorial objects from Document and Docset
@@ -289,7 +286,7 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, BuildScope buildScope, GitCommitProvider gitCommitProvider)
+        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, BuildScope buildScope, GitCommitProvider gitCommitProvider, Cache cache)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
@@ -307,7 +304,7 @@ namespace Microsoft.Docs.Build
                 return Create(docset, pathToDocset, templateEngine, FileOrigin.Current);
             }
 
-            if (gitCommitProvider == null)
+            if (gitCommitProvider == null || cache == null)
             {
                 return default;
             }
@@ -323,7 +320,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependentDoc = s_dependentDocuments.GetOrAdd((dependentDocset, pathToDocset), _ =>
+                var dependentDoc = cache.GetDependentDocument(dependentDocset, pathToDocset, () =>
                 {
                     var dependencyFile = CreateFromGit(gitCommitProvider, dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine);
                     if (dependencyFile != null)

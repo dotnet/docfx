@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
+        private readonly Cache _cache;
         private readonly BuildScope _buildScope;
         private readonly WorkQueue<Document> _buildQueue;
         private readonly BookmarkValidator _bookmarkValidator;
@@ -25,6 +26,7 @@ namespace Microsoft.Docs.Build
 
         public DependencyResolver(
             Config config,
+            Cache cache,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
@@ -33,6 +35,7 @@ namespace Microsoft.Docs.Build
             Lazy<XrefMap> xrefMap,
             TemplateEngine templateEngine)
         {
+            _cache = cache;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
             _bookmarkValidator = bookmarkValidator;
@@ -282,7 +285,7 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider);
+                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider, _cache);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -293,7 +296,7 @@ namespace Microsoft.Docs.Build
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider);
+                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider, _cache);
                         }
 
                         // Do not report error for landing page

@@ -18,6 +18,9 @@ namespace Microsoft.Docs.Build
             Lazy<(List<Error> errors, TableOfContentsModel tocModel, List<Document> referencedFiles, List<Document> referencedTocs)>>
             _tocModelCache = new ConcurrentDictionary<string, Lazy<(List<Error>, TableOfContentsModel, List<Document>, List<Document>)>>();
 
+        private readonly ConcurrentDictionary<(Docset docset, string pathToDocset), Document> _dependentDocuments
+            = new ConcurrentDictionary<(Docset docset, string pathToDocset), Document>();
+
         public (List<Error> errors, JToken token) LoadYamlFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
@@ -40,6 +43,9 @@ namespace Microsoft.Docs.Build
                 file.FilePath.Path,
                 new Lazy<(List<Error>, TableOfContentsModel, List<Document>, List<Document>)>(
                     () => TableOfContentsParser.Load(context, file))).Value;
+
+        public Document GetDependentDocument(Docset docset, string pathToDocset, Func<Document> getDocumentFromGit)
+            => _dependentDocuments.GetOrAdd((docset, pathToDocset), _ => getDocumentFromGit());
 
         private string GetKeyFromFile(Document file)
         {
