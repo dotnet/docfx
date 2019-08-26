@@ -76,8 +76,7 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            RestoreGitMap restoreGitMap,
-            Repository repository = null)
+            Repository repository)
         {
             _options = options;
             _errorLog = errorLog;
@@ -92,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, restoreGitMap, _options);
+                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, _options);
                 _errorLog.Write(errors);
                 return dependencies;
             });
@@ -148,21 +147,17 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreGitMap, CommandLineOptions options)
+            ErrorLog errorLog, string docsetPath, Config config, string locale, CommandLineOptions options)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                var (dir, subRestoreMap) = restoreGitMap.GetGitRestorePath(remote, branch, docsetPath);
+                var dir = RestoreGitMap.GetBareGitRestorePath(remote, docsetPath);
 
-                // get dependent docset config or default config
-                // todo: what parent config should be pass on its children
-                var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
-                errors.AddRange(loadErrors);
-
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap));
+                var repo = Repository.Create(dir, branch);
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, new Config(), options, repo));
             }
             return (errors, result);
         }

@@ -72,6 +72,27 @@ namespace Microsoft.Docs.Build
             Debug.Assert(released);
         }
 
+        public static string GetBareGitRestorePath(string remote, string docsetPath)
+        {
+            if (!UrlUtility.IsHttp(remote))
+            {
+                var fullPath = Path.Combine(docsetPath, remote);
+                if (Directory.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+
+                // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
+                // TODO: populate source info
+                throw Errors.FileNotFound(new SourceInfo<string>(remote)).ToException();
+            }
+
+            var path = AppData.GetGitDir(remote);
+            Debug.Assert(Directory.Exists(path));
+
+            return path;
+        }
+
         /// <summary>
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method

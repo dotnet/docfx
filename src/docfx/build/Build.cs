@@ -48,12 +48,12 @@ namespace Microsoft.Docs.Build
             Config config,
             RestoreGitMap gitMap)
         {
-            var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
+            var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, repository);
             if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
             {
                 if (fallbackRepo != null)
                 {
-                    return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
+                    return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, fallbackRepo));
                 }
 
                 if (LocalizationUtility.TryGetLocalizedDocsetPath(
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
                     return (new Docset(
-                        errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
+                        errorLog, localizationDocsetPath, currentDocset.Locale, config, options, repo), currentDocset);
                 }
             }
 

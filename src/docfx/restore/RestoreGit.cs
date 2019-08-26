@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
                 if (UrlUtility.IsHttp(url))
                 {
-                    yield return (remote, branch, GitFlags.None);
+                    yield return (remote, branch, GitFlags.NoCheckout);
                 }
             }
 
