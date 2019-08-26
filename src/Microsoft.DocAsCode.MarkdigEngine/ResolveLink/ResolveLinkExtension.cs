@@ -4,8 +4,11 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Markdig;
     using Markdig.Renderers;
+    using Markdig.Renderers.Html;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
     using Microsoft.DocAsCode.Common;
@@ -27,6 +30,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (markdownObject is ContainerBlock containerBlock)
             {
+                if (markdownObject is TripleColonBlock tripleColonBlock && tripleColonBlock.Extension.Name == "image")
+                {
+                    var htmlAttributes = tripleColonBlock.GetAttributes();
+
+                    if (htmlAttributes.Properties.Any(p => p.Key == "src"))
+                    {
+                        var srcHtmlAttribute = htmlAttributes.Properties.First(p => p.Key == "src");
+                        var src = srcHtmlAttribute.Value;
+
+                        htmlAttributes.Properties.Remove(new KeyValuePair<string, string>("src", src));
+                        htmlAttributes.AddProperty("src", GetLink(src, InclusionContext.File, InclusionContext.RootFile, tripleColonBlock));
+                        //block.SetData(typeof(HtmlAttributes), htmlAttributes);
+                    }
+                }
+
                 foreach (var subBlock in containerBlock)
                 {
                     UpdateLinks(subBlock);
