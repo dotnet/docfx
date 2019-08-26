@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
             return _commits.GetOrAdd(commitId.a, GetCommitCore, commitId);
         }
 
-        private unsafe NativeGitCommit GetCommitCore(long _, git_oid commitId)
+        private unsafe NativeGitCommit GetCommitCore(long unused, git_oid commitId)
         {
             if (git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */) != 0)
             {
@@ -231,7 +231,7 @@ namespace Microsoft.Docs.Build
             return blob.a;
         }
 
-        private unsafe Dictionary<int, git_oid> LoadTree(long _, git_oid treeId)
+        private unsafe Dictionary<int, git_oid> LoadTree(long unused, git_oid treeId)
         {
             if (git_object_lookup(out var tree, _repo, &treeId, 2 /* GIT_OBJ_TREE */) != 0)
             {
