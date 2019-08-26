@@ -207,20 +207,21 @@ namespace Microsoft.Docs.Build
 
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
         {
-            foreach (var (_, url) in config.Dependencies)
+            foreach (var (_, dependency) in config.Dependencies)
             {
-                var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                if (UrlUtility.IsHttp(url))
+                if (dependency.Type == PackageType.Git)
                 {
-                    yield return (remote, branch, GitFlags.None);
+                    yield return (dependency.Remote, dependency.Branch, GitFlags.None);
                 }
             }
 
-            if (UrlUtility.IsHttp(config.Template))
+            if (config.Template.Type == PackageType.Git)
             {
-                var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
-
-                yield return (remote, branch, GitFlags.None);
+                var localizedTemplate = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+                if (localizedTemplate.Type == PackageType.Git)
+                {
+                    yield return (localizedTemplate.Remote, localizedTemplate.Branch, GitFlags.None);
+                }
             }
 
             foreach (var item in GetLocalizationGitDependencies(rootRepository, config, locale))

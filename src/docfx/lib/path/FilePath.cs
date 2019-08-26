@@ -23,11 +23,9 @@ namespace Microsoft.Docs.Build
             Origin = from;
         }
 
-        public static bool operator ==(FilePath a, FilePath b)
-            => Equals(a, b);
+        public static bool operator ==(FilePath a, FilePath b) => Equals(a, b);
 
-        public static bool operator !=(FilePath a, FilePath b)
-           => !(a == b);
+        public static bool operator !=(FilePath a, FilePath b) => !Equals(a, b);
 
         public override string ToString() => Path;
 

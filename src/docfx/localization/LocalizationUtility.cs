@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, _) = restoreMap.GetGitRestorePath(locRemote, locBranch, docset.DocsetPath);
+                        (localizationDocsetPath, _) = restoreMap.GetGitRestorePath(locRemote, locBranch);
                         localizationBranch = locBranch;
                         break;
                     }
@@ -154,12 +154,22 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static (string remote, string branch) GetLocalizedTheme(string theme, string locale, string defaultLocale)
+        public static PackageUrl GetLocalizedTheme(PackageUrl theme, string locale, string defaultLocale)
         {
-            Debug.Assert(!string.IsNullOrEmpty(theme));
-            var (remote, branch, _) = UrlUtility.SplitGitUrl(theme);
+            switch (theme.Type)
+            {
+                case PackageType.Folder:
+                    return new PackageUrl(
+                        GetLocalizationName(LocalizationMapping.Repository, theme.Path, locale, defaultLocale));
 
-            return (GetLocalizationName(LocalizationMapping.Repository, remote, locale, defaultLocale), branch);
+                case PackageType.Git:
+                    return new PackageUrl(
+                        GetLocalizationName(LocalizationMapping.Repository, theme.Remote, locale, defaultLocale),
+                        theme.Branch);
+
+                default:
+                    return theme;
+            }
         }
 
         public static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
