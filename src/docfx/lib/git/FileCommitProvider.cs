@@ -86,11 +86,13 @@ namespace Microsoft.Docs.Build
             var updateCache = true;
             var result = new List<GitCommit>();
             var commitIds = new List<git_oid>();
-            var parents = new (NativeGitCommit, long blob)[8];
+            var parents = new (NativeGitCommit commit, long blob)[8];
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
 
             var headCommit = GetCommit(git_commit_id(pHead));
             var headBlob = GetBlob(headCommit.Tree, pathSegments);
+
+            var visitedNodes = new HashSet<long> { headCommit.Sha.a };
 
             var stack = new Stack<(NativeGitCommit commit, long blob)>();
             stack.Push((headCommit, headBlob));
@@ -130,7 +132,10 @@ namespace Microsoft.Docs.Build
                     {
                         // and it was TREESAME to one parent, follow only that parent.
                         // (Even if there are several TREESAME parents, follow only one of them.)
-                        stack.Push((parent, blob));
+                        if (visitedNodes.Add(parent.Sha.a))
+                        {
+                            stack.Push((parent, blob));
+                        }
                         singleParent = true;
                         break;
                     }
@@ -141,7 +146,10 @@ namespace Microsoft.Docs.Build
                     // Otherwise, follow all parents.
                     for (var i = 0; i < parentCount; i++)
                     {
-                        stack.Push(parents[i]);
+                        if (visitedNodes.Add(parents[i].commit.Sha.a))
+                        {
+                            stack.Push(parents[i]);
+                        }
                     }
                 }
 
