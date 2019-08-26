@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal class Document : IEquatable<Document>, IComparable<Document>
     {
+        private static ConcurrentDictionary<(Docset docset, string pathToDocset), Document> s_dependentDocuments = new ConcurrentDictionary<(Docset docset, string pathToDocset), Document>();
+
         /// <summary>
         /// Gets the owning docset of this document. A document can only belong to one docset.
         /// TODO: Split data and behaviorial objects from Document and Docset
@@ -320,10 +323,20 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependencyFile = CreateFromGit(gitCommitProvider, dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine);
-                if (dependencyFile != null)
+                var dependentDoc = s_dependentDocuments.GetOrAdd((dependentDocset, pathToDocset), _ =>
                 {
-                    return dependencyFile;
+                    var dependencyFile = CreateFromGit(gitCommitProvider, dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine);
+                    if (dependencyFile != null)
+                    {
+                        return dependencyFile;
+                    }
+
+                    return default;
+                });
+
+                if (dependentDoc != default)
+                {
+                    return dependentDoc;
                 }
             }
 
@@ -344,6 +357,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
+            Log.Write($"Try Get document from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
             var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(docset, pathToDocset);
 
             var commit = deleted && commits.Count > 1 ? commits[1] : (!deleted && commits.Count > 0 ? commits[0] : default);
@@ -353,6 +367,7 @@ namespace Microsoft.Docs.Build
                 return Create(docset, pathToDocset, templateEngine, deleted ? FileOrigin.Fallback : FileOrigin.Current, isFromHistory: true, readText:
                     new Lazy<string>(() =>
                     {
+                        Log.Write($"Try read document content from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commit.Sha, out var content))
                             return content;
                         return default;
