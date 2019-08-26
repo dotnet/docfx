@@ -50,13 +50,13 @@ namespace Microsoft.Docs.Build
         {
             return new TestServer(
                 new WebHostBuilder()
+                    .UseEnvironment(EnvironmentName.Production)
                     .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
 
             void ConfigureServices(IServiceCollection services)
             {
                 services.AddMvc()
-                        .AddRazorOptions(options => options.AllowRecompilingViewsOnFileChange = false)
                         .ConfigureApplicationPartManager(parts =>
                         {
                             // Ensure we only have one private TemplateController
