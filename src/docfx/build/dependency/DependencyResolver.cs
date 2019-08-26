@@ -282,7 +282,7 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope);
+                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope);
+                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider);
                         }
 
                         // Do not report error for landing page
@@ -341,11 +341,7 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = _buildScope.GetFallbackDocset(declaringFile.Docset);
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
             {
-                var (repo, _, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
-                if (repo != null && commits.Count > 0)
-                {
-                    return Document.Create(fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true);
-                }
+                return Document.CreateFromGit(gitCommitProvider, fallbackDocset, pathToDocset, templateEngine, deleted: true);
             }
 
             return default;
@@ -363,20 +359,10 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = _buildScope.GetFallbackDocset(declaringFile.Docset);
             if (fallbackDocset != null)
             {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
-                if (repo != null)
-                {
-                    var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                    if (commits.Count > 1)
-                    {
-                        // the latest commit would be deleting it from repo
-                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
-                        {
-                            return (content, Document.Create(
-                                fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true));
-                        }
-                    }
-                }
+                var doc = Document.CreateFromGit(gitCommitProvider, fallbackDocset, pathToDocset, templateEngine, deleted: true);
+
+                if (doc != null)
+                    return (doc.ReadText(), doc);
             }
 
             return default;

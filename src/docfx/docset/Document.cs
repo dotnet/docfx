@@ -105,6 +105,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
         private readonly Lazy<Repository> _repository;
+        private readonly Lazy<string> _readText;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
@@ -121,7 +122,8 @@ namespace Microsoft.Docs.Build
             bool isExperimental,
             string redirectionUrl = null,
             bool isFromHistory = false,
-            bool isPage = true)
+            bool isPage = true,
+            Lazy<string> readText = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
@@ -141,7 +143,9 @@ namespace Microsoft.Docs.Build
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
             _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
+            _readText = readText;
 
+            Debug.Assert(!isFromHistory || _readText != null);
             Debug.Assert(IsValidRelativePath(FilePath.Path));
             Debug.Assert(IsValidRelativePath(SitePath));
 
@@ -150,25 +154,20 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Reads this document as stream, throws if it does not exists.
-        /// </summary>
-        public Stream ReadStream()
-        {
-            Debug.Assert(ContentType != ContentType.Redirection);
-            Debug.Assert(!IsFromHistory);
-
-            return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path));
-        }
-
-        /// <summary>
         /// Reads this document as text, throws if it does not exists.
         /// </summary>
         public string ReadText()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
-            Debug.Assert(!IsFromHistory);
 
-            using (var reader = new StreamReader(ReadStream()))
+            if (IsFromHistory)
+            {
+                Debug.Assert(_readText != null);
+
+                return _readText.Value;
+            }
+
+            using (var reader = new StreamReader(File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path))))
             {
                 return reader.ReadToEnd();
             }
@@ -239,7 +238,15 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, FileOrigin origin = FileOrigin.Current, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
+        public static Document Create(
+            Docset docset,
+            string path,
+            TemplateEngine templateEngine,
+            FileOrigin origin = FileOrigin.Current,
+            string redirectionUrl = null,
+            bool isFromHistory = false,
+            bool combineRedirectUrl = false,
+            Lazy<string> readText = null)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -270,7 +277,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
+            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage, readText);
         }
 
         /// <summary>
@@ -279,7 +286,7 @@ namespace Microsoft.Docs.Build
         /// <param name="docset">The current docset</param>
         /// <param name="pathToDocset">The path relative to docset root</param>
         /// <returns>A new document, or null if not found</returns>
-        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, BuildScope buildScope)
+        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, BuildScope buildScope, GitCommitProvider gitCommitProvider)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
@@ -297,6 +304,11 @@ namespace Microsoft.Docs.Build
                 return Create(docset, pathToDocset, templateEngine, FileOrigin.Current);
             }
 
+            if (gitCommitProvider == null)
+            {
+                return default;
+            }
+
             // resolve from dependent docsets
             foreach (var (dependencyName, dependentDocset) in docset.DependencyDocsets)
             {
@@ -308,11 +320,43 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, buildScope: null);
+                var dependencyFile = CreateFromGit(gitCommitProvider, dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine);
                 if (dependencyFile != null)
                 {
                     return dependencyFile;
                 }
+            }
+
+            return default;
+        }
+
+        internal static Document CreateFromGit(GitCommitProvider gitCommitProvider, Docset docset, string pathToDocset, TemplateEngine templateEngine, bool deleted = false)
+        {
+            Debug.Assert(gitCommitProvider != null);
+
+            if (string.IsNullOrEmpty(pathToDocset))
+            {
+                return default;
+            }
+
+            if (docset == null)
+            {
+                return default;
+            }
+
+            var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(docset, pathToDocset);
+
+            var commit = deleted && commits.Count > 1 ? commits[1] : (!deleted && commits.Count > 0 ? commits[0] : default);
+            if (repo != null && commit != null)
+            {
+                var repoPath = PathUtility.NormalizeFolder(repo.Path);
+                return Create(docset, pathToDocset, templateEngine, FileOrigin.Current, isFromHistory: true, readText:
+                    new Lazy<string>(() =>
+                    {
+                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commit.Sha, out var content))
+                            return content;
+                        return default;
+                    }));
             }
 
             return default;
