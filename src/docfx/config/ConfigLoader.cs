@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
+        public static (List<Error> errors, Config config) Load(
+            string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
         {
             if (!TryGetConfigPath(docsetPath, out _))
             {
@@ -30,7 +31,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/> or return default config
         /// </summary>
-        public static (List<Error> errors, Config config) TryLoad(string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
+        public static (List<Error> errors, Config config) TryLoad(
+            string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
             => LoadCore(docsetPath, options, locale, extend);
 
         public static bool TryGetConfigPath(string docset, out string configPath)
@@ -128,7 +130,8 @@ namespace Microsoft.Docs.Build
             {
                 if (extend is JValue value && value.Value is string str)
                 {
-                    var content = RestoreFileMap.GetRestoredFileContent(docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)), fallbackDocset: null);
+                    var content = RestoreFileMap.GetRestoredFileContent(
+                        docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)), fallbackDocset: null);
                     var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
                     errors.AddRange(extendErrors);
                     JsonUtility.Merge(result, extendConfigObject);

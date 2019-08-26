@@ -10,7 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerProvider
     {
-        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))> _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
+        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))>
+            _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
+
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
         private readonly ConcurrentDictionary<Document, (Error, List<string>)> _monikerCache
@@ -52,7 +54,7 @@ namespace Microsoft.Docs.Build
             // User should not define it in moniker zone
             if (fileLevelMonikers.Count == 0)
             {
-                return (Errors.MonikerConfigMissing(file), new List<string>());
+                return (Errors.MonikerConfigMissing(rangeString), new List<string>());
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
@@ -91,7 +93,7 @@ namespace Microsoft.Docs.Build
                 // user should not define it in file metadata
                 if (configMonikers.Count == 0)
                 {
-                    return (Errors.MonikerConfigMissing(file), configMonikers);
+                    return (Errors.MonikerConfigMissing(metadata.MonikerRange), configMonikers);
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);

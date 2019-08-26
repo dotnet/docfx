@@ -25,7 +25,8 @@ namespace Microsoft.Docs.Build
                 Parallel.ForEach(fileManifests, fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(docset, fileManifest.Value);
+                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
+                            docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var output = new LegacyManifestOutput
