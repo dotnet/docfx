@@ -17,15 +17,16 @@ namespace Microsoft.Docs.Build
         private readonly string _repoPath;
         private readonly Lazy<GitCommitCache> _commitCache;
 
+        // Commit history and a lookup table from commit hash to commit.	
+        // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.	
+        private readonly ConcurrentDictionary<long, NativeGitCommit> _commits = new ConcurrentDictionary<long, NativeGitCommit>();
+
         // Intern path strings by given each path segment a string ID. For faster string lookup.
         private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
 
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
         private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>> _trees
                    = new ConcurrentDictionary<long, Dictionary<int, git_oid>>();
-
-        // A cache of commit by commit id
-        private readonly ConcurrentDictionary<long, NativeGitCommit> _commits = new ConcurrentDictionary<long, NativeGitCommit>();
 
         private int _nextStringId;
         private IntPtr _repo;
