@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string Serialize(object graph, bool indent = false)
         {
-            using (StringWriter writer = new StringWriter())
+            using (var writer = new StringWriter())
             {
                 Serialize(writer, graph, indent);
                 return writer.ToString();

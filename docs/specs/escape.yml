@@ -16,45 +16,51 @@ repos:
       a++.png:
 outputs:
   links.json: |
-    conceptual: |
-      <p>
-        <a href="a%20b">a%20b.md</a>
-        <a href="a&amp;b">a&amp;b.md</a>
-        <a href="a&amp;b">a&amp;b.md</a>
-        <a href="a&amp;amp;b">a&amp;amp;b.md</a>
-        <a href="http://foo%20b%C3%A4">http://foo%20bä</a>
-        <a href="a++.png">a++.png</a>
-      </p>
+    {
+      "conceptual": "
+        <p>
+          <a href='a%20b'>a%20b.md</a>
+          <a href='a&amp;b'>a&amp;b.md</a>
+          <a href='a&amp;b'>a&amp;b.md</a>
+          <a href='a&amp;amp;b'>a&amp;amp;b.md</a>
+          <a href='http://foo%20b%C3%A4'>http://foo%20bä</a>
+          <a href='a++.png'>a++.png</a>
+        </p>"
+    }
   .publish.json: |
-    files:
-    - url: /a b
-      path: a b.json
-    - url: /a&amp;b
-      path: a&amp;b.json
-    - url: /a&b
-      path: a&b.json
-    - url: /a++.png
-      path: a++.png
-    - url: /links
-      path: links.json
+    {
+      "files": [
+        { "url": "/a b", "path": "a b.json" },
+        { "url": "/a&amp;b", "path": "a&amp;b.json" },
+        { "url": "/a&b", "path": "a&b.json" },
+        { "url": "/a++.png", "path": "a++.png" },
+        { "url": "/links", "path": "links.json" }
+      ]
+    }
   'a b.json': |
-    canonical_url: https://docs.com/en-us/a b
-    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a b.md
-    content_git_url: https://github.com/escape/markdown/blob/master/a b.md
-    original_content_git_url: https://github.com/escape/markdown/blob/master/a b.md
-    original_content_git_url_template: '{repo}/blob/{branch}/a b.md'
+    {
+      "canonical_url": "https://docs.com/en-us/a b",
+      "gitcommit": "https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a b.md",
+      "content_git_url": "https://github.com/escape/markdown/blob/master/a b.md",
+      "original_content_git_url": "https://github.com/escape/markdown/blob/master/a b.md",
+      "original_content_git_url_template": "{repo}/blob/{branch}/a b.md"
+    }
   a&b.json: |
-    canonical_url: https://docs.com/en-us/a&b
-    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&b.md
-    content_git_url: https://github.com/escape/markdown/blob/master/a&b.md
-    original_content_git_url: https://github.com/escape/markdown/blob/master/a&b.md
-    original_content_git_url_template: '{repo}/blob/{branch}/a&b.md'
+    {
+      "canonical_url": "https://docs.com/en-us/a&b",
+      "gitcommit": "https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&b.md",
+      "content_git_url": "https://github.com/escape/markdown/blob/master/a&b.md",
+      "original_content_git_url": "https://github.com/escape/markdown/blob/master/a&b.md",
+      "original_content_git_url_template": "{repo}/blob/{branch}/a&b.md"
+    }
   a&amp;b.json: |
-    canonical_url: https://docs.com/en-us/a&amp;b
-    gitcommit: https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&amp;b.md
-    content_git_url: https://github.com/escape/markdown/blob/master/a&amp;b.md
-    original_content_git_url: https://github.com/escape/markdown/blob/master/a&amp;b.md
-    original_content_git_url_template: '{repo}/blob/{branch}/a&amp;b.md'
+    {
+      "canonical_url": "https://docs.com/en-us/a&amp;b",
+      "gitcommit": "https://github.com/escape/markdown/blob/26230e1514a57bfe4231dfe1e0a7b00307b5f6a9/a&amp;b.md",
+      "content_git_url": "https://github.com/escape/markdown/blob/master/a&amp;b.md",
+      "original_content_git_url": "https://github.com/escape/markdown/blob/master/a&amp;b.md",
+      "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
+    }
   a++.png:
 ---
 # Handle encoding for html links
@@ -73,15 +79,17 @@ inputs:
   a++.png:
 outputs:
   html-links.json: |
-    conceptual: |
-      <p>
-        <a href="a b">a%20b.md</a>
-        <a href="a&amp;b">a&amp;b.md</a>
-        <a href="a&amp;b">a&amp;b.md</a>
-        <a href="a&amp;amp;b">a&amp;amp;b.md</a>
-        <a href="http://foo%20b&#228;">http://foo%20bä</a>
-        <a href="a++.png">a++.png</a>
-      </p>
+    {
+      "conceptual": "
+        <p>
+          <a href='a b'>a%20b.md</a>
+          <a href='a&amp;b'>a&amp;b.md</a>
+          <a href='a&amp;b'>a&amp;b.md</a>
+          <a href='a&amp;amp;b'>a&amp;amp;b.md</a>
+          <a href='http://foo%20b&#228;'>http://foo%20bä</a>
+          <a href='a++.png'>a++.png</a>
+        </p>"
+    }
   'a b.json':
   a&b.json:
   a&amp;b.json:
@@ -119,24 +127,28 @@ inputs:
       "uid": "a&b",
       "name": "test",
       "fullName": "test.test",
-      "summary": "<some text &>"
+      "description": "<some text &>"
     }
   html-xref.md: |
-    Link to [text](xref:a&b?displayProperty=summary)
-    Link to <xref href="a&b?displayProperty=summary" />
-    Link to <xref:a&b?displayProperty=summary>
-    Link to @a&b?displayProperty=summary
+    Link to [text](xref:a&b?displayProperty=description)
+    Link to <xref href="a&b?displayProperty=description" />
+    Link to <xref:a&b?displayProperty=description>
+    Link to @a&b?displayProperty=description
     Link to @a&c
+    Link to <xref:a%2A>
 outputs:
   a.json:
   html-xref.json: |
-    {"conceptual":
-        "
+    {
+      "conceptual": "
           <p>
             Link to <a href=\"a.json\">text</a>
-            Link to <a href='a.json'>&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
-            Link to <a href=\"a.json\">&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
-            Link to <a href=\"a.json\">&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
+            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
+            Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
             Link to @a&amp;c
-          </p>
-        "}
+            Link to &lt;xref:a%2A&gt;
+          </p>"
+    }
+  .errors.log: |
+    ["warning","xref-not-found","Cross reference not found: 'a%2A'","html-xref.md",6,9]

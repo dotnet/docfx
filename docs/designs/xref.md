@@ -180,7 +180,7 @@ inputs:
     }
 outputs:
   a.json:
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {
         "references":[
             { "uid": "a", "summary": "<p>Hello <code>docfx</code>!</p>\n" }

@@ -35,13 +35,13 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<XrefMap> _xrefMap;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, Func<Context, Document, Task> buildFile)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
-
-            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset, restoreFileMap));
+            DependencyMapBuilder = new DependencyMapBuilder();
+            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset, restoreFileMap, DependencyMapBuilder));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
-            BuildQueue = new WorkQueue<Document>(doc => buildFile(this, doc));
+            BuildQueue = new WorkQueue<Document>();
 
             ErrorLog = errorLog;
             Output = new Output(outputPath);
@@ -55,9 +55,15 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            DependencyMapBuilder = new DependencyMapBuilder();
             DependencyResolver = new DependencyResolver(
-                docset.Config, BuildScope, BuildQueue, GitCommitProvider, BookmarkValidator, DependencyMapBuilder, _xrefMap, TemplateEngine);
+                docset.Config,
+                BuildScope,
+                BuildQueue,
+                GitCommitProvider,
+                BookmarkValidator,
+                DependencyMapBuilder,
+                _xrefMap,
+                TemplateEngine);
             ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
         }
 

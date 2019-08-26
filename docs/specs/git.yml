@@ -20,9 +20,7 @@ repos:
         docs/index.md: |
           Alice creates this.
 inputs:
-  docfx.yml: |
-    gitHub:
-      resolveUsers: true
+  docfx.yml:
 cache:
   github-users.json: |
       { "users": [
@@ -53,9 +51,7 @@ inputs:
     author: invalid_user
     ---
     # git-test
-  docfx.yml: |
-    gitHub:
-      resolveUsers: true
+  docfx.yml:
 cache:
   github-users.json: |
     {
@@ -85,9 +81,7 @@ repos:
         docs/index.md: |
           Alice creates this.
 inputs:
-  docfx.yml: |
-    gitHub:
-      resolveUsers: true
+  docfx.yml:
 cache:
   github-users.json: |
       { "users": [
@@ -134,8 +128,6 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
-      resolveUsers: true
     contribution:
       excludedContributors:
         - AlIcE
@@ -155,7 +147,7 @@ outputs:
       {
         "author": 
           { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
-        "!contributors": null
+        "contributors": undefined
       }
     }
 ---
@@ -169,8 +161,6 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
-      resolveUsers: true
     contribution:
       excludedContributors:
         - Alice
@@ -179,7 +169,7 @@ cache:
       { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
 outputs:
   docs/index.json: |
-    { "_op_gitContributorInformation": { "!author": null } }
+    { "_op_gitContributorInformation": { "author": undefined } }
 ---
 # Use the earliest contributor as author if author not specified in YAML header
 repos:
@@ -195,9 +185,7 @@ repos:
         docs/index.md: |
           Alice creates this.
 inputs:
-  docfx.yml: |
-    gitHub:
-      resolveUsers: true
+  docfx.yml:
 cache:
   github-users.json: |
       { "users": [
@@ -238,8 +226,6 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
-      resolveUsers: true
     contribution:
       excludedContributors:
         - ChArLiE
@@ -275,8 +261,6 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
-      resolveUsers: true
     contribution:
       excludedContributors:
         - alice
@@ -285,10 +269,7 @@ cache:
       { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
 outputs:
   docs/index.json: |
-    {
-      "!author": null,
-      "!contributors": null
-    }
+    { "author": undefined, "contributors": undefined }
 ---
 # Show content_git_url, original_content_git_url and gitcommit
 repos:
@@ -476,7 +457,6 @@ repos:
 inputs:
   docfx.yml: |
     gitHub:
-      resolveUsers: true
       authToken: {DOCS_GITHUB_TOKEN}
     contribution:
       repository: https://github.com/docascode/contribution-test
@@ -529,8 +509,6 @@ repos:
           Osmond creates this, without email
 inputs:
   docfx.yml: |
-    gitHub:
-      resolveUsers: true
     contribution:
       repository: https://docascode.visualstudio.com/contribution1/_git/a
 cache:
@@ -591,10 +569,9 @@ cache:
 outputs:
   docs/index.json: |
     {
-      "_op_gitContributorInformation": 
-      {
-        "!author_info": null,
-        "!contributors": null,
+      "_op_gitContributorInformation": {
+        "author_info": undefined,
+        "contributors": undefined
       },
       "updated_at": "2018-10-30 12:00 AM"
     }

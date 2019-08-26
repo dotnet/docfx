@@ -1,0 +1,21 @@
+<Project>
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <LangVersion>Latest</LangVersion>
+    <Exclude>[xunit.*]*,[*.Views]*,[*]ChakraHost.Hosting.*</Exclude>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="2.6.3" />
+    <PackageReference Include="Codecov" Version="1.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

@@ -3,81 +3,103 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
     internal class XrefMap
     {
-        // TODO: key could be uid+moniker+locale
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
         private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
+        private readonly DependencyMapBuilder _dependencyMapBuilder;
 
-        private static ThreadLocal<Stack<(string uid, string propertyName, Document parent)>> t_recursionDetector = new ThreadLocal<Stack<(string, string, Document)>>(() => new Stack<(string, string, Document)>());
-
-        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap)
+        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
         {
             _internalXrefMap = InternalXrefMapBuilder.Build(context);
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
+            _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public (Error error, string href, string display, IXrefSpec xrefSpec) Resolve(string uid, SourceInfo<string> href, string displayPropertyName, Document relativeTo)
+        public (Error error, string href, string display, Document declaringFile) ResolveToLink(SourceInfo<string> href, Document referencingFile)
         {
-            if (t_recursionDetector.Value.Contains((uid, displayPropertyName, relativeTo)))
+            var (uid, query, fragment) = UrlUtility.SplitUrl(href);
+            string moniker = null;
+            string text = null;
+            var queries = new NameValueCollection();
+            if (!string.IsNullOrEmpty(query))
             {
-                var referenceMap = t_recursionDetector.Value.Select(x => x.parent).ToList();
-                referenceMap.Reverse();
-                referenceMap.Add(relativeTo);
-                throw Errors.CircularReference(referenceMap).ToException();
+                queries = HttpUtility.ParseQueryString(query);
+                moniker = queries["view"];
+                queries.Remove("view");
+                text = queries["text"];
+                queries.Remove("text");
+            }
+            var displayProperty = queries["displayProperty"];
+            queries.Remove("displayProperty");
+
+            // need to url decode uid from input content
+            var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), referencingFile);
+            if (xrefError != null)
+            {
+                return (xrefError, null, null, null);
             }
 
-            try
+            var name = xrefSpec.GetXrefPropertyValueAsString("name");
+            var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
+
+            // fallback order:
+            // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid
+            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? name ?? uid;
+
+            if (!string.IsNullOrEmpty(moniker))
             {
-                t_recursionDetector.Value.Push((uid, displayPropertyName, relativeTo));
-                return ResolveCore(uid, href, displayPropertyName);
+                queries["view"] = moniker;
             }
-            finally
-            {
-                Debug.Assert(t_recursionDetector.Value.Count > 0);
-                t_recursionDetector.Value.Pop();
-            }
+            var resolvedHref = UrlUtility.MergeUrl(
+                xrefSpec.Href,
+                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
+                fragment.Length == 0 ? "" : fragment.Substring(1));
+
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public XrefMapModel ToXrefMapModel(Context context)
+        public (Error, ExternalXrefSpec) ResolveToXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        {
+            var (error, xrefSpec) = Resolve(uid, referencingFile);
+            return (error, xrefSpec?.ToExternalXrefSpec());
+        }
+
+        public XrefMapModel ToXrefMapModel()
         {
             var references = _internalXrefMap.Values
-                .Select(xref => xref.ToExternalXrefSpec(context, forXrefMapOutput: true))
+                .Select(xref =>
+                {
+                    var xrefSpec = xref.ToExternalXrefSpec();
+
+                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
+                    var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
+                    var query = xref.DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    xrefSpec.Href = path + query + fragment;
+                    return xrefSpec;
+                })
                 .OrderBy(xref => xref.Uid).ToArray();
 
             return new XrefMapModel { References = references };
         }
 
-        private (Error error, string href, string display, IXrefSpec xrefSpec) ResolveCore(
-            string uid, SourceInfo<string> href, string displayPropertyName)
+        private (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referencingFile)
         {
-            var spec = ResolveXrefSpec(uid);
-            if (spec is null)
+            var unescapedUid = Uri.UnescapeDataString(uid);
+            var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referencingFile) ?? ResolveExternalXrefSpec(unescapedUid);
+            if (xrefSpec is null)
             {
-                return (Errors.XrefNotFound(href), null, null, null);
+                return (Errors.XrefNotFound(uid), null);
             }
-
-            var (_, query, fragment) = UrlUtility.SplitUrl(spec.Href);
-            var resolvedHref = UrlUtility.MergeUrl(spec.Href, query, fragment.Length == 0 ? "" : fragment.Substring(1));
-
-            var name = spec.GetXrefPropertyValue("name");
-            var displayPropertyValue = spec.GetXrefPropertyValue(displayPropertyName);
-
-            // fallback order:
-            // xrefSpec.displayPropertyName -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(displayPropertyValue) ? displayPropertyValue : (!string.IsNullOrEmpty(name) ? name : uid);
-            return (null, resolvedHref, display, spec);
-        }
-
-        private IXrefSpec ResolveXrefSpec(string uid)
-        {
-            return ResolveInternalXrefSpec(uid) ?? ResolveExternalXrefSpec(uid);
+            return (null, xrefSpec);
         }
 
         private IXrefSpec ResolveExternalXrefSpec(string uid)
@@ -85,9 +107,14 @@ namespace Microsoft.Docs.Build
             return _externalXrefMap.TryGetValue(uid, out var result) ? result.Value : null;
         }
 
-        private IXrefSpec ResolveInternalXrefSpec(string uid)
+        private IXrefSpec ResolveInternalXrefSpec(string uid, Document declaringFile)
         {
-            return _internalXrefMap.TryGetValue(uid, out var spec) ? spec : null;
+            if (_internalXrefMap.TryGetValue(uid, out var spec))
+            {
+                _dependencyMapBuilder.AddDependencyItem(declaringFile, spec.DeclaringFile, DependencyType.UidInclusion);
+                return spec;
+            }
+            return null;
         }
     }
 }

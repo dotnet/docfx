@@ -1,0 +1,235 @@
+---
+# note token text can be replaced by template
+repos:
+  https://docs.com/markdown-note:
+  - files:
+      docfx.yml: |
+        template: https://docs.com/template/token
+      docs/a.md: |
+        >[!NOTE]
+        >note
+  https://docs.com/template/token:
+  - files:
+      ContentTemplate/token.json: |
+        { "note": "<p>my note</p>" }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
+---
+# Run data-transform if provided, by default return {"content": "serialized json"}
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}
+---
+# Run data-transform if provided in legacy mode, by default return {"content": "serialized json"}
+legacy: true
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}
+---
+# Run data-transform if provided, and return raw object if content property is not serialized json object
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        result: model.prop + " has run js data transform",
+        content: "raw string"
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {
+      "result": "value has run js data transform",
+      "content": "raw string"
+    }
+---
+# Don't run data-transform if corresponding js not provided
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"prop": "value"}
+---
+# SDP page in none-legacy mode
+# don't run any js transform or mustache, only produce .json output
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "contentType": "markdown"
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime: TestPage
+    metadata:
+      key: value
+    content: |
+      **marked-up**
+    title: this is title
+outputs:
+  a.json: |
+    {
+      "metadata": {
+        "key": "value"
+      },
+      "content": "<p><strong>marked-up</strong></p>",
+      "title": "this is title"
+    }
+---
+# Apply template in none-legacy mode and produce html page when output is not json
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      model.additional = "additional";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/ContentTemplate/Conceptual.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+  a.md: |
+    # title
+    **strong**
+    ~~removed~~
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <p>
+          <strong>strong</strong>
+          <del>removed</del>
+        </p>
+      </div>
+  .publish.json: |
+    {
+      "files": [{
+        "additional": "additional"
+      }]
+    }
+---
+# Apply template in none-legacy mode and produce html page when output is not json with ugly-url
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+      uglifyUrl: true
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/ContentTemplate/Conceptual.html.liquid:
+  a.md:
+outputs:
+  a.html:
+---
+# Verify SDP pipeline
+# YAML mime in the SDP document should have a corresponding *.html.primary.js file
+# Set config.output.json to false to run *.html.liquid to output static HTML
+# Provide *.mta.json.js to transform metadata
+# Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "test"
+      return {
+        content: JSON.stringify(model)
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.tmpl: |
+    <div>{{content}}</div>
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+  _themes/ContentTemplate/test.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <div>value</div>
+
+      </div>
+---
+# html post process for `markdown` properties
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    markdown: |
+      # h1
+      <script>alert(0);</script>
+      <link rel="stylesheet" href="https://a.com/b.css" />
+      <div style="display:hidden"></div>
+      <style>h1 {color:red;}</style>
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "markdown": {"contentType": "markdown"}
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+outputs:
+  a.json: |
+    {"markdown":"<h1 id=\"h1\">h1</h1><div></div>"}

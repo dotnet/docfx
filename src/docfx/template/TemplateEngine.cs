@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -20,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly string _contentTemplateDir;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
-        private readonly JavascriptEngine _js;
+        private readonly IJavaScriptEngine _js;
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
 
@@ -33,7 +34,13 @@ namespace Microsoft.Docs.Build
             _global = LoadGlobalTokens();
             _schemas = LoadSchemas(schemaDir, _contentTemplateDir);
             _liquid = new LiquidTemplate(_contentTemplateDir);
-            _js = new JavascriptEngine(_contentTemplateDir, _global);
+
+            // TODO: remove JINT after Microsoft.CharkraCore NuGet package
+            // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
+            _js = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
+                : new JintJsEngine(_contentTemplateDir, _global);
+
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
         }
 
@@ -96,7 +103,8 @@ namespace Microsoft.Docs.Build
             }
 
             var jsResult = _js.Run(scriptPath, methodName, model);
-            JObject result = new JObject();
+
+            var result = new JObject();
             if (jsResult is JValue)
             {
                 // workaround for result is not JObject
@@ -135,14 +143,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(docset != null);
 
-            if (string.IsNullOrEmpty(docset.Config.Template))
+            if (docset.Config.Template.Type == PackageType.None)
             {
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeRestoreMap) = restoreGitMap.GetGitRestorePath(themeRemote, themeBranch, docset.DocsetPath);
-            Log.Write($"Using theme '{themeRemote}#{themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
+            var theme = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, themeRestoreMap) = restoreGitMap.GetGitRestorePath(theme, docset.DocsetPath);
+            Log.Write($"Using theme '{theme}' commit {themeRestoreMap.DependencyLock?.Commit}' at '{themePath}'");
 
             return new TemplateEngine(themePath);
         }

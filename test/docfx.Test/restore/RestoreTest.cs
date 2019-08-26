@@ -80,7 +80,7 @@ dependencies:
 
             // run restore again
             Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }));
-          
+
             // since the lockdown time works, new slot will be created
             Assert.Equal(3, GetWorkTreeFolderCount(restoreDir));
 

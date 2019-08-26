@@ -30,51 +30,73 @@ namespace Microsoft.Docs.Build
                     return;
 
                 var gitMap = fallbackRestoreGitMap ?? restoreGitMap;
-                var (docset, fallbackDocset) = GetDocsetWithFallback();
+                var (docset, fallbackDocset) = GetDocsetWithFallback(
+                    docsetPath, options, errorLog, repository, locale, fallbackRepo, config, gitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
                 await Run(docset, fallbackDocset, gitMap, options, errorLog, outputPath);
-
-                (Docset docset, Docset fallbackDocset) GetDocsetWithFallback()
-                {
-                    var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
-                    if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
-                    {
-                        if (fallbackRepo != null)
-                        {
-                            return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
-                        }
-
-                        if (LocalizationUtility.TryGetLocalizedDocsetPath(currentDocset, gitMap, config, currentDocset.Locale, out var localizationDocsetPath, out var localizationBranch))
-                        {
-                            var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                            return (new Docset(errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
-                        }
-                    }
-
-                    return (currentDocset, default);
-                }
             }
         }
 
-        private static async Task Run(Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, CommandLineOptions options, ErrorLog errorLog, string outputPath)
+        private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
+            string docsetPath,
+            CommandLineOptions options,
+            ErrorLog errorLog,
+            Repository repository,
+            string locale,
+            Repository fallbackRepo,
+            Config config,
+            RestoreGitMap gitMap)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap, BuildFile))
+            var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
+            if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+            {
+                if (fallbackRepo != null)
+                {
+                    return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
+                }
+
+                if (LocalizationUtility.TryGetLocalizedDocsetPath(
+                    currentDocset,
+                    gitMap,
+                    config,
+                    currentDocset.Locale,
+                    out var localizationDocsetPath,
+                    out var localizationBranch))
+                {
+                    var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                    return (new Docset(
+                        errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
+                }
+            }
+
+            return (currentDocset, default);
+        }
+
+        private static async Task Run(
+            Docset docset,
+            Docset fallbackDocset,
+            RestoreGitMap restoreGitMap,
+            CommandLineOptions options,
+            ErrorLog errorLog,
+            string outputPath)
+        {
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
                 using (Progress.Start("Building files"))
                 {
-                    await context.BuildQueue.Drain(Progress.Update);
+                    await context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
                 }
 
                 context.BookmarkValidator.Validate();
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var xrefMapModel = context.XrefMap.ToXrefMapModel(context);
+                var xrefMapModel = context.XrefMap.ToXrefMapModel();
 
-                context.Output.WriteJson(xrefMapModel, "xrefmap.json");
+                context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
 
@@ -100,7 +122,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task BuildFile(Context context, Document file)
         {
-            if (!ShouldBuildFile())
+            if (!ShouldBuildFile(context, file))
             {
                 return;
             }
@@ -143,22 +165,24 @@ namespace Microsoft.Docs.Build
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
             }
+        }
 
-            bool ShouldBuildFile()
+        private static bool ShouldBuildFile(Context context, Document file)
+        {
+            if (file.ContentType == ContentType.TableOfContents)
             {
-                if (file.ContentType == ContentType.TableOfContents)
+                if (!context.TocMap.Contains(file))
                 {
-                    if (!context.TocMap.Contains(file))
-                    {
-                        return false;
-                    }
-
-                    // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return file.FilePath.Origin != FileOrigin.Fallback || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
+                    return false;
                 }
 
-                return file.FilePath.Origin != FileOrigin.Fallback;
+                // if A toc includes B toc and only B toc is localized, then A need to be included and built
+                return file.FilePath.Origin != FileOrigin.Fallback
+                    || (context.TocMap.TryGetTocReferences(file, out var tocReferences)
+                        && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
             }
+
+            return file.FilePath.Origin != FileOrigin.Fallback;
         }
 
         private static RestoreGitMap GetRestoreGitMap(
@@ -169,8 +193,10 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
+            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
+                ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var dependencyLock = DependencyLock.Load(docsetPath, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock) ?? new DependencyLockModel();
+            var dependencyLock = DependencyLock.Load(docsetPath, dependencyLockPath) ?? new DependencyLockModel();
             return RestoreGitMap.Create(dependencyLock);
         }
 
@@ -184,13 +210,14 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, fallbackBranch) == null && restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, "master") != null)
+                if (restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, fallbackBranch) == null
+                    && restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, "master") != null)
                 {
                     // fallback to master branch
                     fallbackBranch = "master";
                 }
 
-                var (fallbackRepoPath, fallbackRestoreMap) = restoreGitMap.GetGitRestorePath(fallbackRemote, fallbackBranch, docsetPath);
+                var (fallbackRepoPath, fallbackRestoreMap) = restoreGitMap.GetGitRestorePath(fallbackRemote, fallbackBranch);
                 var fallbackRepository = Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
 
                 if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))

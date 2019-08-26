@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         // For testing purpose
         internal static Func<string> GetCachePath;
 
-        public static string GitRoot => Path.Combine(s_root, "git2");
+        public static string GitRoot => Path.Combine(s_root, "git3");
 
         public static string DownloadsRoot => Path.Combine(s_root, "downloads2");
 
@@ -43,7 +43,8 @@ namespace Microsoft.Docs.Build
 
         public static string GetDependencyLockFile(string docsetPath, string locale)
         {
-            return PathUtility.NormalizeFile(Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
+            return PathUtility.NormalizeFile(
+                Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
         }
 
         public static string GetCommitCachePath(string remote)
@@ -53,7 +54,8 @@ namespace Microsoft.Docs.Build
 
         public static string GetCommitBuildTimePath(string remote, string branch)
         {
-            return Path.Combine(CacheRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
+            return Path.Combine(
+                CacheRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
         }
 
         /// <summary>

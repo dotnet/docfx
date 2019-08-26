@@ -35,8 +35,9 @@ namespace Microsoft.Docs.Build
 
         public Error(ErrorLevel level, string code, string message, FilePath file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
         {
+            // TODO: enable error code MUST have line info verification here
             Debug.Assert(!string.IsNullOrEmpty(code));
-            Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), "Error code should only contain dash and letters in lowercase");
+            Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), $"Error code '{code}' should only contain dash and letters in lowercase");
             Debug.Assert(!string.IsNullOrEmpty(message));
 
             Level = level;
@@ -60,6 +61,11 @@ namespace Microsoft.Docs.Build
                 Column,
                 EndLine,
                 EndColumn);
+        }
+
+        public Error WithLevel(ErrorLevel level)
+        {
+            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn);
         }
 
         public override string ToString() => ToString(Level);

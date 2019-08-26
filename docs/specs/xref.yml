@@ -25,7 +25,7 @@ inputs:
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
-  docs/a.md: Link to @System.String
+  docs/a.md: Link to @System.String?displayProperty=fullName
   1.xrefmap.json: |
     {
       "references":[{
@@ -40,7 +40,7 @@ inputs:
     { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
@@ -80,7 +80,7 @@ outputs:
     {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
   docs/a.json:
   docs/b.json:
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {
       "references":[
         {
@@ -149,6 +149,7 @@ inputs:
       "description": "a.description"
     }
   docs/c.md: |
+    Link to <xref:a?text=some%20text&displayProperty=fullName>
     Link to <xref:a?displayProperty=fullName>
     Link to <xref:a??displayProperty=fullName>
     Link to @a?displayProperty=fullName
@@ -158,6 +159,7 @@ outputs:
   docs/c.json: | 
     {
       "conceptual":"<p>
+                        Link to <a href=\"a.json\">some text</a>
                         Link to <a href=\"a.json\">test.test</a>
                         Link to <a href=\"a.json??displayProperty=fullName\">test</a>
                         Link to <a href=\"a.json\">test.test</a>
@@ -165,7 +167,7 @@ outputs:
                         Link to <a href=\"a.json\">test</a></p>"
     }
   docs/a.json:
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a"}]}
   .dependencymap.json: |
     {
@@ -202,7 +204,7 @@ outputs:
     {"conceptual": "<p>Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a></p>\n"}
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.yml', 'docs/b.json'"]
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json?branch=master"}]}
 ---
 # Resolve xref in SDP
@@ -237,7 +239,7 @@ outputs:
           "description": "a.description"
       }
     }
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
   .dependencymap.json: |
     {
@@ -274,8 +276,8 @@ outputs:
   .errors.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
     ["warning","xref-not-found","Cross reference not found: 'a'","docs/b.json",3,13]
-  xrefmap.json: | 
-    {"!references":null}
+  .xrefmap.json: | 
+    {"references": undefined}
 ---
 # support multiple uids in the same array in one SDP
 inputs:
@@ -303,7 +305,7 @@ outputs:
   docs/a.json:
   docs/b.json: |
     {"conceptual": "<p>Link to <a href=\"a.json#a_b\">a.b</a></p>\n"}
-  xrefmap.json: |
+  .xrefmap.json: |
     {
       "references": [{
         "uid": "a",
@@ -392,7 +394,7 @@ inputs:
     }
 outputs:
   docs/a.json:
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","summary":"<pre><code>Hello `docfx`!\n</code></pre>\n"}]}
 ---
 # Xref property field which supports inline markdown content
@@ -407,7 +409,7 @@ inputs:
     }
 outputs:
   docs/a.json:
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Xref property field with dependecy
@@ -425,7 +427,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
 # Refer to uid with hashtag
@@ -494,7 +496,7 @@ outputs:
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'c#bookmark'","docs/b.md",1,9]
+    ["warning","xref-not-found","Cross reference not found: 'c'","docs/b.md",1,9]
 ---
 # Markdown inclusion with xref reference
 inputs:
@@ -552,154 +554,111 @@ outputs:
       }
     }
 ---
-# Markdown and SDP non-cyclic xref reference
+# circular reference within SDP UID definition a -> a
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.md: |
-    ---
-    title: Title from yaml header a
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
     uid: a
-    ---
-    Link to @b?displayProperty=summary
-  docs/b.json: | 
+    xref: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "description": "description for b",
-      "summary": "Link to @a?displayProperty=summary",
-    }
-outputs:
-  docs/a.json:
-  docs/b.json: |
-    { "name":"name for b","description":"description for b" }
----
-# SDP non-cyclic xref reference should be resolved
-# whose display properties are plain text
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @b?displayProperty=inlineDescription",
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "inlineDescription": "description for b",
-      "summary": "Link to @a",
-    }
-outputs:
-  docs/a.json: |
-    {
-      "name": "name for a",
-      "summary": "<p>Link to <a href=\"b.json\">description for b</a></p>\n",
-      "inlineDescription": "description for a",
-      "uid": "a"
-    }
-  docs/b.json: |
-    {
-      "name": "name for b",
-      "summary": "<p>Link to <a href=\"a.json\">name for a</a></p>\n",
-      "inlineDescription": "description for b",
-      "uid": "b"
-    }
----
-# SDP cyclic xref reference whose display properties referring to another uid
-# a.json -> b.json -> a.json && b.json -> a.json -> b.json
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @b?displayProperty=summary",
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "inlineDescription": "description for b",
-      "summary": "Link to @a?displayProperty=summary",
-    }
-  docs/c.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "c",
-      "name": "name for c",
-      "inlineDescription": "description for c",
-      "summary": "Link to @a",
-    }
-outputs:
-  docs/c.json: |
-    {"name":"name for c","summary":"<p>Link to <a href=\"a.json\">name for a</a></p>\n","inlineDescription":"description for c","uid":"c"}
-  .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/b.json' --> 'docs/a.json'","docs/a.json"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.json' --> 'docs/a.json' --> 'docs/b.json'","docs/b.json"]
----
-# SDP cyclic xref reference whose display properties referring to another uid
-# b.json -> c.json -> b.json && b.json -> c.json -> b.json && c.json -> b.json -> c.json
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @b?displayProperty=summary",
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
-      "name": "name for b",
-      "inlineDescription": "description for b",
-      "summary": "Link to @c?displayProperty=summary",
-    }
-  docs/c.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "c",
-      "name": "name for c",
-      "inlineDescription": "description for c",
-      "summary": "Link to @b?displayProperty=summary",
-    }
-outputs:
-  .errors.log: | 
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/c.json' --> 'docs/b.json' --> 'docs/c.json'","docs/c.json"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/b.json"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/b.json' --> 'docs/c.json' --> 'docs/b.json'","docs/a.json"]
----
-# SDP cyclic xref reference to itself
-inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "a",
-      "name": "name for a",
-      "inlineDescription": "description for a",
-      "summary": "Link to @a?displayProperty=summary",
+      "properties": {
+          "uid": {
+            "type": "string",
+            "contentType": "uid"
+          },
+          "xref": {
+              "type": "string",
+              "contentType": "Xref"
+          }
+      },
+      "xrefProperties": [
+          "xref"
+      ]
     }
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/a.json' --> 'docs/a.json'","docs/a.json"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
 ---
-# SDP non-cyclic xref reference, whose property references can be resolved
+# circular reference within SDP UID definition a -> b -> c -> a
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    xref: b
+  docs/b.yml: |
+    #YamlMime:TestData
+    uid: b
+    xref: c
+  docs/c.yml: |
+    #YamlMime:TestData
+    uid: c
+    xref: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+          "uid": {
+            "type": "string",
+            "contentType": "uid"
+          },
+          "xref": {
+              "type": "string",
+              "contentType": "Xref"
+          }
+      },
+      "xrefProperties": [
+          "xref"
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'c (docs/c.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml)' --> 'c (docs/c.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)'","docs/b.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'c (docs/c.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'c (docs/c.yml)'","docs/c.yml"]
+---
+# circular reference within SDP UID definition a -> b -> a -> c
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    xref: b
+    anotherXref: c
+  docs/b.yml: |
+    #YamlMime:TestData
+    uid: b
+    xref: a
+  docs/c.yml: |
+    #YamlMime:TestData
+    uid: c
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+          "uid": {
+            "type": "string",
+            "contentType": "uid"
+          },
+          "xref": {
+              "type": "string",
+              "contentType": "Xref"
+          },
+          "anotherXref": {
+              "type": "string",
+              "contentType": "Xref"
+          }
+      },
+      "xrefProperties": [
+          "xref"
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)'","docs/b.yml"]
+---
+# display property of non-plain text content type will be ignored
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
@@ -710,18 +669,36 @@ inputs:
       "name": "name for a",
       "inlineDescription": "Link to @b?displayProperty=inlineDescription",
       "summary": "Link to @b?displayProperty=summary",
-    }
+    } 
   docs/b.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "uid": "b",
       "name": "name for b",
-      "inlineDescription": "Link to @a?displayProperty=name",
-      "summary": "Link to @a?displayProperty=inlineDescription",
+      "uid": "b",
+      "inlineDescription": "description for b",
+      "summary": "Link to @a",
     }
 outputs:
-  docs/a.json:
-  docs/b.json:
+  docs/a.json: |
+    {
+      "uid": "a",
+      "name": "name for a",
+      "inlineDescription": "Link to <a href=\"b.json\">name for b</a>",
+      "summary": "
+          <p>
+            Link to <a href=\"b.json\">name for b</a>
+          </p>"
+    }
+  docs/b.json: |
+    {
+      "name": "name for b",
+      "uid": "b",
+      "inlineDescription": "description for b",
+      "summary": "
+          <p>
+            Link to <a href=\"a.json\">name for a</a>
+          </p>"
+    }
 ---
 # input yml file is not object
 inputs:
@@ -772,7 +749,7 @@ outputs:
     }
   docs/c.json:
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'd?action=xxx'","docs/a.md",2,5]
+    ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",2,5]
     ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",7,2]
 ---
 # support multiple uids with different xref properties
@@ -834,7 +811,7 @@ outputs:
         Link to <a href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c cccccc</a>
         </p>"
     }
-  xrefmap.json: |
+  .xrefmap.json: |
     {
         "references": [
             {
@@ -914,7 +891,7 @@ repos:
                 - "3.0"
 outputs:
   docs/a.json:
-  xrefmap.json: |
+  .xrefmap.json: |
     {
         "references": [
             {
@@ -964,7 +941,7 @@ repos:
           ---
 outputs:
   docs/a.json:
-  xrefmap.json: |
+  .xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=master"}]}
 ---
 # define UID in live branch
@@ -980,7 +957,7 @@ repos:
           ---
 outputs:
   base_path/docs/a.json:
-  xrefmap.json: |
+  .xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}]}
 ---
 # resolve UID with unknown query
@@ -998,7 +975,7 @@ repos:
 outputs:
   docs/a.json:
   docs/b.json: |
-    conceptual: <p>Link to <a href="a?displayname=xxx" data-linktype="relative-path">Title from yaml header a</a></p>
+    { "conceptual": "<p>Link to <a href='a?displayname=xxx' data-linktype='relative-path'>Title from yaml header a</a></p>" }
 ---
 # respects content type when loading xref specs
 inputs:
@@ -1054,7 +1031,7 @@ outputs:
     }
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: 'a'","docs/a.yml",5,11]
-  xrefmap.json: |
+  .xrefmap.json: |
     {
        "references":[
           {

@@ -67,6 +67,8 @@
     <!-- CA1060: Move pinvokes to native methods class -->
     <Rule Id="CA1060" Action="None" />
     <Rule Id="CA1061" Action="Warning" />
+    <!-- CA1062: CA1062: Validate arguments of public methods -->
+    <Rule Id="CA1062" Action="None" />
     <Rule Id="CA1063" Action="Warning" />
     <!-- CA1064: Make exception public -->
     <Rule Id="CA1064" Action="None" />
@@ -154,5 +156,7 @@
     <Rule Id="MEN008" Action="None" />
     <Rule Id="MEN012" Action="None" />
     <Rule Id="MEN013" Action="None" />
+    <!-- Use a single return -->
+    <Rule Id="MEN007" Action="None" />
   </Rules>
 </RuleSet>

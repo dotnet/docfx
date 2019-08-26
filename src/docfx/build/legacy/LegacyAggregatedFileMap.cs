@@ -12,7 +12,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyAggregatedFileMap
     {
-        public static void Convert(Docset docset, Context context, IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items, Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap)
+        public static void Convert(
+            Docset docset,
+            Context context,
+            IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items,
+            Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap)
         {
             var aggregatedFileMapItems = new List<(string path, object item)>();
 
@@ -29,8 +33,10 @@ namespace Microsoft.Docs.Build
                                     ? dependencyMap[legacyFilePathRelativeToBaseFolder].Select(
                                         x => new DependencyItem
                                         {
-                                            FromFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.From)),
-                                            ToFilePath = PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, x.To)),
+                                            FromFilePath = PathUtility.NormalizeFile(
+                                                Path.Combine(docset.Config.DocumentId.SourceBasePath, x.From)),
+                                            ToFilePath = PathUtility.NormalizeFile(
+                                                Path.Combine(docset.Config.DocumentId.SourceBasePath, x.To)),
                                             DependencyType = x.Type,
                                             Version = x.Version,
                                         })
@@ -41,13 +47,16 @@ namespace Microsoft.Docs.Build
                     type = fileMapItem.Type,
                 };
 
-                aggregatedFileMapItems.Add((PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, legacyFilePathRelativeToBaseFolder)), aggregatedFileMapItem));
+                aggregatedFileMapItems.Add(
+                    (PathUtility.NormalizeFile(Path.Combine(docset.Config.DocumentId.SourceBasePath, legacyFilePathRelativeToBaseFolder)),
+                    aggregatedFileMapItem));
             }
 
             context.Output.WriteJson(
                 new
                 {
-                    aggregated_file_map_items = aggregatedFileMapItems.OrderBy(item => item.path).ToDictionary(item => item.path, item => item.item),
+                    aggregated_file_map_items = aggregatedFileMapItems
+                        .OrderBy(item => item.path).ToDictionary(item => item.path, item => item.item),
                     docset_infos = new Dictionary<string, object>
                     {
                         [docset.Config.Name] = new

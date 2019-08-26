@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -16,6 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _transformedProperties;
+        private static ThreadLocal<Stack<(string uid, Document declaringFile)>> t_recursionDetector
+            = new ThreadLocal<Stack<(string, Document)>>(() => new Stack<(string, Document)>());
 
         public JsonSchemaTransformer(JsonSchema schema)
         {
@@ -78,17 +81,35 @@ namespace Microsoft.Docs.Build
 
                 InternalXrefSpec GetXrefSpec(string uid, JObject obj)
                 {
+                    var contentTypeProperties = new Dictionary<string, JsonSchemaContentType>();
                     var xrefProperties = new Dictionary<string, Lazy<JToken>>();
                     TraverseObjectXref(obj, (propertySchema, key, value) =>
                     {
                         if (schema.XrefProperties.Contains(key))
                         {
+                            contentTypeProperties[key] = propertySchema.ContentType;
                             xrefProperties[key] = new Lazy<JToken>(
                                 () =>
                                 {
-                                    var (transformErrors, transformedToken) = TransformToken(file, context, propertySchema, value);
-                                    context.ErrorLog.Write(transformErrors);
-                                    return transformedToken;
+                                    if (t_recursionDetector.Value.Contains((uid, file)))
+                                    {
+                                        var referenceMap = t_recursionDetector.Value.Select(x => $"{x.uid} ({x.declaringFile})").Reverse().ToList();
+                                        referenceMap.Add($"{uid} ({file})");
+                                        throw Errors.CircularReference(referenceMap, file).ToException();
+                                    }
+
+                                    try
+                                    {
+                                        t_recursionDetector.Value.Push((uid, file));
+                                        var (transformErrors, transformedToken) = TransformToken(file, context, propertySchema, value);
+                                        context.ErrorLog.Write(transformErrors);
+                                        return transformedToken;
+                                    }
+                                    finally
+                                    {
+                                        Debug.Assert(t_recursionDetector.Value.Count > 0);
+                                        t_recursionDetector.Value.Pop();
+                                    }
                                 }, LazyThreadSafetyMode.PublicationOnly);
                             return true;
                         }
@@ -104,6 +125,7 @@ namespace Microsoft.Docs.Build
                         DeclaringFile = file,
                     };
                     xref.ExtensionData.AddRange(xrefProperties);
+                    xref.PropertyContentTypeMapping.AddRange(contentTypeProperties);
                     return xref;
                 }
 
@@ -205,7 +227,9 @@ namespace Microsoft.Docs.Build
                         MarkdownPipelineType.Markdown);
 
                     errors.AddRange(markupErrors);
-                    content = new SourceInfo<string>(html, content);
+
+                    // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
+                    content = new SourceInfo<string>(html.WriteTo(), content);
                     break;
 
                 case JsonSchemaContentType.InlineMarkdown:
@@ -216,7 +240,9 @@ namespace Microsoft.Docs.Build
                         MarkdownPipelineType.InlineMarkdown);
 
                     errors.AddRange(inlineMarkupErrors);
-                    content = new SourceInfo<string>(inlineHtml, content);
+
+                    // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
+                    content = new SourceInfo<string>(inlineHtml.WriteTo(), content);
                     break;
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
@@ -233,12 +259,8 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.Xref:
-                    var (xrefError, xrefLink, _, xrefSpec) = context.DependencyResolver.ResolveAbsoluteXref(content, file);
-
-                    if (xrefSpec is InternalXrefSpec internalSpec)
-                    {
-                        xrefSpec = internalSpec.ToExternalXrefSpec(context, forXrefMapOutput: false);
-                    }
+                    // the content here must be an UID, not href
+                    var (xrefError, xrefSpec) = context.XrefMap.ResolveToXrefSpec(content, file);
                     errors.AddIfNotNull(xrefError);
 
                     if (xrefSpec != null)
