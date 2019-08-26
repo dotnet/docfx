@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -22,12 +23,16 @@ namespace Microsoft.Docs.Build
         // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.
         private readonly ConcurrentDictionary<long, NativeGitCommit> _commits = new ConcurrentDictionary<long, NativeGitCommit>();
 
-        // Intern path strings by given each path segment a string ID. For faster string lookup.
-        private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
-
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
         private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>> _trees
                    = new ConcurrentDictionary<long, Dictionary<int, git_oid>>();
+
+        // Intern path strings by given each path segment a string ID. For faster string lookup.
+        private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
+
+        // Reduce allocation for GetCommitHistory using an object pool.
+        private readonly ConcurrentBag<(List<NativeGitCommit>, (NativeGitCommit commit, long)[], HashSet<long>, Stack<(NativeGitCommit, long)>)> _objectPool
+                   = new ConcurrentBag<(List<NativeGitCommit>, (NativeGitCommit commit, long)[], HashSet<long>, Stack<(NativeGitCommit, long)>)>();
 
         private int _nextStringId;
         private IntPtr _repo;
@@ -43,7 +48,7 @@ namespace Microsoft.Docs.Build
             _commitCache = new Lazy<GitCommitCache>(() => new GitCommitCache(cacheFilePath));
         }
 
-        public List<GitCommit> GetCommitHistory(string file, string committish = null)
+        public GitCommit[] GetCommitHistory(string file, string committish = null)
         {
             Debug.Assert(!file.Contains('\\'));
 
@@ -78,25 +83,27 @@ namespace Microsoft.Docs.Build
             Dispose();
         }
 
-        private unsafe List<GitCommit> GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string committish = null)
+        private unsafe GitCommit[] GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string committish = null)
         {
             if (git_revparse_single(out var pHead, _repo, committish ?? "HEAD") != 0)
             {
                 throw Errors.CommittishNotFound(_repoPath, committish).ToException();
             }
 
-            var updateCache = true;
-            var result = new List<GitCommit>();
-            var commitIds = new List<git_oid>();
-            var parents = new (NativeGitCommit commit, long blob)[8];
-            var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
+            var (commits, parents, closeNodes, openNodes) = _objectPool.TryTake(out var pooled)
+                ? pooled
+                : (new List<NativeGitCommit>(), new (NativeGitCommit commit, long)[8], new HashSet<long>(), new Stack<(NativeGitCommit, long)>());
 
+            commits.Clear();
+            closeNodes.Clear();
+            openNodes.Clear();
+
+            var updateCache = true;
+            var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
             var headCommit = GetCommit(*git_commit_id(pHead));
             var headBlob = GetBlob(headCommit.Tree, pathSegments);
 
-            var closeNodes = new HashSet<long> { headCommit.Sha.a };
-
-            var openNodes = new Stack<(NativeGitCommit commit, long blob)>();
+            closeNodes.Add(headCommit.Sha.a);
             openNodes.Push((headCommit, headBlob));
 
             while (openNodes.TryPop(out var node))
@@ -104,15 +111,14 @@ namespace Microsoft.Docs.Build
                 var (commit, blob) = node;
 
                 // Lookup and use cached commit history ONLY if there are no other commits to follow
-                if (openNodes.Count == 0 && commitCache.TryGetCommits(commit.Sha.a, blob, out var cachedIds))
+                if (openNodes.Count == 0 && commitCache.TryGetCommits(commit.Sha.a, blob, out var commitIds))
                 {
                     // Only update cache when the cached result has changed.
-                    updateCache = result.Count != 0;
+                    updateCache = commits.Count != 0;
 
-                    for (var i = 0; i < cachedIds.Length; i++)
+                    for (var i = 0; i < commitIds.Length; i++)
                     {
-                        result.Add(GetCommit(cachedIds[i]).GitCommit);
-                        commitIds.Add(cachedIds[i]);
+                        commits.Add(GetCommit(commitIds[i]));
                     }
                     break;
                 }
@@ -157,21 +163,24 @@ namespace Microsoft.Docs.Build
 
                 if ((parentCount == 0 && blob != 0) || (parentCount > 0 && !singleParent))
                 {
-                    result.Add(commit.GitCommit);
-                    commitIds.Add(commit.Sha);
+                    commits.Add(commit);
                 }
             }
-
-            // `git log` sorted commits by reverse chronological order
-            result.Sort();
 
             if (updateCache)
             {
                 lock (commitCache)
                 {
-                    commitCache.SetCommits(headCommit.Sha.a, headBlob, commitIds.ToArray());
+                    commitCache.SetCommits(headCommit.Sha.a, headBlob, commits.Select(c => c.Sha).ToArray());
                 }
             }
+
+            var result = commits.Select(c => c.GitCommit).ToArray();
+
+            // `git log` sorted commits by reverse chronological order
+            Array.Sort(result);
+
+            _objectPool.Add((commits, parents, closeNodes, openNodes));
 
             return result;
         }
