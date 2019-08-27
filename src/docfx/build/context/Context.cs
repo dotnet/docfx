@@ -56,11 +56,12 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             DependencyResolver = new DependencyResolver(
-                docset.Config,
+                docset,
                 BuildScope,
                 BuildQueue,
                 GitCommitProvider,
                 BookmarkValidator,
+                restoreGitMap,
                 DependencyMapBuilder,
                 _xrefMap,
                 TemplateEngine);

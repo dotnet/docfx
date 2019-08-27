@@ -702,7 +702,11 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "enable_loc_sxs": true}
+    {
+      "conceptual": "
+        <p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n",
+      "enable_loc_sxs": true
+    }
 ---
 # bilingual build 2
 # [branch mapping]

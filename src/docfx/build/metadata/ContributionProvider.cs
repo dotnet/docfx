@@ -133,10 +133,8 @@ namespace Microsoft.Docs.Build
             List<GitCommit> GetContributionCommits()
             {
                 var result = commits;
-                var bilingual = context.BuildScope.GetFallbackDocset(document.Docset) != null
-                    && document.Docset.Config.Localization.Bilingual;
-                var contributionBranch = bilingual
-                    && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                var bilingual = context.BuildScope.FallbackDocset != null && document.Docset.Config.Localization.Bilingual;
+                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
                     (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
@@ -196,7 +194,7 @@ namespace Microsoft.Docs.Build
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
-                    if (context.BuildScope.GetFallbackDocset(document.Docset) != null)
+                    if (context.BuildScope.FallbackDocset != null)
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
                                                     document.Docset.Config.Localization.Mapping,
