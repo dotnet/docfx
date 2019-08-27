@@ -6,7 +6,7 @@ namespace Microsoft.Docs.Build
     public enum FileOrigin
     {
         /// <summary>
-        /// This file is coming from the default docset folder.
+        /// This file is coming from the main docset folder.
         /// </summary>
         Default,
 
