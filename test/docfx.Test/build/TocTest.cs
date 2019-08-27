@@ -4,21 +4,21 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.DependencyModel;
 using Xunit;
 
 namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
-        private static readonly RestoreGitMap s_restoreGitMap = new RestoreGitMap();
-
         private static readonly Docset s_docset = new Docset(
             new ErrorLog(),
             Directory.GetCurrentDirectory(),
             "en-us",
             JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null),
             new CommandLineOptions(),
-            Repository.Create(Directory.GetCurrentDirectory()));
+            Repository.Create(Directory.GetCurrentDirectory()),
+            new DependencyGitLock());
 
         [Theory]
         // same level
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var templateEngine = TemplateEngine.Create(s_docset, s_restoreGitMap);
+            var templateEngine = TemplateEngine.Create(s_docset);
             var document = Document.Create(s_docset, file, templateEngine);
 
             // test multiple reference case

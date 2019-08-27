@@ -355,7 +355,7 @@ namespace Microsoft.Docs.Build
             }
 
             Log.Write($"Try Get document from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
-            var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(docset, pathToDocset, docset.Repository.Branch);
+            var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(docset, pathToDocset, docset.Repository.Commit);
 
             var commit = deleted && commits.Count > 1 ? commits[1] : (!deleted && commits.Count > 0 ? commits[0] : default);
             if (repo != null && commit != null)

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -19,12 +19,12 @@ namespace Microsoft.Docs.Build
                 var repository = Repository.Create(docsetPath);
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-                var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyLockModel>>(PathUtility.PathComparer);
+                var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyGitLock>>(PathUtility.PathComparer);
                 var localeToRestore = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
-                Task<DependencyLockModel> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLockModel dependencyLock = null)
+                Task<DependencyGitLock> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyGitLock dependencyLock = null)
                 {
                     return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
@@ -49,13 +49,13 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            async Task<DependencyLockModel> RestoreOneDocset(
+            async Task<DependencyGitLock> RestoreOneDocset(
                 string docset,
                 string locale,
                 Config config,
-                Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
+                Func<string, DependencyGitLock, Task<DependencyGitLock>> restoreChild,
                 Repository rootRepository,
-                DependencyLockModel dependencyLock,
+                DependencyGitLock dependencyLock,
                 bool root)
             {
                 // restore extend url firstly
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                 var restoreUrls = extendedConfig.GetFileReferences().Where(UrlUtility.IsHttp).ToList();
                 await RestoreFile.Restore(restoreUrls, extendedConfig);
 
-                var generatedLock = new DependencyLockModel
+                var generatedLock = new DependencyGitLock
                 {
                     Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value),
                 };

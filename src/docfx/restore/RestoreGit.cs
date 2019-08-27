@@ -20,14 +20,14 @@ namespace Microsoft.Docs.Build
             NoCheckout = 0b0010,
         }
 
-        public static async Task<IReadOnlyDictionary<string, DependencyLockModel>> Restore(
+        public static async Task<IReadOnlyDictionary<string, DependencyGitLock>> Restore(
             Config config,
-            Func<string, DependencyLockModel, Task<DependencyLockModel>> restoreChild,
+            Func<string, DependencyGitLock, Task<DependencyGitLock>> restoreChild,
             string locale,
             Repository rootRepository,
-            DependencyLockModel dependencyLock)
+            DependencyGitLock dependencyLock)
         {
-            var gitVersions = new Dictionary<string, DependencyLockModel>();
+            var gitVersions = new Dictionary<string, DependencyGitLock>();
             var gitDependencies =
                 from git in GetGitDependencies(config, locale, rootRepository)
                 group (git.branch, git.flags)
@@ -57,10 +57,11 @@ namespace Microsoft.Docs.Build
             // restore sub-level children
             foreach (var child in children.ToList())
             {
+                // todo: remove restoring for sub children
                 var childDependencyLock = await restoreChild(child.ToRestore.path, child.ToRestore.dependencyLock);
                 gitVersions.TryAdd(
                     $"{child.Restored.remote}#{child.Restored.branch}",
-                    new DependencyLockModel
+                    new DependencyGitLock
                     {
                         Git = childDependencyLock.Git,
                         Commit = child.Restored.commit,
@@ -80,7 +81,7 @@ namespace Microsoft.Docs.Build
                 var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
                 var childRepos = new List<string>();
 
-                using (InterProcessMutex.Create(remote))
+                using (new SharedAndExclusiveLock(remote, shared: false))
                 {
                     if (branchesToFetch.Count > 0)
                     {
@@ -98,7 +99,7 @@ namespace Microsoft.Docs.Build
 
                         using (Progress.Start($"Manage worktree for '{remote}'"))
                         {
-                            AddWorkTrees(dependencyLock, group, subChildren, remote, branches, branchesToFetch, repoPath);
+                            AddWorkTrees(dependencyLock, group, subChildren, remote, branchesToFetch, repoPath);
                         }
                     }
                 }
@@ -108,24 +109,24 @@ namespace Microsoft.Docs.Build
         }
 
         private static void AddWorkTrees(
-            DependencyLockModel dependencyLock,
+            DependencyGitLock dependencyLock,
             IGrouping<string, (string branch, GitFlags flags)> group,
             ListBuilder<RestoreChild> subChildren,
             string remote,
-            string[] branches,
             HashSet<string> branchesToFetch,
             string repoPath)
         {
             ParallelUtility.ForEach(branchesToFetch, branch =>
             {
+                var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
+                var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
+
                 var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
                 if (nocheckout)
                 {
+                    subChildren.Add(new RestoreChild(repoPath, remote, branch, gitDependencyLock, headCommit));
                     return;
                 }
-
-                var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
-                var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
 
                 Log.Write($"Add worktree for `{remote}` `{headCommit}`");
                 if (string.IsNullOrEmpty(headCommit))
@@ -133,76 +134,38 @@ namespace Microsoft.Docs.Build
                     throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
                 }
 
-                var (workTreePath, gitSlot) = RestoreGitMap.TryGetGitRestorePath(remote, branch, headCommit);
-                if (workTreePath is null)
+                // always share the same worktree
+                // todo: remove worktree once we can get files from git for Template and Localization/Fallback repo.
+                var workTreePath = Path.Combine(repoPath.Substring(0, ".git".Length), "1");
+                if (!Directory.Exists(workTreePath))
                 {
-                    (workTreePath, gitSlot) = RestoreGitMap.AcquireExclusiveGit(remote, branch, headCommit);
-                    workTreePath = Path.GetFullPath(workTreePath).Replace('\\', '/');
-                    var restored = true;
-
-                    try
+                    using (Progress.Start($"Create new worktree: {workTreePath}"))
                     {
-                        if (gitSlot.Restored && Directory.Exists(workTreePath))
-                        {
-                            // re-use existing work tree
-                            // checkout to {headCommit}, no need to fetch
-                            Debug.Assert(!GitUtility.IsDirty(workTreePath));
-                            using (Progress.Start($"Checkout worktree {workTreePath} to {headCommit}"))
-                            {
-                                GitUtility.Checkout(workTreePath, headCommit);
-                            }
-                        }
-                        else
-                        {
-                            // create new worktree
-                            try
-                            {
-                                // clean existing work tree folder
-                                // it may be dirty caused by last failed restore action
-                                CleanWorkTreePathIfExists(workTreePath);
-
-                                Debug.Assert(!Directory.Exists(workTreePath));
-                                using (Progress.Start($"Create new worktree: {workTreePath}"))
-                                {
-                                    GitUtility.PruneWorkTree(repoPath);
-                                    GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                throw Errors.GitCloneFailed(remote, branches).ToException(ex);
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        restored = false;
-                        throw;
-                    }
-                    finally
-                    {
-                        RestoreGitMap.ReleaseGit(gitSlot, LockType.Exclusive, restored);
+                        GitUtility.PruneWorkTree(repoPath);
+                        GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
                     }
                 }
                 else
                 {
-                    Log.Write($"Worktree already exists: {workTreePath}");
+                    // re-use existing work tree
+                    // checkout to {headCommit}, no need to fetch
+                    Debug.Assert(!GitUtility.IsDirty(workTreePath));
+                    if (GitUtility.RevParse(workTreePath) != headCommit)
+                    {
+                        using (Progress.Start($"Checkout worktree {workTreePath} to {headCommit}"))
+                        {
+                            GitUtility.Checkout(workTreePath, headCommit);
+                        }
+                    }
+                    else
+                    {
+                        Log.Write($"Worktree already exists: {workTreePath}");
+                    }
                 }
 
                 Debug.Assert(workTreePath != null);
                 subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, headCommit));
             });
-
-            void CleanWorkTreePathIfExists(string workTreePath)
-            {
-                if (Directory.Exists(workTreePath))
-                {
-                    // https://stackoverflow.com/questions/24265481/after-directory-delete-the-directory-exists-returning-true-sometimes
-                    var toDeleteDir = $"{workTreePath}-{Guid.NewGuid()}";
-                    Directory.Move(workTreePath, toDeleteDir);
-                    Directory.Delete(toDeleteDir, true);
-                }
-            }
         }
 
         private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
@@ -286,11 +249,11 @@ namespace Microsoft.Docs.Build
 
         private class RestoreChild
         {
-            public (string path, DependencyLockModel dependencyLock) ToRestore { get; private set; }
+            public (string path, DependencyGitLock dependencyLock) ToRestore { get; private set; }
 
             public (string remote, string branch, string commit) Restored { get; private set; }
 
-            public RestoreChild(string path, string remote, string branch, DependencyLockModel dependencyLock, string commit)
+            public RestoreChild(string path, string remote, string branch, DependencyGitLock dependencyLock, string commit)
             {
                 Debug.Assert(!string.IsNullOrEmpty(path));
                 Debug.Assert(!string.IsNullOrEmpty(remote));

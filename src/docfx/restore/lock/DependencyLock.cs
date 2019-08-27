@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class DependencyLock
     {
-        public static DependencyLockModel GetGitLock(this DependencyLockModel dependencyLock, string href, string branch)
+        public static DependencyGitLock GetGitLock(this DependencyGitLock dependencyLock, string href, string branch)
         {
             Debug.Assert(dependencyLock != null);
 
@@ -26,14 +26,14 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public static bool ContainsGitLock(this DependencyLockModel dependencyLock, string href)
+        public static bool ContainsGitLock(this DependencyGitLock dependencyLock, string href)
         {
             Debug.Assert(dependencyLock != null);
 
             return dependencyLock.Git.ContainsKey(href) || dependencyLock.Git.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
-        public static DependencyLockModel Load(string docset, SourceInfo<string> dependencyLockPath)
+        public static DependencyGitLock Load(string docset, SourceInfo<string> dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -53,10 +53,10 @@ namespace Microsoft.Docs.Build
 
             var content = RestoreFileMap.GetRestoredFileContent(docset, dependencyLockPath, fallbackDocset: null);
 
-            return JsonUtility.Deserialize<DependencyLockModel>(content, new FilePath(dependencyLockPath));
+            return JsonUtility.Deserialize<DependencyGitLock>(content, new FilePath(dependencyLockPath));
         }
 
-        public static void Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
+        public static void Save(string docset, string dependencyLockPath, DependencyGitLock dependencyLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
             Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));

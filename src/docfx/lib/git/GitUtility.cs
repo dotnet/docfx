@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Retrieve git repo information.
         /// </summary>
-        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath, string committish = null)
+        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
         {
             var (remote, branch, commit) = default((string, string, string));
 
@@ -75,11 +75,7 @@ namespace Microsoft.Docs.Build
                 git_remote_free(pRemote);
             }
 
-            IntPtr pObject = default;
-            IntPtr pHead = default;
-            var fromCommittish = !string.IsNullOrEmpty(committish) && git_revparse_ext(out pObject, out pHead, pRepo, committish) == 0;
-            var fromHead = git_repository_head(out pHead, pRepo) == 0;
-            if (fromCommittish || fromHead)
+            if (git_repository_head(out var pHead, pRepo) == 0)
             {
                 commit = git_reference_target(pHead)->ToString();
                 if (git_branch_name(out var pName, pHead) == 0)
@@ -87,9 +83,6 @@ namespace Microsoft.Docs.Build
                     branch = Marshal.PtrToStringUTF8(pName);
                 }
                 git_reference_free(pHead);
-
-                if (fromCommittish)
-                    git_object_free(pObject);
             }
 
             git_repository_free(pRepo);

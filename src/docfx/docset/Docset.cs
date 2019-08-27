@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -76,8 +77,11 @@ namespace Microsoft.Docs.Build
             string locale,
             Config config,
             CommandLineOptions options,
-            Repository repository)
+            Repository repository,
+            DependencyGitLock dependencyLockModel)
         {
+            Debug.Assert(dependencyLockModel != null);
+
             _options = options;
             _errorLog = errorLog;
             Config = config;
@@ -91,7 +95,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
             {
-                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, _options);
+                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, _options, dependencyLockModel);
                 _errorLog.Write(errors);
                 return dependencies;
             });
@@ -147,17 +151,18 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, CommandLineOptions options)
+            ErrorLog errorLog, string docsetPath, Config config, string locale, CommandLineOptions options, DependencyGitLock dependencyLock)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                var dir = RestoreGitMap.GetBareGitRestorePath(remote, docsetPath);
+                var dir = RestoreGitMap.GetGitRestorePath(remote, docsetPath, true);
 
-                var repo = Repository.Create(dir, branch);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, new Config(), options, repo));
+                var gitVersion = dependencyLock.GetGitLock(remote, branch);
+                var repo = Repository.Create(dir, branch, gitVersion.Commit, remote);
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, new Config(), options, repo, gitVersion));
             }
             return (errors, result);
         }

@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<XrefMap> _xrefMap;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
 
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Cache = new Cache();
-            TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
+            TemplateEngine = TemplateEngine.Create(docset);
             BuildScope = new BuildScope(errorLog, docset, fallbackDocset, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache, restoreFileMap);

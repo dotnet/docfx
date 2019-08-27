@@ -201,17 +201,9 @@ repos:
     - files:
         docs/dep1.md: |
           "abc"
-          [!include[](~/dep2/docs/dep2.md)]
-        docfx.yml: |
-          dependencies:
-            dep2: https://docs.com/lock1/c
     - files:
         docs/dep1.md: |
           "def"
-          [!include[](~/dep2/docs/dep2.md)]
-        docfx.yml: |
-          dependencies:
-            dep2: https://docs.com/lock1/c
   https://docs.com/lock1/c:
     - files:
         docs/dep2.md: "2333"
@@ -222,18 +214,14 @@ cache:
     {
        "git":{
           "https://docs.com/lock1/b":{
-             "commit":"6a7b7f142f2de52a0b488309f4257d462956f59f",
-             "git":{
-                "https://docs.com/lock1/c#master":{
-                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
-                }
+             "commit":"b3b94cd72dd3502c2c089ceaf983840dc4badde8"
              }
           }
        }
     }
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
+    {"conceptual":"<p>&quot;def&quot;</p>\n<p>2333</p>\n"}
 ---
 # [skip] restore with wrong dependency version
 repos:
@@ -276,17 +264,9 @@ repos:
     - files:
         docs/dep1.md: |
           "abc"
-          [!include[](~/dep2/docs/dep2.md)]
-        docfx.yml: |
-          dependencies:
-            dep2: https://docascode.visualstudio.com/lock/_git/c
     - files:
         docs/dep1.md: |
           "def"
-          [!include[](~/dep2/docs/dep2.md)]
-        docfx.yml: |
-          dependencies:
-            dep2: https://docascode.visualstudio.com/lock/_git/c
   https://docascode.visualstudio.com/lock/_git/c:
     - files:
         docs/dep2.md: "2333"
@@ -297,11 +277,7 @@ cache:
     {  
        "git":{  
           "https://docascode.visualstudio.com/lock/_git/b":{
-             "commit":"921c49b9f8d6889d36d8aadc570922462963348d",
-             "git":{  
-                "https://docascode.visualstudio.com/lock/_git/c#master":{
-                   "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
-                }
+             "commit":"921c49b9f8d6889d36d8aadc570922462963348d"
              }
           },
           "https://docascode.visualstudio.com/lock/_git/c#master": {
@@ -311,7 +287,7 @@ cache:
     }
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>&quot;def&quot;</p>\n<p>233333</p>\n<p>2333</p>\n"}
+    {"conceptual":"<p>&quot;def&quot;</p>\n<p>2333</p>\n"}
 ---
 # restore with sub dependency lock only, sub dependency lock doesn't work
 repos:
