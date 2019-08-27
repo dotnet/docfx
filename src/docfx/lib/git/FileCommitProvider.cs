@@ -31,8 +31,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
 
         // Reduce allocation for GetCommitHistory using an object pool.
-        private readonly ConcurrentBag<(List<NativeGitCommit>, (NativeGitCommit commit, long)[], HashSet<long>, Stack<(NativeGitCommit, long)>)> _objectPool
-                   = new ConcurrentBag<(List<NativeGitCommit>, (NativeGitCommit commit, long)[], HashSet<long>, Stack<(NativeGitCommit, long)>)>();
+        private readonly ConcurrentBag<HashSet<long>> _closeNodesPool = new ConcurrentBag<HashSet<long>>();
 
         private int _nextStringId;
         private IntPtr _repo;
@@ -90,18 +89,15 @@ namespace Microsoft.Docs.Build
                 throw Errors.CommittishNotFound(_repoPath, committish).ToException();
             }
 
-            var (commits, parents, closeNodes, openNodes) = _objectPool.TryTake(out var pooled)
-                ? pooled
-                : (new List<NativeGitCommit>(), new (NativeGitCommit commit, long)[8], new HashSet<long>(), new Stack<(NativeGitCommit, long)>());
-
-            commits.Clear();
-            closeNodes.Clear();
-            openNodes.Clear();
-
             var updateCache = true;
             var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
             var headCommit = GetCommit(*git_commit_id(pHead));
             var headBlob = GetBlob(headCommit.Tree, pathSegments);
+
+            var commits = new List<NativeGitCommit>();
+            var parents = new (NativeGitCommit commit, long)[8];
+            var openNodes = new Stack<(NativeGitCommit, long)>();
+            var closeNodes = _closeNodesPool.TryTake(out var aCloseNodes) ? aCloseNodes : new HashSet<long>(1024);
 
             closeNodes.Add(headCommit.Sha.a);
             openNodes.Push((headCommit, headBlob));
@@ -181,7 +177,8 @@ namespace Microsoft.Docs.Build
             // `git log` sorted commits by reverse chronological order
             Array.Sort(result);
 
-            _objectPool.Add((commits, parents, closeNodes, openNodes));
+            closeNodes.Clear();
+            _closeNodesPool.Add(closeNodes);
 
             return result;
         }
