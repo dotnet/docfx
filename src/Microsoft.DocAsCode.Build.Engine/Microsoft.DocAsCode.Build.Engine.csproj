@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotLiquid" Version="2.0.145" />
-    <PackageReference Include="Jint" Version="2.5.0" />
+    <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="Nustache" Version="1.15.3.5" />
   </ItemGroup>
 
