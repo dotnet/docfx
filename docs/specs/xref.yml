@@ -87,16 +87,18 @@ outputs:
         {
           "uid": "a",
           "href": "https://docs.com/base_path/docs/a",
-          "name": "Title from yaml header a",
-          "tags": ["/base_path", "public"]
+          "name": "Title from yaml header a"
         },
         {
           "uid": "b",
           "href": "https://docs.com/base_path/docs/b",
-          "name": "Title from yaml header b",
-          "tags": ["/base_path", "public"]
+          "name": "Title from yaml header b"
         }
-      ]
+      ],
+      "properties":
+      {
+          "tags": ["/base_path", "public"]
+      }
     }
   .dependencymap.json: |
     {
@@ -209,7 +211,7 @@ outputs:
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.yml', 'docs/b.json'"]
   .xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master","tags":["/base_path","internal"]}]}
+    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}], "properties": {"tags":["/base_path","internal"]}}
 ---
 # Resolve xref in SDP
 repos:

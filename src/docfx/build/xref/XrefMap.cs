@@ -73,11 +73,20 @@ namespace Microsoft.Docs.Build
 
         public XrefMapModel ToXrefMapModel()
         {
+            string repositoryBranch = null;
+            string siteBasePath = null;
             var references = _internalXrefMap.Values
                 .Select(xref =>
                 {
                     var xrefSpec = xref.ToExternalXrefSpec();
-                    var repositoryBranch = xref.DeclaringFile.Docset.Repository?.Branch;
+                    if (repositoryBranch is null)
+                    {
+                        repositoryBranch = xref.DeclaringFile.Docset.Repository?.Branch;
+                    }
+                    if (siteBasePath is null)
+                    {
+                        siteBasePath = xref.DeclaringFile.Docset.SiteBasePath;
+                    }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
@@ -85,22 +94,27 @@ namespace Microsoft.Docs.Build
                     var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = path + query + fragment;
-
-                    // populate tags
-                    xrefSpec.Tags.Add($"/{xref.DeclaringFile.Docset.SiteBasePath}");
-                    if (repositoryBranch == "master")
-                    {
-                        xrefSpec.Tags.Add("internal");
-                    }
-                    else if (repositoryBranch == "live")
-                    {
-                        xrefSpec.Tags.Add("public");
-                    }
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();
 
-            return new XrefMapModel { References = references };
+            var model = new XrefMapModel { References = references };
+            if (siteBasePath != null)
+            {
+                var properties = new XrefProperties();
+                properties.Tags.Add($"/{siteBasePath}");
+                if (repositoryBranch == "master")
+                {
+                    properties.Tags.Add("internal");
+                }
+                else if (repositoryBranch == "live")
+                {
+                    properties.Tags.Add("public");
+                }
+                model.Properties = properties;
+            }
+
+            return model;
         }
 
         private (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referencingFile)
