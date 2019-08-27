@@ -219,7 +219,7 @@ outputs:
     {
       "conceptual": "<p>Hello</p><h1 id=\"heading-from-c\">Heading from C</h1>",
       "rawTitle": "",
-      "title": undefined
+      "title": "Heading from C"
     }
 ---
 # Include in h1
