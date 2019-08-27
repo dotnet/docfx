@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             if (repoPath is null)
                 return null;
 
-            var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath);
+            var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath, branch);
 
             // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
             remote = Regex.Replace(repoUrl ?? remote ?? "", @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
