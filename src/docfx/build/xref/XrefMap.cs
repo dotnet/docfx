@@ -77,13 +77,25 @@ namespace Microsoft.Docs.Build
                 .Select(xref =>
                 {
                     var xrefSpec = xref.ToExternalXrefSpec();
+                    var repositoryBranch = xref.DeclaringFile.Docset.Repository?.Branch;
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
                     var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
-                    var query = xref.DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = path + query + fragment;
+
+                    // populate tags
+                    xrefSpec.Tags.Add($"/{xref.DeclaringFile.Docset.SiteBasePath}");
+                    if (repositoryBranch == "master")
+                    {
+                        xrefSpec.Tags.Add("internal");
+                    }
+                    else if (repositoryBranch == "live")
+                    {
+                        xrefSpec.Tags.Add("public");
+                    }
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();

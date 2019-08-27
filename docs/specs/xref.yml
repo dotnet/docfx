@@ -63,7 +63,8 @@ outputs:
 repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          baseUrl: https://docs.com/base_path
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -76,22 +77,24 @@ repos:
           ---
         docs/c.md: Link to @a
 outputs:
-  docs/c.json: | 
+  base_path/docs/c.json: | 
     {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
-  docs/a.json:
-  docs/b.json:
+  base_path/docs/a.json:
+  base_path/docs/b.json:
   .xrefmap.json: | 
     {
       "references":[
         {
           "uid": "a",
-          "href": "https://docs.com/docs/a",
-          "name": "Title from yaml header a"
+          "href": "https://docs.com/base_path/docs/a",
+          "name": "Title from yaml header a",
+          "tags": ["/base_path", "public"]
         },
         {
           "uid": "b",
-          "href": "https://docs.com/docs/b",
-          "name": "Title from yaml header b"
+          "href": "https://docs.com/base_path/docs/b",
+          "name": "Title from yaml header b",
+          "tags": ["/base_path", "public"]
         }
       ]
     }
@@ -188,6 +191,7 @@ repos:
     - files:
         docfx.yml: |
           template: {APP_BASE_PATH}data/template
+          baseUrl: https://docs.com/base_path
         docs/a.yml: |
           #YamlMime:TestData
           uid: a
@@ -198,14 +202,14 @@ repos:
           }
         docs/c.md: Link to @a
 outputs:
-  docs/a.json:
-  docs/b.json: 
-  docs/c.json: |
+  base_path/docs/a.json:
+  base_path/docs/b.json: 
+  base_path/docs/c.json: |
     {"conceptual": "<p>Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a></p>\n"}
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.yml', 'docs/b.json'"]
   .xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json?branch=master"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master","tags":["/base_path","internal"]}]}
 ---
 # Resolve xref in SDP
 repos:
