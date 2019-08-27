@@ -201,8 +201,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
                     {
-                        title = child.InnerText == null ? null : HttpUtility.HtmlDecode(child.InnerText);
+                        title = string.IsNullOrEmpty(child.InnerText) ? null : HttpUtility.HtmlDecode(child.InnerText);
 
+                        // NOTE: for backward compatibility during migration phase, the logic of title and raw title is different...
                         if (!existVisibleNode)
                         {
                             rawTitle = child.OuterHtml;
