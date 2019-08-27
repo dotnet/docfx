@@ -36,8 +36,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [Theory]
         [InlineData("string", "string")]
         [InlineData(1, 1.0)]
-        [InlineData('a', "a")]
         [InlineData(true, true)]
+        // Expected is "a" in Jint 2.5 before. Accept this behavior change as no input data can be of type 'char' from YAML/JSON.
+        [InlineData('a', 97.0)]
         public void TestJObjectConvertWithPrimaryType(object input, object expected)
         {
             var jsValue = JintProcessorHelper.ConvertObjectToJsValue(input);
