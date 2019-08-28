@@ -48,15 +48,14 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizedDocsetPath(DependencyGitLock gitLock, Docset docset, Config config, string locale, out string localizationDocsetPath, out string localizationBranch, out string localizationCommit)
+        public static bool TryGetLocalizationDocset(DependencyGitLock gitLock, Docset docset, Config config, string locale, out string localizationDocsetParh, out Repository localizationRepository)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
             Debug.Assert(config != null);
 
-            localizationDocsetPath = null;
-            localizationBranch = null;
-            localizationCommit = null;
+            localizationDocsetParh = null;
+            localizationRepository = null;
             switch (config.Localization.Mapping)
             {
                 case LocalizationMapping.Repository:
@@ -74,8 +73,9 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        (localizationDocsetPath, localizationCommit) = RestoreGitMap.GetRestoredRepository(gitLock, locRemote, locBranch,  docset.DocsetPath, false);
-                        localizationBranch = locBranch;
+                        var (locRepoPath, locCommit) = RestoreGitMap.GetRestoreGitPath(gitLock, locRemote, locBranch, docset.DocsetPath, false);
+                        localizationDocsetParh = locRepoPath;
+                        localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
                         break;
                     }
                 case LocalizationMapping.Folder:
@@ -84,9 +84,8 @@ namespace Microsoft.Docs.Build
                         {
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
-                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
-                        localizationBranch = null;
-                        localizationCommit = null;
+                        localizationDocsetParh = Path.Combine(docset.DocsetPath, "localization", locale);
+                        localizationRepository = Repository.Create(localizationDocsetParh, branch: null, repoUrl: null, commit: null);
                         break;
                     }
                 default:

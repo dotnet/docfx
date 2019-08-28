@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
             foreach (var (name, url) in config.Dependencies)
             {
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                var (dir, commit) = RestoreGitMap.GetRestoredRepository(gitLock, remote, branch, docsetPath, true);
+                var (dir, commit) = RestoreGitMap.GetRestoreGitPath(gitLock, remote, branch, docsetPath, true);
 
                 var repo = Repository.Create(dir, branch, remote, commit);
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, new Config(), options, repo, gitLock.GetGitLock(remote, branch)));

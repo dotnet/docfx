@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeCommt) = RestoreGitMap.GetRestoredRepository(gitLock, themeRemote, themeBranch, docset.DocsetPath, false);
+            var (themePath, themeCommt) = RestoreGitMap.GetRestoreGitPath(gitLock, themeRemote, themeBranch, docset.DocsetPath, false);
             Log.Write($"Using theme '{themeRemote}#{themeCommt}' at '{themePath}'");
 
             return new TemplateEngine(themePath);

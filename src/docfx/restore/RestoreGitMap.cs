@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (string path, string commit) GetRestoredRepository(DependencyGitLock gitLock, string remote, string branch, string docsetPath, bool bare)
+        public static (string path, string commit) GetRestoreGitPath(DependencyGitLock gitLock, string remote, string branch, string docsetPath, bool bare)
         {
             Debug.Assert(gitLock != null);
 
