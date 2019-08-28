@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     docsetPath, options, errorLog, repository, locale, fallbackRepo, config, restoreGitMap.GitLock);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-                await Run(docset, fallbackDocset, options, errorLog, outputPath);
+                await Run(docset, fallbackDocset, options, errorLog, outputPath, restoreGitMap.GitLock);
             }
         }
 
@@ -56,13 +56,15 @@ namespace Microsoft.Docs.Build
                 }
 
                 if (LocalizationUtility.TryGetLocalizedDocsetPath(
+                    gitLock,
                     currentDocset,
                     config,
                     currentDocset.Locale,
                     out var localizationDocsetPath,
-                    out var localizationBranch))
+                    out var localizationBranch,
+                    out var localizationCommit))
                 {
-                    var repo = Repository.Create(localizationDocsetPath, localizationBranch);
+                    var repo = Repository.Create(localizationDocsetPath, localizationBranch, commit: localizationCommit);
                     return (new Docset(
                         errorLog, localizationDocsetPath, currentDocset.Locale, config, options, repo, gitLock), currentDocset);
                 }
@@ -76,9 +78,10 @@ namespace Microsoft.Docs.Build
             Docset fallbackDocset,
             CommandLineOptions options,
             ErrorLog errorLog,
-            string outputPath)
+            string outputPath,
+            DependencyGitLock gitLock)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, gitLock))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -214,8 +217,8 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = "master";
                 }
 
-                var fallbackRepoPath = RestoreGitMap.GetGitRestorePath(fallbackRemote, docsetPath, false);
-                return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
+                var (fallbackRepoPath, commit) = RestoreGitMap.GetRestoredRepository(gitLock, fallbackRemote, fallbackBranch, docsetPath, false);
+                return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote, commit);
             }
 
             return default;

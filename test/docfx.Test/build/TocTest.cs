@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Extensions.DependencyModel;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -54,7 +52,7 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var templateEngine = TemplateEngine.Create(s_docset);
+            var templateEngine = TemplateEngine.Create(s_docset, new DependencyGitLock());
             var document = Document.Create(s_docset, file, templateEngine);
 
             // test multiple reference case

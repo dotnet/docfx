@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         /// Repository's branch info ashould NOT depend on git, unless you are pretty sure about that
         /// Repository's url can also be overwritten
         /// </summary>
-        public static Repository Create(string path, string branch, string commit = null, string repoUrl = null)
+        public static Repository Create(string path, string branch, string repoUrl = null, string commit = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 

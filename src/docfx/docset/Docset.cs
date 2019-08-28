@@ -151,18 +151,17 @@ namespace Microsoft.Docs.Build
         }
 
         private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, CommandLineOptions options, DependencyGitLock dependencyLock)
+            ErrorLog errorLog, string docsetPath, Config config, string locale, CommandLineOptions options, DependencyGitLock gitLock)
         {
             var errors = new List<Error>();
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, url) in config.Dependencies)
             {
                 var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                var dir = RestoreGitMap.GetGitRestorePath(remote, docsetPath, true);
+                var (dir, commit) = RestoreGitMap.GetRestoredRepository(gitLock, remote, branch, docsetPath, true);
 
-                var gitVersion = dependencyLock.GetGitLock(remote, branch);
-                var repo = Repository.Create(dir, branch, gitVersion.Commit, remote);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, new Config(), options, repo, gitVersion));
+                var repo = Repository.Create(dir, branch, remote, commit);
+                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, new Config(), options, repo, gitLock.GetGitLock(remote, branch)));
             }
             return (errors, result);
         }

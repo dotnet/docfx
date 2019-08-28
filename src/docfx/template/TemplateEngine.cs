@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        public static TemplateEngine Create(Docset docset)
+        public static TemplateEngine Create(Docset docset, DependencyGitLock gitLock)
         {
             Debug.Assert(docset != null);
 
@@ -148,9 +148,9 @@ namespace Microsoft.Docs.Build
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var (themeRemote, _) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var themePath = RestoreGitMap.GetGitRestorePath(themeRemote, docset.DocsetPath, false);
-            Log.Write($"Using theme '{themeRemote}' at '{themePath}'");
+            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, themeCommt) = RestoreGitMap.GetRestoredRepository(gitLock, themeRemote, themeBranch, docset.DocsetPath, false);
+            Log.Write($"Using theme '{themeRemote}#{themeCommt}' at '{themePath}'");
 
             return new TemplateEngine(themePath);
         }

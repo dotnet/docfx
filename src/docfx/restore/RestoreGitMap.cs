@@ -41,19 +41,28 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string GetGitRestorePath(string remote, string docsetPath, bool bare)
+        public static (string path, string commit) GetRestoredRepository(DependencyGitLock gitLock, string remote, string branch, string docsetPath, bool bare)
         {
+            Debug.Assert(gitLock != null);
+
             if (!UrlUtility.IsHttp(remote))
             {
                 var fullPath = Path.Combine(docsetPath, remote);
-                if (Directory.Exists(fullPath))
+                if (Directory.Exists(fullPath) && GitUtility.IsRepo(fullPath))
                 {
-                    return fullPath;
+                    return (fullPath, GitUtility.RevParse(fullPath));
                 }
 
                 // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
                 // TODO: populate source info
-                throw Errors.FileNotFound(new SourceInfo<string>(remote)).ToException();
+                throw Errors.NeedRestore(remote).ToException();
+            }
+
+            var gitVersion = gitLock.GetGitLock(remote, branch);
+
+            if (gitVersion == null || gitVersion.Commit == null)
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
             var path = AppData.GetGitDir(remote);
@@ -63,9 +72,12 @@ namespace Microsoft.Docs.Build
                 path = Path.Combine(path, "1");
             }
 
-            Debug.Assert(Directory.Exists(path));
+            if (!Directory.Exists(path))
+            {
+                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+            }
 
-            return path;
+            return (path, gitVersion.Commit);
         }
     }
 }

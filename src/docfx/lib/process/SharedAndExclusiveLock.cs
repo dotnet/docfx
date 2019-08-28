@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                     break;
                 }
 
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                Thread.Sleep(TimeSpan.FromMilliseconds(100));
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
                 lock (Console.Out)
 #pragma warning restore CA2002

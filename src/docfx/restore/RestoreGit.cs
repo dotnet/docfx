@@ -120,6 +120,10 @@ namespace Microsoft.Docs.Build
             {
                 var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
                 var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
+                if (string.IsNullOrEmpty(headCommit))
+                {
+                    throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
+                }
 
                 var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
                 if (nocheckout)
@@ -128,14 +132,9 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
-                Log.Write($"Add worktree for `{remote}` `{headCommit}`");
-                if (string.IsNullOrEmpty(headCommit))
-                {
-                    throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
-                }
-
                 // always share the same worktree
                 // todo: remove worktree once we can get files from git for Template and Localization/Fallback repo.
+                Log.Write($"Add worktree for `{remote}` `{headCommit}`");
                 var workTreePath = Path.Combine(repoPath.Substring(0, repoPath.Length - ".git".Length), "1");
                 if (!Directory.Exists(workTreePath))
                 {
