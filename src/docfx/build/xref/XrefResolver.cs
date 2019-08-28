@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             return (error, link, display, declaringFile);
         }
 
-        public (Error, ExternalXrefSpec) ResolveToXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        public (Error, ExternalXrefSpec) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
             return (error, xrefSpec?.ToExternalXrefSpec());
