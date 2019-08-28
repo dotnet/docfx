@@ -152,11 +152,11 @@ namespace Microsoft.Docs.Build
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
                 = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
-                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(context, file);
+                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
             (contributorErrors, systemMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(
-                context, file, inputMetadata.Author);
+                file, inputMetadata.Author);
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 

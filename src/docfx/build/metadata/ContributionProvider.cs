@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionProvider
     {
+        private readonly Docset _fallbackDocset;
         private readonly GitHubUserCache _gitHubUserCache;
 
         // TODO: support CRR and multiple repositories
@@ -19,18 +20,20 @@ namespace Microsoft.Docs.Build
 
         private readonly GitCommitProvider _gitCommitProvider;
 
-        public ContributionProvider(Docset docset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
+        public ContributionProvider(
+            Docset docset, Docset fallbackDocset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
             Debug.Assert(gitCommitProvider != null);
 
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
+            _fallbackDocset = fallbackDocset;
             _commitBuildTimeProvider = docset.Repository != null && docset.Config.UpdateTimeAsCommitBuildTime
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
         public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(
-            Context context, Document document, SourceInfo<string> authorName)
+            Document document, SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -133,10 +136,8 @@ namespace Microsoft.Docs.Build
             GitCommit[] GetContributionCommits()
             {
                 var result = commits;
-                var bilingual = context.BuildScope.GetFallbackDocset(document.Docset) != null
-                    && document.Docset.Config.Localization.Bilingual;
-                var contributionBranch = bilingual
-                    && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+                var bilingual = _fallbackDocset != null && document.Docset.Config.Localization.Bilingual;
+                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
                     (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
@@ -159,7 +160,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
-            GetGitUrls(Context context, Document document)
+            GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
@@ -196,7 +197,7 @@ namespace Microsoft.Docs.Build
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
 
                     (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
-                    if (context.BuildScope.GetFallbackDocset(document.Docset) != null)
+                    if (_fallbackDocset != null)
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
                                                     document.Docset.Config.Localization.Mapping,

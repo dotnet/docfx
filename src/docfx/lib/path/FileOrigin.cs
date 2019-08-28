@@ -6,13 +6,23 @@ namespace Microsoft.Docs.Build
     public enum FileOrigin
     {
         /// <summary>
-        /// Current repository
+        /// This file is coming from the main docset folder.
         /// </summary>
-        Current,
+        Default,
 
         /// <summary>
-        /// Fallback repository
+        /// This file is coming from a dependency repository
+        /// </summary>
+        Dependency,
+
+        /// <summary>
+        /// This file is coming from the fallback repository of a localized build
         /// </summary>
         Fallback,
+
+        /// <summary>
+        /// This file is a redirection file
+        /// </summary>
+        Redirection,
     }
 }
