@@ -306,29 +306,29 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from entry docset
-            if (File.Exists(Path.Combine(_buildScope.Docset.DocsetPath, pathToDocset)))
+            if (File.Exists(Path.Combine(_docset.DocsetPath, pathToDocset)))
             {
-                return Document.Create(_buildScope.Docset, new FilePath(pathToDocset), _templateEngine);
+                return Document.Create(_docset, new FilePath(pathToDocset), _templateEngine);
             }
 
             // resolve from fallback docset
-            if (_buildScope.FallbackDocset != null)
+            if (_fallbackDocset != null)
             {
-                if (File.Exists(Path.Combine(_buildScope.FallbackDocset.DocsetPath, pathToDocset)))
+                if (File.Exists(Path.Combine(_fallbackDocset.DocsetPath, pathToDocset)))
                 {
-                    return Document.Create(_buildScope.FallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), _templateEngine);
+                    return Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), _templateEngine);
                 }
 
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
-                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_buildScope.FallbackDocset, pathToDocset);
+                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
 
                     // TODO: need to get the first commit that contains the data
                     if (repo != null && commits.Length > 1)
                     {
                         return Document.Create(
-                            _buildScope.FallbackDocset, new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback), _templateEngine);
+                            _fallbackDocset, new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback), _templateEngine);
                     }
                 }
             }

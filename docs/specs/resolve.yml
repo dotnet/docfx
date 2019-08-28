@@ -348,7 +348,7 @@ outputs:
   a.json: |
     {"conceptual":"<p><a href=\"logo.svg\"></a></p>"}
   .errors.log: |
-    ["warning","link-is-dependency","File 'logo.svg' referenced by link 'logo.svg' will not be built because it is from a dependency docset","b.md",1,1,"dependency"]
+    ["warning","link-is-dependency","File 'logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is from a dependency docset","b.md",1,1,"dependency"]
 ---
 # Cannot include entry docset file from dependency
 repos:
