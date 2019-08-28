@@ -36,11 +36,6 @@ namespace Microsoft.Docs.Build
         {
             var filePath = file.FilePath;
 
-            if (file.IsFromHistory)
-            {
-                Debug.Assert(!string.IsNullOrEmpty(content));
-            }
-
             if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 var (errors, tocToken) = content is null ? YamlUtility.Parse(file, context) : YamlUtility.Parse(content, file.FilePath);
@@ -57,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                content = content ?? file.ReadText();
+                content = content ?? context.Input.ReadText(file.FilePath);
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return MarkdownTocMarkup.Parse(content, file);
             }

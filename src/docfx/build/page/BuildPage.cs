@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
-            var content = file.ReadText();
+            var content = context.Input.ReadText(file.FilePath);
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
             var (markupErrors, htmlDom) = MarkdownUtility.ToHtml(

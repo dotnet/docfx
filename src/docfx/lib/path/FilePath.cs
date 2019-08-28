@@ -6,6 +6,9 @@ using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
+    /// <summary>
+    /// Represents a serializable machine independent file identifier.
+    /// </summary>
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         /// <summary>
@@ -19,16 +22,28 @@ namespace Microsoft.Docs.Build
         public string DependencyName { get; }
 
         /// <summary>
-        /// Gets the value to indicate where is this file from
+        /// Gets the value to indicate where is this file from.
         /// </summary>
         public FileOrigin Origin { get; }
 
-        public FilePath(string path, FileOrigin from = FileOrigin.Default)
+        /// <summary>
+        /// Gets the commit id if this file is owned by a git repository and it not the latest version.
+        /// </summary>
+        public string Commit { get; }
+
+        public FilePath(string path, FileOrigin origin = FileOrigin.Default)
         {
-            Debug.Assert(from != FileOrigin.Dependency);
+            Debug.Assert(origin != FileOrigin.Dependency);
 
             Path = PathUtility.NormalizeFile(path);
-            Origin = from;
+            Origin = origin;
+        }
+
+        public FilePath(string path, string commit, FileOrigin origin)
+        {
+            Path = PathUtility.NormalizeFile(path);
+            Origin = origin;
+            Commit = commit;
         }
 
         public FilePath(string path, string dependencyName)
@@ -42,7 +57,31 @@ namespace Microsoft.Docs.Build
 
         public static bool operator !=(FilePath a, FilePath b) => !Equals(a, b);
 
-        public override string ToString() => Path;
+        public override string ToString()
+        {
+            var tags = "";
+
+            switch (Origin)
+            {
+                case FileOrigin.Default:
+                    break;
+
+                case FileOrigin.Dependency:
+                    tags += $"[{DependencyName}]";
+                    break;
+
+                default:
+                    tags += $"[{Origin.ToString().ToLowerInvariant()}]";
+                    break;
+            }
+
+            if (Commit != null)
+            {
+                tags += $"[{Commit}]";
+            }
+
+            return tags.Length > 0 ? $"{Path} {tags}" : Path;
+        }
 
         public override bool Equals(object obj)
         {
@@ -51,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, DependencyName);
+            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, DependencyName, Commit);
         }
 
         public bool Equals(FilePath other)
@@ -63,7 +102,8 @@ namespace Microsoft.Docs.Build
 
             return string.Equals(Path, other.Path, PathUtility.PathComparison) &&
                    other.Origin == Origin &&
-                   DependencyName == other.DependencyName;
+                   DependencyName == other.DependencyName &&
+                   Commit == other.Commit;
         }
 
         public int CompareTo(FilePath other)
@@ -73,6 +113,8 @@ namespace Microsoft.Docs.Build
                 result = Origin.CompareTo(other.Origin);
             if (result == 0)
                 result = DependencyName.CompareTo(other.DependencyName);
+            if (result == 0)
+                result = Commit.CompareTo(other.Commit);
 
             return result;
         }

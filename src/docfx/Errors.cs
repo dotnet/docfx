@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
         public static Error PublishUrlConflict(string url, IEnumerable<Document> files, IEnumerable<string> conflictMonikers)
         {
             var message = !conflictMonikers.Contains("NONE_VERSION") ? $" of the same version({Join(conflictMonikers)})" : null;
-            return new Error(ErrorLevel.Error, "publish-url-conflict", $"Two or more files{message} publish to the same url '{url}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
+            return new Error(ErrorLevel.Error, "publish-url-conflict", $"Two or more files{message} publish to the same url '{url}': {Join(files)}");
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error OutputPathConflict(string path, IEnumerable<Document> files)
-            => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {Join(files, file => file.ContentType == ContentType.Redirection ? $"{file} <redirection>" : file.ToString())}");
+            => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {Join(files)}");
 
         /// <summary>
         /// Used docfx output model property which are not defined in input model.
@@ -598,9 +598,9 @@ namespace Microsoft.Docs.Build
         public static Error Custom404Page(Document file)
             => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
 
-        private static string Join<T>(IEnumerable<T> source, Func<T, string> selector = null)
+        private static string Join<T>(IEnumerable<T> source)
         {
-            var formatSource = source.Select(item => $"{selector?.Invoke(item) ?? item.ToString()}").OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'");
+            var formatSource = source.Select(item => item.ToString()).OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'");
             return $"{string.Join(", ", formatSource.Take(5))}{(formatSource.Count() > 5 ? "..." : "")}";
         }
 

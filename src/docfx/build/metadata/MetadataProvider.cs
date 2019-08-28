@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MetadataProvider
     {
+        private readonly Input _input;
         private readonly Cache _cache;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
@@ -28,8 +29,9 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
-        public MetadataProvider(Docset docset, Cache cache, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
+        public MetadataProvider(Docset docset, Input input, Cache cache, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
         {
+            _input = input;
             _cache = cache;
             _globalMetadata = docset.Config.GlobalMetadata;
 
@@ -145,7 +147,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                using (var reader = new StreamReader(file.ReadStream()))
+                using (var reader = new StreamReader(_input.ReadStream(file.FilePath)))
                 {
                     return ExtractYamlHeader.Extract(reader, file);
                 }

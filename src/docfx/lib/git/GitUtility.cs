@@ -250,30 +250,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static unsafe bool TryGetContentFromHistory(string repoPath, string filePath, string committish, out string content)
+        public static unsafe Stream TryReadStream(string repoPath, string filePath, string committish)
         {
-            content = null;
             if (git_repository_open(out var repo, repoPath) != 0)
             {
-                return false;
+                return null;
             }
 
             if (git_revparse_single(out var commit, repo, committish) != 0)
             {
                 git_repository_free(repo);
-                return false;
+                return null;
             }
 
             if (git_commit_tree(out var tree, commit) != 0)
             {
                 git_repository_free(repo);
-                return false;
+                return null;
             }
 
             if (git_tree_entry_bypath(out var entry, tree, filePath) != 0)
             {
                 git_repository_free(repo);
-                return false;
+                return null;
             }
 
             var obj = git_tree_entry_id(entry);
@@ -281,18 +280,10 @@ namespace Microsoft.Docs.Build
             {
                 git_tree_entry_free(entry);
                 git_repository_free(repo);
-                return false;
+                return null;
             }
 
-            using (var stream = new UnmanagedMemoryStream((byte*)git_blob_rawcontent(blob).ToPointer(), git_blob_rawsize(blob)))
-            using (var reader = new StreamReader(stream, Encoding.UTF8, true))
-            {
-                content = reader.ReadToEnd();
-            }
-
-            git_tree_entry_free(entry);
-            git_repository_free(repo);
-            return true;
+            return new GitBlobStream(repo, entry, (byte*)git_blob_rawcontent(blob).ToPointer(), git_blob_rawsize(blob));
         }
 
         /// <summary>
@@ -378,6 +369,34 @@ namespace Microsoft.Docs.Build
                     return value.Parameter;
                 }
                 return header.Value;
+            }
+        }
+
+        private class GitBlobStream : UnmanagedMemoryStream
+        {
+            private bool _disposed;
+            private IntPtr _repo;
+            private IntPtr _entry;
+
+            public unsafe GitBlobStream(IntPtr repo, IntPtr entry, byte* pointer, int length)
+                : base(pointer, length)
+            {
+                _repo = repo;
+                _entry = entry;
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    if (!_disposed)
+                    {
+                        _disposed = true;
+                        git_tree_entry_free(_entry);
+                        git_repository_free(_repo);
+                    }
+                }
+                base.Dispose(disposing);
             }
         }
     }
