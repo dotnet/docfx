@@ -55,8 +55,11 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
+            ContributionProvider = new ContributionProvider(docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+
             DependencyResolver = new DependencyResolver(
                 docset,
+                fallbackDocset,
                 BuildScope,
                 BuildQueue,
                 GitCommitProvider,
@@ -65,7 +68,6 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 _xrefMap,
                 TemplateEngine);
-            ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
         }
 
         public void Dispose()

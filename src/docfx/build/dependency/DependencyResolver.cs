@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
+        private readonly Docset _docset;
+        private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly WorkQueue<Document> _buildQueue;
         private readonly BookmarkValidator _bookmarkValidator;
@@ -24,6 +26,7 @@ namespace Microsoft.Docs.Build
 
         public DependencyResolver(
             Docset docset,
+            Docset fallbackDocset,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
@@ -33,6 +36,8 @@ namespace Microsoft.Docs.Build
             Lazy<XrefMap> xrefMap,
             TemplateEngine templateEngine)
         {
+            _docset = docset;
+            _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
             _bookmarkValidator = bookmarkValidator;
@@ -315,16 +320,16 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from entry docset
-            if (File.Exists(Path.Combine(_buildScope.Docset.DocsetPath, pathToDocset)))
+            if (File.Exists(Path.Combine(_docset.DocsetPath, pathToDocset)))
             {
-                return Document.Create(_buildScope.Docset, new FilePath(pathToDocset), _templateEngine);
+                return Document.Create(_docset, new FilePath(pathToDocset), _templateEngine);
             }
 
             // resolve from fallback docset
-            if (_buildScope.FallbackDocset != null &&
-                File.Exists(Path.Combine(_buildScope.FallbackDocset.DocsetPath, pathToDocset)))
+            if (_fallbackDocset != null &&
+                File.Exists(Path.Combine(_fallbackDocset.DocsetPath, pathToDocset)))
             {
-                return Document.Create(_buildScope.FallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), _templateEngine);
+                return Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), _templateEngine);
             }
 
             return default;
@@ -338,13 +343,12 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
-            var fallbackDocset = _buildScope.FallbackDocset;
-            if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
+            if (_fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
             {
-                var (repo, _, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
+                var (repo, _, commits) = gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
                 if (repo != null && commits.Count > 0)
                 {
-                    return Document.Create(fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), templateEngine, isFromHistory: true);
+                    return Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), templateEngine, isFromHistory: true);
                 }
             }
 
@@ -359,10 +363,9 @@ namespace Microsoft.Docs.Build
             }
 
             // try to resolve from source repo's git history
-            var fallbackDocset = _buildScope.FallbackDocset;
-            if (fallbackDocset != null)
+            if (_fallbackDocset != null)
             {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
+                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
                 if (repo != null)
                 {
                     var repoPath = PathUtility.NormalizeFolder(repo.Path);
@@ -371,7 +374,7 @@ namespace Microsoft.Docs.Build
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
                         {
-                            return (content, Document.Create(fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), templateEngine, isFromHistory: true));
+                            return (content, Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), templateEngine, isFromHistory: true));
                         }
                     }
                 }

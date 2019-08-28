@@ -25,16 +25,10 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public Docset Docset { get; }
-
-        public Docset FallbackDocset { get; }
-
         public BuildScope(ErrorLog errorLog, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
-            Docset = docset;
-            FallbackDocset = fallbackDocset;
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
 
