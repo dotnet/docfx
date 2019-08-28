@@ -40,7 +40,8 @@ namespace Microsoft.Docs.Build
                     Console.WriteLine($"Waiting for another process to access '{lockName}'");
                     Console.ResetColor();
                 }
-            } while (DateTime.UtcNow - now < (timeout ?? _defaultTimeout));
+            }
+            while (DateTime.UtcNow - now < (timeout ?? _defaultTimeout));
         }
 
         public void Dispose()

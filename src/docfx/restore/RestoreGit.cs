@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
 
                 // always share the same worktree
                 // todo: remove worktree once we can get files from git for Template and Localization/Fallback repo.
-                var workTreePath = Path.Combine(repoPath.Substring(0, ".git".Length), "1");
+                var workTreePath = Path.Combine(repoPath.Substring(0, repoPath.Length - ".git".Length), "1");
                 if (!Directory.Exists(workTreePath))
                 {
                     using (Progress.Start($"Create new worktree: {workTreePath}"))
