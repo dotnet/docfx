@@ -361,7 +361,7 @@ outputs:
       "updated_at": "2018-07-18 05:03 AM"
     }
 ---
-# Throw committish-not-found when try to resolve commit id by none-existing branch name
+# [from loc] Throw committish-not-found when try to resolve commit id by none-existing branch name
 locale: zh-cn
 repos: 
   https://github.com/git/repo#live:
@@ -377,7 +377,6 @@ repos:
         a.md:
 outputs:
   .errors.log: |
-    ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *"]
     ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *","a.md"]
 ---
 # Use current repo's branch when edit branch isn't specified in contribution config,

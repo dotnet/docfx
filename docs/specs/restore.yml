@@ -200,10 +200,10 @@ repos:
   https://docs.com/lock1/b:
     - files:
         docs/dep1.md: |
-          "abc"
+          "123"
     - files:
         docs/dep1.md: |
-          "def"
+          "456"
   https://docs.com/lock1/c:
     - files:
         docs/dep2.md: "2333"
@@ -214,14 +214,14 @@ cache:
     {
        "git":{
           "https://docs.com/lock1/b":{
-             "commit":"b3b94cd72dd3502c2c089ceaf983840dc4badde8"
+             "commit":"c08a067b6e9e5eaac4afb8e1d55501b4e9ff3bca"
              }
           }
        }
     }
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>&quot;def&quot;</p>\n<p>2333</p>\n"}
+    {"conceptual":"<p>&quot;456&quot;</p>\n<p>2333</p>\n"}
 ---
 # [skip] restore with wrong dependency version
 repos:
