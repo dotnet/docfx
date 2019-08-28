@@ -48,9 +48,9 @@ namespace Microsoft.Docs.Build
             if (!UrlUtility.IsHttp(remote))
             {
                 var fullPath = Path.Combine(docsetPath, remote);
-                if (Directory.Exists(fullPath) && GitUtility.IsRepo(fullPath))
+                if (Directory.Exists(fullPath))
                 {
-                    return (fullPath, GitUtility.RevParse(fullPath));
+                    return (fullPath, default);
                 }
 
                 // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
