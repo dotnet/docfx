@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                using (var reader = new StringReader(file.ReadText()))
+                using (var reader = new StreamReader(file.ReadStream()))
                 {
                     return ExtractYamlHeader.Extract(reader, file);
                 }

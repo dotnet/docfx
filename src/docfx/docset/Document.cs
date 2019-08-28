@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
         private readonly Lazy<Repository> _repository;
-        private readonly Lazy<string> _readText;
+        private readonly Func<Stream> _readStream;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
             string redirectionUrl = null,
             bool isFromHistory = false,
             bool isPage = true,
-            Lazy<string> readText = null)
+            Func<Stream> readStream = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
@@ -143,14 +143,25 @@ namespace Microsoft.Docs.Build
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
             _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
-            _readText = readText;
+            _readStream = readStream;
 
-            Debug.Assert(!isFromHistory || _readText != null);
+            Debug.Assert(!isFromHistory || _readStream != null);
             Debug.Assert(IsValidRelativePath(FilePath.Path));
             Debug.Assert(IsValidRelativePath(SitePath));
 
             Debug.Assert(SiteUrl.StartsWith('/'));
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
+        }
+
+        public Stream ReadStream()
+        {
+            Debug.Assert(ContentType != ContentType.Redirection);
+            if (IsFromHistory)
+            {
+                return _readStream();
+            }
+
+            return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path));
         }
 
         /// <summary>
@@ -160,14 +171,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(ContentType != ContentType.Redirection);
 
-            if (IsFromHistory)
-            {
-                Debug.Assert(_readText != null);
-
-                return _readText.Value;
-            }
-
-            using (var reader = new StreamReader(File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path))))
+            using (var reader = new StreamReader(ReadStream()))
             {
                 return reader.ReadToEnd();
             }
@@ -246,7 +250,7 @@ namespace Microsoft.Docs.Build
             string redirectionUrl = null,
             bool isFromHistory = false,
             bool combineRedirectUrl = false,
-            Lazy<string> readText = null)
+            Func<Stream> readStream = null)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(path));
@@ -277,7 +281,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage, readText);
+            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage, readStream);
         }
 
         /// <summary>
@@ -354,21 +358,19 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            Log.Write($"Try Get document from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
+            Log.Write($"Get document from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
             var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(docset, pathToDocset, docset.Repository.Commit);
 
             var commit = deleted && commits.Count > 1 ? commits[1] : (!deleted && commits.Count > 0 ? commits[0] : default);
             if (repo != null && commit != null)
             {
                 var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                return Create(docset, pathToDocset, templateEngine, deleted ? FileOrigin.Fallback : FileOrigin.Current, isFromHistory: true, readText:
-                    new Lazy<string>(() =>
+                return Create(docset, pathToDocset, templateEngine, deleted ? FileOrigin.Fallback : FileOrigin.Current, isFromHistory: true, readStream:
+                    () =>
                     {
-                        Log.Write($"Try read document content from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
-                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commit.Sha, out var content))
-                            return content;
-                        return default;
-                    }));
+                        Log.Write($"Read document content from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
+                        return GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
+                    });
             }
 
             return default;
