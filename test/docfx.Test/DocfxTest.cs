@@ -210,6 +210,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsOutputFile(JToken expected, JToken actual, string name)
         {
+            // TODO: this will also match first property inside JSON file.
             return expected.Parent?.Parent == expected.Root;
         }
 

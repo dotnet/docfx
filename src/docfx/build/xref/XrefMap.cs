@@ -73,22 +73,48 @@ namespace Microsoft.Docs.Build
 
         public XrefMapModel ToXrefMapModel()
         {
+            string repositoryBranch = null;
+            string siteBasePath = null;
             var references = _internalXrefMap.Values
                 .Select(xref =>
                 {
                     var xrefSpec = xref.ToExternalXrefSpec();
+                    if (repositoryBranch is null)
+                    {
+                        repositoryBranch = xref.DeclaringFile.Docset.Repository?.Branch;
+                    }
+                    if (siteBasePath is null)
+                    {
+                        siteBasePath = xref.DeclaringFile.Docset.SiteBasePath;
+                    }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
                     var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
-                    var query = xref.DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = path + query + fragment;
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();
 
-            return new XrefMapModel { References = references };
+            var model = new XrefMapModel { References = references };
+            if (siteBasePath != null)
+            {
+                var properties = new XrefProperties();
+                properties.Tags.Add($"/{siteBasePath}");
+                if (repositoryBranch == "master")
+                {
+                    properties.Tags.Add("internal");
+                }
+                else if (repositoryBranch == "live")
+                {
+                    properties.Tags.Add("public");
+                }
+                model.Properties = properties;
+            }
+
+            return model;
         }
 
         private (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referencingFile)

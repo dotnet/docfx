@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetCommitCachePath(string remote)
         {
-            return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
+            return Path.Combine(CacheRoot, "commits2", HashUtility.GetMd5Hash(remote));
         }
 
         public static string GetCommitBuildTimePath(string remote, string branch)
