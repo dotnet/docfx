@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
                 return authorFromCommits;
             }
 
-            List<GitCommit> GetContributionCommits()
+            GitCommit[] GetContributionCommits()
             {
                 var result = commits;
                 var bilingual = context.BuildScope.GetFallbackDocset(document.Docset) != null
@@ -146,9 +146,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
+        public DateTime GetUpdatedAt(Document document, GitCommit[] fileCommits)
         {
-            if (fileCommits?.Count > 0)
+            if (fileCommits?.Length > 0)
             {
                 return _commitBuildTimeProvider != null
                     && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)

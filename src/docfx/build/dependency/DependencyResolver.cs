@@ -293,7 +293,7 @@ namespace Microsoft.Docs.Build
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
             {
                 var (repo, _, commits) = gitCommitProvider.GetCommitHistory(fallbackDocset, pathToDocset);
-                if (repo != null && commits.Count > 0)
+                if (repo != null && commits.Length > 0)
                 {
                     return Document.Create(fallbackDocset, pathToDocset, templateEngine, FileOrigin.Fallback, isFromHistory: true);
                 }
@@ -318,7 +318,7 @@ namespace Microsoft.Docs.Build
                 if (repo != null)
                 {
                     var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                    if (commits.Count > 1)
+                    if (commits.Length > 1)
                     {
                         // the latest commit would be deleting it from repo
                         if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
