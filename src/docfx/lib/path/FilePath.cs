@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         public FileOrigin Origin { get; }
 
         /// <summary>
-        /// Gets the commit id if this file is owned by a git repository and it not the latest version.
+        /// Gets the commit id if this file is owned by a git repository and is not the latest version.
         /// </summary>
         public string Commit { get; }
 
