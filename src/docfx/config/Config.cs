@@ -70,6 +70,11 @@ namespace Microsoft.Docs.Build
         public readonly string[] Extend = Array.Empty<string>();
 
         /// <summary>
+        /// Gets whether we are running in legacy mode
+        /// </summary>
+        public readonly bool Legacy;
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
@@ -91,7 +96,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, string> Dependencies = new Dictionary<string, string>(PathUtility.PathComparer);
+        public readonly Dictionary<string, PackageUrl> Dependencies = new Dictionary<string, PackageUrl>(PathUtility.PathComparer);
 
         /// <summary>
         /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
@@ -177,7 +182,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly string Template = string.Empty;
+        public readonly PackageUrl Template;
 
         /// <summary>
         /// Gets the dependency lock file path

@@ -143,14 +143,14 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(docset != null);
 
-            if (string.IsNullOrEmpty(docset.Config.Template))
+            if (docset.Config.Template.Type == PackageType.None)
             {
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var (themeRemote, themeBranch) = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, themeCommt) = RestoreGitMap.GetRestoreGitPath(gitLock, themeRemote, themeBranch, docset.DocsetPath, false);
-            Log.Write($"Using theme '{themeRemote}#{themeCommt}' at '{themePath}'");
+            var themePageUrl = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, _) = RestoreGitMap.GetRestoreGitPath(gitLock, themePageUrl, docset.DocsetPath, false);
+            Log.Write($"Using theme '{themePageUrl}' at '{themePath}'");
 
             return new TemplateEngine(themePath);
         }

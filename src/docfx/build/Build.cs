@@ -30,8 +30,7 @@ namespace Microsoft.Docs.Build
                     return;
 
                 var gitLock = fallbackGitLock ?? restoreGitMap.GitLock;
-                var (docset, fallbackDocset) = GetDocsetWithFallback(
-                    docsetPath, options, errorLog, repository, locale, fallbackRepo, config, gitLock);
+                var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, repository, locale, fallbackRepo, config, gitLock);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
                 await Run(docset, fallbackDocset, options, errorLog, outputPath, gitLock);
@@ -40,20 +39,18 @@ namespace Microsoft.Docs.Build
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
             string docsetPath,
-            CommandLineOptions options,
-            ErrorLog errorLog,
             Repository repository,
             string locale,
             Repository fallbackRepo,
             Config config,
             DependencyGitLock gitLock)
         {
-            var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, repository, gitLock);
+            var currentDocset = new Docset(docsetPath, locale, config, repository);
             if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
             {
                 if (fallbackRepo != null)
                 {
-                    return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, fallbackRepo, gitLock));
+                    return (currentDocset, new Docset(fallbackRepo.Path, locale, config, fallbackRepo));
                 }
 
                 if (LocalizationUtility.TryGetLocalizationDocset(
@@ -65,13 +62,11 @@ namespace Microsoft.Docs.Build
                     out var localizationRepository))
                 {
                     return (new Docset(
-                        errorLog,
                         localizationDocset,
                         currentDocset.Locale,
                         config,
-                        options,
-                        localizationRepository,
-                        gitLock), currentDocset);
+                        localizationRepository),
+                        currentDocset);
                 }
             }
 
@@ -99,7 +94,7 @@ namespace Microsoft.Docs.Build
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var xrefMapModel = context.XrefMap.ToXrefMapModel();
+                var xrefMapModel = context.XrefResolver.ToXrefMapModel();
 
                 context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
@@ -222,7 +217,7 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = "master";
                 }
 
-                var (fallbackRepoPath, commit) = RestoreGitMap.GetRestoreGitPath(gitLock, fallbackRemote, fallbackBranch, docsetPath, false);
+                var (fallbackRepoPath, commit) = RestoreGitMap.GetRestoreGitPath(gitLock, new PackageUrl(fallbackRemote, fallbackBranch), docsetPath, false);
                 var fallbackRepository = Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote, commit);
 
                 if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))

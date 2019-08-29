@@ -135,6 +135,7 @@ inputs:
     Link to <xref:a&b?displayProperty=description>
     Link to @a&b?displayProperty=description
     Link to @a&c
+    Link to <xref:a%2A>
 outputs:
   a.json:
   html-xref.json: |
@@ -146,5 +147,8 @@ outputs:
             Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
             Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
             Link to @a&amp;c
+            Link to &lt;xref:a%2A&gt;
           </p>"
     }
+  .errors.log: |
+    ["warning","xref-not-found","Cross reference not found: 'a%2A'","html-xref.md",6,9]

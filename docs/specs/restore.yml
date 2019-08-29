@@ -20,7 +20,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
-# [Skip]Restore dependencies azure repos with their children
+# Restore dependencies azure repos with their children
 repos:
   https://docascode.visualstudio.com/project/_git/a:
     - files:
@@ -118,6 +118,7 @@ inputs:
 outputs:
   .errors.log: |
     ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies."]
+    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
 ---
 # Show error when dependent repo can't be found
 restore: false
@@ -129,7 +130,7 @@ inputs:
     [test](dep/abc)
 outputs:
   .errors.log: |
-    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?","docs/a.md"]
+    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
 ---
 # Show error when dependent URL can't be found
 restore: false
@@ -191,11 +192,9 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
-            dep1: https://docs.com/lock1/b#master
             dep2: https://docs.com/lock1/c
           dependencyLock: '{CACHE_PATH}.lock.json'
         docs/a.md: |
-          [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
   https://docs.com/lock1/b:
     - files:
@@ -254,11 +253,9 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
-            dep1: https://docascode.visualstudio.com/lock/_git/b#master
             dep2: https://docascode.visualstudio.com/lock/_git/c
           dependencyLock: {CACHE_PATH}.lock.json
         docs/a.md: |
-          [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
   https://docascode.visualstudio.com/lock/_git/b:
     - files:

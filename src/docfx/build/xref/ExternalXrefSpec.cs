@@ -31,5 +31,7 @@ namespace Microsoft.Docs.Build
             }
             return null;
         }
+
+        public ExternalXrefSpec ToExternalXrefSpec() => this;
     }
 }

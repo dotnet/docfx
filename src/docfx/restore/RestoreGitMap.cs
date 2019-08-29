@@ -41,43 +41,48 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (string path, string commit) GetRestoreGitPath(DependencyGitLock gitLock, string remote, string branch, string docsetPath, bool bare)
+        public static (string path, string commit) GetRestoreGitPath(DependencyGitLock gitLock, PackageUrl url, string docsetPath, bool bare)
         {
             Debug.Assert(gitLock != null);
 
-            if (!UrlUtility.IsHttp(remote))
+            switch (url.Type)
             {
-                var fullPath = Path.Combine(docsetPath, remote);
-                if (Directory.Exists(fullPath))
-                {
-                    return (fullPath, default);
-                }
+                case PackageType.Folder:
+                    var fullPath = Path.Combine(docsetPath, url.Path);
+                    if (Directory.Exists(fullPath))
+                    {
+                        return (fullPath, default);
+                    }
 
-                // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
-                // TODO: populate source info
-                throw Errors.NeedRestore(remote).ToException();
+                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
+                    // TODO: populate source info
+                    throw Errors.NeedRestore(url.Path).ToException();
+
+                case PackageType.Git:
+                    var gitVersion = gitLock.GetGitLock(url.Remote, url.Path);
+
+                    if (gitVersion == null || gitVersion.Commit == null)
+                    {
+                        throw Errors.NeedRestore($"{url}").ToException();
+                    }
+
+                    var path = AppData.GetGitDir(url.Remote);
+
+                    if (!bare)
+                    {
+                        path = Path.Combine(path, "1");
+                    }
+
+                    if (!Directory.Exists(path))
+                    {
+                        throw Errors.NeedRestore($"{url}").ToException();
+                    }
+
+                    return (path, gitVersion.Commit);
+
+                default:
+                    throw new NotSupportedException($"Unknown package url: '{url}'");
             }
-
-            var gitVersion = gitLock.GetGitLock(remote, branch);
-
-            if (gitVersion == null || gitVersion.Commit == null)
-            {
-                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
-            }
-
-            var path = AppData.GetGitDir(remote);
-
-            if (!bare)
-            {
-                path = Path.Combine(path, "1");
-            }
-
-            if (!Directory.Exists(path))
-            {
-                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
-            }
-
-            return (path, gitVersion.Commit);
         }
     }
 }

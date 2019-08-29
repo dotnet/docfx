@@ -297,6 +297,41 @@ outputs:
   .errors.log: |
     ["warning","link-is-dependency","File 'logo.svg' referenced by link '../dep/logo.svg' will not be built because it is from a dependency docset","docs/a.md",1,9]
 ---
+# Show warning if link from a token in dependency repo to a file in dependency repo
+repos:
+  https://github.com/dep-token/root:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-token/dep
+        a.md: '[!include[dep](~/dep/b.md)]'
+  https://github.com/dep-token/dep:
+    - files:
+        b.md: '[](logo.svg)'
+        logo.svg:
+outputs:
+  a.json: |
+    {"conceptual":"<p><a href=\"logo.svg\"></a></p>"}
+  .errors.log: |
+    ["warning","link-is-dependency","File 'logo.svg' referenced by link 'logo.svg' will not be built because it is from a dependency docset","b.md",1,1,"dependency"]
+---
+# Cannot include entry docset file from dependency
+repos:
+  https://github.com/dep-token-reference-entry/root:
+    - files:
+        docfx.yml: |
+          dependencies:
+            dep: https://github.com/dep-token-reference-entry/dep
+        a.md: '[!include[dep](~/dep/b.md)]'
+  https://github.com/dep-token-reference-entry/dep:
+    - files:
+        b.md: '[](~/a.md)'
+outputs:
+  a.json: |
+    {"conceptual":"<p><a href=\"%7E/a.md\"></a></p>"}
+  .errors.log: |
+    ["warning","file-not-found","Invalid file link: '~/a.md'.","b.md",1,1,"dependency"]
+---
 # Don't show warning if include a file from dependency repo
 repos:
   https://github.com/dep-include/root:
@@ -316,7 +351,7 @@ outputs:
 inputs:
   docfx.yml: |
     dependencies:
-      dep: dependencies#branch
+      dep: dependencies
   a.md: '[!include[dep](~/dep/dep.md)]'
   dependencies/dep.md: DEP
 outputs:

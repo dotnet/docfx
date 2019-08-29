@@ -96,7 +96,21 @@ inputs:
 
     hello
 outputs:
-  docs/a.json:
+  docs/a.json: |
+    { "title": "Title from yaml header" }
+---
+# Empty H1 and title
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title:
+    ---
+
+    #  
+outputs:
+  docs/a.json: |
+    { "title": null }
 ---
 # Non-comments block between yaml-header and H1
 inputs:

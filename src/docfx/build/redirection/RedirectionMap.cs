@@ -104,9 +104,9 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
+                    var filePath = new FilePath(pathToDocset, FileOrigin.Redirection);
                     var redirect = Document.Create(
-                        docset, pathToDocset, templateEngine, redirectionUrl: mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
-
+                        docset, filePath, templateEngine, mutableRedirectUrl, isFromHistory: false, combineRedirectUrl);
                     if (redirectDocumentId)
                     {
                         redirectionsWithDocumentId.Add((redirectUrl, redirect));

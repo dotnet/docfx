@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
 
             var result = new JObject();
             result["output"] = output;
+            result["legacy"] = Legacy;
 
             if (Template != null)
                 result["template"] = Template;

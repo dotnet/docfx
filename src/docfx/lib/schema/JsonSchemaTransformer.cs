@@ -259,13 +259,8 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.Xref:
-                    // TODO: the content here must be an UID, not href
-                    var (xrefError, _, _, xrefSpec) = context.DependencyResolver.ResolveAbsoluteXref(content, file);
-
-                    if (xrefSpec is InternalXrefSpec internalSpec)
-                    {
-                        xrefSpec = internalSpec.ToExternalXrefSpec(forXrefMapOutput: false);
-                    }
+                    // the content here must be an UID, not href
+                    var (xrefError, xrefSpec) = context.XrefResolver.ResolveXrefSpec(content, file);
                     errors.AddIfNotNull(xrefError);
 
                     if (xrefSpec != null)

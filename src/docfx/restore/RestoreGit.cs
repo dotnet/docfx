@@ -171,18 +171,17 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (_, url) in config.Dependencies)
             {
-                var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                if (UrlUtility.IsHttp(url))
+                if (url.Type == PackageType.Git)
                 {
-                    yield return (remote, branch, GitFlags.NoCheckout);
+                    yield return (url.Remote, url.Branch, GitFlags.NoCheckout);
                 }
             }
 
-            if (UrlUtility.IsHttp(config.Template))
+            if (config.Template.Type == PackageType.Git)
             {
-                var (remote, branch) = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+                var templateUrl = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
 
-                yield return (remote, branch, GitFlags.None);
+                yield return (templateUrl.Remote, templateUrl.Branch, GitFlags.None);
             }
 
             foreach (var item in GetLocalizationGitDependencies(rootRepository, config, locale))
