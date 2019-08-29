@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             };
             if (context.IsTemplateUpdated)
             {
-                Logger.LogVerbose("Cannot build incrementally in link phase because template changed. Will apply templates and post process all files", code: InfoCodes.IncrementalBuildReason.TemplateChanged);
+                Logger.LogVerbose($"Cannot build incrementally in link phase because template changed (new: {cb.TemplateHash} vs. old: {lb?.TemplateHash ?? "null"}). Will apply templates and post process all files", code: InfoCodes.IncrementalBuildReason.TemplateChanged);
             }
             context.InitDependency();
             context.InitFileAttributes();
