@@ -32,12 +32,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty", source);
 
         /// <summary>
-        /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
-        /// </summary>
-        public static Error RedirectionUrlInvalid(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' should be absolute or relative path.", source);
-
-        /// <summary>
         /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
         /// can't decide which entry to use when computing document id.
         /// </summary>

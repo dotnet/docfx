@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                             case LinkType.AbsolutePath:
                                 break;
                             default:
-                                errorLog.Write(Errors.RedirectionUrlInvalid(redirectUrl));
+                                errorLog.Write(Errors.RedirectionUrlNotExisted(redirectUrl));
                                 continue;
                         }
                     }
