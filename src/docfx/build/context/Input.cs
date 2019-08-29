@@ -23,6 +23,24 @@ namespace Microsoft.Docs.Build
             _fallbackPath = fallbackPath is null ? null : Path.GetFullPath(fallbackPath);
         }
 
+        public bool TryGetPhysicalPath(FilePath file, out string physicalPath)
+        {
+            var (basePath, path, commit) = ResolveFilePath(file);
+
+            if (basePath != null && commit is null)
+            {
+                var fullPath = Path.Combine(basePath, path);
+                if (File.Exists(fullPath))
+                {
+                    physicalPath = fullPath;
+                    return true;
+                }
+            }
+
+            physicalPath = null;
+            return false;
+        }
+
         public string ReadText(FilePath file)
         {
             using (var stream = ReadStream(file))
@@ -34,29 +52,47 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(FilePath file)
         {
+            var (basePath, path, commit) = ResolveFilePath(file);
+
+            if (basePath is null)
+            {
+                throw new NotSupportedException($"Cannot read file path '{file}'");
+            }
+
+            if (commit is null)
+            {
+                return File.OpenRead(Path.Combine(basePath, path));
+            }
+
+            var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(_fallbackPath, aFile.Path, aFile.Commit))
+                ?? throw new InvalidOperationException($"Error reading '{file}'");
+
+            return new MemoryStream(bytes, writable: false);
+        }
+
+        private (string basePath, string path, string commit) ResolveFilePath(FilePath file)
+        {
             switch (file.Origin)
             {
                 case FileOrigin.Default when file.Commit is null:
-                    return File.OpenRead(Path.Combine(_docsetPath, file.Path));
+                    return (_docsetPath, file.Path, null);
 
                 case FileOrigin.Dependency when file.Commit is null:
                     var (dependencyPath, _) = _restoreMap.GetGitRestorePath(_config.Dependencies[file.DependencyName], _docsetPath);
-                    return File.OpenRead(Path.Combine(dependencyPath, file.Path));
+                    return (dependencyPath, file.Path, null);
 
                 case FileOrigin.Fallback when file.Commit is null && _fallbackPath != null:
-                    return File.OpenRead(Path.Combine(_fallbackPath, file.Path));
+                    return (_fallbackPath, file.Path, null);
 
                 case FileOrigin.Fallback when _fallbackPath != null:
-                    var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(_fallbackPath, aFile.Path, aFile.Commit))
-                        ?? throw new InvalidOperationException($"Error reading '{file}'");
-                    return new MemoryStream(bytes, writable: false);
+                    return (_fallbackPath, file.Path, file.Commit);
 
                 case FileOrigin.Template when file.Commit is null:
                     var (templatePath, _) = _restoreMap.GetGitRestorePath(_config.Template, _docsetPath);
-                    return File.OpenRead(Path.Combine(templatePath, file.Path));
+                    return (templatePath, file.Path, null);
 
                 default:
-                    throw new NotSupportedException($"Cannot read file path '{file}'");
+                    return default;
             }
         }
     }

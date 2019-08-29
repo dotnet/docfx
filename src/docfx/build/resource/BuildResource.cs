@@ -20,12 +20,15 @@ namespace Microsoft.Docs.Build
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, isPage: false);
 
             // Output path is source file path relative to output folder when copy resource is disabled
-            var publishPath = file.Docset.Config.Output.CopyResources
-                ? outputPath
-                : PathUtility.NormalizeFile(
-                    Path.GetRelativePath(
-                        Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.Docset.Config.Output.Path)),
-                        Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.FilePath.Path))));
+            var publishPath = outputPath;
+
+            if (!file.Docset.Config.Output.CopyResources &&
+                context.Input.TryGetPhysicalPath(file.FilePath, out var physicalPath))
+            {
+                publishPath = PathUtility.NormalizeFile(Path.GetRelativePath(
+                    Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.Docset.Config.Output.Path)),
+                    Path.GetFullPath(physicalPath)));
+            }
 
             var publishItem = new PublishItem
             {
