@@ -44,6 +44,7 @@ namespace Microsoft.Docs.Build
             }
 
             var content = RestoreFileMap.GetRestoredFileContent(docset, gitLockPath, fallbackDocset: null);
+            Log.Write(content);
 
             return JsonUtility.Deserialize<GitLock>(content, new FilePath(gitLockPath));
         }

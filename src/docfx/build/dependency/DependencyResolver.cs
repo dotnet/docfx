@@ -320,7 +320,6 @@ namespace Microsoft.Docs.Build
                 return Document.Create(docset, filePath, _templateEngine);
             }
 
-            Log.Write($"Get document from CRR git{(deleted ? " which was deleted" : "")}, {filePath}");
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, filePath.Path, docset.Repository.Commit);
 
             var commit = deleted && commits.Length > 1 ? commits[1] : (!deleted && commits.Length > 0 ? commits[0] : default);

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks.Dataflow;
 using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
@@ -161,6 +162,10 @@ namespace Microsoft.Docs.Build
             if (IsFromHistory)
             {
                 Debug.Assert(_content != null);
+                if (_content.Value == null)
+                {
+                    Log.Write($"{FilePath} doesn't exist while reading stream");
+                }
                 return new MemoryStream(Encoding.UTF8.GetBytes(_content.Value));
             }
 
