@@ -327,12 +327,12 @@ namespace Microsoft.Docs.Build
             if (repo != null && commit != null)
             {
                 var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                return Document.Create(docset, filePath, _templateEngine, isFromHistory: true, readStream:
-                    () =>
+                return Document.Create(docset, filePath, _templateEngine, isFromHistory: true, content:
+                    new Lazy<string>(() =>
                     {
                         Log.Write($"Read document content from CRR git{(deleted ? " which was deleted" : "")}, {filePath}");
                         return GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
-                    });
+                    }));
             }
 
             return default;

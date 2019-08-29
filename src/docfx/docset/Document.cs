@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {
@@ -105,7 +107,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
         private readonly Lazy<Repository> _repository;
-        private readonly Func<Stream> _readStream;
+        private readonly Lazy<string> _content;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
@@ -123,7 +125,7 @@ namespace Microsoft.Docs.Build
             string redirectionUrl = null,
             bool isFromHistory = false,
             bool isPage = true,
-            Func<Stream> readStream = null)
+            Lazy<string> content = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
@@ -143,9 +145,9 @@ namespace Microsoft.Docs.Build
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
             _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
-            _readStream = readStream;
+            _content = content;
 
-            Debug.Assert(!isFromHistory || _readStream != null);
+            Debug.Assert(!isFromHistory || _content != null);
             Debug.Assert(IsValidRelativePath(FilePath.Path));
             Debug.Assert(IsValidRelativePath(SitePath));
 
@@ -158,7 +160,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(ContentType != ContentType.Redirection);
             if (IsFromHistory)
             {
-                return _readStream();
+                Debug.Assert(_content != null);
+                return new MemoryStream(Encoding.UTF8.GetBytes(_content.Value));
             }
 
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path));
@@ -249,7 +252,7 @@ namespace Microsoft.Docs.Build
             string redirectionUrl = null,
             bool isFromHistory = false,
             bool combineRedirectUrl = false,
-            Func<Stream> readStream = null)
+            Lazy<string> content = null)
         {
             Debug.Assert(docset != null);
 
@@ -274,10 +277,11 @@ namespace Microsoft.Docs.Build
                 redirectionUrl = combineRedirectUrl ? PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl)) : redirectionUrl;
                 redirectionUrl = redirectionUrl.EndsWith("/index") ? redirectionUrl.Substring(0, redirectionUrl.Length - "index".Length) : redirectionUrl;
             }
+
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage, readStream);
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage, content);
         }
 
         internal static ContentType GetContentType(string path)
