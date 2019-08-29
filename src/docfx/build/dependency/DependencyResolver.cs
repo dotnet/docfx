@@ -166,8 +166,7 @@ namespace Microsoft.Docs.Build
 
             if (file is null)
             {
-                var (content, fileFromHistory) = TryResolveContentFromHistory(
-                    declaringFile, _gitCommitProvider, pathToDocset, _templateEngine);
+                var (content, fileFromHistory) = TryResolveContentFromHistory(declaringFile, pathToDocset);
                 if (fileFromHistory != null)
                 {
                     return (null, content, fileFromHistory);
@@ -202,7 +201,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                file = TryResolveResourceFromHistory(declaringFile, _gitCommitProvider, pathToDocset, _templateEngine);
+                file = TryResolveResourceFromHistory(declaringFile, pathToDocset);
                 if (file is null)
                 {
                     return (error, href, fragment, linkType, null, false);
@@ -285,7 +284,7 @@ namespace Microsoft.Docs.Build
                         return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
                     }
 
-                    var file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider, _cache);
+                    var file = CreateFromFile(declaringFile.Docset, pathToDocset);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -296,7 +295,7 @@ namespace Microsoft.Docs.Build
                         {
                             // try to resolve with .md for landing page
                             pathToDocset = ResolveToDocsetRelativePath($"{path}.md", declaringFile);
-                            file = Document.CreateFromFile(declaringFile.Docset, pathToDocset, _templateEngine, _buildScope, _gitCommitProvider, _cache);
+                            file = CreateFromFile(declaringFile.Docset, pathToDocset);
                         }
 
                         // Do not report error for landing page
@@ -316,6 +315,98 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        /// <summary>
+        /// Opens a new <see cref="Document"/> based on the path relative to docset.
+        /// </summary>
+        /// <param name="docset">The current docset</param>
+        /// <param name="pathToDocset">The path relative to docset root</param>
+        /// <returns>A new document, or null if not found</returns>
+        private Document CreateFromFile(Docset docset, string pathToDocset)
+        {
+            Debug.Assert(docset != null);
+            Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
+            Debug.Assert(!Path.IsPathRooted(pathToDocset));
+
+            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
+
+            if (_buildScope != null && _buildScope.TryResolveDocset(docset, pathToDocset, out var resolved))
+            {
+                return Document.Create(resolved.resolvedDocset, pathToDocset, _templateEngine, resolved.fileOrigin);
+            }
+
+            if (File.Exists(Path.Combine(docset.DocsetPath, pathToDocset)))
+            {
+                return Document.Create(docset, pathToDocset, _templateEngine, FileOrigin.Current);
+            }
+
+            if (_gitCommitProvider == null || _cache == null)
+            {
+                return default;
+            }
+
+            // resolve from dependent docsets
+            foreach (var (dependencyName, dependentDocset) in docset.DependencyDocsets)
+            {
+                Debug.Assert(dependencyName.EndsWith('/'));
+
+                if (!pathToDocset.StartsWith(dependencyName, PathUtility.PathComparison))
+                {
+                    // the file stored in the dependent docset should start with dependency name
+                    continue;
+                }
+
+                var dependentDoc = _cache.GetDependentDocument(dependentDocset, pathToDocset, () =>
+                {
+                    var dependencyFile = CreateFromGit(dependentDocset, pathToDocset.Substring(dependencyName.Length));
+                    if (dependencyFile != null)
+                    {
+                        return dependencyFile;
+                    }
+
+                    return default;
+                });
+
+                if (dependentDoc != default)
+                {
+                    return dependentDoc;
+                }
+            }
+
+            return default;
+        }
+
+        private Document CreateFromGit(Docset docset, string pathToDocset, bool deleted = false)
+        {
+            Debug.Assert(_gitCommitProvider != null);
+
+            if (string.IsNullOrEmpty(pathToDocset))
+            {
+                return default;
+            }
+
+            if (docset == null)
+            {
+                return default;
+            }
+
+            Log.Write($"Get document from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, pathToDocset, docset.Repository.Commit);
+
+            var commit = deleted && commits.Count > 1 ? commits[1] : (!deleted && commits.Count > 0 ? commits[0] : default);
+            if (repo != null && commit != null)
+            {
+                var repoPath = PathUtility.NormalizeFolder(repo.Path);
+                return Document.Create(docset, pathToDocset, _templateEngine, deleted ? FileOrigin.Fallback : FileOrigin.Current, isFromHistory: true, readStream:
+                    () =>
+                    {
+                        Log.Write($"Read document content from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
+                        return GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
+                    });
+            }
+
+            return default;
+        }
+
         private string ResolveToDocsetRelativePath(string path, Document declaringFile)
         {
             var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(declaringFile.FilePath.Path), path));
@@ -332,8 +423,7 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private Document TryResolveResourceFromHistory(
-            Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
+        private Document TryResolveResourceFromHistory(Document declaringFile, string pathToDocset)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -344,14 +434,13 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = _buildScope.GetFallbackDocset(declaringFile.Docset);
             if (fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
             {
-                return Document.CreateFromGit(gitCommitProvider, fallbackDocset, pathToDocset, templateEngine, deleted: true);
+                return CreateFromGit(fallbackDocset, pathToDocset, deleted: true);
             }
 
             return default;
         }
 
-        private (string content, Document file) TryResolveContentFromHistory(
-            Document declaringFile, GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
+        private (string content, Document file) TryResolveContentFromHistory(Document declaringFile, string pathToDocset)
         {
             if (string.IsNullOrEmpty(pathToDocset))
             {
@@ -362,7 +451,7 @@ namespace Microsoft.Docs.Build
             var fallbackDocset = _buildScope.GetFallbackDocset(declaringFile.Docset);
             if (fallbackDocset != null)
             {
-                var doc = Document.CreateFromGit(gitCommitProvider, fallbackDocset, pathToDocset, templateEngine, deleted: true);
+                var doc = CreateFromGit(fallbackDocset, pathToDocset, deleted: true);
 
                 if (doc != null)
                     return (doc.ReadText(), doc);
