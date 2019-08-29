@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context, bool legacy)
+        public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context)
         {
             // Handle publish url conflicts
             // TODO: Report more detail info for url conflict

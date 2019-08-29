@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
                 context.BookmarkValidator.Validate();
 
-                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
+                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context);
                 var dependencyMap = context.DependencyMapBuilder.Build();
                 var xrefMapModel = context.XrefResolver.ToXrefMapModel();
 
