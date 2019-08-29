@@ -224,14 +224,16 @@ inputs:
       docs/c.md: "/docs/g"
       docs/e.md: "/docs/g"
       docs/f.md: "/docs/b"
+      docs/h.md: "http://hostname/test"
     redirectionsWithoutId:
       docs/d.md: "/docs/e"
   docs/a.md:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",3,14]
-    ["warning","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",4,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",3,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",4,14]
+    ["suggestion","redirection-url-not-existed","The redirect url 'http://hostname/test' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",6,14]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})

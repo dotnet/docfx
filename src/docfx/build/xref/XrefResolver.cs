@@ -9,20 +9,20 @@ using System.Web;
 
 namespace Microsoft.Docs.Build
 {
-    internal class XrefMap
+    internal class XrefResolver
     {
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
         private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
 
-        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
+        public XrefResolver(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
         {
             _internalXrefMap = InternalXrefMapBuilder.Build(context);
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
             _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public (Error error, string href, string display, Document declaringFile) ResolveToLink(SourceInfo<string> href, Document referencingFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referencingFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -65,7 +65,20 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error, ExternalXrefSpec) ResolveToXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveRelativeXref(
+            Document relativeToFile, SourceInfo<string> href, Document referencingFile)
+        {
+            var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referencingFile);
+
+            if (declaringFile != null)
+            {
+                link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
+            }
+
+            return (error, link, display, declaringFile);
+        }
+
+        public (Error, ExternalXrefSpec) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
             return (error, xrefSpec?.ToExternalXrefSpec());
