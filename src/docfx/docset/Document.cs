@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(_content != null);
                 if (_content.Value == null)
                 {
-                    Log.Write($"{FilePath} doesn't exist while reading stream");
+                    Log.Write($"{FilePath} from {FilePath.DependencyName ?? FilePath.Origin.ToString()} doesn't exist while reading stream");
                 }
                 return new MemoryStream(Encoding.UTF8.GetBytes(_content.Value));
             }
