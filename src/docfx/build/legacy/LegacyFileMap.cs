@@ -31,13 +31,10 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
-                            docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var version = legacyVersionProvider.GetLegacyVersion(document);
                         var fileItem = LegacyFileMapItem.Instance(
-                            legacyOutputFilePathRelativeToSiteBasePath,
                             legacySiteUrlRelativeToSiteBasePath,
                             document.ContentType,
                             version,

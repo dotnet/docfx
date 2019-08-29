@@ -22,8 +22,6 @@ namespace Microsoft.Docs.Build
 
         public string Type { get; set; }
 
-        public LegacyManifestOutput Output { get; set; }
-
         // tell ops to use plugin for normalization
         public bool SkipNormalization { get; set; }
 

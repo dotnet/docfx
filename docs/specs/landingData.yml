@@ -18,6 +18,5 @@ inputs:
             image:
               src: ./a.png
 outputs:
-  docs/index.mta.json:
-  docs/index.raw.page.json: |
+  docs/index.json: |
     { "content": "<ul class=\"cardsM cols cols1\"><li><a class=\"card\" href=\"/en-us/a\" data-linktype=\"absolute-path\"><img class=\"cardImage\" role=\"presentation\" src=\"./a.png\" data-linktype=\"relative-path\"><div class=\"cardText\"><h3></h3><p>Test html</p></div></a></li></ul>" }

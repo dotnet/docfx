@@ -48,10 +48,7 @@ cache:
       ]
     }
 outputs:
-  a.raw.page.json:
-  a.mta.json: |
-    { "locale": "en-us", "redirect_url": "/b" }
-  c.raw.page.json: |
+  c.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
       "rawMetadata": {
@@ -79,10 +76,7 @@ outputs:
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
-  c.mta.json: |
-    { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
   toc.json:
-  toc.mta.json:
   .manifest.json:
   filemap.json:
   op_aggregated_file_map_info.json:
@@ -263,11 +257,8 @@ inputs:
   a.md: |
     [link](redirect.md)
 outputs:
-  a.mta.json:
-  a.raw.page.json: |
+  a.json: |
     { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
-  redirect.mta.json:
-  redirect.raw.page.json:
 ---
 # Legacy metadata black list
 inputs:
@@ -312,7 +303,7 @@ outputs:
   .publish.json: |
     {"files":[{"url":"/a.png","path":"../inputs/a.png"}]}
   .manifest.json: |
-    {"files":[{"asset_id":"/a.png","output":{"resource":{"is_raw_page":false,"relative_path":"a.png"}}}]}
+    {"files":[{"asset_id":"/a.png"}]}
 ---
 # Build versioning repository
 legacy: true
@@ -341,19 +332,16 @@ inputs:
       ]
     }
 outputs:
-  docs/a.mta.json:
-  docs/a.raw.page.json:
-  docs/4667fedf/a.mta.json:
-  docs/4667fedf/a.raw.page.json:
-  docs/9d4e15fd/a.mta.json:
-  docs/9d4e15fd/a.raw.page.json:
+  docs/a.json:
+  docs/4667fedf/a.json:
+  docs/9d4e15fd/a.json:
   full-dependent-list.txt:
   docs/.manifest.json: |
     {
       "files":[
-        {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md","output":{".mta.json":{"relative_path":"a.mta.json"},".raw.page.json":{"relative_path":"a.raw.page.json"}}},
-        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"},
-        {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","output":{".mta.json":{"relative_path":"4667fedf/a.mta.json"},".raw.page.json":{"relative_path":"4667fedf/a.raw.page.json"}},"group":"4667fedf"}
+        {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md"},
+        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","group":"9d4e15fd"},
+        {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","group":"4667fedf"}
       ],
       "groups":[
         {"group":"4667fedf","monikers":["netcore-2.0"]},
@@ -363,10 +351,9 @@ outputs:
   docs/filemap.json: |
     {
       "file_mapping":{
-        "docs/a.md":{"type":"Content","output_relative_path":"a.html","asset_id":"a"},
+        "docs/a.md":{"type":"Content","asset_id":"a"},
         "docs/v1/a.md:< netcore-2.0":{
           "type":"Content",
-          "output_relative_path":"9d4e15fd/a.html",
           "asset_id":"a",
           "version": "< netcore-2.0",
           "monikers":["netcore-1.0","netcore-1.1"],
@@ -374,7 +361,6 @@ outputs:
         },
         "docs/v2/a.md:netcore-2.0":{
           "type":"Content",
-          "output_relative_path":"4667fedf/a.html",
           "asset_id":"a",
           "version": "netcore-2.0",
           "monikers":["netcore-2.0"],
@@ -411,14 +397,10 @@ inputs:
     }
 outputs:
   docs/136a42ac/toc.json:
-  docs/136a42ac/toc.mta.json:
-  docs/136a42ac/f1/a.mta.json:
-  docs/136a42ac/f1/a.raw.page.json: |
+  docs/136a42ac/f1/a.json: |
     {"rawMetadata":{"_tocRel": "../toc.json"}}
   docs/4667fedf/toc.json:
-  docs/4667fedf/toc.mta.json:
-  docs/4667fedf/f1/a.mta.json:
-  docs/4667fedf/f1/a.raw.page.json: |
+  docs/4667fedf/f1/a.json: |
     {"rawMetadata":{"_tocRel": "../toc.json"}}
   docs/.manifest.json:
   docs/filemap.json:
@@ -442,8 +424,7 @@ repos:
         docs/a.md: |
           @a
 outputs:
-  docs/a.mta.json:
-  docs/a.raw.page.json:
+  docs/a.json:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"origin":"fallback"}
 ---
@@ -456,10 +437,8 @@ inputs:
   _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
   _themes/ContentTemplate/TestPage.html.primary.tmpl:
 outputs:
-  a.mta.json:
-  a.raw.page.json: '{"content": "<div></div>"}'
-  b.mta.json:
-  b.raw.page.json: '{"content": "<div></div>"}'
+  a.json: '{"content": "<div></div>"}'
+  b.json: '{"content": "<div></div>"}'
 ---
 # Add data-linktype to urls
 legacy: true
@@ -481,11 +460,9 @@ inputs:
     <img src='{{link}}'></img>
     {{{markdown}}}
 outputs:
-  a.mta.json:
-  a.raw.page.json: |
+  a.json: |
     { "content": "<p><a data-linktype='external' href='https://github.com'></a></p>" }
-  b.mta.json:
-  b.raw.page.json: |
+  b.json: |
     { "content": "
         <a data-linktype='external' href='https://github.com'></a>
         <img data-linktype='external' src='https://docs.com'></img>

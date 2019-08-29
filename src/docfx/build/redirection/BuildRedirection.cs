@@ -31,21 +31,7 @@ namespace Microsoft.Docs.Build
                 publishItem.Path = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
             }
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy)
-            {
-                var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
-                var metadata = new
-                {
-                    locale = file.Docset.Locale,
-                    monikers,
-                    redirect_url = file.RedirectionUrl,
-                    is_dynamic_rendering = true,
-                };
-
-                // Note: produce an empty output to make publish happy
-                context.Output.WriteText("{}", publishItem.Path);
-                context.Output.WriteJson(metadata, metadataPath);
-            }
+            context.PublishModelBuilder.TryAdd(file, publishItem);
 
             return errors;
         }

@@ -174,14 +174,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string GetOutputPath(List<string> monikers, string siteBasePath, bool isPage = true)
+        public string GetOutputPath(List<string> monikers, string siteBasePath)
         {
-            var outputPath = PathUtility.NormalizeFile(Path.Combine(
+            return PathUtility.NormalizeFile(Path.Combine(
                 siteBasePath,
                 $"{MonikerUtility.GetGroup(monikers)}",
                 Path.GetRelativePath(siteBasePath, SitePath)));
-
-            return Docset.Legacy && isPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public int CompareTo(Document other)

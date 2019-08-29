@@ -389,12 +389,9 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4}
     {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3}
     {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7}
-  a.mta.json:
-  a.raw.page.json:
-  b.mta.json:
-  b.raw.page.json:
-  c.mta.json:
-  c.raw.page.json:
+  a.json:
+  b.json:
+  c.json:
 ---
 # metadata need to be transformed for SDP
 inputs:

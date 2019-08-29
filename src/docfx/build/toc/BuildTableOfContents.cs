@@ -18,12 +18,12 @@ namespace Microsoft.Docs.Build
             var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
 
             // enable pdf
-            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath, isPage: false);
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath);
 
             if (file.Docset.Config.Output.Pdf)
             {
                 var siteBasePath = file.Docset.SiteBasePath;
-                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, LegacyUtility.ChangeExtension(outputPath, ".pdf")));
+                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, Path.ChangeExtension(outputPath, ".pdf")));
                 model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
             }
 
@@ -40,16 +40,8 @@ namespace Microsoft.Docs.Build
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem))
             {
-                if (file.Docset.Legacy)
-                {
-                    var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(output, outputPath);
-                    context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
-                }
-                else
-                {
-                    context.Output.WriteJson(model, outputPath);
-                }
+                var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
+                context.Output.WriteJson(output, outputPath);
             }
 
             return errors;

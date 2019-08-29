@@ -25,65 +25,7 @@ namespace Microsoft.Docs.Build
                 Parallel.ForEach(fileManifests, fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
-                            docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
-
-                        var output = new LegacyManifestOutput
-                        {
-                            MetadataOutput = !document.IsPage || document.ContentType == ContentType.Resource
-                            ? null
-                            : new LegacyManifestOutputItem
-                            {
-                                IsRawPage = false,
-                                RelativePath = document.ContentType == ContentType.Resource
-                                ? legacyOutputPathRelativeToSiteBasePath + ".mta.json"
-                                : LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".mta.json"),
-                            },
-                        };
-
-                        if (document.ContentType == ContentType.Resource)
-                        {
-                            var resourceOutput = new LegacyManifestOutputItem
-                            {
-                                RelativePath = legacyOutputPathRelativeToSiteBasePath,
-                                IsRawPage = false,
-                            };
-                            if (!docset.Config.Output.CopyResources)
-                            {
-                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.Path));
-                            }
-                            output.ResourceOutput = resourceOutput;
-                        }
-
-                        if (document.ContentType == ContentType.TableOfContents)
-                        {
-                            output.TocOutput = new LegacyManifestOutputItem
-                            {
-                                IsRawPage = false,
-                                RelativePath = legacyOutputPathRelativeToSiteBasePath,
-                            };
-                        }
-
-                        if (document.ContentType == ContentType.Page || document.ContentType == ContentType.Redirection)
-                        {
-                            if (document.IsPage)
-                            {
-                                output.PageOutput = new LegacyManifestOutputItem
-                                {
-                                    IsRawPage = false,
-                                    RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".raw.page.json"),
-                                };
-                            }
-                            else
-                            {
-                                output.TocOutput = new LegacyManifestOutputItem
-                                {
-                                    IsRawPage = false,
-                                    RelativePath = legacyOutputPathRelativeToSiteBasePath,
-                                };
-                            }
-                        }
 
                         var file = new LegacyManifestItem
                         {
@@ -92,7 +34,6 @@ namespace Microsoft.Docs.Build
                             SourceRelativePath = document.ToLegacyPathRelativeToBasePath(docset),
                             OriginalType = GetOriginalType(document.ContentType),
                             Type = GetType(document.ContentType, document),
-                            Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
                             Group = fileManifest.Value.MonikerGroup,

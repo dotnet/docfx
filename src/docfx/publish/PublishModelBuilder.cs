@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var conflictingFile in files.Keys)
                     {
-                        HandleFileWithError(context, conflictingFile, legacy);
+                        HandleFileWithError(context, conflictingFile);
                     }
                 }
             }
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    HandleFileWithError(context, conflictingFile, legacy);
+                    HandleFileWithError(context, conflictingFile);
                 }
             }
 
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    HandleFileWithError(context, file, legacy);
+                    HandleFileWithError(context, file);
                 }
             }
 
@@ -126,14 +126,14 @@ namespace Microsoft.Docs.Build
             return (model, fileManifests);
         }
 
-        private void HandleFileWithError(Context context, Document file, bool legacy)
+        private void HandleFileWithError(Context context, Document file)
         {
             if (_publishItems.TryGetValue(file, out var item))
             {
                 item.HasError = true;
 
                 if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
-                    context.Output.Delete(item.Path, legacy);
+                    context.Output.Delete(item.Path);
             }
         }
 

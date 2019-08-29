@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
-            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
+            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? await CreatePageOutput(context, file, sourceModel)
@@ -58,12 +58,6 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     context.Output.WriteJson(output, publishItem.Path);
-                }
-
-                if (file.Docset.Legacy && file.IsPage)
-                {
-                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(metadata, metadataPath);
                 }
             }
 
