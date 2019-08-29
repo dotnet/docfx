@@ -13,7 +13,6 @@ using Microsoft.DocAsTest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Microsoft.Docs.Build
 {
