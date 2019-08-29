@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             Config config,
             string locale,
             Repository rootRepository,
-            DependencyLockModel dependencyLock)
+            Dictionary<string, string> dependencyLock)
         {
             var gitLock = new Dictionary<string, string>();
             var gitDependencies =
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             return results.ToList().ToDictionary(k => $"{k.Remote}#{k.Branch}", v => v.Commit);
         }
 
-        internal static IReadOnlyList<RestoreGitResult> RestoreGitRepo(Config config, string remote, List<(string branch, GitFlags flags)> branches, DependencyLockModel dependencyLock)
+        internal static IReadOnlyList<RestoreGitResult> RestoreGitRepo(Config config, string remote, List<(string branch, GitFlags flags)> branches, Dictionary<string, string> dependencyLock)
         {
             var branchesToFetch = new HashSet<string>(branches.Select(b => b.branch));
             var repoDir = AppData.GetGitDir(remote);
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static IReadOnlyList<RestoreGitResult> AddWorkTrees(
-            DependencyLockModel dependencyLock,
+            Dictionary<string, string> dependencyLock,
             string remote,
             List<(string branch, GitFlags flags)> branches,
             HashSet<string> branchesToFetch,
@@ -88,13 +88,13 @@ namespace Microsoft.Docs.Build
             var results = new ListBuilder<RestoreGitResult>();
             ParallelUtility.ForEach(branchesToFetch, branch =>
             {
-                var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
-                var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
+                var gitLockCommit = dependencyLock?.GetGitLock(remote, branch);
+                var headCommit = GitUtility.RevParse(repoPath, gitLockCommit ?? branch);
 
                 Log.Write($"Add worktree for `{remote}` `{headCommit}`");
                 if (string.IsNullOrEmpty(headCommit))
                 {
-                    throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
+                    throw Errors.CommittishNotFound(remote, gitLockCommit ?? branch).ToException();
                 }
 
                 var nocheckout = branches.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
