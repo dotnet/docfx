@@ -7,8 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks.Dataflow;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {
