@@ -259,15 +259,15 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private Document TryResolveFile(Document declaringFile, string pathToDocset, bool lookupFallbackCommits)
+        private Document TryResolveFile(Document referencingFile, string pathToDocset, bool lookupFallbackCommits)
         {
             // resolve from the current docset for files in dependencies
-            if (declaringFile.FilePath.Origin == FileOrigin.Dependency)
+            if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
             {
-                if (File.Exists(Path.Combine(declaringFile.Docset.DocsetPath, pathToDocset)))
+                if (File.Exists(Path.Combine(referencingFile.Docset.DocsetPath, pathToDocset)))
                 {
-                    var path = new FilePath(pathToDocset, declaringFile.FilePath.DependencyName);
-                    return Document.Create(declaringFile.Docset, path, _templateEngine);
+                    var path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
+                    return Document.Create(referencingFile.Docset, path, _templateEngine);
                 }
                 return null;
             }
