@@ -315,6 +315,11 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
+            if (File.Exists(Path.Combine(docset.DocsetPath, filePath.Path)))
+            {
+                return Document.Create(docset, filePath, _templateEngine);
+            }
+
             Log.Write($"Get document from CRR git{(deleted ? " which was deleted" : "")}, {filePath}");
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, filePath.Path, docset.Repository.Commit);
 
