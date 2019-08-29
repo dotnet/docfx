@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                     return;
 
                 var gitLock = fallbackGitLock ?? restoreGitMap.GitLock;
-                var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, repository, locale, fallbackRepo, config, gitLock);
+                var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repository, fallbackRepo, gitLock);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
                 await Run(docset, fallbackDocset, options, errorLog, outputPath, gitLock);
@@ -39,11 +39,11 @@ namespace Microsoft.Docs.Build
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
             string docsetPath,
-            Repository repository,
             string locale,
-            Repository fallbackRepo,
             Config config,
-            DependencyGitLock gitLock)
+            Repository repository,
+            Repository fallbackRepo,
+            GitLock gitLock)
         {
             var currentDocset = new Docset(docsetPath, locale, config, repository);
             if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             ErrorLog errorLog,
             string outputPath,
-            DependencyGitLock gitLock)
+            GitLock gitLock)
         {
             using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, gitLock))
             {
@@ -193,25 +193,25 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
-            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
+            var gitLockPath = string.IsNullOrEmpty(config.DependencyLock)
                 ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var gitLock = DependencyLock.Load(docsetPath, dependencyLockPath) ?? new DependencyGitLock();
+            var gitLock = GitLockProvider.Load(docsetPath, gitLockPath) ?? new GitLock();
             return new RestoreGitMap(gitLock);
         }
 
-        private static (Repository fallbackRepository, DependencyGitLock gitLock) GetFallbackRepository(
+        private static (Repository fallbackRepository, GitLock gitLock) GetFallbackRepository(
             string docsetPath,
             Repository repository,
-            DependencyGitLock gitLock)
+            GitLock gitLock)
         {
             Debug.Assert(gitLock != null);
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (gitLock.GetGitLock(fallbackRemote, fallbackBranch) == null
-                    && gitLock.GetGitLock(fallbackRemote, "master") != null)
+                if (gitLock.GetGitVersion(fallbackRemote, fallbackBranch) == null
+                    && gitLock.GetGitVersion(fallbackRemote, "master") != null)
                 {
                     // fallback to master branch
                     fallbackBranch = "master";
@@ -223,8 +223,8 @@ namespace Microsoft.Docs.Build
                 if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
                 {
                     // build from loc repo directly with overwrite config
-                    // which means it's using source repo's dependency git loc;
-                    return (fallbackRepository, gitLock.GetGitLock(fallbackRemote, fallbackBranch));
+                    // which means it's using source repo's git lock;
+                    return (fallbackRepository, gitLock.GetGitVersion(fallbackRemote, fallbackBranch));
                 }
 
                 return (fallbackRepository, default);

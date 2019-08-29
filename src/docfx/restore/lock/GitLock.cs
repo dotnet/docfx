@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyGitLock
+    internal class GitLock
     {
         public string Commit { get; set; }
 
-        public IReadOnlyDictionary<string, DependencyGitLock> Git { get; set; } = new Dictionary<string, DependencyGitLock>();
+        public IReadOnlyDictionary<string, GitLock> Git { get; set; } = new Dictionary<string, GitLock>();
     }
 }

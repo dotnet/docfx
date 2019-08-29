@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        public static TemplateEngine Create(Docset docset, DependencyGitLock gitLock)
+        public static TemplateEngine Create(Docset docset, GitLock gitLock)
         {
             Debug.Assert(docset != null);
 

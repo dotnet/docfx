@@ -19,14 +19,14 @@ namespace Microsoft.Docs.Build
                 var repository = Repository.Create(docsetPath);
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-                var restoredDocsets = new ConcurrentDictionary<string, Task<DependencyGitLock>>(PathUtility.PathComparer);
+                var restoredDocsets = new ConcurrentDictionary<string, Task<GitLock>>(PathUtility.PathComparer);
                 var localeToRestore = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
 
                 await RestoreDocset(docsetPath, rootRepository: repository);
 
-                Task<DependencyGitLock> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyGitLock dependencyLock = null)
+                Task<GitLock> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, GitLock gitLock = null)
                 {
-                    return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
+                    return restoredDocsets.GetOrAdd(docset + gitLock?.Commit, async k =>
                     {
                         var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
 
@@ -41,21 +41,21 @@ namespace Microsoft.Docs.Build
                             docset,
                             localeToRestore,
                             config,
-                            (subDocset, subDependencyLock) => RestoreDocset(subDocset, root: false, dependencyLock: subDependencyLock),
+                            (subDocset, subGitLock) => RestoreDocset(subDocset, root: false, gitLock: subGitLock),
                             rootRepository,
-                            dependencyLock,
+                            gitLock,
                             root);
                     });
                 }
             }
 
-            async Task<DependencyGitLock> RestoreOneDocset(
+            async Task<GitLock> RestoreOneDocset(
                 string docset,
                 string locale,
                 Config config,
-                Func<string, DependencyGitLock, Task<DependencyGitLock>> restoreChild,
+                Func<string, GitLock, Task<GitLock>> restoreChild,
                 Repository rootRepository,
-                DependencyGitLock dependencyLock,
+                GitLock gitLock,
                 bool root)
             {
                 // restore extend url firstly
@@ -73,16 +73,16 @@ namespace Microsoft.Docs.Build
                     await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig);
 
                 if (root)
-                    dependencyLock = DependencyLock.Load(docset, extendedConfig.DependencyLock);
+                    gitLock = GitLockProvider.Load(docset, extendedConfig.DependencyLock);
 
                 // restore git repos includes dependency repos, theme repo and loc repos
-                var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, rootRepository, dependencyLock);
+                var gitVersions = await RestoreGit.Restore(extendedConfig, restoreChild, locale, rootRepository, gitLock);
 
                 // restore urls except extend url
                 var restoreUrls = extendedConfig.GetFileReferences().Where(UrlUtility.IsHttp).ToList();
                 await RestoreFile.Restore(restoreUrls, extendedConfig);
 
-                var generatedLock = new DependencyGitLock
+                var generatedLock = new GitLock
                 {
                     Git = gitVersions.OrderBy(g => g.Key).ToDictionary(k => k.Key, v => v.Value),
                 };
@@ -90,8 +90,8 @@ namespace Microsoft.Docs.Build
                 // save dependency lock if it's root entry
                 if (root)
                 {
-                    var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock;
-                    DependencyLock.Save(docset, dependencyLockFilePath, generatedLock);
+                    var gitLockPath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock;
+                    GitLockProvider.Save(docset, gitLockPath, generatedLock);
                 }
 
                 return generatedLock;

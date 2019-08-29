@@ -192,9 +192,11 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
+            dep1: https://docs.com/lock1/b#master
             dep2: https://docs.com/lock1/c
           dependencyLock: '{CACHE_PATH}.lock.json'
         docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
   https://docs.com/lock1/b:
     - files:
@@ -253,9 +255,11 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
+            dep1: https://docascode.visualstudio.com/lock/_git/b#master
             dep2: https://docascode.visualstudio.com/lock/_git/c
           dependencyLock: {CACHE_PATH}.lock.json
         docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
   https://docascode.visualstudio.com/lock/_git/b:
     - files:

@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
             var builder = new TableOfContentsMapBuilder();
-            var templateEngine = TemplateEngine.Create(s_docset, new DependencyGitLock());
+            var templateEngine = TemplateEngine.Create(s_docset, new GitLock());
             var document = Document.Create(s_docset, new FilePath(file), templateEngine);
 
             // test multiple reference case

@@ -20,14 +20,14 @@ namespace Microsoft.Docs.Build
             NoCheckout = 0b0010,
         }
 
-        public static async Task<IReadOnlyDictionary<string, DependencyGitLock>> Restore(
+        public static async Task<IReadOnlyDictionary<string, GitLock>> Restore(
             Config config,
-            Func<string, DependencyGitLock, Task<DependencyGitLock>> restoreChild,
+            Func<string, GitLock, Task<GitLock>> restoreChild,
             string locale,
             Repository rootRepository,
-            DependencyGitLock dependencyLock)
+            GitLock gitLock)
         {
-            var gitVersions = new Dictionary<string, DependencyGitLock>();
+            var gitVersions = new Dictionary<string, GitLock>();
             var gitDependencies =
                 from git in GetGitDependencies(config, locale, rootRepository)
                 group (git.branch, git.flags)
@@ -58,12 +58,12 @@ namespace Microsoft.Docs.Build
             foreach (var child in children.ToList())
             {
                 // todo: remove restoring for sub children
-                var childDependencyLock = await restoreChild(child.ToRestore.path, child.ToRestore.dependencyLock);
+                var subGitLock = await restoreChild(child.ToRestore.path, child.ToRestore.gitLock);
                 gitVersions.TryAdd(
                     $"{child.Restored.remote}#{child.Restored.branch}",
-                    new DependencyGitLock
+                    new GitLock
                     {
-                        Git = childDependencyLock.Git,
+                        Git = subGitLock.Git,
                         Commit = child.Restored.commit,
                     });
             }
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
 
                         using (Progress.Start($"Manage worktree for '{remote}'"))
                         {
-                            AddWorkTrees(dependencyLock, group, subChildren, remote, branchesToFetch, repoPath);
+                            AddWorkTrees(gitLock, group, subChildren, remote, branchesToFetch, repoPath);
                         }
                     }
                 }
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static void AddWorkTrees(
-            DependencyGitLock dependencyLock,
+            GitLock gitLock,
             IGrouping<string, (string branch, GitFlags flags)> group,
             ListBuilder<RestoreChild> subChildren,
             string remote,
@@ -118,17 +118,17 @@ namespace Microsoft.Docs.Build
         {
             ParallelUtility.ForEach(branchesToFetch, branch =>
             {
-                var gitDependencyLock = dependencyLock?.GetGitLock(remote, branch);
-                var headCommit = GitUtility.RevParse(repoPath, gitDependencyLock?.Commit ?? branch);
+                var subGitLock = gitLock?.GetGitVersion(remote, branch);
+                var headCommit = GitUtility.RevParse(repoPath, subGitLock?.Commit ?? branch);
                 if (string.IsNullOrEmpty(headCommit))
                 {
-                    throw Errors.CommittishNotFound(remote, gitDependencyLock?.Commit ?? branch).ToException();
+                    throw Errors.CommittishNotFound(remote, subGitLock?.Commit ?? branch).ToException();
                 }
 
                 var nocheckout = group.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
                 if (nocheckout)
                 {
-                    subChildren.Add(new RestoreChild(repoPath, remote, branch, gitDependencyLock, headCommit));
+                    subChildren.Add(new RestoreChild(repoPath, remote, branch, subGitLock, headCommit));
                     return;
                 }
 
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 Debug.Assert(workTreePath != null);
-                subChildren.Add(new RestoreChild(workTreePath, remote, branch, gitDependencyLock, headCommit));
+                subChildren.Add(new RestoreChild(workTreePath, remote, branch, subGitLock, headCommit));
             });
         }
 
@@ -247,11 +247,11 @@ namespace Microsoft.Docs.Build
 
         private class RestoreChild
         {
-            public (string path, DependencyGitLock dependencyLock) ToRestore { get; private set; }
+            public (string path, GitLock gitLock) ToRestore { get; private set; }
 
             public (string remote, string branch, string commit) Restored { get; private set; }
 
-            public RestoreChild(string path, string remote, string branch, DependencyGitLock dependencyLock, string commit)
+            public RestoreChild(string path, string remote, string branch, GitLock gitLock, string commit)
             {
                 Debug.Assert(!string.IsNullOrEmpty(path));
                 Debug.Assert(!string.IsNullOrEmpty(remote));
@@ -259,7 +259,7 @@ namespace Microsoft.Docs.Build
                 Debug.Assert(!string.IsNullOrEmpty(commit));
 
                 Restored = (remote, branch, commit);
-                ToRestore = (path, dependencyLock);
+                ToRestore = (path, gitLock);
             }
         }
     }

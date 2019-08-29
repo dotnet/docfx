@@ -12,15 +12,15 @@ namespace Microsoft.Docs.Build
     {
         private readonly List<SharedAndExclusiveLock> _sharedLocks;
 
-        public DependencyGitLock GitLock { get; }
+        public GitLock GitLock { get; }
 
-        public RestoreGitMap(DependencyGitLock gitLock)
+        public RestoreGitMap(GitLock gitLock)
         {
             GitLock = gitLock;
             _sharedLocks = new List<SharedAndExclusiveLock>();
             CreateCore(GitLock);
 
-            void CreateCore(DependencyGitLock dependencyGitLock)
+            void CreateCore(GitLock dependencyGitLock)
             {
                 foreach (var gitVersion in dependencyGitLock.Git)
                 {
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (string path, string commit) GetRestoreGitPath(DependencyGitLock gitLock, PackageUrl url, string docsetPath, bool bare)
+        public static (string path, string commit) GetRestoreGitPath(GitLock gitLock, PackageUrl url, string docsetPath, bool bare)
         {
             Debug.Assert(gitLock != null);
 
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     throw Errors.NeedRestore(url.Path).ToException();
 
                 case PackageType.Git:
-                    var gitVersion = gitLock.GetGitLock(url.Remote, url.Path);
+                    var gitVersion = gitLock.GetGitVersion(url.Remote, url.Branch);
 
                     if (gitVersion == null || gitVersion.Commit == null)
                     {

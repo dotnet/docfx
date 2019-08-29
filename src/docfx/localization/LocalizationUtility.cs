@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizationDocset(DependencyGitLock gitLock, Docset docset, Config config, string locale, out string localizationDocsetParh, out Repository localizationRepository)
+        public static bool TryGetLocalizationDocset(GitLock gitLock, Docset docset, Config config, string locale, out string localizationDocsetParh, out Repository localizationRepository)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));

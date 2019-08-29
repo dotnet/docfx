@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
-            DependencyGitLock gitLogk,
+            GitLock gitLogk,
             DependencyMapBuilder dependencyMapBuilder,
             Lazy<XrefResolver> xrefResolver,
             TemplateEngine templateEngine)
@@ -271,12 +271,7 @@ namespace Microsoft.Docs.Build
             // resolve from the current docset for files in dependencies
             if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
             {
-                if (File.Exists(Path.Combine(referencingFile.Docset.DocsetPath, pathToDocset)))
-                {
-                    var path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
-                    return Document.Create(referencingFile.Docset, path, _templateEngine);
-                }
-                return null;
+                return CreateFromGit(referencingFile.Docset, new FilePath(pathToDocset, referencingFile.FilePath.DependencyName));
             }
 
             // resolve from dependent docsets
@@ -290,21 +285,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var dependentDoc = _cache.GetDependentDocument(dependentDocset, pathToDocset, () =>
-                {
-                    var dependencyFile = CreateFromGit(dependentDocset, pathToDocset.Substring(dependencyName.Length));
-                    if (dependencyFile != null)
-                    {
-                        return dependencyFile;
-                    }
-
-                    return default;
-                });
-
-                if (dependentDoc != default)
-                {
-                    return dependentDoc;
-                }
+                return _cache.GetDependentDocument(dependentDocset, pathToDocset, () => CreateFromGit(dependentDocset, new FilePath(pathToDocset.Substring(dependencyName.Length), dependencyName)));
             }
 
             // resolve from entry docset
@@ -324,31 +305,27 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private Document CreateFromGit(Docset docset, string pathToDocset, bool deleted = false)
+        private Document CreateFromGit(Docset docset, FilePath filePath, bool deleted = false)
         {
             Debug.Assert(_gitCommitProvider != null);
-
-            if (string.IsNullOrEmpty(pathToDocset))
-            {
-                return default;
-            }
+            Debug.Assert(filePath != null);
 
             if (docset == null)
             {
                 return default;
             }
 
-            Log.Write($"Get document from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, pathToDocset, docset.Repository.Commit);
+            Log.Write($"Get document from CRR git{(deleted ? " which was deleted" : "")}, {filePath}");
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, filePath.Path, docset.Repository.Commit);
 
             var commit = deleted && commits.Length > 1 ? commits[1] : (!deleted && commits.Length > 0 ? commits[0] : default);
             if (repo != null && commit != null)
             {
                 var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                return Document.Create(docset, new FilePath(pathToDocset, deleted ? FileOrigin.Fallback : FileOrigin.Dependency), _templateEngine, isFromHistory: true, readStream:
+                return Document.Create(docset, filePath, _templateEngine, isFromHistory: true, readStream:
                     () =>
                     {
-                        Log.Write($"Read document content from CRR git{(deleted ? " which was deleted" : "")}, {pathToDocset}");
+                        Log.Write($"Read document content from CRR git{(deleted ? " which was deleted" : "")}, {filePath}");
                         return GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
                     });
             }
@@ -372,53 +349,6 @@ namespace Microsoft.Docs.Build
             return docsetRelativePath;
         }
 
-        private Document TryResolveFile(Document referencingFile, string pathToDocset)
-        {
-            // resolve from the current docset for files in dependencies
-            if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
-            {
-                if (File.Exists(Path.Combine(referencingFile.Docset.DocsetPath, pathToDocset)))
-                {
-                    var path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
-                    return Document.Create(referencingFile.Docset, path, _templateEngine);
-                }
-                return null;
-            }
-
-            // resolve from dependencies
-            foreach (var (dependencyName, dependencyDocset) in _dependencies)
-            {
-                Debug.Assert(dependencyName.EndsWith('/'));
-
-                if (!pathToDocset.StartsWith(dependencyName, PathUtility.PathComparison))
-                {
-                    // the file stored in the dependent docset should start with dependency name
-                    continue;
-                }
-
-                var pathToDependencyDocset = pathToDocset.Substring(dependencyName.Length);
-                if (File.Exists(Path.Combine(dependencyDocset.DocsetPath, pathToDependencyDocset)))
-                {
-                    return Document.Create(dependencyDocset, new FilePath(pathToDependencyDocset, dependencyName), _templateEngine);
-                }
-            }
-
-            // resolve from entry docset
-            if (File.Exists(Path.Combine(_docset.DocsetPath, pathToDocset)))
-            {
-                return Document.Create(_docset, new FilePath(pathToDocset), _templateEngine);
-            }
-
-            // resolve from fallback docset
-            if (_fallbackDocset != null &&
-                File.Exists(Path.Combine(_fallbackDocset.DocsetPath, pathToDocset)))
-            {
-                return Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), _templateEngine);
-            }
-
-            return default;
-        }
-
         private Document TryResolveResourceFromHistory(string pathToDocset)
         {
             if (string.IsNullOrEmpty(pathToDocset))
@@ -429,7 +359,7 @@ namespace Microsoft.Docs.Build
             // try to resolve from source repo's git history
             if (_fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
             {
-                return CreateFromGit(_fallbackDocset, pathToDocset, deleted: true);
+                return CreateFromGit(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), deleted: true);
             }
 
             return default;
@@ -445,7 +375,7 @@ namespace Microsoft.Docs.Build
             // try to resolve from source repo's git history
             if (_fallbackDocset != null)
             {
-                var doc = CreateFromGit(_fallbackDocset, pathToDocset, deleted: true);
+                var doc = CreateFromGit(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), deleted: true);
 
                 if (doc != null)
                     return (doc.ReadText(), doc);
@@ -466,7 +396,7 @@ namespace Microsoft.Docs.Build
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
 
-        private static Dictionary<string, Docset> LoadDependencies(Docset docset, DependencyGitLock gitLock)
+        private static Dictionary<string, Docset> LoadDependencies(Docset docset, GitLock gitLock)
         {
             var result = new Dictionary<string, Docset>(docset.Config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, dependency) in docset.Config.Dependencies)
