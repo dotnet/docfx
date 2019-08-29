@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly IReadOnlyDictionary<string, Docset> _dependencies;
-        private readonly Lazy<XrefMap> _xrefMap;
+        private readonly Lazy<XrefResolver> _xrefResolver;
         private readonly TemplateEngine _templateEngine;
 
         public DependencyResolver(
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             RestoreGitMap restoreGitMap,
             DependencyMapBuilder dependencyMapBuilder,
-            Lazy<XrefMap> xrefMap,
+            Lazy<XrefResolver> xrefResolver,
             TemplateEngine templateEngine)
         {
             _docset = docset;
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
-            _xrefMap = xrefMap;
+            _xrefResolver = xrefResolver;
             _resolveAlias = LoadResolveAlias(docset.Config);
             _dependencies = LoadDependencies(docset, restoreGitMap);
             _templateEngine = templateEngine;
@@ -94,23 +94,6 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string href, string display, Document declaringFile) ResolveRelativeXref(
-            Document relativeToFile, SourceInfo<string> href, Document referencingFile)
-        {
-            var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referencingFile);
-
-            if (declaringFile != null)
-            {
-                link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
-            }
-
-            return (error, link, display, declaringFile);
-        }
-
-        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(
-            SourceInfo<string> href, Document referencingFile)
-            => _xrefMap.Value.ResolveToLink(href, referencingFile);
-
         private (Error error, string content, Document file) TryResolveContent(Document referencingFile, SourceInfo<string> href)
         {
             var (error, file, _, _, _, pathToDocset) = TryResolveFile(referencingFile, href);
@@ -140,7 +123,7 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = ResolveAbsoluteXref(uid, referencingFile);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.Value.ResolveAbsoluteXref(uid, referencingFile);
                 var xrefLinkType = declaringFile != null ? LinkType.RelativePath : LinkType.External;
 
                 return (uidError, uidHref, null, xrefLinkType, declaringFile, true);
