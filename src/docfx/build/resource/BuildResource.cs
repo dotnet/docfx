@@ -20,11 +20,13 @@ namespace Microsoft.Docs.Build
             var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, isPage: false);
 
             // Output path is source file path relative to output folder when copy resource is disabled
+            var copy = true;
             var publishPath = outputPath;
 
             if (!file.Docset.Config.Output.CopyResources &&
                 context.Input.TryGetPhysicalPath(file.FilePath, out var physicalPath))
             {
+                copy = false;
                 publishPath = PathUtility.NormalizeFile(Path.GetRelativePath(
                     Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.Docset.Config.Output.Path)),
                     Path.GetFullPath(physicalPath)));
@@ -40,7 +42,7 @@ namespace Microsoft.Docs.Build
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
             };
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Config.Output.CopyResources)
+            if (context.PublishModelBuilder.TryAdd(file, publishItem) && copy)
             {
                 context.Output.Copy(file, outputPath);
             }
