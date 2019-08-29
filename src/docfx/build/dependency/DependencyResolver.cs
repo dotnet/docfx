@@ -323,8 +323,6 @@ namespace Microsoft.Docs.Build
                 if (lookupFallbackCommits)
                 {
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
-
-                    // TODO: need to get the first commit that contains the data
                     if (repo != null && commits.Length > 1)
                     {
                         return Document.Create(

@@ -250,7 +250,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static unsafe Stream TryReadStream(string repoPath, string filePath, string committish)
+        public static unsafe byte[] ReadBytes(string repoPath, string filePath, string committish)
         {
             if (git_repository_open(out var repo, repoPath) != 0)
             {
@@ -283,7 +283,16 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            return new GitBlobStream(repo, entry, (byte*)git_blob_rawcontent(blob).ToPointer(), git_blob_rawsize(blob));
+            var blobSize = git_blob_rawsize(blob);
+            var bytes = new Span<byte>(git_blob_rawcontent(blob).ToPointer(), blobSize);
+            var result = new byte[blobSize];
+
+            bytes.CopyTo(result);
+
+            git_tree_entry_free(entry);
+            git_repository_free(repo);
+
+            return result;
         }
 
         /// <summary>
@@ -369,34 +378,6 @@ namespace Microsoft.Docs.Build
                     return value.Parameter;
                 }
                 return header.Value;
-            }
-        }
-
-        private class GitBlobStream : UnmanagedMemoryStream
-        {
-            private bool _disposed;
-            private IntPtr _repo;
-            private IntPtr _entry;
-
-            public unsafe GitBlobStream(IntPtr repo, IntPtr entry, byte* pointer, int length)
-                : base(pointer, length)
-            {
-                _repo = repo;
-                _entry = entry;
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
-                    if (!_disposed)
-                    {
-                        _disposed = true;
-                        git_tree_entry_free(_entry);
-                        git_repository_free(_repo);
-                    }
-                }
-                base.Dispose(disposing);
             }
         }
     }

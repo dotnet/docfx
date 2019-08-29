@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -12,6 +13,7 @@ namespace Microsoft.Docs.Build
         private readonly string _fallbackPath;
         private readonly Config _config;
         private readonly RestoreGitMap _restoreMap;
+        private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
         public Input(string docsetPath, string fallbackPath, Config config, RestoreGitMap restoreMap)
         {
@@ -45,8 +47,9 @@ namespace Microsoft.Docs.Build
                     return File.OpenRead(Path.Combine(_fallbackPath, file.Path));
 
                 case FileOrigin.Fallback when _fallbackPath != null:
-                    return GitUtility.TryReadStream(_fallbackPath, file.Path, file.Commit)
+                    var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(_fallbackPath, aFile.Path, aFile.Commit))
                         ?? throw new InvalidOperationException($"Error reading '{file}'");
+                    return new MemoryStream(bytes, writable: false);
 
                 case FileOrigin.Template when file.Commit is null:
                     var (templatePath, _) = _restoreMap.GetGitRestorePath(_config.Template, _docsetPath);
