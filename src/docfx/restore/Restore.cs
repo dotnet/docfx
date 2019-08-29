@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,10 +27,21 @@ namespace Microsoft.Docs.Build
 
                 Task<DependencyLockModel> RestoreDocset(string docset, bool root = true, Repository rootRepository = null, DependencyLockModel dependencyLock = null)
                 {
+                    var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
+
+                    if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
+                    {
+                        if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
+                        {
+                            // build from loc directly with overwrite config
+                            // which means fallback repo need to be restored firstly
+                            var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, GitFlags flags)> { (fallbackBranch, GitFlags.None) }, null);
+                            (errors, config) = ConfigLoader.Load(restoredResult.First().ToRestore.path, options, localeToRestore, extend: false);
+                        }
+                    }
+
                     return restoredDocsets.GetOrAdd(docset + dependencyLock?.Commit, async k =>
                     {
-                        var (errors, config) = ConfigLoader.TryLoad(docset, options, localeToRestore, extend: false);
-
                         if (root)
                         {
                             errorLog.Configure(config);

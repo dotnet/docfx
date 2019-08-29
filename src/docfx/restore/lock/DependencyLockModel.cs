@@ -9,6 +9,6 @@ namespace Microsoft.Docs.Build
     {
         public string Commit { get; set; }
 
-        public IReadOnlyDictionary<string, DependencyLockModel> Git { get; set; } = new Dictionary<string, DependencyLockModel>();
+        public IReadOnlyDictionary<string, string> Git { get; set; } = new Dictionary<string, string>();
     }
 }
