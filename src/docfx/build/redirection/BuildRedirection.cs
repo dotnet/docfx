@@ -26,11 +26,6 @@ namespace Microsoft.Docs.Build
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
             };
 
-            if (file.Docset.Legacy)
-            {
-                publishItem.Path = file.GetOutputPath(monikers, file.Docset.SiteBasePath);
-            }
-
             context.PublishModelBuilder.TryAdd(file, publishItem);
 
             return errors;

@@ -311,7 +311,6 @@ namespace Microsoft.Docs.Build
             var pageMetadata = HtmlUtility.CreateHtmlMetaTags(
                 metadata, context.MetadataProvider.HtmlMetaHidden, context.MetadataProvider.HtmlMetaNames);
 
-            // content for *.raw.page.json
             var model = new TemplateModel
             {
                 Content = content,
