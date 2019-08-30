@@ -73,6 +73,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     ReloadModelsPerChanges(hostServices);
                 }
+
+                foreach (var hostService in hostServices)
+                {
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name} (link phase), total file count: {hostService.SourceFiles.Count}, skipped file count: {hostService.SourceFiles.Count - hostService.Models.Count}.");
+                }
             }
             Parallel.Invoke(
                 new Action(() =>
