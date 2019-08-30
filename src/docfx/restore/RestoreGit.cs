@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
             Repository rootRepository,
             Dictionary<string, string> dependencyLock)
         {
-            var gitLock = new Dictionary<string, string>();
             var gitDependencies =
                 from git in GetGitDependencies(config, locale, rootRepository)
                 group (git.branch, git.flags)
@@ -26,7 +25,6 @@ namespace Microsoft.Docs.Build
 
             var results = new ListBuilder<RestoreGitResult>();
 
-            // restore first level children
             ParallelUtility.ForEach(
                 gitDependencies,
                 group =>
