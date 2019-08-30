@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            return file != null ? (error, _input.ReadText(file.FilePath), file) : default;
+            return file != null ? (error, _input.ReadString(file.FilePath), file) : default;
         }
 
         private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(referencingFile.Docset, path, _templateEngine);
+                    return Document.Create(referencingFile.Docset, path, _input, _templateEngine);
                 }
                 return null;
             }
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(remainingPath, dependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(dependencyDocset, path, _templateEngine);
+                    return Document.Create(dependencyDocset, path, _input, _templateEngine);
                 }
             }
 
@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
             path = new FilePath(pathToDocset);
             if (_input.Exists(path))
             {
-                return Document.Create(_docset, path, _templateEngine);
+                return Document.Create(_docset, path, _input, _templateEngine);
             }
 
             // resolve from fallback docset
@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(pathToDocset, FileOrigin.Fallback);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(_fallbackDocset, path, _templateEngine);
+                    return Document.Create(_fallbackDocset, path, _input, _templateEngine);
                 }
 
                 // resolve from fallback docset git commit history
@@ -297,7 +297,7 @@ namespace Microsoft.Docs.Build
                     if (repo != null && commits.Length > 1)
                     {
                         path = new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback);
-                        return Document.Create(_fallbackDocset, path, _templateEngine);
+                        return Document.Create(_fallbackDocset, path, _input, _templateEngine);
                     }
                 }
             }

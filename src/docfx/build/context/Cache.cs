@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) LoadYamlFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
-                var content = _input.ReadText(file.FilePath);
+                var content = _input.ReadString(file.FilePath);
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return YamlUtility.Parse(content, file.FilePath);
             })).Value;
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) LoadJsonFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
-                var content = _input.ReadText(file.FilePath);
+                var content = _input.ReadString(file.FilePath);
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return JsonUtility.Parse(content, file.FilePath);
             })).Value;

@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
-                content = content ?? context.Input.ReadText(file.FilePath);
+                content = content ?? context.Input.ReadString(file.FilePath);
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return MarkdownTocMarkup.Parse(content, file);
             }

@@ -58,16 +58,15 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public string ReadText(FilePath file)
+        public string ReadString(FilePath file)
         {
-            using (var stream = ReadStream(file))
-            using (var reader = new StreamReader(stream))
+            using (var reader = ReadText(file))
             {
                 return reader.ReadToEnd();
             }
         }
 
-        public Stream ReadStream(FilePath file)
+        public TextReader ReadText(FilePath file)
         {
             var (basePath, path, commit) = ResolveFilePath(file);
 
@@ -78,13 +77,13 @@ namespace Microsoft.Docs.Build
 
             if (commit is null)
             {
-                return File.OpenRead(Path.Combine(basePath, path));
+                return File.OpenText(Path.Combine(basePath, path));
             }
 
             var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(_fallbackPath, aFile.Path, aFile.Commit))
                 ?? throw new InvalidOperationException($"Error reading '{file}'");
 
-            return new MemoryStream(bytes, writable: false);
+            return new StreamReader(new MemoryStream(bytes, writable: false));
         }
 
         private (string basePath, string path, string commit) ResolveFilePath(FilePath file)
