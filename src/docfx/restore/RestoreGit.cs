@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             var results = new ListBuilder<RestoreGitResult>();
             ParallelUtility.ForEach(branchesToFetch, branch =>
             {
-                var gitLockCommit = dependencyLock?.GetGitLock(remote, branch);
+                var gitLockCommit = DependencyLockProvider.GetGitLock(dependencyLock, remote, branch);
                 var headCommit = GitUtility.RevParse(repoPath, gitLockCommit ?? branch);
 
                 Log.Write($"Add worktree for `{remote}` `{headCommit}`");

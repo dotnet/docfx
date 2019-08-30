@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
             using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
             {
-                var (fallbackRepo, fallbackRestoreGitMap) = GetFallbackRepository(docsetPath, repository, restoreGitMap);
+                var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
 
                 var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
                 errorLog.Configure(config);
@@ -29,12 +29,11 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(configErrors))
                     return;
 
-                var gitMap = fallbackRestoreGitMap ?? restoreGitMap;
                 var (docset, fallbackDocset) = GetDocsetWithFallback(
-                    docsetPath, repository, locale, fallbackRepo, config, gitMap);
+                    docsetPath, repository, locale, fallbackRepo, config, restoreGitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-                await Run(docset, fallbackDocset, gitMap, options, errorLog, outputPath);
+                await Run(docset, fallbackDocset, restoreGitMap, options, errorLog, outputPath);
             }
         }
 
@@ -193,11 +192,11 @@ namespace Microsoft.Docs.Build
             var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
                 ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var dependencyLock = DependencyLock.Load(docsetPath, dependencyLockPath) ?? new DependencyLockModel();
+            var dependencyLock = DependencyLockProvider.Load(docsetPath, dependencyLockPath) ?? new Dictionary<string, string>();
             return RestoreGitMap.Create(dependencyLock);
         }
 
-        private static (Repository fallbackRepo, RestoreGitMap fallbackRestoreGitMap) GetFallbackRepository(
+        private static Repository GetFallbackRepository(
             string docsetPath,
             Repository repository,
             RestoreGitMap restoreGitMap)
@@ -207,24 +206,15 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, fallbackBranch) == null
-                    && restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, "master") != null)
+                if (DependencyLockProvider.GetGitLock(restoreGitMap.DependencyLock, fallbackRemote, fallbackBranch) == null
+                    && DependencyLockProvider.GetGitLock(restoreGitMap.DependencyLock, fallbackRemote, "master") != null)
                 {
                     // fallback to master branch
                     fallbackBranch = "master";
                 }
 
-                var (fallbackRepoPath, fallbackRestoreMap) = restoreGitMap.GetGitRestorePath(fallbackRemote, fallbackBranch);
-                var fallbackRepository = Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
-
-                if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
-                {
-                    // build from loc repo directly with overwrite config
-                    // which means it's using source repo's dependency loc;
-                    return (fallbackRepository, fallbackRestoreMap);
-                }
-
-                return (fallbackRepository, default);
+                var fallbackRepoPath = restoreGitMap.GetGitRestorePath(fallbackRemote, fallbackBranch);
+                return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
             }
 
             return default;

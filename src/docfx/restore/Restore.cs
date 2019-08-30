@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 var (dependencyLock, dependencyLockFilePath) = await RestoreOneDocset(docsetPath, localeToRestore, config, repository);
 
                 // save dependency lock if it's root entry
-                DependencyLock.Save(docsetPath, dependencyLockFilePath, dependencyLock);
+                DependencyLockProvider.Save(docsetPath, dependencyLockFilePath, dependencyLock);
             }
 
             async Task<(Dictionary<string, string> dependencyLock, string dependencyLockFilePath)> RestoreOneDocset(string docset, string locale, Config config, Repository repository)
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                 if (UrlUtility.IsHttp(extendedConfig.DependencyLock))
                     await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig);
 
-                var dependencyLock = DependencyLock.Load(docset, extendedConfig.DependencyLock);
+                var dependencyLock = DependencyLockProvider.Load(docset, extendedConfig.DependencyLock);
 
                 // restore git repos includes dependency repos, theme repo and loc repos
                 var gitVersions = RestoreGit.Restore(extendedConfig, locale, repository, dependencyLock);

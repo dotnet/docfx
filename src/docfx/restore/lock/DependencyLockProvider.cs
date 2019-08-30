@@ -4,15 +4,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class DependencyLock
+    internal static class DependencyLockProvider
     {
-        public static string GetGitLock(this Dictionary<string, string> dependencyLock, string href, string branch)
+        public static string GetGitLock(Dictionary<string, string> dependencyLock, string href, string branch)
         {
-            Debug.Assert(dependencyLock != null);
+            if (dependencyLock == null)
+            {
+                return null;
+            }
 
             if (dependencyLock.TryGetValue($"{href}#{branch}", out var commit))
             {
@@ -25,13 +27,6 @@ namespace Microsoft.Docs.Build
             }
 
             return null;
-        }
-
-        public static bool ContainsGitLock(this Dictionary<string, string> dependencyLock, string href)
-        {
-            Debug.Assert(dependencyLock != null);
-
-            return dependencyLock.ContainsKey(href) || dependencyLock.Keys.Any(g => g.StartsWith($"{href}#"));
         }
 
         public static Dictionary<string, string> Load(string docset, SourceInfo<string> dependencyLockPath)

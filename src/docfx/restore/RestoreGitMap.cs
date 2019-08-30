@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
 
-        public DependencyLockModel DependencyLock { get; private set; }
+        public Dictionary<string, string> DependencyLock { get; private set; }
 
         public RestoreGitMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits = null)
         {
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, RestoreGitMap subRestoreMap) GetGitRestorePath(PackageUrl url, string docsetPath)
+        public string GetGitRestorePath(PackageUrl url, string docsetPath)
         {
             switch (url.Type)
             {
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                     var fullPath = Path.Combine(docsetPath, url.Path);
                     if (Directory.Exists(fullPath))
                     {
-                        return (fullPath, new RestoreGitMap(_acquiredGits));
+                        return fullPath;
                     }
 
                     // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
@@ -49,16 +49,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, RestoreGitMap subRestoreMap) GetGitRestorePath(string remote, string branch)
+        public string GetGitRestorePath(string remote, string branch)
         {
-            var gitVersion = DependencyLock.GetGitLock(remote, branch);
+            var gitVersion = DependencyLockProvider.GetGitLock(DependencyLock, remote, branch);
 
             if (gitVersion is null)
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
 
-            if (!_acquiredGits.TryGetValue((remote, branch, gitVersion.Commit), out var gitInfo))
+            if (!_acquiredGits.TryGetValue((remote, branch, gitVersion), out var gitInfo))
             {
                 throw Errors.NeedRestore($"{remote}#{branch}").ToException();
             }
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             var path = Path.Combine(AppData.GetGitDir(remote), gitInfo.path);
             Debug.Assert(Directory.Exists(path));
 
-            return (path, new RestoreGitMap(_acquiredGits) { DependencyLock = gitVersion });
+            return path;
         }
 
         public void Dispose()
@@ -89,13 +89,28 @@ namespace Microsoft.Docs.Build
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static RestoreGitMap Create(DependencyLockModel dependencyLock)
+        public static RestoreGitMap Create(Dictionary<string, string> dependencyLock)
         {
             var acquired = new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
 
             try
             {
-                return CreateCore(dependencyLock, acquired);
+                Debug.Assert(dependencyLock != null);
+
+                foreach (var (key, commit) in dependencyLock)
+                {
+                    var (remote, branch, _) = UrlUtility.SplitGitUrl(key);
+                    if (!acquired.ContainsKey((remote, branch, commit/*commit*/)))
+                    {
+                        var (path, git) = AcquireGit(remote, branch, commit, LockType.Shared);
+                        acquired[(remote, branch, commit/*commit*/)] = (path, git);
+                    }
+                }
+
+                return new RestoreGitMap(acquired)
+                {
+                    DependencyLock = dependencyLock,
+                };
             }
             catch
             {
@@ -140,32 +155,6 @@ namespace Microsoft.Docs.Build
 
         public static bool ReleaseGit(DependencyGit git, LockType lockType, bool successed = true)
             => DependencySlotPool<DependencyGit>.ReleaseSlot(git, lockType, successed);
-
-        private static RestoreGitMap CreateCore(
-            DependencyLockModel dependencyLock,
-            Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquired)
-        {
-            Debug.Assert(dependencyLock != null);
-
-            foreach (var gitVersion in dependencyLock.Git)
-            {
-                var (remote, branch, _) = UrlUtility.SplitGitUrl(gitVersion.Key);
-                if (!acquired.ContainsKey((remote, branch, gitVersion.Value.Commit/*commit*/)))
-                {
-                    var (path, git) = AcquireGit(remote, branch, gitVersion.Value.Commit, LockType.Shared);
-                    acquired[(remote, branch, gitVersion.Value.Commit/*commit*/)] = (path, git);
-                }
-
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                CreateCore(gitVersion.Value, acquired);
-#pragma warning restore CA2000 // Dispose objects before losing scope
-            }
-
-            return new RestoreGitMap(acquired)
-            {
-                DependencyLock = dependencyLock,
-            };
-        }
 
         private static (string path, DependencyGit git) AcquireGit(string remote, string branch, string commit, LockType type)
         {
