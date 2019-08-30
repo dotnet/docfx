@@ -24,59 +24,74 @@ namespace Microsoft.Docs.Build
 
                 var (errors, config) = ConfigLoader.TryLoad(docsetPath, options, localeToRestore, extend: false);
 
-                if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
-                {
-                    if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
-                    {
-                        // build from loc directly with overwrite config
-                        // which means fallback repo need to be restored firstly
-                        var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, GitFlags flags)> { (fallbackBranch, GitFlags.None) }, null);
-                        Debug.Assert(restoredResult.Count == 1);
+                var (fallbackErrors, fallbackConfig, restoreFallbackResult) = RestoreFallbackRepo(docsetPath, config, repository, localeToRestore, options);
+                errors.AddRange(fallbackErrors);
 
-                        var fallbackRestoreResult = restoredResult[0];
-                        (errors, config) = ConfigLoader.Load(fallbackRestoreResult.Path, options, localeToRestore, extend: false);
-
-                        restoredGitLock.Add($"{fallbackRestoreResult.Remote}#{fallbackRestoreResult.Branch}", fallbackRestoreResult.Commit);
-                    }
-                }
-
+                config = fallbackConfig ?? config;
                 errorLog.Configure(config);
                 errorLog.Write(errors);
 
-                // no need to restore child docsets' loc repository
-                var (dependencyLock, dependencyLockFilePath) = await RestoreOneDocset(docsetPath, localeToRestore, config, repository);
-
-                // save dependency lock if it's root entry
-                DependencyLockProvider.Save(docsetPath, dependencyLockFilePath, dependencyLock);
-            }
-
-            async Task<(Dictionary<string, string> dependencyLock, string dependencyLockFilePath)> RestoreOneDocset(string docset, string locale, Config config, Repository repository)
-            {
                 // restore extend url firstly
-                // no need to extend config
                 await ParallelUtility.ForEach(
                     config.Extend.Where(UrlUtility.IsHttp),
                     restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
                 // extend the config before loading
-                var (errors, extendedConfig) = ConfigLoader.TryLoad(docset, options, locale, extend: true);
-                errorLog.Write(errors);
-
-                // restore and load dependency lock if need
-                if (UrlUtility.IsHttp(extendedConfig.DependencyLock))
-                    await RestoreFile.Restore(extendedConfig.DependencyLock, extendedConfig);
-
-                var dependencyLock = DependencyLockProvider.Load(docset, extendedConfig.DependencyLock);
-
-                // restore git repos includes dependency repos, theme repo and loc repos
-                var gitVersions = RestoreGit.Restore(extendedConfig, locale, repository, dependencyLock);
+                var (extendConfigErrors, extendedConfig) = ConfigLoader.TryLoad(restoreFallbackResult?.Path ?? docsetPath, options, localeToRestore, extend: true);
+                errorLog.Write(extendConfigErrors);
 
                 // restore urls except extend url
                 var restoreUrls = extendedConfig.GetFileReferences().Where(UrlUtility.IsHttp).ToList();
                 await RestoreFile.Restore(restoreUrls, extendedConfig);
 
-                return (dependencyLock, string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docset, locale) : extendedConfig.DependencyLock);
+                // restore git repos includes dependency repos, theme repo and loc repos
+                var restoredDependencyLock = RestoreGit.Restore(extendedConfig, localeToRestore, repository, DependencyLockProvider.Load(docsetPath, extendedConfig.DependencyLock));
+
+                var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock) ? AppData.GetDependencyLockFile(docsetPath, localeToRestore) : extendedConfig.DependencyLock;
+
+                // save dependency lock
+                if (restoreFallbackResult != null)
+                {
+                    restoredGitLock.Add($"{restoreFallbackResult.Remote}#{restoreFallbackResult.Branch}", restoreFallbackResult.Commit);
+                }
+
+                foreach (var (key, commit) in restoredDependencyLock)
+                {
+                    restoredGitLock.Add(key, commit);
+                }
+                DependencyLockProvider.Save(docsetPath, dependencyLockFilePath, restoredGitLock);
             }
+        }
+
+        private static (List<Error> errors, Config config, RestoreGitResult result) RestoreFallbackRepo(string docsetPath, Config config, Repository repository, string locale, CommandLineOptions options)
+        {
+            var errors = new List<Error>();
+            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
+            {
+                // fallback to master
+                if (fallbackBranch != "master" &&
+                    !GitUtility.RemoteBranchExists(fallbackRemote, fallbackBranch, config))
+                {
+                    fallbackBranch = "master";
+                }
+
+                // build from loc directly with overwrite config
+                // which means fallback repo need to be restored firstly
+                var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, GitFlags flags)> { (fallbackBranch, GitFlags.None) }, null);
+                Debug.Assert(restoredResult.Count == 1);
+
+                var fallbackRestoreResult = restoredResult[0];
+                if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
+                {
+                    // use the fallback config
+                    var (fallbackConfigErrors, fallbackConfig) = ConfigLoader.Load(fallbackRestoreResult.Path, options, locale, extend: false);
+                    return (fallbackConfigErrors, fallbackConfig, fallbackRestoreResult);
+                }
+
+                return (errors, default, fallbackRestoreResult);
+            }
+
+            return (errors, default, default);
         }
     }
 }

@@ -50,7 +50,6 @@ namespace Microsoft.Docs.Build
             var branchesToFetch = new HashSet<string>(branches.Select(b => b.branch));
             var repoDir = AppData.GetGitDir(remote);
             var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
-            var childRepos = new List<string>();
 
             using (InterProcessMutex.Create(remote))
             {
@@ -222,19 +221,10 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetFallbackRepository(repo, out var sourceRemote, out var sourceBranch, out _))
+            if (LocalizationUtility.TryGetFallbackRepository(repo, out _, out _, out _))
             {
-                // fallback to master
-                if (sourceBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(sourceRemote, sourceBranch, config))
-                {
-                    sourceBranch = "master";
-                }
-
-                yield return (sourceRemote, sourceBranch, GitFlags.None);
-                yield break; // no need to find localized repo anymore
+                yield break;
             }
-
             if (config.Localization.Mapping == LocalizationMapping.Folder)
             {
                 yield break;
