@@ -195,24 +195,9 @@ namespace Microsoft.Docs.Build
                         return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
                     }
 
-                    // Apply resolve alias
-                    var pathToDocset = ApplyResolveAlias(path, referencingFile);
-
-                    // Use the actual file name case
-                    if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
-                    {
-                        pathToDocset = pathActualCase;
-                    }
-
-                    // resolve from redirection files
-                    if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
-                    {
-                        return (null, redirectFile, query, fragment, LinkType.RelativePath);
-                    }
-
                     // resolve file
-                    var lookupFallbackCommits = inclusion || Document.GetContentType(pathToDocset) == ContentType.Resource;
-                    var file = TryResolveFile(referencingFile, pathToDocset, lookupFallbackCommits);
+                    var lookupFallbackCommits = inclusion || Document.GetContentType(path) == ContentType.Resource;
+                    var file = TryResolveRelativePath(referencingFile, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -222,8 +207,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            pathToDocset = ApplyResolveAlias($"{path}.md", referencingFile);
-                            file = TryResolveFile(referencingFile, pathToDocset, lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupFallbackCommits);
                         }
 
                         // Do not report error for landing page
@@ -243,33 +227,34 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string ApplyResolveAlias(string path, Document referencingFile)
+        private Document TryResolveRelativePath(Document referencingFile, string relativePath, bool lookupFallbackCommits)
         {
-            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.Path), path));
-            if (!File.Exists(Path.Combine(referencingFile.Docset.DocsetPath, docsetRelativePath)))
-            {
-                foreach (var (alias, aliasPath) in _resolveAlias)
-                {
-                    if (path.StartsWith(alias, PathUtility.PathComparison))
-                    {
-                        return PathUtility.NormalizeFile(aliasPath + path.Substring(alias.Length));
-                    }
-                }
-            }
-            return docsetRelativePath;
-        }
+            FilePath path;
 
-        private Document TryResolveFile(Document referencingFile, string pathToDocset, bool lookupFallbackCommits)
-        {
+            // apply resolve alias
+            var pathToDocset = ApplyResolveAlias(referencingFile, relativePath);
+
             // resolve from the current docset for files in dependencies
             if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
             {
-                if (File.Exists(Path.Combine(referencingFile.Docset.DocsetPath, pathToDocset)))
+                path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
+                if (_input.Exists(path))
                 {
-                    var path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
                     return Document.Create(referencingFile.Docset, path, _templateEngine);
                 }
                 return null;
+            }
+
+            // Use the actual file name case
+            if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
+            {
+                pathToDocset = pathActualCase;
+            }
+
+            // resolve from redirection files
+            if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
+            {
+                return redirectFile;
             }
 
             // resolve from dependencies
@@ -282,24 +267,27 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                if (File.Exists(Path.Combine(dependencyDocset.DocsetPath, remainingPath)))
+                path = new FilePath(remainingPath, dependencyName);
+                if (_input.Exists(path))
                 {
-                    return Document.Create(dependencyDocset, new FilePath(remainingPath, dependencyName), _templateEngine);
+                    return Document.Create(dependencyDocset, path, _templateEngine);
                 }
             }
 
             // resolve from entry docset
-            if (File.Exists(Path.Combine(_docset.DocsetPath, pathToDocset)))
+            path = new FilePath(pathToDocset);
+            if (_input.Exists(path))
             {
-                return Document.Create(_docset, new FilePath(pathToDocset), _templateEngine);
+                return Document.Create(_docset, path, _templateEngine);
             }
 
             // resolve from fallback docset
             if (_fallbackDocset != null)
             {
-                if (File.Exists(Path.Combine(_fallbackDocset.DocsetPath, pathToDocset)))
+                path = new FilePath(pathToDocset, FileOrigin.Fallback);
+                if (_input.Exists(path))
                 {
-                    return Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), _templateEngine);
+                    return Document.Create(_fallbackDocset, path, _templateEngine);
                 }
 
                 // resolve from fallback docset git commit history
@@ -308,13 +296,27 @@ namespace Microsoft.Docs.Build
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
                     if (repo != null && commits.Length > 1)
                     {
-                        return Document.Create(
-                            _fallbackDocset, new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback), _templateEngine);
+                        path = new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback);
+                        return Document.Create(_fallbackDocset, path, _templateEngine);
                     }
                 }
             }
 
             return default;
+        }
+
+        private string ApplyResolveAlias(Document referencingFile, string path)
+        {
+            foreach (var (alias, aliasPath) in _resolveAlias)
+            {
+                var (match, _, remainingPath) = PathUtility.Match(path, alias);
+                if (match)
+                {
+                    return PathUtility.NormalizeFile(aliasPath + remainingPath);
+                }
+            }
+
+            return PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.Path), path));
         }
 
         private static Dictionary<string, string> LoadResolveAlias(Config config)
@@ -323,7 +325,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (alias, aliasPath) in config.ResolveAlias)
             {
-                result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
+                result.TryAdd(alias, PathUtility.NormalizeFolder(aliasPath));
             }
 
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
@@ -333,12 +335,14 @@ namespace Microsoft.Docs.Build
         {
             var config = docset.Config;
             var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
+
             foreach (var (name, dependency) in config.Dependencies)
             {
                 var (dir, _) = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
 
                 result.TryAdd(name, new Docset(dir, docset.Locale, config));
             }
+
             return result;
         }
     }

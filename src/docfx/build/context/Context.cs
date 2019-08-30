@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            ContributionProvider = new ContributionProvider(docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+            ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
 
             DependencyResolver = new DependencyResolver(
                 docset,

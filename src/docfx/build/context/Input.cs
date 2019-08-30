@@ -23,6 +23,23 @@ namespace Microsoft.Docs.Build
             _fallbackPath = fallbackPath is null ? null : Path.GetFullPath(fallbackPath);
         }
 
+        public bool Exists(FilePath file)
+        {
+            var (basePath, path, commit) = ResolveFilePath(file);
+
+            if (basePath is null)
+            {
+                return false;
+            }
+
+            if (commit is null)
+            {
+                return File.Exists(Path.Combine(basePath, path));
+            }
+
+            throw new NotSupportedException("Checking if a file exists in a git repo");
+        }
+
         public bool TryGetPhysicalPath(FilePath file, out string physicalPath)
         {
             var (basePath, path, commit) = ResolveFilePath(file);
