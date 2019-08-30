@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
-        internal static IReadOnlyDictionary<string, string> Restore(
+        internal static IReadOnlyList<RestoreGitResult> Restore(
             Config config,
             string locale,
             Repository rootRepository,
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                 GitUtility.Fetch(rootRepository.Path, rootRepository.Remote, contributionBranch, config);
             }
 
-            return results.ToList().ToDictionary(k => $"{k.Remote}#{k.Branch}", v => v.Commit);
+            return results.ToList();
         }
 
         internal static IReadOnlyList<RestoreGitResult> RestoreGitRepo(Config config, string remote, List<(string branch, GitFlags flags)> branches, Dictionary<string, string> dependencyLock)
