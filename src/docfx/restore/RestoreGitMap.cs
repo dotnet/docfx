@@ -23,21 +23,34 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public (string path, RestoreGitMap subRestoreMap) GetGitRestorePath(string remote, string branch, string docsetPath)
+        public (string path, RestoreGitMap subRestoreMap) GetGitRestorePath(PackageUrl url, string docsetPath)
         {
-            if (!UrlUtility.IsHttp(remote))
+            switch (url.Type)
             {
-                var fullPath = Path.Combine(docsetPath, remote);
-                if (Directory.Exists(fullPath))
-                {
-                    return (fullPath, new RestoreGitMap(_acquiredGits));
-                }
+                case PackageType.Folder:
+                    var fullPath = Path.Combine(docsetPath, url.Path);
+                    if (Directory.Exists(fullPath))
+                    {
+                        return (fullPath, new RestoreGitMap(_acquiredGits));
+                    }
 
-                // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
-                // TODO: populate source info
-                throw Errors.FileNotFound(new SourceInfo<string>(remote)).ToException();
+                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
+                    // TODO: populate source info
+                    throw Errors.FileNotFound(new SourceInfo<string>(url.Path)).ToException();
+
+                case PackageType.Git:
+                    return GetGitRestorePath(url.Remote, url.Branch);
+
+                default:
+                    throw new NotSupportedException($"Unknown package url: '{url}'");
             }
+        }
 
+        /// <summary>
+        /// The dependency lock must be loaded before using this method
+        /// </summary>
+        public (string path, RestoreGitMap subRestoreMap) GetGitRestorePath(string remote, string branch)
+        {
             var gitVersion = DependencyLock.GetGitLock(remote, branch);
 
             if (gitVersion is null)

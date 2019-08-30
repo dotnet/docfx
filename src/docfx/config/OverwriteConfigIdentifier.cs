@@ -33,7 +33,8 @@ namespace Microsoft.Docs.Build
             var localeMatched = TryGetMatchedParts(s_localeRegex, out var locales);
             if (branchMatched || localeMatched)
             {
-                overwriteConfigIdentifier = new OverwriteConfigIdentifier(new HashSet<string>(branches), new HashSet<string>(locales, StringComparer.OrdinalIgnoreCase));
+                overwriteConfigIdentifier = new OverwriteConfigIdentifier(
+                    new HashSet<string>(branches), new HashSet<string>(locales, StringComparer.OrdinalIgnoreCase));
                 return true;
             }
 

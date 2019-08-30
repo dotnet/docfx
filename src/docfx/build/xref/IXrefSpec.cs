@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
 
         HashSet<string> Monikers { get; }
 
-        string GetXrefPropertyValue(string propertyName);
+        string GetXrefPropertyValueAsString(string propertyName);
+
+        ExternalXrefSpec ToExternalXrefSpec();
     }
 }

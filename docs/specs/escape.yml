@@ -127,14 +127,15 @@ inputs:
       "uid": "a&b",
       "name": "test",
       "fullName": "test.test",
-      "summary": "<some text &>"
+      "description": "<some text &>"
     }
   html-xref.md: |
-    Link to [text](xref:a&b?displayProperty=summary)
-    Link to <xref href="a&b?displayProperty=summary" />
-    Link to <xref:a&b?displayProperty=summary>
-    Link to @a&b?displayProperty=summary
+    Link to [text](xref:a&b?displayProperty=description)
+    Link to <xref href="a&b?displayProperty=description" />
+    Link to <xref:a&b?displayProperty=description>
+    Link to @a&b?displayProperty=description
     Link to @a&c
+    Link to <xref:a%2A>
 outputs:
   a.json:
   html-xref.json: |
@@ -142,9 +143,12 @@ outputs:
       "conceptual": "
           <p>
             Link to <a href=\"a.json\">text</a>
-            Link to <a href='a.json'>&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
-            Link to <a href=\"a.json\">&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
-            Link to <a href=\"a.json\">&lt;p&gt;&amp;lt;some text &amp;amp;&amp;gt;&lt;/p&gt;\n</a>
+            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
+            Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
             Link to @a&amp;c
+            Link to &lt;xref:a%2A&gt;
           </p>"
     }
+  .errors.log: |
+    ["warning","xref-not-found","Cross reference not found: 'a%2A'","html-xref.md",6,9]

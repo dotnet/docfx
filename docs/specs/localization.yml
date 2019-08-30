@@ -584,7 +584,7 @@ outputs:
   docs/a.json:
   docs/b.json: |
     {"conceptual":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
-  xrefmap.json: |
+  .xrefmap.json: |
     {"references":[{"uid":"a","href":"https://docs.com/docs/a?branch=master","name":"a"},{"uid":"c","href":"https://docs.com/docs/c?branch=master","name":"c"}]}
 ---
 # loc folder should be excluded from source docset during loc docset build
@@ -702,7 +702,11 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n", "enable_loc_sxs": true}
+    {
+      "conceptual": "
+        <p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n",
+      "enable_loc_sxs": true
+    }
 ---
 # bilingual build 2
 # [branch mapping]
@@ -745,9 +749,6 @@ repos:
           localization:
             mapping: Branch
             bilingual: true
-          gitHub:
-            userCache: github-user.json
-            resolveUsers: true
   https://github.com/ss/b.loc#master-sxs.zh-cn:
     - files:
         docs/a.md: a

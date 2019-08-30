@@ -13,7 +13,6 @@ using Microsoft.DocAsTest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Microsoft.Docs.Build
 {
@@ -26,12 +25,6 @@ namespace Microsoft.Docs.Build
 
         static DocfxTest()
         {
-            Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
-            Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
-
-            Log.ForceVerbose = true;
-            TestUtility.MakeDebugAssertThrowException();
-
             AppData.GetCachePath = () => t_cachePath.Value;
             GitUtility.GitRemoteProxy = remote =>
             {
@@ -178,10 +171,19 @@ namespace Microsoft.Docs.Build
 
         private static void VerifyOutput(string outputPath, DocfxTestSpec spec)
         {
-            var outputs = Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories)
-                                   .ToDictionary(file => file.Substring(outputPath.Length).Replace('\\', '/'), File.ReadAllText);
+            var expectedOutputs = JObject.FromObject(spec.Outputs);
 
-            s_jsonDiff.Verify(spec.Outputs, outputs);
+            // Ensure no .errors.log file if there is no error
+            if (!spec.Outputs.ContainsKey(".errors.log"))
+            {
+                expectedOutputs[".errors.log"] = JValue.CreateUndefined();
+            }
+
+            var actualOutputs = Directory
+                .GetFiles(outputPath, "*", SearchOption.AllDirectories)
+                .ToDictionary(file => file.Substring(outputPath.Length).Replace('\\', '/'), File.ReadAllText);
+
+            s_jsonDiff.Verify(expectedOutputs, actualOutputs);
         }
 
         private static JsonDiff CreateJsonDiff()
@@ -201,6 +203,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsOutputFile(JToken expected, JToken actual, string name)
         {
+            // TODO: this will also match first property inside JSON file.
             return expected.Parent?.Parent == expected.Root;
         }
 
@@ -223,6 +226,10 @@ namespace Microsoft.Docs.Build
             // Compare data-linktype only if the expectation contains data-linktype
             var expectedHtml = expected.Value<string>();
             var actualHtml = actual.Value<string>();
+            if (string.IsNullOrEmpty(expectedHtml) || string.IsNullOrEmpty(expectedHtml))
+            {
+                return (expectedHtml, actualHtml);
+            }
             if (!expectedHtml.Contains("data-linktype"))
             {
                 actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");

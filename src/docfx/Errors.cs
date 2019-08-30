@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("Layout", "MEN002", Justification = "Suppress MEN002 for Errors.cs")]
     internal static class Errors
     {
         /// <summary>
@@ -30,18 +32,18 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty", source);
 
         /// <summary>
-        /// Defined redirect dest not starting with '\' in <see cref="Config.Redirections"/>.
-        /// </summary>
-        public static Error RedirectionUrlInvalid(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "redirection-url-invalid", $"The redirect url '{source}' should be absolute or relative path.", source);
-
-        /// <summary>
         /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
         /// can't decide which entry to use when computing document id.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error RedirectionUrlConflict(SourceInfo<string> source)
             => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings", source);
+
+        /// <summary>
+        /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
+        /// </summary>
+        public static Error RedirectionUrlNotExisted(SourceInfo<string> source)
+            => new Error(ErrorLevel.Suggestion, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true", source);
 
         /// <summary>
         /// Used invalid glob pattern in configuration.
@@ -73,8 +75,8 @@ namespace Microsoft.Docs.Build
         ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error CircularReference<T>(IEnumerable<T> dependencyChain)
-            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}");
+        public static Error CircularReference<T>(IEnumerable<T> dependencyChain, Document declaringFile)
+            => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}", file: declaringFile.FilePath);
 
         /// <summary>
         /// Didn't run `docfx restore` before running `docfx build`.
@@ -102,8 +104,8 @@ namespace Microsoft.Docs.Build
         ///   - using invalid access token(more detailed info in ex.Message)
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error GitHubApiFailed(string exMessage)
-            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
+        public static Error GitHubApiFailed(string message)
+            => new Error(ErrorLevel.Warning, "github-api-failed", $"Call to GitHub API failed '{message}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
         /// <summary>
         /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -568,8 +570,8 @@ namespace Microsoft.Docs.Build
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerConfigMissing(Document file)
-            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", file.FilePath);
+        public static Error MonikerConfigMissing(SourceInfo<string> source)
+            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
 
         /// <summary>
         /// Config's monikerRange and monikerRange defined in yaml header has no intersection,

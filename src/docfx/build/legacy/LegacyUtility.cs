@@ -45,11 +45,13 @@ namespace Microsoft.Docs.Build
             var legacySiteUrlRelativeToSiteBasePath = doc.SiteUrl;
             if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.SiteBasePath}", PathUtility.PathComparison))
             {
-                legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
+                legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(
+                    docset.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
             }
 
             return PathUtility.NormalizeFile(
-                Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison) && doc.ContentType != ContentType.Resource
+                Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison)
+                && doc.ContentType != ContentType.Resource
                 ? $"{legacySiteUrlRelativeToSiteBasePath}/index"
                 : legacySiteUrlRelativeToSiteBasePath);
         }

@@ -132,11 +132,10 @@ inputs:
       }
     }
 outputs:
-  docs/a.json:
   toc.json:
   docs/toc.json:
   .errors.log: |
-    ["warning","unexpected-type","Expected type 'String' but got 'Object'","docs/a.yml",3,18]
+    ["error","unexpected-type","Expected type 'String' but got 'Object'","docs/a.yml",3,18]
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
@@ -193,9 +192,8 @@ inputs:
       }
     }
 outputs:
-  docs/a.json:
   .errors.log: |
-    ["warning","unexpected-type","Expected type 'String' but got 'Null'","docs/a.yml",2,13]
+    ["error","unexpected-type","Expected type 'String' but got 'Null'","docs/a.yml",2,13]
 ---
 # Support schema documents with inline markdown content
 inputs:
@@ -315,55 +313,6 @@ outputs:
   .errors.log: |
     ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
 ---
-# Run data-transform if provided, by default return {"content": "serialized json"}
-inputs:
-  docfx.yml:
-  a.yml: |
-    #YamlMime:TestData
-    prop: value
-  _themes/ContentTemplate/TestData.json.js: |
-    exports.transform = function (model) {
-      return {
-        content: JSON.stringify({result: model.prop + " has run js data transform"})
-      }
-    }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
-outputs:
-  a.json: |
-    {"result": "value has run js data transform"}
----
-# Run data-transform if provided, and return raw object if content property is not serialized json object
-inputs:
-  docfx.yml:
-  a.yml: |
-    #YamlMime:TestData
-    prop: value
-  _themes/ContentTemplate/TestData.json.js: |
-    exports.transform = function (model) {
-      return {
-        result: model.prop + " has run js data transform",
-        content: "raw string"
-      }
-    }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
-outputs:
-  a.json: |
-    {
-      "result": "value has run js data transform",
-      "content": "raw string"
-    }
----
-# Don't run data-transform if corresponding js not provided
-inputs:
-  docfx.yml:
-  a.yml: |
-    #YamlMime:TestData
-    prop: value
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
-outputs:
-  a.json: |
-    {"prop": "value"}
----
 # Data-model output should only contains input(or transformed input)
 inputs:
   docfx.yml: |
@@ -402,45 +351,6 @@ inputs:
 outputs:
   .errors.log: |
     ["error","unexpected-type","Expected type 'Object' but got 'Array'","a.yml",1,1]
----
-# Verify SDP pipeline
-# YAML mime in the SDP document should have a corresponding *.html.primary.js file
-# Set config.output.json to false to run *.html.liquid to output static HTML
-# Provide *.mta.json.js to transform metadata
-# Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
-inputs:
-  docfx.yml: |
-    output:
-      json: false
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
-  a.yml: |
-    #YamlMime:TestData
-    prop: value
-  _themes/ContentTemplate/TestData.mta.json.js: |
-    exports.transform = function (model) {
-      model.layout = "test"
-      return {
-        content: JSON.stringify(model)
-      }
-    }
-  _themes/ContentTemplate/TestData.html.primary.tmpl: |
-    <div>{{content}}</div>
-  _themes/ContentTemplate/TestData.html.primary.js: |
-    exports.transform = function (model) {
-      return model.prop;
-    }
-  _themes/ContentTemplate/test.html.liquid: |
-    <!DOCTYPE html>
-      <div>
-          {{content}}
-      </div>
-outputs:
-  a/index.html: |
-    <!DOCTYPE html>
-      <div>
-        <div>value</div>
-
-      </div>
 ---
 # Validate bookmark against content HTML after applying template for SDP 
 legacy: true

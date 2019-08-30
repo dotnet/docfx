@@ -30,14 +30,20 @@ namespace Microsoft.Docs.Build
 
         public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
 
-        public LegacyFileMapItem(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version, List<string> monikers)
+        public LegacyFileMapItem(
+            string legacyOutputFilePathRelativeToSiteBasePath,
+            string legacySiteUrlRelativeToSiteBasePath,
+            ContentType contentType,
+            string version,
+            List<string> monikers)
         {
             switch (contentType)
             {
                 case ContentType.Page:
                 case ContentType.Redirection:
                     Type = "Content";
-                    OutputRelativePath = PathUtility.NormalizeFile(LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
+                    OutputRelativePath = PathUtility.NormalizeFile(
+                        LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
                     AssetId = legacySiteUrlRelativeToSiteBasePath;
                     Version = version;
                     Monikers = monikers;
@@ -55,14 +61,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static LegacyFileMapItem Instance(string legacyOutputFilePathRelativeToSiteBasePath, string legacySiteUrlRelativeToSiteBasePath, ContentType contentType, string version, List<string> monikers)
+        public static LegacyFileMapItem Instance(
+            string legacyOutputFilePathRelativeToSiteBasePath,
+            string legacySiteUrlRelativeToSiteBasePath,
+            ContentType contentType,
+            string version,
+            List<string> monikers)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {
                 return null;
             }
 
-            return new LegacyFileMapItem(legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType, version, monikers);
+            return new LegacyFileMapItem(
+                legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType, version, monikers);
         }
 
         private static string RemoveExtension(string path)

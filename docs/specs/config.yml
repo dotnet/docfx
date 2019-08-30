@@ -121,7 +121,7 @@ inputs:
   docfx.yml: |
     globalMetadata:
       key: ' value   '
-    redirections:
+    redirectionsWithoutId:
       docs/redirect.md: '/absolute/path '
   docs/a.md: |
     [redirect](redirect.md?a#b)
@@ -315,10 +315,12 @@ outputs:
 inputs:
   docfx.yml: |
     redirections:
-      docs/a.md: /absolute/path1
+      docs/a.md: /docs/b
     redirectionsWithoutId:
       docs/a.md: /absolute/path2
+  docs/b.md:
 outputs:
+  docs/b.json:
   .errors.log: |
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",4,14]
 ---
@@ -326,7 +328,7 @@ outputs:
 inputs:
   docfx.yml: |
     exclude: '*'
-    redirections:
+    redirectionsWithoutId:
       docs/a.md: /absolute/path1
       b.md: /absolute/path2
 outputs:
@@ -345,10 +347,12 @@ inputs:
   docfx.yml: |
     redirections:
       docs/TOC.md: /absolute/path
-      docs/a.md: /absolute/path1
+      docs/a.md: /docs/b
     redirectionsWithoutId:
       docs/a.md: /absolute/path2
+  docs/b.md:
 outputs:
+  docs/b.json:
   .errors.log: |
     ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
     ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",5,14]
@@ -457,15 +461,6 @@ inputs:
   a.md:
 outputs:
   a.json:
----
-# redirect to in config.redirections should be relative or absoute path
-inputs:
-  docfx.yml: |
-    redirections:
-      a.md: https://docs.microsoft.com/docfx/a
-outputs:
-  .errors.log: |
-    ["warning","redirection-url-invalid","The redirect url 'https://docs.microsoft.com/docfx/a' should be absolute or relative path.","docfx.yml",2,9]
 ---
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:

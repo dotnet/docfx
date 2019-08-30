@@ -177,13 +177,14 @@ inputs:
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
     redirections:
-      docs/v1/a-old.md: /docs/a1
+      docs/v1/a-old.md: /docs/b
     redirectionsWithoutId:
       docs/v2/a-old.md: /docs/a2
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
   docs/v2/a.md: |
     Moniker: netcore-1.2, netcore-1.3
+  docs/b.md:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -206,12 +207,14 @@ outputs:
       "conceptual": "<p>Moniker: netcore-1.2, netcore-1.3</p>",
       "monikers": ["netcore-1.2", "netcore-1.3"]
     }
+  docs/b.json:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a1", "moniker_group": "9d4e15fd" },
         { "url": "/docs/a-old", "redirect_url": "/docs/a2", "moniker_group": "f961cd88" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/b", "moniker_group": "9d4e15fd" },
         { "url": "/docs/a", "moniker_group": "9d4e15fd" },
+        { "url": "/docs/b" },
         { "url": "/docs/a", "moniker_group": "f961cd88" },
       ],
       "moniker_groups": {
@@ -315,12 +318,16 @@ outputs:
 inputs:
   docfx.yml: |
     monikerDefinition: monikerDefinition.json
-  docs/v1/a.md: |
+    fileMetadata:
+      monikerRange:
+        docs/b.md: '> netcore-1.0'
+  docs/a.md: |
     ---
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
-  docs/v1/TOC.yml: |
+  docs/b.md:
+  docs/TOC.yml: |
     - name: A
       href: a.md
   monikerDefinition.json: |
@@ -333,16 +340,19 @@ inputs:
       ]
     }
 outputs:
-  docs/v1/a.json:
-  docs/v1/toc.json:
+  docs/a.json:
+  docs/b.json:
+  docs/toc.json:
   .errors.log: |
-    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/a.md",2,15]
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docfx.yml",4,16]
 ---
 # With moniker range not defined in config, user should not define it in moniker zone
 inputs:
   docfx.yml: |
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
+    # Title
     ::: moniker range="netcore-1.0"
     Moniker: netcore-1.0
     ::: moniker-end
@@ -355,7 +365,7 @@ inputs:
 outputs:
   docs/v1/a.json:
   .errors.log: |
-    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md",2,1]
 ---
 # No intersection of config monikers and file monikers
 inputs:
@@ -609,7 +619,7 @@ outputs:
     ["warning","moniker-overlapping","Two or more documents have defined overlapping moniker: 'netcore-2.0'"]
     ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'"]
     ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md', 'docs/v2/a.md'"]
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
   .publish.json: |
     {
@@ -808,7 +818,7 @@ outputs:
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
     }
-  xrefmap.json: | 
+  .xrefmap.json: | 
     {"references":[{"uid":"a","name":"no version"}]}
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.md', 'docs/b.md'"]

@@ -11,19 +11,23 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 
 ### Phase 2: Docs Integration
 - [x] Migration tooling for <https://docs.microsoft.com> _(done)_
-- [x] Publish integration with <https://docs.microsoft.com> _(testing)_
+- [x] Publish integration with <https://docs.microsoft.com> _(done)_
 - [x] Config integration with <https://docs.microsoft.com> _(done)_
 
 ### Phase 3: Schema Contents
 
-- [x] Integration with <https://docs.microsoft.com> template system _(testing)_
-- [x] Schema driven documents for reference contents _(testing)_
-- [ ] Schema driven documents for learn contents
+- [x] Integration with <https://docs.microsoft.com> template system _(done)_
+- [x] Schema driven documents for reference contents _(postponed)_
+- [ ] Schema driven documents for learn contents _(postponed)_
+
+### Phase 4: Local Authoring Experience
+
+- [ ] Local build _(started)_
+- [ ] vscode integration _(started)_
+- [ ] Local preview
 
 ### Phase 4: Future
 
-- [ ] Local watch
-- [ ] vscode integration
 - [ ] PDF
 - [ ] Tweak <https://docs.microsoft.com> template for community needs
 - [ ] Integration with [mdoc](https://www.mono-project.com/docs/tools+libraries/tools/monodocer/) for .NET reference doc.
