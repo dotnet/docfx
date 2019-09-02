@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly string _acquirer;
         private readonly string _lockName;
 
-        public SharedAndExclusiveLock(string lockName, bool shared, TimeSpan? timeout = null)
+        public SharedAndExclusiveLock(string lockName, bool shared)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                     Console.ResetColor();
                 }
             }
-            while (DateTime.UtcNow - now < (timeout ?? _defaultTimeout));
+            while (DateTime.UtcNow - now < _defaultTimeout);
         }
 
         public void Dispose()

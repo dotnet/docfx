@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        public static TemplateEngine Create(Docset docset, GitLock gitLock)
+        public static TemplateEngine Create(Docset docset, RestoreGitMap restoreGitMap)
         {
             Debug.Assert(docset != null);
 
@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             }
 
             var themePageUrl = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, _) = RestoreGitMap.GetRestoreGitPath(gitLock, themePageUrl, docset.DocsetPath, false);
+            var (themePath, _) = restoreGitMap.GetRestoreGitPath(themePageUrl, docset.DocsetPath, false);
             Log.Write($"Using theme '{themePageUrl}' at '{themePath}'");
 
             return new TemplateEngine(themePath);

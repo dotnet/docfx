@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
-            GitLock gitLogk,
+            RestoreGitMap restoreGitMap,
             DependencyMapBuilder dependencyMapBuilder,
             Lazy<XrefResolver> xrefResolver,
             TemplateEngine templateEngine)
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
             _resolveAlias = LoadResolveAlias(docset.Config);
-            _dependencies = LoadDependencies(docset, gitLogk);
+            _dependencies = LoadDependencies(docset, restoreGitMap);
             _templateEngine = templateEngine;
         }
 
@@ -264,10 +264,6 @@ namespace Microsoft.Docs.Build
         /// <returns>A new document, or null if not found</returns>
         private Document CreateFromFile(Document referencingFile, string pathToDocset)
         {
-            Debug.Assert(referencingFile != null);
-            Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
-            Debug.Assert(!Path.IsPathRooted(pathToDocset));
-
             // resolve from the current docset for files in dependencies
             if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
             {
@@ -289,7 +285,6 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from entry docset
-            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
             if (File.Exists(Path.Combine(_docset.DocsetPath, pathToDocset)))
             {
                 return Document.Create(_docset, new FilePath(pathToDocset), _templateEngine);
@@ -322,15 +317,25 @@ namespace Microsoft.Docs.Build
 
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, filePath.Path, docset.Repository.Commit);
 
-            var commit = deleted && commits.Length > 1 ? commits[1] : (!deleted && commits.Length > 0 ? commits[0] : default);
-            if (repo != null && commit != null)
+            commits = deleted && commits.Length > 1 ? commits.Skip(1).ToArray() : (!deleted && commits.Length > 0 ? commits : default);
+            if (repo != null && commits != null && commits.Length > 0)
             {
                 var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                return Document.Create(docset, filePath, _templateEngine, isFromHistory: true, content:
+                return Document.Create(docset, filePath, _templateEngine, content:
                     new Lazy<string>(() =>
                     {
                         Log.Write($"Read document content from CRR git{(deleted ? " which was deleted" : "")}, {filePath}");
-                        return GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
+
+                        string content = null;
+                        foreach (var commit in commits)
+                        {
+                            content = GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
+                            if (content != null)
+                                break;
+                        }
+
+                        Debug.Assert(content != null);
+                        return content;
                     }));
             }
 
@@ -400,12 +405,12 @@ namespace Microsoft.Docs.Build
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
 
-        private static Dictionary<string, Docset> LoadDependencies(Docset docset, GitLock gitLock)
+        private static Dictionary<string, Docset> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
         {
             var result = new Dictionary<string, Docset>(docset.Config.Dependencies.Count, PathUtility.PathComparer);
             foreach (var (name, dependency) in docset.Config.Dependencies)
             {
-                var (dir, commit) = RestoreGitMap.GetRestoreGitPath(gitLock, dependency, docset.DocsetPath, true);
+                var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, docset.DocsetPath, true);
 
                 var repo = Repository.Create(dir, dependency.Branch, dependency.Remote, commit);
                 result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(dir, docset.Locale, docset.Config, repo));

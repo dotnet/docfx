@@ -122,7 +122,6 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> mime,
             bool isExperimental,
             string redirectionUrl = null,
-            bool isFromHistory = false,
             bool isPage = true,
             Lazy<string> content = null)
         {
@@ -139,14 +138,12 @@ namespace Microsoft.Docs.Build
             Mime = mime;
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
-            IsFromHistory = isFromHistory;
             IsPage = isPage;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
             _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
             _content = content;
 
-            Debug.Assert(!isFromHistory || _content != null);
             Debug.Assert(IsValidRelativePath(FilePath.Path));
             Debug.Assert(IsValidRelativePath(SitePath));
 
@@ -253,7 +250,6 @@ namespace Microsoft.Docs.Build
             FilePath path,
             TemplateEngine templateEngine,
             string redirectionUrl = null,
-            bool isFromHistory = false,
             bool combineRedirectUrl = false,
             Lazy<string> content = null)
         {
@@ -284,7 +280,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage, content);
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage, content);
         }
 
         internal static ContentType GetContentType(string path)
