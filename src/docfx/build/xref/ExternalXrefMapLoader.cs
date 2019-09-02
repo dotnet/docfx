@@ -24,9 +24,23 @@ namespace Microsoft.Docs.Build
                 {
                     LoadZipFile(result, new SourceInfo<string>(Path.Combine(docset.DocsetPath, url), url.Source));
                 }
+                else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    var content = restoreFileMap.GetRestoredFileContent(url);
+                    var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
+                    foreach (var spec in xrefMap.References)
+                    {
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                    }
+                }
                 else
                 {
-                    LoadFile(restoreFileMap, result, url);
+                    var filePath = restoreFileMap.GetRestoredFilePath(url);
+                    foreach (var (uid, spec) in Load(filePath))
+                    {
+                        // for same uid with multiple specs, we should respect the order of the list
+                        result.TryAdd(uid, spec);
+                    }
                 }
             }
 
@@ -53,28 +67,6 @@ namespace Microsoft.Docs.Build
                 })));
             }
             return result;
-        }
-
-        private static void LoadFile(RestoreFileMap restoreFileMap, Dictionary<string, Lazy<ExternalXrefSpec>> result, SourceInfo<string> url)
-        {
-            if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-            {
-                var content = restoreFileMap.GetRestoredFileContent(url);
-                var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
-                foreach (var spec in xrefMap.References)
-                {
-                    result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
-                }
-            }
-            else
-            {
-                var filePath = restoreFileMap.GetRestoredFilePath(url);
-                foreach (var (uid, spec) in Load(filePath))
-                {
-                    // for same uid with multiple specs, we should respect the order of the list
-                    result.TryAdd(uid, spec);
-                }
-            }
         }
 
         private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, SourceInfo<string> url)
