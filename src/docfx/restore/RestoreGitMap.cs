@@ -11,13 +11,13 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreGitMap : IDisposable
     {
-        private readonly IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> _acquiredGits;
+        private readonly IReadOnlyDictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)> _acquiredGits;
 
-        public Dictionary<string, string> DependencyLock { get; private set; }
+        public Dictionary<PackageUrl, DependencyGitLock> DependencyGitLock { get; private set; }
 
-        public RestoreGitMap(IReadOnlyDictionary<(string remote, string branch, string commit), (string path, DependencyGit git)> acquiredGits = null)
+        public RestoreGitMap(IReadOnlyDictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)> acquiredGits = null)
         {
-            _acquiredGits = acquiredGits ?? new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
+            _acquiredGits = acquiredGits ?? new Dictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)>();
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                     throw Errors.FileNotFound(new SourceInfo<string>(url.Path)).ToException();
 
                 case PackageType.Git:
-                    return GetGitRestorePath(url.Remote, url.Branch);
+                    return GetGitRestorePath(url);
 
                 default:
                     throw new NotSupportedException($"Unknown package url: '{url}'");
@@ -49,26 +49,26 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public string GetGitRestorePath(string remote, string branch)
+        public string GetGitRestorePath(PackageUrl packageUrl)
         {
-            var gitVersion = DependencyLockProvider.GetGitLock(DependencyLock, remote, branch);
+            var gitLock = DependencyLockProvider.GetGitLock(DependencyGitLock, packageUrl);
 
-            if (gitVersion is null)
+            if (gitLock is null)
             {
-                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+                throw Errors.NeedRestore($"{packageUrl}").ToException();
             }
 
-            if (!_acquiredGits.TryGetValue((remote, branch, gitVersion), out var gitInfo))
+            if (!_acquiredGits.TryGetValue((packageUrl, gitLock.Commit), out var gitInfo))
             {
-                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+                throw Errors.NeedRestore($"{packageUrl}").ToException();
             }
 
             if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git is null)
             {
-                throw Errors.NeedRestore($"{remote}#{branch}").ToException();
+                throw Errors.NeedRestore($"{packageUrl}").ToException();
             }
 
-            var path = Path.Combine(AppData.GetGitDir(remote), gitInfo.path);
+            var path = Path.Combine(AppData.GetGitDir(packageUrl.Remote), gitInfo.path);
             Debug.Assert(Directory.Exists(path));
 
             return path;
@@ -89,27 +89,26 @@ namespace Microsoft.Docs.Build
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static RestoreGitMap Create(Dictionary<string, string> dependencyLock)
+        public static RestoreGitMap Create(Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
         {
-            var acquired = new Dictionary<(string remote, string branch, string commit), (string path, DependencyGit git)>();
+            var acquired = new Dictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)>();
 
             try
             {
                 Debug.Assert(dependencyLock != null);
 
-                foreach (var (key, commit) in dependencyLock)
+                foreach (var (packageUrl, gitLock) in dependencyLock)
                 {
-                    var (remote, branch, _) = UrlUtility.SplitGitUrl(key);
-                    if (!acquired.ContainsKey((remote, branch, commit/*commit*/)))
+                    if (!acquired.ContainsKey((packageUrl, gitLock.Commit)))
                     {
-                        var (path, git) = AcquireGit(remote, branch, commit, LockType.Shared);
-                        acquired[(remote, branch, commit/*commit*/)] = (path, git);
+                        var (path, git) = AcquireGit(packageUrl.Remote, packageUrl.Branch, gitLock.Commit, LockType.Shared);
+                        acquired[(packageUrl, gitLock.Commit)] = (path, git);
                     }
                 }
 
                 return new RestoreGitMap(acquired)
                 {
-                    DependencyLock = dependencyLock,
+                    DependencyGitLock = dependencyLock,
                 };
             }
             catch

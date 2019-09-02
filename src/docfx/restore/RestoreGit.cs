@@ -15,11 +15,11 @@ namespace Microsoft.Docs.Build
         internal static IReadOnlyList<RestoreGitResult> Restore(
             Config config,
             string locale,
-            Repository rootRepository,
-            Dictionary<string, string> dependencyLock)
+            Repository repository,
+            Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
         {
             var gitDependencies =
-                from git in GetGitDependencies(config, locale, rootRepository)
+                from git in GetGitDependencies(config, locale, repository)
                 group (git.branch, git.flags)
                 by git.remote;
 
@@ -35,15 +35,19 @@ namespace Microsoft.Docs.Build
                 maxDegreeOfParallelism: 8);
 
             // fetch contribution branch
-            if (rootRepository != null && LocalizationUtility.TryGetContributionBranch(rootRepository, out var contributionBranch))
+            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository, out var contributionBranch))
             {
-                GitUtility.Fetch(rootRepository.Path, rootRepository.Remote, contributionBranch, config);
+                GitUtility.Fetch(repository.Path, repository.Remote, contributionBranch, config);
             }
 
             return results.ToList();
         }
 
-        internal static IReadOnlyList<RestoreGitResult> RestoreGitRepo(Config config, string remote, List<(string branch, RestoreGitFlags flags)> branches, Dictionary<string, string> dependencyLock)
+        internal static IReadOnlyList<RestoreGitResult> RestoreGitRepo(
+            Config config,
+            string remote,
+            List<(string branch, RestoreGitFlags flags)> branches,
+            Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
         {
             var branchesToFetch = new HashSet<string>(branches.Select(b => b.branch));
             var repoDir = AppData.GetGitDir(remote);
@@ -67,7 +71,7 @@ namespace Microsoft.Docs.Build
 
                     using (Progress.Start($"Manage worktree for '{remote}'"))
                     {
-                        return AddWorkTrees(dependencyLock, remote, branches, branchesToFetch, repoPath);
+                        return AddWorkTrees(repoPath, remote, branches, branchesToFetch, dependencyLock);
                     }
                 }
             }
@@ -76,22 +80,22 @@ namespace Microsoft.Docs.Build
         }
 
         private static IReadOnlyList<RestoreGitResult> AddWorkTrees(
-            Dictionary<string, string> dependencyLock,
+            string repoPath,
             string remote,
             List<(string branch, RestoreGitFlags flags)> branches,
             HashSet<string> branchesToFetch,
-            string repoPath)
+            Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
         {
             var results = new ListBuilder<RestoreGitResult>();
             ParallelUtility.ForEach(branchesToFetch, branch =>
             {
-                var gitLockCommit = DependencyLockProvider.GetGitLock(dependencyLock, remote, branch);
-                var headCommit = GitUtility.RevParse(repoPath, gitLockCommit ?? branch);
+                var gitLock = DependencyLockProvider.GetGitLock(dependencyLock, new PackageUrl(remote, branch));
+                var headCommit = GitUtility.RevParse(repoPath, gitLock?.Commit ?? branch);
 
                 Log.Write($"Add worktree for `{remote}` `{headCommit}`");
                 if (string.IsNullOrEmpty(headCommit))
                 {
-                    throw Errors.CommittishNotFound(remote, gitLockCommit ?? branch).ToException();
+                    throw Errors.CommittishNotFound(remote, gitLock?.Commit ?? branch).ToException();
                 }
 
                 var nocheckout = branches.Where(g => g.branch == branch).All(g => (g.flags & RestoreGitFlags.NoCheckout) != 0);

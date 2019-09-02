@@ -192,8 +192,8 @@ namespace Microsoft.Docs.Build
             var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
                 ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var dependencyLock = DependencyLockProvider.Load(docsetPath, dependencyLockPath) ?? new Dictionary<string, string>();
-            return RestoreGitMap.Create(dependencyLock);
+            var dependenyGitLock = DependencyLockProvider.LoadGitLock(docsetPath, dependencyLockPath) ?? new Dictionary<PackageUrl, DependencyGitLock>();
+            return RestoreGitMap.Create(dependenyGitLock);
         }
 
         private static Repository GetFallbackRepository(
@@ -206,14 +206,15 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (DependencyLockProvider.GetGitLock(restoreGitMap.DependencyLock, fallbackRemote, fallbackBranch) == null
-                    && DependencyLockProvider.GetGitLock(restoreGitMap.DependencyLock, fallbackRemote, "master") != null)
+                var fallbackPackageUrl = new PackageUrl(fallbackRemote, fallbackBranch);
+                if (DependencyLockProvider.GetGitLock(restoreGitMap.DependencyGitLock, fallbackPackageUrl) == null
+                    && DependencyLockProvider.GetGitLock(restoreGitMap.DependencyGitLock, new PackageUrl(fallbackRemote, "master")) != null)
                 {
                     // fallback to master branch
                     fallbackBranch = "master";
                 }
 
-                var fallbackRepoPath = restoreGitMap.GetGitRestorePath(fallbackRemote, fallbackBranch);
+                var fallbackRepoPath = restoreGitMap.GetGitRestorePath(fallbackPackageUrl);
                 return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
             }
 

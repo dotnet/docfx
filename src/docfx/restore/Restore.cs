@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -19,7 +20,6 @@ namespace Microsoft.Docs.Build
                 var repository = Repository.Create(docsetPath);
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-                var restoredGitLock = new Dictionary<string, string>();
                 var localeToRestore = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
 
                 var (errors, config) = ConfigLoader.TryLoad(docsetPath, options, localeToRestore, extend: false);
@@ -54,20 +54,21 @@ namespace Microsoft.Docs.Build
                 await RestoreFile.Restore(restoreUrls, extendedConfig);
 
                 // restore git repos includes dependency repos, theme repo and loc repos
-                var restoreDependencyResults = RestoreGit.Restore(extendedConfig, localeToRestore, repository, DependencyLockProvider.Load(docsetPath, extendedConfig.DependencyLock));
+                var restoreDependencyResults = RestoreGit.Restore(extendedConfig, localeToRestore, repository, DependencyLockProvider.LoadGitLock(docsetPath, extendedConfig.DependencyLock));
 
                 // save dependency lock
+                var restoredGitLock = new List<DependencyGitLock>();
                 foreach (var restoreResult in restoreDependencyResults.Concat(new[] { restoreFallbackResult }))
                 {
                     if (restoreResult != null)
-                        restoredGitLock.Add($"{restoreResult.Remote}#{restoreResult.Branch}", restoreResult.Commit);
+                        restoredGitLock.Add(new DependencyGitLock { Url = restoreResult.Remote, Branch = restoreResult.Branch, Commit = restoreResult.Commit });
                 }
 
                 var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock)
                     ? AppData.GetDependencyLockFile(docsetPath, localeToRestore)
                     : extendedConfig.DependencyLock;
 
-                DependencyLockProvider.Save(docsetPath, dependencyLockFilePath, restoredGitLock);
+                DependencyLockProvider.SaveGitLock(docsetPath, dependencyLockFilePath, restoredGitLock);
             }
         }
 

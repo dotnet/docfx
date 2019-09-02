@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         /// <protocol>://<hostname>[:<port>][:][/]<path>[#<branch>]
         /// Fallback to git origin if not set.
         /// </summary>
-        public readonly string Repository;
+        public readonly PackageUrl Repository;
 
         /// <summary>
         /// The excluded contributors which you don't want to show
