@@ -317,8 +317,8 @@ namespace Microsoft.Docs.Build
 
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, filePath.Path, docset.Repository.Commit);
 
-            commits = deleted && commits.Length > 1 ? commits.Skip(1).ToArray() : (!deleted && commits.Length > 0 ? commits : default);
-            if (repo != null && commits != null && commits.Length > 0)
+            commits = deleted && commits.Count() > 1 ? commits.Skip(1).ToList() : (!deleted && commits.Count() > 0 ? commits : default);
+            if (repo != null && commits != null && commits.Count() > 0)
             {
                 var repoPath = PathUtility.NormalizeFolder(repo.Path);
                 return Document.Create(docset, filePath, _templateEngine, content:

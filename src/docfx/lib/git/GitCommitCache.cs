@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using static Microsoft.Docs.Build.LibGit2;
-
 namespace Microsoft.Docs.Build
 {
     internal class GitCommitCache
@@ -99,14 +97,14 @@ namespace Microsoft.Docs.Build
         public class FileCommitCache
         {
             private readonly GitCommitCache _parent;
-            private readonly Dictionary<(long commit, long blob), (git_oid[] commitHistory, int lruOrder)> _commits
-                       = new Dictionary<(long commit, long blob), (git_oid[] commitHistory, int lruOrder)>();
+            private readonly Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)> _commits
+                       = new Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>();
 
             private int _nextLruOrder;
 
             internal FileCommitCache(GitCommitCache parent) => _parent = parent;
 
-            public bool TryGetCommits(long sha, long blob, out git_oid[] commits)
+            public bool TryGetCommits(long sha, long blob, out long[] commits)
             {
                 if (_commits.TryGetValue((sha, blob), out var value))
                 {
@@ -118,7 +116,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            public void SetCommits(long sha, long blob, git_oid[] commits)
+            public void SetCommits(long sha, long blob, long[] commits)
             {
                 _parent._cacheUpdated = true;
                 _commits[(sha, blob)] = (commits, 0);
@@ -132,13 +130,11 @@ namespace Microsoft.Docs.Build
                     var commit = reader.ReadInt64();
                     var blob = reader.ReadInt64();
                     var commitCount = reader.ReadInt32();
-                    var commitHistory = new git_oid[commitCount];
+                    var commitHistory = new long[commitCount];
 
                     for (var commitIndex = 0; commitIndex < commitCount; commitIndex++)
                     {
-                        commitHistory[commitIndex].a = reader.ReadInt64();
-                        commitHistory[commitIndex].b = reader.ReadInt64();
-                        commitHistory[commitIndex].c = reader.ReadInt32();
+                        commitHistory[commitIndex] = reader.ReadInt64();
                     }
                     _commits.Add((commit, blob), (commitHistory, i + 1));
                 }
@@ -158,9 +154,7 @@ namespace Microsoft.Docs.Build
 
                     foreach (var sha in commitHistory)
                     {
-                        writer.Write(sha.a);
-                        writer.Write(sha.b);
-                        writer.Write(sha.c);
+                        writer.Write(sha);
                     }
                 }
             }

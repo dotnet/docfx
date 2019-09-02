@@ -25,12 +25,6 @@ namespace Microsoft.Docs.Build
 
         static DocfxTest()
         {
-            Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
-            Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
-
-            Log.ForceVerbose = true;
-            TestUtility.MakeDebugAssertThrowException();
-
             AppData.GetCachePath = () => t_cachePath.Value;
             GitUtility.GitRemoteProxy = remote =>
             {
