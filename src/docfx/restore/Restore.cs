@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -24,12 +24,21 @@ namespace Microsoft.Docs.Build
 
                 var (errors, config) = ConfigLoader.TryLoad(docsetPath, options, localeToRestore, extend: false);
 
-                var (fallbackErrors, fallbackConfig, restoreFallbackResult) = RestoreFallbackRepo(docsetPath, config, repository, localeToRestore, options);
-                errors.AddRange(fallbackErrors);
+                var restoreFallbackResult = RestoreFallbackRepo(config, repository);
 
-                config = fallbackConfig ?? config;
+                if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
+                {
+                    // build from loc directly with overwrite config
+                    // use the fallback config
+                    List<Error> fallbackConfigErrors;
+                    (fallbackConfigErrors, config) = ConfigLoader.Load(restoreFallbackResult.Path, options, localeToRestore, extend: false);
+                    errors.AddRange(fallbackConfigErrors);
+                }
+
+                // config error log, and return if config has errors
                 errorLog.Configure(config);
-                errorLog.Write(errors);
+                if (errorLog.Write(errors))
+                    return;
 
                 // restore extend url firstly
                 await ParallelUtility.ForEach(
@@ -62,9 +71,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error> errors, Config config, RestoreGitResult result) RestoreFallbackRepo(string docsetPath, Config config, Repository repository, string locale, CommandLineOptions options)
+        private static RestoreGitResult RestoreFallbackRepo(Config config, Repository repository)
         {
-            var errors = new List<Error>();
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
             {
                 // fallback to master
@@ -74,22 +82,13 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = "master";
                 }
 
-                var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, GitFlags flags)> { (fallbackBranch, GitFlags.None) }, null);
+                var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, RestoreGitFlags flags)> { (fallbackBranch, RestoreGitFlags.None) }, null);
                 Debug.Assert(restoredResult.Count == 1);
 
-                var fallbackRestoreResult = restoredResult[0];
-                if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
-                {
-                    // build from loc directly with overwrite config
-                    // use the fallback config
-                    var (fallbackConfigErrors, fallbackConfig) = ConfigLoader.Load(fallbackRestoreResult.Path, options, locale, extend: false);
-                    return (fallbackConfigErrors, fallbackConfig, fallbackRestoreResult);
-                }
-
-                return (errors, default, fallbackRestoreResult);
+                return restoredResult[0];
             }
 
-            return (errors, default, default);
+            return default;
         }
     }
 }

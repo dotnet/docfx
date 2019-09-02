@@ -6,7 +6,7 @@ using System;
 namespace Microsoft.Docs.Build
 {
     [Flags]
-    internal enum GitFlags
+    internal enum RestoreGitFlags
     {
         None = 0,
         NoCheckout = 0b0010,

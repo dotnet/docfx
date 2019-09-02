@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             return results.ToList();
         }
 
-        internal static IReadOnlyList<RestoreGitResult> RestoreGitRepo(Config config, string remote, List<(string branch, GitFlags flags)> branches, Dictionary<string, string> dependencyLock)
+        internal static IReadOnlyList<RestoreGitResult> RestoreGitRepo(Config config, string remote, List<(string branch, RestoreGitFlags flags)> branches, Dictionary<string, string> dependencyLock)
         {
             var branchesToFetch = new HashSet<string>(branches.Select(b => b.branch));
             var repoDir = AppData.GetGitDir(remote);
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
         private static IReadOnlyList<RestoreGitResult> AddWorkTrees(
             Dictionary<string, string> dependencyLock,
             string remote,
-            List<(string branch, GitFlags flags)> branches,
+            List<(string branch, RestoreGitFlags flags)> branches,
             HashSet<string> branchesToFetch,
             string repoPath)
         {
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                     throw Errors.CommittishNotFound(remote, gitLockCommit ?? branch).ToException();
                 }
 
-                var nocheckout = branches.Where(g => g.branch == branch).All(g => (g.flags & GitFlags.NoCheckout) != 0);
+                var nocheckout = branches.Where(g => g.branch == branch).All(g => (g.flags & RestoreGitFlags.NoCheckout) != 0);
                 if (nocheckout)
                 {
                     return;
@@ -174,13 +174,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
+        private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
         {
             foreach (var (_, dependency) in config.Dependencies)
             {
                 if (dependency.Type == PackageType.Git)
                 {
-                    yield return (dependency.Remote, dependency.Branch, GitFlags.None);
+                    yield return (dependency.Remote, dependency.Branch, RestoreGitFlags.None);
                 }
             }
 
@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
                 var localizedTemplate = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
                 if (localizedTemplate.Type == PackageType.Git)
                 {
-                    yield return (localizedTemplate.Remote, localizedTemplate.Branch, GitFlags.None);
+                    yield return (localizedTemplate.Remote, localizedTemplate.Branch, RestoreGitFlags.None);
                 }
             }
 
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get source repository or localized repository
         /// </summary>
-        private static IEnumerable<(string remote, string branch, GitFlags flags)> GetLocalizationGitDependencies(Repository repo, Config config, string locale)
+        private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetLocalizationGitDependencies(Repository repo, Config config, string locale)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -236,12 +236,12 @@ namespace Microsoft.Docs.Build
                 locale,
                 config.Localization.DefaultLocale);
 
-            yield return (remote, branch, GitFlags.None);
+            yield return (remote, branch, RestoreGitFlags.None);
 
             if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
-                yield return (remote, contributionBranch, GitFlags.NoCheckout);
+                yield return (remote, contributionBranch, RestoreGitFlags.NoCheckout);
             }
         }
     }
