@@ -90,11 +90,6 @@ namespace Microsoft.Docs.Build
         public bool IsExperimental { get; }
 
         /// <summary>
-        /// Gets a value indicating whether it's from git history(deleted/moved/renamed)
-        /// </summary>
-        public bool IsFromHistory { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
         public bool IsPage { get; }
@@ -154,9 +149,8 @@ namespace Microsoft.Docs.Build
         public Stream ReadStream()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
-            if (IsFromHistory)
+            if (_content != null)
             {
-                Debug.Assert(_content != null);
                 if (_content.Value == null)
                 {
                     Log.Write($"{FilePath} from {FilePath.DependencyName ?? FilePath.Origin.ToString()} doesn't exist while reading stream");
