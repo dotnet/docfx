@@ -37,12 +37,12 @@ namespace Microsoft.DocAsTest
         /// configured in this <see cref="JsonDiff"/> object.
         /// Throws <see cref="JsonDiffException"/> if the validation failed.
         /// </summary>
-        public void Verify(object expected, object actual)
+        public void Verify(object expected, object actual, string summary = null)
         {
             var diff = Diff(expected, actual);
             if (!string.IsNullOrEmpty(diff))
             {
-                throw new JsonDiffException(diff);
+                throw new JsonDiffException(summary, diff);
             }
         }
 
