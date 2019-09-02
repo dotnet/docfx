@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.Compile);
 
                 IncrementalContext.IncrementalInfo.ReportProcessorFileCount(hostService.Processor.Name, allFiles.Count, skippedFiles.Count);
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}, total file count: {allFiles.Count}, skipped file count: {skippedFiles.Count}.");
+                Logger.LogVerbose($"Processor {hostService.Processor.Name} (compile phase), total file count: {allFiles.Count}, skipped file count: {skippedFiles.Count}.");
             }
         }
 
