@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string GetGitRestorePath(PackageUrl packageUrl)
         {
-            var gitLock = DependencyLockProvider.GetGitLock(DependencyGitLock, packageUrl);
+            var gitLock = DependencyGitLock.GetGitLock(packageUrl);
 
             if (gitLock is null)
             {

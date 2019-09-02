@@ -11,14 +11,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class DependencyLockProvider
     {
-        public static DependencyGitLock GetGitLock(Dictionary<PackageUrl, DependencyGitLock> dependencyLock, PackageUrl packageUrl)
+        public static DependencyGitLock GetGitLock(this Dictionary<PackageUrl, DependencyGitLock> dependencyLock, PackageUrl packageUrl)
         {
             if (dependencyLock == null)
             {
                 return null;
             }
-
-            Debug.Assert(packageUrl.Type == PackageType.Git);
 
             if (dependencyLock.TryGetValue(packageUrl, out var gitLock))
             {

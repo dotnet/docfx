@@ -204,7 +204,10 @@ repos:
 cache:
   .lock.json: |
     {
-      "https://docs.com/lock1/c#master":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+      "git":
+      [
+        {"url": "https://docs.com/lock1/c", "branch": "master", "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"}
+      ]
     }
 outputs:
   docs/a.json: |
@@ -253,7 +256,10 @@ repos:
 cache:
   .lock.json: |
     {
-      "https://docascode.visualstudio.com/lock/_git/c#master":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
+      "git":
+      [
+        {"url": "https://docascode.visualstudio.com/lock/_git/c", "branch": "master", "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"}
+      ]
     }
 outputs:
   docs/a.json: |

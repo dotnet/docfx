@@ -207,11 +207,11 @@ namespace Microsoft.Docs.Build
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
                 var fallbackPackageUrl = new PackageUrl(fallbackRemote, fallbackBranch);
-                if (DependencyLockProvider.GetGitLock(restoreGitMap.DependencyGitLock, fallbackPackageUrl) == null
-                    && DependencyLockProvider.GetGitLock(restoreGitMap.DependencyGitLock, new PackageUrl(fallbackRemote, "master")) != null)
+                if (restoreGitMap.DependencyGitLock.GetGitLock(fallbackPackageUrl) == null
+                    && restoreGitMap.DependencyGitLock.GetGitLock(new PackageUrl(fallbackRemote, "master")) != null)
                 {
                     // fallback to master branch
-                    fallbackBranch = "master";
+                    fallbackPackageUrl = new PackageUrl(fallbackRemote, "master");
                 }
 
                 var fallbackRepoPath = restoreGitMap.GetGitRestorePath(fallbackPackageUrl);
