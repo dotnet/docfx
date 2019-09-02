@@ -1,5 +1,13 @@
 param ([switch]$noTest = $false)
 
+# Create NuGet package
+$commitSha = & { git rev-parse --short HEAD }
+$commitCount = & { git rev-list --count HEAD }
+$revision = $commitCount.ToString().PadLeft(5, '0')
+
+# CI triggered by v3
+$version = "3.0.0-beta-$revision-$commitSha"
+
 function exec([string] $cmd) {
     Write-Host $cmd -ForegroundColor Green
     & ([scriptblock]::Create($cmd))
@@ -21,14 +29,6 @@ function test() {
 }
 
 function publish() {
-    # Create NuGet package
-    $commitSha = & { git rev-parse --short HEAD }
-    $commitCount = & { git rev-list --count HEAD }
-    $revision = $commitCount.ToString().PadLeft(5, '0')
-
-    # CI triggered by v3
-    $version = "3.0.0-beta-$revision-$commitSha"
-
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
     exec "dotnet pack src\Microsoft.DocAsTest -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
