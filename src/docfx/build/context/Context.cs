@@ -28,18 +28,18 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly TemplateEngine TemplateEngine;
 
-        public XrefMap XrefMap => _xrefMap.Value;
+        public XrefResolver XrefResolver => _xrefResolver.Value;
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
-        private readonly Lazy<XrefMap> _xrefMap;
+        private readonly Lazy<XrefResolver> _xrefResolver;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
             DependencyMapBuilder = new DependencyMapBuilder();
-            _xrefMap = new Lazy<XrefMap>(() => new XrefMap(this, docset, restoreFileMap, DependencyMapBuilder));
+            _xrefResolver = new Lazy<XrefResolver>(() => new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>();
 
@@ -55,16 +55,19 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
+            ContributionProvider = new ContributionProvider(docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+
             DependencyResolver = new DependencyResolver(
-                docset.Config,
+                docset,
+                fallbackDocset,
                 BuildScope,
                 BuildQueue,
                 GitCommitProvider,
                 BookmarkValidator,
+                restoreGitMap,
                 DependencyMapBuilder,
-                _xrefMap,
+                _xrefResolver,
                 TemplateEngine);
-            ContributionProvider = new ContributionProvider(docset, GitHubUserCache, GitCommitProvider);
         }
 
         public void Dispose()

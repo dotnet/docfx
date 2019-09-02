@@ -13,7 +13,6 @@ using Microsoft.DocAsTest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Microsoft.Docs.Build
 {
@@ -26,12 +25,6 @@ namespace Microsoft.Docs.Build
 
         static DocfxTest()
         {
-            Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
-            Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
-
-            Log.ForceVerbose = true;
-            TestUtility.MakeDebugAssertThrowException();
-
             AppData.GetCachePath = () => t_cachePath.Value;
             GitUtility.GitRemoteProxy = remote =>
             {
@@ -210,6 +203,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsOutputFile(JToken expected, JToken actual, string name)
         {
+            // TODO: this will also match first property inside JSON file.
             return expected.Parent?.Parent == expected.Root;
         }
 

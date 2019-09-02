@@ -70,6 +70,11 @@ namespace Microsoft.Docs.Build
         public readonly string[] Extend = Array.Empty<string>();
 
         /// <summary>
+        /// Gets whether we are running in legacy mode
+        /// </summary>
+        public readonly bool Legacy;
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>

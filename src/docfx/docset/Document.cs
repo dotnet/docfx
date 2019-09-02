@@ -239,19 +239,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, string path, TemplateEngine templateEngine, FileOrigin origin = FileOrigin.Current, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
+        public static Document Create(Docset docset, FilePath path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
         {
             Debug.Assert(docset != null);
-            Debug.Assert(!string.IsNullOrEmpty(path));
-            Debug.Assert(!Path.IsPathRooted(path));
 
-            var filePath = new FilePath(PathUtility.NormalizeFile(path), origin);
-            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(filePath.Path, PathUtility.PathComparer);
-            var type = isConfigReference ? ContentType.Unknown : GetContentType(filePath.Path);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(docset.DocsetPath, filePath) : default;
+            var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(path.Path, PathUtility.PathComparer);
+            var type = isConfigReference ? ContentType.Unknown : GetContentType(path.Path);
+            var mime = type == ContentType.Page ? ReadMimeFromFile(docset.DocsetPath, path) : default;
             var isPage = templateEngine.IsPage(mime);
-            var isExperimental = Path.GetFileNameWithoutExtension(filePath.Path).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(filePath.Path, docset.Routes, docset.SiteBasePath);
+            var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
+            var routedFilePath = ApplyRoutes(path.Path, docset.Routes, docset.SiteBasePath);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
@@ -270,52 +267,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, filePath, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
-        }
-
-        /// <summary>
-        /// Opens a new <see cref="Document"/> based on the path relative to docset.
-        /// </summary>
-        /// <param name="docset">The current docset</param>
-        /// <param name="pathToDocset">The path relative to docset root</param>
-        /// <returns>A new document, or null if not found</returns>
-        public static Document CreateFromFile(Docset docset, string pathToDocset, TemplateEngine templateEngine, BuildScope buildScope)
-        {
-            Debug.Assert(docset != null);
-            Debug.Assert(!string.IsNullOrEmpty(pathToDocset));
-            Debug.Assert(!Path.IsPathRooted(pathToDocset));
-
-            pathToDocset = PathUtility.NormalizeFile(pathToDocset);
-
-            if (buildScope != null && buildScope.TryResolveDocset(docset, pathToDocset, out var resolved))
-            {
-                return Create(resolved.resolvedDocset, pathToDocset, templateEngine, resolved.fileOrigin);
-            }
-
-            if (File.Exists(Path.Combine(docset.DocsetPath, pathToDocset)))
-            {
-                return Create(docset, pathToDocset, templateEngine, FileOrigin.Current);
-            }
-
-            // resolve from dependent docsets
-            foreach (var (dependencyName, dependentDocset) in docset.DependencyDocsets)
-            {
-                Debug.Assert(dependencyName.EndsWith('/'));
-
-                if (!pathToDocset.StartsWith(dependencyName, PathUtility.PathComparison))
-                {
-                    // the file stored in the dependent docset should start with dependency name
-                    continue;
-                }
-
-                var dependencyFile = CreateFromFile(dependentDocset, pathToDocset.Substring(dependencyName.Length), templateEngine, buildScope: null);
-                if (dependencyFile != null)
-                {
-                    return dependencyFile;
-                }
-            }
-
-            return default;
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
         }
 
         internal static ContentType GetContentType(string path)

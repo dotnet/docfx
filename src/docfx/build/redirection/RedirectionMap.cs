@@ -99,14 +99,14 @@ namespace Microsoft.Docs.Build
                             case LinkType.AbsolutePath:
                                 break;
                             default:
-                                errorLog.Write(Errors.RedirectionUrlInvalid(redirectUrl));
+                                errorLog.Write(Errors.RedirectionUrlNotExisted(redirectUrl));
                                 continue;
                         }
                     }
 
+                    var filePath = new FilePath(pathToDocset, FileOrigin.Redirection);
                     var redirect = Document.Create(
-                        docset, pathToDocset, templateEngine, redirectionUrl: mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
-
+                        docset, filePath, templateEngine, mutableRedirectUrl, isFromHistory: false, combineRedirectUrl);
                     if (redirectDocumentId)
                     {
                         redirectionsWithDocumentId.Add((redirectUrl, redirect));

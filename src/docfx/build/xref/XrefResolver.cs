@@ -9,20 +9,20 @@ using System.Web;
 
 namespace Microsoft.Docs.Build
 {
-    internal class XrefMap
+    internal class XrefResolver
     {
         private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
         private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
 
-        public XrefMap(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
+        public XrefResolver(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
         {
             _internalXrefMap = InternalXrefMapBuilder.Build(context);
             _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
             _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public (Error error, string href, string display, Document declaringFile) ResolveToLink(SourceInfo<string> href, Document referencingFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referencingFile)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -65,7 +65,20 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error, ExternalXrefSpec) ResolveToXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveRelativeXref(
+            Document relativeToFile, SourceInfo<string> href, Document referencingFile)
+        {
+            var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referencingFile);
+
+            if (declaringFile != null)
+            {
+                link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
+            }
+
+            return (error, link, display, declaringFile);
+        }
+
+        public (Error, ExternalXrefSpec) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
             return (error, xrefSpec?.ToExternalXrefSpec());
@@ -73,22 +86,48 @@ namespace Microsoft.Docs.Build
 
         public XrefMapModel ToXrefMapModel()
         {
+            string repositoryBranch = null;
+            string siteBasePath = null;
             var references = _internalXrefMap.Values
                 .Select(xref =>
                 {
                     var xrefSpec = xref.ToExternalXrefSpec();
+                    if (repositoryBranch is null)
+                    {
+                        repositoryBranch = xref.DeclaringFile.Docset.Repository?.Branch;
+                    }
+                    if (siteBasePath is null)
+                    {
+                        siteBasePath = xref.DeclaringFile.Docset.SiteBasePath;
+                    }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
                     var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
-                    var query = xref.DeclaringFile.Docset.Repository?.Branch == "master" ? "?branch=master" : "";
+                    var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = path + query + fragment;
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();
 
-            return new XrefMapModel { References = references };
+            var model = new XrefMapModel { References = references };
+            if (siteBasePath != null)
+            {
+                var properties = new XrefProperties();
+                properties.Tags.Add($"/{siteBasePath}");
+                if (repositoryBranch == "master")
+                {
+                    properties.Tags.Add("internal");
+                }
+                else if (repositoryBranch == "live")
+                {
+                    properties.Tags.Add("public");
+                }
+                model.Properties = properties;
+            }
+
+            return model;
         }
 
         private (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referencingFile)

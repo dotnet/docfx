@@ -321,7 +321,7 @@ namespace Microsoft.Docs.Build
             // process uid first
             if (!string.IsNullOrEmpty(uid))
             {
-                var (uidError, uidLink, display, declaringFile) = context.DependencyResolver.ResolveRelativeXref(rootPath, uid, filePath);
+                var (uidError, uidLink, display, declaringFile) = context.XrefResolver.ResolveRelativeXref(rootPath, uid, filePath);
                 errors.AddIfNotNull(uidError);
 
                 if (declaringFile != null)

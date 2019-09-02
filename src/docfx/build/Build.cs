@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
                 var gitMap = fallbackRestoreGitMap ?? restoreGitMap;
                 var (docset, fallbackDocset) = GetDocsetWithFallback(
-                    docsetPath, options, errorLog, repository, locale, fallbackRepo, config, gitMap);
+                    docsetPath, repository, locale, fallbackRepo, config, gitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
                 await Run(docset, fallbackDocset, gitMap, options, errorLog, outputPath);
@@ -40,20 +40,18 @@ namespace Microsoft.Docs.Build
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
             string docsetPath,
-            CommandLineOptions options,
-            ErrorLog errorLog,
             Repository repository,
             string locale,
             Repository fallbackRepo,
             Config config,
             RestoreGitMap gitMap)
         {
-            var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
+            var currentDocset = new Docset(docsetPath, locale, config, repository);
             if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
             {
                 if (fallbackRepo != null)
                 {
-                    return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
+                    return (currentDocset, new Docset(fallbackRepo.Path, locale, config, fallbackRepo));
                 }
 
                 if (LocalizationUtility.TryGetLocalizedDocsetPath(
@@ -65,8 +63,7 @@ namespace Microsoft.Docs.Build
                     out var localizationBranch))
                 {
                     var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                    return (new Docset(
-                        errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
+                    return (new Docset(localizationDocsetPath, currentDocset.Locale, config, repo), currentDocset);
                 }
             }
 
@@ -94,7 +91,7 @@ namespace Microsoft.Docs.Build
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var xrefMapModel = context.XrefMap.ToXrefMapModel();
+                var xrefMapModel = context.XrefResolver.ToXrefMapModel();
 
                 context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
