@@ -294,7 +294,7 @@ namespace Microsoft.Docs.Build
                 if (lookupFallbackCommits)
                 {
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
-                    if (repo != null && commits.Length > 1)
+                    if (repo != null && commits.Count > 1)
                     {
                         path = new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback);
                         return Document.Create(_fallbackDocset, path, _input, _templateEngine);
