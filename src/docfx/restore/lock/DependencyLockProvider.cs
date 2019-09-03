@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
             var dependencyLock = JsonUtility.Deserialize<DependencyLock>(content, new FilePath(dependencyLockPath));
 
-            return dependencyLock.Git.ToDictionary(k => new PackageUrl(k.Url, k.Branch), v => v);
+            return dependencyLock.Git.ToDictionary(k => new PackageUrl(k.Key), v => v.Value);
         }
 
         public static void SaveGitLock(string docset, string dependencyLockPath, List<DependencyGitLock> dependencyGitLock)
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docset));
             Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));
 
-            var dependencyLock = new DependencyLock { Git = dependencyGitLock.ToArray() };
+            var dependencyLock = new DependencyLock { Git = dependencyGitLock.ToDictionary(k => $"{new PackageUrl(k.Url, k.Branch)}", v => v) };
             var content = JsonUtility.Serialize(dependencyLock, indent: true);
 
             if (!UrlUtility.IsHttp(dependencyLockPath))
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
 
         private class DependencyLock
         {
-            public DependencyGitLock[] Git { get; set; } = Array.Empty<DependencyGitLock>();
+            public Dictionary<string, DependencyGitLock> Git { get; set; } = new Dictionary<string, DependencyGitLock>();
         }
     }
 }

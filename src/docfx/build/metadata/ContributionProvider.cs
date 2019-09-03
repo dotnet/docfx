@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                 : null;
 
             var isGitHubRepo = UrlUtility.TryParseGitHubUrl(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.Repository.Remote, out gitHubOwner, out gitHubRepoName);
+                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName);
 
             if (!document.Docset.Config.GitHub.ResolveUsers)
             {
@@ -190,12 +190,12 @@ namespace Microsoft.Docs.Build
                     editBranch = repoContributionBranch;
                 }
 
-                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository.Remote))
+                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
                 {
-                    var (contributionRemote, contributionBranch) = (document.Docset.Config.Contribution.Repository.Remote, document.Docset.Config.Contribution.Repository.Branch);
-                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
+                    var contributionPackageUrl = new PackageUrl(document.Docset.Config.Contribution.Repository);
+                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Remote, pathToRepo);
 
-                    (editRemote, editBranch) = (contributionRemote, document.Docset.Config.Contribution.Repository.HasRefSpec ? contributionBranch : editBranch);
+                    (editRemote, editBranch) = (contributionPackageUrl.Remote, contributionPackageUrl.HasRefSpec ? contributionPackageUrl.Branch : editBranch);
                     if (_fallbackDocset != null)
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
