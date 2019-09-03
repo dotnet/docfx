@@ -46,19 +46,19 @@ namespace Microsoft.Docs.Build
             TemplateEngine templateEngine,
             IReadOnlyCollection<Document> buildFiles)
         {
-            var redirections = new HashSet<(string normalizedRedirectUrl, Document redirection)>();
+            var redirections = new HashSet<Document>();
             var redirectionsWithDocumentId = new List<(SourceInfo<string> originalRedirectUrl, string normalizedRedirectiUrl)>();
 
             // load redirections with document id
             AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
             var redirectionsByRedirectionUrl = redirections
-                .GroupBy(item => item.normalizedRedirectUrl, PathUtility.PathComparer)
-                .ToDictionary(group => group.Key, group => group.First().redirection, PathUtility.PathComparer);
+                .GroupBy(item => NormalizeRedirectUrl(item.RedirectionUrl), PathUtility.PathComparer)
+                .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
 
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
 
-            var redirectionsBySourcePath = redirections.ToDictionary(file => file.redirection.FilePath.Path, file => file.redirection, PathUtility.PathComparer);
+            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, file => file, PathUtility.PathComparer);
 
             CheckInvalidRedrectUrl(errorLog, redirectionsWithDocumentId, redirections, buildFiles);
             return new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl);
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                             case LinkType.AbsolutePath:
                                 break;
                             default:
-                                errorLog.Write(Errors.RedirectionUrlNotExisted(redirectUrl, null));
+                                errorLog.Write(Errors.RedirectionUrlNotExisted(redirectUrl));
                                 continue;
                         }
                     }
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                         redirectionsWithDocumentId.Add((redirectUrl, NormalizeRedirectUrl(redirect.RedirectionUrl)));
                     }
 
-                    if (!redirections.Add((NormalizeRedirectUrl(redirect.RedirectionUrl), redirect)))
+                    if (!redirections.Add(redirect))
                     {
                         errorLog.Write(Errors.RedirectionConflict(redirectUrl, pathToDocset));
                     }
@@ -129,27 +129,18 @@ namespace Microsoft.Docs.Build
         private static void CheckInvalidRedrectUrl(
             ErrorLog errorLog,
             List<(SourceInfo<string> originalRedirectUrl, string normalizedRedirectUrl)> redirectionsWithDocumentId,
-            HashSet<(string normalizedRedirectUrl, Document redirection)> redirections,
+            HashSet<Document> redirections,
             IReadOnlyCollection<Document> buildFiles)
         {
             var redirectUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             var publishUrls = buildFiles.Select(file => file.SiteUrl)
-                .Concat(redirections.Select(item => item.redirection.SiteUrl)).ToHashSet();
+                .Concat(redirections.Select(item => item.SiteUrl)).ToHashSet();
             foreach (var (originalRedirectUrl, normalizedRedirectUrl) in redirectionsWithDocumentId)
             {
                 if (!publishUrls.Contains(normalizedRedirectUrl))
                 {
-                    string candidateRedirectionUrl = null;
-                    if (normalizedRedirectUrl.EndsWith("/") && publishUrls.Contains(normalizedRedirectUrl.Substring(0, normalizedRedirectUrl.Length - 1)))
-                    {
-                        candidateRedirectionUrl = normalizedRedirectUrl.Substring(0, normalizedRedirectUrl.Length - 1);
-                    }
-                    else if (!normalizedRedirectUrl.EndsWith("/") && publishUrls.Contains(normalizedRedirectUrl + "/"))
-                    {
-                        candidateRedirectionUrl = normalizedRedirectUrl + "/";
-                    }
-                    errorLog.Write(Errors.RedirectionUrlNotExisted(originalRedirectUrl, candidateRedirectionUrl));
+                    errorLog.Write(Errors.RedirectionUrlNotExisted(originalRedirectUrl));
                 }
                 else if (!redirectUrls.Add(normalizedRedirectUrl))
                 {

@@ -238,26 +238,16 @@ inputs:
       docs/c.md: "/docs/x#bookmark"
       docs/b.md: "http://hostname/test"
       docs/d.md: "/docs/folder0"
-      docs/e.md: "/docs/folder1"
       docs/f.md: "/docs/folder0/"
-      docs/g.md: "/docs/folder2/"
       docs/h.md: "/docs/folder0/index"
-      docs/i.md: "/docs/folder2/index"
-  docs/folder1/index.md:
-  docs/folder2.md:
 outputs:
-  docs/folder1/index.json:
-  docs/folder2.json:
   .errors.log: |
     ["suggestion","redirection-url-not-existed","The redirect url 'http://hostname/test' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",4,14]
     ["suggestion","redirection-url-not-existed","The redirect url '/docs/x' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",2,14]
     ["suggestion","redirection-url-not-existed","The redirect url '/docs/x#bookmark' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",3,14]
     ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",5,14]
-    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder1' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url(did you mean '/docs/folder1/'?) or add this rule to `redirectionsWithoutId`","docfx.yml",6,14]
-    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0/' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",7,14]
-    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder2/' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url(did you mean '/docs/folder2'?) or add this rule to `redirectionsWithoutId`","docfx.yml",8,14]
-    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0/index' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",9,14]
-    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder2/index' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url(did you mean '/docs/folder2'?) or add this rule to `redirectionsWithoutId`","docfx.yml",10,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0/' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",6,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0/index' does not match any file's publish URL, but the redirect_with_id flag has been set as true,please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",7,14]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})
