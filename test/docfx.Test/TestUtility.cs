@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using LibGit2Sharp;
 using Microsoft.DocAsTest;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -51,7 +53,44 @@ namespace Microsoft.Docs.Build
             {
                 var filePath = Path.GetFullPath(Path.Combine(path, file.Key));
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+                if (file.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                {
+                    CreateZipFile(file, filePath);
+                }
+                else
+                {
+                    File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+                }
+            }
+        }
+
+        private static void CreateZipFile(KeyValuePair<string, string> file, string filePath)
+        {
+            var token = YamlUtility.ToJToken(file.Value);
+            if (token is JObject obj)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    {
+                        foreach (JProperty child in obj.Children())
+                        {
+                            var entry = archive.CreateEntry(child.Name);
+
+                            using (var entryStream = entry.Open())
+                            using (var sw = new StreamWriter(entryStream))
+                            {
+                                sw.Write(child.Value);
+                            }
+                        }
+                    }
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        memoryStream.CopyTo(fileStream);
+                    }
+                }
             }
         }
 
