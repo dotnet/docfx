@@ -2,15 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Microsoft.DocAsTest</PackageId>
     <AssemblyName>Microsoft.DocAsTest.TestAdapter</AssemblyName>
     <DevelopmentDependency>true</DevelopmentDependency>
-    <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DiffPlex" Version="1.4.4" />
     <PackageReference Include="Glob" Version="1.1.3" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.4.9" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.12" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="YamlDotNet" Version="6.1.2" />
@@ -18,6 +19,10 @@
 
   <ItemGroup>
     <Compile Include="../docfx/lib/json/YamlUtility.Shared.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="build\netstandard2.0\Microsoft.DocAsTest.props" PackagePath="build\netstandard2.0\Microsoft.DocAsTest.props" Pack="true" />
   </ItemGroup>
 
 </Project>

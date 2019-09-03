@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// The git commit information
     /// </summary>
-    internal class GitCommit : IComparable<GitCommit>
+    internal class GitCommit
     {
         /// <summary>
         /// Gets or sets the git commmit author name
@@ -29,7 +29,5 @@ namespace Microsoft.Docs.Build
         /// Gets or sets the git commit time
         /// </summary>
         public DateTimeOffset Time { get; set; }
-
-        public int CompareTo(GitCommit other) => other.Time.CompareTo(Time);
     }
 }

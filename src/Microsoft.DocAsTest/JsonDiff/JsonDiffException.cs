@@ -7,9 +7,15 @@ namespace Microsoft.DocAsTest
 {
     public class JsonDiffException : Exception
     {
+        public string Summary { get; }
+
         public string Diff { get; }
 
-        public JsonDiffException(string diff)
-            : base($"\n\n{diff}") => Diff = diff;
+        public JsonDiffException(string summary, string diff)
+            : base($"{summary}\n\n{diff}")
+        {
+            Summary = summary;
+            Diff = diff;
+        }
     }
 }
