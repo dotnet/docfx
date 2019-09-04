@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
 
             if (file.StartsWith(matcher, PathComparison))
             {
-                return (true, false, Path.GetRelativePath(matcher, file).Replace('\\', '/'));
+                return (true, false, file.Substring(matcher.Length).Replace('\\', '/'));
             }
 
             return default;
