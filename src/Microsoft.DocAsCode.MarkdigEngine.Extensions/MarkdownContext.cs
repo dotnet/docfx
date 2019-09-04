@@ -30,11 +30,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public ReadFileDelegate ReadFile { get; }
 
         /// <summary>
-        /// Log diagnostic
-        /// </summary>
-        public LogActionDelegate LogDiagnostic { get; }
-
-        /// <summary>
         /// Log info
         /// </summary>
         public LogActionDelegate LogInfo{ get; }
@@ -63,7 +58,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public MarkdownContext(
             Func<string, string> getToken = null,
-            LogActionDelegate logDiagnostic = null,
             LogActionDelegate logInfo = null,
             LogActionDelegate logSuggestion = null,
             LogActionDelegate logWarning = null,
@@ -72,7 +66,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             _getToken = getToken ?? (_ => null);
             ReadFile = readFile ?? ReadFileDefault;
-            LogDiagnostic = logDiagnostic ?? ((a, b, c, d) => { });
             LogInfo = logInfo ?? ((a, b, c, d) => { });
             LogSuggestion = logSuggestion ?? ((a, b, c, d) => { });
             LogWarning = logWarning ?? ((a, b, c, d) => { });
