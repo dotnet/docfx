@@ -249,7 +249,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static unsafe string GetContentFromHistory(string repoPath, string filePath, string committish)
+        public static unsafe byte[] GetContentFromHistory(string repoPath, string filePath, string committish)
         {
             if (git_repository_open(out var repo, repoPath) != 0)
             {
@@ -282,16 +282,14 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            string content;
-            using (var stream = new UnmanagedMemoryStream((byte*)git_blob_rawcontent(blob).ToPointer(), git_blob_rawsize(blob)))
-            using (var reader = new StreamReader(stream, Encoding.UTF8, true))
-            {
-                content = reader.ReadToEnd();
-            }
+            var blobSize = git_blob_rawsize(blob);
+            var bytes = new Span<byte>(git_blob_rawcontent(blob).ToPointer(), blobSize);
+            var result = new byte[blobSize];
+            bytes.CopyTo(result);
 
             git_tree_entry_free(entry);
             git_repository_free(repo);
-            return content;
+            return result;
         }
 
         /// <summary>

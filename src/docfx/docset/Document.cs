@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
         private readonly Lazy<Repository> _repository;
-        private readonly Lazy<string> _content;
+        private readonly byte[] _bytes;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             bool isExperimental,
             string redirectionUrl = null,
             bool isPage = true,
-            Lazy<string> content = null)
+            byte[] bytes = null)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
             Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
             _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
-            _content = content;
+            _bytes = bytes;
 
             Debug.Assert(IsValidRelativePath(FilePath.Path));
             Debug.Assert(IsValidRelativePath(SitePath));
@@ -149,13 +149,9 @@ namespace Microsoft.Docs.Build
         public Stream ReadStream()
         {
             Debug.Assert(ContentType != ContentType.Redirection);
-            if (_content != null)
+            if (_bytes != null)
             {
-                if (_content.Value == null)
-                {
-                    Log.Write($"{FilePath} from {FilePath.DependencyName ?? FilePath.Origin.ToString()} doesn't exist while reading stream");
-                }
-                return new MemoryStream(Encoding.UTF8.GetBytes(_content.Value));
+                return new MemoryStream(_bytes);
             }
 
             return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path));
@@ -245,7 +241,7 @@ namespace Microsoft.Docs.Build
             TemplateEngine templateEngine,
             string redirectionUrl = null,
             bool combineRedirectUrl = false,
-            Lazy<string> content = null)
+            byte[] bytes = null)
         {
             Debug.Assert(docset != null);
 
@@ -274,7 +270,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage, content);
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage, bytes);
         }
 
         internal static ContentType GetContentType(string path)

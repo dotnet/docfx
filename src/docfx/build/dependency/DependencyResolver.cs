@@ -317,26 +317,18 @@ namespace Microsoft.Docs.Build
 
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(docset, filePath.Path, docset.Repository.Commit);
 
-            commits = deleted && commits.Count() > 1 ? commits.Skip(1).ToList() : (!deleted && commits.Count() > 0 ? commits : default);
-            if (repo != null && commits != null && commits.Count() > 0)
+            var commit = deleted && commits.Count > 1 ? commits[1] : (!deleted && commits.Count > 0 ? commits[0] : default);
+            if (repo != null && commit != null)
             {
                 var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                return Document.Create(docset, filePath, _templateEngine, content:
-                    new Lazy<string>(() =>
-                    {
-                        Log.Write($"Read document content from CRR git{(deleted ? " which was deleted" : "")}, {filePath}");
+                var bytes = GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
 
-                        string content = null;
-                        foreach (var commit in commits)
-                        {
-                            content = GitUtility.GetContentFromHistory(repoPath, pathToRepo, commit.Sha);
-                            if (content != null)
-                                break;
-                        }
+                if (bytes == null)
+                {
+                    return default;
+                }
 
-                        Debug.Assert(content != null);
-                        return content;
-                    }));
+                return Document.Create(docset, filePath, _templateEngine, bytes: bytes);
             }
 
             return default;
