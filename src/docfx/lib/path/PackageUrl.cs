@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -29,7 +30,7 @@ namespace Microsoft.Docs.Build
             if (UrlUtility.IsHttp(url))
             {
                 Type = PackageType.Git;
-                (Remote, Branch, _) = UrlUtility.SplitGitUrl(url);
+                (Remote, Branch) = SplitGitUrl(url);
             }
             else
             {
@@ -40,6 +41,9 @@ namespace Microsoft.Docs.Build
 
         public PackageUrl(string remote, string branch)
         {
+            Debug.Assert(remote != null);
+            Debug.Assert(branch != null);
+
             Type = PackageType.Git;
             Remote = remote;
             Branch = branch;
@@ -59,6 +63,19 @@ namespace Microsoft.Docs.Build
                 default:
                     return Type.ToString();
             }
+        }
+
+        private static (string remote, string refspec) SplitGitUrl(string remoteUrl)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(remoteUrl));
+
+            var (path, _, fragment) = UrlUtility.SplitUrl(remoteUrl);
+
+            path = path.TrimEnd('/', '\\');
+            var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
+            var refspec = hasRefSpec ? fragment.Substring(1) : "master";
+
+            return (path, refspec);
         }
     }
 }
