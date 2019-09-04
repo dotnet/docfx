@@ -189,10 +189,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
-            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
-                ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            return RestoreGitMap.Create(docsetPath, dependencyLockPath);
+            return RestoreGitMap.Create(docsetPath, config, locale);
         }
 
         private static Repository GetFallbackRepository(
