@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Try get the absolute path of the specified file if it exit physically on disk.
+        /// Try get the absolute path of the specified file if it exists physically on disk.
         /// Some file path like content from a bare git repo does not exist physically
         /// on disk but we can still read its content.
         /// </summary>
