@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionProvider
     {
+        private readonly Input _input;
         private readonly Docset _fallbackDocset;
         private readonly GitHubUserCache _gitHubUserCache;
 
@@ -21,10 +22,9 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
 
         public ContributionProvider(
-            Docset docset, Docset fallbackDocset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
+            Input input, Docset docset, Docset fallbackDocset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
-            Debug.Assert(gitCommitProvider != null);
-
+            _input = input;
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
@@ -156,7 +156,10 @@ namespace Microsoft.Docs.Build
                     ? timeFromHistory
                     : fileCommits[0].Time.UtcDateTime;
             }
-            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath.Path));
+
+            return _input.TryGetPhysicalPath(document.FilePath, out var physicalPath)
+                ? File.GetLastWriteTimeUtc(physicalPath)
+                : default;
         }
 
         public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)

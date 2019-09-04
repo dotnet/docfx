@@ -274,7 +274,7 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md [redirection]', 'docs/v2/a-old.md [redirection]'"]
 ---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
 inputs:
