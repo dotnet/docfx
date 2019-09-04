@@ -44,6 +44,7 @@ namespace Microsoft.Docs.Build
                 return File.Exists(Path.Combine(basePath, path));
             }
 
+            // TODO: Implement exists check from git repository
             throw new NotSupportedException($"{nameof(Exists)}: {file}");
         }
 
@@ -105,9 +106,9 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Reads all the file path.
+        /// List all the file path.
         /// </summary>
-        public FilePath[] ReadFilesRecursive(FileOrigin origin, string dependencyName = null)
+        public FilePath[] ListFilesRecursive(FileOrigin origin, string dependencyName = null)
         {
             switch (origin)
             {
@@ -134,7 +135,7 @@ namespace Microsoft.Docs.Build
                         .ToArray();
 
                 default:
-                    throw new NotSupportedException($"{nameof(ReadFilesRecursive)}: {origin}");
+                    throw new NotSupportedException($"{nameof(ListFilesRecursive)}: {origin}");
             }
         }
 

@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             {
                 var docsetPath = docset.DocsetPath;
                 var files = new ListBuilder<Document>();
-                var fileNames = _input.ReadFilesRecursive(origin);
+                var fileNames = _input.ListFilesRecursive(origin);
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
