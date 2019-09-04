@@ -22,16 +22,18 @@ namespace Microsoft.Docs.Build
 
                 var localeToRestore = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
 
-                var (errors, config) = ConfigLoader.TryLoad(docsetPath, options, localeToRestore, extend: false);
+                var configPath = docsetPath;
+                var (errors, config) = ConfigLoader.TryLoad(configPath, options, localeToRestore, extend: false);
 
                 var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-
                 if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
                 {
                     // build from loc directly with overwrite config
                     // use the fallback config
+                    Log.Write("Use config from fallback repository");
                     List<Error> fallbackConfigErrors;
-                    (fallbackConfigErrors, config) = ConfigLoader.Load(restoreFallbackResult.Path, options, localeToRestore, extend: false);
+                    configPath = restoreFallbackResult.Path;
+                    (fallbackConfigErrors, config) = ConfigLoader.Load(configPath, options, localeToRestore, extend: false);
                     errors.AddRange(fallbackConfigErrors);
                 }
 
@@ -46,7 +48,7 @@ namespace Microsoft.Docs.Build
                     restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
                 // extend the config after the extend url being restored
-                var (extendConfigErrors, extendedConfig) = ConfigLoader.TryLoad(restoreFallbackResult?.Path ?? docsetPath, options, localeToRestore, extend: true);
+                var (extendConfigErrors, extendedConfig) = ConfigLoader.Load(configPath, options, localeToRestore, extend: true);
                 errorLog.Write(extendConfigErrors);
 
                 // restore urls except extend url
