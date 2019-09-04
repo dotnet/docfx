@@ -25,15 +25,13 @@ namespace Microsoft.Docs.Build
 
         public readonly string Branch;
 
-        public readonly bool HasRefSpec;
-
         public PackageUrl(string url)
             : this()
         {
             if (UrlUtility.IsHttp(url))
             {
                 Type = PackageType.Git;
-                (Remote, Branch, HasRefSpec) = SplitGitUrl(url);
+                (Remote, Branch) = SplitGitUrl(url);
             }
             else
             {
@@ -50,7 +48,6 @@ namespace Microsoft.Docs.Build
             Type = PackageType.Git;
             Remote = remote;
             Branch = branch;
-            HasRefSpec = true;
             Path = null;
         }
 
@@ -136,7 +133,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string remote, string refspec, bool hasRefSpec) SplitGitUrl(string remoteUrl)
+        private static (string remote, string refspec) SplitGitUrl(string remoteUrl)
         {
             Debug.Assert(!string.IsNullOrEmpty(remoteUrl));
 
@@ -146,7 +143,7 @@ namespace Microsoft.Docs.Build
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
             var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
-            return (path, refspec, hasRefSpec);
+            return (path, refspec);
         }
     }
 }

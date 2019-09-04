@@ -195,7 +195,8 @@ namespace Microsoft.Docs.Build
                     var contributionPackageUrl = new PackageUrl(document.Docset.Config.Contribution.Repository);
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Remote, pathToRepo);
 
-                    (editRemote, editBranch) = (contributionPackageUrl.Remote, contributionPackageUrl.HasRefSpec ? contributionPackageUrl.Branch : editBranch);
+                    var hasBranch = (UrlUtility.SplitUrl(document.Docset.Config.Contribution.Repository).fragment ?? "").Length > 1;
+                    (editRemote, editBranch) = (contributionPackageUrl.Remote, hasBranch ? contributionPackageUrl.Branch : editBranch);
                     if (_fallbackDocset != null)
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
