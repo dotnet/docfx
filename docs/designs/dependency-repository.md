@@ -20,13 +20,13 @@ Or
 ```yml
 dependencies:
   _csharplang: 
-    remote: https://github.com/dotnet/csharplang
+    remoteUrl: https://github.com/dotnet/csharplang
     branch: master
 ```
 
 Above two configurations are identical:
   - The key `_csharplang` is the `dependency alias`, we will talk about it later detailed.
-  - The **value** represents the dependency repository information, including `remote`, `branch` and others.
+  - The **value** represents the dependency repository information, including `remote url`, `branch` and others.
 
 ## How to use
 
@@ -36,7 +36,7 @@ Run `docfx restore` to restore the dependency repositories to local before using
 
 ### To include token/codesnippet file in dependency repositories
 
-Token and code-snippet files will be built inside of the page who includes them, you need specific the `dependency alias` at the beginning of the file path like below:
+Token and code-snippet files will be built inside the page which includes them, you need Specify the `dependency alias` at the beginning of the file path like below:
 
 Example: 
 
@@ -57,26 +57,28 @@ The files which to be built to page can also be from dependency repository, whic
     ```yml
     dependencies:
         _csharplang: 
-            remote: https://github.com/dotnet/csharplang
+            remoteUrl: https://github.com/dotnet/csharplang
             branch: master
             inScope: true
     ```
 
-- Specific the `dependency alias` which you want to include in the `build scope`
+- Specify the `dependency alias` which you want to include in the `build scope`
 
     ```yml
     file:
         _csharplang/**/*.md
     excludes:
         _csharplang/**/include/**/*
-    dependencies:
-        _csharplang: 
-            remote: https://github.com/dotnet/csharplang
-            branch: master
-            inScope: true
     ```
 
-- Specific the `dependency alias` in the `routes` to route the built/published pages
+- Specify the `dependency alias` in the `routes` to route the built/published pages
+
+    ```yml
+    routes:
+        _csharplang/: docs/csharplang/
+    ```
+
+- Finally we get:
 
     ```yml
     file:
@@ -87,7 +89,7 @@ The files which to be built to page can also be from dependency repository, whic
         _csharplang/: docs/csharplang/
     dependencies:
         _csharplang: 
-            remote: https://github.com/dotnet/csharplang
+            remoteUrl: https://github.com/dotnet/csharplang
             branch: master
             inScope: true
     ```
