@@ -7,7 +7,7 @@ Docfx support to build repo content which has `dependencies` to another reposito
 
 ## How to config
 
-Define your dependent repositories in `docfx.yml` `dependencies` configuration with alias:
+Define the dependent repositories in `docfx.yml` `dependencies` configuration with alias:
 
 Example:
 
@@ -32,7 +32,7 @@ Above two configurations are identical:
 
 ### Restore before Build
 
-Run `docfx restore` to restore your dependency repositories to local before using them, you can find the details from [restore-file-and-git](./restore-file-and-git.md#restore-dependency-repositories)
+Run `docfx restore` to restore the dependency repositories to local before using them, you can find the details from [restore-file-and-git](./restore-file-and-git.md#restore-dependency-repositories)
 
 ### To include token/codesnippet file in dependency repositories
 
@@ -48,11 +48,11 @@ In above example, the `_csharplang` is the `dependency alias`, which means that 
 
 ### To build files in dependency repositories
 
-The files which to be built to page can also be from dependency repository, which means that you can build/publish **the mixed the content in your repository and other repositories together**.
+The files which to be built to page can also be from dependency repository, which means that you can build/publish **the mixed the content in the repository and other repositories together**.
 
-> Note: The dependency repository may be also referenced by others, which means that when you build/publish some files from dependency repository, these published pages may be duplicated with other sites.
+> Note: The dependency repository may be also referenced by others, which means that when building/publishing some files from dependency repository, these published pages may be duplicated with other sites.
 
-- Turn on the `InScope` flags in your `Dependency` config
+- Turn on the `InScope` flags in the `Dependency` config
 
     ```yml
     dependencies:
@@ -62,7 +62,7 @@ The files which to be built to page can also be from dependency repository, whic
             inScope: true
     ```
 
-- Specific the `dependency alias` which you want to include in your `build scope`
+- Specific the `dependency alias` which you want to include in the `build scope`
 
     ```yml
     file:
@@ -76,7 +76,7 @@ The files which to be built to page can also be from dependency repository, whic
             inScope: true
     ```
 
-- Specific the `dependency alias` in your `routes` to route your pages
+- Specific the `dependency alias` in the `routes` to route the built/published pages
 
     ```yml
     file:
