@@ -28,11 +28,24 @@ namespace Microsoft.Docs.Build
         public string GetGitRestorePath(PackageUrl packageUrl)
         {
             var path = TryGetGitRestorePath(packageUrl);
-            if (path is null)
+            if (path != null)
             {
-                throw Errors.NeedRestore(packageUrl.ToString()).ToException();
+                return path;
             }
-            return path;
+
+            switch (packageUrl.Type)
+            {
+                case PackageType.Folder:
+                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
+                    // TODO: populate source info
+                    throw Errors.FileNotFound(new SourceInfo<string>(packageUrl.Path)).ToException();
+
+                case PackageType.Git:
+                    throw Errors.NeedRestore(packageUrl.ToString()).ToException();
+
+                default:
+                    throw new NotSupportedException($"Unknown package url: '{packageUrl}'");
+            }
         }
 
         public string TryGetGitRestorePath(PackageUrl packageUrl)
