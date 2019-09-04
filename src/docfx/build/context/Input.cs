@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                 return File.OpenText(Path.Combine(basePath, path));
             }
 
-            var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(_fallbackPath, aFile.Path, aFile.Commit))
+            var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(basePath, aFile.Path, aFile.Commit))
                 ?? throw new InvalidOperationException($"Error reading '{file}'");
 
             return new StreamReader(new MemoryStream(bytes, writable: false));
@@ -143,22 +143,19 @@ namespace Microsoft.Docs.Build
         {
             switch (file.Origin)
             {
-                case FileOrigin.Default when file.Commit is null:
-                    return (_docsetPath, file.Path, null);
+                case FileOrigin.Default:
+                    return (_docsetPath, file.Path, file.Commit);
 
-                case FileOrigin.Dependency when file.Commit is null:
+                case FileOrigin.Dependency:
                     var (dependencyPath, _) = _restoreMap.GetGitRestorePath(_config.Dependencies[file.DependencyName], _docsetPath);
-                    return (dependencyPath, file.Path, null);
+                    return (dependencyPath, file.Path, file.Commit);
 
-                case FileOrigin.Fallback when file.Commit is null && _fallbackPath != null:
-                    return (_fallbackPath, file.Path, null);
-
-                case FileOrigin.Fallback when _fallbackPath != null:
+                case FileOrigin.Fallback:
                     return (_fallbackPath, file.Path, file.Commit);
 
-                case FileOrigin.Template when file.Commit is null:
+                case FileOrigin.Template:
                     var (templatePath, _) = _restoreMap.GetGitRestorePath(_config.Template, _docsetPath);
-                    return (templatePath, file.Path, null);
+                    return (templatePath, file.Path, file.Commit);
 
                 default:
                     return default;
