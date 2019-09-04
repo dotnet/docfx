@@ -11,67 +11,64 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreGitMap : IDisposable
     {
+        private readonly string _docsetPath;
+        private readonly IReadOnlyDictionary<PackageUrl, DependencyGitLock> _dependencyGitLock;
         private readonly IReadOnlyDictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)> _acquiredGits;
 
-        public Dictionary<PackageUrl, DependencyGitLock> DependencyGitLock { get; private set; }
-
-        public RestoreGitMap(IReadOnlyDictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)> acquiredGits = null)
+        public RestoreGitMap(
+            string docsetPath,
+            IReadOnlyDictionary<PackageUrl, DependencyGitLock> dependencyGitLock,
+            IReadOnlyDictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)> acquiredGits)
         {
-            _acquiredGits = acquiredGits ?? new Dictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)>();
+            _docsetPath = docsetPath;
+            _dependencyGitLock = dependencyGitLock;
+            _acquiredGits = acquiredGits;
         }
 
-        /// <summary>
-        /// The dependency lock must be loaded before using this method
-        /// </summary>
-        public string GetGitRestorePath(PackageUrl url, string docsetPath)
-        {
-            switch (url.Type)
-            {
-                case PackageType.Folder:
-                    var fullPath = Path.Combine(docsetPath, url.Path);
-                    if (Directory.Exists(fullPath))
-                    {
-                        return fullPath;
-                    }
-
-                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
-                    // TODO: populate source info
-                    throw Errors.FileNotFound(new SourceInfo<string>(url.Path)).ToException();
-
-                case PackageType.Git:
-                    return GetGitRestorePath(url);
-
-                default:
-                    throw new NotSupportedException($"Unknown package url: '{url}'");
-            }
-        }
-
-        /// <summary>
-        /// The dependency lock must be loaded before using this method
-        /// </summary>
         public string GetGitRestorePath(PackageUrl packageUrl)
         {
-            var gitLock = DependencyGitLock.GetGitLock(packageUrl);
-
-            if (gitLock is null)
+            var path = TryGetGitRestorePath(packageUrl);
+            if (path is null)
             {
-                throw Errors.NeedRestore($"{packageUrl}").ToException();
+                throw Errors.NeedRestore(packageUrl.ToString()).ToException();
             }
-
-            if (!_acquiredGits.TryGetValue((packageUrl, gitLock.Commit), out var gitInfo))
-            {
-                throw Errors.NeedRestore($"{packageUrl}").ToException();
-            }
-
-            if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git is null)
-            {
-                throw Errors.NeedRestore($"{packageUrl}").ToException();
-            }
-
-            var path = Path.Combine(AppData.GetGitDir(packageUrl.Remote), gitInfo.path);
-            Debug.Assert(Directory.Exists(path));
-
             return path;
+        }
+
+        public string TryGetGitRestorePath(PackageUrl packageUrl)
+        {
+            switch (packageUrl.Type)
+            {
+                case PackageType.Folder:
+                    var fullPath = Path.Combine(_docsetPath, packageUrl.Path);
+                    return Directory.Exists(fullPath) ? fullPath : default;
+
+                case PackageType.Git:
+                    var gitLock = _dependencyGitLock.GetGitLock(packageUrl);
+
+                    if (gitLock is null)
+                    {
+                        return default;
+                    }
+
+                    if (!_acquiredGits.TryGetValue((packageUrl, gitLock.Commit), out var gitInfo))
+                    {
+                        return default;
+                    }
+
+                    if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git is null)
+                    {
+                        return default;
+                    }
+
+                    var path = Path.Combine(AppData.GetGitDir(packageUrl.Remote), gitInfo.path);
+                    Debug.Assert(Directory.Exists(path));
+
+                    return path;
+
+                default:
+                    return default;
+            }
         }
 
         public void Dispose()
@@ -89,13 +86,14 @@ namespace Microsoft.Docs.Build
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static RestoreGitMap Create(Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
+        public static RestoreGitMap Create(string docsetPath, SourceInfo<string> dependencyLockPath)
         {
             var acquired = new Dictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)>();
 
             try
             {
-                Debug.Assert(dependencyLock != null);
+                var dependencyLock = DependencyLockProvider.LoadGitLock(docsetPath, dependencyLockPath)
+                    ?? new Dictionary<PackageUrl, DependencyGitLock>();
 
                 foreach (var (packageUrl, gitLock) in dependencyLock)
                 {
@@ -106,10 +104,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return new RestoreGitMap(acquired)
-                {
-                    DependencyGitLock = dependencyLock,
-                };
+                return new RestoreGitMap(docsetPath, dependencyLock, acquired);
             }
             catch
             {

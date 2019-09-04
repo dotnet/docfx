@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
-        private static readonly RestoreGitMap s_restoreGitMap = new RestoreGitMap();
+        private static readonly RestoreGitMap s_restoreGitMap = new RestoreGitMap(Directory.GetCurrentDirectory(), null, null);
         private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null);
         private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory(), "en-us", s_config, null);
         private static readonly Input s_input = new Input(Directory.GetCurrentDirectory(), null, s_config, s_restoreGitMap);

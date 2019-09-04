@@ -338,7 +338,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (name, dependency) in config.Dependencies)
             {
-                var dir = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
+                var dir = restoreGitMap.GetGitRestorePath(dependency);
 
                 result.TryAdd(name, new Docset(dir, docset.Locale, config));
             }
