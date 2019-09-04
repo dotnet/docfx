@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
@@ -15,7 +14,7 @@ namespace Microsoft.Docs.Build
     /// The commit-sh can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal readonly struct PackageUrl : IEquatable<PackageUrl>, IComparable<PackageUrl>
+    internal readonly struct PackageUrl
     {
         public readonly PackageType Type;
 
@@ -63,73 +62,6 @@ namespace Microsoft.Docs.Build
 
                 default:
                     return Type.ToString();
-            }
-        }
-
-        public override int GetHashCode()
-        {
-            switch (Type)
-            {
-                case PackageType.Folder:
-                    return Path.GetHashCode();
-
-                case PackageType.Git:
-                    return HashCode.Combine(Remote.GetHashCode(), Branch.GetHashCode());
-
-                default:
-                    return Type.GetHashCode();
-            }
-        }
-
-        public int CompareTo(PackageUrl other)
-        {
-            var result = Type.CompareTo(other.Type);
-            switch (Type)
-            {
-                case PackageType.Folder:
-                    result = string.Compare(Path, other.Path, PathUtility.PathComparison);
-                    break;
-
-                case PackageType.Git:
-                    result = Remote.CompareTo(other.Remote);
-                    if (result == 0)
-                        result = Branch.CompareTo(other.Branch);
-
-                    break;
-
-                default:
-                    throw new NotSupportedException($"{Type} is not supported");
-            }
-
-            return result;
-        }
-
-        public static bool operator ==(PackageUrl a, PackageUrl b) => Equals(a, b);
-
-        public static bool operator !=(PackageUrl a, PackageUrl b) => !Equals(a, b);
-
-        public override bool Equals(object obj)
-        {
-            return obj is PackageUrl && Equals((PackageUrl)obj);
-        }
-
-        public bool Equals(PackageUrl other)
-        {
-            if (other.Type != Type)
-            {
-                return false;
-            }
-
-            switch (Type)
-            {
-                case PackageType.Folder:
-                    return string.Equals(Path, other.Path, PathUtility.PathComparison);
-
-                case PackageType.Git:
-                    return string.Equals(Remote, other.Remote) && string.Equals(Branch, other.Branch);
-
-                default:
-                    throw new NotSupportedException($"{Type} is not supported");
             }
         }
 
