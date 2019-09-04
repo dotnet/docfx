@@ -62,20 +62,17 @@ namespace Microsoft.Docs.Build
             {
                 var docsetPath = docset.DocsetPath;
                 var files = new ListBuilder<Document>();
-                var fileNames = Directory
-                    .GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
-                    .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
-                    .ToHashSet(PathUtility.PathComparer);
+                var fileNames = _input.ReadFilesRecursive(origin);
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file))
+                    if (glob(file.Path))
                     {
-                        files.Add(Document.Create(docset, new FilePath(file, origin), _input, _templateEngine));
+                        files.Add(Document.Create(docset, file, _input, _templateEngine));
                     }
                 });
 
-                return (fileNames, files.ToList());
+                return (fileNames.Select(item => item.Path).ToHashSet(PathUtility.PathComparer), files.ToList());
             }
         }
 

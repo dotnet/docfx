@@ -4,9 +4,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    /// <summary>
+    /// Application level input abstraction
+    /// </summary>
     internal class Input
     {
         private readonly string _docsetPath;
@@ -23,6 +27,9 @@ namespace Microsoft.Docs.Build
             _fallbackPath = fallbackPath is null ? null : Path.GetFullPath(fallbackPath);
         }
 
+        /// <summary>
+        /// Check if the specified file path exist.
+        /// </summary>
         public bool Exists(FilePath file)
         {
             var (basePath, path, commit) = ResolveFilePath(file);
@@ -37,9 +44,14 @@ namespace Microsoft.Docs.Build
                 return File.Exists(Path.Combine(basePath, path));
             }
 
-            throw new NotSupportedException("Checking if a file exists in a git repo");
+            throw new NotSupportedException($"{nameof(Exists)}: {file}");
         }
 
+        /// <summary>
+        /// Try get the absolute path of the specified file if it exit physically on disk.
+        /// Some file path like content from a bare git repo does not exist physically
+        /// on disk but we can still read its content.
+        /// </summary>
         public bool TryGetPhysicalPath(FilePath file, out string physicalPath)
         {
             var (basePath, path, commit) = ResolveFilePath(file);
@@ -58,6 +70,9 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
+        /// <summary>
+        /// Reads the specified file as a string.
+        /// </summary>
         public string ReadString(FilePath file)
         {
             using (var reader = ReadText(file))
@@ -66,13 +81,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        /// <summary>
+        /// Open the specified file and read it as text.
+        /// </summary>
         public TextReader ReadText(FilePath file)
         {
             var (basePath, path, commit) = ResolveFilePath(file);
 
             if (basePath is null)
             {
-                throw new NotSupportedException($"Cannot read file path '{file}'");
+                throw new NotSupportedException($"{nameof(ReadText)}: {file}");
             }
 
             if (commit is null)
@@ -84,6 +102,40 @@ namespace Microsoft.Docs.Build
                 ?? throw new InvalidOperationException($"Error reading '{file}'");
 
             return new StreamReader(new MemoryStream(bytes, writable: false));
+        }
+
+        /// <summary>
+        /// Reads all the file path.
+        /// </summary>
+        public FilePath[] ReadFilesRecursive(FileOrigin origin, string dependencyName = null)
+        {
+            switch (origin)
+            {
+                case FileOrigin.Default:
+                    return Directory
+                        .GetFiles(_docsetPath, "*", SearchOption.AllDirectories)
+                        .Select(path => new FilePath(
+                            Path.GetRelativePath(_docsetPath, path).Replace('\\', '/'), FileOrigin.Default))
+                        .ToArray();
+
+                case FileOrigin.Fallback:
+                    return Directory
+                        .GetFiles(_fallbackPath, "*", SearchOption.AllDirectories)
+                        .Select(path => new FilePath(
+                            Path.GetRelativePath(_fallbackPath, path).Replace('\\', '/'), FileOrigin.Fallback))
+                        .ToArray();
+
+                case FileOrigin.Dependency:
+                    var (dependencyPath, _) = _restoreMap.GetGitRestorePath(_config.Dependencies[dependencyName], _docsetPath);
+                    return Directory
+                        .GetFiles(dependencyPath, "*", SearchOption.AllDirectories)
+                        .Select(path => new FilePath(
+                            Path.GetRelativePath(dependencyPath, path).Replace('\\', '/'), FileOrigin.Fallback))
+                        .ToArray();
+
+                default:
+                    throw new NotSupportedException($"{nameof(ReadFilesRecursive)}: {origin}");
+            }
         }
 
         private (string basePath, string path, string commit) ResolveFilePath(FilePath file)
