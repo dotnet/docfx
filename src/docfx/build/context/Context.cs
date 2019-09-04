@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,6 +13,7 @@ namespace Microsoft.Docs.Build
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
+        public readonly Input Input;
         public readonly BuildScope BuildScope;
         public readonly WorkQueue<Document> BuildQueue;
         public readonly MetadataProvider MetadataProvider;
@@ -45,21 +45,23 @@ namespace Microsoft.Docs.Build
 
             ErrorLog = errorLog;
             Output = new Output(outputPath);
-            Cache = new Cache();
+            Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);
+            Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
-            BuildScope = new BuildScope(errorLog, docset, fallbackDocset, TemplateEngine);
+            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Cache, MicrosoftGraphCache, restoreFileMap);
+            MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            ContributionProvider = new ContributionProvider(docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+            ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
 
             DependencyResolver = new DependencyResolver(
                 docset,
                 fallbackDocset,
+                Input,
                 BuildScope,
                 BuildQueue,
                 GitCommitProvider,
