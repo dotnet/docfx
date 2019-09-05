@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
         }
 
-        public string GetOutputPath(List<string> monikers, string siteBasePath, bool isPage = true)
+        public string GetOutputPath(List<string> monikers, string siteBasePath)
         {
             return PathUtility.NormalizeFile(Path.Combine(
                 siteBasePath,
