@@ -8,15 +8,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Net;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Text.RegularExpressions;
 
     public class ImageExtension : ITripleColonExtensionInfo
     {
         public string Name => "image";
-        public bool SelfClosing => true;
-        public bool EndingTripleColons => true;
+        public bool SelfClosing { get; set; } = true;
+        public bool EndingTripleColons { get; set; } = false;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
@@ -32,6 +34,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             renderProperties = new Dictionary<string, string>();
             var src = string.Empty;
             var alt = string.Empty;
+            var type = string.Empty;
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -40,6 +43,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     case "alt-text":
                         alt = value;
+                        break;
+                    case "type":
+                        type = value;
                         break;
                     case "source":
                         src = value;
@@ -50,31 +56,64 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
+            if(type == "complex")
+            {
+                EndingTripleColons = true;
+                //SelfClosing = false;
+            } else
+            {
+                EndingTripleColons = false;
+                //SelfClosing = true;
+            }
+
             if (string.IsNullOrEmpty(src))
             {
-                logError($"source is a required attribute. Please ensure you have specified a source attribute");
+                logError($"source is a required attribute. Please ensure you have specified a source attribute.");
             }
-            if (string.IsNullOrEmpty(alt))
+            if (string.IsNullOrEmpty(type))
+            {
+                logError($"type is a required attribute. Please ensure you have specified a type attribute. Options (\"comples\", \"content\", \"icon\")");
+            }
+            if (string.IsNullOrEmpty(alt) && type != "icon")
             {
                 logError($"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
             }
-            if (string.IsNullOrEmpty(alt) || string.IsNullOrEmpty(src))
+            if ((string.IsNullOrEmpty(alt) && type != "icon") || string.IsNullOrEmpty(src))
             {
                 return false;
             }
             var id = GetHtmlId(processor.LineIndex, processor.Column);
             htmlAttributes = new HtmlAttributes();
             htmlAttributes.AddProperty("src", src);
-            htmlAttributes.AddProperty("alt", alt);
-            htmlAttributes.AddProperty("aria-describedby", id);
+            if (type == "icon")
+            {
+                htmlAttributes.AddProperty("role", "presentation");
+            } else
+            {
+                htmlAttributes.AddProperty("alt", alt);
+            }
+            if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             RenderDelegate = (renderer, obj) =>
             {
-                renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine($"<div id=\"{id}\" class=\"visually-hidden\">");
-                renderer.WriteChildren(obj);
-                renderer.WriteLine("</div>");
+                //if obj.Count == 0, this signifies that there is no long description for the image.
+                if(obj.Count == 0)
+                {
+                    renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+                } else
+                {
+                    if(type == "complex" && obj.Count == 0)
+                    {
+                        logError($"If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
+                        return false;
+                    }
 
+                    renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+                    renderer.WriteLine($"<div id=\"{id}\" class=\"visually-hidden\">");
+                    renderer.WriteChildren(obj);
+                    renderer.WriteLine("</div>");
+                }
+                
                 return true;
             };
 

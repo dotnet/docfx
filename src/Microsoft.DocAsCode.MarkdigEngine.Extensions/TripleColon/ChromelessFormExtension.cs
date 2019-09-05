@@ -13,8 +13,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class ChromelessFormExtension : ITripleColonExtensionInfo
     {
         public string Name => "form";
-        public bool SelfClosing => true;
-        public bool EndingTripleColons => false;
+        public bool SelfClosing { get; set; } = true;
+        public bool EndingTripleColons {get; set;} = true;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
