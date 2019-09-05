@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<string> _fileNames;
         private readonly Func<string, bool> _glob;
+
+        private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
 
         /// <summary>
@@ -25,10 +27,11 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
+        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
+            _input = input;
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
 
@@ -42,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob, templateEngine, Files);
+            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
 
             Files.UnionWith(Redirections.Files);
         }
@@ -59,20 +62,17 @@ namespace Microsoft.Docs.Build
             {
                 var docsetPath = docset.DocsetPath;
                 var files = new ListBuilder<Document>();
-                var fileNames = Directory
-                    .GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
-                    .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
-                    .ToHashSet(PathUtility.PathComparer);
+                var fileNames = _input.ListFilesRecursive(origin);
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file))
+                    if (glob(file.Path))
                     {
-                        files.Add(Document.Create(docset, new FilePath(file, origin), _templateEngine));
+                        files.Add(Document.Create(docset, file, _input, _templateEngine));
                     }
                 });
 
-                return (fileNames, files.ToList());
+                return (fileNames.Select(item => item.Path).ToHashSet(PathUtility.PathComparer), files.ToList());
             }
         }
 

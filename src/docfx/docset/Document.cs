@@ -89,11 +89,6 @@ namespace Microsoft.Docs.Build
         public bool IsExperimental { get; }
 
         /// <summary>
-        /// Gets a value indicating whether it's from git history(deleted/moved/renamed)
-        /// </summary>
-        public bool IsFromHistory { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the current document is schema data
         /// </summary>
         public bool IsPage { get; }
@@ -120,7 +115,6 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> mime,
             bool isExperimental,
             string redirectionUrl = null,
-            bool isFromHistory = false,
             bool isPage = true)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
@@ -136,7 +130,6 @@ namespace Microsoft.Docs.Build
             Mime = mime;
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
-            IsFromHistory = isFromHistory;
             IsPage = isPage;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
@@ -149,32 +142,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
         }
 
-        /// <summary>
-        /// Reads this document as stream, throws if it does not exists.
-        /// </summary>
-        public Stream ReadStream()
-        {
-            Debug.Assert(ContentType != ContentType.Redirection);
-            Debug.Assert(!IsFromHistory);
-
-            return File.OpenRead(Path.Combine(Docset.DocsetPath, FilePath.Path));
-        }
-
-        /// <summary>
-        /// Reads this document as text, throws if it does not exists.
-        /// </summary>
-        public string ReadText()
-        {
-            Debug.Assert(ContentType != ContentType.Redirection);
-            Debug.Assert(!IsFromHistory);
-
-            using (var reader = new StreamReader(ReadStream()))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        public string GetOutputPath(List<string> monikers, string siteBasePath)
+        public string GetOutputPath(List<string> monikers, string siteBasePath, bool isPage = true)
         {
             return PathUtility.NormalizeFile(Path.Combine(
                 siteBasePath,
@@ -237,13 +205,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, FilePath path, TemplateEngine templateEngine, string redirectionUrl = null, bool isFromHistory = false, bool combineRedirectUrl = false)
+        public static Document Create(Docset docset, FilePath path, Input input, TemplateEngine templateEngine, string redirectionUrl = null, bool combineRedirectUrl = false)
         {
             Debug.Assert(docset != null);
 
             var isConfigReference = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).Contains(path.Path, PathUtility.PathComparer);
             var type = isConfigReference ? ContentType.Unknown : GetContentType(path.Path);
-            var mime = type == ContentType.Page ? ReadMimeFromFile(docset.DocsetPath, path) : default;
+            var mime = type == ContentType.Page ? ReadMimeFromFile(input, path) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path, docset.Routes, docset.SiteBasePath);
@@ -265,7 +233,7 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isFromHistory, isPage);
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage);
         }
 
         internal static ContentType GetContentType(string path)
@@ -446,26 +414,30 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
-        private static SourceInfo<string> ReadMimeFromFile(string docsetPath, FilePath filePath)
+        private static SourceInfo<string> ReadMimeFromFile(Input input, FilePath filePath)
         {
             SourceInfo<string> mime = default;
 
-            var fullPath = Path.Combine(docsetPath, filePath.Path);
-            if (fullPath.EndsWith(".json", PathUtility.PathComparison))
+            if (filePath.Path.EndsWith(".json", PathUtility.PathComparison))
             {
-                if (File.Exists(fullPath))
+                // TODO: we could have not depend on this exists check, but currently
+                //       DependencyResolver works with Document and return a Document for token files,
+                //       thus we are forced to get the mime type of a token file here even if it's not useful.
+                //
+                //       After token resolve does not create Document, this Exists check can be removed.
+                if (input.Exists(filePath))
                 {
-                    using (var reader = new StreamReader(fullPath))
+                    using (var reader = input.ReadText(filePath))
                     {
                         mime = JsonUtility.ReadMime(reader, filePath);
                     }
                 }
             }
-            else if (fullPath.EndsWith(".yml", PathUtility.PathComparison))
+            else if (filePath.Path.EndsWith(".yml", PathUtility.PathComparison))
             {
-                if (File.Exists(fullPath))
+                if (input.Exists(filePath))
                 {
-                    using (var reader = new StreamReader(fullPath))
+                    using (var reader = input.ReadText(filePath))
                     {
                         mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
                     }

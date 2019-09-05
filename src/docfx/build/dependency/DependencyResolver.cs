@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyResolver
     {
+        private readonly Input _input;
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
@@ -27,6 +28,7 @@ namespace Microsoft.Docs.Build
         public DependencyResolver(
             Docset docset,
             Docset fallbackDocset,
+            Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
@@ -36,6 +38,7 @@ namespace Microsoft.Docs.Build
             Lazy<XrefResolver> xrefResolver,
             TemplateEngine templateEngine)
         {
+            _input = input;
             _docset = docset;
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
@@ -96,23 +99,14 @@ namespace Microsoft.Docs.Build
 
         private (Error error, string content, Document file) TryResolveContent(Document referencingFile, SourceInfo<string> href)
         {
-            var (error, file, _, _, _, pathToDocset) = TryResolveFile(referencingFile, href);
+            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
 
             if (file?.RedirectionUrl != null)
             {
                 return default;
             }
 
-            if (file is null)
-            {
-                var (content, fileFromHistory) = TryResolveContentFromHistory(_gitCommitProvider, pathToDocset, _templateEngine);
-                if (fileFromHistory != null)
-                {
-                    return (null, content, fileFromHistory);
-                }
-            }
-
-            return file != null ? (error, file.ReadText(), file) : default;
+            return file != null ? (error, _input.ReadString(file.FilePath), file) : default;
         }
 
         private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(
@@ -130,7 +124,7 @@ namespace Microsoft.Docs.Build
             }
 
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
-            var (error, file, query, fragment, linkType, pathToDocset) = TryResolveFile(referencingFile, decodedHref);
+            var (error, file, query, fragment, linkType) = TryResolveFile(referencingFile, decodedHref);
 
             if (linkType == LinkType.WindowsAbsolutePath)
             {
@@ -140,14 +134,7 @@ namespace Microsoft.Docs.Build
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
-                file = TryResolveResourceFromHistory(_gitCommitProvider, pathToDocset, _templateEngine);
-                if (file is null)
-                {
-                    return (error, href, fragment, linkType, null, false);
-                }
-
-                // set file to resource got from histroy, reset the error
-                error = null;
+                return (error, href, fragment, linkType, null, false);
             }
 
             // Self reference, don't build the file, leave href as is
@@ -186,8 +173,8 @@ namespace Microsoft.Docs.Build
             return (error, file.SiteUrl + query + fragment, fragment, linkType, file, false);
         }
 
-        private (Error error, Document file, string query, string fragment, LinkType linkType, string pathToDocset) TryResolveFile(
-            Document referencingFile, SourceInfo<string> href)
+        private (Error error, Document file, string query, string fragment, LinkType linkType) TryResolveFile(
+            Document referencingFile, SourceInfo<string> href, bool inclusion = false)
         {
             href = href.Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -195,36 +182,22 @@ namespace Microsoft.Docs.Build
             switch (UrlUtility.GetLinkType(href))
             {
                 case LinkType.SelfBookmark:
-                    return (null, referencingFile, query, fragment, LinkType.SelfBookmark, null);
+                    return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
 
                 case LinkType.WindowsAbsolutePath:
-                    return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath, null);
+                    return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath);
 
                 case LinkType.RelativePath:
                     if (string.IsNullOrEmpty(path))
                     {
                         // https://tools.ietf.org/html/rfc2396#section-4.2
                         // a hack way to process empty href
-                        return (null, referencingFile, query, fragment, LinkType.SelfBookmark, null);
+                        return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
                     }
 
-                    // Apply resolve alias
-                    var pathToDocset = ApplyResolveAlias(path, referencingFile);
-
-                    // Use the actual file name case
-                    if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
-                    {
-                        pathToDocset = pathActualCase;
-                    }
-
-                    // resolve from redirection files
-                    if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
-                    {
-                        return (null, redirectFile, query, fragment, LinkType.RelativePath, pathToDocset);
-                    }
-
-                    // resolve from dependencies then from current docset
-                    var file = TryResolveFile(referencingFile, pathToDocset);
+                    // resolve file
+                    var lookupFallbackCommits = inclusion || Document.GetContentType(path) == ContentType.Resource;
+                    var file = TryResolveRelativePath(referencingFile, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -234,136 +207,116 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            pathToDocset = ApplyResolveAlias($"{path}.md", referencingFile);
-                            file = TryResolveFile(referencingFile, pathToDocset);
+                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupFallbackCommits);
                         }
 
                         // Do not report error for landing page
-                        return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
+                        return (null, file, query, fragment, LinkType.RelativePath);
                     }
 
                     if (file is null)
                     {
                         return (Errors.FileNotFound(
-                            new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath, pathToDocset);
+                            new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath);
                     }
 
-                    return (null, file, query, fragment, LinkType.RelativePath, pathToDocset);
+                    return (null, file, query, fragment, LinkType.RelativePath);
 
                 default:
                     return default;
             }
         }
 
-        private string ApplyResolveAlias(string path, Document referencingFile)
+        private Document TryResolveRelativePath(Document referencingFile, string relativePath, bool lookupFallbackCommits)
         {
-            var docsetRelativePath = PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.Path), path));
-            if (!File.Exists(Path.Combine(referencingFile.Docset.DocsetPath, docsetRelativePath)))
-            {
-                foreach (var (alias, aliasPath) in _resolveAlias)
-                {
-                    if (path.StartsWith(alias, PathUtility.PathComparison))
-                    {
-                        return PathUtility.NormalizeFile(aliasPath + path.Substring(alias.Length));
-                    }
-                }
-            }
-            return docsetRelativePath;
-        }
+            FilePath path;
 
-        private Document TryResolveFile(Document referencingFile, string pathToDocset)
-        {
+            // apply resolve alias
+            var pathToDocset = ApplyResolveAlias(referencingFile, relativePath);
+
             // resolve from the current docset for files in dependencies
             if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
             {
-                if (File.Exists(Path.Combine(referencingFile.Docset.DocsetPath, pathToDocset)))
+                path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
+                if (_input.Exists(path))
                 {
-                    var path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
-                    return Document.Create(referencingFile.Docset, path, _templateEngine);
+                    return Document.Create(referencingFile.Docset, path, _input, _templateEngine);
                 }
                 return null;
+            }
+
+            // Use the actual file name case
+            if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
+            {
+                pathToDocset = pathActualCase;
+            }
+
+            // resolve from redirection files
+            if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
+            {
+                return redirectFile;
             }
 
             // resolve from dependencies
             foreach (var (dependencyName, dependencyDocset) in _dependencies)
             {
-                Debug.Assert(dependencyName.EndsWith('/'));
-
-                if (!pathToDocset.StartsWith(dependencyName, PathUtility.PathComparison))
+                var (match, _, remainingPath) = PathUtility.Match(pathToDocset, dependencyName);
+                if (!match)
                 {
                     // the file stored in the dependent docset should start with dependency name
                     continue;
                 }
 
-                var pathToDependencyDocset = pathToDocset.Substring(dependencyName.Length);
-                if (File.Exists(Path.Combine(dependencyDocset.DocsetPath, pathToDependencyDocset)))
+                path = new FilePath(remainingPath, dependencyName);
+                if (_input.Exists(path))
                 {
-                    return Document.Create(dependencyDocset, new FilePath(pathToDependencyDocset, dependencyName), _templateEngine);
+                    return Document.Create(dependencyDocset, path, _input, _templateEngine);
                 }
             }
 
             // resolve from entry docset
-            if (File.Exists(Path.Combine(_docset.DocsetPath, pathToDocset)))
+            path = new FilePath(pathToDocset);
+            if (_input.Exists(path))
             {
-                return Document.Create(_docset, new FilePath(pathToDocset), _templateEngine);
+                return Document.Create(_docset, path, _input, _templateEngine);
             }
 
             // resolve from fallback docset
-            if (_fallbackDocset != null &&
-                File.Exists(Path.Combine(_fallbackDocset.DocsetPath, pathToDocset)))
-            {
-                return Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), _templateEngine);
-            }
-
-            return default;
-        }
-
-        private Document TryResolveResourceFromHistory(GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
-        {
-            if (string.IsNullOrEmpty(pathToDocset))
-            {
-                return default;
-            }
-
-            // try to resolve from source repo's git history
-            if (_fallbackDocset != null && Document.GetContentType(pathToDocset) == ContentType.Resource)
-            {
-                var (repo, _, commits) = gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
-                if (repo != null && commits.Length > 0)
-                {
-                    return Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), templateEngine, isFromHistory: true);
-                }
-            }
-
-            return default;
-        }
-
-        private (string content, Document file) TryResolveContentFromHistory(GitCommitProvider gitCommitProvider, string pathToDocset, TemplateEngine templateEngine)
-        {
-            if (string.IsNullOrEmpty(pathToDocset))
-            {
-                return default;
-            }
-
-            // try to resolve from source repo's git history
             if (_fallbackDocset != null)
             {
-                var (repo, pathToRepo, commits) = gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
-                if (repo != null)
+                path = new FilePath(pathToDocset, FileOrigin.Fallback);
+                if (_input.Exists(path))
                 {
-                    var repoPath = PathUtility.NormalizeFolder(repo.Path);
-                    if (commits.Length > 1)
+                    return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                }
+
+                // resolve from fallback docset git commit history
+                if (lookupFallbackCommits)
+                {
+                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
+                    if (repo != null && commits.Count > 1)
                     {
-                        // the latest commit would be deleting it from repo
-                        if (GitUtility.TryGetContentFromHistory(repoPath, pathToRepo, commits[1].Sha, out var content))
-                        {
-                            return (content, Document.Create(_fallbackDocset, new FilePath(pathToDocset, FileOrigin.Fallback), templateEngine, isFromHistory: true));
-                        }
+                        path = new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback);
+                        return Document.Create(_fallbackDocset, path, _input, _templateEngine);
                     }
                 }
             }
 
             return default;
+        }
+
+        private string ApplyResolveAlias(Document referencingFile, string path)
+        {
+            foreach (var (alias, aliasPath) in _resolveAlias)
+            {
+                var (match, _, remainingPath) = PathUtility.Match(path, alias);
+                if (match)
+                {
+                    return PathUtility.NormalizeFile(aliasPath + remainingPath);
+                }
+            }
+
+            return PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.Path), path));
         }
 
         private static Dictionary<string, string> LoadResolveAlias(Config config)
@@ -372,7 +325,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (alias, aliasPath) in config.ResolveAlias)
             {
-                result.TryAdd(PathUtility.NormalizeFolder(alias), PathUtility.NormalizeFolder(aliasPath));
+                result.TryAdd(alias, PathUtility.NormalizeFolder(aliasPath));
             }
 
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
@@ -385,10 +338,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var (name, dependency) in config.Dependencies)
             {
-                var (dir, _) = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
+                var dir = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
 
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(dir, docset.Locale, config));
+                result.TryAdd(name, new Docset(dir, docset.Locale, config));
             }
+
             return result;
         }
     }

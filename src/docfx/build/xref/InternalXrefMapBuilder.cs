@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var errors = new List<Error>();
-                var content = file.ReadText();
+                var content = context.Input.ReadString(file.FilePath);
                 var callStack = new List<Document> { file };
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
