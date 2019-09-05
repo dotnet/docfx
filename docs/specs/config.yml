@@ -10,7 +10,7 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Content supports array form
+# Files supports array form
 inputs:
   docfx.yml: |
     files:
@@ -23,27 +23,86 @@ outputs:
   docs1/index.json:
   docs2/index.json:
 ---
-# Content supports exclude file
+# Exclude supports file
 inputs:
   docfx.yml: |
     files: docs/**/*.md
     exclude: docs/**/ignore.md
   docs/index.md:
+  docs/ignore.md:
 outputs:
   docs/index.json:
 ---
-# Content supports exclude folder
+# Exclude supports folder
 inputs:
   docfx.yml: |
     files: docs/**/*.md
     exclude:
-      - docs/ignore/**/*.md
-      - docs/codesnippet/**/*.md
+    - docs/ignore/**/*.md
+    - docs/codesnippet/**/*.md
   docs/index.md:
   docs/ignore/index.md:
   docs/codesnippet/index.md:
 outputs:
   docs/index.json:
+---
+# Support specify build scope in fileGroups object
+inputs:
+  docfx.yml: |
+    fileGroups:
+      files: docs/**/*.md
+      exclude: docs/**/ignore.md
+  docs/index.md:
+  docs/ignore.md:
+outputs:
+  docs/index.json:
+---
+# Support specify build scope in fileGroups array
+inputs:
+  docfx.yml: |
+    fileGroups:
+    - files: docs/**/*.md
+      exclude: docs/**/ignore.md
+  docs/index.md:
+  docs/ignore.md:
+outputs:
+  docs/index.json:
+---
+# Support fileGroups as object
+inputs:
+  docfx.yml: |
+    fileGroups:
+      files: docs/b.md
+      exclude: docs/**/ignore.md
+  docs/a.md:
+  docs/b.md:
+outputs:
+  docs/b.json:
+---
+# Use FileGroups and ignore root build scope if FileGroups is defined
+inputs:
+  docfx.yml: |
+    files: docs/a.md
+    fileGroups:
+    - files: docs/b.md
+  docs/a.md:
+  docs/b.md:
+outputs:
+  docs/b.json:
+---
+# FileGroup a's exclude won't influence b's include
+inputs:
+  docfx.yml: |
+    fileGroups:
+    - files: docs/**/*.md
+      exclude: docs/**/*.png
+    - files: docs/**/*.png
+      exclude: docs/**/*.md
+  docs/a.md:
+  docs/b.png:
+outputs:
+  docs/a.json:
+  docs/b.png:
 ---
 # Global metadata
 inputs:

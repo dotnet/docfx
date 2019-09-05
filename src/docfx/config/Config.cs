@@ -48,6 +48,12 @@ namespace Microsoft.Docs.Build
         public readonly string[] Exclude = Array.Empty<string>();
 
         /// <summary>
+        /// Gets the file groups config.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public readonly FileGroupConfig[] FileGroups = Array.Empty<FileGroupConfig>();
+
+        /// <summary>
         /// Gets the output config.
         /// </summary>
         public readonly OutputConfig Output = new OutputConfig();
