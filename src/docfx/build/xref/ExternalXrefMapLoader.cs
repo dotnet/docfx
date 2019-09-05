@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 
@@ -11,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefMapLoader
     {
-        private static byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
+        private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
         public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset, RestoreFileMap restoreFileMap)
         {
@@ -19,7 +20,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var url in docset.Config.Xref)
             {
-                if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                {
+                    LoadZipFile(result, new SourceInfo<string>(Path.Combine(docset.DocsetPath, url), url.Source));
+                }
+                else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
                     var content = restoreFileMap.GetRestoredFileContent(url);
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(content, new FilePath(url));
@@ -62,6 +67,35 @@ namespace Microsoft.Docs.Build
                 })));
             }
             return result;
+        }
+
+        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, SourceInfo<string> url)
+        {
+            using (var archive = ZipFile.OpenRead(url.Value))
+            {
+                foreach (var entry in archive.Entries)
+                {
+                    using (var sr = new StreamReader(entry.Open()))
+                    {
+                        if (entry.FullName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var xrefMap = YamlUtility.Deserialize<XrefMapModel>(sr.ReadToEnd(), new FilePath(url));
+                            foreach (var spec in xrefMap.References)
+                            {
+                                result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                            }
+                        }
+                        else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var xrefMap = JsonUtility.Deserialize<XrefMapModel>(sr.ReadToEnd(), new FilePath(url));
+                            foreach (var spec in xrefMap.References)
+                            {
+                                result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private static List<(string uid, long start, long end)> GetXrefSpecPositions(ReadOnlySpan<byte> content)

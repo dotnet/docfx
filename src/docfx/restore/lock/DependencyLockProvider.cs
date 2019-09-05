@@ -1,24 +1,24 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class DependencyLock
+    internal static class DependencyLockProvider
     {
-        public static DependencyLockModel GetGitLock(this DependencyLockModel dependencyLock, string href, string branch)
+        public static DependencyGitLock GetGitLock(this Dictionary<PackageUrl, DependencyGitLock> dependencyLock, PackageUrl packageUrl)
         {
-            Debug.Assert(dependencyLock != null);
-
-            if (dependencyLock.Git.TryGetValue($"{href}#{branch}", out var gitLock))
+            if (dependencyLock == null)
             {
-                return gitLock;
+                return null;
             }
 
-            if (branch == "master" && dependencyLock.Git.TryGetValue($"{href}", out gitLock))
+            if (dependencyLock.TryGetValue(packageUrl, out var gitLock))
             {
                 return gitLock;
             }
@@ -26,14 +26,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public static bool ContainsGitLock(this DependencyLockModel dependencyLock, string href)
-        {
-            Debug.Assert(dependencyLock != null);
-
-            return dependencyLock.Git.ContainsKey(href) || dependencyLock.Git.Keys.Any(g => g.StartsWith($"{href}#"));
-        }
-
-        public static DependencyLockModel Load(string docset, SourceInfo<string> dependencyLockPath)
+        public static Dictionary<PackageUrl, DependencyGitLock> LoadGitLock(string docset, SourceInfo<string> dependencyLockPath)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
 
@@ -53,14 +46,17 @@ namespace Microsoft.Docs.Build
 
             var content = RestoreFileMap.GetRestoredFileContent(docset, dependencyLockPath, fallbackDocset: null);
 
-            return JsonUtility.Deserialize<DependencyLockModel>(content, new FilePath(dependencyLockPath));
+            var dependencyLock = JsonUtility.Deserialize<DependencyLock>(content, new FilePath(dependencyLockPath));
+
+            return dependencyLock.Git.ToDictionary(k => new PackageUrl(k.Key), v => v.Value);
         }
 
-        public static void Save(string docset, string dependencyLockPath, DependencyLockModel dependencyLock)
+        public static void SaveGitLock(string docset, string dependencyLockPath, List<DependencyGitLock> dependencyGitLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
             Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));
 
+            var dependencyLock = new DependencyLock { Git = dependencyGitLock.ToDictionary(k => $"{new PackageUrl(k.Url, k.Branch)}", v => v) };
             var content = JsonUtility.Serialize(dependencyLock, indent: true);
 
             if (!UrlUtility.IsHttp(dependencyLockPath))
@@ -69,6 +65,11 @@ namespace Microsoft.Docs.Build
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 ProcessUtility.WriteFile(path, content);
             }
+        }
+
+        private class DependencyLock
+        {
+            public Dictionary<string, DependencyGitLock> Git { get; set; } = new Dictionary<string, DependencyGitLock>();
         }
     }
 }

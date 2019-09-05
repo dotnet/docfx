@@ -16,7 +16,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   .errors.log: |
-    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
+    ["warning","link-is-dependency","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
@@ -37,7 +37,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   .errors.log: |
-    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
+    ["warning","link-is-dependency","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
@@ -97,7 +97,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   .errors.log: |
-    ["warning","link-is-dependency","File 'docs/a.md' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
+    ["warning","link-is-dependency","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
 ---
@@ -204,10 +204,14 @@ repos:
 cache:
   .lock.json: |
     {
-      "git":{
-         "https://docs.com/lock1/c#master":{
-            "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
-         }
+      "git":
+      {
+        "https://docs.com/lock1/c#master":
+        {
+          "url": "https://docs.com/lock1/c",
+          "branch": "master",
+          "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"
+        }
       }
     }
 outputs:
@@ -257,10 +261,14 @@ repos:
 cache:
   .lock.json: |
     {
-      "git":{  
-         "https://docascode.visualstudio.com/lock/_git/c#master":{
-            "commit":"8720d784fb99abcbdfa922025b8bcc060f0f622a"
-         }
+      "git":
+      {
+        "https://docascode.visualstudio.com/lock/_git/c#master":
+        {
+          "url": "https://docascode.visualstudio.com/lock/_git/c",
+          "branch": "master",
+          "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"
+        }
       }
     }
 outputs:
