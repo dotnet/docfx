@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<string> _fileNames;
-        private readonly Func<string, bool> _glob;
+        private readonly Func<string, bool>[] _globs;
 
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
@@ -32,10 +32,10 @@ namespace Microsoft.Docs.Build
             var config = docset.Config;
 
             _input = input;
-            _glob = CreateGlob(config);
+            _globs = CreateGlob(config);
             _templateEngine = templateEngine;
 
-            var (fileNames, files) = GetFiles(FileOrigin.Default, docset, _glob);
+            var (fileNames, files) = GetFiles(FileOrigin.Default, docset, _globs);
 
             var fallbackFiles = fallbackDocset != null
                 ? GetFiles(FileOrigin.Fallback, fallbackDocset, CreateGlob(fallbackDocset.Config)).files
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
+            Redirections = RedirectionMap.Create(errorLog, docset, _globs, _input, templateEngine, Files);
 
             Files.UnionWith(Redirections.Files);
         }
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(
-            FileOrigin origin, Docset docset, Func<string, bool> glob)
+            FileOrigin origin, Docset docset, Func<string, bool>[] globs)
         {
             using (Progress.Start("Globbing files"))
             {
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file.Path))
+                    if (globs.Any(glob => glob(file.Path)))
                     {
                         files.Add(Document.Create(docset, file, _input, _templateEngine));
                     }
@@ -76,11 +76,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Func<string, bool> CreateGlob(Config config)
+        private static Func<string, bool>[] CreateGlob(Config config)
         {
-            return GlobUtility.CreateGlobMatcher(
-                config.Files,
-                config.Exclude.Concat(Config.DefaultExclude).ToArray());
+            if (config.FileGroups.Length == 0)
+            {
+                return new[] { GlobUtility.CreateGlobMatcher(FileGroupConfig.DefaultInclude, FileGroupConfig.DefaultExclude) };
+            }
+
+            return config.FileGroups.Select(fileGroup => GlobUtility.CreateGlobMatcher(
+                    fileGroup.Files,
+                    fileGroup.Exclude.Concat(FileGroupConfig.DefaultExclude).ToArray()))
+                   .ToArray();
         }
     }
 }

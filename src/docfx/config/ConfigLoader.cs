@@ -73,6 +73,8 @@ namespace Microsoft.Docs.Build
             // apply overwrite
             OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
 
+            UpdateFileScope(configObject);
+
             var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
@@ -83,6 +85,34 @@ namespace Microsoft.Docs.Build
                 var repoPath = GitUtility.FindRepo(docsetPath);
 
                 return repoPath is null ? null : GitUtility.GetRepoInfo(repoPath).branch;
+            }
+        }
+
+        private static void UpdateFileScope(JObject configObject)
+        {
+            if (configObject.ContainsKey("files") || configObject.ContainsKey("exclude"))
+            {
+                var rootFileGroup = new JObject
+                {
+                    ["files"] = configObject["files"],
+                    ["exclude"] = configObject["exclude"],
+                };
+                if (configObject.TryGetValue("fileGroups", out var fileGroups))
+                {
+                    switch (fileGroups)
+                    {
+                        case JArray arr:
+                            arr.Add(rootFileGroup);
+                            break;
+                        case JObject obj:
+                            configObject["fileGroups"] = new JArray { rootFileGroup, obj };
+                            break;
+                    }
+                }
+                else
+                {
+                    configObject["fileGroups"] = new JArray { rootFileGroup };
+                }
             }
         }
 
