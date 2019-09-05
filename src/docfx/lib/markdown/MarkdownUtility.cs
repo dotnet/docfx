@@ -86,7 +86,13 @@ namespace Microsoft.Docs.Build
 
         private static MarkdownPipeline CreateMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile);
+            var markdownContext = new MarkdownContext(
+                GetToken,
+                (code, message, origin, line) => Log.Write(message),
+                LogSuggestion,
+                LogWarning,
+                LogError,
+                ReadFile);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -99,7 +105,13 @@ namespace Microsoft.Docs.Build
 
         private static MarkdownPipeline CreateInlineMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(GetToken, LogWarning, LogError, ReadFile);
+            var markdownContext = new MarkdownContext(
+                GetToken,
+                (code, message, origin, line) => Log.Write(message),
+                LogSuggestion,
+                LogWarning,
+                LogError,
+                ReadFile);
 
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -144,6 +156,11 @@ namespace Microsoft.Docs.Build
         private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
         {
             t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.ToSourceInfo(line)));
+        }
+
+        private static void LogSuggestion(string code, string message, MarkdownObject origin, int? line)
+        {
+            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
         }
 
         private static (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
