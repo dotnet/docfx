@@ -295,8 +295,12 @@ namespace Microsoft.Docs.Build
                 {
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
                     var commit = repo != null && commits.Count > 1 ? commits[1] : default;
-                    path = new FilePath(pathToDocset, commit.Sha, FileOrigin.Fallback);
-                    return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                    path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
+
+                    if (_input.Exists(path))
+                    {
+                        return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                    }
                 }
             }
 
@@ -337,7 +341,7 @@ namespace Microsoft.Docs.Build
                 var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, docset.DocsetPath, true);
 
                 var repo = Repository.Create(dir, dependency.Branch, dependency.Remote, commit);
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(dir, docset.Locale, docset.Config, repo));
+                result.TryAdd(name, new Docset(dir, docset.Locale, docset.Config, repo));
             }
 
             return result;
