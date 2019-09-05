@@ -11,6 +11,15 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
+        public static readonly string[] DefaultExclude = new[]
+        {
+            "_site/**",             // Default output location
+            "localization/**",      // Localization file when using folder convention
+            "_themes/**",           // Default template location
+        };
+
+        private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
+
         /// <summary>
         /// Gets the default site name
         /// </summary>
@@ -25,6 +34,18 @@ namespace Microsoft.Docs.Build
         /// Gets the default docset name
         /// </summary>
         public readonly string Name = string.Empty;
+
+        /// <summary>
+        /// Gets the file glob patterns included by the docset.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public readonly string[] Files = s_defaultInclude;
+
+        /// <summary>
+        /// Gets the file glob patterns excluded from this docset.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public readonly string[] Exclude = Array.Empty<string>();
 
         /// <summary>
         /// Gets the file groups config.

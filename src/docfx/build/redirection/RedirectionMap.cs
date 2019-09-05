@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         public static RedirectionMap Create(
             ErrorLog errorLog,
             Docset docset,
-            Func<string, bool>[] globs,
+            Func<string, bool> glob,
             Input input,
             TemplateEngine templateEngine,
             IReadOnlyCollection<Document> buildFiles)
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    if (!globs.Any(glob => glob(path)))
+                    if (!glob(path))
                     {
                         continue;
                     }
