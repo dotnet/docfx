@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private static readonly Regex pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
         private static readonly Regex pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
         public string Name => "zone";
-		public bool SelfClosing { get; set; } = false;
+		public bool SelfClosing => false;
         public bool EndingTripleColons { get; set; } = false;
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)

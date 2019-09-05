@@ -17,9 +17,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class ImageExtension : ITripleColonExtensionInfo
     {
         public string Name => "image";
-        public bool SelfClosing { get; set; } = true;
+        public bool SelfClosing => true;
         public bool EndingTripleColons { get; set; } = false;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+        private List<ImageProperties> imagesList = new List<ImageProperties>();
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
         {
@@ -59,11 +60,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if(type == "complex")
             {
                 EndingTripleColons = true;
-                //SelfClosing = false;
             } else
             {
                 EndingTripleColons = false;
-                //SelfClosing = true;
             }
 
             if (string.IsNullOrEmpty(src))
@@ -83,6 +82,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             var id = GetHtmlId(processor.LineIndex, processor.Column);
+            var image = new ImageProperties
+            {
+                id = id,
+                type = type
+            };
+            imagesList.Add(image);
             htmlAttributes = new HtmlAttributes();
             htmlAttributes.AddProperty("src", src);
             if (type == "icon")
@@ -94,8 +99,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
+            var imageCount = 0;
             RenderDelegate = (renderer, obj) =>
             {
+                image = imagesList[imageCount];
+                imageCount++;
                 //if obj.Count == 0, this signifies that there is no long description for the image.
                 if(obj.Count == 0)
                 {
@@ -109,7 +117,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
 
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
-                    renderer.WriteLine($"<div id=\"{id}\" class=\"visually-hidden\">");
+                    renderer.WriteLine($"<div id=\"{image.id}\" class=\"visually-hidden\">");
                     renderer.WriteChildren(obj);
                     renderer.WriteLine("</div>");
                 }
@@ -134,5 +142,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return new Guid(fileBytes).ToString("N").Substring(0, 5);
             }
         }
+    }
+
+    public class ImageProperties
+    {
+        public string id { get; set; }
+        public string type { get; set; }
     }
 }

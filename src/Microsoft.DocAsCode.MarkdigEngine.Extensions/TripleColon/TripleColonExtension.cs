@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public interface ITripleColonExtensionInfo
     {
         string Name { get; }
-        bool SelfClosing { get; set; }
+        bool SelfClosing { get; }
         bool EndingTripleColons { get; set; }
         bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, BlockProcessor processor);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
