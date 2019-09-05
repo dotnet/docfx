@@ -12,31 +12,19 @@ namespace Microsoft.Docs.Build
     {
         private readonly List<SharedAndExclusiveLock> _sharedLocks = new List<SharedAndExclusiveLock>();
 
-        public GitLock GitLock { get; private set; }
+        public Dictionary<PackageUrl, DependencyGitLock> GitLock { get; private set; }
 
-        public static RestoreGitMap Create(GitLock gitLock)
+        public RestoreGitMap(Dictionary<PackageUrl, DependencyGitLock> gitLock)
         {
             Debug.Assert(gitLock != null);
 
-            var result = new RestoreGitMap { GitLock = gitLock };
-            result.CreateCore(gitLock);
+            GitLock = gitLock;
 
-            return result;
-        }
-
-        public void Dispose()
-        {
-            foreach (var sharedLock in _sharedLocks)
+            foreach (var (packageUrl, _) in gitLock)
             {
-                sharedLock.Dispose();
+                var sharedLock = new SharedAndExclusiveLock(packageUrl.Remote, shared: true);
+                _sharedLocks.Add(sharedLock);
             }
-        }
-
-        // todo: will be removed after we faltten the restored git map
-        public RestoreGitMap GetSubRestoreGitMap(PackageUrl url)
-        {
-            var subGitLock = GitLock.GetGitVersion(url.Remote, url.Branch);
-            return new RestoreGitMap { GitLock = subGitLock };
         }
 
         public (string path, string commit) GetRestoreGitPath(PackageUrl url, string docsetPath, bool bare)
@@ -57,9 +45,9 @@ namespace Microsoft.Docs.Build
                     throw Errors.NeedRestore(url.Path).ToException();
 
                 case PackageType.Git:
-                    var gitVersion = GitLock.GetGitVersion(url.Remote, url.Branch);
+                    var gitLock = GitLock.GetGitLock(url);
 
-                    if (gitVersion == null || gitVersion.Commit == null)
+                    if (gitLock == null || gitLock.Commit == null)
                     {
                         throw Errors.NeedRestore($"{url}").ToException();
                     }
@@ -76,22 +64,18 @@ namespace Microsoft.Docs.Build
                         throw Errors.NeedRestore($"{url}").ToException();
                     }
 
-                    return (path, gitVersion.Commit);
+                    return (path, gitLock.Commit);
 
                 default:
                     throw new NotSupportedException($"Unknown package url: '{url}'");
             }
         }
 
-        private void CreateCore(GitLock dependencyGitLock)
+        public void Dispose()
         {
-            foreach (var gitVersion in dependencyGitLock.Git)
+            foreach (var sharedLock in _sharedLocks)
             {
-                var (remote, branch, _) = UrlUtility.SplitGitUrl(gitVersion.Key);
-                var sharedLock = new SharedAndExclusiveLock(remote, shared: true);
-
-                _sharedLocks.Add(sharedLock);
-                CreateCore(gitVersion.Value);
+                sharedLock.Dispose();
             }
         }
     }

@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
             ErrorLog errorLog,
             Docset docset,
             Func<string, bool> glob,
+            Input input,
             TemplateEngine templateEngine,
             IReadOnlyCollection<Document> buildFiles)
         {
@@ -105,8 +106,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     var filePath = new FilePath(pathToDocset, FileOrigin.Redirection);
-                    var redirect = Document.Create(
-                        docset, filePath, templateEngine, mutableRedirectUrl, combineRedirectUrl);
+                    var redirect = Document.Create(docset, filePath, input, templateEngine, mutableRedirectUrl, combineRedirectUrl);
                     if (redirectDocumentId)
                     {
                         redirectionsWithDocumentId.Add((redirectUrl, redirect));

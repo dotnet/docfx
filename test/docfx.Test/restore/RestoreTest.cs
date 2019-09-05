@@ -19,14 +19,14 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/dotnet/docfx#986127a", "https://github.com/dotnet/docfx", "986127a")]
         [InlineData("https://github.com/dotnet/docfx#a#a", "https://github.com/dotnet/docfx", "a#a")]
         [InlineData("https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C", "https://github.com/dotnet/docfx", "a\\b/d<e>f*h|i%3C")]
-        public static void SplitGitHref(string remote, string expectedUrl, string expectedRev)
+        public static void PackageUrlTest(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev, _) = UrlUtility.SplitGitUrl(remote);
+            var packageUrl = new PackageUrl(remote);
 
             // Assert
-            Assert.Equal(expectedUrl, url);
-            Assert.Equal(expectedRev, rev);
+            Assert.Equal(expectedUrl, packageUrl.Remote);
+            Assert.Equal(expectedRev, packageUrl.Branch);
         }
 
         [Fact]

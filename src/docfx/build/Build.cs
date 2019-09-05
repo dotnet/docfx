@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
             using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
             {
-                var (fallbackRepo, fallbackGitMap) = GetFallbackRepository(docsetPath, repository, restoreGitMap);
+                var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
 
                 var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
                 errorLog.Configure(config);
@@ -29,11 +29,11 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(configErrors))
                     return;
 
-                var gitMap = fallbackGitMap ?? restoreGitMap;
-                var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repository, fallbackRepo, gitMap);
+                var (docset, fallbackDocset) = GetDocsetWithFallback(
+                    docsetPath, locale, config, repository, fallbackRepo, restoreGitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
 
-                await Run(docset, fallbackDocset, options, errorLog, outputPath, gitMap);
+                await Run(docset, fallbackDocset, options, errorLog, outputPath, restoreGitMap);
             }
         }
 
@@ -196,11 +196,11 @@ namespace Microsoft.Docs.Build
             var gitLockPath = string.IsNullOrEmpty(config.DependencyLock)
                 ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var gitLock = GitLockProvider.Load(docsetPath, gitLockPath) ?? new GitLock();
-            return RestoreGitMap.Create(gitLock);
+            var gitLock = DependencyLockProvider.LoadGitLock(docsetPath, gitLockPath) ?? new Dictionary<PackageUrl, DependencyGitLock>();
+            return new RestoreGitMap(gitLock);
         }
 
-        private static (Repository fallbackRepository, RestoreGitMap fallbackGitMap) GetFallbackRepository(
+        private static Repository GetFallbackRepository(
             string docsetPath,
             Repository repository,
             RestoreGitMap restoreGitMap)
@@ -210,25 +210,16 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (restoreGitMap.GitLock.GetGitVersion(fallbackRemote, fallbackBranch) == null
-                    && restoreGitMap.GitLock.GetGitVersion(fallbackRemote, "master") != null)
+                var fallbackPackageUrl = new PackageUrl(fallbackRemote, fallbackBranch);
+                if (restoreGitMap.GitLock.GetGitLock(fallbackPackageUrl) == null
+                    && restoreGitMap.GitLock.GetGitLock(new PackageUrl(fallbackRemote, "master")) != null)
                 {
                     // fallback to master branch
-                    fallbackBranch = "master";
+                    fallbackPackageUrl = new PackageUrl(fallbackRemote, "master");
                 }
 
-                var fallbackPackageUrl = new PackageUrl(fallbackRemote, fallbackBranch);
-                var (fallbackRepoPath, commit) = restoreGitMap.GetRestoreGitPath(fallbackPackageUrl, docsetPath, false);
-                var fallbackRepository = Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote, commit);
-
-                if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
-                {
-                    // build from loc repo directly with overwrite config
-                    // which means it's using source repo's git lock;
-                    return (fallbackRepository, restoreGitMap.GetSubRestoreGitMap(fallbackPackageUrl));
-                }
-
-                return (fallbackRepository, default);
+                var (fallbackRepoPath, commit) = restoreGitMap.GetRestoreGitPath(fallbackPackageUrl, docsetPath, true);
+                return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote, commit);
             }
 
             return default;

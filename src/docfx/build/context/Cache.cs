@@ -21,10 +21,14 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<(Docset docset, string pathToDocset), Lazy<Document>> _dependentDocuments
             = new ConcurrentDictionary<(Docset docset, string pathToDocset), Lazy<Document>>();
 
+        private readonly Input _input;
+
+        public Cache(Input input) => _input = input;
+
         public (List<Error> errors, JToken token) LoadYamlFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
-                var content = file.ReadText();
+                var content = _input.ReadString(file.FilePath);
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return YamlUtility.Parse(content, file.FilePath);
             })).Value;
@@ -32,7 +36,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, JToken token) LoadJsonFile(Document file)
             => _tokenCache.GetOrAdd(GetKeyFromFile(file), new Lazy<(List<Error>, JToken)>(() =>
             {
-                var content = file.ReadText();
+                var content = _input.ReadString(file.FilePath);
                 GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return JsonUtility.Parse(content, file.FilePath);
             })).Value;

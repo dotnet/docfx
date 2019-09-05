@@ -249,7 +249,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static unsafe byte[] GetContentFromHistory(string repoPath, string filePath, string committish)
+        public static unsafe byte[] ReadBytes(string repoPath, string filePath, string committish)
         {
             if (git_repository_open(out var repo, repoPath) != 0)
             {
@@ -285,10 +285,12 @@ namespace Microsoft.Docs.Build
             var blobSize = git_blob_rawsize(blob);
             var bytes = new Span<byte>(git_blob_rawcontent(blob).ToPointer(), blobSize);
             var result = new byte[blobSize];
+
             bytes.CopyTo(result);
 
             git_tree_entry_free(entry);
             git_repository_free(repo);
+
             return result;
         }
 

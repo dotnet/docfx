@@ -44,13 +44,13 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale, bool extend)
         {
-            if (!TryGetConfigPath(docsetPath, out var configPath))
+            var errors = new List<Error>();
+            var configObject = new JObject();
+            if (TryGetConfigPath(docsetPath, out var configPath))
             {
-                return (new List<Error>(), new Config());
+                var configFileName = PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
+                (errors, configObject) = LoadConfigObject(configFileName, File.ReadAllText(configPath));
             }
-
-            var configFileName = PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
-            var (errors, configObject) = LoadConfigObject(configFileName, File.ReadAllText(configPath));
 
             // apply options
             var optionConfigObject = options?.ToJObject();

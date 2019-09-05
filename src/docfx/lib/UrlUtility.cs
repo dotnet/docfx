@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -87,23 +87,6 @@ namespace Microsoft.Docs.Build
             var fragment = (sourceFragment == null || sourceFragment.Length == 0) ? targetFragment : "#" + sourceFragment;
 
             return targetPath + query + fragment;
-        }
-
-        /// <summary>
-        /// Get the git remote information from remote href
-        /// </summary>
-        /// <param name="remoteUrl">The git remote href like https://github.com/dotnet/docfx#master</param>
-        public static (string remote, string refspec, bool hasRefSpec) SplitGitUrl(string remoteUrl)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(remoteUrl));
-
-            var (path, _, fragment) = SplitUrl(remoteUrl);
-
-            path = path.TrimEnd('/', '\\');
-            var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
-            var refspec = hasRefSpec ? fragment.Substring(1) : "master";
-
-            return (path, refspec, hasRefSpec);
         }
 
         public static DependencyType FragmentToDependencyType(string fragment)
