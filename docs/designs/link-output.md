@@ -24,7 +24,7 @@ Docfx generate `links` and `bookmarks` information of each files into one single
 
 `bookmarks` includes all bookmarks ids generated/defined from source content, includes its inclusions(token/code-snippets)
 
-| Source content Examples        | Html content                             | Output in `links.json` |
+| Source content examples        | Html content                             | Output in `links.json` |
 | ------------------------------ | -----------------------------------------| ---------------------- |
 |  `# Title H1`                  | `<h1 id="title-h1">Title H1</h1>`        | title-h1               |
 |  `## Title H2`                 | `<h2 id="title-h2">Title H2</h2>`        | title-h2               |
