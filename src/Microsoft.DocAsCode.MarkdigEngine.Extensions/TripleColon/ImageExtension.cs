@@ -9,12 +9,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
     using System.Net;
+    using System.Security.Cryptography;
+    using System.Text;
 
-    public class ChromelessFormExtension : ITripleColonExtensionInfo
+    public class ImageExtension : ITripleColonExtensionInfo
     {
-        public string Name => "form";
+        public string Name => "image";
         public bool SelfClosing => true;
-        public bool EndingTripleColons => false;
+        public bool EndingTripleColons => true;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
@@ -28,23 +30,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
-            var model = string.Empty;
-            var action = string.Empty;
-            var submitText = string.Empty;
+            var src = string.Empty;
+            var alt = string.Empty;
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
                 var value = attribute.Value;
                 switch (name)
                 {
-                    case "model":
-                        model = value;
+                    case "alt-text":
+                        alt = value;
                         break;
-                    case "action":
-                        action = value;
-                        break;
-                    case "submittext":
-                        submitText = WebUtility.HtmlEncode(value);
+                    case "source":
+                        src = value;
                         break;
                     default:
                         logError($"Unexpected attribute \"{name}\".");
@@ -52,37 +50,30 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if (action == string.Empty)
+            if (string.IsNullOrEmpty(src))
             {
-                logError($"Form action must be specified.");
+                logError($"source is a required attribute. Please ensure you have specified a source attribute");
+            }
+            if (string.IsNullOrEmpty(alt))
+            {
+                logError($"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
+            }
+            if (string.IsNullOrEmpty(alt) || string.IsNullOrEmpty(src))
+            {
                 return false;
             }
-            if (submitText == string.Empty)
-            {
-                logError($"Submit text must be specified.");
-                return false;
-            }
-
-
+            var id = GetHtmlId(processor.LineIndex, processor.Column);
             htmlAttributes = new HtmlAttributes();
-            if (model != string.Empty)
-            {
-                htmlAttributes.AddProperty("data-model", model);
-            }
-            htmlAttributes.AddProperty("data-action", action);
-            htmlAttributes.AddClass("chromeless-form");
-
-            renderProperties.Add(new KeyValuePair<string, string>("submitText", submitText));
+            htmlAttributes.AddProperty("src", src);
+            htmlAttributes.AddProperty("alt", alt);
+            htmlAttributes.AddProperty("aria-describedby", id);
 
             RenderDelegate = (renderer, obj) =>
             {
-                var buttonText = "Submit";
-                obj.RenderProperties.TryGetValue("submitText", out buttonText);
-
-                renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine("<div></div>");
-                renderer.WriteLine($"<button class=\"button is-primary\" disabled=\"disabled\" type=\"submit\">{buttonText}</button>");
-                renderer.WriteLine("</form>");
+                renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+                renderer.WriteLine($"<div id=\"{id}\" class=\"visually-hidden\">");
+                renderer.WriteChildren(obj);
+                renderer.WriteLine("</div>");
 
                 return true;
             };
@@ -92,6 +83,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             return true;
+        }
+
+        public static string GetHtmlId(int line, int column)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var id = $"{InclusionContext.File}-{line}-{column}";
+                var fileBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(id));
+
+                return new Guid(fileBytes).ToString("N").Substring(0, 5);
+            }
         }
     }
 }

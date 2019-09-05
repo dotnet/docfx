@@ -460,9 +460,11 @@ test2
 
         [Trait("Related", "TemplateProcessor")]
         [Trait("Related", "Mustache")]
-        [Fact(Skip = "Disable as downgrading jint to 2.5.0 to fix toc external link issue")]
+        [Fact]
         public void TestMustacheTemplateWithScriptWithLongStringInModelShouldWork()
         {
+            // https://github.com/sebastienros/jint/issues/357
+
             var templateName = "TemplateFolder.html";
             string defaultTemplate = @"{{name}}";
             var name = "this is a looooooooooooooooooooooooooooooooooooog name";
@@ -499,6 +501,75 @@ exports.transform = function (model){
             Assert.Equal($"{{&quot;model&quot;:{{&quot;name&quot;:&quot;{longName}&quot;}},&quot;__global&quot;:{{}}}}", File.ReadAllText(outputFilePath1));
         }
 
+
+        [Fact]
+        public void JsRegexShouldNotShareStatusAmongFunctions()
+        {
+            // https://github.com/sebastienros/jint/issues/364
+
+            var templateName = "TemplateFolder.html";
+            string defaultTemplate = @"{{result1}},{{result2}}";
+            string script = @"
+exports.transform = function (model){
+    var url = 'https://www.example.com';
+    var result1 = isAbsolutePath(url);
+    var result2 = isAbsolutePath(url);
+
+    function isAbsolutePath(path) {
+        return /^(\w+:)?\/\//g.test(path);
+    }
+
+    return {
+        result1: result1,
+        result2: result2
+    };
+}";
+
+            var model = new object();
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "file",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "file.md",
+            };
+            ProcessTemplate(templateName, null, new[] { item1 }, model, _outputFolder,
+                Tuple.Create("default.html.tmpl", defaultTemplate),
+                Tuple.Create("default.html.js", script)
+                );
+            var outputFilePath1 = Path.Combine(_outputFolder, "file.html");
+            Assert.True(File.Exists(outputFilePath1));
+            Assert.Equal($"True,True", File.ReadAllText(outputFilePath1));
+        }
+
+        [Fact]
+        public void JsCreateDateShouldNotThrowError()
+        {
+            var templateName = "TemplateFolder.html";
+            string defaultTemplate = @"{{date}}";
+            string script = @"
+exports.transform = function (model){
+    return {
+        date: new Date(new Date('2019-08-19T05:40:30.4629999Z')).toISOString()
+    };
+}";
+
+            var model = new object();
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "file",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "file.md",
+            };
+            ProcessTemplate(templateName, null, new[] { item1 }, model, _outputFolder,
+                Tuple.Create("default.html.tmpl", defaultTemplate),
+                Tuple.Create("default.html.js", script)
+                );
+            var outputFilePath1 = Path.Combine(_outputFolder, "file.html");
+            Assert.True(File.Exists(outputFilePath1));
+            Assert.Equal($"2019-08-19T05:40:30.000Z", File.ReadAllText(outputFilePath1));
+        }
         #endregion
 
         #region Liquid template processor test
