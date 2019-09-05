@@ -150,7 +150,7 @@ namespace Microsoft.Docs.Build
 
         private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
         {
-            ErrorLog.ConsoleLog(ErrorLevel.Off, new Error(ErrorLevel.Off, code, message, origin.ToSourceInfo(line)));
+            Log.Write($"{code} {message}");
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
