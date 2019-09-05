@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (string path, string commit) GetRestoreGitPath(PackageUrl url, string docsetPath, bool bare)
+        public (string path, string commit) GetRestoreGitPath(PackageUrl url, string docsetPath, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
         {
             Debug.Assert(GitLock != null);
 
