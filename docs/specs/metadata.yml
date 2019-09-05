@@ -543,4 +543,15 @@ outputs:
   .errors.log: |
     ["warning","attribute-reserved","Attribute wordCount is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
     ["warning","attribute-reserved","Attribute document_id is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",3,1]
-
+---
+# Title in file metadata should overwrite H1
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      title:
+        docs/a.md: Title to overwrite
+  docs/a.md: |
+    # Title for a
+outputs:
+  docs/a.json: |
+    {"title": "Title to overwrite"}
