@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
-        private readonly Cache _cache;
         private readonly BuildScope _buildScope;
         private readonly WorkQueue<Document> _buildQueue;
         private readonly BookmarkValidator _bookmarkValidator;
@@ -27,7 +26,6 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
 
         public DependencyResolver(
-            Cache cache,
             Docset docset,
             Docset fallbackDocset,
             Input input,
@@ -43,7 +41,6 @@ namespace Microsoft.Docs.Build
             _input = input;
             _docset = docset;
             _fallbackDocset = fallbackDocset;
-            _cache = cache;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
             _bookmarkValidator = bookmarkValidator;

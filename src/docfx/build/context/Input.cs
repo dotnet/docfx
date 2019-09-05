@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace Microsoft.Docs.Build
 {
@@ -127,6 +126,8 @@ namespace Microsoft.Docs.Build
                         .ToArray();
 
                 case FileOrigin.Dependency:
+
+                    // todo: support list files in bare repo
                     var (dependencyPath, _) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], _docsetPath, true);
                     return Directory
                         .GetFiles(dependencyPath, "*", SearchOption.AllDirectories)

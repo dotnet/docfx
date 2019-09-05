@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
                     fallbackPackageUrl = new PackageUrl(fallbackRemote, "master");
                 }
 
-                var (fallbackRepoPath, commit) = restoreGitMap.GetRestoreGitPath(fallbackPackageUrl, docsetPath, true);
+                var (fallbackRepoPath, commit) = restoreGitMap.GetRestoreGitPath(fallbackPackageUrl, docsetPath, bare: false);
                 return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote, commit);
             }
 

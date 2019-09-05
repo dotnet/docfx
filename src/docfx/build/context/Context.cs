@@ -59,7 +59,6 @@ namespace Microsoft.Docs.Build
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
 
             DependencyResolver = new DependencyResolver(
-                Cache,
                 docset,
                 fallbackDocset,
                 Input,
