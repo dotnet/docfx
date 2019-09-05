@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
         {
             var markdownContext = new MarkdownContext(
                 GetToken,
-                (code, message, origin, line) => Log.Write(message),
+                LogInfo,
                 LogSuggestion,
                 LogWarning,
                 LogError,
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
         {
             var markdownContext = new MarkdownContext(
                 GetToken,
-                (code, message, origin, line) => Log.Write(message),
+                LogInfo,
                 LogSuggestion,
                 LogWarning,
                 LogError,
@@ -146,6 +146,11 @@ namespace Microsoft.Docs.Build
         private static string GetToken(string key)
         {
             return t_status.Value.Peek().Context.TemplateEngine.GetToken(key);
+        }
+
+        private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
+        {
+            ErrorLog.ConsoleLog(ErrorLevel.Off, new Error(ErrorLevel.Off, code, message, origin.ToSourceInfo(line)));
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
