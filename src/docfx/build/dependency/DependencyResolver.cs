@@ -234,6 +234,12 @@ namespace Microsoft.Docs.Build
             // apply resolve alias
             var pathToDocset = ApplyResolveAlias(referencingFile, relativePath);
 
+            // use the actual file name case
+            if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
+            {
+                pathToDocset = pathActualCase;
+            }
+
             // resolve from the current docset for files in dependencies
             if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
             {
@@ -243,12 +249,6 @@ namespace Microsoft.Docs.Build
                     return Document.Create(referencingFile.Docset, path, _input, _templateEngine);
                 }
                 return null;
-            }
-
-            // Use the actual file name case
-            if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
-            {
-                pathToDocset = pathActualCase;
             }
 
             // resolve from redirection files

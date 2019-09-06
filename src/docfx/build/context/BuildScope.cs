@@ -48,6 +48,14 @@ namespace Microsoft.Docs.Build
             Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
 
             Files.UnionWith(Redirections.Files);
+
+            var dependencyFileNames = new ListBuilder<string>();
+            ParallelUtility.ForEach(config.Dependencies, dependency =>
+            {
+                dependencyFileNames.AddRange(_input.ListFilesRecursive(FileOrigin.Dependency, dependency.Key).Select(f => Path.Combine(dependency.Key, f.Path).Replace("\\", "/")).ToList());
+            });
+
+            _fileNames.UnionWith(dependencyFileNames.ToList());
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)

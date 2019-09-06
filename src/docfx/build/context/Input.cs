@@ -126,13 +126,12 @@ namespace Microsoft.Docs.Build
                         .ToArray();
 
                 case FileOrigin.Dependency:
+                    var (dependencyPath, commit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], _docsetPath, true);
 
-                    // todo: support list files in bare repo
-                    var (dependencyPath, _) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], _docsetPath, true);
-                    return Directory
-                        .GetFiles(dependencyPath, "*", SearchOption.AllDirectories)
+                    // todo: get tree list from repository
+                    return GitUtility.ListTree(dependencyPath, commit)
                         .Select(path => new FilePath(
-                            Path.GetRelativePath(dependencyPath, path).Replace('\\', '/'), FileOrigin.Fallback))
+                            path.Replace('\\', '/'), dependencyName))
                         .ToArray();
 
                 default:

@@ -9,8 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
-using System.Text;
-
 using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
@@ -203,6 +201,12 @@ namespace Microsoft.Docs.Build
             // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
             // -f/ --force overrides these safeguards.
             ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
+        }
+
+        public static string[] ListTree(string cwd, string committish = null)
+        {
+            return Execute(cwd, $"ls-tree {committish ?? "HEAD"} -r --name-only")
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
