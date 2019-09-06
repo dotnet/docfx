@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
         private string RemoveSharingHost(string url, string hostName)
         {
-            if (url.StartsWith(hostName, StringComparison.OrdinalIgnoreCase))
+            if (url.StartsWith($"{hostName}/", StringComparison.OrdinalIgnoreCase))
             {
                 return url.Substring(hostName.Length);
             }

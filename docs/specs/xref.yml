@@ -42,6 +42,27 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
+# Should not remove host name if not sharing with xref href
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.co
+    xref: 
+      - 1.xrefmap.json
+  docs/a.md: Link to @System.String?displayProperty=fullName
+  1.xrefmap.json: |
+    {
+      "references":[{
+          "uid": "System.String",
+          "name": "String",
+          "fullName": "System.String",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "nameWithType": "System.String"
+      }]
+    }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a></p>\n"}
+---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
   docfx.yml: |
