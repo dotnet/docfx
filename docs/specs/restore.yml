@@ -286,14 +286,14 @@ repos:
     - files:
         docfx.yml: |
           files:
-            - "**/*"
+            - "docs/**/*"
             - "crrb/**/*"
           dependencies:
             crrb:
               url: https://docs.com/crrcontent/b
               inScope: true
             crrc: https://docs.com/crrcontent/c
-        a.md:
+        docs/a.md:
   https://docs.com/crrcontent/b:
     - files:
         b.md:
@@ -301,7 +301,7 @@ repos:
     - files:
         c.md:
 outputs:
-  a.json:
+  docs/a.json:
   crrb/b.json:
 ---
 # apply routes to the files in dependency repository
@@ -311,8 +311,8 @@ repos:
     - files:
         docfx.yml: |
           files:
-            - "**/*"
             - "crrb/**/*"
+            - "crrc/**/*"
           routes:
             "crrb/": "xyz"
           dependencies:
@@ -322,7 +322,6 @@ repos:
             crrc:
               url: https://docs.com/crrcontent/3
               inScope: true
-        a.md:
   https://docs.com/crrcontent/2:
     - files:
         b.md:
@@ -330,6 +329,5 @@ repos:
     - files:
         c.md:
 outputs:
-  a.json:
   xyz/b.json:
   crrc/c.json:
