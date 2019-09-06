@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
                     return Directory
                         .GetFiles(dependencyPath, "*", SearchOption.AllDirectories)
                         .Select(path => new FilePath(
-                            Path.Combine(dependencyName, Path.GetRelativePath(dependencyPath, path)).Replace('\\', '/'), FileOrigin.Dependency))
+                            Path.GetRelativePath(dependencyPath, path).Replace('\\', '/'), dependencyName))
                         .ToArray();
 
                 default:

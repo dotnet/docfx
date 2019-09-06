@@ -274,3 +274,54 @@ cache:
 outputs:
   docs/a.json: |
     {"conceptual":"<p>233333</p>"}
+---
+# build content in dependency repository
+# content in dependency repository:
+#   1. by default will not be built
+#   2. will be built when:
+#      1. explicitly turn on the inScope flag
+#      2. specify the dependency name in `build scope` and `routes`
+repos:
+  https://docs.com/crrcontent/a:
+    - files:
+        docfx.yml: |
+          files:
+            - "**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              url: https://docs.com/crrcontent/b
+              inScope: true
+            crrc: https://docs.com/crrcontent/c
+        a.md:
+  https://docs.com/crrcontent/b:
+    - files:
+        b.md:
+  https://docs.com/crrcontent/c:
+    - files:
+        c.md:
+outputs:
+  a.json:
+  crrb/b.json:
+---
+# routes files in dependency repository
+repos:
+  https://docs.com/crrcontent/1:
+    - files:
+        docfx.yml: |
+          files:
+            - "**/*"
+            - "crrb/**/*"
+          routes:
+            "crrb/": "xyz"
+          dependencies:
+            crrb:
+              url: https://docs.com/crrcontent/2
+              inScope: true
+        a.md:
+  https://docs.com/crrcontent/2:
+    - files:
+        b.md:
+outputs:
+  a.json:
+  xyz/b.json:

@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 if (inScope)
                 {
                     InScopeDependencyNames.Add(dependencyName);
-                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob, dependencyName);
                     Files.UnionWith(dependencyFiles);
                 }
             }
@@ -77,7 +77,8 @@ namespace Microsoft.Docs.Build
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file.Path))
+                    var path = Path.Combine(dependencyName ?? "", file.Path).Replace("\\", "/");
+                    if (glob(path))
                     {
                         files.Add(Document.Create(docset, file, _input, _templateEngine));
                     }
