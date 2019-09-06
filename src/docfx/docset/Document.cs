@@ -347,17 +347,16 @@ namespace Microsoft.Docs.Build
         {
             // the latter rule takes precedence of the former rule
             var pathToMatch = Path.Combine(path.DependencyName ?? "", path.Path).Replace("\\", "/");
-            var matchedPath = pathToMatch;
             foreach (var (source, dest) in routes)
             {
                 var result = ApplyRoutes(pathToMatch, source, dest);
                 if (result != null)
                 {
-                    matchedPath = result;
+                    pathToMatch = result;
                     break;
                 }
             }
-            return PathUtility.NormalizeFile(Path.Combine(siteBasePath, matchedPath));
+            return PathUtility.NormalizeFile(Path.Combine(siteBasePath, pathToMatch));
         }
 
         private static string ApplyRoutes(string path, string source, string dest)
