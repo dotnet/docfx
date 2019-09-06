@@ -98,5 +98,5 @@ In above example, it includes **all files** except `includes` folder of `https:/
 
 > Note: The default value of "inScope" is false
 
-> Note: If the `inscope` flag of dependency repository is not turned on obviously, all files will not be build/published even the `dependency alias` is used, and also links to files/resources in these dependency repositories will be treated as warnings.
+> Note: If the `inscope` flag of dependency repository is not turned on explicitly, all files will not be build/published even the `dependency alias` is used, and also links to files/resources in these dependency repositories will be treated as warnings.
 
