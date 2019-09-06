@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public HashSet<string> InScopeDependencyNames { get; }
+        public HashSet<string> InScopeDependencyNames { get; } = new HashSet<string>();
 
         public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine)
         {
