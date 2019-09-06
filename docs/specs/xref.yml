@@ -66,6 +66,8 @@ inputs:
       - xrefmap.zip
   docs/a.md: Link to @System.String
   xrefmap.zip: |
+    a.json: |
+      { "references":[{"uid": "System.String", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
     xrefmap.yml: |
       references:
         - uid: System.String
@@ -73,8 +75,6 @@ inputs:
           fullName: System.String
           href: https://docs.microsoft.com/en-us/dotnet/api/system.string
           nameWithType: System.String
-    a.json: |
-      { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
