@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
             // Link to dependent repo, don't build the file, leave href as is
             if (file.FilePath.Origin == FileOrigin.Dependency && !_buildScope.InScopeDependencyNames.Contains(file.FilePath.DependencyName))
             {
-                return (Errors.LinkIsDependency(href, file), href, fragment, linkType, null, false);
+                return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
             if (file?.RedirectionUrl != null)
