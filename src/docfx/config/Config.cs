@@ -16,7 +16,6 @@ namespace Microsoft.Docs.Build
             "_site/**",             // Default output location
             "localization/**",      // Localization file when using folder convention
             "_themes/**",           // Default template location
-            "**/includes/**",       // Default includes folder
         };
 
         private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };

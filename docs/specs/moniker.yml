@@ -1311,6 +1311,7 @@ outputs:
 # Resolving monikerzone in token should base on root file's moniker
 inputs:
   docfx.yml: |
+    exclude: "**/includes/**"
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'
