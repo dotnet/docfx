@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, PackageUrl> Dependencies = new Dictionary<string, PackageUrl>(PathUtility.PathComparer);
+        public readonly Dictionary<string, DependencyPackageUrl> Dependencies = new Dictionary<string, DependencyPackageUrl>(PathUtility.PathComparer);
 
         /// <summary>
         /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file

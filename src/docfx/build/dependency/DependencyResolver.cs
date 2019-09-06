@@ -28,12 +28,12 @@ namespace Microsoft.Docs.Build
         public DependencyResolver(
             Docset docset,
             Docset fallbackDocset,
+            Dictionary<string, Docset> dependencies,
             Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
-            RestoreGitMap restoreGitMap,
             DependencyMapBuilder dependencyMapBuilder,
             Lazy<XrefResolver> xrefResolver,
             TemplateEngine templateEngine)
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
             _resolveAlias = LoadResolveAlias(docset.Config);
-            _dependencies = LoadDependencies(docset, restoreGitMap);
+            _dependencies = dependencies;
             _templateEngine = templateEngine;
         }
 
@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Link to dependent repo, don't build the file, leave href as is
-            if (file.FilePath.Origin == FileOrigin.Dependency)
+            if (file.FilePath.Origin == FileOrigin.Dependency && !_buildScope.InScopeDependencyNames.Contains(file.FilePath.DependencyName))
             {
                 return (Errors.LinkIsDependency(href, file), href, fragment, linkType, null, false);
             }
@@ -329,21 +329,6 @@ namespace Microsoft.Docs.Build
             }
 
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
-        }
-
-        private static Dictionary<string, Docset> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
-        {
-            var config = docset.Config;
-            var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
-
-            foreach (var (name, dependency) in config.Dependencies)
-            {
-                var dir = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
-
-                result.TryAdd(name, new Docset(dir, docset.Locale, config));
-            }
-
-            return result;
         }
     }
 }

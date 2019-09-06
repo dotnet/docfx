@@ -2,6 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {
@@ -38,6 +41,7 @@ namespace Microsoft.Docs.Build
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
+            var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
             DependencyMapBuilder = new DependencyMapBuilder();
             _xrefResolver = new Lazy<XrefResolver>(() => new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
@@ -48,7 +52,7 @@ namespace Microsoft.Docs.Build
             Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
-            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, TemplateEngine);
+            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
@@ -61,15 +65,34 @@ namespace Microsoft.Docs.Build
             DependencyResolver = new DependencyResolver(
                 docset,
                 fallbackDocset,
+                dependencyDocsets.
+                    ToDictionary(
+                        k => k.Key,
+                        v => v.Value.docset,
+                        PathUtility.PathComparer),
                 Input,
                 BuildScope,
                 BuildQueue,
                 GitCommitProvider,
                 BookmarkValidator,
-                restoreGitMap,
                 DependencyMapBuilder,
                 _xrefResolver,
                 TemplateEngine);
+        }
+
+        private static Dictionary<string, (Docset docset, bool inScope)> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
+        {
+            var config = docset.Config;
+            var result = new Dictionary<string, (Docset docset, bool inScope)>(config.Dependencies.Count, PathUtility.PathComparer);
+
+            foreach (var (name, dependency) in config.Dependencies)
+            {
+                var dir = restoreGitMap.GetGitRestorePath(dependency.Url, docset.DocsetPath);
+
+                result.TryAdd(name, (new Docset(dir, docset.Locale, config), dependency.InScope));
+            }
+
+            return result;
         }
 
         public void Dispose()

@@ -127,11 +127,11 @@ namespace Microsoft.Docs.Build
                         .ToArray();
 
                 case FileOrigin.Dependency:
-                    var dependencyPath = _restoreMap.GetGitRestorePath(_config.Dependencies[dependencyName], _docsetPath);
+                    var dependencyPath = _restoreMap.GetGitRestorePath(_config.Dependencies[dependencyName].Url, _docsetPath);
                     return Directory
                         .GetFiles(dependencyPath, "*", SearchOption.AllDirectories)
                         .Select(path => new FilePath(
-                            Path.GetRelativePath(dependencyPath, path).Replace('\\', '/'), FileOrigin.Fallback))
+                            Path.Combine(dependencyName, Path.GetRelativePath(dependencyPath, path)).Replace('\\', '/'), FileOrigin.Dependency))
                         .ToArray();
 
                 default:
@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
                     return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
-                    var dependencyPath = _restoreMap.GetGitRestorePath(_config.Dependencies[file.DependencyName], _docsetPath);
+                    var dependencyPath = _restoreMap.GetGitRestorePath(_config.Dependencies[file.DependencyName].Url, _docsetPath);
                     return (dependencyPath, file.Path, file.Commit);
 
                 case FileOrigin.Fallback:

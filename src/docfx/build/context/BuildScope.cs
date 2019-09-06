@@ -27,7 +27,9 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
+        public HashSet<string> InScopeDependencyNames { get; }
+
+        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
@@ -48,6 +50,16 @@ namespace Microsoft.Docs.Build
             Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
 
             Files.UnionWith(Redirections.Files);
+
+            foreach (var (dependencyName, (dependencyDocset, inScope)) in dependencyDocsets)
+            {
+                if (inScope)
+                {
+                    InScopeDependencyNames.Add(dependencyName);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob);
+                    Files.UnionWith(dependencyFiles);
+                }
+            }
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)
@@ -56,13 +68,12 @@ namespace Microsoft.Docs.Build
         }
 
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(
-            FileOrigin origin, Docset docset, Func<string, bool> glob)
+            FileOrigin origin, Docset docset, Func<string, bool> glob, string dependencyName = null)
         {
             using (Progress.Start("Globbing files"))
             {
-                var docsetPath = docset.DocsetPath;
                 var files = new ListBuilder<Document>();
-                var fileNames = _input.ListFilesRecursive(origin);
+                var fileNames = _input.ListFilesRecursive(origin, dependencyName);
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {

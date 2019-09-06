@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 
 namespace Microsoft.Docs.Build
 {
@@ -182,9 +183,10 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (_, dependency) in config.Dependencies)
             {
-                if (dependency.Type == PackageType.Git)
+                var dependencyUrl = dependency.Url;
+                if (dependencyUrl.Type == PackageType.Git)
                 {
-                    yield return (dependency.Remote, dependency.Branch, RestoreGitFlags.None);
+                    yield return (dependencyUrl.Remote, dependencyUrl.Branch, RestoreGitFlags.None);
                 }
             }
 
