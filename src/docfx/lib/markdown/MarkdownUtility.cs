@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
         private static List<string> GetMonikerRange(SourceInfo<string> monikerRange)
         {
             var status = t_status.Value.Peek();
-            var (error, monikers) = status.Context.MonikerProvider.GetZoneLevelMonikers((Document)InclusionContext.File, monikerRange);
+            var (error, monikers) = status.Context.MonikerProvider.GetZoneLevelMonikers((Document)InclusionContext.RootFile, monikerRange);
             status.Errors.AddIfNotNull(error);
             return monikers;
         }
