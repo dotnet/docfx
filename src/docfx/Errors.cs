@@ -44,9 +44,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error RedirectionUrlNotExisted(SourceInfo<string> source)
         {
-            var msg = $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true,"
-                        + $"please use a valid redirection url or add this rule to `redirectionsWithoutId`";
-            return new Error(ErrorLevel.Suggestion, "redirection-url-not-existed", msg, source);
+            return new Error(ErrorLevel.Suggestion, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`", source);
         }
 
         /// <summary>
