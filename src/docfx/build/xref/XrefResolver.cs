@@ -46,7 +46,6 @@ namespace Microsoft.Docs.Build
                 return (xrefError, null, null, null);
             }
 
-            var resolvedHref = RemoveSharingHost(xrefSpec.Href, referencingFile.Docset.HostName);
             var name = xrefSpec.GetXrefPropertyValueAsString("name");
             var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
 
@@ -58,8 +57,8 @@ namespace Microsoft.Docs.Build
             {
                 queries["view"] = moniker;
             }
-            resolvedHref = UrlUtility.MergeUrl(
-                resolvedHref,
+            var resolvedHref = UrlUtility.MergeUrl(
+                RemoveSharingHost(xrefSpec.Href, referencingFile.Docset.HostName),
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment.Substring(1));
 
