@@ -362,6 +362,8 @@ namespace Microsoft.Docs.Build
 
         private static string ApplyRoutes(string path, string source, string dest)
         {
+            Debug.Assert(!string.IsNullOrEmpty(path));
+
             var (match, isFileMatch, remainingPath) = PathUtility.Match(path, source);
 
             if (match)

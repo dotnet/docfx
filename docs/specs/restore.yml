@@ -280,7 +280,7 @@ outputs:
 #   1. by default will not be built
 #   2. will be built when:
 #      1. explicitly turn on the inScope flag
-#      2. specify the dependency name in `build scope` and `routes`
+#      2. specify the dependency name in `build scope`
 repos:
   https://docs.com/crrcontent/a:
     - files:
@@ -304,7 +304,8 @@ outputs:
   a.json:
   crrb/b.json:
 ---
-# routes files in dependency repository
+# apply routes to the files in dependency repository
+# if no route applied, crr files will be built to `{dependencyName}/` folder
 repos:
   https://docs.com/crrcontent/1:
     - files:
@@ -318,10 +319,17 @@ repos:
             crrb:
               url: https://docs.com/crrcontent/2
               inScope: true
+            crrc:
+              url: https://docs.com/crrcontent/3
+              inScope: true
         a.md:
   https://docs.com/crrcontent/2:
     - files:
         b.md:
+  https://docs.com/crrcontent/3:
+    - files:
+        c.md:
 outputs:
   a.json:
   xyz/b.json:
+  crrc/c.json:
