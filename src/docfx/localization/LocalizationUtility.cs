@@ -48,13 +48,13 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, Docset docset, Config config, string locale, out string localizationDocsetParh, out Repository localizationRepository)
+        public static bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, Docset docset, Config config, string locale, out string localizationDocsetPath, out Repository localizationRepository)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
             Debug.Assert(config != null);
 
-            localizationDocsetParh = null;
+            localizationDocsetPath = null;
             localizationRepository = null;
             switch (config.Localization.Mapping)
             {
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                             locale,
                             config.Localization.DefaultLocale);
                         var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(locRemote, locBranch), docset.DocsetPath, false);
-                        localizationDocsetParh = locRepoPath;
+                        localizationDocsetPath = locRepoPath;
                         localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
                         break;
                     }
@@ -84,8 +84,8 @@ namespace Microsoft.Docs.Build
                         {
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
-                        localizationDocsetParh = Path.Combine(docset.DocsetPath, "localization", locale);
-                        localizationRepository = Repository.Create(localizationDocsetParh, branch: null, repoUrl: null, commit: null);
+                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
+                        localizationRepository = Repository.Create(localizationDocsetPath, branch: null, repoUrl: null, commit: null);
                         break;
                     }
                 default:
