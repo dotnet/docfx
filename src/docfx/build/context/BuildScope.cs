@@ -78,6 +78,15 @@ namespace Microsoft.Docs.Build
 
         private static Func<string, bool> CreateGlob(Config config)
         {
+            if (config.FileGroups.Length > 0)
+            {
+                var globs = config.FileGroups.Select(fileGroup => GlobUtility.CreateGlobMatcher(
+                    fileGroup.Files,
+                    fileGroup.Exclude.Concat(Config.DefaultExclude).ToArray()))
+                   .ToArray();
+                return new Func<string, bool>((file) => globs.Any(glob => glob(file)));
+            }
+
             return GlobUtility.CreateGlobMatcher(
                 config.Files,
                 config.Exclude.Concat(Config.DefaultExclude).ToArray());
