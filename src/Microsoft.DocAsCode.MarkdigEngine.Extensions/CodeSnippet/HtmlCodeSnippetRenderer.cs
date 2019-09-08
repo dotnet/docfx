@@ -218,7 +218,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (sourceObject == null)
             {
-                _context.LogError("source-code-notfound", string.Format("The name '{0}' is not present in the notebook file.", tagName), obj);
+                _context.LogError("tag-notfound", string.Format("The name '{0}' is not present in the notebook file.", tagName), obj);
                 return string.Empty;
             }
 
