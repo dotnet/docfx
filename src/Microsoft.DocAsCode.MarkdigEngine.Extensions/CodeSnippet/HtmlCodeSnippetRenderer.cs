@@ -212,13 +212,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             catch (JsonException)
             {
-                _context.LogError("mutiple-tags-with-same-name", string.Format("The name '{0}' is not unique in the notebook file.", tagName), obj);
+                _context.LogError("mutiple-tags-with-same-name", string.Format("Multiple entries with the name '{0}' where found in the notebook.", tagName), obj);
                 return string.Empty;
             }
 
             if (sourceObject == null)
             {
-                _context.LogError("tag-notfound", string.Format("The name '{0}' is not present in the notebook file.", tagName), obj);
+                _context.LogError("tag-not-found", string.Format("The name '{0}' is not present in the notebook file.", tagName), obj);
                 return string.Empty;
             }
 
