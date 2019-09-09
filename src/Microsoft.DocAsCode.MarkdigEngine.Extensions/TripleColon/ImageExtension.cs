@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Net;
+    using System.Net.Mime;
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -18,9 +19,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public string Name => "image";
         public bool SelfClosing => true;
-        public bool EndingTripleColons { get; set; } = false;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
-        private List<ImageProperties> imagesList = new List<ImageProperties>();
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
         {
@@ -57,21 +56,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if(type == "complex")
+            if(string.IsNullOrEmpty(type))
             {
-                EndingTripleColons = true;
-            } else
-            {
-                EndingTripleColons = false;
+                type = "content";
             }
 
             if (string.IsNullOrEmpty(src))
             {
                 logError($"source is a required attribute. Please ensure you have specified a source attribute.");
-            }
-            if (string.IsNullOrEmpty(type))
-            {
-                logError($"type is a required attribute. Please ensure you have specified a type attribute. Options (\"comples\", \"content\", \"icon\")");
             }
             if (string.IsNullOrEmpty(alt) && type != "icon")
             {
@@ -81,13 +73,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return false;
             }
-            var id = GetHtmlId(processor.LineIndex, processor.Column);
-            var image = new ImageProperties
-            {
-                id = id,
-                type = type
-            };
-            imagesList.Add(image);
             htmlAttributes = new HtmlAttributes();
             htmlAttributes.AddProperty("src", src);
             if (type == "icon")
@@ -97,13 +82,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 htmlAttributes.AddProperty("alt", alt);
             }
+            var id = GetHtmlId(processor.LineIndex, processor.Column);
             if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
-            var imageCount = 0;
             RenderDelegate = (renderer, obj) =>
             {
-                image = imagesList[imageCount];
-                imageCount++;
                 //if obj.Count == 0, this signifies that there is no long description for the image.
                 if(obj.Count == 0)
                 {
@@ -115,9 +98,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         logError($"If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
                     }
-
+                    var htmlId = GetHtmlId(obj.Line, obj.Column);
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
-                    renderer.WriteLine($"<div id=\"{image.id}\" class=\"visually-hidden\">");
+                    renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
                     renderer.WriteChildren(obj);
                     renderer.WriteLine("</div>");
                 }
@@ -140,6 +123,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var fileBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(id));
 
                 return new Guid(fileBytes).ToString("N").Substring(0, 5);
+            }
+        }
+
+        public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)
+        {
+            if(attributes != null
+               && attributes.ContainsKey("type")
+               && attributes["type"] == "complex")
+            {
+                return true;
+            } else
+            {
+                return false;
             }
         }
     }
