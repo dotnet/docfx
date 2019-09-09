@@ -17,6 +17,6 @@ namespace Microsoft.Docs.Build
 
         string RunMustache(string fileName, JToken model);
 
-        JObject RunJint(string fileName, JObject model);
+        JToken RunJint(string fileName, JToken model);
     }
 }

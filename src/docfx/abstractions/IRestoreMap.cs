@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 
         string GetFilePath(SourceInfo<string> url);
 
-        (string path, string commit) GetGitRepository(string url, string branch);
+        (string path, string commit) GetGitRepositoryPath(string url, string branch);
 
         bool TryGetGitRepositoryPath(string url, string branch, out string path, out string commit);
     }
