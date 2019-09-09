@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using DotLiquid;
-using Microsoft.Graph;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
