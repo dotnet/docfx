@@ -56,7 +56,7 @@ items:
     license: MIT
     usage:
       init: "git clone https://github.com/ovasquez/docfx-material.git material"
-      command: "-t default, material/material"
+      command: "-t default,material/material"
       config: '"template":["default","material/material"]'
   - name: darkFX
     description: A dark theme for DocFX .
@@ -73,7 +73,7 @@ items:
     license: MIT
     usage:
       init: "git clone https://github.com/steffen-wilke/darkfx.git darkfx"
-      command: "-t default, templates/darkfx"
+      command: "-t default,templates/darkfx"
       config: '"template":["default","templates/darkfx"]'
 description: |
   # Dashboard for Templates
