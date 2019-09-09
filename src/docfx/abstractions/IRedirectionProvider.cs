@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
     {
         bool TryGetRedirection(string sourcePath, out string redirectUrl);
 
-        bool TryGetRename(string sourcePath, out string renamedPath);
+        bool TryGetRename(string sourcePath, out string originalPath);
     }
 }

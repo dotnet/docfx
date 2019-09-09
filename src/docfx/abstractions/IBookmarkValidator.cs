@@ -8,7 +8,5 @@ namespace Microsoft.Docs.Build
         void AddLink(FilePath declaringFile, FilePath targetFile, SourceInfo<string> url);
 
         void AddBookmarks(FilePath file, string[] bookmarks);
-
-        void Validate();
     }
 }

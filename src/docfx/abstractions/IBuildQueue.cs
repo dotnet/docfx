@@ -6,7 +6,5 @@ namespace Microsoft.Docs.Build
     internal interface IBuildQueue
     {
         void Enqueue(FilePath file);
-
-        void Drain();
     }
 }

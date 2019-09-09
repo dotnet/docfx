@@ -6,7 +6,5 @@ namespace Microsoft.Docs.Build
     internal interface IDependencyTracker
     {
         void TrackDependency(FilePath from, FilePath to, DependencyType type);
-
-        DependencyMap CreateDependencyMap();
     }
 }

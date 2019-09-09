@@ -6,7 +6,5 @@ namespace Microsoft.Docs.Build
     internal interface IPublishManifestBuilder
     {
         bool TryAdd(FilePath file, PublishItem item);
-
-        PublishModel CreatePublishManifest();
     }
 }

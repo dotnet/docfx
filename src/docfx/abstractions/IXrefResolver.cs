@@ -9,7 +9,5 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> href, FilePath referencingFile);
 
         (Error error, IXrefSpec xrefSpec) ResolveXrefSpec(SourceInfo<string> uid, FilePath referencingFile);
-
-        XrefMapModel CreateXrefMap();
     }
 }
