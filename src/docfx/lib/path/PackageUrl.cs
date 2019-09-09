@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     /// The commit-sh can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class PackageUrl : IEquatable<PackageUrl>, IComparable<PackageUrl>
+    internal class PackageUrl : IEquatable<PackageUrl>
     {
         public PackageType Type { get; set; }
 
@@ -85,22 +85,6 @@ namespace Microsoft.Docs.Build
         public override int GetHashCode()
         {
             return HashCode.Combine(Type, Path, RemoteUrl, Branch);
-        }
-
-        public int CompareTo(PackageUrl other)
-        {
-            var result = Type.CompareTo(other.Type);
-
-            if (result == 0)
-                result = string.Compare(Path, other.Path, PathUtility.PathComparison);
-
-            if (result == 0)
-                result = string.Compare(RemoteUrl, other.RemoteUrl);
-
-            if (result == 0)
-                result = string.Compare(Branch, other.Branch);
-
-            return result;
         }
 
         public bool Equals(PackageUrl other)
