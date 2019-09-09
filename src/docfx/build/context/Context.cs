@@ -37,10 +37,9 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<XrefResolver> _xrefResolver;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
-            var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
             DependencyMapBuilder = new DependencyMapBuilder();
             _xrefResolver = new Lazy<XrefResolver>(() => new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
@@ -77,21 +76,6 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 _xrefResolver,
                 TemplateEngine);
-        }
-
-        private static Dictionary<string, (Docset docset, bool inScope)> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
-        {
-            var config = docset.Config;
-            var result = new Dictionary<string, (Docset docset, bool inScope)>(config.Dependencies.Count, PathUtility.PathComparer);
-
-            foreach (var (name, dependency) in config.Dependencies)
-            {
-                var dir = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
-
-                result.TryAdd(name, (new Docset(dir, docset.Locale, config), dependency.ExtendToBuild));
-            }
-
-            return result;
         }
 
         public void Dispose()
