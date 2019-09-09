@@ -27,61 +27,71 @@ namespace Microsoft.Docs.Build
 
         public string GetGitRestorePath(PackageUrl packageUrl)
         {
-            var path = TryGetGitRestorePath(packageUrl);
-            if (path != null)
-            {
-                return path;
-            }
-
-            switch (packageUrl.Type)
-            {
-                case PackageType.Folder:
-                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
-                    // TODO: populate source info
-                    throw Errors.FileNotFound(new SourceInfo<string>(packageUrl.Path)).ToException();
-
-                case PackageType.Git:
-                    throw Errors.NeedRestore(packageUrl.ToString()).ToException();
-
-                default:
-                    throw new NotSupportedException($"Unknown package url: '{packageUrl}'");
-            }
-        }
-
-        public string TryGetGitRestorePath(PackageUrl packageUrl)
-        {
             switch (packageUrl.Type)
             {
                 case PackageType.Folder:
                     var fullPath = Path.Combine(_docsetPath, packageUrl.Path);
-                    return Directory.Exists(fullPath) ? fullPath : default;
+                    if (Directory.Exists(fullPath))
+                    {
+                        return fullPath;
+                    }
+
+                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
+                    // TODO: populate source info
+                    throw Errors.FileNotFound(new SourceInfo<string>(packageUrl.Path)).ToException();
 
                 case PackageType.Git:
                     var gitLock = _dependencyGitLock.GetGitLock(packageUrl);
 
                     if (gitLock is null)
                     {
-                        return default;
+                        throw Errors.NeedRestore($"{packageUrl}").ToException();
                     }
 
                     if (!_acquiredGits.TryGetValue((packageUrl, gitLock.Commit), out var gitInfo))
                     {
-                        return default;
+                        throw Errors.NeedRestore($"{packageUrl}").ToException();
                     }
 
                     if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git is null)
                     {
-                        return default;
+                        throw Errors.NeedRestore($"{packageUrl}").ToException();
                     }
 
                     var path = Path.Combine(AppData.GetGitDir(packageUrl.Remote), gitInfo.path);
-                    Debug.Assert(Directory.Exists(path));
+                    if (!Directory.Exists(path))
+                    {
+                        throw Errors.NeedRestore($"{packageUrl}").ToException();
+                    }
 
                     return path;
 
                 default:
-                    return default;
+                    throw new NotSupportedException($"Unknown package url: '{packageUrl}'");
             }
+        }
+
+        public bool BranchExists(string remote, string branch)
+        {
+            var packageUrl = new PackageUrl(remote, branch);
+            var gitLock = _dependencyGitLock.GetGitLock(packageUrl);
+
+            if (gitLock is null)
+            {
+                return false;
+            }
+
+            if (!_acquiredGits.TryGetValue((packageUrl, gitLock.Commit), out var gitInfo))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(gitInfo.path) || gitInfo.git is null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void Dispose()

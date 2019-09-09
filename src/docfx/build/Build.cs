@@ -205,9 +205,9 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    var fallbackRepoPath = restoreGitMap.TryGetGitRestorePath(new PackageUrl(fallbackRemote, branch));
-                    if (fallbackRepoPath != null)
+                    if (restoreGitMap.BranchExists(fallbackRemote, branch))
                     {
+                        var fallbackRepoPath = restoreGitMap.GetGitRestorePath(new PackageUrl(fallbackRemote, branch));
                         return Repository.Create(fallbackRepoPath, branch, fallbackRemote);
                     }
                 }
