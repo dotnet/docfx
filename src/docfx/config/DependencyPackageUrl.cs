@@ -6,17 +6,18 @@ using Newtonsoft.Json;
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(ShortHandConverter))]
-    internal readonly struct DependencyPackageUrl
+    internal class DependencyPackageUrl : PackageUrl
     {
-        public readonly PackageUrl Url;
+        public bool ExtendToBuild { get; set; }
 
-        public readonly bool InScope;
+        public DependencyPackageUrl()
+            : base()
+        {
+        }
 
         public DependencyPackageUrl(string url)
-            : this()
+            : base(url)
         {
-            Url = new PackageUrl(url);
-            InScope = false;
         }
     }
 }

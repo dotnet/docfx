@@ -182,10 +182,9 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (_, dependency) in config.Dependencies)
             {
-                var dependencyUrl = dependency.Url;
-                if (dependencyUrl.Type == PackageType.Git)
+                if (dependency.Type == PackageType.Git)
                 {
-                    yield return (dependencyUrl.Remote, dependencyUrl.Branch, RestoreGitFlags.None);
+                    yield return (dependency.RemoteUrl, dependency.Branch, RestoreGitFlags.None);
                 }
             }
 
@@ -194,7 +193,7 @@ namespace Microsoft.Docs.Build
                 var localizedTemplate = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
                 if (localizedTemplate.Type == PackageType.Git)
                 {
-                    yield return (localizedTemplate.Remote, localizedTemplate.Branch, RestoreGitFlags.None);
+                    yield return (localizedTemplate.RemoteUrl, localizedTemplate.Branch, RestoreGitFlags.None);
                 }
             }
 

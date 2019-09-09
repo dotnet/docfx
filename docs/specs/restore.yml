@@ -290,8 +290,10 @@ repos:
             - "crrb/**/*"
           dependencies:
             crrb:
-              url: https://docs.com/crrcontent/b
-              inScope: true
+              type: git
+              remoteUrl: https://docs.com/crrcontent/b
+              branch: master
+              extendToBuild: true
             crrc: https://docs.com/crrcontent/c
         docs/a.md:
   https://docs.com/crrcontent/b:
@@ -317,11 +319,14 @@ repos:
             "crrb/": "xyz"
           dependencies:
             crrb:
-              url: https://docs.com/crrcontent/2
-              inScope: true
+              type: git
+              remoteUrl: https://docs.com/crrcontent/2
+              branch: master
+              extendToBuild: true
             crrc:
-              url: https://docs.com/crrcontent/3
-              inScope: true
+              type: git
+              remoteUrl: https://docs.com/crrcontent/3
+              extendToBuild: true
   https://docs.com/crrcontent/2:
     - files:
         b.md:

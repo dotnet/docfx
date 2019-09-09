@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DotLiquid;
+using Microsoft.Graph;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -188,7 +190,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly PackageUrl Template;
+        public readonly PackageUrl Template = new PackageUrl();
 
         /// <summary>
         /// Gets the dependency lock file path

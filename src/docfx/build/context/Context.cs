@@ -86,9 +86,9 @@ namespace Microsoft.Docs.Build
 
             foreach (var (name, dependency) in config.Dependencies)
             {
-                var dir = restoreGitMap.GetGitRestorePath(dependency.Url, docset.DocsetPath);
+                var dir = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
 
-                result.TryAdd(name, (new Docset(dir, docset.Locale, config), dependency.InScope));
+                result.TryAdd(name, (new Docset(dir, docset.Locale, config), dependency.ExtendToBuild));
             }
 
             return result;

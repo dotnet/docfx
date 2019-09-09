@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
@@ -14,23 +15,26 @@ namespace Microsoft.Docs.Build
     /// The commit-sh can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal readonly struct PackageUrl
+    internal class PackageUrl : IEquatable<PackageUrl>, IComparable<PackageUrl>
     {
-        public readonly PackageType Type;
+        public PackageType Type { get; set; }
 
-        public readonly string Path;
+        public string Path { get; set; }
 
-        public readonly string Remote;
+        public string RemoteUrl { get; set; }
 
-        public readonly string Branch;
+        public string Branch { get; set; } = "master";
+
+        public PackageUrl()
+        {
+        }
 
         public PackageUrl(string url)
-            : this()
         {
             if (UrlUtility.IsHttp(url))
             {
                 Type = PackageType.Git;
-                (Remote, Branch) = SplitGitUrl(url);
+                (RemoteUrl, Branch) = SplitGitUrl(url);
             }
             else
             {
@@ -45,7 +49,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(branch != null);
 
             Type = PackageType.Git;
-            Remote = remote;
+            RemoteUrl = remote;
             Branch = branch;
             Path = null;
         }
@@ -58,7 +62,7 @@ namespace Microsoft.Docs.Build
                     return Path;
 
                 case PackageType.Git:
-                    return $"{Remote}#{Branch}";
+                    return $"{RemoteUrl}#{Branch}";
 
                 default:
                     return Type.ToString();
@@ -76,6 +80,45 @@ namespace Microsoft.Docs.Build
             var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
             return (path, refspec);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Type, Path, RemoteUrl, Branch);
+        }
+
+        public int CompareTo(PackageUrl other)
+        {
+            var result = Type.CompareTo(other.Type);
+
+            if (result == 0)
+                result = string.Compare(Path, other.Path, PathUtility.PathComparison);
+
+            if (result == 0)
+                result = string.Compare(RemoteUrl, other.RemoteUrl);
+
+            if (result == 0)
+                result = string.Compare(Branch, other.Branch);
+
+            return result;
+        }
+
+        public bool Equals(PackageUrl other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Type == other.Type &&
+                   string.Equals(Path, other.Path, PathUtility.PathComparison) &&
+                   RemoteUrl == other.RemoteUrl &&
+                   Branch == other.Branch;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as PackageUrl);
         }
     }
 }
