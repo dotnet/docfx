@@ -151,21 +151,12 @@ namespace Microsoft.Docs.Build
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null, false);
             }
 
-            // Link to dependent repo, don't build the file, leave href as is
-            if (file.FilePath.Origin == FileOrigin.Dependency && !_buildScope.InScopeDependencyNames.Contains(file.FilePath.DependencyName))
-            {
-                return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
-            }
-
             if (file?.RedirectionUrl != null)
             {
                 return (error, file.SiteUrl + query + fragment, null, linkType, file, false);
             }
 
-            // Pages outside build scope, don't build the file, leave href as is
-            if (error is null
-                && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-                && !_buildScope.Files.Contains(file))
+            if (error != null && _buildScope.OutOfScope(file))
             {
                 return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }

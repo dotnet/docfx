@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
+        private readonly HashSet<string> _inScopeDependencyNames = new HashSet<string>();
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -26,8 +27,6 @@ namespace Microsoft.Docs.Build
         public HashSet<Document> Files { get; }
 
         public RedirectionMap Redirections { get; }
-
-        public HashSet<string> InScopeDependencyNames { get; } = new HashSet<string>();
 
         public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine)
         {
@@ -55,11 +54,28 @@ namespace Microsoft.Docs.Build
             {
                 if (inScope)
                 {
-                    InScopeDependencyNames.Add(dependencyName);
+                    _inScopeDependencyNames.Add(dependencyName);
                     var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob, dependencyName);
                     Files.UnionWith(dependencyFiles);
                 }
             }
+        }
+
+        public bool OutOfScope(Document filePath)
+        {
+            // Link to dependent repo
+            if (filePath.FilePath.Origin == FileOrigin.Dependency && !_inScopeDependencyNames.Contains(filePath.FilePath.DependencyName))
+            {
+                return true;
+            }
+
+            // Pages outside build scope, don't build the file, leave href as is
+            if ((filePath.ContentType == ContentType.Page || filePath.ContentType == ContentType.TableOfContents) && !Files.Contains(filePath))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)
