@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
                 return (error, file.SiteUrl + query + fragment, null, linkType, file, false);
             }
 
-            if (error != null && _buildScope.OutOfScope(file))
+            if (error is null && _buildScope.OutOfScope(file))
             {
                 return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
