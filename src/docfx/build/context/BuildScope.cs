@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
+        private readonly HashSet<string> _inScopeDependencyNames = new HashSet<string>();
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -27,7 +28,7 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
+        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
@@ -48,6 +49,33 @@ namespace Microsoft.Docs.Build
             Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
 
             Files.UnionWith(Redirections.Files);
+
+            foreach (var (dependencyName, (dependencyDocset, inScope)) in dependencyDocsets)
+            {
+                if (inScope)
+                {
+                    _inScopeDependencyNames.Add(dependencyName);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob, dependencyName);
+                    Files.UnionWith(dependencyFiles);
+                }
+            }
+        }
+
+        public bool OutOfScope(Document filePath)
+        {
+            // Link to dependent repo
+            if (filePath.FilePath.Origin == FileOrigin.Dependency && !_inScopeDependencyNames.Contains(filePath.FilePath.DependencyName))
+            {
+                return true;
+            }
+
+            // Pages outside build scope, don't build the file, leave href as is
+            if ((filePath.ContentType == ContentType.Page || filePath.ContentType == ContentType.TableOfContents) && !Files.Contains(filePath))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)
@@ -56,17 +84,17 @@ namespace Microsoft.Docs.Build
         }
 
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(
-            FileOrigin origin, Docset docset, Func<string, bool> glob)
+            FileOrigin origin, Docset docset, Func<string, bool> glob, string dependencyName = null)
         {
             using (Progress.Start("Globbing files"))
             {
-                var docsetPath = docset.DocsetPath;
                 var files = new ListBuilder<Document>();
-                var fileNames = _input.ListFilesRecursive(origin);
+                var fileNames = _input.ListFilesRecursive(origin, dependencyName);
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file.Path))
+                    var path = Path.Combine(dependencyName ?? "", file.Path).Replace("\\", "/");
+                    if (glob(path))
                     {
                         files.Add(Document.Create(docset, file, _input, _templateEngine));
                     }

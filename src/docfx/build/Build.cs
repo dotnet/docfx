@@ -32,8 +32,9 @@ namespace Microsoft.Docs.Build
                 var (docset, fallbackDocset) = GetDocsetWithFallback(
                     docsetPath, repository, locale, fallbackRepo, config, restoreGitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
+                var dependencyDocset = LoadDependencies(docset, restoreGitMap);
 
-                await Run(docset, fallbackDocset, restoreGitMap, options, errorLog, outputPath);
+                await Run(docset, fallbackDocset, dependencyDocset, restoreGitMap, options, errorLog, outputPath);
             }
         }
 
@@ -72,12 +73,13 @@ namespace Microsoft.Docs.Build
         private static async Task Run(
             Docset docset,
             Docset fallbackDocset,
+            Dictionary<string, (Docset, bool)> dependencyDocsets,
             RestoreGitMap restoreGitMap,
             CommandLineOptions options,
             ErrorLog errorLog,
             string outputPath)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, dependencyDocsets, restoreGitMap))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -189,11 +191,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
-            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
-                ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var dependenyGitLock = DependencyLockProvider.LoadGitLock(docsetPath, dependencyLockPath) ?? new Dictionary<PackageUrl, DependencyGitLock>();
-            return RestoreGitMap.Create(dependenyGitLock);
+            return RestoreGitMap.Create(docsetPath, config, locale);
         }
 
         private static Repository GetFallbackRepository(
@@ -206,16 +205,14 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                var fallbackPackageUrl = new PackageUrl(fallbackRemote, fallbackBranch);
-                if (restoreGitMap.DependencyGitLock.GetGitLock(fallbackPackageUrl) == null
-                    && restoreGitMap.DependencyGitLock.GetGitLock(new PackageUrl(fallbackRemote, "master")) != null)
+                foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    // fallback to master branch
-                    fallbackPackageUrl = new PackageUrl(fallbackRemote, "master");
+                    if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
+                    {
+                        var fallbackRepoPath = restoreGitMap.GetGitRestorePath(new PackageUrl(fallbackRemote, branch));
+                        return Repository.Create(fallbackRepoPath, branch, fallbackRemote);
+                    }
                 }
-
-                var fallbackRepoPath = restoreGitMap.GetGitRestorePath(fallbackPackageUrl);
-                return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
             }
 
             return default;
@@ -233,6 +230,21 @@ namespace Microsoft.Docs.Build
             }
 
             return ConfigLoader.Load(fallbackRepo.Path, options, locale);
+        }
+
+        private static Dictionary<string, (Docset docset, bool inScope)> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
+        {
+            var config = docset.Config;
+            var result = new Dictionary<string, (Docset docset, bool inScope)>(config.Dependencies.Count, PathUtility.PathComparer);
+
+            foreach (var (name, dependency) in config.Dependencies)
+            {
+                var dir = restoreGitMap.GetGitRestorePath(dependency);
+
+                result.TryAdd(name, (new Docset(dir, docset.Locale, config), dependency.ExtendToBuild));
+            }
+
+            return result;
         }
     }
 }

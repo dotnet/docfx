@@ -227,13 +227,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
 
         /// <summary>
-        /// Link which's resolved to a file in dependency repo won't be built.
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsDependency(SourceInfo<string> href, Document file)
-            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", href);
-
-        /// <summary>
         /// Used a link pointing to an rooted absolute file path.
         /// Examples:
         ///   - [Absolute](C:/a.md)

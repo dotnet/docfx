@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             var packageUrl = new PackageUrl(remote);
 
             // Assert
-            Assert.Equal(expectedUrl, packageUrl.Remote);
+            Assert.Equal(expectedUrl, packageUrl.Url);
             Assert.Equal(expectedRev, packageUrl.Branch);
         }
 

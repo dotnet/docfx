@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -35,7 +37,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<XrefResolver> _xrefResolver;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -48,7 +50,7 @@ namespace Microsoft.Docs.Build
             Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
-            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, TemplateEngine);
+            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
@@ -61,12 +63,16 @@ namespace Microsoft.Docs.Build
             DependencyResolver = new DependencyResolver(
                 docset,
                 fallbackDocset,
+                dependencyDocsets.
+                    ToDictionary(
+                        k => k.Key,
+                        v => v.Value.docset,
+                        PathUtility.PathComparer),
                 Input,
                 BuildScope,
                 BuildQueue,
                 GitCommitProvider,
                 BookmarkValidator,
-                restoreGitMap,
                 DependencyMapBuilder,
                 _xrefResolver,
                 TemplateEngine);

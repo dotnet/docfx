@@ -16,7 +16,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   .errors.log: |
-    ["warning","link-is-dependency","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
+    ["warning","link-out-of-scope","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is not included in build scope","docs/a.md",1,1]
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
@@ -37,7 +37,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   .errors.log: |
-    ["warning","link-is-dependency","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
+    ["warning","link-out-of-scope","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is not included in build scope","docs/a.md",1,1]
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
@@ -97,7 +97,7 @@ inputs:
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)
 outputs:
   .errors.log: |
-    ["warning","link-is-dependency","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is from a dependency docset","docs/a.md",1,1]
+    ["warning","link-out-of-scope","File 'docs/a.md [docfx-test-dependencies1]' referenced by link '~/docfx-test-dependencies1/docs/a.md' will not be built because it is not included in build scope","docs/a.md",1,1]
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
 ---
@@ -274,3 +274,65 @@ cache:
 outputs:
   docs/a.json: |
     {"conceptual":"<p>233333</p>"}
+---
+# build content in dependency repository
+# content in dependency repository:
+#   1. by default will not be built
+#   2. will be built when:
+#      1. explicitly turn on the inScope flag
+#      2. specify the dependency name in `build scope`
+repos:
+  https://docs.com/crrcontent/a:
+    - files:
+        docfx.yml: |
+          files:
+            - "docs/**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              type: git
+              url: https://docs.com/crrcontent/b
+              branch: master
+              extendToBuild: true
+            crrc: https://docs.com/crrcontent/c
+        docs/a.md:
+  https://docs.com/crrcontent/b:
+    - files:
+        b.md:
+  https://docs.com/crrcontent/c:
+    - files:
+        c.md:
+outputs:
+  docs/a.json:
+  crrb/b.json:
+---
+# apply routes to the files in dependency repository
+# if no route applied, crr files will be built to `{dependencyName}/` folder
+repos:
+  https://docs.com/crrcontent/1:
+    - files:
+        docfx.yml: |
+          files:
+            - "crrb/**/*"
+            - "crrc/**/*"
+          routes:
+            "crrb/": "xyz"
+          dependencies:
+            crrb:
+              type: git
+              url: https://docs.com/crrcontent/2
+              branch: master
+              extendToBuild: true
+            crrc:
+              type: git
+              url: https://docs.com/crrcontent/3
+              extendToBuild: true
+  https://docs.com/crrcontent/2:
+    - files:
+        b.md:
+  https://docs.com/crrcontent/3:
+    - files:
+        c.md:
+outputs:
+  xyz/b.json:
+  crrc/c.json:

@@ -137,6 +137,13 @@ namespace Microsoft.Docs.Build
                 return url.Substring(hostName.Length);
             }
 
+            // TODO: this workaround can be removed when all xref related repos migrated to v3
+            if (hostName.Equals("https://docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
+                        && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
+            {
+                return url.Substring("https://review.docs.microsoft.com".Length);
+            }
+
             return url;
         }
 
