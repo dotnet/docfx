@@ -2,13 +2,17 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyLockModel
+    public class DependencyGitLock
     {
-        public string Commit { get; set; }
+        public string Url { get; set; }
 
-        public IReadOnlyDictionary<string, DependencyLockModel> Git { get; set; } = new Dictionary<string, DependencyLockModel>();
+        public string Branch { get; set; }
+
+        public string Commit { get; set; }
     }
 }

@@ -32,8 +32,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (bool match, bool isFileMatch, string remainingPath) Match(this string file, string matcher)
         {
-            Debug.Assert(!file.EndsWith('/'));
-
             if (string.Equals(file, matcher, PathComparison))
             {
                 return (true, true, file);
@@ -51,7 +49,7 @@ namespace Microsoft.Docs.Build
 
             if (file.StartsWith(matcher, PathComparison))
             {
-                return (true, false, Path.GetRelativePath(matcher, file).Replace('\\', '/'));
+                return (true, false, file.Substring(matcher.Length).Replace('\\', '/'));
             }
 
             return default;

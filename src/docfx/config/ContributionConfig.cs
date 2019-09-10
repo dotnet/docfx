@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     internal sealed class ContributionConfig
     {
         /// <summary>
-        /// Specify the repository url for contribution:
+        /// Specify the repository url for contribution
         /// <protocol>://<hostname>[:<port>][:][/]<path>[#<branch>]
         /// Fallback to git origin if not set.
         /// </summary>

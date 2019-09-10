@@ -114,19 +114,33 @@ outputs:
 inputs:
   docfx.yml: |
     documentId:
-      sourceBasePath: sccm
-    name: sccm
-    product: Win
-    files: "**/*"
-    baseUrl: https://docs.com/sccm
+      sourceBasePath: docs/
+    baseUrl: https://docs.com/docs
     routes:
-      sccm/: .
+      docs/: .
     redirections:
-      sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
-  sccm/mdm/understand/hybrid-mobile-device-management.md:
+      docs/a.md: /docs/x
+      docs/b.md: /docs/y?query=value#bookmark
+      docs/c.md: /docs/folder1/index
+      docs/d.md: /docs/folder2/
+      docs/e.md: /docs/z
+      docs/f.md: /docs/e
+  docs/x.md:
+  docs/y.md:
+  docs/z.md:
+  docs/folder1/index.md:
+  docs/folder2/index.md:
 outputs:
-  sccm/mdm/understand/hybrid-mobile-device-management.json: |
-    { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+  docs/x.json: |
+    { "document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5" }
+  docs/y.json: |
+    { "document_id": "746406e9-2aac-1b22-259a-b6712b49c610", "document_version_independent_id": "d93f906b-e1e0-e950-45b4-ce1e777af3e6" }
+  docs/z.json: |
+    { "document_id": "3c1b64b6-2acf-2a8d-0b02-687e4c6751b6", "document_version_independent_id": "b7faa2da-5935-b5fb-4609-dd030b0e74ab" }
+  docs/folder1/index.json: |
+    { "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902", "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608" }
+  docs/folder2/index.json: |
+    { "document_id": "64dd67d2-325f-bc70-d1b3-0106d0cb71e3", "document_version_independent_id": "5f485788-9aee-232c-f1f0-66c205d6e9a9" }
 ---
 # generate different document id and version id with 'redirection without document id'
 inputs:
@@ -220,20 +234,20 @@ outputs:
 inputs:
   docfx.yml: |
     redirections:
-      docs/b.md: "/docs/a"
-      docs/c.md: "/docs/g"
-      docs/e.md: "/docs/g"
-      docs/f.md: "/docs/b"
-      docs/h.md: "http://hostname/test"
-    redirectionsWithoutId:
-      docs/d.md: "/docs/e"
-  docs/a.md:
+      docs/a.md: "/docs/x"
+      docs/c.md: "/docs/x#bookmark"
+      docs/b.md: "http://hostname/test"
+      docs/d.md: "/docs/folder0"
+      docs/f.md: "/docs/folder0/"
+      docs/h.md: "/docs/folder0/index"
 outputs:
-  docs/a.json:
   .errors.log: |
-    ["suggestion","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",3,14]
-    ["suggestion","redirection-url-not-existed","The redirect url '/docs/g' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",4,14]
-    ["suggestion","redirection-url-not-existed","The redirect url 'http://hostname/test' does not match any file's publish URL, but the redirect_with_id flag has been set as true","docfx.yml",6,14]
+    ["suggestion","redirection-url-not-existed","The redirect url 'http://hostname/test' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",4,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/x' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",2,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/x#bookmark' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",3,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",5,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0/' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",6,14]
+    ["suggestion","redirection-url-not-existed","The redirect url '/docs/folder0/index' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`","docfx.yml",7,14]
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})
@@ -437,7 +451,7 @@ inputs:
 outputs:
   .errors.log: |
     ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/a.md <redirection>'"]
+    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/a.md [redirection]'"]
 ---
 # redirection defined in file metadata is not supported
 inputs:
@@ -543,4 +557,15 @@ outputs:
   .errors.log: |
     ["warning","attribute-reserved","Attribute wordCount is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
     ["warning","attribute-reserved","Attribute document_id is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",3,1]
-
+---
+# Title in file metadata should overwrite H1
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      title:
+        docs/a.md: Title to overwrite
+  docs/a.md: |
+    # Title for a
+outputs:
+  docs/a.json: |
+    {"title": "Title to overwrite"}
