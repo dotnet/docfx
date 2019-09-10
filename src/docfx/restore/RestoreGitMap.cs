@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore($"{packageUrl}").ToException();
             }
 
-            var path = Path.Combine(AppData.GetGitDir(packageUrl.RemoteUrl), gitInfo.path);
+            var path = Path.Combine(AppData.GetGitDir(packageUrl.Url), gitInfo.path);
             Debug.Assert(Directory.Exists(path));
 
             return path;
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!acquired.ContainsKey((packageUrl, gitLock.Commit)))
                     {
-                        var (path, git) = AcquireGit(packageUrl.RemoteUrl, packageUrl.Branch, gitLock.Commit, LockType.Shared);
+                        var (path, git) = AcquireGit(packageUrl.Url, packageUrl.Branch, gitLock.Commit, LockType.Shared);
                         acquired[(packageUrl, gitLock.Commit)] = (path, git);
                     }
                 }

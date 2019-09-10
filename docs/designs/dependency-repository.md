@@ -20,7 +20,7 @@ Or
 ```yml
 dependencies:
   _csharplang: 
-    remoteUrl: https://github.com/dotnet/csharplang
+    url: https://github.com/dotnet/csharplang
     branch: master
 ```
 
@@ -57,7 +57,7 @@ The files which to be built to page can also be from dependency repository, whic
     ```yml
     dependencies:
         _csharplang: 
-            remoteUrl: https://github.com/dotnet/csharplang
+            url: https://github.com/dotnet/csharplang
             branch: master
             inScope: true
     ```
@@ -89,7 +89,7 @@ The files which to be built to page can also be from dependency repository, whic
         _csharplang/: docs/csharplang/
     dependencies:
         _csharplang: 
-            remoteUrl: https://github.com/dotnet/csharplang
+            url: https://github.com/dotnet/csharplang
             branch: master
             inScope: true
     ```

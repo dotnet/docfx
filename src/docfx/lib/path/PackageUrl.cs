@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public string Path { get; set; }
 
-        public string RemoteUrl { get; set; }
+        public string Url { get; set; }
 
         public string Branch { get; set; } = "master";
 
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             if (UrlUtility.IsHttp(url))
             {
                 Type = PackageType.Git;
-                (RemoteUrl, Branch) = SplitGitUrl(url);
+                (Url, Branch) = SplitGitUrl(url);
             }
             else
             {
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(branch != null);
 
             Type = PackageType.Git;
-            RemoteUrl = remote;
+            Url = remote;
             Branch = branch;
             Path = null;
         }
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                     return Path;
 
                 case PackageType.Git:
-                    return $"{RemoteUrl}#{Branch}";
+                    return $"{Url}#{Branch}";
 
                 default:
                     return Type.ToString();
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Type, Path, RemoteUrl, Branch);
+            return HashCode.Combine(Type, Path, Url, Branch);
         }
 
         public bool Equals(PackageUrl other)
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
 
             return Type == other.Type &&
                    string.Equals(Path, other.Path, PathUtility.PathComparison) &&
-                   RemoteUrl == other.RemoteUrl &&
+                   Url == other.Url &&
                    Branch == other.Branch;
         }
 
