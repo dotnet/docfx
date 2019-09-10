@@ -191,11 +191,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
-            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
-                ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
 
-            var dependenyGitLock = DependencyLockProvider.LoadGitLock(docsetPath, dependencyLockPath) ?? new Dictionary<PackageUrl, DependencyGitLock>();
-            return RestoreGitMap.Create(dependenyGitLock);
+            return RestoreGitMap.Create(docsetPath, config, locale);
         }
 
         private static Repository GetFallbackRepository(
@@ -208,16 +205,14 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                var fallbackPackageUrl = new PackageUrl(fallbackRemote, fallbackBranch);
-                if (restoreGitMap.DependencyGitLock.GetGitLock(fallbackPackageUrl) == null
-                    && restoreGitMap.DependencyGitLock.GetGitLock(new PackageUrl(fallbackRemote, "master")) != null)
+                foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    // fallback to master branch
-                    fallbackPackageUrl = new PackageUrl(fallbackRemote, "master");
+                    if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
+                    {
+                        var fallbackRepoPath = restoreGitMap.GetGitRestorePath(new PackageUrl(fallbackRemote, branch));
+                        return Repository.Create(fallbackRepoPath, branch, fallbackRemote);
+                    }
                 }
-
-                var fallbackRepoPath = restoreGitMap.GetGitRestorePath(fallbackPackageUrl);
-                return Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
             }
 
             return default;
@@ -244,7 +239,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (name, dependency) in config.Dependencies)
             {
-                var dir = restoreGitMap.GetGitRestorePath(dependency, docset.DocsetPath);
+                var dir = restoreGitMap.GetGitRestorePath(dependency);
 
                 result.TryAdd(name, (new Docset(dir, docset.Locale, config), dependency.ExtendToBuild));
             }
