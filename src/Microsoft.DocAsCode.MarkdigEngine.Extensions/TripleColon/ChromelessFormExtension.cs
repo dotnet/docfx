@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public string Name => "form";
         public bool SelfClosing => true;
-        public bool EndingTripleColons => false;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
