@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
 
                 case PackageType.Git:
                     return new PackageUrl(
-                        GetLocalizationName(LocalizationMapping.Repository, theme.RemoteUrl, locale, defaultLocale),
+                        GetLocalizationName(LocalizationMapping.Repository, theme.Url, locale, defaultLocale),
                         theme.Branch);
 
                 default:
