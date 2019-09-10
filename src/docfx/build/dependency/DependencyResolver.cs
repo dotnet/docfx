@@ -28,12 +28,12 @@ namespace Microsoft.Docs.Build
         public DependencyResolver(
             Docset docset,
             Docset fallbackDocset,
+            Dictionary<string, Docset> dependencies,
             Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
-            RestoreGitMap restoreGitMap,
             DependencyMapBuilder dependencyMapBuilder,
             Lazy<XrefResolver> xrefResolver,
             TemplateEngine templateEngine)
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
             _resolveAlias = LoadResolveAlias(docset.Config);
-            _dependencies = LoadDependencies(docset, restoreGitMap);
+            _dependencies = dependencies;
             _templateEngine = templateEngine;
         }
 
@@ -151,21 +151,12 @@ namespace Microsoft.Docs.Build
                 return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null, false);
             }
 
-            // Link to dependent repo, don't build the file, leave href as is
-            if (file.FilePath.Origin == FileOrigin.Dependency)
-            {
-                return (Errors.LinkIsDependency(href, file), href, fragment, linkType, null, false);
-            }
-
             if (file?.RedirectionUrl != null)
             {
                 return (error, file.SiteUrl + query + fragment, null, linkType, file, false);
             }
 
-            // Pages outside build scope, don't build the file, leave href as is
-            if (error is null
-                && (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-                && !_buildScope.Files.Contains(file))
+            if (error is null && _buildScope.OutOfScope(file))
             {
                 return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
@@ -329,21 +320,6 @@ namespace Microsoft.Docs.Build
             }
 
             return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
-        }
-
-        private static Dictionary<string, Docset> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
-        {
-            var config = docset.Config;
-            var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
-
-            foreach (var (name, dependency) in config.Dependencies)
-            {
-                var dir = restoreGitMap.GetGitRestorePath(dependency);
-
-                result.TryAdd(name, new Docset(dir, docset.Locale, config));
-            }
-
-            return result;
         }
     }
 }

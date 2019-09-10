@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<PackageUrl, DependencyGitLock> _dependencyGitLock;
         private readonly IReadOnlyDictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)> _acquiredGits;
 
-        public RestoreGitMap(
+        private RestoreGitMap(
             string docsetPath,
             IReadOnlyDictionary<PackageUrl, DependencyGitLock> dependencyGitLock,
             IReadOnlyDictionary<(PackageUrl packageUrl, string commit), (string path, DependencyGit git)> acquiredGits)
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                         throw Errors.NeedRestore($"{packageUrl}").ToException();
                     }
 
-                    var path = Path.Combine(AppData.GetGitDir(packageUrl.Remote), gitInfo.path);
+                    var path = Path.Combine(AppData.GetGitDir(packageUrl.RemoteUrl), gitInfo.path);
                     if (!Directory.Exists(path))
                     {
                         throw Errors.NeedRestore($"{packageUrl}").ToException();
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool BranchExists(string remote, string branch)
+        public bool IsBranchRestored(string remote, string branch)
         {
             var packageUrl = new PackageUrl(remote, branch);
             var gitLock = _dependencyGitLock.GetGitLock(packageUrl);
@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!acquired.ContainsKey((packageUrl, gitLock.Commit)))
                     {
-                        var (path, git) = AcquireGit(packageUrl.Remote, packageUrl.Branch, gitLock.Commit, LockType.Shared);
+                        var (path, git) = AcquireGit(packageUrl.RemoteUrl, packageUrl.Branch, gitLock.Commit, LockType.Shared);
                         acquired[(packageUrl, gitLock.Commit)] = (path, git);
                     }
                 }
