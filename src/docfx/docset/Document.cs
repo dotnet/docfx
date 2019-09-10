@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
             var mime = type == ContentType.Page ? ReadMimeFromFile(input, path) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(path.Path, docset.Routes, docset.SiteBasePath);
+            var routedFilePath = ApplyRoutes(path, docset.Routes, docset.SiteBasePath);
 
             var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
@@ -343,19 +343,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string ApplyRoutes(string path, IReadOnlyDictionary<string, string> routes, string siteBasePath)
+        private static string ApplyRoutes(FilePath path, IReadOnlyDictionary<string, string> routes, string siteBasePath)
         {
             // the latter rule takes precedence of the former rule
+            var pathToMatch = Path.Combine(path.DependencyName ?? "", path.Path).Replace("\\", "/");
             foreach (var (source, dest) in routes)
             {
-                var result = ApplyRoutes(path, source, dest);
+                var result = ApplyRoutes(pathToMatch, source, dest);
                 if (result != null)
                 {
-                    path = result;
+                    pathToMatch = result;
                     break;
                 }
             }
-            return PathUtility.NormalizeFile(Path.Combine(siteBasePath, path));
+            return PathUtility.NormalizeFile(Path.Combine(siteBasePath, pathToMatch));
         }
 
         private static string ApplyRoutes(string path, string source, string dest)
