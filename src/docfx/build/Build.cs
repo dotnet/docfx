@@ -32,8 +32,9 @@ namespace Microsoft.Docs.Build
                 var (docset, fallbackDocset) = GetDocsetWithFallback(
                     docsetPath, locale, config, repository, fallbackRepo, restoreGitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
+                var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
 
-                await Run(docset, fallbackDocset, options, errorLog, outputPath, restoreGitMap);
+                await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, restoreGitMap);
             }
         }
 
@@ -76,12 +77,13 @@ namespace Microsoft.Docs.Build
         private static async Task Run(
             Docset docset,
             Docset fallbackDocset,
+            Dictionary<string, (Docset, bool)> dependencyDocsets,
             CommandLineOptions options,
             ErrorLog errorLog,
             string outputPath,
             RestoreGitMap restoreGitMap)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, dependencyDocsets, restoreGitMap))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -237,6 +239,22 @@ namespace Microsoft.Docs.Build
             }
 
             return ConfigLoader.Load(fallbackRepo.Path, options, locale);
+        }
+
+        private static Dictionary<string, (Docset docset, bool inScope)> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
+        {
+            var config = docset.Config;
+            var result = new Dictionary<string, (Docset docset, bool inScope)>(config.Dependencies.Count, PathUtility.PathComparer);
+
+            foreach (var (name, dependency) in config.Dependencies)
+            {
+                var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, docset.DocsetPath, true);
+
+                var repository = Repository.Create(dir, dependency.Branch, dependency.RemoteUrl, commit);
+                result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.ExtendToBuild));
+            }
+
+            return result;
         }
     }
 }

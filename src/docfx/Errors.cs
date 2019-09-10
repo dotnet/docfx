@@ -43,7 +43,9 @@ namespace Microsoft.Docs.Build
         /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
         /// </summary>
         public static Error RedirectionUrlNotExisted(SourceInfo<string> source)
-            => new Error(ErrorLevel.Suggestion, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true", source);
+        {
+            return new Error(ErrorLevel.Suggestion, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`", source);
+        }
 
         /// <summary>
         /// Used invalid glob pattern in configuration.
@@ -223,13 +225,6 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
             => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
-
-        /// <summary>
-        /// Link which's resolved to a file in dependency repo won't be built.
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error LinkIsDependency(SourceInfo<string> href, Document file)
-            => new Error(ErrorLevel.Warning, "link-is-dependency", $"File '{file}' referenced by link '{href}' will not be built because it is from a dependency docset", href);
 
         /// <summary>
         /// Used a link pointing to an rooted absolute file path.

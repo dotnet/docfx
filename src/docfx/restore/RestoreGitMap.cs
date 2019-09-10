@@ -22,19 +22,19 @@ namespace Microsoft.Docs.Build
 
             foreach (var (packageUrl, _) in gitLock)
             {
-                var sharedLock = new SharedAndExclusiveLock(packageUrl.Remote, shared: true);
+                var sharedLock = new SharedAndExclusiveLock(packageUrl.RemoteUrl, shared: true);
                 _sharedLocks.Add(sharedLock);
             }
         }
 
-        public (string path, string commit) GetRestoreGitPath(PackageUrl url, string docsetPath, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
+        public (string path, string commit) GetRestoreGitPath(PackageUrl packageUrl, string docsetPath, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
         {
             Debug.Assert(GitLock != null);
 
-            switch (url.Type)
+            switch (packageUrl.Type)
             {
                 case PackageType.Folder:
-                    var fullPath = Path.Combine(docsetPath, url.Path);
+                    var fullPath = Path.Combine(docsetPath, packageUrl.Path);
                     if (Directory.Exists(fullPath))
                     {
                         return (fullPath, default);
@@ -42,17 +42,17 @@ namespace Microsoft.Docs.Build
 
                     // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
                     // TODO: populate source info
-                    throw Errors.NeedRestore(url.Path).ToException();
+                    throw Errors.NeedRestore(packageUrl.Path).ToException();
 
                 case PackageType.Git:
-                    var gitLock = GitLock.GetGitLock(url);
+                    var gitLock = GitLock.GetGitLock(packageUrl);
 
                     if (gitLock == null || gitLock.Commit == null)
                     {
-                        throw Errors.NeedRestore($"{url}").ToException();
+                        throw Errors.NeedRestore($"{packageUrl}").ToException();
                     }
 
-                    var path = AppData.GetGitDir(url.Remote);
+                    var path = AppData.GetGitDir(packageUrl.RemoteUrl);
 
                     if (!bare)
                     {
@@ -61,13 +61,13 @@ namespace Microsoft.Docs.Build
 
                     if (!Directory.Exists(path))
                     {
-                        throw Errors.NeedRestore($"{url}").ToException();
+                        throw Errors.NeedRestore($"{packageUrl}").ToException();
                     }
 
                     return (path, gitLock.Commit);
 
                 default:
-                    throw new NotSupportedException($"Unknown package url: '{url}'");
+                    throw new NotSupportedException($"Unknown package url: '{packageUrl}'");
             }
         }
 

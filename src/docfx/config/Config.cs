@@ -48,6 +48,12 @@ namespace Microsoft.Docs.Build
         public readonly string[] Exclude = Array.Empty<string>();
 
         /// <summary>
+        /// Gets the file groups config.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public readonly FileGroupConfig[] FileGroups = Array.Empty<FileGroupConfig>();
+
+        /// <summary>
         /// Gets the output config.
         /// </summary>
         public readonly OutputConfig Output = new OutputConfig();
@@ -96,7 +102,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, PackageUrl> Dependencies = new Dictionary<string, PackageUrl>(PathUtility.PathComparer);
+        public readonly Dictionary<string, DependencyPackageUrl> Dependencies = new Dictionary<string, DependencyPackageUrl>(PathUtility.PathComparer);
 
         /// <summary>
         /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
@@ -182,7 +188,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly PackageUrl Template;
+        public readonly PackageUrl Template = new PackageUrl();
 
         /// <summary>
         /// Gets the dependency lock file path
