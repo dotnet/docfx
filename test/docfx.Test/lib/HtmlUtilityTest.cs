@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Syntax.Inlines;
 using Microsoft.DocAsTest;
 using Xunit;
 
@@ -47,6 +48,22 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><link href='a'></div>", "<div></div>")]
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void HtmlStripTags(string input, string output)
+        {
+            var actual = HtmlUtility.LoadHtml(input).StripTags().WriteTo();
+
+            Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
+        }
+
+        [Theory]
+        [InlineData("<th style='text-align: left;'>", "<th style='text-align: left;'>")]
+        [InlineData("<th style='text-align: center;'>", "<th style='text-align: center;'>")]
+        [InlineData("<th style='text-align: right;'>", "<th style='text-align: right;'>")]
+        [InlineData("<td style='text-align: left;'>", "<td style='text-align: left;'>")]
+        [InlineData("<td style='text-align: center;'>", "<td style='text-align: center;'>")]
+        [InlineData("<td style='text-align: right;'>", "<td style='text-align: right;'>")]
+        [InlineData("<table style='text-align: right;'>", "<table style='text-align: right;'>")]
+        [InlineData("<table style='text-align: right; background-color: yellow'>", "<table/>")]
+        public void HtmlStripTableStyles(string input, string output)
         {
             var actual = HtmlUtility.LoadHtml(input).StripTags().WriteTo();
 

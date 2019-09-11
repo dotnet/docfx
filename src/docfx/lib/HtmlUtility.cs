@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
             ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
 
-        private static readonly Regex s_styleCellAlignRegEx = new Regex("text-align: (?:(?:left)|(?:center)|(?:right));", RegexOptions.Compiled);
+        private static readonly Regex s_styleCellAlignRegEx = new Regex("^text-align: (?:(?:left)|(?:center)|(?:right));$", RegexOptions.Compiled);
 
         public static HtmlNode LoadHtml(string html)
         {

@@ -297,20 +297,13 @@ outputs:
   docs/a.json: |
     { "conceptual": "<div></div><p>body</p>" }
 ---
-# table with styles is allowed
+# markdown table with styles is allowed
 inputs:
   docfx.yml:
   docs/a.md: |
     a     | b       | c 
     :-----|:-------:| ----: 
     0     | 1       | 2 
-
-    <th style="text-align: left;">
-    <th style="text-align: center;">
-    <th style="text-align: right;">
-    <td style="text-align: left;">
-    <td style="text-align: center;">
-    <td style="text-align: right;">
 outputs:
   docs/a.json: |
     {
@@ -331,13 +324,6 @@ outputs:
             </tr>
           </tbody>
         </table>
-
-        <th style=\"text-align: left;\"></th>
-        <th style=\"text-align: center;\"></th>
-        <th style=\"text-align: right;\"></th>
-        <td style=\"text-align: left;\"></td>
-        <td style=\"text-align: center;\"></td>
-        <td style=\"text-align: right;\">\n</td>"
     }
 ---
 # do not process auto links
