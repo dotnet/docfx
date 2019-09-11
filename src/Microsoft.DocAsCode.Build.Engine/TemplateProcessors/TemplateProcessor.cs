@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _resourceProvider = resourceProvider;
             _maxParallelism = maxParallelism;
             _templateCollection = new TemplateCollection(resourceProvider, context, maxParallelism);
-            Tokens = LoadTokenJson(resourceProvider) ?? new Dictionary<string, string>();
+            Tokens = TemplateProcessorUtility.LoadTokens(resourceProvider) ?? new Dictionary<string, string>();
         }
 
         public TemplateBundle GetTemplateBundle(string documentType)
@@ -158,23 +158,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _maxParallelism);
             return manifest.ToList();
 
-        }
-
-        private static IDictionary<string, string> LoadTokenJson(ResourceFileReader resource)
-        {
-            var tokenJson = resource.GetResource("token.json");
-            if (string.IsNullOrEmpty(tokenJson))
-            {
-                // also load `global.json` for backward compatibility
-                // TODO: remove this
-                tokenJson = resource.GetResource("global.json");
-                if (string.IsNullOrEmpty(tokenJson))
-                {
-                    return null;
-                }
-            }
-
-            return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
         public void Dispose()
