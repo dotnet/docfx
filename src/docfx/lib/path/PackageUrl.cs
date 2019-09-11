@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     /// The commit-sh can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class PackageUrl : IEquatable<PackageUrl>
+    internal class PackageUrl
     {
         public PackageType Type { get; set; }
 
@@ -80,29 +80,6 @@ namespace Microsoft.Docs.Build
             var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
             return (path, refspec);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Type, Path, Url, Branch);
-        }
-
-        public bool Equals(PackageUrl other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return Type == other.Type &&
-                   string.Equals(Path, other.Path, PathUtility.PathComparison) &&
-                   Url == other.Url &&
-                   Branch == other.Branch;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as PackageUrl);
         }
     }
 }

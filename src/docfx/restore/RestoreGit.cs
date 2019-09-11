@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             Config config,
             string locale,
             Repository repository,
-            Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
+            DependencyLockProvider dependencyLockProvider)
         {
             var gitDependencies =
                 from git in GetGitDependencies(config, locale, repository)
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 gitDependencies,
                 group =>
                 {
-                    results.AddRange(RestoreGitRepo(config, group.Key, group.ToList(), dependencyLock));
+                    results.AddRange(RestoreGitRepo(config, group.Key, group.ToList(), dependencyLockProvider));
                 },
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             Config config,
             string remote,
             List<(string branch, RestoreGitFlags flags)> branches,
-            Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
+            DependencyLockProvider dependencyLockProvider)
         {
             var branchesToFetch = new HashSet<string>(branches.Select(b => b.branch));
             var repoDir = AppData.GetGitDir(remote);
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
 
                     using (Progress.Start($"Manage worktree for '{remote}'"))
                     {
-                        return AddWorkTrees(repoPath, remote, branches, branchesToFetch, dependencyLock);
+                        return AddWorkTrees(repoPath, remote, branches, branchesToFetch, dependencyLockProvider);
                     }
                 }
             }
@@ -84,12 +84,12 @@ namespace Microsoft.Docs.Build
             string remote,
             List<(string branch, RestoreGitFlags flags)> branches,
             HashSet<string> branchesToFetch,
-            Dictionary<PackageUrl, DependencyGitLock> dependencyLock)
+            DependencyLockProvider dependencyLockProvider)
         {
             var results = new ListBuilder<RestoreGitResult>();
             ParallelUtility.ForEach(branchesToFetch, branch =>
             {
-                var gitLock = dependencyLock.GetGitLock(new PackageUrl(remote, branch));
+                var gitLock = dependencyLockProvider?.GetGitLock(remote, branch);
                 var headCommit = GitUtility.RevParse(repoPath, gitLock?.Commit ?? branch);
 
                 Log.Write($"Add worktree for `{remote}` `{headCommit}`");
