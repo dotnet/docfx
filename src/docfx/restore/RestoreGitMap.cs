@@ -12,27 +12,25 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _docsetPath;
         private readonly List<SharedAndExclusiveLock> _sharedLocks = new List<SharedAndExclusiveLock>();
-        private readonly IReadOnlyDictionary<PackageUrl, DependencyGitLock> _dependencyGitLock;
+        private readonly DependencyLockProvider _dependencyLockProvider;
 
-        private RestoreGitMap(Dictionary<PackageUrl, DependencyGitLock> gitLock, string docsetPath)
+        private RestoreGitMap(DependencyLockProvider dependencyLockProvider, string docsetPath)
         {
-            Debug.Assert(gitLock != null);
+            Debug.Assert(dependencyLockProvider != null);
             Debug.Assert(!string.IsNullOrEmpty(docsetPath));
 
             _docsetPath = docsetPath;
-            _dependencyGitLock = gitLock;
+            _dependencyLockProvider = dependencyLockProvider;
 
-            foreach (var (packageUrl, _) in gitLock)
+            foreach (var (url, _, _) in _dependencyLockProvider.ListAll())
             {
-                var sharedLock = new SharedAndExclusiveLock(packageUrl.Url, shared: true);
+                var sharedLock = new SharedAndExclusiveLock(url, shared: true);
                 _sharedLocks.Add(sharedLock);
             }
         }
 
         public (string path, string commit) GetRestoreGitPath(PackageUrl packageUrl, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
         {
-            Debug.Assert(_dependencyGitLock != null);
-
             switch (packageUrl.Type)
             {
                 case PackageType.Folder:
@@ -47,7 +45,7 @@ namespace Microsoft.Docs.Build
                     throw Errors.NeedRestore(packageUrl.Path).ToException();
 
                 case PackageType.Git:
-                    var gitLock = _dependencyGitLock.GetGitLock(packageUrl);
+                    var gitLock = _dependencyLockProvider.GetGitLock(packageUrl.Url, packageUrl.Branch);
 
                     if (gitLock is null || gitLock.Commit is null)
                     {
@@ -75,8 +73,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsBranchRestored(string remote, string branch)
         {
-            var packageUrl = new PackageUrl(remote, branch);
-            var gitLock = _dependencyGitLock.GetGitLock(packageUrl);
+            var gitLock = _dependencyLockProvider.GetGitLock(remote, branch);
 
             if (gitLock is null || gitLock.Commit is null)
             {
@@ -102,10 +99,9 @@ namespace Microsoft.Docs.Build
         {
             var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
                     ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
-            var dependencyLock = DependencyLockProvider.LoadGitLock(docsetPath, dependencyLockPath)
-                ?? new Dictionary<PackageUrl, DependencyGitLock>();
+            var dependencyLockProvider = DependencyLockProvider.Create(docsetPath, dependencyLockPath);
 
-            return new RestoreGitMap(dependencyLock, docsetPath);
+            return new RestoreGitMap(dependencyLockProvider, docsetPath);
         }
     }
 }
