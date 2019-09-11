@@ -111,11 +111,22 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             if (MatchTitle(ref slice, ref title) && MatchPath(ref slice, ref path))
             {
-                slice.NextChar();
                 return true;
             }
 
             return false;
+        }
+
+        public static bool MatchInlcusionEnd(ref StringSlice slice)
+        {
+            if (slice.CurrentChar != ']')
+            {
+                return false;
+            }
+
+            slice.NextChar();
+
+            return true;
         }
 
         public static void SkipWhitespace(ref StringSlice slice)
