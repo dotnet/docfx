@@ -635,7 +635,7 @@ outputs:
       },
       "content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
       "original_content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
-      "original_content_git_url_template": "{repo}/blob/{branch}/b.md",
+      "original_content_git_url_template": undefined,
       "gitcommit": "https://github.com/testowner/crr-content/blob/44e7dd472e06b95898986635feccbcefde3c42f0/b.md",
       "updated_at": "2018-10-30 12:00 AM"
     }
