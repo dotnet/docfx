@@ -323,7 +323,7 @@ outputs:
               <td style=\"text-align: right;\">2</td>
             </tr>
           </tbody>
-        </table>
+        </table>"
     }
 ---
 # do not process auto links

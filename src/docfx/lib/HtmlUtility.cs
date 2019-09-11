@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
             ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
 
-        private static readonly Regex s_styleCellAlignRegEx = new Regex("^text-align: (?:(?:left)|(?:center)|(?:right));$", RegexOptions.Compiled);
+        private static readonly string[] s_allowedStyles = new[] { "text-align: right;", "text-align: left;", "text-align: center;" };
 
         public static HtmlNode LoadHtml(string html)
         {
@@ -321,7 +321,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (node.Name != "th" && node.Name != "td" && node.Attributes.Contains("style"))
                     {
-                        if (!s_styleCellAlignRegEx.IsMatch(node.Attributes["style"].Value ?? ""))
+                        var value = node.Attributes["style"].Value ?? "";
+                        if (!s_allowedStyles.Any(l => l == value))
                         {
                             node.Attributes.Remove("style");
                         }
