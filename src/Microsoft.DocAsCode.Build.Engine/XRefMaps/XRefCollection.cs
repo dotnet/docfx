@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 AddToDownloadList(_uris);
                 var dict = new Dictionary<string, IXRefContainer>();
-                foreach(var item in _processing)
+                foreach (var item in _processing)
                 {
                     var task = item.Key;
                     var uri = item.Value;
