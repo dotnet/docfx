@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
                     editBranch = repoContributionBranch;
                 }
 
-                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
+                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) && document.FilePath.Origin != FileOrigin.Dependency)
                 {
                     var contributionPackageUrl = new PackageUrl(document.Docset.Config.Contribution.Repository);
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Url, pathToRepo);

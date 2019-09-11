@@ -575,3 +575,67 @@ outputs:
       },
       "updated_at": "2018-10-30 12:00 AM"
     }
+---
+# Git/Contribution info for content in CRR
+repos:
+  https://docs.com/crrcontent/a:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/contrib-owner/contrib-repo#contrib-branch
+          files:
+            - "docs/**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              type: git
+              url: https://github.com/testowner/crr-content
+              branch: master
+              extendToBuild: true
+        docs/a.md:
+  https://github.com/testowner/crr-content:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        b.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        b.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        b.md: |
+          Alice creates this.
+cache:
+  github-users.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+outputs:
+  docs/a.json:
+  crrb/b.json: |
+    {
+      "_op_gitContributorInformation":
+      {
+        "author": 
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      },
+      "content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
+      "original_content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
+      "original_content_git_url_template": "{repo}/blob/{branch}/b.md",
+      "gitcommit": "https://github.com/testowner/crr-content/blob/44e7dd472e06b95898986635feccbcefde3c42f0/b.md",
+      "updated_at": "2018-10-30 12:00 AM"
+    }
