@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 v => v.Value));
         }
 
-        public static void Save(string docset, string dependencyLockPath, List<DependencyGitLock> dependencyGitLock)
+        public static void SaveGitLock(string docset, string dependencyLockPath, List<DependencyGitLock> dependencyGitLock)
         {
             Debug.Assert(!string.IsNullOrEmpty(docset));
             Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));

@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                     ? AppData.GetDependencyLockFile(docsetPath, localeToRestore)
                     : extendedConfig.DependencyLock;
 
-                DependencyLockProvider.Save(docsetPath, dependencyLockFilePath, restoredGitLock);
+                DependencyLockProvider.SaveGitLock(docsetPath, dependencyLockFilePath, restoredGitLock);
             }
         }
 
