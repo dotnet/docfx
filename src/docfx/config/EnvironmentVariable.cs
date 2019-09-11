@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
 
         public static string CachePath => GetValue("DOCFX_CACHE_PATH");
 
+        public static string StatePath => GetValue("DOCFX_STATE_PATH");
+
         public static string RepositoryUrl => GetValue("DOCFX_REPOSITORY_URL");
 
         public static string RepositoryBranch => GetValue("DOCFX_REPOSITORY_BRANCH");

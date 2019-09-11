@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class DependencyLockProvider
     {
-        public static DependencyGitLock GetGitLock(this Dictionary<PackageUrl, DependencyGitLock> dependencyLock, PackageUrl packageUrl)
+        public static DependencyGitLock GetGitLock(this IReadOnlyDictionary<PackageUrl, DependencyGitLock> dependencyLock, PackageUrl packageUrl)
         {
             if (dependencyLock == null)
             {
@@ -45,6 +45,8 @@ namespace Microsoft.Docs.Build
             }
 
             var content = RestoreFileMap.GetRestoredFileContent(docset, dependencyLockPath, fallbackDocset: null);
+
+            Log.Write($"DependencyLock ({dependencyLockPath}):\n{content}");
 
             var dependencyLock = JsonUtility.Deserialize<DependencyLock>(content, new FilePath(dependencyLockPath));
 

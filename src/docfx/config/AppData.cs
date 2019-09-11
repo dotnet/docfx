@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
 
         // For testing purpose
         internal static Func<string> GetCachePath;
+        internal static Func<string> GetStatePath;
 
         public static string GitRoot => Path.Combine(s_root, "git4");
 
@@ -21,6 +22,8 @@ namespace Microsoft.Docs.Build
         public static string MutexRoot => Path.Combine(s_root, "mutex");
 
         public static string CacheRoot => GetCachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
+
+        public static string StateRoot => GetStatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
 
         public static string DependencyLockRoot => Path.Combine(s_root, "lock");
 
@@ -55,7 +58,7 @@ namespace Microsoft.Docs.Build
         public static string GetCommitBuildTimePath(string remote, string branch)
         {
             return Path.Combine(
-                CacheRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
+                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
         }
 
         /// <summary>

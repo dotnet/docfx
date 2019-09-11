@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.Type == PackageType.Git)
                 {
-                    yield return (url.RemoteUrl, url.Branch, RestoreGitFlags.NoCheckout);
+                    yield return (url.Url, url.Branch, RestoreGitFlags.NoCheckout);
                 }
             }
 
@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
                 var localizedTemplate = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
                 if (localizedTemplate.Type == PackageType.Git)
                 {
-                    yield return (localizedTemplate.RemoteUrl, localizedTemplate.Branch, RestoreGitFlags.None);
+                    yield return (localizedTemplate.Url, localizedTemplate.Branch, RestoreGitFlags.None);
                 }
             }
 

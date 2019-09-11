@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
                         .ToArray();
 
                 case FileOrigin.Dependency:
-                    var (dependencyPath, commit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], _docsetPath, true);
+                    var (dependencyPath, commit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], true);
 
                     // todo: get tree list from repository
                     return GitUtility.ListTree(dependencyPath, commit)
@@ -147,14 +147,14 @@ namespace Microsoft.Docs.Build
                     return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
-                    var (dependencyPath, dependencyCommit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[file.DependencyName], _docsetPath, true);
+                    var (dependencyPath, dependencyCommit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[file.DependencyName], true);
                     return (dependencyPath, file.Path, file.Commit ?? dependencyCommit);
 
                 case FileOrigin.Fallback:
                     return (_fallbackPath, file.Path, file.Commit);
 
                 case FileOrigin.Template:
-                    var (templatePath, _) = _restoreMap.GetRestoreGitPath(_config.Template, _docsetPath, false);
+                    var (templatePath, _) = _restoreMap.GetRestoreGitPath(_config.Template, false);
                     return (templatePath, file.Path, file.Commit);
 
                 default:

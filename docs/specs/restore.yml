@@ -306,7 +306,7 @@ repos:
           dependencies:
             crrb:
               type: git
-              remoteUrl: https://docs.com/crrcontent/b
+              url: https://docs.com/crrcontent/b
               branch: master
               extendToBuild: true
             crrc: https://docs.com/crrcontent/c
@@ -335,12 +335,12 @@ repos:
           dependencies:
             crrb:
               type: git
-              remoteUrl: https://docs.com/crrcontent/2
+              url: https://docs.com/crrcontent/2
               branch: master
               extendToBuild: true
             crrc:
               type: git
-              remoteUrl: https://docs.com/crrcontent/3
+              url: https://docs.com/crrcontent/3
               extendToBuild: true
   https://docs.com/crrcontent/2:
     - files:

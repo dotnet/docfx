@@ -148,10 +148,8 @@ namespace Microsoft.Docs.Build
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var themePageUrl = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, _) = restoreGitMap.GetRestoreGitPath(themePageUrl, docset.DocsetPath, false);
-            Log.Write($"Using theme '{themePageUrl}' at '{themePath}'");
-
+            var theme = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
+            var (themePath, _) = restoreGitMap.GetRestoreGitPath(theme, bare: false);
             return new TemplateEngine(themePath);
         }
 

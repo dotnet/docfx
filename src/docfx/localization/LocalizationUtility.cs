@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(locRemote, locBranch), docset.DocsetPath, false);
+                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(locRemote, locBranch), false);
                         localizationDocsetPath = locRepoPath;
                         localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
                         break;
@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
 
                 case PackageType.Git:
                     return new PackageUrl(
-                        GetLocalizationName(LocalizationMapping.Repository, theme.RemoteUrl, locale, defaultLocale),
+                        GetLocalizationName(LocalizationMapping.Repository, theme.Url, locale, defaultLocale),
                         theme.Branch);
 
                 default:

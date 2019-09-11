@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                             var xrefMap = YamlUtility.Deserialize<XrefMapModel>(sr.ReadToEnd(), new FilePath(url));
                             foreach (var spec in xrefMap.References)
                             {
-                                result[spec.Uid] = new Lazy<ExternalXrefSpec>(() => spec);
+                                result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                             }
                         }
                         else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                             var xrefMap = JsonUtility.Deserialize<XrefMapModel>(sr.ReadToEnd(), new FilePath(url));
                             foreach (var spec in xrefMap.References)
                             {
-                                result[spec.Uid] = new Lazy<ExternalXrefSpec>(() => spec);
+                                result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                             }
                         }
                     }
