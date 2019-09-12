@@ -24,11 +24,9 @@ namespace Microsoft.Docs.Build
 
         public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo source)
         {
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
-
             if (reference.ContentType == ContentType.Page && !string.IsNullOrEmpty(fragment))
             {
-                var bookmark = fragment.Substring(1).Trim();
+                var bookmark = fragment.Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
                     _references.Add((file, reference, bookmark, isSelfBookmark, source));

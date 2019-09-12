@@ -216,10 +216,10 @@ inputs:
     redirectionsWithoutId:
       docs/redirect.md: /absolute/path
   docs/a.md: |
-    [redirect](redirect.md?a#b)
+    [redirect](redirect.md?a=1#b)
 outputs:
   docs/a.json: |
-    {"conceptual":"<p><a href=\"redirect?a#b\">redirect</a></p>"}
+    {"conceptual":"<p><a href=\"redirect?a=1#b\">redirect</a></p>"}
 ---
 # Show error if inclusion is a redirection file
 inputs:

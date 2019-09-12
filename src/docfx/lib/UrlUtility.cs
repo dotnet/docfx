@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = url.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = url.Substring(fragmentIndex);
+                fragment = url.Substring(fragmentIndex + 1);
                 var queryIndex = url.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex, fragmentIndex - queryIndex);
+                    query = url.Substring(queryIndex + 1, fragmentIndex - queryIndex - 1);
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = url.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex);
+                    query = url.Substring(queryIndex + 1);
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -72,8 +72,6 @@ namespace Microsoft.Docs.Build
         public static string MergeUrl(string targetUrl, string sourceQuery, string sourceFragment)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
-            if (string.IsNullOrEmpty(targetPath))
-                return targetUrl;
 
             var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
             var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
@@ -84,15 +82,15 @@ namespace Microsoft.Docs.Build
             }
 
             var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
-            var fragment = (sourceFragment == null || sourceFragment.Length == 0) ? targetFragment : "#" + sourceFragment;
+            var fragment = (sourceFragment == null || sourceFragment.Length == 0)
+                ? (!string.IsNullOrEmpty(targetFragment) ? $"#{targetFragment}" : "")
+                : (!string.IsNullOrEmpty(sourceFragment) ? $"#{sourceFragment}" : "");
 
             return targetPath + query + fragment;
         }
 
         public static DependencyType FragmentToDependencyType(string fragment)
         {
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
-
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
 
@@ -159,8 +157,14 @@ namespace Microsoft.Docs.Build
                 result.Append(path, segmentIndex, path.Length - segmentIndex);
             }
 
-            result.Append(query);
-            result.Append(fragment);
+            if (!string.IsNullOrEmpty(query))
+            {
+                result.Append($"?{query}");
+            }
+            if (!string.IsNullOrEmpty(fragment))
+            {
+                result.Append($"#{fragment}");
+            }
             return result.ToString();
         }
 

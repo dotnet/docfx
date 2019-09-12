@@ -583,4 +583,15 @@ inputs:
     [some text](#)
 outputs:
   docs/a.json:
-
+---
+# link
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    # title 2
+  docs/b.md: |
+    [a](a.md?#title-2)
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    {"conceptual": "<p><a href=\"a#title-2\" data-linktype=\"relative-path\">a</a></p>\n"}
