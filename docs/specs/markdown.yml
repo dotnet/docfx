@@ -584,7 +584,7 @@ inputs:
 outputs:
   docs/a.json:
 ---
-# link
+# link with empty query
 inputs:
   docfx.yml:
   docs/a.md: |
