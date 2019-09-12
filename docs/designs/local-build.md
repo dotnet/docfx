@@ -10,7 +10,7 @@ Local build allows users to build against a locally stored [MicrosoftDocs](https
 - Build output contains errors, warnings, suggestions with deep links to local files
 - Ability to build all files and only changed files
 - If the build require access to protected resources, authenticate the user using Azure Active Directory
-- Build result should be the same as server build, except where it doesn't make sense (E.g., resolving GitHub contributors locally would exhaust the users GitHub rate limit so I wouldn't fit for local build).
+- Build result should be the same as server build, except where it doesn't make sense (E.g., resolving GitHub contributors locally would exhaust users GitHub rate limit).
 
 ## User Experience
 
@@ -24,22 +24,26 @@ The initial MVP project can be a command line tool that satisfies the above requ
 - Open vscode integrated terminal
 - Run `docfx build` to build all files
 - Run `docfx build --changed` to build only changed files
-- Errors, warnings, suggestions will show up in command line output with `ctrl` clickable links to source location
-![](./images/local-build-cli-deep-link.png)
 - If authentication is required, users are guided to sign in using the standard [Azure AD device login flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-device-code).
   > The command line pauses and shows: _To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code XXXX to authenticate._
+- Errors, warnings, suggestions will show up in command line output with `ctrl` clickable links to source location
+![](./images/local-build-cli-deep-link.png)
 
 ### Phase 2: vscode Integration
 
 - Install the offical [Docs Authoring Pack](https://marketplace.visualstudio.com/items?itemName=docsmsft.docs-authoring-pack), local build extension is bundled as part of it.
 - In vscode command palette, choose `Docs: Build All Files` to build everything, choose `Docs: Build Changed Files` to build only files that are changed
-![](./images/local-build-vscode-commands.png)
+
+  ![](./images/local-build-vscode-commands.png)
 - Errors, warnings, suggestions will show up as standard errors in vscode `Problems Window` as well as squiggles in files.
-![](./images/local-build-vscode-diagnostics.png)
-- If authentication is required, users are prompted to sign in using the standard Azure AD login flow.
-![](./images/local-build-vscode-sign-in.png)
+
+  ![](./images/local-build-vscode-diagnostics.png)
+- If authentication is required, users are prompted to sign in using standard Azure AD login flow.
+
+  ![](./images/local-build-vscode-sign-in.png)
 - Build may need to download some external dependencies for the first time or occationally afterwards, users are prompted and build will then automatically download these dependcencies.
-![](./images/local-build-vscode-restore.png)
+
+  ![](./images/local-build-vscode-restore.png)
 
 ## Technical Design
 
@@ -85,18 +89,18 @@ With LSP, we can expose all the smartness of docfx build engine to any tool, be 
 
 #### OPS Config
 
-`docfx` currently does not understand `.openpublishing.config.json` and `docfx.json` in docfx v2. There is a seperate config migration step that converts these config files and some server only config values to `docfx.yml` that docfx v3 recognizes during server build. 
+`docfx` currently does not understand `.openpublishing.config.json` and `docfx.json`. There is a seperate config migration step that converts these config files and some server only configs to `docfx.yml` that docfx recognizes during server build. 
 
-For local build, `docfx` needs to recognize these config files.
+For local build, `docfx` needs to recognize these config files by embedding config migration into docfx.
 
 #### Config Service
 
-Some config values are protected resources, they __MUST__ be gated behind an authenticated service. `docs build service` exposes serveral endpoints to return these protected resources:
+Some config values are protected resources, they __MUST__ be gated behind an authenticated service. `docs build service` exposes serveral endpoints to retrieve these protected resources:
 
 url | url query parameters | allow public access | remarks
 ----|----|---|---
-`/monikerdefinition` | | ❌ | Returns a JSON that confirms to docfx /MonikerDefiniton config 
-`/metadataschema` | repository, branch | ✔ | Returns metadata JSON schema
+`/monikerdefinition` | | ❌ | Returns a JSON that confirms to docfx `monikerDefiniton` config 
+`/metadataschema` | repository, branch | ✔ | Returns metadata JSON schema converted from metadata validation service. OPS metadata schema is bundled inside docfx.
 `/xref/{basepath}` | exclude, branch, hostname | ✔ for public xrefmap. ❌ for private xrefmap | __TBD__ . _exclude_ represents docset name to exclude. when _branch_ missing, implies public xrefmap. When _hostname_ missing, implies _docs.microsoft.com_.
 
 #### Config Service Authentication
@@ -107,13 +111,13 @@ Config service uses Azure AD for authentication. Thus `docfx` needs to implement
 http:
   https://docs.microsoft.com:
     microsoftIdentity:
-      enabled: {true|false} # optional, default to false
+      enabled: {true|false} # required, default to false
       clientId: {clientId} # optional, default to docfx app
       tenant: {tenant} # optional, default to Microsoft tenant
 ```
 
 When a host enables Microsoft Identity, all requests to that host tries to use existing AAD token first. When the server returns 401, client should re-authenticate against AAD and retry the request. 
->[Polly Retry](https://github.com/App-vNext/Polly) provides a handy method to retry once on unauthorized access.
+>[Polly Retry](https://github.com/App-vNext/Polly) provides a handy method to retry on unauthorized access.
 
 ![](images/local-build-aad-auth.png)
 
@@ -126,4 +130,4 @@ LSP uses [JSON RPC](https://www.jsonrpc.org/specification), a simple, light-weig
 
 `docfx serve` command launches `docfx` as a local web server. When `--language-server` option is specified, it also launches the language server.
 
-> The reason to use `docfx serve --language-server` as the command over `docfx watch` is that watching file changes is done in language clients (vscode) for [good reasons](https://microsoft.github.io/language-server-protocol/specification#workspace_didChangeWatchedFiles). If there is need to watch file system changes without a language client (vscode), we can choose to add a `--watch` flag to `docfx serve` that enables file system watch from command line.
+> The reason to use `docfx serve --language-server` as the command over `docfx watch` is that watching file changes is done in language clients (vscode) for [good reasons](https://microsoft.github.io/language-server-protocol/specification#workspace_didChangeWatchedFiles). If there is need to watch file system changes without a language client (vscode), we can choose to add a `--watch` flag to `docfx serve` that enables file system watching.
