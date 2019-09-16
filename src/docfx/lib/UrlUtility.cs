@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = url.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = url.Substring(fragmentIndex + 1);
+                fragment = url.Substring(fragmentIndex);
                 var queryIndex = url.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex + 1, fragmentIndex - queryIndex - 1);
+                    query = url.Substring(queryIndex, fragmentIndex - queryIndex);
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = url.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex + 1);
+                    query = url.Substring(queryIndex);
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -83,8 +83,8 @@ namespace Microsoft.Docs.Build
 
             var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
             var fragment = (sourceFragment == null || sourceFragment.Length == 0)
-                ? (!string.IsNullOrEmpty(targetFragment) ? $"#{targetFragment}" : "")
-                : (!string.IsNullOrEmpty(sourceFragment) ? $"#{sourceFragment}" : "");
+                ? (!string.IsNullOrEmpty(targetFragment) ? targetFragment : "")
+                : (!string.IsNullOrEmpty(sourceFragment) ? sourceFragment : "");
 
             return Uri.UnescapeDataString(targetPath + query + fragment);
         }
@@ -159,11 +159,11 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(query))
             {
-                result.Append($"?{query}");
+                result.Append(query);
             }
             if (!string.IsNullOrEmpty(fragment))
             {
-                result.Append($"#{fragment}");
+                result.Append(fragment);
             }
             return result.ToString();
         }

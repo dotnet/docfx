@@ -590,14 +590,21 @@ outputs:
                      </p>"
     }
 ---
-# link with empty query
+# link with empty query and empty fragment
 inputs:
   docfx.yml:
   docs/a.md: |
     # title 2
+    ## title 3
   docs/b.md: |
     [a](a.md?#title-2)
+    [a1](a.md#)
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"conceptual": "<p><a href=\"a#title-2\" data-linktype=\"relative-path\">a</a></p>\n"}
+    {
+      "conceptual": "<p>
+                          <a href=\"a#title-2\" data-linktype=\"relative-path\">a</a>
+                          <a href=\"a#\" data-linktype=\"relative-path\">a1</a>
+                     </p>"
+    }

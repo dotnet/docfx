@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             var queries = new NameValueCollection();
             if (!string.IsNullOrEmpty(query))
             {
-                queries = HttpUtility.ParseQueryString($"?{query}");
+                queries = HttpUtility.ParseQueryString(query);
                 moniker = queries["view"];
                 queries.Remove("view");
                 text = queries["text"];

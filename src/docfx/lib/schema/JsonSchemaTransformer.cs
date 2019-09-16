@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                     {
                         Uid = uid,
                         Source = JsonUtility.GetSourceInfo(obj),
-                        Href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", GetBookmarkFromUid(uid)),
+                        Href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", $"#{GetBookmarkFromUid(uid)}"),
                         DeclaringFile = file,
                     };
                     xref.ExtensionData.AddRange(xrefProperties);

@@ -114,11 +114,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(href != null);
 
-            if (href == "#")
-            {
-                return (null, href, null, LinkType.SelfBookmark, null, false);
-            }
-
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);

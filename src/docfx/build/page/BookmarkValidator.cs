@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         {
             if (reference.ContentType == ContentType.Page && !string.IsNullOrEmpty(fragment))
             {
-                var bookmark = fragment.Trim();
+                var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
                     _references.Add((file, reference, bookmark, isSelfBookmark, source));
