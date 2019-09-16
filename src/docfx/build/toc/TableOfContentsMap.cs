@@ -71,9 +71,9 @@ namespace Microsoft.Docs.Build
             var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
 
             var tocCandidates = from toc in filteredTocs
-                                let dirInfo = GetRelativeDirectoryInfo(file.SitePath, toc.SitePath)
+                                let dirInfo = GetRelativeDirectoryInfo(file.FilePath.Path, toc.FilePath.Path)
                                 where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
-                                select new TocCandidate((dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount), toc, file);
+                                select new TocCandidate((dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount), toc);
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
@@ -147,41 +147,31 @@ namespace Microsoft.Docs.Build
 
         private sealed class TocCandidate
         {
-            private Lazy<(int subDirectoryCount, int parentDirectoryCount)> _fileDirInfo;
-
-            public (int subCount, int parentCount) SiteDirInfo { get; }
-
-            public (int subCount, int parentCount) FileDirInfo => _fileDirInfo.Value;
+            public (int subCount, int parentCount) FileDirInfo { get; }
 
             public Document Toc { get; }
 
-            public TocCandidate((int, int) siteDirInfo, Document toc, Document referencedFile)
+            public TocCandidate((int, int) fileDirInfo, Document toc)
             {
-                SiteDirInfo = siteDirInfo;
+                FileDirInfo = fileDirInfo;
                 Toc = toc;
-                _fileDirInfo = new Lazy<(int, int)>(() => GetRelativeDirectoryInfo(referencedFile.FilePath.Path, Toc.FilePath.Path));
             }
         }
 
         /// <summary>
         /// Compare two toc candidate relative to target file.
         /// Return negative if x is closer than y, possitive if x is farer than y, 0 if x equals y.
-        /// 1. sub nearest(based on site path)
-        /// 2. parent nearest(based on site path)
-        /// 3. sub nearest(based on file path)
-        /// 4. parent nearest(based on file path)
+        /// 1. sub nearest(based on file path)
+        /// 2. parent nearest(based on file path)
+        /// 3. sub-name lexicographical nearest
         /// </summary>
         private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
         {
-            var result = candidateX.SiteDirInfo.subCount - candidateY.SiteDirInfo.subCount;
-            if (result == 0)
-                result = candidateX.SiteDirInfo.parentCount - candidateY.SiteDirInfo.parentCount;
-            if (result == 0)
-                result = candidateX.FileDirInfo.subCount - candidateY.FileDirInfo.subCount;
+            var result = candidateX.FileDirInfo.subCount - candidateY.FileDirInfo.subCount;
             if (result == 0)
                 result = candidateX.FileDirInfo.parentCount - candidateY.FileDirInfo.parentCount;
             if (result == 0)
-                result = candidateX.Toc.FilePath.CompareTo(candidateY.Toc.FilePath);
+                result = candidateX.Toc.CompareTo(candidateY.Toc);
             return result;
         }
     }
