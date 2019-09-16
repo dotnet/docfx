@@ -36,7 +36,6 @@ Docfx generate `links` information of each files into one single file `.links.js
   |-------------------|----------------------|
   | `source_url`      | /dotnet/articles/a   |
   | `target_url`      | /dotnet/articles/b   |
-  | `source_monikers` | [`dotnet-1.1`]       |
 
 Example:
 
