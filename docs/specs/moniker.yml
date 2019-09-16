@@ -876,7 +876,7 @@ outputs:
       "conceptual": "<p>Moniker: netcore-1.1, netcore-1.2</p>",
       "monikers": ["netcore-1.1", "netcore-1.2"]
     }
-  8169d1ea/docs/toc.json: |
+  1dd7adba/docs/toc.json: |
     {
       "items": [
         {
@@ -905,7 +905,7 @@ outputs:
           "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"]
         }
       ],
-      "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
+      "metadata": {"monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
     }
 ---
 # Build toc with monikers info - multiple node with same url
@@ -965,7 +965,7 @@ inputs:
     Moniker: netcore-1.2
   docs/v1/e.md: |
     ---
-    monikerRange: netcore-1.3
+    monikerRange: netcore-1.3 
     ---
     Moniker: netcore-1.3
   docs/v1/TOC.yml: |
@@ -996,7 +996,7 @@ outputs:
   218c13d0/docs/c.json:
   b201e604/docs/d.json:
   8d1c2563/docs/e.json:
-  8169d1ea/docs/toc.json: |
+  3e6312f5/docs/toc.json: |
     {
       "items": [
         {
@@ -1017,7 +1017,7 @@ outputs:
           ]
         }
       ],
-      "metadata": { "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ] }
+      "metadata": { "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.3" ] }
     }
 ---
 # Build folder reference toc with moniker info
@@ -1077,7 +1077,7 @@ outputs:
   218c13d0/docs/c.json:
   b201e604/docs/d.json:
   8d1c2563/docs/e.json:
-  8169d1ea/docs/toc.json: |
+  4a6b740e/docs/toc.json: |
     {
       "items": [
         {
@@ -1097,7 +1097,7 @@ outputs:
           ]
         }
       ],
-      "metadata": { "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ] }
+      "metadata": { "monikers": ["netcore-1.0", "netcore-1.2", "netcore-1.3" ] }
     }
 ---
 # Build toc with duplicate monikers
@@ -1111,9 +1111,11 @@ inputs:
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
   docs/v1/TOC.md: |
-    # Node
+    # [A](a.md)
+  docs/v1/a.md:
   docs/v2/TOC.md: |
-    # Node
+    # [A](b.md)
+  docs/v2/b.md:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -1126,11 +1128,13 @@ outputs:
     {
       "files":
       [
+        { "url": "/docs/b" },
         {
           "url": "/docs/toc.json",
           "locale": "en-us",
           "has_error": true
         },
+        { "url": "/docs/a" },
         {
           "url": "/docs/toc.json",
           "locale": "en-us",
@@ -1163,8 +1167,6 @@ inputs:
     }
 outputs:
   docs/toc.json:
-  .errors.log: |
-    ["warning","empty-monikers","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","docs/v1/TOC.md"]
 ---
 # Build resource file with moniker
 inputs:

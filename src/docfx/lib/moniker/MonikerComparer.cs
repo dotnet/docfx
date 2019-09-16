@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MonikerComparer : IComparer<string>
+    internal class MonikerComparer : IComparer<string>, IEqualityComparer<string>
     {
         private readonly Dictionary<string, (string productName, int orderInProduct)> _monikerOrder;
 
@@ -34,6 +34,16 @@ namespace Microsoft.Docs.Build
             }
 
             return orderXInProduct.CompareTo(orderYInProduct);
+        }
+
+        public bool Equals(string x, string y)
+        {
+            return Compare(x, y) == 0;
+        }
+
+        public int GetHashCode(string obj)
+        {
+            return HashCode.Combine(obj);
         }
     }
 }

@@ -25,10 +25,7 @@ namespace Microsoft.Docs.Build
 
             var (errors, model) = LoadInternal(context, file, file, referencedFiles, referencedTocs);
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
-            errors.AddIfNotNull(error);
-
-            model.Metadata.Monikers = monikers;
+            model.Metadata.Monikers = model.Items.SelectMany(item => item.Monikers).Distinct(context.MonikerProvider.Comparer).ToList();
             return (errors, model, referencedFiles, referencedTocs);
         }
 

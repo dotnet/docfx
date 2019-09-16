@@ -398,9 +398,11 @@ inputs:
       docs/v1/: .
       docs/v2/: .
     monikerDefinition: monikerDefinition.json
-  docs/v1/TOC.md:
+  docs/v1/TOC.md: |
+    # [A](f1/a.md)
   docs/v1/f1/a.md:
-  docs/v2/TOC.md:
+  docs/v2/TOC.md: |
+    # [A](f1/a.md)
   docs/v2/f1/a.md:
   monikerDefinition.json: |
     {
@@ -424,7 +426,9 @@ outputs:
   docs/filemap.json:
   full-dependent-list.txt: |
     {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
+    {"dependency_type":"file","from_file_path":"*docs\\v1\\TOC.md*","to_file_path":"*docs\\v1\\f1\\a.md*","version":"netcore-1.0"}
     {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
+    {"dependency_type":"file","from_file_path":"*docs\\v2\\TOC.md*","to_file_path":"*docs\\v2\\f1\\a.md*","version":"netcore-2.0"}
 ---
 # legacy errors from source repo [repo mapping]
 locale: zh-cn
