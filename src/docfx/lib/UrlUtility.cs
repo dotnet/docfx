@@ -162,14 +162,8 @@ namespace Microsoft.Docs.Build
                 result.Append(path, segmentIndex, path.Length - segmentIndex);
             }
 
-            if (!string.IsNullOrEmpty(query))
-            {
-                result.Append(query);
-            }
-            if (!string.IsNullOrEmpty(fragment))
-            {
-                result.Append(fragment);
-            }
+            result.Append(query);
+            result.Append(fragment);
             return result.ToString();
         }
 
