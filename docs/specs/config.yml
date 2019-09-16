@@ -183,12 +183,12 @@ inputs:
     redirectionsWithoutId:
       docs/redirect.md: '/absolute/path '
   docs/a.md: |
-    [redirect](redirect.md?a=c#b)
+    [redirect](redirect.md?a#b)
 outputs:
   docs/a.json: |
     {
       "key": "value",
-      "conceptual": "<p><a href=\"redirect?a=c#b\">redirect</a></p>"
+      "conceptual": "<p><a href=\"redirect?a#b\">redirect</a></p>"
     }
 ---
 # routes

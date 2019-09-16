@@ -2,10 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace Microsoft.Docs.Build
 {
@@ -73,20 +74,22 @@ namespace Microsoft.Docs.Build
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
-            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
-            var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
+            var targetQueryParameters = ParseQueryString(targetQuery);
+            var sourceQueryParameters = ParseQueryString(sourceQuery);
 
-            foreach (var key in sourceQueryParameters.AllKeys)
+            foreach (var key in sourceQueryParameters.Keys)
             {
-                targetQueryParameters.Set(key, sourceQueryParameters[key]);
+                targetQueryParameters[key] = sourceQueryParameters[key];
             }
 
-            var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
+            var query = targetQueryParameters.Any() ?
+                $"?{string.Join("&", targetQueryParameters.Select(x => !string.IsNullOrEmpty(x.Value) ? $"{x.Key}={x.Value}" : x.Key))}"
+                : string.Empty;
             var fragment = (sourceFragment == null || sourceFragment.Length == 0)
                 ? (!string.IsNullOrEmpty(targetFragment) ? targetFragment : "")
                 : (!string.IsNullOrEmpty(sourceFragment) ? sourceFragment : "");
 
-            return Uri.UnescapeDataString(targetPath + query + fragment);
+            return targetPath + query + fragment;
         }
 
         public static DependencyType FragmentToDependencyType(string fragment)
@@ -256,6 +259,32 @@ namespace Microsoft.Docs.Build
             repo = match.Groups["repository"].Value;
 
             return true;
+        }
+
+        private static Dictionary<string, string> ParseQueryString(string query)
+        {
+            Debug.Assert(string.IsNullOrEmpty(query) || query[0] == '?');
+            var result = new Dictionary<string, string>();
+            if (string.IsNullOrEmpty(query) || query == "?")
+            {
+                return result;
+            }
+
+            foreach (var item in query.Substring(1).Split('&'))
+            {
+                var index = item.IndexOf('=');
+                if (index != -1)
+                {
+                    var key = item.Substring(0, index);
+                    var value = item.Substring(index + 1);
+                    result.Add(key, value);
+                }
+                else
+                {
+                    result.Add(item, null);
+                }
+            }
+            return result;
         }
     }
 }

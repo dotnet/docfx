@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("", "", "", "")]
-        [InlineData("", "?b=1", "#c", "?b=1#c")]
+        [InlineData("", "?b", "#c", "?b#c")]
         [InlineData("a", "?b=1", "#c", "a?b=1#c")]
         [InlineData("a", "", null, "a")]
         [InlineData("a?b=1#c", "?b=2", "#c1", "a?b=2#c1")]
