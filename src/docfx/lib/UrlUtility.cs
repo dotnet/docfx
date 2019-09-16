@@ -2,11 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using System.Collections.Specialized;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
@@ -74,17 +73,20 @@ namespace Microsoft.Docs.Build
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
-            var targetQueryParameters = ParseQueryString(targetQuery);
-            var sourceQueryParameters = ParseQueryString(sourceQuery);
+            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
+            var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
-            foreach (var key in sourceQueryParameters.Keys)
+            foreach (var key in sourceQueryParameters.AllKeys)
             {
                 targetQueryParameters[key] = sourceQueryParameters[key];
             }
 
-            var query = targetQueryParameters.Any() ?
-                $"?{string.Join("&", targetQueryParameters.Select(x => !string.IsNullOrEmpty(x.Value) ? $"{x.Key}={x.Value}" : x.Key))}"
-                : string.Empty;
+            var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : string.Empty;
+            if (string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(sourceQuery))
+            {
+                query = sourceQuery;
+            }
+
             var fragment = (sourceFragment == null || sourceFragment.Length == 0)
                 ? (!string.IsNullOrEmpty(targetFragment) ? targetFragment : "")
                 : (!string.IsNullOrEmpty(sourceFragment) ? sourceFragment : "");
@@ -261,30 +263,22 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static Dictionary<string, string> ParseQueryString(string query)
+        private static string ToQueryString(this NameValueCollection collection)
         {
-            Debug.Assert(string.IsNullOrEmpty(query) || query[0] == '?');
-            var result = new Dictionary<string, string>();
-            if (string.IsNullOrEmpty(query) || query == "?")
+            var result = new StringBuilder("?");
+            foreach (var key in collection.AllKeys)
             {
-                return result;
-            }
-
-            foreach (var item in query.Substring(1).Split('&'))
-            {
-                var index = item.IndexOf('=');
-                if (index != -1)
+                if (string.IsNullOrEmpty(key))
                 {
-                    var key = item.Substring(0, index);
-                    var value = item.Substring(index + 1);
-                    result.Add(key, value);
+                    result.Append($"{collection[key]}&");
                 }
                 else
                 {
-                    result.Add(item, null);
+                    result.Append($"{key}={collection[key]}&");
                 }
             }
-            return result;
+            result.Remove(result.Length - 1, 1);
+            return result.ToString();
         }
     }
 }

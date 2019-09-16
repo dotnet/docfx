@@ -604,7 +604,7 @@ outputs:
   docs/b.json: |
     {
       "conceptual": "<p>
-                          <a href=\"a#title-2\" data-linktype=\"relative-path\">a</a>
+                          <a href=\"a?#title-2\" data-linktype=\"relative-path\">a</a>
                           <a href=\"a#\" data-linktype=\"relative-path\">a1</a>
                      </p>"
     }
