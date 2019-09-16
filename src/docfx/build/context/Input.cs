@@ -44,8 +44,7 @@ namespace Microsoft.Docs.Build
                 return File.Exists(Path.Combine(basePath, path));
             }
 
-            // TODO: Implement exists check from git repository
-            throw new NotSupportedException($"{nameof(Exists)}: {file}");
+            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit)) != null;
         }
 
         /// <summary>
@@ -99,7 +98,7 @@ namespace Microsoft.Docs.Build
                 return File.OpenText(Path.Combine(basePath, path));
             }
 
-            var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(basePath, aFile.Path, aFile.Commit))
+            var bytes = _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit))
                 ?? throw new InvalidOperationException($"Error reading '{file}'");
 
             return new StreamReader(new MemoryStream(bytes, writable: false));
@@ -127,11 +126,12 @@ namespace Microsoft.Docs.Build
                         .ToArray();
 
                 case FileOrigin.Dependency:
-                    var dependencyPath = _restoreMap.GetGitRestorePath(_config.Dependencies[dependencyName]);
-                    return Directory
-                        .GetFiles(dependencyPath, "*", SearchOption.AllDirectories)
+                    var (dependencyPath, commit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], true);
+
+                    // todo: get tree list from repository
+                    return GitUtility.ListTree(dependencyPath, commit)
                         .Select(path => new FilePath(
-                            Path.GetRelativePath(dependencyPath, path).Replace('\\', '/'), dependencyName))
+                            path.Replace('\\', '/'), dependencyName))
                         .ToArray();
 
                 default:
@@ -147,14 +147,14 @@ namespace Microsoft.Docs.Build
                     return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
-                    var dependencyPath = _restoreMap.GetGitRestorePath(_config.Dependencies[file.DependencyName]);
-                    return (dependencyPath, file.Path, file.Commit);
+                    var (dependencyPath, dependencyCommit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[file.DependencyName], true);
+                    return (dependencyPath, file.Path, file.Commit ?? dependencyCommit);
 
                 case FileOrigin.Fallback:
                     return (_fallbackPath, file.Path, file.Commit);
 
                 case FileOrigin.Template:
-                    var templatePath = _restoreMap.GetGitRestorePath(_config.Template);
+                    var (templatePath, _) = _restoreMap.GetRestoreGitPath(_config.Template, false);
                     return (templatePath, file.Path, file.Commit);
 
                 default:

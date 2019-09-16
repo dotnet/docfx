@@ -6,8 +6,8 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
-            restore-child: https://docs.com/restore1#child
-  https://docs.com/restore1#child:
+            restore-child: https://docs.com/restore-child1#child
+  https://docs.com/restore-child1#child:
     - files:
         docs/child.md:
   https://docs.com/restore1.zh-cn#master:
@@ -29,7 +29,7 @@ repos:
           localization:
             bilingual: true
           dependencies:
-            restore-child: https://docs.com/restore2#child
+            restore-child: https://docs.com/restore-child2#child
   https://docs.com/restore2.zh-cn#master-sxs:
     - files:
         docs/loc.md: |
@@ -37,7 +37,7 @@ repos:
   https://docs.com/restore2.zh-cn#master:
     - files:
         docs/loc.md:
-  https://docs.com/restore2#child:
+  https://docs.com/restore-child2#child:
     - files:
         docs/child.md:
 outputs:

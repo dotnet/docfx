@@ -192,10 +192,19 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
+            dep1: https://docs.com/lock1/b#master
             dep2: https://docs.com/lock1/c
           dependencyLock: '{CACHE_PATH}.lock.json'
         docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
+  https://docs.com/lock1/b:
+    - files:
+        docs/dep1.md: |
+          "123"
+    - files:
+        docs/dep1.md: |
+          "456"
   https://docs.com/lock1/c:
     - files:
         docs/dep2.md: "2333"
@@ -204,19 +213,16 @@ repos:
 cache:
   .lock.json: |
     {
-      "git":
-      {
-        "https://docs.com/lock1/c#master":
-        {
-          "url": "https://docs.com/lock1/c",
-          "branch": "master",
-          "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"
-        }
-      }
+       "git":{
+          "https://docs.com/lock1/b":{
+             "commit":"c08a067b6e9e5eaac4afb8e1d55501b4e9ff3bca"
+             }
+          }
+       }
     }
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>233333</p>\n"}
+    {"conceptual":"<p>&quot;456&quot;</p>\n<p>2333</p>\n"}
 ---
 # [skip] restore with wrong dependency version
 repos:
@@ -249,10 +255,19 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
+            dep1: https://docascode.visualstudio.com/lock/_git/b#master
             dep2: https://docascode.visualstudio.com/lock/_git/c
           dependencyLock: {CACHE_PATH}.lock.json
         docs/a.md: |
+          [!include[](~/dep1/docs/dep1.md)]
           [!include[](~/dep2/docs/dep2.md)]
+  https://docascode.visualstudio.com/lock/_git/b:
+    - files:
+        docs/dep1.md: |
+          "abc"
+    - files:
+        docs/dep1.md: |
+          "def"
   https://docascode.visualstudio.com/lock/_git/c:
     - files:
         docs/dep2.md: "2333"
@@ -260,20 +275,20 @@ repos:
         docs/dep2.md: "233333"
 cache:
   .lock.json: |
-    {
-      "git":
-      {
-        "https://docascode.visualstudio.com/lock/_git/c#master":
-        {
-          "url": "https://docascode.visualstudio.com/lock/_git/c",
-          "branch": "master",
-          "commit": "8720d784fb99abcbdfa922025b8bcc060f0f622a"
-        }
-      }
+    {  
+       "git":{  
+          "https://docascode.visualstudio.com/lock/_git/b":{
+             "commit":"b3b94cd72dd3502c2c089ceaf983840dc4badde8"
+             }
+          },
+          "https://docascode.visualstudio.com/lock/_git/c#master": {
+            "commit": "c5969737496ff42854a019f982882d5fac486a56"
+          }
+       }
     }
 outputs:
   docs/a.json: |
-    {"conceptual":"<p>233333</p>"}
+    {"conceptual":"<p>&quot;def&quot;</p>\n<p>2333</p>\n"}
 ---
 # build content in dependency repository
 # content in dependency repository:

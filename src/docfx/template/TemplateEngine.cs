@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             }
 
             var theme = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var themePath = restoreGitMap.GetGitRestorePath(theme);
+            var (themePath, _) = restoreGitMap.GetRestoreGitPath(theme, bare: false);
             return new TemplateEngine(themePath);
         }
 

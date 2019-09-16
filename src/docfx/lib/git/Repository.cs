@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         /// Repository's branch info ashould NOT depend on git, unless you are pretty sure about that
         /// Repository's url can also be overwritten
         /// </summary>
-        public static Repository Create(string path, string branch, string repoUrl = null)
+        public static Repository Create(string path, string branch, string repoUrl = null, string commit = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
@@ -45,13 +45,18 @@ namespace Microsoft.Docs.Build
 
             if (repoPath is null)
                 return null;
-
-            var (remote, repoBranch, commit) = GitUtility.GetRepoInfo(repoPath);
+            if (string.IsNullOrEmpty(branch) || string.IsNullOrEmpty(commit) || string.IsNullOrEmpty(repoUrl))
+            {
+                var (remote, repoBranch, repoCommit) = GitUtility.GetRepoInfo(repoPath);
+                repoUrl = repoUrl ?? remote;
+                branch = branch ?? repoBranch;
+                commit = commit ?? repoCommit;
+            }
 
             // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
-            remote = Regex.Replace(repoUrl ?? remote ?? "", @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
+            repoUrl = Regex.Replace(repoUrl ?? "", @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
 
-            return new Repository(remote, branch ?? repoBranch, commit, PathUtility.NormalizeFolder(repoPath));
+            return new Repository(repoUrl, branch, commit, PathUtility.NormalizeFolder(repoPath));
         }
     }
 }
