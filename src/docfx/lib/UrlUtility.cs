@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                 ? (!string.IsNullOrEmpty(targetFragment) ? $"#{targetFragment}" : "")
                 : (!string.IsNullOrEmpty(sourceFragment) ? $"#{sourceFragment}" : "");
 
-            return targetPath + query + fragment;
+            return Uri.UnescapeDataString(targetPath + query + fragment);
         }
 
         public static DependencyType FragmentToDependencyType(string fragment)

@@ -582,7 +582,13 @@ inputs:
     [some text](#top)
     [some text](#)
 outputs:
-  docs/a.json:
+  docs/a.json: |
+    {
+      "conceptual": "<p>
+                         <a href=\"#top\" data-linktype=\"self-bookmark\">some text</a>
+                         <a href=\"#\" data-linktype=\"self-bookmark\">some text</a>
+                     </p>"
+    }
 ---
 # link with empty query
 inputs:
