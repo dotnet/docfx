@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                 return File.OpenText(Path.Combine(basePath, path));
             }
 
-            var bytes = _gitBlobCache.GetOrAdd(file, aFile => GitUtility.ReadBytes(basePath, aFile.Path, aFile.Commit))
+            var bytes = _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit))
                 ?? throw new InvalidOperationException($"Error reading '{file}'");
 
             return new StreamReader(new MemoryStream(bytes, writable: false));
