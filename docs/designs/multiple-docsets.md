@@ -5,7 +5,7 @@ This document describes the behavior for repositories with multiple docsets.
 
 ## Configuration
 
-`docsets.yml` is the config file to describe a collection of docsets under multiple docsets setup for a repository. It contains a `docsets` property that describes the location of docsets managed by this repository. The value is an arry of glob patterns that matches the folder path of each docset relative to `docsets.yml`, it could be short circuited to a single string glob if there is only one glob:
+`docsets.yml` is the config file to describe a collection of docsets under multiple docsets setup for a repository. It contains a `docsets` property that describes the location of docsets managed by this repository. The value is an array of glob patterns that matches the folder path of each docset relative to `docsets.yml`, it could be short circuited to a string if there is only one glob:
 
 ```yml
 docsets:
@@ -13,7 +13,7 @@ docsets:
 - 'docsets/*'   # Matches folders under `docsets` that contains docfx.yml
 ```
 
-- Just like `docfx.yml`/`docfx.json` pair, we also supports `docsets.json` file.
+- Just like `docfx.yml`/`docfx.json` pair, `docsets.json` is also a supported format.
 - Just like `docfx.yml`, `docsets.yml` does not have to be at repository root folder.
 - To interop with existing MicrosoftDocs repositories, `docsets.yml` is generated from `.openpublishing.config.json`.
 
@@ -27,7 +27,7 @@ Each docset is built seperately as a standalone, self-contained unit. No states 
 
 Building against `docsets.yml` is conceptually the same as building each docset that it contains. Output content and structure of building a `docsets.yml` is exactly the same as building each `docfx.yml`.
 
-When `--output` is not explicitly specified in command line, output folder of each docset respects `output.path` config or `_site` by default:
+When `--output` is _NOT_ explicitly specified in command line, output folder of each docset respects `output.path` config or `_site` by default:
 
 ```yml
 # cmd: docfx build
@@ -46,6 +46,8 @@ b/output_b/b.json:
 ```
 
 When `--output` option is specified from the command line, `output.path` is overwritten by `{cwd}/{cmd-output}/{docset-folder}`:
+
+> Server build alway passes `--output` and always assumes  multi docset build even if the repository contains just a single docset.
 
 ```yml
 # cmd: docfx build --output _site
