@@ -11,12 +11,12 @@ namespace Microsoft.Docs.Build
     public struct InterProcessReaderWriterLock : IDisposable
     {
         private readonly FileStream _fileStream;
-        private readonly string _lockName;
+        private readonly string _filePath;
 
-        private InterProcessReaderWriterLock(FileStream fileStream, string lockName)
+        private InterProcessReaderWriterLock(FileStream fileStream, string filePath)
         {
             _fileStream = fileStream;
-            _lockName = lockName;
+            _filePath = filePath;
         }
 
         public static InterProcessReaderWriterLock CreateReaderLock(string lockName)
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             var filePath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(lockName));
             var fileLock = WaitFile(lockName, filePath, FileAccess.Write, FileShare.None);
 
-            return new InterProcessReaderWriterLock(fileLock, lockName);
+            return new InterProcessReaderWriterLock(fileLock, filePath);
         }
 
         private static FileStream WaitFile(string name, string path, FileAccess access, FileShare fileShare)
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    using (new GlobalMutex(name))
+                    using (new GlobalMutex(path))
                     {
                         return new FileStream(path, FileMode.OpenOrCreate, access, fileShare);
                     }
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
         {
             if (_fileStream != null)
             {
-                using (new GlobalMutex(_lockName))
+                using (new GlobalMutex(_filePath))
                 {
                     _fileStream.Dispose();
                 }
