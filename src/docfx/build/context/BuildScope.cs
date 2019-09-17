@@ -58,6 +58,8 @@ namespace Microsoft.Docs.Build
                     var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob, dependencyName);
                     Files.UnionWith(dependencyFiles);
                 }
+
+                _fileNames.UnionWith(_input.ListFilesRecursive(FileOrigin.Dependency, dependencyName).Select(f => Path.Combine(dependencyName, f.Path).Replace("\\", "/")).ToList());
             }
         }
 

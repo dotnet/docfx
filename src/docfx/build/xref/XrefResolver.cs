@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             var resolvedHref = UrlUtility.MergeUrl(
                 RemoveSharingHost(xrefSpec.Href, referencingFile.Docset.HostName),
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
-                fragment.Length == 0 ? "" : fragment.Substring(1));
+                fragment.Length == 0 ? "" : fragment);
 
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
                     var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
-                    xrefSpec.Href = path + query + fragment;
+                    xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();

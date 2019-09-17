@@ -142,18 +142,18 @@ namespace Microsoft.Docs.Build
             {
                 if (linkType == LinkType.SelfBookmark)
                 {
-                    return (error, query + fragment, fragment, linkType, null, false);
+                    return (error, UrlUtility.MergeUrl("", query, fragment), fragment, linkType, null, false);
                 }
 
                 var selfUrl = Document.PathToRelativeUrl(
                     Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
 
-                return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null, false);
+                return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
 
             if (file?.RedirectionUrl != null)
             {
-                return (error, file.SiteUrl + query + fragment, null, linkType, file, false);
+                return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), null, linkType, file, false);
             }
 
             if (error is null && _buildScope.OutOfScope(file))
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
-            return (error, file.SiteUrl + query + fragment, fragment, linkType, file, false);
+            return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), fragment, linkType, file, false);
         }
 
         private (Error error, Document file, string query, string fragment, LinkType linkType) TryResolveFile(
@@ -225,6 +225,12 @@ namespace Microsoft.Docs.Build
             // apply resolve alias
             var pathToDocset = ApplyResolveAlias(referencingFile, relativePath);
 
+            // use the actual file name case
+            if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
+            {
+                pathToDocset = pathActualCase;
+            }
+
             // resolve from the current docset for files in dependencies
             if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
             {
@@ -236,20 +242,14 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            // Use the actual file name case
-            if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
-            {
-                pathToDocset = pathActualCase;
-            }
-
             // resolve from redirection files
             if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
             {
                 return redirectFile;
             }
 
-            // resolve from dependencies
-            foreach (var (dependencyName, dependencyDocset) in _dependencies)
+            // resolve from dependent docsets
+            foreach (var (dependencyName, dependentDocset) in _dependencies)
             {
                 var (match, _, remainingPath) = PathUtility.Match(pathToDocset, dependencyName);
                 if (!match)
@@ -261,7 +261,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(remainingPath, dependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(dependencyDocset, path, _input, _templateEngine);
+                    return Document.Create(dependentDocset, path, _input, _templateEngine);
                 }
             }
 
@@ -285,9 +285,11 @@ namespace Microsoft.Docs.Build
                 if (lookupFallbackCommits)
                 {
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
-                    if (repo != null && commits.Count > 1)
+                    var commit = repo != null && commits.Count > 1 ? commits[1] : default;
+                    path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
+
+                    if (_input.Exists(path))
                     {
-                        path = new FilePath(pathToDocset, commits[1].Sha, FileOrigin.Fallback);
                         return Document.Create(_fallbackDocset, path, _input, _templateEngine);
                     }
                 }

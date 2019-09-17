@@ -167,6 +167,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(document != null);
 
+            var isWhitelisted = document.FilePath.Origin == FileOrigin.Default || document.FilePath.Origin == FileOrigin.Fallback;
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
             if (repo is null)
                 return default;
@@ -182,7 +183,10 @@ namespace Microsoft.Docs.Build
             var originalContentGitUrlTemplate = contentBranchUrlTemplate;
             var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
 
-            return (GetContentGitUrl(contentBranchUrlTemplate), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
+            return (GetContentGitUrl(contentBranchUrlTemplate),
+                originalContentGitUrl,
+                !isWhitelisted ? originalContentGitUrl : originalContentGitUrlTemplate,
+                contentGitCommitUrl);
 
             string GetContentGitUrl(string branchUrlTemplate)
             {
@@ -193,7 +197,7 @@ namespace Microsoft.Docs.Build
                     editBranch = repoContributionBranch;
                 }
 
-                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
+                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) && isWhitelisted)
                 {
                     var contributionPackageUrl = new PackageUrl(document.Docset.Config.Contribution.Repository);
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Url, pathToRepo);

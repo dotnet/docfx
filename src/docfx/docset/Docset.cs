@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
 
-        public Docset(string docsetPath, string locale, Config config, Repository repository = null)
+        public Docset(string docsetPath, string locale, Config config, Repository repository)
         {
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));

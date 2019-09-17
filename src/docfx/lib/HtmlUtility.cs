@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -14,6 +15,8 @@ namespace Microsoft.Docs.Build
     {
         private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
             ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
+
+        private static readonly string[] s_allowedStyles = new[] { "text-align: right;", "text-align: left;", "text-align: center;" };
 
         public static HtmlNode LoadHtml(string html)
         {
@@ -316,7 +319,14 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    node.Attributes.Remove("style");
+                    if (node.Name != "th" && node.Name != "td" && node.Attributes.Contains("style"))
+                    {
+                        var value = node.Attributes["style"].Value ?? "";
+                        if (!s_allowedStyles.Any(l => l == value))
+                        {
+                            node.Attributes.Remove("style");
+                        }
+                    }
                 }
             }
 

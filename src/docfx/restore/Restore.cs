@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -56,7 +55,7 @@ namespace Microsoft.Docs.Build
                 await RestoreFile.Restore(restoreUrls, extendedConfig);
 
                 // restore git repos includes dependency repos, theme repo and loc repos
-                var restoreDependencyResults = RestoreGit.Restore(extendedConfig, localeToRestore, repository, DependencyLockProvider.LoadGitLock(docsetPath, extendedConfig.DependencyLock));
+                var restoreDependencyResults = RestoreGit.Restore(extendedConfig, localeToRestore, repository, DependencyLockProvider.Create(docsetPath, extendedConfig.DependencyLock));
 
                 // save dependency lock
                 var restoredGitLock = new List<DependencyGitLock>();
