@@ -850,12 +850,14 @@ inputs:
     ---
     # [A](a.md)
     ## [B](b.md)
-    ## [C](/c)
-    ## [D](http://test.com/test)
+    ## [Absolute](/c)
+    ## [External](http://test.com/test)
     ### [A](xref:a)
-    ## E
+    ## Text
     ### [A](a.md)
     ### [B](b.md)
+    ### [Non-versioning](../x.md)
+  docs/x.md:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -869,14 +871,15 @@ outputs:
   9d4e15fd/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
-      "monikers": ["netcore-1.0", "netcore-1.1"]
+      "monikers": ["netcore-1.0", "netcore-1.1" ]
     }
   e300a7df/docs/b.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1, netcore-1.2</p>",
       "monikers": ["netcore-1.1", "netcore-1.2"]
     }
-  1dd7adba/docs/toc.json: |
+  docs/x.json:
+  2420f88b/docs/toc.json: |
     {
       "items": [
         {
@@ -884,28 +887,29 @@ outputs:
           "href": "a",
           "items": [
             { "name": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
-            { "name": "C", "href": "/c", "monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3"] },
+            { "name": "Absolute", "href": "/c", !"monikers": null },
             { 
-              "name": "D",
+              "name": "External",
               "href": "http://test.com/test",
-              "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"],
+              "monikers": ["netcore-1.0", "netcore-1.1" ],
               "items": [
                 { "name": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
               ]
             },
             {
-              "name": "E",
+              "name": "Text",
               "monikers": [ "netcore-1.0", "netcore-1.1", "netcore-1.2" ],
               "items": [
                 { "name": "A", "href": "a", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
                 { "name": "B", "href": "b", "monikers": [ "netcore-1.1", "netcore-1.2"] },
+                { "name": "Non-versioning", "href": "x", !"monikers": null },
               ]
             }
           ],
-          "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3"]
+          "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2" ]
         }
       ],
-      "metadata": {"monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
+      "metadata": {"monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2" ]}
     }
 ---
 # Build toc with monikers info - multiple node with same url

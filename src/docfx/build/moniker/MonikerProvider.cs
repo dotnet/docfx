@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -43,6 +44,8 @@ namespace Microsoft.Docs.Build
 
         public (Error error, List<string> monikers) GetFileLevelMonikers(Document file)
         {
+            Debug.Assert(file.ContentType != ContentType.TableOfContents);
+
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 

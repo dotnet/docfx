@@ -183,14 +183,7 @@ namespace Microsoft.Docs.Build
             else if (!string.IsNullOrEmpty(currentItem.Href))
             {
                 var linkType = UrlUtility.GetLinkType(currentItem.Href);
-                if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
-                {
-                    var (error, rootFileMonikers) = context.MonikerProvider.GetFileLevelMonikers(rootPath);
-                    errors.AddIfNotNull(error);
-
-                    monikers = rootFileMonikers;
-                }
-                else
+                if (linkType != LinkType.External && linkType != LinkType.AbsolutePath)
                 {
                     if (currentItem.Document != null)
                     {
