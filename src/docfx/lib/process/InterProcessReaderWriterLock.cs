@@ -47,8 +47,9 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    using (InterProcessMutex.Create(name))
+                    using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(name)}"))
                     {
+                        mutex.WaitOne();
                         return new FileStream(path, FileMode.OpenOrCreate, access, fileShare);
                     }
                 }
@@ -78,8 +79,9 @@ namespace Microsoft.Docs.Build
         {
             if (_fileStream != null)
             {
-                using (InterProcessMutex.Create(_lockName))
+                using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(_lockName)}"))
                 {
+                    mutex.WaitOne();
                     _fileStream.Dispose();
                 }
             }
