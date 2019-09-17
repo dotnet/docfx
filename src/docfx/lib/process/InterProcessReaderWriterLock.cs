@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         private static FileStream WaitFile(string name, string path, FileAccess access, FileShare fileShare)
         {
             var start = DateTime.UtcNow;
-            while (DateTime.UtcNow - start <= TimeSpan.FromMinutes(1))
+            while (true)
             {
                 try
                 {
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private class GlobalMutex : IDisposable
+        private struct GlobalMutex : IDisposable
         {
             private readonly Mutex _mutex;
 
