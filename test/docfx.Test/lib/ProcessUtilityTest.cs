@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -19,55 +18,6 @@ namespace Microsoft.Docs.Build
         {
             Directory.CreateDirectory("process-test");
         }
-
-        /*
-        [Fact]
-        public static void TestRRFileShare()
-        {
-            using (var file1 = new FileStream("1.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
-            {
-                using (var file2 = new FileStream("1.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
-                {
-                    Console.WriteLine("PASS");
-                }
-            }
-        }
-
-        [Fact]
-        public static void TestWRFileShare()
-        {
-            using (var file1 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-            {
-                using (var file2 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
-                {
-                    Console.WriteLine("Failed");
-                }
-            }
-        }
-
-        [Fact]
-        public static void TestRWFileShare()
-        {
-            using (var file1 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
-            {
-                using (var file2 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-                {
-                    Console.WriteLine("Failed");
-                }
-            }
-        }
-
-        [Fact]
-        public static void TestWWFileShare()
-        {
-            using (var file1 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-            {
-                using (var file2 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-                {
-                    Console.WriteLine("Failed");
-                }
-            }
-        }*/
 
         [Fact]
         public static void RunCommandsInParallel()
@@ -159,116 +109,6 @@ namespace Microsoft.Docs.Build
                         // do nothing
                     }
                 });
-            }
-        }
-
-        [Theory]
-        [InlineData(new[] { "a-s:a", "r-s:a" }, new[] { true, true })]
-        [InlineData(new[] { "a-s:a", "r-s:a", "a-s:a", "r-s:a" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-s:a", "a-s:a", "r-s:a", "r-s:a" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-s:a", "r-s:a", "r-s:a" }, new[] { true, true, false })]
-        [InlineData(new[] { "r-s:a" }, new[] { false })]
-        [InlineData(new[] { "r-s:a", "a-s:a", "r-s:a" }, new[] { false, true, true })]
-        [InlineData(new[] { "a-s:a", "a-s:b", "r-s:b", "r-s:a" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-s:a", "a-s:b", "r-s:a", "r-s:b" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-s:a", "r-s:a", "a-s:b", "r-s:b" }, new[] { true, true, true, true })]
-
-
-        [InlineData(new[] { "a-e:a", "r-e:a" }, new[] { true, true })]
-        [InlineData(new[] { "a-e:a", "r-e:a", "r-e:a" }, new[] { true, true, false })]
-        [InlineData(new[] { "a-e:a", "a-e:a", "r-e:a" }, new[] { true, false, true })]
-        [InlineData(new[] { "r-e:a" }, new[] { false })]
-        [InlineData(new[] { "r-e:a", "a-e:a", "r-e:a" }, new[] { false, true, true })]
-        [InlineData(new[] { "a-e:a", "r-e:a", "a-e:b", "r-e:b" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-e:a", "a-e:b", "r-e:a", "r-e:b" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-e:a", "a-e:b", "r-e:b", "r-e:a" }, new[] { true, true, true, true })]
-
-
-        [InlineData(new[] { "a-s:a", "r-s:a", "a-e:a", "r-e:a" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-e:a", "r-e:a", "a-s:a", "r-s:a" }, new[] { true, true, true, true })]
-        [InlineData(new[] { "a-s:a", "a-e:a", "r-s:a", "r-e:a" }, new[] { true, false, true, false })]
-        [InlineData(new[] { "a-e:a", "a-s:a", "r-s:a", "r-e:a" }, new[] { true, false, false, true })]
-        [InlineData(new[] { "a-s:a", "a-e:b", "r-s:a", "r-e:b" }, new[] { true, true, true, true })]
-
-        public static async Task RunSharedAndExclusiveLock(string[] steps, bool[] results)
-        {
-            Debug.Assert(steps != null);
-            Debug.Assert(results != null);
-            Debug.Assert(steps.Length == results.Length);
-            var guid = Guid.NewGuid().ToString();
-
-            int i = 0;
-            var acquirers = new Dictionary<string, List<string>>();
-
-            foreach (var step in steps)
-            {
-                await Task.Yield();
-                var parts = step.Split(new[] { ':' });
-                Debug.Assert(parts.Length == 2);
-                string acquirer = null;
-                bool acquired = false;
-                switch (parts[0])
-                {
-                    case "a-s": // acquire shared lock
-                        (acquired, acquirer) = ProcessUtility.AcquireSharedLock(guid + parts[1]);
-                        Debug.Assert(acquired == results[i], $"{i}");
-                        if (acquired)
-                        {
-                            var key = "s" + parts[1];
-                            if (!acquirers.TryGetValue(key, out var list))
-                            {
-                                acquirers[key] = list = new List<string>();
-                            }
-                            list.Add(acquirer);
-                        }
-                        break;
-                    case "a-e": // acquire exclusive lock
-                        (acquired, acquirer) = ProcessUtility.AcquireExclusiveLock(guid + parts[1]);
-                        Debug.Assert(acquired == results[i], $"{i}");
-                        if (acquired)
-                        {
-                            var key = "e" + parts[1];
-                            if (!acquirers.TryGetValue(key, out var list))
-                            {
-                                acquirers[key] = list = new List<string>();
-                            }
-                            list.Add(acquirer);
-
-                            Debug.Assert(list.Count == 1, $"{i}");
-                        }
-                        break;
-                    case "r-s": // release shared lock
-                        string sharedAcquirer = null;
-                        if (acquirers.TryGetValue("s" + parts[1], out var sharedList))
-                        {
-                            Debug.Assert(sharedList.Count >= 1, $"{i}");
-                            sharedAcquirer = sharedList[sharedList.Count - 1];
-                            sharedList.RemoveAt(sharedList.Count - 1);
-                            if (!sharedList.Any())
-                            {
-                                acquirers.Remove("s" + parts[1]);
-                            }
-                        }
-                        var sharedReleased = ProcessUtility.ReleaseSharedLock(guid + parts[1], sharedAcquirer ?? "not exists");
-                        Debug.Assert(sharedReleased == results[i], $"{i}");
-                        break;
-                    case "r-e": // release exclusive lock
-                        string exclusiveAcquirer = null;
-                        if (acquirers.TryGetValue("e" + parts[1], out var exclusiveList))
-                        {
-                            Debug.Assert(exclusiveList.Count == 1, $"{i}");
-                            exclusiveAcquirer = exclusiveList[exclusiveList.Count - 1];
-                            exclusiveList.RemoveAt(exclusiveList.Count - 1);
-                            acquirers.Remove("e" + parts[1]);
-                        }
-                        if (!string.IsNullOrEmpty(exclusiveAcquirer))
-                            Assert.True(ProcessUtility.IsExclusiveLockHeld(guid + parts[1]));
-                        var exclusivedReleased = ProcessUtility.ReleaseExclusiveLock(guid + parts[1], exclusiveAcquirer ?? "not exists");
-                        Debug.Assert(exclusivedReleased == results[i], $"{i}");
-                        break;
-                }
-
-                i++;
             }
         }
     }
