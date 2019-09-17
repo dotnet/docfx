@@ -856,7 +856,8 @@ inputs:
     ## Text
     ### [A](a.md)
     ### [B](b.md)
-    ### [Non-versioning](../x.md)
+    ## [Non-versioning](../x.md)
+    ### [A](a.md)
   docs/x.md:
   monikerDefinition.json: |
     {
@@ -887,11 +888,11 @@ outputs:
           "href": "a",
           "items": [
             { "name": "B", "href": "b", "monikers": ["netcore-1.1", "netcore-1.2"] },
-            { "name": "Absolute", "href": "/c", !"monikers": null },
+            { "name": "Absolute", "href": "/c", "monikers": undefined },
             { 
               "name": "External",
               "href": "http://test.com/test",
-              "monikers": ["netcore-1.0", "netcore-1.1" ],
+              "monikers": undefined,
               "items": [
                 { "name": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
               ]
@@ -901,10 +902,17 @@ outputs:
               "monikers": [ "netcore-1.0", "netcore-1.1", "netcore-1.2" ],
               "items": [
                 { "name": "A", "href": "a", "monikers": [ "netcore-1.0", "netcore-1.1" ] },
-                { "name": "B", "href": "b", "monikers": [ "netcore-1.1", "netcore-1.2"] },
-                { "name": "Non-versioning", "href": "x", !"monikers": null },
+                { "name": "B", "href": "b", "monikers": [ "netcore-1.1", "netcore-1.2"] }
               ]
-            }
+            },
+            { 
+              "name": "Non-versioning",
+              "href": "x",
+              "monikers": undefined,
+              "items": [
+                { "name": "A", "href": "a", "monikers": ["netcore-1.0", "netcore-1.1"] }
+              ]
+            },
           ],
           "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2" ]
         }

@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 // resolve monikers
-                newItem.Monikers = GetMonikers(context, rootPath, newItem, errors);
+                newItem.Monikers = GetMonikers(context, newItem, errors);
                 newItems.Add(newItem);
 
                 // validate
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
             return (errors, newItems);
         }
 
-        private static List<string> GetMonikers(Context context, Document rootPath, TableOfContentsItem currentItem, List<Error> errors)
+        private static List<string> GetMonikers(Context context, TableOfContentsItem currentItem, List<Error> errors)
         {
             var monikers = new List<string>();
             if (currentItem.Monikers.Any())
@@ -183,12 +183,20 @@ namespace Microsoft.Docs.Build
             else if (!string.IsNullOrEmpty(currentItem.Href))
             {
                 var linkType = UrlUtility.GetLinkType(currentItem.Href);
-                if (linkType != LinkType.External && linkType != LinkType.AbsolutePath)
+                if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
+                {
+                    return monikers;
+                }
+                else
                 {
                     if (currentItem.Document != null)
                     {
                         var (error, referenceFileMonikers) = context.MonikerProvider.GetFileLevelMonikers(currentItem.Document);
                         errors.AddIfNotNull(error);
+                        if (referenceFileMonikers.Count == 0)
+                        {
+                            return referenceFileMonikers;
+                        }
 
                         monikers = referenceFileMonikers;
                     }
