@@ -281,7 +281,7 @@ namespace Microsoft.Docs.Build
                 return (tocHref, default, default);
             }
 
-            var (hrefPath, fragment, query) = UrlUtility.SplitUrl(tocHref);
+            var (hrefPath, _, _) = UrlUtility.SplitUrl(tocHref);
 
             var (referencedTocContent, referenceTocFilePath) = ResolveTocHrefContent(
                 context, filePath, referencedTocs, tocHrefType, new SourceInfo<string>(hrefPath, tocHref), errors);

@@ -142,18 +142,18 @@ namespace Microsoft.Docs.Build
             {
                 if (linkType == LinkType.SelfBookmark)
                 {
-                    return (error, query + fragment, fragment, linkType, null, false);
+                    return (error, UrlUtility.MergeUrl("", query, fragment), fragment, linkType, null, false);
                 }
 
                 var selfUrl = Document.PathToRelativeUrl(
                     Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
 
-                return (error, selfUrl + query + fragment, fragment, LinkType.SelfBookmark, null, false);
+                return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
 
             if (file?.RedirectionUrl != null)
             {
-                return (error, file.SiteUrl + query + fragment, null, linkType, file, false);
+                return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), null, linkType, file, false);
             }
 
             if (error is null && _buildScope.OutOfScope(file))
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
-            return (error, file.SiteUrl + query + fragment, fragment, linkType, file, false);
+            return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), fragment, linkType, file, false);
         }
 
         private (Error error, Document file, string query, string fragment, LinkType linkType) TryResolveFile(
