@@ -47,12 +47,9 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(name)}"))
+                    using (new GlobalMutex(name))
                     {
-                        mutex.WaitOne();
-                        var fileStream = new FileStream(path, FileMode.OpenOrCreate, access, fileShare);
-                        mutex.ReleaseMutex();
-                        return fileStream;
+                        return new FileStream(path, FileMode.OpenOrCreate, access, fileShare);
                     }
                 }
                 catch
@@ -81,11 +78,29 @@ namespace Microsoft.Docs.Build
         {
             if (_fileStream != null)
             {
-                using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(_lockName)}"))
+                using (new GlobalMutex(_lockName))
                 {
-                    mutex.WaitOne();
                     _fileStream.Dispose();
-                    mutex.ReleaseMutex();
+                }
+            }
+        }
+
+        private class GlobalMutex : IDisposable
+        {
+            private readonly Mutex _mutex;
+
+            public GlobalMutex(string name)
+            {
+                _mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(name)}");
+                _mutex.WaitOne();
+            }
+
+            public void Dispose()
+            {
+                if (_mutex != null)
+                {
+                    _mutex.ReleaseMutex();
+                    _mutex.Dispose();
                 }
             }
         }
