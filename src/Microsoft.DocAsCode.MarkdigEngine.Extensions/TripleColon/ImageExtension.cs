@@ -35,6 +35,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var src = string.Empty;
             var alt = string.Empty;
             var type = string.Empty;
+            var loc_scope = string.Empty;
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -46,6 +47,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         break;
                     case "type":
                         type = value;
+                        break;
+                    case "loc-scope":
+                        loc_scope = value;
                         break;
                     case "source":
                         src = value;
