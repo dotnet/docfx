@@ -20,6 +20,55 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory("process-test");
         }
 
+        /*
+        [Fact]
+        public static void TestRRFileShare()
+        {
+            using (var file1 = new FileStream("1.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
+            {
+                using (var file2 = new FileStream("1.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None))
+                {
+                    Console.WriteLine("PASS");
+                }
+            }
+        }
+
+        [Fact]
+        public static void TestWRFileShare()
+        {
+            using (var file1 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            {
+                using (var file2 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
+                {
+                    Console.WriteLine("Failed");
+                }
+            }
+        }
+
+        [Fact]
+        public static void TestRWFileShare()
+        {
+            using (var file1 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
+            {
+                using (var file2 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+                {
+                    Console.WriteLine("Failed");
+                }
+            }
+        }
+
+        [Fact]
+        public static void TestWWFileShare()
+        {
+            using (var file1 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            {
+                using (var file2 = new FileStream("2.md", FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+                {
+                    Console.WriteLine("Failed");
+                }
+            }
+        }*/
+
         [Fact]
         public static void RunCommandsInParallel()
         {
