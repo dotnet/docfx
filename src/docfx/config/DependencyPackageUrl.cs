@@ -8,7 +8,10 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(ShortHandConverter))]
     internal class DependencyPackageUrl : PackageUrl
     {
-        public bool ExtendToBuild { get; set; }
+        /// <summary>
+        /// Indicate the dependency repository may be added to <see cref="BuildScope"/> and treated as inScope.
+        /// </summary>
+        public bool BuildFiles { get; set; }
 
         public DependencyPackageUrl()
             : base()
