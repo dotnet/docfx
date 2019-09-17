@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
                 var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, true);
 
                 var repository = Repository.Create(dir, dependency.Branch, dependency.Url, commit);
-                result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.ExtendToBuild));
+                result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.BuildFiles));
             }
 
             return result;

@@ -591,7 +591,7 @@ repos:
               type: git
               url: https://github.com/testowner/crr-content
               branch: master
-              extendToBuild: true
+              buildFiles: true
         docs/a.md:
   https://github.com/testowner/crr-content:
     - author: Charlie
