@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
@@ -10,15 +9,10 @@ namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
-        private static readonly RestoreGitMap s_restoreGitMap = new RestoreGitMap();
-
-        private static readonly Docset s_docset = new Docset(
-            new ErrorLog(),
-            Directory.GetCurrentDirectory(),
-            "en-us",
-            JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null),
-            new CommandLineOptions(),
-            s_restoreGitMap);
+        private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null);
+        private static readonly RestoreGitMap s_restoreGitMap = RestoreGitMap.Create(Directory.GetCurrentDirectory(), s_config, null);
+        private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory(), "en-us", s_config, null);
+        private static readonly Input s_input = new Input(Directory.GetCurrentDirectory(), null, s_config, s_restoreGitMap);
 
         [Theory]
         // same level
@@ -53,14 +47,15 @@ namespace Microsoft.Docs.Build
 
         public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
+            // TODO: This test depend too much on the details of our implementation and it needs some refactoring.
             var builder = new TableOfContentsMapBuilder();
             var templateEngine = TemplateEngine.Create(s_docset, s_restoreGitMap);
-            var document = Document.Create(s_docset, file, templateEngine);
+            var document = Document.Create(s_docset, new FilePath(file), s_input, templateEngine);
 
             // test multiple reference case
             foreach (var tocFile in tocFiles)
             {
-                var toc = Document.Create(s_docset, tocFile, templateEngine);
+                var toc = Document.Create(s_docset, new FilePath(tocFile), s_input, templateEngine);
                 builder.Add(toc, new List<Document> { document }, new List<Document>());
             }
 
@@ -71,7 +66,7 @@ namespace Microsoft.Docs.Build
             builder = new TableOfContentsMapBuilder();
             foreach (var tocFile in tocFiles)
             {
-                var toc = Document.Create(s_docset, tocFile, templateEngine);
+                var toc = Document.Create(s_docset, new FilePath(tocFile), s_input, templateEngine);
                 builder.Add(toc, new List<Document>(), new List<Document>());
             }
             tocMap = builder.Build();

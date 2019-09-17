@@ -33,6 +33,24 @@ outputs:
   a.json: |
     {"result": "value has run js data transform"}
 ---
+# Run data-transform if provided in legacy mode, by default return {"content": "serialized json"}
+legacy: true
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}
+---
 # Run data-transform if provided, and return raw object if content property is not serialized json object
 inputs:
   docfx.yml:
@@ -64,6 +82,93 @@ inputs:
 outputs:
   a.json: |
     {"prop": "value"}
+---
+# SDP page in none-legacy mode
+# don't run any js transform or mustache, only produce .json output
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "contentType": "markdown"
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime: TestPage
+    metadata:
+      key: value
+    content: |
+      **marked-up**
+    title: this is title
+outputs:
+  a.json: |
+    {
+      "metadata": {
+        "key": "value"
+      },
+      "content": "<p><strong>marked-up</strong></p>",
+      "title": "this is title"
+    }
+---
+# Apply template in none-legacy mode and produce html page when output is not json
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      model.additional = "additional";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/ContentTemplate/Conceptual.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+  a.md: |
+    # title
+    **strong**
+    ~~removed~~
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <p>
+          <strong>strong</strong>
+          <del>removed</del>
+        </p>
+      </div>
+  .publish.json: |
+    {
+      "files": [{
+        "additional": "additional"
+      }]
+    }
+---
+# Apply template in none-legacy mode and produce html page when output is not json with ugly-url
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+      uglifyUrl: true
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/ContentTemplate/Conceptual.html.liquid:
+  a.md:
+outputs:
+  a.html:
 ---
 # Verify SDP pipeline
 # YAML mime in the SDP document should have a corresponding *.html.primary.js file

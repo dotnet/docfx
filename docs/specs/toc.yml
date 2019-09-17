@@ -10,6 +10,7 @@ inputs:
     ### [Reference Normal File 2](../index.md)
     ### [Reference Normal File 3](f1/n1.md?branch=master)
     ### [Reference Normal File 4](~/docs/n1.md)
+    ### [@Reference Normal File 5](n1.md)
   docs/index.md:
   docs/n1.md:
   docs/f1/n1.md:
@@ -39,6 +40,10 @@ outputs:
                       },
                       {  
                         "name":"Reference Normal File 4",
+                        "href":"n1"
+                      },
+                      {  
+                        "name":"@Reference Normal File 5",
                         "href":"n1"
                       }
                   ],
@@ -1129,7 +1134,7 @@ outputs:
   docs/dir1/dir2/file-with-toc.json: |
     {"_tocRel": "../toc.json"}
 ---
-# File referenced by multiple toc, _tocRel uses relative site path first
+# File referenced by multiple toc, _tocRel uses relative file path first
 inputs:
   docfx.yml: |
     routes:
@@ -1143,11 +1148,11 @@ outputs:
   toc.json:
   dir1/toc.json:
   a.json: |
-    {"_tocRel": "toc.json"}
+    {"_tocRel": "dir1/toc.json"}
   .dependencymap.json: |
     {}
 ---
-# File referenced by multiple toc with same relative site and file path, use order alphabetical. For other tests, reference build/TocTest.
+# File referenced by multiple toc with same relative file path, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
   docfx.yml: 
   docs/dir1/a/TOC.yml: |

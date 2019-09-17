@@ -39,21 +39,27 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static RedirectionMap Create(ErrorLog errorLog, Docset docset, Func<string, bool> glob, TemplateEngine templateEngine, IReadOnlyCollection<Document> buildFiles)
+        public static RedirectionMap Create(
+            ErrorLog errorLog,
+            Docset docset,
+            Func<string, bool> glob,
+            Input input,
+            TemplateEngine templateEngine,
+            IReadOnlyCollection<Document> buildFiles)
         {
             var redirections = new HashSet<Document>();
-            var redirectionsWithDocumentId = new List<(SourceInfo<string> redirectUrl, Document redirect)>();
+            var redirectionsWithDocumentId = new List<(SourceInfo<string> originalRedirectUrl, string normalizedRedirectiUrl)>();
 
             // load redirections with document id
             AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
             var redirectionsByRedirectionUrl = redirections
-                .GroupBy(file => file.RedirectionUrl, PathUtility.PathComparer)
+                .GroupBy(item => NormalizeRedirectUrl(item.RedirectionUrl), PathUtility.PathComparer)
                 .ToDictionary(group => group.Key, group => group.First(), PathUtility.PathComparer);
 
             // load redirections without document id
             AddRedirections(docset.Config.RedirectionsWithoutId);
 
-            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, PathUtility.PathComparer);
+            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, file => file, PathUtility.PathComparer);
 
             CheckInvalidRedrectUrl(errorLog, redirectionsWithDocumentId, redirections, buildFiles);
             return new RedirectionMap(redirectionsBySourcePath, redirectionsByRedirectionUrl);
@@ -94,16 +100,16 @@ namespace Microsoft.Docs.Build
                             case LinkType.AbsolutePath:
                                 break;
                             default:
-                                errorLog.Write(Errors.RedirectionUrlInvalid(redirectUrl));
+                                errorLog.Write(Errors.RedirectionUrlNotExisted(redirectUrl));
                                 continue;
                         }
                     }
 
-                    var redirect = Document.Create(docset, pathToDocset, templateEngine, redirectionUrl: mutableRedirectUrl, combineRedirectUrl: combineRedirectUrl);
-
+                    var filePath = new FilePath(pathToDocset, FileOrigin.Redirection);
+                    var redirect = Document.Create(docset, filePath, input, templateEngine, mutableRedirectUrl, combineRedirectUrl);
                     if (redirectDocumentId)
                     {
-                        redirectionsWithDocumentId.Add((redirectUrl, redirect));
+                        redirectionsWithDocumentId.Add((redirectUrl, NormalizeRedirectUrl(redirect.RedirectionUrl)));
                     }
 
                     if (!redirections.Add(redirect))
@@ -114,20 +120,31 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void CheckInvalidRedrectUrl(ErrorLog errorLog, List<(SourceInfo<string> redirectUrl, Document redirect)> redirectionsWithDocumentId, HashSet<Document> redirections, IReadOnlyCollection<Document> buildFiles)
+        private static string NormalizeRedirectUrl(string redirectionUrl)
+        {
+            var (url, _, _) = UrlUtility.SplitUrl(redirectionUrl);
+            return url.EndsWith("/index", PathUtility.PathComparison) ? url.Substring(0, url.Length - "index".Length) : url;
+        }
+
+        private static void CheckInvalidRedrectUrl(
+            ErrorLog errorLog,
+            List<(SourceInfo<string> originalRedirectUrl, string normalizedRedirectUrl)> redirectionsWithDocumentId,
+            HashSet<Document> redirections,
+            IReadOnlyCollection<Document> buildFiles)
         {
             var redirectUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            var publishUrls = buildFiles.Select(file => file.SiteUrl).Concat(redirections.Select(redirection => redirection.SiteUrl)).ToHashSet();
-            foreach (var (redirectionUrl, redirect) in redirectionsWithDocumentId)
+            var publishUrls = buildFiles.Select(file => file.SiteUrl)
+                .Concat(redirections.Select(item => item.SiteUrl)).ToHashSet();
+            foreach (var (originalRedirectUrl, normalizedRedirectUrl) in redirectionsWithDocumentId)
             {
-                if (!publishUrls.Contains(redirect.RedirectionUrl))
+                if (!publishUrls.Contains(normalizedRedirectUrl))
                 {
-                    errorLog.Write(Errors.RedirectionUrlNotExisted(redirectionUrl));
+                    errorLog.Write(Errors.RedirectionUrlNotExisted(originalRedirectUrl));
                 }
-                else if (!redirectUrls.Add(redirect.RedirectionUrl))
+                else if (!redirectUrls.Add(normalizedRedirectUrl))
                 {
-                    errorLog.Write(Errors.RedirectionUrlConflict(redirectionUrl));
+                    errorLog.Write(Errors.RedirectionUrlConflict(originalRedirectUrl));
                 }
             }
         }

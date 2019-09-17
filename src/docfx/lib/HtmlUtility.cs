@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
@@ -14,6 +15,8 @@ namespace Microsoft.Docs.Build
     {
         private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
             ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
+
+        private static readonly string[] s_allowedStyles = new[] { "text-align: right;", "text-align: left;", "text-align: center;" };
 
         public static HtmlNode LoadHtml(string html)
         {
@@ -201,8 +204,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
                     {
-                        title = child.InnerText == null ? null : HttpUtility.HtmlDecode(child.InnerText);
+                        title = string.IsNullOrEmpty(child.InnerText) ? null : HttpUtility.HtmlDecode(child.InnerText);
 
+                        // NOTE: for backward compatibility during migration phase, the logic of title and raw title is different...
                         if (!existVisibleNode)
                         {
                             rawTitle = child.OuterHtml;
@@ -315,7 +319,14 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    node.Attributes.Remove("style");
+                    if (node.Name != "th" && node.Name != "td" && node.Attributes.Contains("style"))
+                    {
+                        var value = node.Attributes["style"].Value ?? "";
+                        if (!s_allowedStyles.Any(l => l == value))
+                        {
+                            node.Attributes.Remove("style");
+                        }
+                    }
                 }
             }
 

@@ -93,7 +93,10 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                JsonUtility.Merge(outputMetadata, sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(), systemMetadataJObject);
+                JsonUtility.Merge(
+                    outputMetadata,
+                    sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(),
+                    systemMetadataJObject);
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
@@ -121,20 +124,23 @@ namespace Microsoft.Docs.Build
             return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file, InputMetadata inputMetadata)
+        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(
+            Context context, Document file, InputMetadata inputMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(file, inputMetadata.BreadcrumbPath, file);
+                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(
+                    file, inputMetadata.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
 
             systemMetadata.Locale = file.Docset.Locale;
-            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel) ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
+                ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             systemMetadata.SiteName = file.Docset.Config.SiteName;
@@ -143,11 +149,14 @@ namespace Microsoft.Docs.Build
             errors.AddIfNotNull(monikerError);
             systemMetadata.Monikers = monikers;
 
-            (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId) = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
-            (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate, systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(context, file);
+            (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
+                = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+            (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
+                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
             List<Error> contributorErrors;
-            (contributorErrors, systemMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(context, file, inputMetadata.Author);
+            (contributorErrors, systemMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(
+                file, inputMetadata.Author);
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
@@ -158,7 +167,10 @@ namespace Microsoft.Docs.Build
             systemMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{systemMetadata.Locale}/{file.Docset.SiteBasePath}/";
 
             if (file.Docset.Config.Output.Pdf)
-                systemMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{systemMetadata.Locale}/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+            {
+                systemMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{systemMetadata.Locale}" +
+                    $"/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+            }
 
             if (contributorErrors != null)
                 errors.AddRange(contributorErrors);
@@ -184,7 +196,7 @@ namespace Microsoft.Docs.Build
         private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)
         {
             var errors = new List<Error>();
-            var content = file.ReadText();
+            var content = context.Input.ReadString(file.FilePath);
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
             var (markupErrors, htmlDom) = MarkdownUtility.ToHtml(
@@ -253,7 +265,8 @@ namespace Microsoft.Docs.Build
             {
                 // transform metadata via json schema
                 var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-                var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
+                var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(
+                    file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
                 errors.AddRange(metadataTransformedErrors);
                 pageModel["metadata"] = ((JObject)transformedMetadata)["metadata"];
@@ -264,7 +277,8 @@ namespace Microsoft.Docs.Build
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);
 
-                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).StripTags().RemoveRerunCodepenIframes();
+                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData))
+                    .StripTags().RemoveRerunCodepenIframes();
                 ValidateBookmarks(context, file, htmlDom);
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
@@ -286,7 +300,8 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint(string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            var templateMetadata = context.TemplateEngine.RunJint(
+                string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
 
             if (TemplateEngine.IsLandingData(file.Mime))
             {
@@ -299,7 +314,8 @@ namespace Microsoft.Docs.Build
                 ["is_dynamic_rendering"] = true,
             };
 
-            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata, context.MetadataProvider.HtmlMetaHidden, context.MetadataProvider.HtmlMetaNames);
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(
+                metadata, context.MetadataProvider.HtmlMetaHidden, context.MetadataProvider.HtmlMetaNames);
 
             // content for *.raw.page.json
             var model = new TemplateModel

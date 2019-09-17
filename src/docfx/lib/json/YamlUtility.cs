@@ -3,14 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {

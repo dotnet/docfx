@@ -13,14 +13,17 @@ namespace Microsoft.Docs.Build
 
         // For testing purpose
         internal static Func<string> GetCachePath;
+        internal static Func<string> GetStatePath;
 
-        public static string GitRoot => Path.Combine(s_root, "git3");
+        public static string GitRoot => Path.Combine(s_root, "git4");
 
         public static string DownloadsRoot => Path.Combine(s_root, "downloads2");
 
         public static string MutexRoot => Path.Combine(s_root, "mutex");
 
         public static string CacheRoot => GetCachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
+
+        public static string StateRoot => GetStatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
 
         public static string DependencyLockRoot => Path.Combine(s_root, "lock");
 
@@ -43,7 +46,8 @@ namespace Microsoft.Docs.Build
 
         public static string GetDependencyLockFile(string docsetPath, string locale)
         {
-            return PathUtility.NormalizeFile(Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
+            return PathUtility.NormalizeFile(
+                Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
         }
 
         public static string GetCommitCachePath(string remote)
@@ -53,7 +57,8 @@ namespace Microsoft.Docs.Build
 
         public static string GetCommitBuildTimePath(string remote, string branch)
         {
-            return Path.Combine(CacheRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
+            return Path.Combine(
+                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
         }
 
         /// <summary>

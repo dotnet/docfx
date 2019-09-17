@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether enable legacy output.
         /// </summary>
-        public bool Legacy => _options.Legacy;
+        public bool Legacy => Config.Legacy;
 
         /// <summary>
         /// Gets the reversed <see cref="Config.Routes"/> for faster lookup.
@@ -60,27 +60,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string HostName { get; }
 
-        /// <summary>
-        /// Gets the dependent docsets
-        /// </summary>
-        public IReadOnlyDictionary<string, Docset> DependencyDocsets => _dependencyDocsets.Value;
-
-        private readonly CommandLineOptions _options;
-        private readonly ErrorLog _errorLog;
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
-        private readonly Lazy<IReadOnlyDictionary<string, Docset>> _dependencyDocsets;
 
-        public Docset(
-            ErrorLog errorLog,
-            string docsetPath,
-            string locale,
-            Config config,
-            CommandLineOptions options,
-            RestoreGitMap restoreGitMap,
-            Repository repository = null)
+        public Docset(string docsetPath, string locale, Config config, Repository repository)
         {
-            _options = options;
-            _errorLog = errorLog;
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
@@ -89,13 +72,6 @@ namespace Microsoft.Docs.Build
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
             Repository = repository ?? Repository.Create(DocsetPath, branch: null);
-
-            _dependencyDocsets = new Lazy<IReadOnlyDictionary<string, Docset>>(() =>
-            {
-                var (errors, dependencies) = LoadDependencies(_errorLog, docsetPath, Config, Locale, restoreGitMap, _options);
-                _errorLog.Write(errors);
-                return dependencies;
-            });
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
         }
@@ -145,26 +121,6 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.LocaleInvalid(locale).ToException();
             }
-        }
-
-        private static (List<Error>, Dictionary<string, Docset>) LoadDependencies(
-            ErrorLog errorLog, string docsetPath, Config config, string locale, RestoreGitMap restoreGitMap, CommandLineOptions options)
-        {
-            var errors = new List<Error>();
-            var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
-            foreach (var (name, url) in config.Dependencies)
-            {
-                var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                var (dir, subRestoreMap) = restoreGitMap.GetGitRestorePath(remote, branch, docsetPath);
-
-                // get dependent docset config or default config
-                // todo: what parent config should be pass on its children
-                var (loadErrors, subConfig) = ConfigLoader.TryLoad(dir, options, locale);
-                errors.AddRange(loadErrors);
-
-                result.TryAdd(PathUtility.NormalizeFolder(name), new Docset(errorLog, dir, locale, subConfig, options, subRestoreMap));
-            }
-            return (errors, result);
         }
 
         private static (string hostName, string siteBasePath) SplitBaseUrl(string baseUrl)

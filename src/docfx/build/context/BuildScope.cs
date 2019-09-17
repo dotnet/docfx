@@ -16,9 +16,10 @@ namespace Microsoft.Docs.Build
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<string> _fileNames;
         private readonly Func<string, bool> _glob;
+
+        private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
-        private readonly Docset _fallbackDocset;
-        private readonly Docset _docset;
+        private readonly HashSet<string> _inScopeDependencyNames = new HashSet<string>();
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -27,28 +28,56 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine)
+        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine)
         {
             var config = docset.Config;
 
-            _docset = docset;
-            _fallbackDocset = fallbackDocset;
+            _input = input;
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
 
-            var (fileNames, files) = GetFiles(docset, _glob);
+            var (fileNames, files) = GetFiles(FileOrigin.Default, docset, _glob);
 
             var fallbackFiles = fallbackDocset != null
-                ? GetFiles(fallbackDocset, CreateGlob(fallbackDocset.Config)).files
+                ? GetFiles(FileOrigin.Fallback, fallbackDocset, CreateGlob(fallbackDocset.Config)).files
                 : Enumerable.Empty<Document>();
 
             _fileNames = fileNames;
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob, templateEngine, Files);
+            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
 
             Files.UnionWith(Redirections.Files);
+
+            foreach (var (dependencyName, (dependencyDocset, inScope)) in dependencyDocsets)
+            {
+                if (inScope)
+                {
+                    _inScopeDependencyNames.Add(dependencyName);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob, dependencyName);
+                    Files.UnionWith(dependencyFiles);
+                }
+
+                _fileNames.UnionWith(_input.ListFilesRecursive(FileOrigin.Dependency, dependencyName).Select(f => Path.Combine(dependencyName, f.Path).Replace("\\", "/")).ToList());
+            }
+        }
+
+        public bool OutOfScope(Document filePath)
+        {
+            // Link to dependent repo
+            if (filePath.FilePath.Origin == FileOrigin.Dependency && !_inScopeDependencyNames.Contains(filePath.FilePath.DependencyName))
+            {
+                return true;
+            }
+
+            // Pages outside build scope, don't build the file, leave href as is
+            if ((filePath.ContentType == ContentType.Page || filePath.ContentType == ContentType.TableOfContents) && !Files.Contains(filePath))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool GetActualFileName(string fileName, out string actualFileName)
@@ -56,62 +85,38 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        public Docset GetFallbackDocset(Docset docset)
-            => docset == _docset || docset == _fallbackDocset ? _fallbackDocset : null;
-
-        public bool TryResolveDocset(Docset docset, string file, out (Docset resolvedDocset, FileOrigin fileOrigin) resolved)
-        {
-            docset = docset == _fallbackDocset ? _docset : docset;
-            var fallbackDocset = GetFallbackDocset(docset);
-            resolved = default;
-
-            // resolve from current docset
-            if (File.Exists(Path.Combine(docset.DocsetPath, file)))
-            {
-                resolved.resolvedDocset = docset;
-                resolved.fileOrigin = FileOrigin.Current;
-                return true;
-            }
-
-            // resolve from fallback docset
-            if (fallbackDocset != null && File.Exists(Path.Combine(fallbackDocset.DocsetPath, file)))
-            {
-                resolved.resolvedDocset = fallbackDocset;
-                resolved.fileOrigin = FileOrigin.Fallback;
-                return true;
-            }
-
-            return false;
-        }
-
-        private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(Docset docset, Func<string, bool> glob)
+        private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(
+            FileOrigin origin, Docset docset, Func<string, bool> glob, string dependencyName = null)
         {
             using (Progress.Start("Globbing files"))
             {
-                var docsetPath = docset.DocsetPath;
                 var files = new ListBuilder<Document>();
-                var fileNames = Directory
-                    .GetFiles(docsetPath, "*.*", SearchOption.AllDirectories)
-                    .Select(path => Path.GetRelativePath(docsetPath, path).Replace('\\', '/'))
-                    .ToHashSet(PathUtility.PathComparer);
+                var fileNames = _input.ListFilesRecursive(origin, dependencyName);
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file))
+                    var path = Path.Combine(dependencyName ?? "", file.Path).Replace("\\", "/");
+                    if (glob(path))
                     {
-                        files.Add(Document.Create(docset, file, _templateEngine, GetOrigin(docset)));
+                        files.Add(Document.Create(docset, file, _input, _templateEngine));
                     }
                 });
 
-                return (fileNames, files.ToList());
+                return (fileNames.Select(item => item.Path).ToHashSet(PathUtility.PathComparer), files.ToList());
             }
         }
 
-        private FileOrigin GetOrigin(Docset docset)
-            => docset == _fallbackDocset ? FileOrigin.Fallback : FileOrigin.Current;
-
         private static Func<string, bool> CreateGlob(Config config)
         {
+            if (config.FileGroups.Length > 0)
+            {
+                var globs = config.FileGroups.Select(fileGroup => GlobUtility.CreateGlobMatcher(
+                    fileGroup.Files,
+                    fileGroup.Exclude.Concat(Config.DefaultExclude).ToArray()))
+                   .ToArray();
+                return new Func<string, bool>((file) => globs.Any(glob => glob(file)));
+            }
+
             return GlobUtility.CreateGlobMatcher(
                 config.Files,
                 config.Exclude.Concat(Config.DefaultExclude).ToArray());

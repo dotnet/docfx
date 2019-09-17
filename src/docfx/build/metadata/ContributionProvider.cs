@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal class ContributionProvider
     {
+        private readonly Input _input;
+        private readonly Docset _fallbackDocset;
         private readonly GitHubUserCache _gitHubUserCache;
 
         // TODO: support CRR and multiple repositories
@@ -19,17 +21,19 @@ namespace Microsoft.Docs.Build
 
         private readonly GitCommitProvider _gitCommitProvider;
 
-        public ContributionProvider(Docset docset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
+        public ContributionProvider(
+            Input input, Docset docset, Docset fallbackDocset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
-            Debug.Assert(gitCommitProvider != null);
-
+            _input = input;
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
+            _fallbackDocset = fallbackDocset;
             _commitBuildTimeProvider = docset.Repository != null && docset.Config.UpdateTimeAsCommitBuildTime
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
-        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(Context context, Document document, SourceInfo<string> authorName)
+        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(
+            Document document, SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -52,7 +56,8 @@ namespace Microsoft.Docs.Build
                 ? new ContributionInfo
                 {
                     Contributors = contributors,
-                    UpdateAt = updatedDateTime.ToString(document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    UpdateAt = updatedDateTime.ToString(
+                        document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
                     UpdatedAtDateTime = updatedDateTime,
                 }
                 : null;
@@ -104,7 +109,8 @@ namespace Microsoft.Docs.Build
             {
                 if (isGitHubRepo)
                 {
-                    var (error, githubUser) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
+                    var (error, githubUser) = await _gitHubUserCache.GetByCommit(
+                        commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     return githubUser?.ToContributor();
                 }
@@ -130,7 +136,7 @@ namespace Microsoft.Docs.Build
             List<GitCommit> GetContributionCommits()
             {
                 var result = commits;
-                var bilingual = context.BuildScope.GetFallbackDocset(document.Docset) != null && document.Docset.Config.Localization.Bilingual;
+                var bilingual = _fallbackDocset != null && document.Docset.Config.Localization.Bilingual;
                 var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
@@ -145,18 +151,23 @@ namespace Microsoft.Docs.Build
         {
             if (fileCommits?.Count > 0)
             {
-                return _commitBuildTimeProvider != null && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)
+                return _commitBuildTimeProvider != null
+                    && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)
                     ? timeFromHistory
                     : fileCommits[0].Time.UtcDateTime;
             }
-            return File.GetLastWriteTimeUtc(Path.Combine(document.Docset.DocsetPath, document.FilePath.Path));
+
+            return _input.TryGetPhysicalPath(document.FilePath, out var physicalPath)
+                ? File.GetLastWriteTimeUtc(physicalPath)
+                : default;
         }
 
         public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
-            GetGitUrls(Context context, Document document)
+            GetGitUrls(Document document)
         {
             Debug.Assert(document != null);
 
+            var isWhitelisted = document.FilePath.Origin == FileOrigin.Default || document.FilePath.Origin == FileOrigin.Fallback;
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
             if (repo is null)
                 return default;
@@ -172,7 +183,10 @@ namespace Microsoft.Docs.Build
             var originalContentGitUrlTemplate = contentBranchUrlTemplate;
             var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
 
-            return (GetContentGitUrl(contentBranchUrlTemplate), originalContentGitUrl, originalContentGitUrlTemplate, contentGitCommitUrl);
+            return (GetContentGitUrl(contentBranchUrlTemplate),
+                originalContentGitUrl,
+                !isWhitelisted ? originalContentGitUrl : originalContentGitUrlTemplate,
+                contentGitCommitUrl);
 
             string GetContentGitUrl(string branchUrlTemplate)
             {
@@ -183,13 +197,14 @@ namespace Microsoft.Docs.Build
                     editBranch = repoContributionBranch;
                 }
 
-                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository))
+                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) && isWhitelisted)
                 {
-                    var (contributionRemote, contributionBranch, hasRefSpec) = UrlUtility.SplitGitUrl(document.Docset.Config.Contribution.Repository);
-                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionRemote, pathToRepo);
+                    var contributionPackageUrl = new PackageUrl(document.Docset.Config.Contribution.Repository);
+                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Url, pathToRepo);
 
-                    (editRemote, editBranch) = (contributionRemote, hasRefSpec ? contributionBranch : editBranch);
-                    if (context.BuildScope.GetFallbackDocset(document.Docset) != null)
+                    var hasBranch = (UrlUtility.SplitUrl(document.Docset.Config.Contribution.Repository).fragment ?? "").Length > 1;
+                    (editRemote, editBranch) = (contributionPackageUrl.Url, hasBranch ? contributionPackageUrl.Branch : editBranch);
+                    if (_fallbackDocset != null)
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
                                                     document.Docset.Config.Localization.Mapping,
@@ -222,7 +237,8 @@ namespace Microsoft.Docs.Build
 
             if (UrlUtility.TryParseAzureReposUrl(remote, out _, out _))
             {
-                return ($"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents", $"{{repo}}/commit/{{commit}}?path=/{pathToRepo}&_a=contents");
+                return ($"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents",
+                    $"{{repo}}/commit/{{commit}}?path=/{pathToRepo}&_a=contents");
             }
 
             return default;

@@ -2,34 +2,86 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
+    /// <summary>
+    /// Represents a serializable machine independent file identifier.
+    /// </summary>
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         /// <summary>
-        /// The file relative path
+        /// Gets the file path relative to the main docset/dependency docset/template.
         /// </summary>
         public string Path { get; }
 
         /// <summary>
-        /// Gets the value to indicate where is this file from
+        /// Gets the name of the dependency if it is from dependency repo.
+        /// </summary>
+        public string DependencyName { get; }
+
+        /// <summary>
+        /// Gets the value to indicate where is this file from.
         /// </summary>
         public FileOrigin Origin { get; }
 
-        public FilePath(string path, FileOrigin from = FileOrigin.Current)
+        /// <summary>
+        /// Gets the commit id if this file is owned by a git repository and is not the latest version.
+        /// </summary>
+        public string Commit { get; }
+
+        public FilePath(string path, FileOrigin origin = FileOrigin.Default)
         {
-            Path = path;
-            Origin = from;
+            Debug.Assert(origin != FileOrigin.Dependency);
+
+            Path = PathUtility.NormalizeFile(path);
+            Origin = origin;
         }
 
-        public static bool operator ==(FilePath a, FilePath b)
-            => Equals(a, b);
+        public FilePath(string path, string commit, FileOrigin origin)
+        {
+            Path = PathUtility.NormalizeFile(path);
+            Origin = origin;
+            Commit = commit;
+        }
 
-        public static bool operator !=(FilePath a, FilePath b)
-           => !(a == b);
+        public FilePath(string path, string dependencyName)
+        {
+            Path = PathUtility.NormalizeFile(path);
+            DependencyName = dependencyName;
+            Origin = FileOrigin.Dependency;
+        }
 
-        public override string ToString() => Path;
+        public static bool operator ==(FilePath a, FilePath b) => Equals(a, b);
+
+        public static bool operator !=(FilePath a, FilePath b) => !Equals(a, b);
+
+        public override string ToString()
+        {
+            var tags = "";
+
+            switch (Origin)
+            {
+                case FileOrigin.Default:
+                    break;
+
+                case FileOrigin.Dependency:
+                    tags += $"[{DependencyName}]";
+                    break;
+
+                default:
+                    tags += $"[{Origin.ToString().ToLowerInvariant()}]";
+                    break;
+            }
+
+            if (Commit != null)
+            {
+                tags += $"[{Commit}]";
+            }
+
+            return tags.Length > 0 ? $"{Path} {tags}" : Path;
+        }
 
         public override bool Equals(object obj)
         {
@@ -38,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin);
+            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, DependencyName, Commit);
         }
 
         public bool Equals(FilePath other)
@@ -48,7 +100,10 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return string.Equals(Path, other.Path, PathUtility.PathComparison) && other.Origin == Origin;
+            return string.Equals(Path, other.Path, PathUtility.PathComparison) &&
+                   other.Origin == Origin &&
+                   DependencyName == other.DependencyName &&
+                   Commit == other.Commit;
         }
 
         public int CompareTo(FilePath other)
@@ -56,6 +111,10 @@ namespace Microsoft.Docs.Build
             var result = string.Compare(Path, other.Path, PathUtility.PathComparison);
             if (result == 0)
                 result = Origin.CompareTo(other.Origin);
+            if (result == 0)
+                result = DependencyName.CompareTo(other.DependencyName);
+            if (result == 0)
+                result = Commit.CompareTo(other.Commit);
 
             return result;
         }

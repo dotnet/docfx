@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                     {
                         Uid = uid,
                         Source = JsonUtility.GetSourceInfo(obj),
-                        Href = obj.Parent is null ? file.SiteUrl : $"{file.SiteUrl}#{GetBookmarkFromUid(uid)}",
+                        Href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", $"#{GetBookmarkFromUid(uid)}"),
                         DeclaringFile = file,
                     };
                     xref.ExtensionData.AddRange(xrefProperties);
@@ -259,13 +259,8 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.Xref:
-                    // TODO: the content here must be an UID, not href
-                    var (xrefError, _, _, xrefSpec) = context.DependencyResolver.ResolveAbsoluteXref(content, file);
-
-                    if (xrefSpec is InternalXrefSpec internalSpec)
-                    {
-                        xrefSpec = internalSpec.ToExternalXrefSpec(forXrefMapOutput: false);
-                    }
+                    // the content here must be an UID, not href
+                    var (xrefError, xrefSpec) = context.XrefResolver.ResolveXrefSpec(content, file);
                     errors.AddIfNotNull(xrefError);
 
                     if (xrefSpec != null)

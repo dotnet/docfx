@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Microsoft.Docs.Build
 {
@@ -13,8 +12,8 @@ namespace Microsoft.Docs.Build
         private readonly PublishModelBuilder _publishModelBuilder;
 
         private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
-        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)> _references
-                   = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
+        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>
+            _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
 
         public BookmarkValidator(ErrorLog errorLog, PublishModelBuilder publishModelBuilder)
         {
@@ -24,8 +23,6 @@ namespace Microsoft.Docs.Build
 
         public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo source)
         {
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
-
             if (reference.ContentType == ContentType.Page && !string.IsNullOrEmpty(fragment))
             {
                 var bookmark = fragment.Substring(1).Trim();

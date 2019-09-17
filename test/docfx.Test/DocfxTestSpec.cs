@@ -31,6 +31,8 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string> Cache { get; set; } = new Dictionary<string, string>();
 
+        public Dictionary<string, string> State { get; set; } = new Dictionary<string, string>();
+
         public Dictionary<string, string> Outputs { get; set; } = new Dictionary<string, string>();
 
         public Dictionary<string, JToken> Http { get; set; } = new Dictionary<string, JToken>();

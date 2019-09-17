@@ -50,6 +50,7 @@ namespace Microsoft.Docs.Build
         {
             return new TestServer(
                 new WebHostBuilder()
+                    .UseEnvironment(EnvironmentName.Production)
                     .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
 

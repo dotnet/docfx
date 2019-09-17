@@ -1,8 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -72,44 +72,30 @@ namespace Microsoft.Docs.Build
         public static string MergeUrl(string targetUrl, string sourceQuery, string sourceFragment)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
-            if (string.IsNullOrEmpty(targetPath))
-                return targetUrl;
 
             var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
             var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
             foreach (var key in sourceQueryParameters.AllKeys)
             {
-                targetQueryParameters.Set(key, sourceQueryParameters[key]);
+                targetQueryParameters[key] = sourceQueryParameters[key];
             }
 
-            var query = targetQueryParameters.HasKeys() ? "?" + targetQueryParameters.ToString() : string.Empty;
-            var fragment = (sourceFragment == null || sourceFragment.Length == 0) ? targetFragment : "#" + sourceFragment;
+            var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : string.Empty;
+            if (string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(sourceQuery))
+            {
+                query = sourceQuery;
+            }
+
+            var fragment = (sourceFragment == null || sourceFragment.Length == 0)
+                ? (!string.IsNullOrEmpty(targetFragment) ? targetFragment : "")
+                : (!string.IsNullOrEmpty(sourceFragment) ? sourceFragment : "");
 
             return targetPath + query + fragment;
         }
 
-        /// <summary>
-        /// Get the git remote information from remote href
-        /// </summary>
-        /// <param name="remoteUrl">The git remote href like https://github.com/dotnet/docfx#master</param>
-        public static (string remote, string refspec, bool hasRefSpec) SplitGitUrl(string remoteUrl)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(remoteUrl));
-
-            var (path, _, fragment) = SplitUrl(remoteUrl);
-
-            path = path.TrimEnd('/', '\\');
-            var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
-            var refspec = hasRefSpec ? fragment.Substring(1) : "master";
-
-            return (path, refspec, hasRefSpec);
-        }
-
         public static DependencyType FragmentToDependencyType(string fragment)
         {
-            Debug.Assert(string.IsNullOrEmpty(fragment) || fragment[0] == '#');
-
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
 
@@ -269,6 +255,24 @@ namespace Microsoft.Docs.Build
             repo = match.Groups["repository"].Value;
 
             return true;
+        }
+
+        private static string ToQueryString(this NameValueCollection collection)
+        {
+            var result = new StringBuilder("?");
+            foreach (var key in collection.AllKeys)
+            {
+                if (string.IsNullOrEmpty(key))
+                {
+                    result.Append($"{collection[key]}&");
+                }
+                else
+                {
+                    result.Append($"{key}={collection[key]}&");
+                }
+            }
+            result.Remove(result.Length - 1, 1);
+            return result.ToString();
         }
     }
 }

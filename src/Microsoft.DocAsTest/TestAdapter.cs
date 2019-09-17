@@ -53,7 +53,7 @@ namespace Microsoft.DocAsTest
             DiscoverTests(
                 sources,
                 testCase => discoverySink.SendTestCase(testCase),
-                message => logger.SendMessage(TestMessageLevel.Informational, message));
+                message => logger.SendMessage(TestMessageLevel.Warning, message));
         }
 
         public void Cancel() => _canceled = true;
@@ -108,7 +108,7 @@ namespace Microsoft.DocAsTest
                         testRuns.Add(RunTest(frameworkHandle, test));
                     }
                 },
-                message => frameworkHandle.SendMessage(TestMessageLevel.Informational, message));
+                message => frameworkHandle.SendMessage(TestMessageLevel.Warning, message));
 
             Task.WhenAll(testRuns).GetAwaiter().GetResult();
         }
@@ -140,6 +140,12 @@ namespace Microsoft.DocAsTest
                 result.ErrorMessage = ex.Reason;
                 result.Outcome = TestOutcome.Skipped;
             }
+            catch (TargetInvocationException tie)
+            {
+                result.ErrorMessage = tie.InnerException.Message;
+                result.ErrorStackTrace = tie.InnerException.StackTrace;
+                result.Outcome = TestOutcome.Failed;
+            }
             catch (Exception ex)
             {
                 result.ErrorMessage = ex.Message;
@@ -148,7 +154,6 @@ namespace Microsoft.DocAsTest
             }
             finally
             {
-                result.Traits.Add("a", "b");
                 result.EndTime = DateTime.UtcNow;
                 log.RecordEnd(test, result.Outcome);
                 log.RecordResult(result);
@@ -203,13 +208,14 @@ namespace Microsoft.DocAsTest
             if (glob.StartsWith("~/") || glob.StartsWith("~\\"))
             {
                 glob = glob.Substring(2);
+                sourcePath = s_repositoryRoot.Value ?? sourcePath;
             }
 
-            sourcePath = s_repositoryRoot.Value ?? sourcePath;
-
             var files = Glob.Files(sourcePath, glob, GlobOptions.CaseInsensitive).ToArray();
-
-            log($"Found {files.Length} file(s) using glob pattern '{glob}' in directory '{sourcePath}'");
+            if (files.Length == 0)
+            {
+                log($"No file is found in directory '{sourcePath}' using glob pattern '{glob}'");
+            }
 
             Parallel.ForEach(files, file => attribute.DiscoverTests(Path.Combine(sourcePath, file), report));
         }

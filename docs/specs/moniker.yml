@@ -274,7 +274,7 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md <redirection>', 'docs/v2/a-old.md <redirection>'"]
+    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md [redirection]', 'docs/v2/a-old.md [redirection]'"]
 ---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
 inputs:
@@ -318,12 +318,16 @@ outputs:
 inputs:
   docfx.yml: |
     monikerDefinition: monikerDefinition.json
-  docs/v1/a.md: |
+    fileMetadata:
+      monikerRange:
+        docs/b.md: '> netcore-1.0'
+  docs/a.md: |
     ---
     monikerRange: '> netcore-1.0'
     ---
     Moniker: netcore-1.1
-  docs/v1/TOC.yml: |
+  docs/b.md:
+  docs/TOC.yml: |
     - name: A
       href: a.md
   monikerDefinition.json: |
@@ -336,16 +340,19 @@ inputs:
       ]
     }
 outputs:
-  docs/v1/a.json:
-  docs/v1/toc.json:
+  docs/a.json:
+  docs/b.json:
+  docs/toc.json:
   .errors.log: |
-    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/a.md",2,15]
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docfx.yml",4,16]
 ---
 # With moniker range not defined in config, user should not define it in moniker zone
 inputs:
   docfx.yml: |
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
+    # Title
     ::: moniker range="netcore-1.0"
     Moniker: netcore-1.0
     ::: moniker-end
@@ -358,7 +365,7 @@ inputs:
 outputs:
   docs/v1/a.json:
   .errors.log: |
-    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md"]
+    ["warning","moniker-config-missing","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md",2,1]
 ---
 # No intersection of config monikers and file monikers
 inputs:
@@ -1300,3 +1307,57 @@ outputs:
   .errors.log: |
     ["error","moniker-range-invalid","Invalid moniker range: 'netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/a.md",2,15]
     ["error","moniker-range-invalid","Invalid moniker range: '<= netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/b.md",2,1]
+---
+# Resolving monikerzone in token should base on root file's moniker
+inputs:
+  docfx.yml: |
+    exclude: "**/includes/**"
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    baseUrl: https://docs.com/docs
+    routes:
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    [!INCLUDE [Include](../includes/token.md)]
+  docs/v2/a.md: |
+    [!INCLUDE [Include](../includes/token.md)]
+  docs/includes/token.md: |
+    Moniker: Same with parent
+    ::: moniker range=">= netcore-1.1"
+    Moniker: >= netcore-1.1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+  docs/9d4e15fd/a.json: |
+    {
+      "conceptual": "<p>Moniker: Same with parent</p><div data-moniker=\"netcore-1.1\"><p>Moniker: &gt;= netcore-1.1</p></div>",
+      "monikers": ["netcore-1.0", "netcore-1.1"]
+    }
+  docs/23d205a5/a.json: |
+    {
+      "conceptual": "<p>Moniker: Same with parent</p><div data-moniker=\"netcore-2.0 netcore-2.1\"><p>Moniker: &gt;= netcore-1.1</p></div>",
+      "monikers": ["netcore-2.0", "netcore-2.1"]
+    }
+  .publish.json: |
+    {
+      "files":[
+        {"url":"/docs/a","moniker_group":"23d205a5"},
+        {"url":"/docs/a","moniker_group":"9d4e15fd"}
+      ],
+      "moniker_groups":{
+        "23d205a5":["netcore-2.0","netcore-2.1"],
+        "9d4e15fd":["netcore-1.0","netcore-1.1"]
+      }
+    }

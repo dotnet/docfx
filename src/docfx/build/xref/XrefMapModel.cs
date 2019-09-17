@@ -8,5 +8,7 @@ namespace Microsoft.Docs.Build
     internal class XrefMapModel
     {
         public ExternalXrefSpec[] References { get; set; } = Array.Empty<ExternalXrefSpec>();
+
+        public XrefProperties Properties { get; set; }
     }
 }

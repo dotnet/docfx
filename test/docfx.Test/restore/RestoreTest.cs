@@ -1,7 +1,5 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,101 +19,14 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/dotnet/docfx#986127a", "https://github.com/dotnet/docfx", "986127a")]
         [InlineData("https://github.com/dotnet/docfx#a#a", "https://github.com/dotnet/docfx", "a#a")]
         [InlineData("https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C", "https://github.com/dotnet/docfx", "a\\b/d<e>f*h|i%3C")]
-        public static void SplitGitHref(string remote, string expectedUrl, string expectedRev)
+        public static void PackageUrlTest(string remote, string expectedUrl, string expectedRev)
         {
             // Act
-            var (url, rev, _) = UrlUtility.SplitGitUrl(remote);
+            var packageUrl = new PackageUrl(remote);
 
             // Assert
-            Assert.Equal(expectedUrl, url);
-            Assert.Equal(expectedRev, rev);
-        }
-
-        [Fact]
-        public static async Task ForceAcquireNewWorkTree()
-        {
-            var docsetPath = "force-acquire-work-tree";
-            var gitUrl = "https://github.com/docascode/docfx.test";
-
-            Directory.CreateDirectory(docsetPath);
-
-            var restoreDir = AppData.GetGitDir(gitUrl);
-            DeleteDir(restoreDir);
-
-            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-dependencies:
-  dep: {gitUrl}#master");
-
-            // acquire slot lock firstly
-            ProcessUtility.AcquireExclusiveLock($"{gitUrl}/1", true);
-
-            // run restore and check the work trees
-            await Docfx.Run(new[] { "restore", docsetPath });
-            Assert.Equal(1, GetWorkTreeFolderCount(restoreDir));
-        }
-
-        [Fact]
-        public static async Task RestoreGitWorkTrees()
-        {
-            var docsetPath = "restore-worktrees";
-            var gitUrl = "https://github.com/docascode/docfx-test-dependencies-clean";
-
-            Directory.CreateDirectory(docsetPath);
-
-            var restoreDir = AppData.GetGitDir(gitUrl);
-            DeleteDir(restoreDir);
-
-            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-dependencies:
-  dep5: {gitUrl}#master
-  dep6: {gitUrl}#chi");
-
-            // run restore and check the work trees
-            Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }));
-            Assert.Equal(2, GetWorkTreeFolderCount(restoreDir));
-
-            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-dependencies:
-  dep1: {gitUrl}#test-1-clean");
-
-            // run restore again
-            Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }));
-
-            // since the lockdown time works, new slot will be created
-            Assert.Equal(3, GetWorkTreeFolderCount(restoreDir));
-
-            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-dependencies:
-  dep2: {gitUrl}#test-2-clean
-  dep3: {gitUrl}#test-3-clean");
-
-            // reset last access time
-            // make one slot availabe for next restore
-            var slots = DependencySlotPool<DependencyGit>.GetSlots(AppData.GetGitDir(gitUrl));
-            Assert.True(slots.Count == 3);
-            slots[1].LastAccessDate = DateTime.UtcNow - TimeSpan.FromDays(1);
-            DependencySlotPool<DependencyGit>.WriteSlots(AppData.GetGitDir(gitUrl), slots);
-
-            // run restore again
-            // will create a new slot and find an available slot
-            Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }));
-            Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
-
-            // restore again to use existing worktree
-            Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }));
-            Assert.Equal(4, GetWorkTreeFolderCount(restoreDir));
-
-            // todo: enable this test until we found root cause of failure
-            // make worktree not synced with slots
-            //Exec("git", "worktree add 5", restoreDir);
-            //File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-            // dependencies:
-            //   dep1: {gitUrl}#test-4-clean");
-
-            // run restore again
-            // will create a new slot and find an available slot
-            // Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }));
-            // Assert.Equal(5, GetWorkTreeFolderCount(restoreDir));
+            Assert.Equal(expectedUrl, packageUrl.Url);
+            Assert.Equal(expectedRev, packageUrl.Branch);
         }
 
         [Fact]
@@ -149,45 +60,6 @@ monikerDefinition: {url}");
 
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
             Assert.NotEqual("1", File.ReadAllText(filePath));
-        }
-
-        private static int GetWorkTreeFolderCount(string path)
-        => Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)
-           .Where(c => Path.GetFileName(c) != ".git").Count();
-
-        private static void DeleteDir(string root)
-        {
-            if (!Directory.Exists(root))
-            {
-                return;
-            }
-
-            var dir = new DirectoryInfo(root);
-
-            if (dir.Exists)
-            {
-                SetAttributesNormal(dir);
-                dir.Delete(true);
-            }
-
-            void SetAttributesNormal(DirectoryInfo sub)
-            {
-                foreach (var subDir in sub.GetDirectories())
-                {
-                    SetAttributesNormal(subDir);
-                    subDir.Attributes = FileAttributes.Normal;
-                }
-                foreach (var file in sub.GetFiles())
-                {
-                    file.Attributes = FileAttributes.Normal;
-                }
-            }
-        }
-
-        private static string Exec(string name, string args, string cwd)
-        {
-            var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });
-            return p.StandardOutput.ReadToEnd().Trim();
         }
     }
 }

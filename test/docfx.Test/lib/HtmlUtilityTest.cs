@@ -54,6 +54,22 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("<th style='text-align: left;'>", "<th style='text-align: left;'>")]
+        [InlineData("<th style='text-align: center;'>", "<th style='text-align: center;'>")]
+        [InlineData("<th style='text-align: right;'>", "<th style='text-align: right;'>")]
+        [InlineData("<td style='text-align: left;'>", "<td style='text-align: left;'>")]
+        [InlineData("<td style='text-align: center;'>", "<td style='text-align: center;'>")]
+        [InlineData("<td style='text-align: right;'>", "<td style='text-align: right;'>")]
+        [InlineData("<table style='text-align: right;'>", "<table style='text-align: right;'>")]
+        [InlineData("<table style='text-align: right; background-color: yellow'>", "<table/>")]
+        public void HtmlStripTableStyles(string input, string output)
+        {
+            var actual = HtmlUtility.LoadHtml(input).StripTags().WriteTo();
+
+            Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
+        }
+
+        [Theory]
         [InlineData("", "666", "")]
         [InlineData("</a>", "666", "</a>")]
         [InlineData("<a href='hello'>", "666", "<a href='666'>")]

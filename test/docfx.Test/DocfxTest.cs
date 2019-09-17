@@ -13,7 +13,6 @@ using Microsoft.DocAsTest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Microsoft.Docs.Build
 {
@@ -23,16 +22,12 @@ namespace Microsoft.Docs.Build
 
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_cachePath = new AsyncLocal<string>();
+        private static readonly AsyncLocal<string> t_statePath = new AsyncLocal<string>();
 
         static DocfxTest()
         {
-            Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
-            Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
-
-            Log.ForceVerbose = true;
-            TestUtility.MakeDebugAssertThrowException();
-
             AppData.GetCachePath = () => t_cachePath.Value;
+            AppData.GetStatePath = () => t_statePath.Value;
             GitUtility.GitRemoteProxy = remote =>
             {
                 var mockedRepos = t_repos.Value;
@@ -48,12 +43,13 @@ namespace Microsoft.Docs.Build
         [MarkdownTest("~/docs/designs/**/*.md")]
         public static async Task Run(TestData test, DocfxTestSpec spec)
         {
-            var (docsetPath, cachePath, outputPath, repos) = CreateDocset(test, spec);
+            var (docsetPath, cachePath, statePath, outputPath, repos) = CreateDocset(test, spec);
 
             try
             {
                 t_repos.Value = repos;
                 t_cachePath.Value = cachePath;
+                t_statePath.Value = statePath;
 
                 if (OsMatches(spec.OS))
                 {
@@ -68,16 +64,18 @@ namespace Microsoft.Docs.Build
             {
                 t_repos.Value = null;
                 t_cachePath.Value = null;
+                t_statePath.Value = null;
             }
         }
 
-        private static (string docsetPath, string cachePath, string outputPath, Dictionary<string, string> repos)
+        private static (string docsetPath, string cachePath, string statePath, string outputPath, Dictionary<string, string> repos)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
             var basePath = Path.GetFullPath(Path.Combine("docfx-test", testName));
             var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs/"));
             var cachePath = Path.Combine(basePath, "cache/");
+            var statePath = Path.Combine(basePath, "state/");
             var markerPath = Path.Combine(basePath, "marker");
 
             var variables = new Dictionary<string, string>
@@ -85,6 +83,7 @@ namespace Microsoft.Docs.Build
                 { "APP_BASE_PATH", AppContext.BaseDirectory },
                 { "OUTPUT_PATH", outputPath },
                 { "CACHE_PATH", cachePath },
+                { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
             };
@@ -98,7 +97,7 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(basePath);
 
             var repos = spec.Repos
-                .Select(repo => UrlUtility.SplitGitUrl(repo.Key).remote)
+                .Select(repo => new PackageUrl(repo.Key).Url)
                 .Distinct()
                 .Select((remote, index) => (remote, index))
                 .ToDictionary(
@@ -111,17 +110,18 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
                 {
-                    var (remote, branch, _) = UrlUtility.SplitGitUrl(url);
-                    TestUtility.CreateGitRepository(repos[remote], commits, remote, branch, variables);
+                    var packageUrl = new PackageUrl(url);
+                    TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, variables);
                 }
 
                 TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
                 TestUtility.CreateFiles(cachePath, spec.Cache, variables);
+                TestUtility.CreateFiles(statePath, spec.State, variables);
 
                 File.WriteAllText(markerPath, "");
             }
 
-            return (docsetPath, cachePath, outputPath, repos);
+            return (docsetPath, cachePath, statePath, outputPath, repos);
         }
 
         private async static Task RunCore(TestData test, string docsetPath, string outputPath, DocfxTestSpec spec)
@@ -210,6 +210,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsOutputFile(JToken expected, JToken actual, string name)
         {
+            // TODO: this will also match first property inside JSON file.
             return expected.Parent?.Parent == expected.Root;
         }
 
@@ -232,6 +233,10 @@ namespace Microsoft.Docs.Build
             // Compare data-linktype only if the expectation contains data-linktype
             var expectedHtml = expected.Value<string>();
             var actualHtml = actual.Value<string>();
+            if (string.IsNullOrEmpty(expectedHtml) || string.IsNullOrEmpty(expectedHtml))
+            {
+                return (expectedHtml, actualHtml);
+            }
             if (!expectedHtml.Contains("data-linktype"))
             {
                 actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");

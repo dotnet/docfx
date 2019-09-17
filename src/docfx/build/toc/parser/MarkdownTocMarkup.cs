@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Markdig.Extensions.Yaml;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -146,15 +147,29 @@ namespace Microsoft.Docs.Build
 
             while (child != null)
             {
-                if (!(child is LiteralInline literal))
+                if (child is LiteralInline literal)
+                {
+                    var content = literal.Content;
+                    result.Append(content.Text, content.Start, content.Length);
+                    child = child.NextSibling;
+                }
+                else if (child is XrefInline xref)
+                {
+                    foreach (var pair in xref.GetAttributes().Properties)
+                    {
+                        if (pair.Key == "data-raw-source")
+                        {
+                            result.Append(pair.Value);
+                            break;
+                        }
+                    }
+                    child = child.NextSibling;
+                }
+                else
                 {
                     errors.Add(Errors.InvalidTocSyntax(inline.ToSourceInfo(file: filePath)));
                     return default;
                 }
-
-                var content = literal.Content;
-                result.Append(content.Text, content.Start, content.Length);
-                child = child.NextSibling;
             }
 
             return new SourceInfo<string>(result.ToString(), inline.ToSourceInfo(file: filePath));

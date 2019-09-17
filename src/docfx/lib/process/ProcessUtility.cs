@@ -3,12 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -259,6 +257,15 @@ namespace Microsoft.Docs.Build
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
             {
                 return read(fs);
+            }
+        }
+
+        public static void ReadFile(string path, Action<Stream> read)
+        {
+            using (InterProcessMutex.Create(path))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+            {
+                read(fs);
             }
         }
 

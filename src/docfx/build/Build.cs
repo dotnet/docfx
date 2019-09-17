@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
             using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
             {
-                var (fallbackRepo, fallbackRestoreGitMap) = GetFallbackRepository(docsetPath, repository, restoreGitMap);
+                var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
 
                 var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
                 errorLog.Configure(config);
@@ -29,37 +29,61 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(configErrors))
                     return;
 
-                var gitMap = fallbackRestoreGitMap ?? restoreGitMap;
-                var (docset, fallbackDocset) = GetDocsetWithFallback();
+                var (docset, fallbackDocset) = GetDocsetWithFallback(
+                    docsetPath, locale, config, repository, fallbackRepo, restoreGitMap);
                 var outputPath = Path.Combine(docsetPath, config.Output.Path);
+                var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
 
-                await Run(docset, fallbackDocset, gitMap, options, errorLog, outputPath);
-
-                (Docset docset, Docset fallbackDocset) GetDocsetWithFallback()
-                {
-                    var currentDocset = new Docset(errorLog, docsetPath, locale, config, options, gitMap, repository);
-                    if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
-                    {
-                        if (fallbackRepo != null)
-                        {
-                            return (currentDocset, new Docset(errorLog, fallbackRepo.Path, locale, config, options, gitMap, fallbackRepo));
-                        }
-
-                        if (LocalizationUtility.TryGetLocalizedDocsetPath(currentDocset, gitMap, config, currentDocset.Locale, out var localizationDocsetPath, out var localizationBranch))
-                        {
-                            var repo = Repository.Create(localizationDocsetPath, localizationBranch);
-                            return (new Docset(errorLog, localizationDocsetPath, currentDocset.Locale, config, options, gitMap, repo), currentDocset);
-                        }
-                    }
-
-                    return (currentDocset, default);
-                }
+                await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, restoreGitMap);
             }
         }
 
-        private static async Task Run(Docset docset, Docset fallbackDocset, RestoreGitMap restoreGitMap, CommandLineOptions options, ErrorLog errorLog, string outputPath)
+        private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
+            string docsetPath,
+            string locale,
+            Config config,
+            Repository repository,
+            Repository fallbackRepo,
+            RestoreGitMap restoreGitMap)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, restoreGitMap))
+            var currentDocset = new Docset(docsetPath, locale, config, repository);
+            if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+            {
+                if (fallbackRepo != null)
+                {
+                    return (currentDocset, new Docset(fallbackRepo.Path, locale, config, fallbackRepo));
+                }
+
+                if (LocalizationUtility.TryGetLocalizationDocset(
+                    restoreGitMap,
+                    currentDocset,
+                    config,
+                    currentDocset.Locale,
+                    out var localizationDocset,
+                    out var localizationRepository))
+                {
+                    return (new Docset(
+                        localizationDocset,
+                        currentDocset.Locale,
+                        config,
+                        localizationRepository),
+                        currentDocset);
+                }
+            }
+
+            return (currentDocset, default);
+        }
+
+        private static async Task Run(
+            Docset docset,
+            Docset fallbackDocset,
+            Dictionary<string, (Docset, bool)> dependencyDocsets,
+            CommandLineOptions options,
+            ErrorLog errorLog,
+            string outputPath,
+            RestoreGitMap restoreGitMap)
+        {
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, dependencyDocsets, restoreGitMap))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -72,7 +96,7 @@ namespace Microsoft.Docs.Build
 
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var xrefMapModel = context.XrefMap.ToXrefMapModel();
+                var xrefMapModel = context.XrefResolver.ToXrefMapModel();
 
                 context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
@@ -100,7 +124,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task BuildFile(Context context, Document file)
         {
-            if (!ShouldBuildFile())
+            if (!ShouldBuildFile(context, file))
             {
                 return;
             }
@@ -143,22 +167,24 @@ namespace Microsoft.Docs.Build
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
             }
+        }
 
-            bool ShouldBuildFile()
+        private static bool ShouldBuildFile(Context context, Document file)
+        {
+            if (file.ContentType == ContentType.TableOfContents)
             {
-                if (file.ContentType == ContentType.TableOfContents)
+                if (!context.TocMap.Contains(file))
                 {
-                    if (!context.TocMap.Contains(file))
-                    {
-                        return false;
-                    }
-
-                    // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    return file.FilePath.Origin != FileOrigin.Fallback || (context.TocMap.TryGetTocReferences(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
+                    return false;
                 }
 
-                return file.FilePath.Origin != FileOrigin.Fallback;
+                // if A toc includes B toc and only B toc is localized, then A need to be included and built
+                return file.FilePath.Origin != FileOrigin.Fallback
+                    || (context.TocMap.TryGetTocReferences(file, out var tocReferences)
+                        && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
             }
+
+            return file.FilePath.Origin != FileOrigin.Fallback;
         }
 
         private static RestoreGitMap GetRestoreGitMap(
@@ -170,11 +196,10 @@ namespace Microsoft.Docs.Build
 
             var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
 
-            var dependencyLock = DependencyLock.Load(docsetPath, string.IsNullOrEmpty(config.DependencyLock) ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock) ?? new DependencyLockModel();
-            return RestoreGitMap.Create(dependencyLock);
+            return RestoreGitMap.Create(docsetPath, config, locale);
         }
 
-        private static (Repository fallbackRepo, RestoreGitMap fallbackRestoreGitMap) GetFallbackRepository(
+        private static Repository GetFallbackRepository(
             string docsetPath,
             Repository repository,
             RestoreGitMap restoreGitMap)
@@ -184,23 +209,14 @@ namespace Microsoft.Docs.Build
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
             {
-                if (restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, fallbackBranch) == null && restoreGitMap.DependencyLock.GetGitLock(fallbackRemote, "master") != null)
+                foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    // fallback to master branch
-                    fallbackBranch = "master";
+                    if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
+                    {
+                        var (fallbackRepoPath, fallbackRepoCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(fallbackRemote, branch), bare: false);
+                        return Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit);
+                    }
                 }
-
-                var (fallbackRepoPath, fallbackRestoreMap) = restoreGitMap.GetGitRestorePath(fallbackRemote, fallbackBranch, docsetPath);
-                var fallbackRepository = Repository.Create(fallbackRepoPath, fallbackBranch, fallbackRemote);
-
-                if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
-                {
-                    // build from loc repo directly with overwrite config
-                    // which means it's using source repo's dependency loc;
-                    return (fallbackRepository, fallbackRestoreMap);
-                }
-
-                return (fallbackRepository, default);
             }
 
             return default;
@@ -218,6 +234,22 @@ namespace Microsoft.Docs.Build
             }
 
             return ConfigLoader.Load(fallbackRepo.Path, options, locale);
+        }
+
+        private static Dictionary<string, (Docset docset, bool inScope)> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
+        {
+            var config = docset.Config;
+            var result = new Dictionary<string, (Docset docset, bool inScope)>(config.Dependencies.Count, PathUtility.PathComparer);
+
+            foreach (var (name, dependency) in config.Dependencies)
+            {
+                var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, true);
+
+                var repository = Repository.Create(dir, dependency.Branch, dependency.Url, commit);
+                result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.ExtendToBuild));
+            }
+
+            return result;
         }
     }
 }

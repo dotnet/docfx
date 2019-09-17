@@ -32,15 +32,36 @@ inputs:
           "uid": "System.String",
           "name": "String",
           "fullName": "System.String",
-          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string",
           "nameWithType": "System.String"
       }]
     }
   2.xrefmap.json: |
-    { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
+    { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+---
+# Should not remove host name if not sharing with xref href
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.co
+    xref: 
+      - 1.xrefmap.json
+  docs/a.md: Link to @System.String?displayProperty=fullName
+  1.xrefmap.json: |
+    {
+      "references":[{
+          "uid": "System.String",
+          "name": "String",
+          "fullName": "System.String",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "nameWithType": "System.String"
+      }]
+    }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
@@ -59,11 +80,32 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
+# Restore xref map from configured url and use the zip file for resolving
+inputs:
+  docfx.yml: |
+    xref: 
+      - xrefmap.zip
+  docs/a.md: Link to @System.String
+  xrefmap.zip: |
+    xrefmap.yml: |
+      references:
+        - uid: System.String
+          name: String
+          fullName: System.String
+          href: https://docs.microsoft.com/en-us/dotnet/api/system.string
+          nameWithType: System.String
+    a.json: |
+      { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
+---
 # Define uid in conceptual, resolve it
 repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          baseUrl: https://docs.com/base_path
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -76,24 +118,28 @@ repos:
           ---
         docs/c.md: Link to @a
 outputs:
-  docs/c.json: | 
+  base_path/docs/c.json: | 
     {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
-  docs/a.json:
-  docs/b.json:
+  base_path/docs/a.json:
+  base_path/docs/b.json:
   .xrefmap.json: | 
     {
       "references":[
         {
           "uid": "a",
-          "href": "https://docs.com/docs/a",
+          "href": "https://docs.com/base_path/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://docs.com/docs/b",
+          "href": "https://docs.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
-      ]
+      ],
+      "properties":
+      {
+          "tags": ["/base_path", "public"]
+      }
     }
   .dependencymap.json: |
     {
@@ -106,6 +152,30 @@ outputs:
           ]
       }
     }
+---
+# Remove host from review site
+# This can be removed when xref related repo migrated to v3
+repos:
+  https://docs.com/test-uid-conceptual#live:
+    - files:
+        docfx.yml: |
+          baseUrl: https://docs.microsoft.com/base_path
+          xref: 
+            - 1.xrefmap.json
+        docs/a.md: Link to @System.String
+        1.xrefmap.json: |
+          {
+            "references":[{
+                "uid": "System.String",
+                "name": "String",
+                "fullName": "System.String",
+                "href": "https://review.docs.microsoft.com/dotnet/api/system.string",
+                "nameWithType": "System.String"
+            }]
+          }
+outputs:
+  base_path/docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # The same uid in internal and external
 # should resolve it from the internal one
@@ -188,6 +258,7 @@ repos:
     - files:
         docfx.yml: |
           template: {APP_BASE_PATH}data/template
+          baseUrl: https://docs.com/base_path
         docs/a.yml: |
           #YamlMime:TestData
           uid: a
@@ -198,14 +269,14 @@ repos:
           }
         docs/c.md: Link to @a
 outputs:
-  docs/a.json:
-  docs/b.json: 
-  docs/c.json: |
+  base_path/docs/a.json:
+  base_path/docs/b.json: 
+  base_path/docs/c.json: |
     {"conceptual": "<p>Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a></p>\n"}
   .errors.log: |
     ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.yml', 'docs/b.json'"]
   .xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a.json?branch=master"}]}
+    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}], "properties": {"tags":["/base_path","internal"]}}
 ---
 # Resolve xref in SDP
 repos:
@@ -496,7 +567,7 @@ outputs:
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'c#bookmark'","docs/b.md",1,9]
+    ["warning","xref-not-found","Cross reference not found: 'c'","docs/b.md",1,9]
 ---
 # Markdown inclusion with xref reference
 inputs:
@@ -749,7 +820,7 @@ outputs:
     }
   docs/c.json:
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'd?action=xxx'","docs/a.md",2,5]
+    ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",2,5]
     ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",7,2]
 ---
 # support multiple uids with different xref properties
@@ -861,7 +932,7 @@ inputs:
     { "references":[{"uid": "System.String", "href": "https://2.docs.microsoft.com/en-us/system.string"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # support non-leaf nodes for xref properties
 repos:

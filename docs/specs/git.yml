@@ -323,7 +323,7 @@ repos:
         docfx.yml: |
           updateTimeAsCommitBuildTime: true
         docs/index.md: Alice creates this.
-cache:
+state:
   history/build_history_1026df13-852a-b3da-a226-492390c1c82e_17190aeb-6297-d34d-a48f-a681d3061212.json: |
     {
       "commits": [{ "sha": "7e6344c7275cccec2334ca04b73017bdeb7ecc2a", "built_at": "2019-04-23T00:00:00Z" }]
@@ -361,7 +361,7 @@ outputs:
       "updated_at": "2018-07-18 05:03 AM"
     }
 ---
-# Throw committish-not-found when try to resolve commit id by none-existing branch name
+# [from loc] Throw committish-not-found when try to resolve commit id by none-existing branch name
 locale: zh-cn
 repos: 
   https://github.com/git/repo#live:
@@ -573,5 +573,69 @@ outputs:
         "author_info": undefined,
         "contributors": undefined
       },
+      "updated_at": "2018-10-30 12:00 AM"
+    }
+---
+# Git/Contribution info for content in CRR
+repos:
+  https://docs.com/crrcontent/a:
+    - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/contrib-owner/contrib-repo#contrib-branch
+          files:
+            - "docs/**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              type: git
+              url: https://github.com/testowner/crr-content
+              branch: master
+              extendToBuild: true
+        docs/a.md:
+  https://github.com/testowner/crr-content:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        b.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        b.md: |
+          Alice creates this. Bob updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        b.md: |
+          Alice creates this.
+cache:
+  github-users.json: |
+      { "users": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+outputs:
+  docs/a.json:
+  crrb/b.json: |
+    {
+      "_op_gitContributorInformation":
+      {
+        "author": 
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      },
+      "content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
+      "original_content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
+      "original_content_git_url_template": "https://github.com/testowner/crr-content/blob/master/b.md",
+      "gitcommit": "https://github.com/testowner/crr-content/blob/44e7dd472e06b95898986635feccbcefde3c42f0/b.md",
       "updated_at": "2018-10-30 12:00 AM"
     }
