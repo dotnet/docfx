@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
 
         private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
         {
-            Log.Write($"{code} {message}");
+            Log.Write($"{code}: {message}");
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
