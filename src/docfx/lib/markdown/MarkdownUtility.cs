@@ -100,6 +100,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(markdownContext, GetConfig())
                 .Build();
         }
 
@@ -119,6 +120,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(markdownContext, GetConfig())
                 .UseInlineOnly()
                 .Build();
         }
@@ -141,6 +143,11 @@ namespace Microsoft.Docs.Build
                    .UsePreciseSourceLocation();
 
             return builder.Build();
+        }
+
+        private static Config GetConfig()
+        {
+            return t_status.Value.Peek().Context.Config;
         }
 
         private static string GetToken(string key)

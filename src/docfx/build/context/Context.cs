@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal sealed class Context : IDisposable
     {
+        public readonly Config Config;
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
@@ -45,6 +46,7 @@ namespace Microsoft.Docs.Build
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>();
 
+            Config = docset.Config;
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);
