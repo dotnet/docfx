@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             var repoDir = AppData.GetGitDir(remote);
             var repoPath = Path.GetFullPath(Path.Combine(repoDir, ".git"));
 
-            using (new SharedAndExclusiveLock(remote, shared: false))
+            using (InterProcessReaderWriterLock.CreateWriterLock(remote))
             {
                 if (branchesToFetch.Count > 0)
                 {
