@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseContentValidation(this MarkdownPipelineBuilder builder, MarkdownContext markdownContext, Config config)
         {
             var validatorProvider = new OnlineServiceMarkdownValidatorProvider(
-                new ContentValidationContext(),
+                new ContentValidationContext(config),
                 new ContentValidationLogger(markdownContext));
 
             return builder.Use(document =>
