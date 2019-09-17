@@ -32,10 +32,11 @@ Docfx generate `links` information of each files into one single file `.links.js
 
 *link model*:
 
-  |                   |                      |
-  |-------------------|----------------------|
-  | `source_url`      | /dotnet/articles/a   |
-  | `target_url`      | /dotnet/articles/b   |
+  |                         |                      |
+  |-------------------------|----------------------|
+  | `source_url`            | /dotnet/articles/a   |
+  | `source_moniker_group`  | 218c13d0             |
+  | `target_url`            | /dotnet/articles/b   |
 
 Example:
 
@@ -45,14 +46,17 @@ Example:
     [
         {
             "source_url": "/dotnet/articles/a",
+            "source_moniker_group": "218c13d0",
             "target_url": "/dotnet/articles/b"
         },
         {
             "source_url": "/dotnet/articles/a",
+            "source_moniker_group": "218c13d0",
             "target_url": "https://github.com"
         },
         {
             "source_url": "/dotnet/articles/a",
+            "source_moniker_group": "218c13d0",
             "target_url": "./c.md"
         }
     ]
