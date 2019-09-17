@@ -189,8 +189,8 @@ namespace Microsoft.Docs.Build
                         using (InterProcessReaderWriterLock.CreateReaderLock(name))
                         {
                             count++;
-                            barrier.SignalAndWait(); // 1
                             Assert.Equal(1, count);
+                            barrier.SignalAndWait(); // 1
                             barrier.SignalAndWait(); // 2
                             Assert.Equal(2, count);
                         }
