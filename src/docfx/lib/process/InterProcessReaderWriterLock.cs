@@ -50,7 +50,9 @@ namespace Microsoft.Docs.Build
                     using (var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(name)}"))
                     {
                         mutex.WaitOne();
-                        return new FileStream(path, FileMode.OpenOrCreate, access, fileShare);
+                        var fileStream = new FileStream(path, FileMode.OpenOrCreate, access, fileShare);
+                        mutex.ReleaseMutex();
+                        return fileStream;
                     }
                 }
                 catch
@@ -83,6 +85,7 @@ namespace Microsoft.Docs.Build
                 {
                     mutex.WaitOne();
                     _fileStream.Dispose();
+                    mutex.ReleaseMutex();
                 }
             }
         }
