@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         private static FileStream WaitFile(string name, string path, FileAccess access, FileShare fileShare)
         {
             var start = DateTime.UtcNow;
-            while (true)
+            while (DateTime.UtcNow - start <= TimeSpan.FromMinutes(1))
             {
                 try
                 {
@@ -70,6 +70,8 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
             }
+
+            throw new ApplicationException($"Failed to access resource {name}");
         }
 
         public void Dispose()
