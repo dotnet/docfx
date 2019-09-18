@@ -302,12 +302,16 @@ namespace Microsoft.Docs.Build
             }
 
             var templateMetadata = new JObject();
-            var conceptual = pageModel["conceptual"].ToString();
+            var conceptual = pageModel["conceptual"]?.ToString();
             pageModel.Remove("conceptual");
             if (string.IsNullOrEmpty(file.Mime))
             {
                 templateMetadata = context.TemplateEngine.RunJint($"Conceptual.mta.json.js", pageModel);
-                templateMetadata["interactive_type"] = GetInteractiveTypeForConceptual(conceptual);
+                var interactiveTypes = GetInteractiveTypeForConceptual(conceptual);
+                if (!string.IsNullOrEmpty(interactiveTypes))
+                {
+                    templateMetadata["interactive_type"] = interactiveTypes;
+                }
             }
             else
             {
