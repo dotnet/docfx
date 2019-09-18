@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
@@ -300,12 +301,17 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint(
-                string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
-
-            if (TemplateEngine.IsLandingData(file.Mime))
+            var templateMetadata = new JObject();
+            var conceptual = pageModel["conceptual"].ToString();
+            pageModel.Remove("conceptual");
+            if (string.IsNullOrEmpty(file.Mime))
             {
-                templateMetadata.Remove("conceptual");
+                templateMetadata = context.TemplateEngine.RunJint($"Conceptual.mta.json.js", pageModel);
+                templateMetadata["interactive_type"] = GetInteractiveTypeForConceptual(conceptual);
+            }
+            else
+            {
+                templateMetadata = context.TemplateEngine.RunJint($"{file.Mime}.mta.json.js", pageModel);
             }
 
             // content for *.mta.json
@@ -328,6 +334,9 @@ namespace Microsoft.Docs.Build
 
             return (model, metadata);
         }
+
+        private static string GetInteractiveTypeForConceptual(string conceptual)
+            => string.Join(',', Regex.Matches(conceptual, "data-interactive=[\" |\']([\\w|\\-]+)[\"|\']").Select(x => x.Groups[1].Value).Distinct());
 
         private static string CreateHtmlContent(Document file, HtmlNode html)
             => LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
