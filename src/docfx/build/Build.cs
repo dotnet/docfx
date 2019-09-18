@@ -20,38 +20,38 @@ namespace Microsoft.Docs.Build
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
             using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
             {
-                var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
+                var (errors, docset, fallbackDocset) = GetDocsetWithFallback(
+                    docsetPath, locale, options, repository, restoreGitMap);
 
-                var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
-                errorLog.Configure(config);
+                errorLog.Configure(docset.Config);
 
                 // just return if config loading has errors
-                if (errorLog.Write(configErrors))
+                if (errorLog.Write(errors))
                     return;
 
-                var (docset, fallbackDocset) = GetDocsetWithFallback(
-                    docsetPath, locale, config, repository, fallbackRepo, restoreGitMap);
-                var outputPath = Path.Combine(docsetPath, config.Output.Path);
+                var outputPath = Path.Combine(docsetPath, docset.Config.Output.Path);
                 var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
 
                 await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, restoreGitMap);
             }
         }
 
-        private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
+        private static (List<Error> errors, Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
             string docsetPath,
             string locale,
-            Config config,
+            CommandLineOptions options,
             Repository repository,
-            Repository fallbackRepo,
             RestoreGitMap restoreGitMap)
         {
+            var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
+            var (errors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
+
             var currentDocset = new Docset(docsetPath, locale, config, repository);
             if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
             {
                 if (fallbackRepo != null)
                 {
-                    return (currentDocset, new Docset(fallbackRepo.Path, locale, config, fallbackRepo));
+                    return (errors, currentDocset, new Docset(fallbackRepo.Path, locale, config, fallbackRepo));
                 }
 
                 if (LocalizationUtility.TryGetLocalizationDocset(
@@ -62,7 +62,8 @@ namespace Microsoft.Docs.Build
                     out var localizationDocset,
                     out var localizationRepository))
                 {
-                    return (new Docset(
+                    return (errors,
+                        new Docset(
                         localizationDocset,
                         currentDocset.Locale,
                         config,
@@ -71,7 +72,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (currentDocset, default);
+            return (errors, currentDocset, default);
         }
 
         private static async Task Run(

@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
                     return (dependencyPath, file.Path, file.Commit ?? dependencyCommit);
 
                 case FileOrigin.Fallback:
-                    return (_fallbackPath, file.Path, file.Commit ?? _fallbackCommit);
+                    return (_fallbackRepository.Path, file.Path, file.Commit ?? _fallbackRepository.Commit);
 
                 case FileOrigin.Template:
                     var (templatePath, _) = _restoreMap.GetRestoreGitPath(_config.Template, false);
