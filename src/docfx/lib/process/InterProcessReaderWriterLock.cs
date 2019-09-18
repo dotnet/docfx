@@ -11,50 +11,52 @@ namespace Microsoft.Docs.Build
     public struct InterProcessReaderWriterLock : IDisposable
     {
         private readonly FileStream _fileStream;
-        private readonly string _filePath;
+        private readonly string _lockHash;
 
-        private InterProcessReaderWriterLock(FileStream fileStream, string filePath)
+        private InterProcessReaderWriterLock(FileStream fileStream, string lockHash)
         {
             _fileStream = fileStream;
-            _filePath = filePath;
+            _lockHash = lockHash;
         }
 
         public static InterProcessReaderWriterLock CreateReaderLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
-            var filePath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(lockName));
-            var fileLock = WaitFile(lockName, filePath, FileAccess.Read, FileShare.Read);
+            var lockHash = HashUtility.GetMd5Hash(lockName);
+            var fileLock = WaitFile(lockName, lockHash, FileAccess.Read, FileShare.Read);
 
-            return new InterProcessReaderWriterLock(fileLock, filePath);
+            return new InterProcessReaderWriterLock(fileLock, lockHash);
         }
 
         public static InterProcessReaderWriterLock CreateWriterLock(string lockName)
         {
             Debug.Assert(!string.IsNullOrEmpty(lockName));
 
-            var filePath = Path.Combine(AppData.MutexRoot, HashUtility.GetMd5Hash(lockName));
-            var fileLock = WaitFile(lockName, filePath, FileAccess.Write, FileShare.None);
+            var lockHash = HashUtility.GetMd5Hash(lockName);
+            var fileLock = WaitFile(lockName, lockHash, FileAccess.Write, FileShare.None);
 
-            return new InterProcessReaderWriterLock(fileLock, filePath);
+            return new InterProcessReaderWriterLock(fileLock, lockHash);
         }
 
-        private static FileStream WaitFile(string name, string path, FileAccess access, FileShare fileShare)
+        private static FileStream WaitFile(string name, string lockHash, FileAccess access, FileShare fileShare)
         {
+            var path = Path.Combine(AppData.MutexRoot, lockHash);
             var start = DateTime.UtcNow;
+
             while (true)
             {
                 try
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    using (new GlobalMutex(path))
+                    Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path)));
+                    using (new GlobalMutex(lockHash))
                     {
                         return new FileStream(path, FileMode.OpenOrCreate, access, fileShare);
                     }
                 }
                 catch
                 {
-                    if (DateTime.UtcNow - start > TimeSpan.FromSeconds(10))
+                    if (DateTime.UtcNow - start > TimeSpan.FromSeconds(30))
                     {
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
                         lock (Console.Out)
@@ -67,7 +69,6 @@ namespace Microsoft.Docs.Build
                     }
 
                     Thread.Sleep(200);
-                    continue;
                 }
             }
 
@@ -76,32 +77,35 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            if (_fileStream != null)
+            using (new GlobalMutex(_lockHash))
             {
-                using (new GlobalMutex(_filePath))
-                {
-                    _fileStream.Dispose();
-                }
+                _fileStream.Dispose();
             }
         }
 
-        private struct GlobalMutex : IDisposable
+        private readonly struct GlobalMutex : IDisposable
         {
             private readonly Mutex _mutex;
 
-            public GlobalMutex(string name)
+            public GlobalMutex(string hash)
             {
-                _mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(name)}");
-                _mutex.WaitOne();
+                _mutex = new Mutex(initiallyOwned: false, $"Global\\{hash}");
+
+                try
+                {
+                    _mutex.WaitOne();
+                }
+                catch (AbandonedMutexException)
+                {
+                    // When another process/thread exited without relasing its mutex,
+                    // this exception is thrown and we've successfully acquired the mutex.
+                }
             }
 
             public void Dispose()
             {
-                if (_mutex != null)
-                {
-                    _mutex.ReleaseMutex();
-                    _mutex.Dispose();
-                }
+                _mutex.ReleaseMutex();
+                _mutex.Dispose();
             }
         }
     }

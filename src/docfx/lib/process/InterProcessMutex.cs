@@ -26,16 +26,24 @@ namespace Microsoft.Docs.Build
 
             var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(mutexName)}");
 
-            while (!mutex.WaitOne(TimeSpan.FromSeconds(30)))
+            try
             {
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-                lock (Console.Out)
-#pragma warning restore CA2002
+                while (!mutex.WaitOne(TimeSpan.FromSeconds(30)))
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"Waiting for another process to access '{mutexName}'");
-                    Console.ResetColor();
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
+                    lock (Console.Out)
+#pragma warning restore CA2002
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Waiting for another process to access '{mutexName}'");
+                        Console.ResetColor();
+                    }
                 }
+            }
+            catch (AbandonedMutexException)
+            {
+                // When another process/thread exited without relasing its mutex,
+                // this exception is thrown and we've successfully acquired the mutex.
             }
 
             return new InterProcessMutex { _mutex = mutex };
