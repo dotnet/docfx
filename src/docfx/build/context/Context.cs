@@ -40,6 +40,7 @@ namespace Microsoft.Docs.Build
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
+
             DependencyMapBuilder = new DependencyMapBuilder();
             _xrefResolver = new Lazy<XrefResolver>(() => new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
@@ -47,7 +48,7 @@ namespace Microsoft.Docs.Build
 
             ErrorLog = errorLog;
             Output = new Output(outputPath);
-            Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);
+            Input = new Input(docset.DocsetPath, docset.Config, restoreGitMap, fallbackDocset?.Repository);
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
             BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine);

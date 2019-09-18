@@ -17,12 +17,15 @@ namespace Microsoft.Docs.Build
 
         public string Path { get; }
 
-        private Repository(string remote, string branch, string commit, string path)
+        public bool Bare { get; }
+
+        private Repository(string remote, string branch, string commit, string path, bool bare)
         {
             Remote = remote ?? throw new ArgumentNullException(nameof(remote));
             Branch = branch ?? "master";
             Commit = commit ?? throw new ArgumentNullException(nameof(commit));
             Path = path ?? throw new ArgumentNullException(nameof(path));
+            Bare = bare;
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace Microsoft.Docs.Build
         /// Repository's branch info ashould NOT depend on git, unless you are pretty sure about that
         /// Repository's url can also be overwritten
         /// </summary>
-        public static Repository Create(string path, string branch, string repoUrl = null, string commit = null)
+        public static Repository Create(string path, string branch, string repoUrl = null, string commit = null, bool bare = false)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 
@@ -56,7 +59,7 @@ namespace Microsoft.Docs.Build
             // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
             repoUrl = Regex.Replace(repoUrl ?? "", @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
 
-            return new Repository(repoUrl, branch, commit, PathUtility.NormalizeFolder(repoPath));
+            return new Repository(repoUrl, branch, commit, PathUtility.NormalizeFolder(repoPath), bare);
         }
     }
 }

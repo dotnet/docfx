@@ -14,17 +14,17 @@ namespace Microsoft.Docs.Build
     internal class Input
     {
         private readonly string _docsetPath;
-        private readonly string _fallbackPath;
+        private readonly Repository _fallbackRepository;
         private readonly Config _config;
         private readonly RestoreGitMap _restoreMap;
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
-        public Input(string docsetPath, string fallbackPath, Config config, RestoreGitMap restoreMap)
+        public Input(string docsetPath, Config config, RestoreGitMap restoreMap, Repository fallbackRepository)
         {
             _config = config;
             _restoreMap = restoreMap;
             _docsetPath = Path.GetFullPath(docsetPath);
-            _fallbackPath = fallbackPath is null ? null : Path.GetFullPath(fallbackPath);
+            _fallbackRepository = fallbackRepository;
         }
 
         /// <summary>
@@ -119,10 +119,17 @@ namespace Microsoft.Docs.Build
                         .ToArray();
 
                 case FileOrigin.Fallback:
+                    if (_fallbackRepository.Bare)
+                    {
+                        // todo: get tree list from repositroy
+                        return GitUtility.ListTree(_fallbackRepository.Path, _fallbackRepository.Commit)
+                            .Select(path => new FilePath(path.Replace("\\", "/"), FileOrigin.Fallback)).ToArray();
+                    }
+
                     return Directory
-                        .GetFiles(_fallbackPath, "*", SearchOption.AllDirectories)
+                        .GetFiles(_fallbackRepository.Path, "*", SearchOption.AllDirectories)
                         .Select(path => new FilePath(
-                            Path.GetRelativePath(_fallbackPath, path).Replace('\\', '/'), FileOrigin.Fallback))
+                            Path.GetRelativePath(_fallbackRepository.Path, path).Replace('\\', '/'), FileOrigin.Fallback))
                         .ToArray();
 
                 case FileOrigin.Dependency:
@@ -151,7 +158,7 @@ namespace Microsoft.Docs.Build
                     return (dependencyPath, file.Path, file.Commit ?? dependencyCommit);
 
                 case FileOrigin.Fallback:
-                    return (_fallbackPath, file.Path, file.Commit);
+                    return (_fallbackPath, file.Path, file.Commit ?? _fallbackCommit);
 
                 case FileOrigin.Template:
                     var (templatePath, _) = _restoreMap.GetRestoreGitPath(_config.Template, false);

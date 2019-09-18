@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = "master";
                 }
 
-                var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, RestoreGitFlags flags)> { (fallbackBranch, RestoreGitFlags.None) }, null);
+                var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, RestoreGitFlags flags)> { (fallbackBranch, RestoreGitFlags.NoCheckout) }, null);
                 Debug.Assert(restoredResult.Count == 1);
 
                 return restoredResult[0];

@@ -214,7 +214,7 @@ namespace Microsoft.Docs.Build
                     if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
                     {
                         var (fallbackRepoPath, fallbackRepoCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(fallbackRemote, branch), bare: false);
-                        return Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit);
+                        return Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit, true);
                     }
                 }
             }
@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
             {
                 var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, true);
 
-                var repository = Repository.Create(dir, dependency.Branch, dependency.Url, commit);
+                var repository = Repository.Create(dir, dependency.Branch, dependency.Url, commit, true);
                 result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.BuildFiles));
             }
 
