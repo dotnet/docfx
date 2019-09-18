@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (AbandonedMutexException)
                 {
-                    // When another process/thread exited without relasing its mutex,
+                    // When another process/thread exited without releasing its mutex,
                     // this exception is thrown and we've successfully acquired the mutex.
                 }
             }
