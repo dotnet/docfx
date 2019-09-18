@@ -67,6 +67,98 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         }
 
         [Fact]
+        public void NotebookCodeSnippetGeneral()
+        {
+            var content = @"{
+ ""cells"": [
+  {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  }
+ ]
+}";
+
+            File.WriteAllText("Program.ipynb", content.Replace("\r\n", "\n"));
+            var marked = TestUtility.MarkupWithoutSourceInfo(@"[!notebook-python[](Program.ipynb?name=import)]", "Topic.md");
+            var expected = @"<pre><code class=""lang-python"">import azureml.core
+print(azureml.core.VERSION)</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+        [Fact]
+        public void NotebookCodeSnippetTagNotFound()
+        {
+            var content = @"{
+ ""cells"": [
+  {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  }
+ ]
+}";
+
+            File.WriteAllText("Program.ipynb", content.Replace("\r\n", "\n"));
+            var marked = TestUtility.MarkupWithoutSourceInfo(@"[!notebook-python[](Program.ipynb?name=nonexistent)]", "Topic.md");
+            var expected = @"<pre><code class=""lang-python""></code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+        [Fact]
+        public void NotebookCodeSnippetMultipleTagFound()
+        {
+            //arange
+            var content = @"{
+ ""cells"": [
+  {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  },
+ {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  }
+ ]
+}";
+
+            File.WriteAllText("Program.ipynb", content.Replace("\r\n", "\n"));
+            var marked = TestUtility.MarkupWithoutSourceInfo(@"[!notebook-python[](Program.ipynb?name=import)]", "Topic.md");
+            var expected = @"<pre><code class=""lang-python""></code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+        [Fact]
         public void CodeSnippetShouldNotWorkInParagragh()
         {
             var marked = TestUtility.MarkupWithoutSourceInfo("text [!code[test](CodeSnippet.cs)]", "Topic.md");
