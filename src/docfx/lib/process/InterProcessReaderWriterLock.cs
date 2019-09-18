@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
             public GlobalMutex(string hash)
             {
-                _mutex = new Mutex(initiallyOwned: false, $"Global\\{hash}");
+                _mutex = new Mutex(initiallyOwned: false, $"Global\\iprwl-{hash}");
 
                 try
                 {

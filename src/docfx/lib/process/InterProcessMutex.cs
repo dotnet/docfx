@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             }
             t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Push(mutexName);
 
-            var mutex = new Mutex(initiallyOwned: false, $"Global\\{HashUtility.GetMd5Hash(mutexName)}");
+            var mutex = new Mutex(initiallyOwned: false, $"Global\\ipm-{HashUtility.GetMd5Hash(mutexName)}");
 
             try
             {
