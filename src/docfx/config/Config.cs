@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
-        public readonly SourceInfo<string> ContentValidationRulesFilePath = new SourceInfo<string>(string.Empty);
+        public readonly SourceInfo<string> MarkdownValidationRules = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// Get the metadata JSON schema file path.
