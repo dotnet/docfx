@@ -49,11 +49,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 AddToDownloadList(_uris);
                 var dict = new Dictionary<string, IXRefContainer>();
-                while (_processing.Count > 0)
+                foreach (var item in _processing)
                 {
-                    var task = await Task.WhenAny(_processing.Keys);
-                    var uri = _processing[task];
-                    _processing.Remove(task);
+                    var task = item.Key;
+                    var uri = item.Value;
                     try
                     {
                         var container = await task;

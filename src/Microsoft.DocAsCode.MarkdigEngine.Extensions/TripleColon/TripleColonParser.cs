@@ -74,8 +74,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(block);
 
-            if (extension.EndingTripleColons)
+            if (extension.GetType() == typeof(ImageExtension)
+                && htmlAttributes != null
+                && ImageExtension.RequiresClosingTripleColon(attributes))
             {
+                ((TripleColonBlock)block).EndingTripleColons = true;
                 return BlockState.ContinueDiscard;
             }
 
@@ -115,7 +118,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var c = ExtensionsHelper.SkipSpaces(ref slice);
 
-            var endingTripleColons = ((TripleColonBlock)block).Extension.EndingTripleColons;
+            var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
             if (endingTripleColons && !ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
                 _context.LogWarning(
