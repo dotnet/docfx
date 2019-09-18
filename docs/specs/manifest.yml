@@ -122,10 +122,10 @@ outputs:
 # Manifest contains nested token or codesnippet dependencies
 inputs:
   docfx.yml:
-  docs/a.md: a [!INCLUDE[](b.md)
+  docs/a.md: a [!INCLUDE[](b.md)]
   docs/b.md: |
     Link to [c](c.md)
-    b [!INCLUDE[](c.md)
+    b [!INCLUDE[](c.md)]
   docs/c.md:
 outputs:
   docs/a.json:
@@ -173,9 +173,9 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    one [!INCLUDE[](b.md)
+    one [!INCLUDE[](b.md)]
   docs/b.md: |
-    another [!INCLUDE[](a.md)
+    another [!INCLUDE[](a.md)]
 outputs:
   docs/a.json:
   docs/b.json:
