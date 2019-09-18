@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
     internal sealed class Context : IDisposable
     {
         public readonly Config Config;
+        public readonly RestoreFileMap RestoreFileMap;
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
@@ -47,6 +48,7 @@ namespace Microsoft.Docs.Build
             BuildQueue = new WorkQueue<Document>();
 
             Config = docset.Config;
+            RestoreFileMap = restoreFileMap;
             ErrorLog = errorLog;
             Output = new Output(outputPath);
             Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);

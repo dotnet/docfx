@@ -32,9 +32,9 @@ namespace Microsoft.Docs.Build
 
         public int MaxTransientFailureCount { get; set; }
 
-        public ContentValidationContext(Config config)
+        public ContentValidationContext(string markdownValidationRulesPath)
         {
-            MarkdownRulesFilePath = config.MarkdownValidationRules;
+            MarkdownRulesFilePath = markdownValidationRulesPath;
             RepositoryUrl = EnvironmentVariable.RepositoryUrl;
             Branch = EnvironmentVariable.RepositoryBranch;
             ApiBase = ValidationApiBaseUrl;
