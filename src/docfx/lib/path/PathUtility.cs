@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks.Dataflow;
 
 namespace Microsoft.Docs.Build
 {
@@ -58,18 +59,20 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Finds a yaml or json file under the specified location
         /// </summary>
-        public static string FindYamlOrJson(string pathWithoutExtension)
+        public static FilePath FindYamlOrJson(Input input, FileOrigin origin, string pathWithoutExtension)
         {
-            var fullPath = PathUtility.NormalizeFile(pathWithoutExtension + ".yml");
-            if (File.Exists(fullPath))
+            var fullPath = NormalizeFile(pathWithoutExtension + ".yml");
+            var filePath = new FilePath(fullPath, origin);
+            if (input.Exists(filePath))
             {
-                return fullPath;
+                return filePath;
             }
 
-            fullPath = PathUtility.NormalizeFile(pathWithoutExtension + ".json");
-            if (File.Exists(fullPath))
+            fullPath = NormalizeFile(pathWithoutExtension + ".json");
+            filePath = new FilePath(fullPath, origin)
+            if (input.Exists(filePath))
             {
-                return fullPath;
+                return filePath;
             }
 
             return null;

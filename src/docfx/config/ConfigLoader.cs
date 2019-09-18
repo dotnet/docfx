@@ -3,53 +3,68 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class ConfigLoader
+    internal class ConfigLoader
     {
         private const string Extend = "extend";
         private const string DefaultLocale = "defaultLocale";
         private const string Localization = "localization";
 
+        private readonly string _docsetPath;
+        private readonly Input _input;
+        private readonly RepositoryProvider _repositoryProvider;
+
+        public ConfigLoader(string docsetPath, Input input, RepositoryProvider repositoryProvider)
+        {
+            _docsetPath = docsetPath;
+            _input = input;
+            _repositoryProvider = repositoryProvider;
+        }
+
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (List<Error> errors, Config config) Load(
-            string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
+        public (List<Error> errors, Config config) Load(CommandLineOptions options, string locale = null, bool extend = true)
         {
-            if (!TryGetConfigPath(docsetPath, out _))
+            if (!TryGetConfigPath(out _))
             {
-                throw Errors.ConfigNotFound(docsetPath).ToException();
+                throw Errors.ConfigNotFound(_docsetPath).ToException();
             }
 
-            return TryLoad(docsetPath, options, locale, extend);
+            return TryLoad(options, locale, extend);
         }
 
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/> or return default config
         /// </summary>
-        public static (List<Error> errors, Config config) TryLoad(
-            string docsetPath, CommandLineOptions options, string locale = null, bool extend = true)
-            => LoadCore(docsetPath, options, locale, extend);
+        public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, string locale = null, bool extend = true)
+            => LoadCore(options, locale, extend);
 
-        public static bool TryGetConfigPath(string docset, out string configPath)
+        public bool TryGetConfigPath(out FilePath configPath)
         {
-            configPath = PathUtility.FindYamlOrJson(Path.Combine(docset, "docfx"));
+            configPath = PathUtility.FindYamlOrJson(_input, FileOrigin.Default, "docfx");
 
-            return !string.IsNullOrEmpty(configPath);
+            if (configPath == null)
+            {
+                configPath = PathUtility.FindYamlOrJson(_input, FileOrigin.Fallback, "docfx");
+            }
+
+            return configPath != null;
         }
 
-        private static (List<Error>, Config) LoadCore(string docsetPath, CommandLineOptions options, string locale, bool extend)
+        private (List<Error>, Config) LoadCore(CommandLineOptions options, string locale, bool extend)
         {
             var errors = new List<Error>();
             var configObject = new JObject();
-            if (TryGetConfigPath(docsetPath, out var configPath))
+            if (TryGetConfigPath(out var configPath))
             {
-                var configFileName = PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, configPath));
-                (errors, configObject) = LoadConfigObject(configFileName, File.ReadAllText(configPath));
+                var configFileName = configPath.Path;
+                (errors, configObject) = LoadConfigObject(configFileName, _input.ReadString(configPath));
             }
 
             // apply options
@@ -66,24 +81,39 @@ namespace Microsoft.Docs.Build
             if (extend)
             {
                 var extendErrors = new List<Error>();
-                (extendErrors, configObject) = ExtendConfigs(configObject, docsetPath);
+                (extendErrors, configObject) = ExtendConfigs(configObject);
                 errors.AddRange(extendErrors);
             }
 
             // apply overwrite
-            OverwriteConfig(configObject, locale ?? options.Locale, GetBranch());
+            OverwriteConfig(configObject, locale ?? options.Locale, _repositoryProvider.GetRepository(FileOrigin.Default)?.Branch);
 
             var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
             return (errors, config);
+        }
 
-            string GetBranch()
+        private (List<Error>, JObject) ExtendConfigs(JObject config)
+        {
+            var result = new JObject();
+            var errors = new List<Error>();
+            var extends = config[Extend] is JArray arr ? arr : new JArray(config[Extend]);
+
+            foreach (var extend in extends)
             {
-                var repoPath = GitUtility.FindRepo(docsetPath);
-
-                return repoPath is null ? null : GitUtility.GetRepoInfo(repoPath).branch;
+                if (extend is JValue value && value.Value is string str)
+                {
+                    var content = RestoreFileMap.GetRestoredFileContent(
+                        _input, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
+                    var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
+                    errors.AddRange(extendErrors);
+                    JsonUtility.Merge(result, extendConfigObject);
+                }
             }
+
+            JsonUtility.Merge(result, config);
+            return (errors, result);
         }
 
         private static (List<Error>, JObject) LoadConfigObject(string fileName, string content)
@@ -114,28 +144,6 @@ namespace Microsoft.Docs.Build
             if (File.Exists(globalConfigPath))
             {
                 (errors, result) = LoadConfigObject(globalConfigPath, File.ReadAllText(globalConfigPath));
-            }
-
-            JsonUtility.Merge(result, config);
-            return (errors, result);
-        }
-
-        private static (List<Error>, JObject) ExtendConfigs(JObject config, string docsetPath)
-        {
-            var result = new JObject();
-            var errors = new List<Error>();
-            var extends = config[Extend] is JArray arr ? arr : new JArray(config[Extend]);
-
-            foreach (var extend in extends)
-            {
-                if (extend is JValue value && value.Value is string str)
-                {
-                    var content = RestoreFileMap.GetRestoredFileContent(
-                        docsetPath, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)), fallbackDocset: null);
-                    var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
-                    errors.AddRange(extendErrors);
-                    JsonUtility.Merge(result, extendConfigObject);
-                }
             }
 
             JsonUtility.Merge(result, config);

@@ -15,15 +15,17 @@ namespace Microsoft.Docs.Build
         public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
         {
             var repositoryProvider = new RepositoryProvider(docsetPath);
+            var input = new Input(docsetPath, repositoryProvider);
+            var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
+
             var repository = repositoryProvider.GetRepository(FileOrigin.Default);
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-
             var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
 
             using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
             {
                 repositoryProvider = repositoryProvider.WithRestoreMap(restoreGitMap);
-                var (errors, config) = GetBuildConfig(docsetPath, options, locale, repositoryProvider);
+                var (errors, config) = configLoader.Load(options, locale, extend: true);
 
                 errorLog.Configure(config);
 
@@ -188,33 +190,6 @@ namespace Microsoft.Docs.Build
             }
 
             return file.FilePath.Origin != FileOrigin.Fallback;
-        }
-
-        private static RestoreGitMap GetRestoreGitMap(
-            string docsetPath,
-            string locale,
-            CommandLineOptions commandLineOptions)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
-
-            var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
-
-            return RestoreGitMap.Create(docsetPath, config, locale);
-        }
-
-        private static (List<Error> errors, Config config) GetBuildConfig(
-            string docset,
-            CommandLineOptions options,
-            string locale,
-            RepositoryProvider repositoryProvider)
-        {
-            var fallbackRepo = repositoryProvider.GetRepository(FileOrigin.Fallback);
-            if (ConfigLoader.TryGetConfigPath(docset, out _) || fallbackRepo is null)
-            {
-                return ConfigLoader.Load(docset, options, locale);
-            }
-
-            return ConfigLoader.Load(fallbackRepo.Path, options, locale);
         }
 
         private static Dictionary<string, (Docset docset, bool inScope)> LoadDependencies(Docset docset, RepositoryProvider repositoryProvider)

@@ -56,25 +56,22 @@ namespace Microsoft.Docs.Build
             return filePath;
         }
 
-        public static string GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset)
+        public static string GetRestoredFileContent(Input input, SourceInfo<string> url)
         {
             var fromUrl = UrlUtility.IsHttp(url);
             if (!fromUrl)
             {
                 // directly return the relative path
-                var fullPath = Path.Combine(docsetPath, url);
-                if (File.Exists(fullPath))
+                var localFilePath = new FilePath(url, FileOrigin.Default);
+                if (input.Exists(localFilePath))
                 {
-                    return File.ReadAllText(fullPath);
+                    return input.ReadString(localFilePath);
                 }
 
-                if (!string.IsNullOrEmpty(fallbackDocset))
+                localFilePath = new FilePath(url, FileOrigin.Fallback);
+                if (input.Exists(localFilePath))
                 {
-                    fullPath = Path.Combine(fallbackDocset, url);
-                    if (File.Exists(fullPath))
-                    {
-                        return File.ReadAllText(fullPath);
-                    }
+                    return input.ReadString(localFilePath);
                 }
 
                 throw Errors.FileNotFound(url).ToException();
