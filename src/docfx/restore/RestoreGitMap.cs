@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class RestoreGitMap : IDisposable
     {
         private readonly string _docsetPath;
-        private readonly List<SharedAndExclusiveLock> _sharedLocks = new List<SharedAndExclusiveLock>();
+        private readonly List<InterProcessReaderWriterLock> _sharedLocks = new List<InterProcessReaderWriterLock>();
         private readonly DependencyLockProvider _dependencyLockProvider;
 
         private RestoreGitMap(DependencyLockProvider dependencyLockProvider, string docsetPath)
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (url, _, _) in _dependencyLockProvider.ListAll())
             {
-                var sharedLock = new SharedAndExclusiveLock(url, shared: true);
+                var sharedLock = InterProcessReaderWriterLock.CreateReaderLock(url);
                 _sharedLocks.Add(sharedLock);
             }
         }
