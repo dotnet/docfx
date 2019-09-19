@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 // resolve monikers
-                newItem.Monikers = GetMonikers(context, rootPath, newItem, errors);
+                newItem.Monikers = GetMonikers(context, newItem, errors);
                 newItems.Add(newItem);
 
                 // validate
@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
             return (errors, newItems);
         }
 
-        private static List<string> GetMonikers(Context context, Document rootPath, TableOfContentsItem currentItem, List<Error> errors)
+        private static List<string> GetMonikers(Context context, TableOfContentsItem currentItem, List<Error> errors)
         {
             var monikers = new List<string>();
             if (!string.IsNullOrEmpty(currentItem.Href))
