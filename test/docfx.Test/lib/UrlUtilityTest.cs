@@ -28,12 +28,13 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("", "", "", "")]
-        [InlineData("", "b", "c", "")]
-        [InlineData("a", "b=1", "c", "a?b=1#c")]
+        [InlineData("", "?b", "#c", "?b#c")]
+        [InlineData("a", "?b=1", "#c", "a?b=1#c")]
         [InlineData("a", "", null, "a")]
-        [InlineData("a?b=1#c", "b=2", "c1", "a?b=2#c1")]
-        [InlineData("a?b=1#c", "b1=1", "", "a?b=1&b1=1#c")]
-        [InlineData("a?b=1#c", "", "c1", "a?b=1#c1")]
+        [InlineData("a?b=1#c", "?b=2", "#c1", "a?b=2#c1")]
+        [InlineData("a?b=1#c", "?b1=1", "", "a?b=1&b1=1#c")]
+        [InlineData("a?b=1#c", "", "#c1", "a?b=1#c1")]
+        [InlineData("", "?", "#c1", "?#c1")]
         public static void MergeUrl(string url, string query, string fragment, string expected)
         {
             var result = UrlUtility.MergeUrl(url, query, fragment);

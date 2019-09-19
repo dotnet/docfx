@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         /// <summary>
-        /// Gets the file path relative to the main docset.
+        /// Gets the file path relative to the main docset/dependency docset/template.
         /// </summary>
         public string Path { get; }
 
