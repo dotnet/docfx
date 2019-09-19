@@ -12,9 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class ContentValidationExtension
     {
-        private static ImmutableArray<IMarkdownObjectValidator> _validators;
-        private static object locker = new object();
-
         public static MarkdownPipelineBuilder UseContentValidation(this MarkdownPipelineBuilder builder, MarkdownContext markdownContext, Func<string> getMarkdownValidationRulesPath)
         {
             return builder.Use(document =>
@@ -24,21 +21,11 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
-                if (_validators.IsDefaultOrEmpty)
-                {
-                    lock (locker)
-                    {
-                        if (_validators.IsDefaultOrEmpty)
-                        {
-                            var validatorProvider = new OnlineServiceMarkdownValidatorProvider(
-                                new ContentValidationContext(getMarkdownValidationRulesPath()),
-                                new ContentValidationLogger(markdownContext));
-                            _validators = validatorProvider.GetValidators();
-                        }
-                    }
-                }
+                var validatorProvider = new OnlineServiceMarkdownValidatorProvider(
+                    new ContentValidationContext(getMarkdownValidationRulesPath()),
+                    new ContentValidationLogger(markdownContext));
 
-                foreach (var validator in _validators)
+                foreach (var validator in validatorProvider.GetValidators())
                 {
                     validator.Validate(document);
                 }
