@@ -17,6 +17,9 @@ repos:
         ms.author: yufeih
         ---
         [d](d.png)
+        ```azurepowershell-interactive
+          New-AzResourceGroup -Name myResourceGroup -Location westeurope
+        ```
       d.png:
       TOC.md: |
         # [c](c.md)
@@ -53,7 +56,12 @@ outputs:
     { "locale": "en-us", "redirect_url": "/b" }
   c.raw.page.json: |
     {
-      "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
+      "content": "<p>
+                    <a href=\"d.png\" data-linktype=\"relative-path\">d</a>
+                  </p>
+                  <pre>
+                    <code class=\"lang-azurepowershell\" data-interactive=\"azurepowershell\">  New-AzResourceGroup -Name myResourceGroup -Location westeurope\n</code>
+                  </pre>",
       "rawMetadata": {
         "ms.author": "yufeih",
         "robots": undefined,
@@ -77,7 +85,8 @@ outputs:
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
         <meta name=\"site_name\" content=\"Docs\" />
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
-        <meta name=\"wordCount\" content=\"1\" />"
+        <meta name=\"wordCount\" content=\"6\" />
+        <meta name=\"interactive_type\" content=\"azurepowershell\" />"
     }
   c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
