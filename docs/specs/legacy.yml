@@ -20,6 +20,12 @@ repos:
         ```azurepowershell-interactive
           New-AzResourceGroup -Name myResourceGroup -Location westeurope
         ```
+        ```azuresql-interactive
+          New-AzResourceGroup -Name myResourceGroup -Location westeurope
+        ```
+        ```azurepowershell-interactive
+          New-AzResourceGroup -Name myResourceGroup -Location westeurope
+        ```
       d.png:
       TOC.md: |
         # [c](c.md)
@@ -61,6 +67,12 @@ outputs:
                   </p>
                   <pre>
                     <code class=\"lang-azurepowershell\" data-interactive=\"azurepowershell\">  New-AzResourceGroup -Name myResourceGroup -Location westeurope\n</code>
+                  </pre>
+                  <pre>
+                    <code class=\"lang-azuresql\" data-interactive=\"azuresql\">  New-AzResourceGroup -Name myResourceGroup -Location westeurope\n</code>
+                  </pre>
+                  <pre>
+                    <code class=\"lang-azurepowershell\" data-interactive=\"azurepowershell\">  New-AzResourceGroup -Name myResourceGroup -Location westeurope\n</code>
                   </pre>",
       "rawMetadata": {
         "ms.author": "yufeih",
@@ -85,8 +97,8 @@ outputs:
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
         <meta name=\"site_name\" content=\"Docs\" />
         <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
-        <meta name=\"wordCount\" content=\"6\" />
-        <meta name=\"interactive_type\" content=\"azurepowershell\" />"
+        <meta name=\"wordCount\" content=\"16\" />
+        <meta name=\"interactive_type\" content=\"azurepowershell,azuresql\" />"
     }
   c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
