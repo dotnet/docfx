@@ -498,16 +498,17 @@ In current docfx v3, Toc file is build at the same time with `page` files, becau
 
 When build the toc file(including the toc file included in another), we have to cover:
 
-1. *Monikers* of every node in toc(We don't support setting monikers of node in toc file).
-    1. If the node is a text node(`## Header`), the *monikers* of this node is the union of its children's monikers.
-    2. If the node is a relative link node(`## [Header](a.md)`), the *monikers* of this node is the union of its children's monikers and the monikers of this node.
-    3. If the node is a absolute link node(`## [Header](/a)` or `## [Header](http://test)`), the *monikers* of this node is the monikers of this toc file, which means this node will always be displayed.
-    4. If the node is a relative folder node(`## [Header](a/)`), the *monikers* of this node is the monikers of the union of:
-        1. Its children's monikers
-        2. The monikers of the document chosen as the resolved result of the current node(specified by the topicHref or the first node of the toc file under folder `a/`).
-    5. If the node is a toc referenced node(`## [Header](a/toc.yml)`), the *monikers* of this node is the monikers of the union of:
-        1. The monikers of the document chosen as the resolved result of the current node(specified by the topicHref).
-        1. The union of the monikers of all the node imported by the referenced toc file.
+1. *Monikers* of every node in toc(We don't support setting monikers of node in toc file) should be the union of current node's monikers and the monikers of all children. The moniker of current node should be:
+    1. If the node is a text node(`## Header`), the *monikers* of current node is empty.
+    2. If the node is a relative link node(`## [Header](a.md)`) and the referenced node is a versioning page, the *monikers* of current node is the monikers of referenced page.
+    3. If the node is a relative link node(`## [Header](a.md)`) and the referenced node is a non-versioning page, the *monikers* of current node is null.
+    4. If the node is a absolute link node(`## [Header](/a)` or `## [Header](http://test)`), the *monikers* of this node is the monikers of current node is null.
+    5. If the node is a relative folder node(`## [Header](a/)`), the *monikers* of current node is the monikers of the monikers of the document chosen as the resolved result of the current node(specified by the topicHref or the first node of the toc file under folder `a/`).
+    6. If the node is a toc referenced node(`## [Header](a/toc.yml)`), the *monikers* of current node is the monikers of the document chosen as the resolved result of the current node(specified by the topicHref).
+> **Notes**
+> 1. When the monikers of toc node is null, this node will always display.
+> 2. When calculating the union of nodes' monikers, once there is a child whose monikers is null, the union result is null.
+
 1. *Monikers* of toc file - Intersection of the monikerRange setting in the config and file metadata(If the intersection is empty, a warning will be logged).
 
 > For now, if the monikers of the node is out of the moniker Range of this toc, we do not report warning.

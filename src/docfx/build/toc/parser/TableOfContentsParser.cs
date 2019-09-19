@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -148,8 +149,6 @@ namespace Microsoft.Docs.Build
                     Name = tocModelItem.Name.Or(resolvedTopicName),
                     Document = document ?? subChildrenFirstItem?.Document,
                     Items = subChildren?.Items ?? tocModelItem.Items,
-                    Monikers = string.IsNullOrEmpty(resolvedTocHref) && string.IsNullOrEmpty(resolvedTopicHref)
-                        ? subChildrenFirstItem?.Monikers ?? new List<string>() : new List<string>(),
                 };
 
                 // resolve children
@@ -179,19 +178,12 @@ namespace Microsoft.Docs.Build
         private static List<string> GetMonikers(Context context, Document rootPath, TableOfContentsItem currentItem, List<Error> errors)
         {
             var monikers = new List<string>();
-            if (currentItem.Monikers.Any())
-            {
-                monikers = currentItem.Monikers;
-            }
-            else if (!string.IsNullOrEmpty(currentItem.Href))
+            if (!string.IsNullOrEmpty(currentItem.Href))
             {
                 var linkType = UrlUtility.GetLinkType(currentItem.Href);
                 if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
                 {
-                    var (error, rootFileMonikers) = context.MonikerProvider.GetFileLevelMonikers(rootPath);
-                    errors.AddIfNotNull(error);
-
-                    monikers = rootFileMonikers;
+                    return new List<string>();
                 }
                 else
                 {
@@ -200,14 +192,27 @@ namespace Microsoft.Docs.Build
                         var (error, referenceFileMonikers) = context.MonikerProvider.GetFileLevelMonikers(currentItem.Document);
                         errors.AddIfNotNull(error);
 
+                        if (referenceFileMonikers.Count == 0)
+                        {
+                            return new List<string>();
+                        }
                         monikers = referenceFileMonikers;
                     }
                 }
             }
 
             // Union with children's monikers
-            var childrenMonikers = currentItem.Items?.SelectMany(c => c.Monikers) ?? new List<string>();
-            monikers = childrenMonikers.Union(monikers).Distinct().ToList();
+            if (currentItem.Items?.Count > 0)
+            {
+                foreach (var item in currentItem.Items)
+                {
+                    if (item.Monikers?.Count == 0)
+                    {
+                        return new List<string>();
+                    }
+                    monikers = monikers.Union(item.Monikers).Distinct().ToList();
+                }
+            }
             monikers.Sort(context.MonikerProvider.Comparer);
             return monikers;
         }
