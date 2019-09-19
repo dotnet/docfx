@@ -19,6 +19,11 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
+                if (string.IsNullOrEmpty(getMarkdownValidationRulesPath()))
+                {
+                    return;
+                }
+
                 if (_validators.IsDefaultOrEmpty)
                 {
                     lock (locker)
