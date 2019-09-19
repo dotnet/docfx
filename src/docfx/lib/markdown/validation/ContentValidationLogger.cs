@@ -18,22 +18,34 @@ namespace Microsoft.Docs.Build
 
         public void LogInfo(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
         {
-            _markdownContext.LogInfo(code, message, origin, line);
+            if (!string.IsNullOrEmpty(code))
+            {
+                _markdownContext.LogInfo(code, message, origin, line);
+            }
         }
 
         public void LogSuggestion(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
         {
-            _markdownContext.LogSuggestion(code, message, origin, line);
+            if (!string.IsNullOrEmpty(code))
+            {
+                _markdownContext.LogSuggestion(code, message, origin, line);
+            }
         }
 
         public void LogWarning(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
         {
-            _markdownContext.LogWarning(code, message, origin, line);
+            if (!string.IsNullOrEmpty(code))
+            {
+                _markdownContext.LogWarning(code, message, origin, line);
+            }
         }
 
         public void LogError(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
         {
-            _markdownContext.LogError(code, message, origin, line);
+            if (!string.IsNullOrEmpty(code))
+            {
+                _markdownContext.LogError(code, message, origin, line);
+            }
         }
     }
 }
