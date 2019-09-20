@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                     return (path, gitLock.Commit);
 
                 default:
-                    throw new NotSupportedException($"Unknown package url: '{packageUrl.Url}', type: {packageUrl.Type}");
+                    throw new NotSupportedException($"Unknown package url: '{packageUrl}'");
             }
         }
 
