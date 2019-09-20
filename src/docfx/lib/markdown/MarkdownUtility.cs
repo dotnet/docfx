@@ -100,6 +100,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(markdownContext, GetMarkdownValidationRulesPath)
                 .Build();
         }
 
@@ -119,6 +120,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(markdownContext, GetMarkdownValidationRulesPath)
                 .UseInlineOnly()
                 .Build();
         }
@@ -143,6 +145,17 @@ namespace Microsoft.Docs.Build
             return builder.Build();
         }
 
+        private static string GetMarkdownValidationRulesPath()
+        {
+            var path = t_status.Value.Peek().Context.Config.MarkdownValidationRules;
+            if (string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
+
+            return t_status.Value.Peek().Context.RestoreFileMap.GetRestoredFilePath(t_status.Value.Peek().Context.Config.MarkdownValidationRules);
+        }
+
         private static string GetToken(string key)
         {
             return t_status.Value.Peek().Context.TemplateEngine.GetToken(key);
@@ -150,7 +163,7 @@ namespace Microsoft.Docs.Build
 
         private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
         {
-            Log.Write($"{code} {message}");
+            Log.Write($"{code}: {message}");
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
