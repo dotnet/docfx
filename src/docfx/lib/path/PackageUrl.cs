@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             else
             {
                 Type = PackageType.Folder;
-                Path = Url;
+                Path = Path ?? Url;
             }
         }
     }

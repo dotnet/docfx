@@ -605,3 +605,42 @@ repos:
 outputs:
   crr/b.json: |
     {"conceptual": "<p>used</p>"}
+---
+# [skip] dependencyPackageUrl can use relative path by setting path or url
+# path has higher priority than url
+# todo: un-skip after handle dependency is relative folder case
+inputs:
+  docfx.yml: |
+    files:
+    - crr1/**/*.md
+    - crr2/**/*.md
+    dependencies:
+      crr1:
+        path: crr-by-path
+        includeInBuild: true
+      crr2:
+        url: crr-priority-url
+        path: crr-priority-path
+        includeInBuild: true
+  crr-by-path/crr-by-path.md:
+  crr-priority-url/crr-priority-url.md:
+  crr-priority-path/crr-priority-path.md:
+outputs:
+  crr1/crr-by-path.json:
+  crr2/crr-priority-path.json:
+---
+# dependencyPackageUrl's path using git url won't restore the git repo
+repos:
+  https://docs.com/crr-url-using-path/1:
+  - files:
+      docfx.yml: |
+        dependencies:
+          crr:
+            path: https://docs.com/crr-url-using-path/2
+            includeInBuild: true
+  https://docs.com/crr-url-using-path/2:
+  - files:
+      b.md:
+outputs:
+  .errors.log: |
+    ["error","need-restore","Cannot find dependency 'https://docs.com/crr-url-using-path/2', did you forget to run `docfx restore`?"]
