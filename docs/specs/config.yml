@@ -595,7 +595,7 @@ repos:
             crr:
               url: https://docs.com/branch-priority/2#master
               branch: unused
-              buildFiles: true
+              includeInBuild: true
   https://docs.com/branch-priority/2#master:
     - files:
         b.md: used

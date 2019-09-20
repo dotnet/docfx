@@ -590,7 +590,7 @@ repos:
             crrb:
               url: https://github.com/testowner/crr-content
               branch: master
-              buildFiles: true
+              includeInBuild: true
         docs/a.md:
   https://github.com/testowner/crr-content:
     - author: Charlie

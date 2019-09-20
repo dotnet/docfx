@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     return $"{Url}#{Branch}";
 
                 default:
-                    return Type.ToString();
+                    return $"{Url}, (type: {Type.ToString()})";
             }
         }
 

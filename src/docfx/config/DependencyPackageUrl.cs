@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Indicate the dependency repository may be added to <see cref="BuildScope"/> and treated as inScope.
         /// </summary>
-        public bool BuildFiles { get; set; }
+        public bool IncludeInBuild { get; set; }
 
         public DependencyPackageUrl()
             : base()
