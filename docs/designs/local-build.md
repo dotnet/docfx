@@ -24,6 +24,10 @@ The initial MVP project can be a command line tool that satisfies the above requ
 - Open vscode integrated terminal
 - Run `docfx build` to build all files
 - Run `docfx build --changed` to build only changed files
+  > Due to techinical limitations, we currently does not have a way to reliably detect potential impact of a change.
+  > When you run `docfx build --changed`, we can only build changed content files (markdowns, TOCs, schema documents files),
+  > changing a token or config does not trigger build, in this case use `docfx build` instead.
+
 - If authentication is required, users are guided to sign in using the standard [Azure AD device login flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-device-code).
   > The command line pauses and shows: _To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code XXXX to authenticate._
 - Errors, warnings, suggestions will show up in command line output with `ctrl` clickable links to source location
@@ -95,7 +99,8 @@ For local build, `docfx` needs to recognize these config files by embedding conf
 
 #### Config Service
 
-Some config values are protected resources, they __MUST__ be gated behind an authenticated service. `docs build service` exposes serveral endpoints to retrieve these protected resources:
+Some config values are protected resources, they __MUST__ be gated behind an authenticated service. `docs build service` exposes a `/config/docfx` endpoint to retrieve these protected resources:
+
 
 url | url query parameters | allow public access | remarks
 ----|----|---|---
