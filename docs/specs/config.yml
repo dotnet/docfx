@@ -585,3 +585,23 @@ outputs:
     }
   docs/path1.json: |
     {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5",}
+---
+# dependencyPackageUrl's branch defined in url has higher priority
+repos:
+  https://docs.com/branch-priority/1:
+    - files:
+        docfx.yml: |
+          dependencies:
+            crr:
+              url: https://docs.com/branch-priority/2#master
+              branch: unused
+              buildFiles: true
+  https://docs.com/branch-priority/2#master:
+    - files:
+        b.md: used
+  https://docs.com/branch-priority/2#unused:
+    - files:
+        c.md: unused
+outputs:
+  crr/b.json: |
+    {"conceptual": "<p>used</p>"}

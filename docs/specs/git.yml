@@ -588,7 +588,6 @@ repos:
             - "crrb/**/*"
           dependencies:
             crrb:
-              type: git
               url: https://github.com/testowner/crr-content
               branch: master
               buildFiles: true

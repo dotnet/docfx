@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -17,6 +17,9 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(ShortHandConverter))]
     internal class PackageUrl
     {
+        private static StreamingContext s_streamingContext = default;
+
+        [JsonIgnore]
         public PackageType Type { get; set; }
 
         public string Path { get; set; }
@@ -31,16 +34,8 @@ namespace Microsoft.Docs.Build
 
         public PackageUrl(string url)
         {
-            if (UrlUtility.IsHttp(url))
-            {
-                Type = PackageType.Git;
-                (Url, Branch) = SplitGitUrl(url);
-            }
-            else
-            {
-                Type = PackageType.Folder;
-                Path = url;
-            }
+            Url = url;
+            OnDeserialized(s_streamingContext);
         }
 
         public PackageUrl(string remote, string branch)
@@ -77,9 +72,25 @@ namespace Microsoft.Docs.Build
 
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
-            var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
-            return (path, refspec);
+            return (path, hasRefSpec ? fragment.Substring(1) : default);
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (UrlUtility.IsHttp(Url))
+            {
+                Type = PackageType.Git;
+                var (url, branch) = SplitGitUrl(Url);
+                Url = url;
+                Branch = branch ?? Branch;
+            }
+            else
+            {
+                Type = PackageType.Folder;
+                Path = Url;
+            }
         }
     }
 }
