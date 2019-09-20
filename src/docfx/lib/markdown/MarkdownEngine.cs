@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
+        private readonly string _markdownValidationRules;
 
         private readonly MarkdownContext _markdownContext;
         private readonly MarkdownPipeline[] _pipelines;
@@ -29,7 +30,12 @@ namespace Microsoft.Docs.Build
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
         public MarkdownEngine(
-            DependencyResolver dependencyResolver, XrefResolver xrefResolver, MonikerProvider monikerProvider, TemplateEngine templateEngine)
+            Config config,
+            RestoreFileMap restoreFileMap,
+            DependencyResolver dependencyResolver,
+            XrefResolver xrefResolver,
+            MonikerProvider monikerProvider,
+            TemplateEngine templateEngine)
         {
             _dependencyResolver = dependencyResolver;
             _xrefResolver = xrefResolver;
@@ -37,6 +43,11 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
+            _markdownValidationRules = config.MarkdownValidationRules;
+            if (!string.IsNullOrEmpty(_markdownValidationRules))
+            {
+                _markdownValidationRules = restoreFileMap.GetRestoredFilePath(config.MarkdownValidationRules);
+            }
 
             _pipelines = new[]
             {
@@ -106,6 +117,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(_markdownContext, _markdownValidationRules)
                 .Build();
         }
 
@@ -117,6 +129,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(_markdownContext, _markdownValidationRules)
                 .UseInlineOnly()
                 .Build();
         }
@@ -148,7 +161,7 @@ namespace Microsoft.Docs.Build
 
         private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
         {
-            Log.Write($"{code} {message}");
+            Log.Write($"{code}: {message}");
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
