@@ -99,12 +99,9 @@ namespace Microsoft.Docs.Build
             }
 
             // ignore bookmark reference for FileLinkMap
-            if (!isSelfBookmark
-                && UrlUtility.FragmentToDependencyType(fragment) != DependencyType.Bookmark
-                && !string.IsNullOrEmpty(link)
-                && file != null)
+            if (!isSelfBookmark && !string.IsNullOrEmpty(link))
             {
-                _fileLinkMapBuilder.AddFileLink(path, referencingFile, link);
+                _fileLinkMapBuilder.AddFileLink(referencingFile, link);
             }
 
             return (error, link, file);

@@ -17,16 +17,15 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
         }
 
-        public void AddFileLink(string sourceUrl, Document file, string targetUrl)
+        public void AddFileLink(Document file, string targetUrl)
         {
-            Debug.Assert(sourceUrl != null);
             Debug.Assert(file != null);
             Debug.Assert(targetUrl != null);
 
             var (_, monikers) = _monikerProvider.GetFileLevelMonikers(file);
             _links.Add(new FileLinkItem()
             {
-                SourceUrl = sourceUrl,
+                SourceUrl = file.SiteUrl,
                 SourceMonikerGroup = MonikerUtility.GetGroup(monikers),
                 TargetUrl = targetUrl,
             });

@@ -1429,9 +1429,14 @@ inputs:
     Link to @a
     Link to [some text](../v2/c.md)
     Link to [not existed](c.md)
+    Link to [absolute link](/docs/c)
+    Link to [relative link with bookmark](../v2/d.md#title-1)
+    Link to [absolute link with bookmark](/docs/d.md#title-1)
   docs/v2/c.md: |
     some text
-  docs/toc.yml: |
+  docs/v2/d.md: |
+    # title 1
+  docs/TOC.yml: |
     - name: Toc Reference
       href: v1/b.md
     - name: Non-existed Toc reference
@@ -1446,33 +1451,22 @@ inputs:
       ]
     }
 outputs:
-  9d4e15fd/docs/b.json: |
-    {
-      "conceptual": "<p>
-                      Link to <a href=\"a\" data-linktype=\"relative-path\">netcore</a>
-                      Link to <a href=\"c\" data-linktype=\"relative-path\">some text</a>
-                      Link to <a href=\"c.md\" data-linktype=\"relative-path\">not existed</a>
-                     </p>",
-      "monikers": ["netcore-1.0","netcore-1.1"]
-    }
-  218c13d0/docs/a.json: |
-    {
-      "conceptual": "<p>Moniker: netcore-1.1</p>",
-      "monikers": ["netcore-1.1"]
-    }
-  23d205a5/docs/c.json: |
-    {
-      "conceptual": "<p>some text</p>",
-      "monikers": ["netcore-2.0","netcore-2.1"]
-    }
+  9d4e15fd/docs/b.json:
+  218c13d0/docs/a.json:
+  23d205a5/docs/c.json:
   .links.json: |
     {
       "links":[
-        {"source_url":"v1/b.md","target_url":"/docs/b"},
-        {"source_url":"../v2/c.md","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
-        {"source_url":"a","source_moniker_group":"9d4e15fd","target_url":"/docs/a"},
+        {"source_url":"/docs/toc.json","target_url":"/docs/b"},
+        {"source_url":"/docs/toc.json","target_url":"b.md"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a"},
       ]
     }
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'c.md'.","docs/v1/b.md",3,9]
-    ["warning","file-not-found","Invalid file link: 'b.md'.","docs/toc.yml",4,9]
+    ["warning","file-not-found","Invalid file link: 'b.md'.","docs/TOC.yml",4,9]

@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(resolvedHref))
             {
-                _fileLinkMapBuilder.AddFileLink(uid, referencingFile, resolvedHref);
+                _fileLinkMapBuilder.AddFileLink(referencingFile, resolvedHref);
             }
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
