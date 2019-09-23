@@ -96,22 +96,23 @@ namespace Microsoft.Docs.Build
                             return (templatePath, null);
                         }
 
-                        return (templatePath, Repository.Create(templatePath, _config.Template.Branch, _config.Template.Url, templateCommit));
+                        return (templatePath, Repository.Create(templatePath, theme.Branch, theme.Url, templateCommit));
                     })).Value;
 
                 case FileOrigin.Dependency when _config != null && _restoreGitMap != null && dependencyName != null:
                     return _repositories.GetOrAdd(origin.ToString() + dependencyName, _ =>
                     new Lazy<(string docset, Repository repository)>(() =>
                     {
-                        var (dependencyPath, dependencyCommit) = _restoreGitMap.GetRestoreGitPath(_config.Dependencies[dependencyName], bare: true);
+                        var dependency = _config.Dependencies[dependencyName];
+                        var (dependencyPath, dependencyCommit) = _restoreGitMap.GetRestoreGitPath(dependency, bare: true);
 
-                        if (_config.Dependencies[dependencyName].Type != PackageType.Git)
+                        if (dependency.Type != PackageType.Git)
                         {
                             // point to a folder
                             return (dependencyPath, null);
                         }
 
-                        return (dependencyPath, Repository.Create(dependencyPath, _config.Template.Branch, _config.Template.Url, dependencyCommit));
+                        return (dependencyPath, Repository.Create(dependencyPath, dependency.Branch, dependency.Url, dependencyCommit));
                     })).Value;
             }
 
