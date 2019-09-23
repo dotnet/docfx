@@ -7,11 +7,11 @@
 <div class="inheritance">
   <h5>{{__global.inheritance}}</h5>
 {{/inheritance.0}}
-{{#inheritance}}
-    <div class="level{{index}}">{{{specName.0.value}}}</div>
-{{/inheritance}}
+{{#inheritance.0.value}}
+    {{>partials/uref/inheritance}}
+{{/inheritance.0.value}}
 {{#inheritance.0}}
-    <div class="level{{item.level}}"><span class="xref">{{item.name.0.value}}</span></div>
+    <div class="level{{level}}"><span class="xref">{{name.0.value}}</span></div>
 </div>
 {{/inheritance.0}}
 {{#inheritedMembers.0}}
@@ -31,6 +31,12 @@
 {{#inheritedMembers.0}}
 </div>
 {{/inheritedMembers.0}}
+{{#namespace.0}}
+<h6><strong>{{__global.namespace}}</strong>: {{{value.specName.0.value}}}</h6>
+{{/namespace.0}}
+{{#package.0}}
+<h6><strong>{{__global.package}}</strong>: {{{value.specName.0.value}}}</h6>
+{{/package.0}}
 {{#remarks}}
 <h5 id="{{id}}_remarks"><strong>{{__global.remarks}}</strong></h5>
 <div class="markdown level0 remarks">{{{remarks}}}</div>
