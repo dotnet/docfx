@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
             using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
             {
-                // load configuration from current docset and falback docset
+                // load configuration from current docset and fallback docset
                 var input = new Input(docsetPath, repositoryProvider);
                 var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 

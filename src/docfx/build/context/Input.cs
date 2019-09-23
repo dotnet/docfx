@@ -44,16 +44,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Get the absolute path of current root
-        /// </summary>
-        public string GetRootPath(FileOrigin origin, string dependencyName = null)
-        {
-            var (basePath, _, _) = ResolveFilePath(dependencyName != null ? new FilePath("", dependencyName) : new FilePath("", origin));
-
-            return basePath;
-        }
-
-        /// <summary>
         /// Try get the absolute path of the specified file if it exists physically on disk.
         /// Some file path like content from a bare git repo does not exist physically
         /// on disk but we can still read its content.
