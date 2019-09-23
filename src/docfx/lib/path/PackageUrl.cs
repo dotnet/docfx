@@ -17,8 +17,6 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(ShortHandConverter))]
     internal class PackageUrl
     {
-        private static StreamingContext s_streamingContext = default;
-
         [JsonIgnore]
         public PackageType Type { get; set; }
 
@@ -35,7 +33,7 @@ namespace Microsoft.Docs.Build
         public PackageUrl(string url)
         {
             Url = url;
-            OnDeserialized(s_streamingContext);
+            OnDeserialized(default);
         }
 
         public PackageUrl(string remote, string branch)
