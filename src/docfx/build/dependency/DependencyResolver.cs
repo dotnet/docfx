@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
@@ -24,6 +25,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Docset> _dependencies;
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
+        private readonly FileLinkMapBuilder _fileLinkMapBuilder;
 
         public DependencyResolver(
             Docset docset,
@@ -36,7 +38,8 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
             XrefResolver xrefResolver,
-            TemplateEngine templateEngine)
+            TemplateEngine templateEngine,
+            FileLinkMapBuilder fileLinkMapBuilder)
         {
             _input = input;
             _docset = docset;
@@ -50,6 +53,7 @@ namespace Microsoft.Docs.Build
             _resolveAlias = LoadResolveAlias(docset.Config);
             _dependencies = dependencies;
             _templateEngine = templateEngine;
+            _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
         public (Error error, string content, Document file) ResolveContent(
@@ -92,6 +96,15 @@ namespace Microsoft.Docs.Build
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(
                     referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
+            }
+
+            // ignore bookmark reference for FileLinkMap
+            if (!isSelfBookmark
+                && UrlUtility.FragmentToDependencyType(fragment) != DependencyType.Bookmark
+                && !string.IsNullOrEmpty(link)
+                && file != null)
+            {
+                _fileLinkMapBuilder.AddFileLink(path, referencingFile, link);
             }
 
             return (error, link, file);
