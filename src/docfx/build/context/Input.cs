@@ -118,32 +118,46 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Default:
-                    return Directory
-                        .GetFiles(_docsetPath, "*", SearchOption.AllDirectories)
-                        .Select(path => new FilePath(
-                            Path.GetRelativePath(_docsetPath, path).Replace('\\', '/'), FileOrigin.Default))
-                        .ToArray();
+                    return ListFilesRecursive(_docsetPath, null);
 
                 case FileOrigin.Fallback:
-                    var fallbackRepository = _repositoryProvider.GetRepository(origin);
+                    var (fallbackEntry, fallbackRepository) = _repositoryProvider.GetRepositoryWithEntry(origin);
 
-                    return Directory
-                        .GetFiles(fallbackRepository.Path, "*", SearchOption.AllDirectories)
-                        .Select(path => new FilePath(
-                            Path.GetRelativePath(fallbackRepository.Path, path).Replace('\\', '/'), FileOrigin.Fallback))
-                        .ToArray();
+                    return ListFilesRecursive(fallbackEntry, null);
 
                 case FileOrigin.Dependency:
-                    var dependencyRepository = _repositoryProvider.GetRepository(origin, dependencyName);
+                    var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithEntry(origin, dependencyName);
 
-                    // todo: get tree list from repository
-                    return GitUtility.ListTree(dependencyRepository.Path, dependencyRepository.Commit)
-                        .Select(path => new FilePath(
-                            path.Replace('\\', '/'), dependencyName))
-                        .ToArray();
+                    return ListFilesRecursive(dependencyEntry, dependencyRepository);
 
                 default:
                     throw new NotSupportedException($"{nameof(ListFilesRecursive)}: {origin}");
+            }
+
+            FilePath[] ListFilesRecursive(string entry, Repository repository)
+            {
+                if (repository != null)
+                {
+                    // todo: get tree list from repository
+                    return GitUtility.ListTree(repository.Path, repository.Commit)
+                        .Select(path => CreateFilePath(path.Replace('\\', '/')))
+                        .ToArray();
+                }
+
+                if (!Directory.Exists(entry))
+                {
+                    return Array.Empty<FilePath>();
+                }
+
+                return Directory
+                .GetFiles(entry, "*", SearchOption.AllDirectories)
+                    .Select(path => CreateFilePath(Path.GetRelativePath(entry, path).Replace('\\', '/')))
+                    .ToArray();
+            }
+
+            FilePath CreateFilePath(string path)
+            {
+                return dependencyName is null ? new FilePath(path, origin) : new FilePath(path, dependencyName);
             }
         }
 
@@ -155,16 +169,16 @@ namespace Microsoft.Docs.Build
                     return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
-                    var dependencyRepository = _repositoryProvider.GetRepository(file.Origin, file.DependencyName);
-                    return (dependencyRepository.Path, file.Path, file.Commit ?? dependencyRepository.Commit);
+                    var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithEntry(file.Origin, file.DependencyName);
+                    return (dependencyEntry, file.Path, file.Commit ?? dependencyRepository?.Commit);
 
                 case FileOrigin.Fallback:
-                    var fallbackRepository = _repositoryProvider.GetRepository(file.Origin);
-                    return (fallbackRepository.Path, file.Path, file.Commit);
+                    var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithEntry(file.Origin);
+                    return (fallbackEntry, file.Path, file.Commit);
 
                 case FileOrigin.Template:
-                    var templateRepository = _repositoryProvider.GetRepository(FileOrigin.Template);
-                    return (templateRepository.Path, file.Path, file.Commit);
+                    var (templateEntry, _) = _repositoryProvider.GetRepositoryWithEntry(FileOrigin.Template);
+                    return (templateEntry, file.Path, file.Commit);
 
                 default:
                     return default;

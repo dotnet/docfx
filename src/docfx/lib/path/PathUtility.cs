@@ -59,20 +59,18 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Finds a yaml or json file under the specified location
         /// </summary>
-        public static FilePath FindYamlOrJson(Input input, FileOrigin origin, string pathWithoutExtension)
+        public static string FindYamlOrJson(string pathWithoutExtension)
         {
             var fullPath = NormalizeFile(pathWithoutExtension + ".yml");
-            var filePath = new FilePath(fullPath, origin);
-            if (input.Exists(filePath))
+            if (File.Exists(fullPath))
             {
-                return filePath;
+                return fullPath;
             }
 
             fullPath = NormalizeFile(pathWithoutExtension + ".json");
-            filePath = new FilePath(fullPath, origin)
-            if (input.Exists(filePath))
+            if (File.Exists(fullPath))
             {
-                return filePath;
+                return fullPath;
             }
 
             return null;

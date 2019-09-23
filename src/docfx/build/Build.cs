@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,17 +13,19 @@ namespace Microsoft.Docs.Build
     {
         public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
         {
-            var repositoryProvider = new RepositoryProvider(docsetPath);
-            var input = new Input(docsetPath, repositoryProvider);
-            var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
-
+            // load and trace entry repository
+            var repositoryProvider = new RepositoryProvider(docsetPath, options);
             var repository = repositoryProvider.GetRepository(FileOrigin.Default);
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-            var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
+            var locale = LocalizationUtility.GetLocale(repository, options);
 
-            using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
+            using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
             {
-                repositoryProvider = repositoryProvider.WithRestoreMap(restoreGitMap);
+                // load configuration from current docset and falback docset
+                var input = new Input(docsetPath, repositoryProvider);
+                var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
+
+                repositoryProvider.ConfigRestoreMap(restoreGitMap);
                 var (errors, config) = configLoader.Load(options, locale, extend: true);
 
                 errorLog.Configure(config);
@@ -33,12 +34,18 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(errors))
                     return;
 
-                repositoryProvider = repositoryProvider.WithConfig(config);
+                // get docsets(build docset, fallback docset and dependency docsets)
+                repositoryProvider.Config(config);
                 var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider, restoreGitMap);
-                var outputPath = Path.Combine(docsetPath, docset.Config.Output.Path);
+                if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
+                {
+                    // entry docset is not the docset to build
+                    input = new Input(docset.DocsetPath, repositoryProvider);
+                }
                 var dependencyDocsets = LoadDependencies(docset, repositoryProvider);
 
-                await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, restoreGitMap);
+                // run build based on docsets
+                await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, Path.Combine(docsetPath, docset.Config.Output.Path), input, repositoryProvider);
             }
         }
 
@@ -67,6 +74,7 @@ namespace Microsoft.Docs.Build
                     out var localizationDocset,
                     out var localizationRepository))
                 {
+                    repositoryProvider.ConfigLocalizationRepo(localizationDocset, localizationRepository);
                     return (new Docset(
                         localizationDocset,
                         currentDocset.Locale,
@@ -86,9 +94,10 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             ErrorLog errorLog,
             string outputPath,
-            RestoreGitMap restoreGitMap)
+            Input input,
+            RepositoryProvider repositoryProvider)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, dependencyDocsets, restoreGitMap))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, dependencyDocsets, input, repositoryProvider))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -200,7 +209,10 @@ namespace Microsoft.Docs.Build
             foreach (var (name, dependency) in config.Dependencies)
             {
                 var repository = repositoryProvider.GetRepository(FileOrigin.Dependency, name);
-                result.TryAdd(name, (new Docset(repository.Path, docset.Locale, config, repository), dependency.BuildFiles));
+                if (repository != null)
+                {
+                    result.TryAdd(name, (new Docset(repository.Path, docset.Locale, config, repository), dependency.BuildFiles));
+                }
             }
 
             return result;

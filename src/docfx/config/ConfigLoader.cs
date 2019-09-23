@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -47,11 +46,11 @@ namespace Microsoft.Docs.Build
 
         public bool TryGetConfigPath(out FilePath configPath)
         {
-            configPath = PathUtility.FindYamlOrJson(_input, FileOrigin.Default, "docfx");
+            configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
 
             if (configPath == null)
             {
-                configPath = PathUtility.FindYamlOrJson(_input, FileOrigin.Fallback, "docfx");
+                configPath = _input.FindYamlOrJson(FileOrigin.Fallback, "docfx");
             }
 
             return configPath != null;

@@ -9,10 +9,11 @@ namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
+        private static readonly string s_docsetPath = Directory.GetCurrentDirectory();
+        private static readonly RepositoryProvider s_repositoryProvider = new RepositoryProvider(s_docsetPath, new CommandLineOptions());
+        private static readonly Input s_input = new Input(s_docsetPath, s_repositoryProvider);
         private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null);
-        private static readonly RestoreGitMap s_restoreGitMap = RestoreGitMap.Create(Directory.GetCurrentDirectory(), s_config, null);
         private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory(), "en-us", s_config, null);
-        private static readonly Input s_input = new Input(Directory.GetCurrentDirectory(), null, s_config, s_restoreGitMap);
 
         [Theory]
         // same level
@@ -49,7 +50,7 @@ namespace Microsoft.Docs.Build
         {
             // TODO: This test depend too much on the details of our implementation and it needs some refactoring.
             var builder = new TableOfContentsMapBuilder();
-            var templateEngine = TemplateEngine.Create(s_docset, s_restoreGitMap);
+            var templateEngine = TemplateEngine.Create(s_docset, s_repositoryProvider);
             var document = Document.Create(s_docset, new FilePath(file), s_input, templateEngine);
 
             // test multiple reference case
