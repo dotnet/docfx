@@ -26,24 +26,23 @@ namespace Microsoft.Docs.Build
         public readonly BookmarkValidator BookmarkValidator;
         public readonly DependencyMapBuilder DependencyMapBuilder;
         public readonly DependencyResolver DependencyResolver;
+        public readonly XrefResolver XrefResolver;
         public readonly GitHubUserCache GitHubUserCache;
         public readonly MicrosoftGraphCache MicrosoftGraphCache;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
+        public readonly MarkdownEngine MarkdownEngine;
         public readonly TemplateEngine TemplateEngine;
-
-        public XrefResolver XrefResolver => _xrefResolver.Value;
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
-        private readonly Lazy<XrefResolver> _xrefResolver;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, RestoreGitMap restoreGitMap)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
             DependencyMapBuilder = new DependencyMapBuilder();
-            _xrefResolver = new Lazy<XrefResolver>(() => new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder));
+            XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder);
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>();
 
@@ -78,8 +77,10 @@ namespace Microsoft.Docs.Build
                 GitCommitProvider,
                 BookmarkValidator,
                 DependencyMapBuilder,
-                _xrefResolver,
+                XrefResolver,
                 TemplateEngine);
+
+            MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
         }
 
         public void Dispose()
