@@ -208,10 +208,10 @@ namespace Microsoft.Docs.Build
 
             foreach (var (name, dependency) in config.Dependencies)
             {
-                var repository = repositoryProvider.GetRepository(FileOrigin.Dependency, name);
-                if (repository != null)
+                var (entry, repository) = repositoryProvider.GetRepositoryWithEntry(FileOrigin.Dependency, name);
+                if (!string.IsNullOrEmpty(entry))
                 {
-                    result.TryAdd(name, (new Docset(repository.Path, docset.Locale, config, repository), dependency.BuildFiles));
+                    result.TryAdd(name, (new Docset(entry, docset.Locale, config, repository), dependency.BuildFiles));
                 }
             }
 

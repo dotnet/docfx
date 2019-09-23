@@ -13,22 +13,29 @@ namespace Microsoft.Docs.Build
 
         private string _locale;
         private string _docset;
+        private string _fallbackDocset;
         private Repository _docsetRepository;
         private Repository _fallbackRepository;
         private RestoreGitMap _restoreGitMap;
         private Config _config;
 
         public RepositoryProvider(string docsetPath, CommandLineOptions options)
-            : this(null, Repository.Create(docsetPath), null, null, null)
         {
             _docset = docsetPath;
+            _docsetRepository = Repository.Create(docsetPath);
             _locale = LocalizationUtility.GetLocale(_docsetRepository, options);
+
+            _fallbackDocset = default;
+            _fallbackRepository = default;
+            _restoreGitMap = default;
+            _config = default;
         }
 
         public void ConfigFallbackRepository(Repository fallbackRepository)
         {
             Debug.Assert(_fallbackRepository is null);
 
+            _fallbackDocset = fallbackRepository.Path;
             _fallbackRepository = fallbackRepository;
         }
 
@@ -46,24 +53,17 @@ namespace Microsoft.Docs.Build
 
             _restoreGitMap = restoreGitMap;
             _fallbackRepository = GetFallbackRepository(_docsetRepository, restoreGitMap);
+            _fallbackDocset = _fallbackRepository?.Path;
         }
 
         public void ConfigLocalizationRepo(string localizationDocsetPath, Repository localizationRepository)
         {
             Debug.Assert(_fallbackRepository is null);
 
+            _fallbackDocset = _docset;
             _fallbackRepository = _docsetRepository;
             _docset = localizationDocsetPath;
             _docsetRepository = localizationRepository;
-        }
-
-        private RepositoryProvider(string locale, Repository docsetRepository, Repository fallbackRepository, RestoreGitMap restoreGitMap, Config config)
-        {
-            _locale = locale;
-            _docsetRepository = docsetRepository;
-            _fallbackRepository = fallbackRepository;
-            _restoreGitMap = restoreGitMap;
-            _config = config;
         }
 
         public Repository GetRepository(FileOrigin origin, string dependencyName = null)
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                     return (_docset, _docsetRepository);
 
                 case FileOrigin.Fallback:
-                    return (_fallbackRepository?.Path, _fallbackRepository);
+                    return (_fallbackDocset, _fallbackRepository);
 
                 case FileOrigin.Template when _config != null && _restoreGitMap != null:
                     return _repositories.GetOrAdd(origin.ToString(), _ =>
