@@ -45,6 +45,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public bool IsInteractive { get; set; }
 
+        public bool IsNotebookCode { get; set; }
+
         public void SetAttributeString()
         {
             var attributes = this.GetAttributes();

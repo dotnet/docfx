@@ -8,13 +8,13 @@ Step1. Setup DocFX
 Download *docfx* from http://dotnet.github.io/docfx/. [Getting Started with docfx](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-exe-directly) describes three ways to install *docfx*. This walkthrough uses the first one: Use *docfx.exe* directly.
 
 1. Download *docfx.zip* and unzip it to `D:\docfx\`
-2. Add `D:\docfx\` to `PATH` so that command `docfx` and be directly called from everywhere for convenience. (for example, for Windows, `set PATH=%PATH%;D:\docfx\`
+2. Add `D:\docfx\` to `PATH` so that the command `docfx` can be directly called from everywhere for convenience. (For example, for Windows, `set PATH=%PATH%;D:\docfx\`.)
 
 Step2. Init a DocFX project
 ---------------------------
 1. Create a new folder `D:\docfx_walkthrough`
 2. Start Command Line under `D:\docfx_walkthrough`
-3. Call `docfx init -q`. This command generates a `docfx_project` folder with the default `docfx.json` file under it. `docfx.json` is the configuration file `docfx` uses to generate documentation. `-q` option means generating the project quietly using default value, you can also try `docfx init` and follow the instructions to provide your own settings.
+3. Call `docfx init -q`. This command generates a `docfx_project` folder with the default `docfx.json` file under it. `docfx.json` is the configuration file `docfx` uses to generate documentation. `-q` option means generating the project quietly using default values, you can also try `docfx init` and follow the instructions to provide your own settings.
 
 Step3. Build our website
 -----------------------
@@ -33,7 +33,7 @@ Congrats! You can now see a simple website similar to:
 
 Step5. Add a set of articles to the website
 -------------------------
-1. Place more `.md` files to `articles`, e.g. `details1.md`, `details2.md`, `details3.md`. If the file references any resources, put those resources into the `images` folder.
+1. Place more `.md` files into `articles`, e.g., `details1.md`, `details2.md`, `details3.md`. If the files reference any resources, put those resources into the `images` folder.
 2. In order to organize these articles, we add these files into `toc.yml` under `articles` subfolder. The content of `toc.yml` is as below:
 
     ```yml
@@ -67,7 +67,7 @@ Notice that more items are added to the sidebar for *Articles* nav page. The tit
 
 Conclusion
 ---------
-In this walkthrough, we build a website from a set of `.md` files. We call these `.md` files **Conceptual Documentation**. In walkthrough part 2, we will learn to add **API Documentation** to our website. The **API Documentation** is extracted directly from .NET source code. In a series of advanced walkthroughs, we will learn advanced concepts in `docfx`, such as *cross reference* between articles, *external reference* to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.
+In this walkthrough, we built a website from a set of `.md` files. We call these `.md` files **Conceptual Documentation**. In walkthrough part 2, we will learn to add **API Documentation** to our website. The **API Documentation** is extracted directly from .NET source code. In a series of advanced walkthroughs, we will learn advanced concepts in `docfx`, such as *cross reference* between articles, *external reference* to other documentation sets, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.
 
 Read more
 ---------

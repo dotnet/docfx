@@ -1,7 +1,7 @@
 Walkthrough Part II: Adding API Documentation to the Website
 ==========================
 
-After completing [Walkthrough Part I: Generate a Simple Documentation Website](walkthrough_create_a_docfx_project.md), we build a website from a set of `.md` files. We call it **Conceptual Documentation**. In this walkthrough, we will learn to build website from .NET source code, which is called **API Documentation**. We will also integrate **Conceptual Documentation** and **API Documentation** into one website, so that we can navigate from **Conceptual** to **API**, or **API** to **Conceptual** seamlessly. Download the files used in this walkthrough [here](artifacts/walkthrough2.zip).
+After completing [Walkthrough Part I: Generate a Simple Documentation Website](walkthrough_create_a_docfx_project.md), we built a website from a set of `.md` files. We call it **Conceptual Documentation**. In this walkthrough, we will learn to build a website from .NET source code, which is called **API Documentation**. We will also integrate **Conceptual Documentation** and **API Documentation** into one website so that we can navigate from **Conceptual** to **API**, or **API** to **Conceptual** seamlessly. Download the files used in this walkthrough [here](artifacts/walkthrough2.zip).
 
 After completing walkthrough part I, our `D:\docfx_walkthrough\docfx_project` folder is in the following structure:
 
@@ -23,7 +23,7 @@ After completing walkthrough part I, our `D:\docfx_walkthrough\docfx_project` fo
 
 Step1. Add a C# project
 ---------------------------
-1. Create a subfolder `src` under `D:\docfx_walkthrough\docfx_project`. Open *Visual Studio Community 2015* (or an above version) and create a **C# Class Library** `HelloDocfx` under folder `src`. In the `Class1.cs`, add some comments and methods to this class, similar to:
+Create a subfolder `src` under `D:\docfx_walkthrough\docfx_project`. Open *Visual Studio Community 2015* (or an above version) and create a **C# Class Library** `HelloDocfx` under folder `src`. In the `Class1.cs`, add some comments and methods to this class, similar to:
 
 ```csharp
 namespace HelloDocfx
@@ -71,7 +71,7 @@ namespace HelloDocfx
 
 Step2. Generate metadata for the C# project
 ----------------------
-Calling `docfx metadata` under `D:\docfx_walkthrough\docfx_project`. `docfx metadata` is a sub-command registered in `docfx`, and it reads configuration in the `metadata` section from `docfx.json`. `[ "src/**.csproj" ]` in `metadata/src/files` tells `docfx` to search all the `csproj` from `src` subfolder to generate metadata.
+Execute `docfx metadata` under `D:\docfx_walkthrough\docfx_project`. `docfx metadata` is a subcommand registered in `docfx`, and it reads configuration in the `metadata` section of `docfx.json`. `[ "src/**.csproj" ]` in `metadata/src/files` tells `docfx` to search for `csproj` files in the `src` subfolder to generate metadata.
 
 ```json
 "metadata": [
@@ -93,7 +93,7 @@ Calling `docfx metadata` under `D:\docfx_walkthrough\docfx_project`. `docfx meta
   ]
 ```
 
-This generates several `YAML` files in the `api` folder. The `YAML` file contains the data model extracted from C# source code file. YAML is the metadata format used in `docfx`. [General Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_format_spec.html) defines the general schema, and [.NET Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html) defines the metadata schema for .NET languages that `docfx` can consume.
+This generates several `YAML` files in the `api` folder. The `YAML` file contains the data model extracted from the C# source code file. YAML is the metadata format used in `docfx`. [General Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_format_spec.html) defines the general schema, and [.NET Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html) defines the metadata schema for .NET languages that `docfx` can consume.
 ```
 |- HelloDocfx.Class1.InnerClass.yml
 |- HelloDocfx.Class1.yml
@@ -101,7 +101,7 @@ This generates several `YAML` files in the `api` folder. The `YAML` file contain
 |- toc.yml
 ```
 
-Also, note that if your csprojs are located outside of your docfx directory, and you need to use `../` you will need to use the `src` property:
+Also, note that if your csproj files are located outside of your docfx directory, you need to use the `src` property with `../` to find them: 
 ```json
 "metadata": [
     {
@@ -125,7 +125,7 @@ Also, note that if your csprojs are located outside of your docfx directory, and
 
 Step3. Build and preview our website
 ----------------------------------------------------
-Running the command `docfx`. `docfx` reads `docfx.json` and execute subcommands defined in the config file one by one. Our `docfx.json` defines `metadata` and `build`, so by running `docfx`, we are actually executing `docfx metadata` and `docfx build`, and thus generating the website.
+Run the command `docfx`. `docfx` reads `docfx.json` and executes subcommands defined in the config file one by one. Our `docfx.json` defines `metadata` and `build`, so by running `docfx`, we are actually executing `docfx metadata` and `docfx build`, and thus generating the website.
 
 Run `docfx serve _site`, and the website is now:
 ![Step3](images/walkthrough2_step3.png).
@@ -289,7 +289,7 @@ More details: http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-anot
 
 Conclusion
 ---------
-In this walkthrough, we build a website containing both **Conceptual Documentation** and **API Documentation**. In the upcoming series of advanced walkthroughs, we will learn advanced concepts in `docfx`, such as *cross reference* between articles, *external reference* to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.
+In this walkthrough, we built a website containing both **Conceptual Documentation** and **API Documentation**. In the upcoming series of walkthroughs, we will learn advanced concepts in `docfx`, such as *cross reference* between articles, *external reference* to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.
 
 Read more
 ---------

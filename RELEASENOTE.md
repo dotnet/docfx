@@ -1,14 +1,24 @@
-Version Notes (Current Version: v2.45)
+Version Notes (Current Version: v2.46)
 =======================================
 
-v2.45(Pre-Release)
+v2.46(Pre-Release)
 -----------
 
-v2.44
+v2.45.1
 -----------
+1. Improve performance by upgrading Jint to 2.11.58. (#5032)
+2. Resolve UID from xrefmap respecting the order defined in `docfx.json`. (#5094)
+3. Bug fix:
+    1. Fix incremental build error when previous build has no content. (#5010)
+    2. Fix PDF cover page not work. (#5077)
+    3. Enforce trailing `]` when matching file inclusion Markdown syntax. (#5091)
+    
 
-v2.43.3
+v2.45
 -----------
+1. Support linking to repository from dev.azure.com automatically. (#4493)
+2. Unify log code `InvalidInternalBookmark` and `InvalidExternalBookmark` into `InvalidBookMark`.
+3. Expand environment variables in metadata/build `src` section when looking for input files. (#4983)
 
 v2.43.2
 -----------

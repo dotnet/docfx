@@ -28,6 +28,8 @@ Test Include File
 
 [!include[refa](a.md)]
 
+[!include[refa](a.md) ]
+
 ";
 
             var refa = @"---
@@ -37,7 +39,7 @@ description: include file
 
 # Hello Include File A
 
-This is a file A included by another file. [!include[refb](b.md)]
+This is a file A included by another file. [!include[refb](b.md)] [!include[refb](b.md) ]
 
 ";
 
@@ -56,7 +58,9 @@ description: include file
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
-<p>This is a file A included by another file. # Hello Include File B</p>
+<p>This is a file A included by another file. # Hello Include File B [!include<a href=""%7E/r/b.md"">refb</a> ]</p>
+
+<p>[!include<a href=""a.md"">refa</a> ]</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
