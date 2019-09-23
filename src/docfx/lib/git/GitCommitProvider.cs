@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace Microsoft.Docs.Build
 {
@@ -31,7 +32,7 @@ namespace Microsoft.Docs.Build
             using (Telemetry.TrackingOperationTime(TelemetryName.LoadCommitHistory))
             {
                 var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
-                return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
+                return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish ?? repo.Commit));
             }
         }
 

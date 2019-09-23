@@ -44,12 +44,7 @@ namespace Microsoft.Docs.Build
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
         }
 
-        public List<GitCommit> GetCommitHistory(string committish = null)
-        {
-            return GetCommitHistory("", committish);
-        }
-
-        public List<GitCommit> GetCommitHistory(string file, string committish = null)
+        public List<GitCommit> GetCommitHistory(string file, string committish)
         {
             Debug.Assert(!file.Contains('\\'));
 
@@ -61,7 +56,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private List<GitCommit> GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string committish = null)
+        private List<GitCommit> GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string committish)
         {
             const int MaxParentBlob = 32;
 
