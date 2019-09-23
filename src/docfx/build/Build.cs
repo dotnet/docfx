@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                 var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
                 repositoryProvider.ConfigRestoreMap(restoreGitMap);
-                var (errors, config) = configLoader.Load(options, locale, extend: true);
+                var (errors, config) = configLoader.Load(options, extend: true);
 
                 errorLog.Configure(config);
 

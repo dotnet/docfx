@@ -28,21 +28,21 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(CommandLineOptions options, string locale = null, bool extend = true)
+        public (List<Error> errors, Config config) Load(CommandLineOptions options, bool extend = true)
         {
             if (!TryGetConfigPath(out _))
             {
                 throw Errors.ConfigNotFound(_docsetPath).ToException();
             }
 
-            return TryLoad(options, locale, extend);
+            return TryLoad(options, extend);
         }
 
         /// <summary>
         /// Load the config if it exists under <paramref name="docsetPath"/> or return default config
         /// </summary>
-        public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, string locale = null, bool extend = true)
-            => LoadCore(options, locale, extend);
+        public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, bool extend = true)
+            => LoadCore(options, extend);
 
         public bool TryGetConfigPath(out FilePath configPath)
         {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             return configPath != null;
         }
 
-        private (List<Error>, Config) LoadCore(CommandLineOptions options, string locale, bool extend)
+        private (List<Error>, Config) LoadCore(CommandLineOptions options, bool extend)
         {
             var errors = new List<Error>();
             var configObject = new JObject();
@@ -85,7 +85,8 @@ namespace Microsoft.Docs.Build
             }
 
             // apply overwrite
-            OverwriteConfig(configObject, locale ?? options.Locale, _repositoryProvider.GetRepository(FileOrigin.Default)?.Branch);
+            var repository = _repositoryProvider.GetRepository(configPath?.Origin ?? FileOrigin.Default);
+            OverwriteConfig(configObject, LocalizationUtility.GetLocale(repository, options), repository?.Branch);
 
             var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);

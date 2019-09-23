@@ -27,13 +27,13 @@ namespace Microsoft.Docs.Build
                 var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
                 var configPath = docsetPath;
-                var (errors, config) = configLoader.TryLoad(options, locale, extend: false);
+                var (errors, config) = configLoader.TryLoad(options, extend: false);
                 var restoreFallbackResult = RestoreFallbackRepo(config, repository);
                 if (restoreFallbackResult != null)
                     repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit));
 
                 List<Error> fallbackConfigErrors;
-                (fallbackConfigErrors, config) = configLoader.Load(options, locale, extend: false);
+                (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);
                 errors.AddRange(fallbackConfigErrors);
 
                 // config error log, and return if config has errors
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
                 // extend the config after the extend url being restored
-                var (extendConfigErrors, extendedConfig) = configLoader.Load(options, locale, extend: true);
+                var (extendConfigErrors, extendedConfig) = configLoader.Load(options, extend: true);
                 errorLog.Write(extendConfigErrors);
 
                 // restore urls except extend url
