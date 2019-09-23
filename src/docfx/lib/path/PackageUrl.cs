@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         public string Url { get; set; }
 
-        public string Branch { get; set; } = "master";
+        public string Branch { get; set; }
 
         public PackageUrl()
         {
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
 
-            return (path, hasRefSpec ? fragment.Substring(1) : default);
+            return (path, hasRefSpec ? fragment.Substring(1) : "master");
         }
 
         [OnDeserialized]
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                 Type = PackageType.Git;
                 var (url, branch) = SplitGitUrl(Url);
                 Url = url;
-                Branch = branch ?? Branch;
+                Branch = Branch ?? branch;
             }
             else
             {

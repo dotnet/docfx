@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/dotnet/docfx#986127a", PackageType.Git, "https://github.com/dotnet/docfx", "986127a", null)]
         [InlineData("https://github.com/dotnet/docfx#a#a", PackageType.Git, "https://github.com/dotnet/docfx", "a#a", null)]
         [InlineData("https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C", PackageType.Git, "https://github.com/dotnet/docfx", "a\\b/d<e>f*h|i%3C", null)]
-        [InlineData("crr/local-path", PackageType.Folder, "crr/local-path", "master", "crr/local-path")]
+        [InlineData("crr/local-path", PackageType.Folder, "crr/local-path", null, "crr/local-path")]
         public static void PackageUrlTest(
             string remote,
             PackageType expectedPackageType,
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        internal static async Task RestoreUrls()
+        public static async Task RestoreUrls()
         {
             // prepare versions
             var docsetPath = "restore-urls";
