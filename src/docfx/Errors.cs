@@ -36,8 +36,8 @@ namespace Microsoft.Docs.Build
         /// can't decide which entry to use when computing document id.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionUrlConflict(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings", source);
+        public static Error RedirectionUrlConflict(string redirectUrl)
+            => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{redirectUrl}' appears twice or more in the redirection mappings");
 
         /// <summary>
         /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
