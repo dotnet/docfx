@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
 
             if (basePath is null)
             {
-                throw new NotFiniteNumberException($"{nameof(ReadStream)}: {file}");
+                throw new NotSupportedException($"{nameof(ReadStream)}: {file}");
             }
 
             if (commit is null)
