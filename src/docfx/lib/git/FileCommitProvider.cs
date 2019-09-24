@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class FileCommitProvider : IDisposable
     {
-        private readonly string _repoPath;
+        private readonly Repository _repository;
         private readonly Lazy<GitCommitCache> _commitCache;
 
         // Commit history and a lookup table from commit hash to commit.
@@ -33,13 +33,14 @@ namespace Microsoft.Docs.Build
         private int _nextStringId;
         private IntPtr _repo;
 
-        public FileCommitProvider(string repoPath, string cacheFilePath)
+        public FileCommitProvider(Repository repository, string cacheFilePath)
         {
-            if (git_repository_open(out _repo, repoPath) != 0)
+            Debug.Assert(repository != null);
+            if (git_repository_open(out _repo, repository.Path) != 0)
             {
-                throw new ArgumentException($"Invalid git repo {repoPath}");
+                throw new ArgumentException($"Invalid git repo {repository.Path}");
             }
-            _repoPath = repoPath;
+            _repository = repository;
             _commitCache = new Lazy<GitCommitCache>(() => new GitCommitCache(cacheFilePath));
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
         }
@@ -192,7 +193,7 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(committish))
             {
-                committish = "HEAD";
+                committish = _repository.Commit;
             }
 
             var commits = new List<Commit>();
@@ -205,7 +206,7 @@ namespace Microsoft.Docs.Build
             if (git_revparse_single(out var headCommit, _repo, committish) != 0)
             {
                 git_object_free(walk);
-                throw Errors.CommittishNotFound(_repoPath, committish).ToException();
+                throw Errors.CommittishNotFound(_repository.Path, committish).ToException();
             }
 
             var lastCommitId = *git_object_id(headCommit);
@@ -226,7 +227,7 @@ namespace Microsoft.Docs.Build
                     git_revwalk_free(walk);
 
                     Log.Write($"Load git commit failed: {error} {lastCommitId}");
-                    throw Errors.GitCloneIncomplete(_repoPath).ToException();
+                    throw Errors.GitCloneIncomplete(_repository.Path).ToException();
                 }
 
                 lastCommitId = commitId;
@@ -269,7 +270,7 @@ namespace Microsoft.Docs.Build
                 commit.ParentShas = null;
             });
 
-            if (committish.Equals("HEAD"))
+            if (committish.Equals(_repository.Commit))
             {
                 Telemetry.TrackBuildCommitCount(commits.Count());
             }

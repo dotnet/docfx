@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly IReadOnlyDictionary<string, Docset> _dependencies;
-        private readonly Lazy<XrefResolver> _xrefResolver;
+        private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
 
         public DependencyResolver(
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
-            Lazy<XrefResolver> xrefResolver,
+            XrefResolver xrefResolver,
             TemplateEngine templateEngine)
         {
             _input = input;
@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.Value.ResolveAbsoluteXref(uid, referencingFile);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveAbsoluteXref(uid, referencingFile);
                 var xrefLinkType = declaringFile != null ? LinkType.RelativePath : LinkType.External;
 
                 return (uidError, uidHref, null, xrefLinkType, declaringFile, true);

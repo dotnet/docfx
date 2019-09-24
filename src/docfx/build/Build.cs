@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
                 var (entry, repository) = repositoryProvider.GetRepositoryWithEntry(FileOrigin.Dependency, name);
                 if (!string.IsNullOrEmpty(entry))
                 {
-                    result.TryAdd(name, (new Docset(entry, docset.Locale, config, repository), dependency.BuildFiles));
+                    result.TryAdd(name, (new Docset(entry, docset.Locale, config, repository), dependency.IncludeInBuild));
                 }
             }
 

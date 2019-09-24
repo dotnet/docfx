@@ -11,14 +11,18 @@ namespace Microsoft.Docs.Build
 {
     internal class XrefResolver
     {
-        private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
-        private readonly IReadOnlyDictionary<string, InternalXrefSpec> _internalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
 
         public XrefResolver(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
         {
-            _internalXrefMap = InternalXrefMapBuilder.Build(context);
-            _externalXrefMap = ExternalXrefMapLoader.Load(docset, restoreFileMap);
+            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
+                () => InternalXrefMapBuilder.Build(context));
+
+            _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
+                () => ExternalXrefMapLoader.Load(docset, restoreFileMap));
+
             _dependencyMapBuilder = dependencyMapBuilder;
         }
 
@@ -88,7 +92,7 @@ namespace Microsoft.Docs.Build
         {
             string repositoryBranch = null;
             string siteBasePath = null;
-            var references = _internalXrefMap.Values
+            var references = _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
                     var xrefSpec = xref.ToExternalXrefSpec();
@@ -160,12 +164,12 @@ namespace Microsoft.Docs.Build
 
         private IXrefSpec ResolveExternalXrefSpec(string uid)
         {
-            return _externalXrefMap.TryGetValue(uid, out var result) ? result.Value : null;
+            return _externalXrefMap.Value.TryGetValue(uid, out var result) ? result.Value : null;
         }
 
         private IXrefSpec ResolveInternalXrefSpec(string uid, Document declaringFile)
         {
-            if (_internalXrefMap.TryGetValue(uid, out var spec))
+            if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
                 _dependencyMapBuilder.AddDependencyItem(declaringFile, spec.DeclaringFile, DependencyType.UidInclusion);
                 return spec;

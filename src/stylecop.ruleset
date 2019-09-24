@@ -89,6 +89,7 @@
     <Rule Id="CA1405" Action="Warning" />
     <Rule Id="CA1410" Action="Warning" />
     <Rule Id="CA1415" Action="Warning" />
+    <Rule Id="CA1724" Action="None" />
     <!-- CA1806DoNotIgnoreMethodResults -->
     <Rule Id="CA1806" Action="None" />
     <Rule Id="CA1814" Action="None" />

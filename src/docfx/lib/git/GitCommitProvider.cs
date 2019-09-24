@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             return _fileCommitProvidersByRepoPath.GetOrAdd(
                 repo.Path,
-                _ => new FileCommitProvider(repo.Path, AppData.GetCommitCachePath(repo.Remote)));
+                _ => new FileCommitProvider(repo, AppData.GetCommitCachePath(repo.Remote)));
         }
     }
 }

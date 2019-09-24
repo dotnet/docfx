@@ -585,3 +585,60 @@ outputs:
     }
   docs/path1.json: |
     {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5",}
+---
+# branch property has higher priority than branch defined in url
+repos:
+  https://docs.com/branch-priority/1:
+    - files:
+        docfx.yml: |
+          dependencies:
+            crr:
+              url: https://docs.com/branch-priority/2#unused
+              branch: master
+              includeInBuild: true
+  https://docs.com/branch-priority/2#master:
+    - files:
+        b.md: 
+  https://docs.com/branch-priority/2#unused:
+    - files:
+        c.md: 
+outputs:
+  crr/b.json:
+---
+# dependencyPackageUrl can use relative path by setting path or url
+# path has higher priority than url
+inputs:
+  docfx.yml: |
+    files:
+    - crr1/**/*.md
+    - crr2/**/*.md
+    dependencies:
+      crr1:
+        path: crr-by-path
+        includeInBuild: true
+      crr2:
+        url: crr-priority-url
+        path: crr-priority-path
+        includeInBuild: true
+  crr-by-path/crr-by-path.md:
+  crr-priority-url/crr-priority-url.md:
+  crr-priority-path/crr-priority-path.md:
+outputs:
+  crr1/crr-by-path.json:
+  crr2/crr-priority-path.json:
+---
+# dependencyPackageUrl's path using git url won't restore the git repo
+repos:
+  https://docs.com/crr-url-using-path/1:
+  - files:
+      docfx.yml: |
+        dependencies:
+          crr:
+            path: https://docs.com/crr-url-using-path/2
+            includeInBuild: true
+  https://docs.com/crr-url-using-path/2:
+  - files:
+      b.md:
+outputs:
+  .errors.log: |
+    ["error","need-restore","Cannot find dependency 'https://docs.com/crr-url-using-path/2', did you forget to run `docfx restore`?"]

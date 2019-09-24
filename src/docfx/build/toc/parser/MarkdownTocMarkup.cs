@@ -15,11 +15,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTocMarkup
     {
-        public static (List<Error> errors, TableOfContentsModel model) Parse(string tocContent, Document file)
+        public static (List<Error> errors, TableOfContentsModel model) Parse(MarkdownEngine markdownEngine, string tocContent, Document file)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
-            var (markupErrors, ast) = MarkdownUtility.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
+            var (markupErrors, ast) = markdownEngine.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
             errors.AddRange(markupErrors);
 
             foreach (var block in ast)
