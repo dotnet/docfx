@@ -3,45 +3,20 @@
 A docset is a collection of files defined by `docfx.yml`. These files are build together using the same configuration. Usually a repository contains a single docset with `docfx.yml` sitting at the root directory, but sometimes it is desirable to have multiple docsets managed by a single repository.
 This document describes the behavior for repositories with multiple docsets.
 
-## Configuration
-
-`docsets.yml` is the config file that describes a collection of docsets under multiple docsets setup for a repository. 
-
-It contains a `docsets` property that describes the location of docsets managed by this repository. The value is an array of glob patterns that matches the folder path of each docset relative to `docsets.yml`, it could be short circuited to a string if there is only one glob:
-
-```yml
-docsets:
-- '**'          # Matches all folders containing docfx.yml recursively
-- 'docsets/*'   # Matches folders under `docsets` that contains docfx.yml
-```
-
-- Just like `docfx.yml`/`docfx.json` pair, `docsets.json` is also a supported format.
-- Just like `docfx.yml`, `docsets.yml` does not have to be at repository root folder.
-- To interop with existing MicrosoftDocs repositories, `docsets.yml` is generated from `.openpublishing.config.json`.
-
-`docsets.yml` is completedly optional for repositories with a single docset.
-
-The other alternative is to let `docfx` search for all `docfx.yml` files in subdirectories. Current preference is to have this explicit configuration because:
-  - It avoids running directory search on none docfx directories. This has a huge benefit on local vscode authoring experience:
-    without this file, a user with docfx vscode extension installed pays the penalty whenever a non-docfx directory is opened in vscode.
-  - It allows explicit control over which docset are included for a build.
-
 ## Build
 
-`docfx build` and commands alike now recognize `docsets.yml` in addition to `docfx.yml`. When build runs against a folder, it looks for `docsets.yml` first before checking for `docfx.yml`.
+`docfx build` and commands alike now recognize a folder in addition to `docfx.yml`. When build runs against a folder, it looks for all `docfx.yml` files under subdirectories.
 
 Each docset is built seperately as a standalone, self-contained unit. No states are not shared across docsets, e.g., you cannot reference contents in another docset using relative path.
 
 ## Build Output
 
-Building against `docsets.yml` is conceptually the same as building each docset that it contains. Output content and structure of building a `docsets.yml` is exactly the same as building each `docfx.yml`. There might be some additional aggregated information if necessary.
+Building against a folder is conceptually the same as building each docset that it contains. Output content and structure of building a folder is exactly the same as building each `docfx.yml`. There might be some additional aggregated information if necessary.
 
 When `--output` is _NOT_ explicitly specified in command line, output folder of each docset respects `output.path` config or `_site` by default:
 
 ```yml
 # cmd: docfx build
-docsets.yml: |
-  docsets: '**'
 # Docset `a` uses the default output path _site
 a/docfx.yml:
 a/a.md:
@@ -60,8 +35,6 @@ When `--output` option is specified from the command line, `output.path` is over
 
 ```yml
 # cmd: docfx build --output _site
-docsets.yml: |
-  docsets: '**'
 # Docsets
 a/docfx.yml:
 a/a.md:
@@ -109,9 +82,27 @@ outputs:
     }
 ```
 
+## Configuration
+
+We _may_ add config file named `docsets.yml` that describes a collection of docsets under multiple docsets setup for folder.
+It is conceptually equivalent to `.sln` files in .NET world or `lerna.json` in NodeJS world. Such config file:
+
+- Avoids running directory search on none docfx directories.
+- Allows explicit control over which docset are included for a build.
+
+It contains a `docsets` property that describes the location of docsets managed by this repository. The value is an array of glob patterns that matches the folder path of each docset relative to , it could be short circuited to a string if there is only one glob:
+
+```yml
+docsets:
+- '**'          # Matches all folders containing docfx.yml recursively
+- 'docsets/*'   # Matches folders under `docsets` that contains docfx.yml
+```
+
+`docsets.yml` is completedly optional for repositories with a single docset.
+
 ## Work Items
 
-- Read `docsets.yml` and build each docset (3)
+- Find docsets and build each docset (1)
 - Add `source_url` to `.publish.json` and `file_url` to `.errors.log` (2)
 - Produce aggregated outputs (4)
 - Server side adjustments
