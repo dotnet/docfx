@@ -53,10 +53,10 @@ namespace Microsoft.Docs.Build
             Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
-            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
+            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
