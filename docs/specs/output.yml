@@ -446,6 +446,9 @@ inputs:
       href: v1/b.md
     - name: Non-existed Toc reference
       href: b.md
+  docs/v1/TOC.yml: |
+    - name: Toc Reference
+      href: b.md
   monikerDefinition.json: |
     {
       "monikers": [
@@ -457,12 +460,15 @@ inputs:
     }
 outputs:
   9d4e15fd/docs/b.json:
+  9d4e15fd/docs/toc.json:
   218c13d0/docs/a.json:
   23d205a5/docs/c.json:
+  docs/toc.json:
   .links.json: |
     {
       "links":[
         {"source_url":"/docs/toc.json","target_url":"/docs/b"},
+        {"source_url":"/docs/toc.json","source_moniker_group": "9d4e15fd","target_url":"/docs/b"},
         {"source_url":"/docs/toc.json","target_url":"b.md"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md"},
