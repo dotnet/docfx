@@ -132,11 +132,11 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
-            var redirectionsWithDocumentIdSourcePath = new Dictionary<string, Document>();
+            var redirectionsWithDocumentIdSourcePath = new Dictionary<string, Document>(PathUtility.PathComparer);
 
             var publishUrlMap = buildFiles
                 .GroupBy(file => file.SiteUrl)
-                .ToDictionary(group => group.Key, group => group.ToList());
+                .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
 
             foreach (var (originalRedirectUrl, redirect) in redirectionsWithDocumentId)
             {
