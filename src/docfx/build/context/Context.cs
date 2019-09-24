@@ -33,6 +33,7 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly MarkdownEngine MarkdownEngine;
         public readonly TemplateEngine TemplateEngine;
+        public readonly FileLinkMapBuilder FileLinkMapBuilder;
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
@@ -42,7 +43,6 @@ namespace Microsoft.Docs.Build
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
             DependencyMapBuilder = new DependencyMapBuilder();
-            XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder);
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>();
 
@@ -62,6 +62,8 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+            FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);
+            XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
 
             DependencyResolver = new DependencyResolver(
                 docset,
@@ -78,7 +80,8 @@ namespace Microsoft.Docs.Build
                 BookmarkValidator,
                 DependencyMapBuilder,
                 XrefResolver,
-                TemplateEngine);
+                TemplateEngine,
+                FileLinkMapBuilder);
 
             MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
         }
