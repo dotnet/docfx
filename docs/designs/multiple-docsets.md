@@ -59,15 +59,14 @@ Path in output contents such as `source_path` in `.publish.json` and `file` in `
 repos:
   https://github.com/multidocset/test:
   - files:
-      docsets.yml: |
-        docsets: '**'
-      a/docfx.yml:
+      a/docfx.yml: 'name: a'
       a/a.md:
-      b/folder/docfx.yml:
+      b/folder/docfx.yml: 'name: b'
       b/folder/b.md:
 outputs:
   a/.publish.json: |
     {
+        "name": "a",
         "files": [{
             "source_path": "a.md",
             "source_url": "https://github.com/multidocset/test/a/a.md"
@@ -75,6 +74,7 @@ outputs:
     }
   b/folder/.publish.json: |
     {
+        "name": "b",
         "files": [{
             "source_path": "b.md",
             "source_url": "https://github.com/multidocset/test/b/folder/b.md"
@@ -105,4 +105,6 @@ docsets:
 - Find docsets and build each docset (1)
 - Add `source_url` to `.publish.json` and `file_url` to `.errors.log` (2)
 - Produce aggregated outputs (4)
-- Server side adjustments
+- Server side config migration (2)
+- Server side publish
+- Migration tool
