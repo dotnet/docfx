@@ -7,7 +7,7 @@ This document describes the behavior for repositories with multiple docsets.
 
 `docfx build` and commands alike now recognize a folder in addition to `docfx.yml`. When build runs against a folder, it looks for all `docfx.yml` files under subdirectories.
 
-Each docset is built seperately as a standalone, self-contained unit. No states are not shared across docsets, e.g., you cannot reference contents in another docset using relative path.
+Each docset is built seperately as a standalone, self-contained unit. No states are shared across docsets, e.g., you cannot reference contents in another docset using relative path.
 
 ## Build Output
 
@@ -53,7 +53,7 @@ Path in output contents such as `source_path` in `.publish.json` and `file` in `
 
 - To make generating clickable links, `.publish.json` will have a new `source_url` property for each item that is an absolute URL pointing to the original git repository.
 - Similarly, `.errors.log` will have a `file_url` property that points to a specific line in GitHub or Azure Repos.
-- More information are added to `.publish.json` at the root level such as `docset_name` as needed.
+- More information are added to `.publish.json` at the root level such as `name` as needed.
 
 ```yml
 repos:
@@ -84,7 +84,7 @@ outputs:
 
 ## Configuration
 
-We _may_ add config file named `docsets.yml` that describes a collection of docsets under multiple docsets setup for folder.
+We _may_ add an optional config file named `docsets.yml` that describes a collection of docsets under multiple docsets setup for folder.
 It is conceptually equivalent to `.sln` files in .NET world or `lerna.json` in NodeJS world. Such config file:
 
 - Avoids running directory search on none docfx directories.
@@ -97,8 +97,6 @@ docsets:
 - '**'          # Matches all folders containing docfx.yml recursively
 - 'docsets/*'   # Matches folders under `docsets` that contains docfx.yml
 ```
-
-`docsets.yml` is completedly optional for repositories with a single docset.
 
 ## Work Items
 
