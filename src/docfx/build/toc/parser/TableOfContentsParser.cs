@@ -291,8 +291,9 @@ namespace Microsoft.Docs.Build
                 context, filePath, referencedTocs, tocHrefType, new SourceInfo<string>(hrefPath, tocHref), errors);
             if (referencedTocContent != null)
             {
-                var (subErrors, nestedToc) = LoadInternal(
-                    context, referenceTocFilePath, rootPath, referencedFiles, referencedTocs, referencedTocContent);
+                var (subErrors, nestedToc) = tocHrefType == TocHrefType.RelativeFolder
+                    ? LoadInternal(context, referenceTocFilePath, rootPath, new List<Document>(), referencedTocs, referencedTocContent)
+                    : LoadInternal(context, referenceTocFilePath, rootPath, referencedFiles, referencedTocs, referencedTocContent);
                 errors.AddRange(subErrors);
 
                 if (tocHrefType == TocHrefType.RelativeFolder)
