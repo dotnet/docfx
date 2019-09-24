@@ -44,7 +44,8 @@ namespace Microsoft.Docs.Build
             {
                 Links = _links.ToList()
                 .OrderBy(x => x.SourceUrl, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(x => x.TargetUrl, StringComparer.OrdinalIgnoreCase),
+                .ThenBy(x => x.TargetUrl, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(x => x.SourceMonikerGroup, StringComparer.OrdinalIgnoreCase),
             };
     }
 }
