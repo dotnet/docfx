@@ -313,14 +313,14 @@ repos:
   https://docs.com/crrcontent/b:
     - files:
         b.md:
-        image.png:
+        image.png: xxx
   https://docs.com/crrcontent/c:
     - files:
         c.md:
 outputs:
   docs/a.json:
   crrb/b.json:
-  crrb/image.png:
+  crrb/image.png: xxx
 ---
 # apply routes to the files in dependency repository
 # if no route applied, crr files will be built to `{dependencyName}/` folder
