@@ -129,6 +129,7 @@ namespace Microsoft.Docs.Build
                     var (dependencyPath, commit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], true);
 
                     // todo: get tree list from repository
+                    // todo: handle dependency is a relative folder
                     return GitUtility.ListTree(dependencyPath, commit)
                         .Select(path => new FilePath(
                             path.Replace('\\', '/'), dependencyName))

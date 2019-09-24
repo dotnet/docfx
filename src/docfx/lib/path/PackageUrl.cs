@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -17,13 +17,14 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(ShortHandConverter))]
     internal class PackageUrl
     {
+        [JsonIgnore]
         public PackageType Type { get; set; }
 
         public string Path { get; set; }
 
         public string Url { get; set; }
 
-        public string Branch { get; set; } = "master";
+        public string Branch { get; set; }
 
         public PackageUrl()
         {
@@ -31,16 +32,8 @@ namespace Microsoft.Docs.Build
 
         public PackageUrl(string url)
         {
-            if (UrlUtility.IsHttp(url))
-            {
-                Type = PackageType.Git;
-                (Url, Branch) = SplitGitUrl(url);
-            }
-            else
-            {
-                Type = PackageType.Folder;
-                Path = url;
-            }
+            Url = url;
+            OnDeserialized(default);
         }
 
         public PackageUrl(string remote, string branch)
@@ -65,7 +58,7 @@ namespace Microsoft.Docs.Build
                     return $"{Url}#{Branch}";
 
                 default:
-                    return Type.ToString();
+                    return $"{Url}, (type: {Type.ToString()})";
             }
         }
 
@@ -77,9 +70,25 @@ namespace Microsoft.Docs.Build
 
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
-            var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
-            return (path, refspec);
+            return (path, hasRefSpec ? fragment.Substring(1) : "master");
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (UrlUtility.IsHttp(Url))
+            {
+                Type = PackageType.Git;
+                var (url, branch) = SplitGitUrl(Url);
+                Url = url;
+                Branch = Branch ?? branch;
+            }
+            else
+            {
+                Type = PackageType.Folder;
+                Path = Path ?? Url;
+            }
         }
     }
 }

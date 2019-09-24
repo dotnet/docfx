@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum PackageType
+    public enum PackageType
     {
         None,
         Folder,

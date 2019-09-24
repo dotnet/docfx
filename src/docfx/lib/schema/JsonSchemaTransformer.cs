@@ -220,12 +220,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.Markdown:
-                    var (markupErrors, html) = MarkdownUtility.ToHtml(
-                        context,
-                        content,
-                        file,
-                        MarkdownPipelineType.Markdown);
-
+                    var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
@@ -233,12 +228,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.InlineMarkdown:
-                    var (inlineMarkupErrors, inlineHtml) = MarkdownUtility.ToHtml(
-                        context,
-                        content,
-                        file,
-                        MarkdownPipelineType.InlineMarkdown);
-
+                    var (inlineMarkupErrors, inlineHtml) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
