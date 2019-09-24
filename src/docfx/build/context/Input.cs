@@ -86,22 +86,27 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public TextReader ReadText(FilePath file)
         {
+            return new StreamReader(ReadStream(file));
+        }
+
+        public Stream ReadStream(FilePath file)
+        {
             var (basePath, path, commit) = ResolveFilePath(file);
 
             if (basePath is null)
             {
-                throw new NotSupportedException($"{nameof(ReadText)}: {file}");
+                throw new NotSupportedException($"{nameof(ReadStream)}: {file}");
             }
 
             if (commit is null)
             {
-                return File.OpenText(Path.Combine(basePath, path));
+                return File.OpenRead(Path.Combine(basePath, path));
             }
 
             var bytes = _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit))
                 ?? throw new InvalidOperationException($"Error reading '{file}'");
 
-            return new StreamReader(new MemoryStream(bytes, writable: false));
+            return new MemoryStream(bytes, writable: false);
         }
 
         /// <summary>
