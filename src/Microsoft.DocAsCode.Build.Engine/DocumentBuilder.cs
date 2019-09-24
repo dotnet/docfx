@@ -420,7 +420,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters)
         {
-            var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(new DocumentBuildContext(parameters), parameters.MaxParallelism);
+            var resourceProvider = parameters.TemplateManager?.CreateTemplateResource();
 
             return new MarkdigMarkdownService(
                 new MarkdownServiceParameters
@@ -428,7 +428,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     BasePath = parameters.Files.DefaultBaseDir,
                     TemplateDir = parameters.TemplateDir,
                     Extensions = parameters.MarkdownEngineParameters,
-                    Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
+                    Tokens = TemplateProcessorUtility.LoadTokens(resourceProvider)?.ToImmutableDictionary(),
                 },
                 new CompositionContainer(CompositionContainer.DefaultContainer));
         }
