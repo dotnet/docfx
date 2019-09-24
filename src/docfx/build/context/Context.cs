@@ -49,8 +49,8 @@ namespace Microsoft.Docs.Build
             Config = docset.Config;
             RestoreFileMap = restoreFileMap;
             ErrorLog = errorLog;
-            Output = new Output(outputPath);
             Input = input;
+            Output = new Output(outputPath, input);
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine);
