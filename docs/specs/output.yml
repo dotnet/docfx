@@ -467,15 +467,15 @@ outputs:
   .links.json: |
     {
       "links":[
-        {"source_url":"/docs/toc.json","target_url":"/docs/b"},
-        {"source_url":"/docs/toc.json","source_moniker_group": "9d4e15fd","target_url":"/docs/b"},
-        {"source_url":"/docs/toc.json","target_url":"b.md"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1"},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md"},
+        {"source_url":"/docs/toc.json","target_url":"/docs/b"},
+        {"source_url":"/docs/toc.json","source_moniker_group": "9d4e15fd","target_url":"/docs/b"},
+        {"source_url":"/docs/toc.json","target_url":"b.md"},
       ]
     }
   .errors.log: |

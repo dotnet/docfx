@@ -3,18 +3,21 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class FileLinkMapBuilder
     {
         private readonly MonikerProvider _monikerProvider;
+        private readonly ErrorLog _errorLog;
         private readonly ListBuilder<FileLinkItem> _links = new ListBuilder<FileLinkItem>();
 
-        public FileLinkMapBuilder(MonikerProvider monikerProvider)
+        public FileLinkMapBuilder(MonikerProvider monikerProvider, ErrorLog errorLog)
         {
             Debug.Assert(monikerProvider != null);
             _monikerProvider = monikerProvider;
+            _errorLog = errorLog;
         }
 
         public void AddFileLink(Document file, string targetUrl)
@@ -22,7 +25,11 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file != null);
             Debug.Assert(targetUrl != null);
 
-            var (_, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+            var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+            if (error != null)
+            {
+                _errorLog.Write(file, error);
+            }
             _links.Add(new FileLinkItem()
             {
                 SourceUrl = file.SiteUrl,
@@ -32,6 +39,6 @@ namespace Microsoft.Docs.Build
         }
 
         public object Build()
-            => new { Links = _links.ToList() };
+            => new { Links = _links.ToList().OrderBy(x => x.SourceUrl).ThenBy(x => x.TargetUrl) };
     }
 }

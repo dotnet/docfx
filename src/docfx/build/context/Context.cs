@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
-            FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider);
+            FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);
             XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
 
             DependencyResolver = new DependencyResolver(
