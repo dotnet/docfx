@@ -3,7 +3,7 @@ Getting Started with *DocFX*
 
 ## 1. What is *DocFX*
 
-*DocFX* is an API documentation generator for .NET, which currently supports C# and VB.
+*DocFX* is an API documentation generator for .NET, which currently supports C#, VB and F#.
 It generates API reference documentation from triple-slash comments in your source code.
 It also allows you to use Markdown files to create additional topics such as tutorials and how-tos, and to customize the generated reference documentation.
 *DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web servers (for example, *github.io*).

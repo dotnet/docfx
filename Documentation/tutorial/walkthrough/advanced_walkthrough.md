@@ -13,7 +13,7 @@ To export the default PDF template, run `docfx template export pdf.default`.
 
 ### Create a new template
 
-Create a new directory at root to hold your custom templates - name it something like `templates`. Inside that folder, create a new folder and name it wantever you want to name your custom template. In this folder you'll replicate files from `_exported_templates/default` or `_exported_templates/pdf.default` (and only those files) you want to overwrite.
+Create a new directory at root to hold your custom templates - name it something like `templates`. Inside that folder, create a new folder and name it whatever you want to name your custom template. In this folder you'll replicate files from `_exported_templates/default` or `_exported_templates/pdf.default` (and only those files) you want to overwrite.
 
 ### Apply the template
 

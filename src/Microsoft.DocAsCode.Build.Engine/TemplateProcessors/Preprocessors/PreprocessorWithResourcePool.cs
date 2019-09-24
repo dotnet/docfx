@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
-
+    using Jint.Parser;
     using Microsoft.DocAsCode.Common;
 
     internal class PreprocessorWithResourcePool : ITemplatePreprocessor
@@ -28,7 +28,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             catch (Exception e)
             {
                 _preprocessorPool = null;
-                Logger.LogWarning($"Not a valid template preprocessor, ignored: {e.Message}");
+                Logger.LogWarning(
+                    e.InnerException is ParserException parserEx
+                    ? $"\"{parserEx.Source}\" not a valid template preprocessor, ignored: {parserEx.Message}"
+                    : $"Not a valid template preprocessor, ignored: {e.Message}"
+                );
             }
         }
 
