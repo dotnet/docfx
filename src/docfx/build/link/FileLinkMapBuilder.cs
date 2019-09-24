@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
@@ -39,6 +40,11 @@ namespace Microsoft.Docs.Build
         }
 
         public object Build()
-            => new { Links = _links.ToList().OrderBy(x => x.SourceUrl).ThenBy(x => x.TargetUrl) };
+            => new
+            {
+                Links = _links.ToList()
+                .OrderBy(x => x.SourceUrl, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(x => x.TargetUrl, StringComparer.OrdinalIgnoreCase),
+            };
     }
 }
