@@ -436,6 +436,7 @@ inputs:
     Link to [absolute link](/docs/c)
     Link to [relative link with bookmark](../v2/d.md#title-1)
     Link to [absolute link with bookmark](/docs/d.md#title-1)
+    Link to [empty]()
   docs/v2/c.md: |
     some text
   docs/v2/d.md: |
