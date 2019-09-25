@@ -34,7 +34,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the path relative to docset root or dependency docset root
         /// </summary>
-        public string PathToRoot => PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName ?? ".", Path));
+        public string PathWithoutDependenyName
+            => PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName ?? ".", Path));
 
         public FilePath(string path, FileOrigin origin = FileOrigin.Default)
         {
