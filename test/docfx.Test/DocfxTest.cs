@@ -227,6 +227,11 @@ namespace Microsoft.Docs.Build
 
         private static bool IsHtml(JToken expected, JToken actual, string name)
         {
+            if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
             if (expected is JValue value && value.Value is string str &&
                 str.Trim() is string html && html.StartsWith('<') && html.EndsWith('>'))
             {
