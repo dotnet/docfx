@@ -22,8 +22,9 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly IReadOnlyDictionary<string, Docset> _dependencies;
-        private readonly Lazy<XrefResolver> _xrefResolver;
+        private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
+        private readonly FileLinkMapBuilder _fileLinkMapBuilder;
 
         public DependencyResolver(
             Docset docset,
@@ -35,8 +36,9 @@ namespace Microsoft.Docs.Build
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
-            Lazy<XrefResolver> xrefResolver,
-            TemplateEngine templateEngine)
+            XrefResolver xrefResolver,
+            TemplateEngine templateEngine,
+            FileLinkMapBuilder fileLinkMapBuilder)
         {
             _input = input;
             _docset = docset;
@@ -50,6 +52,7 @@ namespace Microsoft.Docs.Build
             _resolveAlias = LoadResolveAlias(docset.Config);
             _dependencies = dependencies;
             _templateEngine = templateEngine;
+            _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
         public (Error error, string content, Document file) ResolveContent(
@@ -94,6 +97,12 @@ namespace Microsoft.Docs.Build
                     referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
+            // ignore self bookmark reference for FileLinkMap
+            if (!isSelfBookmark && !string.IsNullOrEmpty(link))
+            {
+                _fileLinkMapBuilder.AddFileLink(referencingFile, link);
+            }
+
             return (error, link, file);
         }
 
@@ -117,7 +126,7 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.Value.ResolveAbsoluteXref(uid, referencingFile);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveAbsoluteXref(uid, referencingFile);
                 var xrefLinkType = declaringFile != null ? LinkType.RelativePath : LinkType.External;
 
                 return (uidError, uidHref, null, xrefLinkType, declaringFile, true);

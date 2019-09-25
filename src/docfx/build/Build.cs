@@ -97,10 +97,12 @@ namespace Microsoft.Docs.Build
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
                 var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+                var fileLinkMap = context.FileLinkMapBuilder.Build();
 
                 context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
+                context.Output.WriteJson(fileLinkMap, ".links.json");
 
                 if (options.Legacy)
                 {
@@ -246,7 +248,7 @@ namespace Microsoft.Docs.Build
                 var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, true);
 
                 var repository = Repository.Create(dir, dependency.Branch, dependency.Url, commit);
-                result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.BuildFiles));
+                result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.IncludeInBuild));
             }
 
             return result;

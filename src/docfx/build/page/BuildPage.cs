@@ -199,11 +199,7 @@ namespace Microsoft.Docs.Build
             var content = context.Input.ReadString(file.FilePath);
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
-            var (markupErrors, htmlDom) = MarkdownUtility.ToHtml(
-                context,
-                content,
-                file,
-                MarkdownPipelineType.Markdown);
+            var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
             var wordCount = HtmlUtility.CountWord(htmlDom);
