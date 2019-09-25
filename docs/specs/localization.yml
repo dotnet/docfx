@@ -17,7 +17,7 @@ repos:
 outputs:
   docs/loc.json:
   .errors.log: |
-    ["warning","link-out-of-scope","File 'docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","docs/loc.md",1,1]
+    ["warning","link-out-of-scope","File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","docs/loc.md",1,1]
 ---
 # restore loc repo with dependencies 2
 # [repository mapping & bilingual]
@@ -43,7 +43,7 @@ repos:
 outputs:
   docs/loc.json:
   .errors.log: |
-    ["warning","link-out-of-scope","File 'docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","docs/loc.md",1,1]
+    ["warning","link-out-of-scope","File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","docs/loc.md",1,1]
 ---
 # restore loc repo without dependencies 1
 # [branch mapping]
