@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             var dependencies = this
                 .OrderBy(d => GetSourcePath(d.Key.FilePath))
                 .ToDictionary(
-                    d => Path.Combine(d.Key.FilePath.DependencyName ?? "", d.Key.FilePath.Path).Replace("\\", "/"),
+                    d => GetSourcePath(d.Key.FilePath),
                     d => (from v in d.Value
                           orderby v.To.FilePath.Path, v.Type
                           select new DependencyManifestItem { Source = GetSourcePath(v.To.FilePath), Type = v.Type }).ToArray());
