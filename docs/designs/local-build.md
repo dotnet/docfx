@@ -104,7 +104,7 @@ Some config values are protected resources, they __MUST__ be gated behind an aut
 _Example Request:_
 
 ```
-GET /config/docfx?repository=https%3A%2F%2Fgithub.com%2FMicrosoftDocs%2Fazure-docs-pr
+GET /config/docfx
 ```
 
 _Example Response:_
@@ -176,6 +176,10 @@ LSP defines the [standard communication protocol](https://microsoft.github.io/la
 To support basic local build, `docfx serve --language-server` exposes these custom APIs:
 
 #### `docfx/build`
+
+Triggers a build of the current workspace. Error, warning and suggestions are communicated back to vscode using `textDocument/publishDiagnostics` notification.
+
+_params_:
 
 ```csharp
 {
