@@ -9,7 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class RepositoryProvider
     {
-        private readonly ConcurrentDictionary<string, Lazy<(string docset, Repository repository)>> _repositories = new ConcurrentDictionary<string, Lazy<(string docset, Repository repository)>>();
+        private readonly ConcurrentDictionary<(FileOrigin origin, string dependencyName), Lazy<(string docset, Repository repository)>> _repositories
+            = new ConcurrentDictionary<(FileOrigin origin, string dependencyName), Lazy<(string docset, Repository repository)>>();
 
         private string _locale;
         private string _docset;
@@ -83,7 +84,7 @@ namespace Microsoft.Docs.Build
                     return (_fallbackDocset, _fallbackRepository);
 
                 case FileOrigin.Template when _config != null && _restoreGitMap != null:
-                    return _repositories.GetOrAdd(origin.ToString(), _ =>
+                    return _repositories.GetOrAdd((origin, dependencyName), _ =>
                     new Lazy<(string docset, Repository repository)>(() =>
                     {
                         var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.Localization.DefaultLocale);
@@ -100,7 +101,7 @@ namespace Microsoft.Docs.Build
                     })).Value;
 
                 case FileOrigin.Dependency when _config != null && _restoreGitMap != null && dependencyName != null:
-                    return _repositories.GetOrAdd(origin.ToString() + dependencyName, _ =>
+                    return _repositories.GetOrAdd((origin, dependencyName), _ =>
                     new Lazy<(string docset, Repository repository)>(() =>
                     {
                         var dependency = _config.Dependencies[dependencyName];
@@ -116,7 +117,7 @@ namespace Microsoft.Docs.Build
                     })).Value;
             }
 
-            return default;
+            throw new InvalidOperationException();
         }
 
         private static Repository GetFallbackRepository(
