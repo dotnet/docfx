@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModelBuilder
     {
+        public static readonly string NONE_VERSIONING = "NONE_VERSION";
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
@@ -43,7 +44,7 @@ namespace Microsoft.Docs.Build
             var monikers = item.Monikers;
             if (monikers.Count == 0)
             {
-                monikers = new List<string> { "NONE_VERSION" };
+                monikers = new List<string> { PublishModelBuilder.NONE_VERSIONING };
             }
             _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
 
@@ -62,7 +63,7 @@ namespace Microsoft.Docs.Build
                     .Select(group => group.Key);
 
                 if (conflictMoniker.Any()
-                    || (files.Count() > 1 && files.Any(file => file.Value.Contains("NONE_VERSION"))))
+                    || (files.Count() > 1 && files.Any(file => file.Value.Contains(PublishModelBuilder.NONE_VERSIONING))))
                 {
                     context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
