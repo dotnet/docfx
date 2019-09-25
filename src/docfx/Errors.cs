@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ❌
         public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, List<string>> files, IEnumerable<string> conflictMonikers)
         {
-            var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NONE_VERSIONING);
+            var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
             var message = conflictMonikers.Any() && !nonVersion ? $" of the same version({Join(conflictMonikers)})" : null;
             return new Error(
                 ErrorLevel.Error,
