@@ -4,10 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using System.Collections.Generic;
-
-    using MarkdigEngine.Extensions;
-
-    using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
 
@@ -140,22 +136,7 @@ $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sou
 
         private static void TestMarkupInGeneral(string source, string expected)
         {
-            var result = SimpleMarkup(source).Html;
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
-        }
-
-        private static MarkupResult SimpleMarkup(string source)
-        {
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = ".",
-                Extensions = new Dictionary<string, object>
-                {
-                    { "EnableSourceInfo", true }
-                }
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            return service.Markup(source, "Topic.md");
+            TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
         }
     }
 }
