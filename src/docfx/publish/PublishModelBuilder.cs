@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
@@ -43,7 +43,6 @@ namespace Microsoft.Docs.Build
             var monikers = item.Monikers;
             if (monikers.Count == 0)
             {
-                // TODO: report a warning if there are multiple files published to same url, one of them have no version
                 monikers = new List<string> { "NONE_VERSION" };
             }
             _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
@@ -54,7 +53,6 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context, bool legacy)
         {
             // Handle publish url conflicts
-            // TODO: Report more detail info for url conflict
             foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
                 var conflictMoniker = files
@@ -63,10 +61,10 @@ namespace Microsoft.Docs.Build
                     .Where(group => group.Count() > 1)
                     .Select(group => group.Key);
 
-                if (conflictMoniker.Count() > 0)
+                if (conflictMoniker.Any()
+                    || (files.Count() > 1 && files.Any(file => file.Value.Contains("NONE_VERSION"))))
                 {
-                    context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
-
+                    context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
                     {
                         HandleFileWithError(context, conflictingFile, legacy);
