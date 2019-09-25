@@ -384,6 +384,18 @@ repos:
           [link to b](b.md)
         b.md:
 outputs:
+  docs/a.mta.json:
+  docs/a.raw.page.json:
+  docs/b.mta.json:
+  docs/b.raw.page.json:
+  crrb/a.mta.json:
+  crrb/a.raw.page.json:
+  crrb/b.mta.json:
+  crrb/b.raw.page.json:
+  crrc/a.mta.json:
+  crrc/a.raw.page.json:
+  crrc/b.mta.json:
+  crrc/b.raw.page.json:
   filemap.json: |
     {
       "file_mapping": {

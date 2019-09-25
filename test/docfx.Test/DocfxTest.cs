@@ -195,29 +195,42 @@ namespace Microsoft.Docs.Build
 
         private static JsonDiff CreateJsonDiff()
         {
-            return new JsonDiffBuilder()
+            var fileJsonDiff = new JsonDiffBuilder()
                 .UseAdditionalProperties()
                 .UseNegate()
                 .UseRegex()
                 .UseWildcard()
-                .UseIgnoreNull(IsOutputFile)
-                .UseJson()
                 .UseHtml(IsHtml)
                 .Use(IsHtml, RemoveDataLinkType)
-                .UseLogFile()
+                .Build();
+
+            return new JsonDiffBuilder()
+                .UseAdditionalProperties(null, IsRequiredOutput)
+                .UseIgnoreNull()
+                .UseJson(null, fileJsonDiff)
+                .UseLogFile(fileJsonDiff)
+                .UseHtml(IsHtml)
+                .Use(IsHtml, RemoveDataLinkType)
                 .Build();
         }
 
-        private static bool IsOutputFile(JToken expected, JToken actual, string name)
+        private static bool IsRequiredOutput(string name)
         {
-            // TODO: this will also match first property inside JSON file.
-            return expected.Parent?.Parent == expected.Root;
+            var fileName = Path.GetFileName(name);
+
+            return (fileName == ".errors.log" || !fileName.StartsWith("."))
+                && fileName != "filemap.json"
+                && fileName != "op_aggregated_file_map_info.json"
+                && fileName != "full-dependent-list.txt"
+                && fileName != "server-side-dependent-list.txt";
         }
 
         private static bool IsHtml(JToken expected, JToken actual, string name)
         {
             if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
+            }
 
             if (expected is JValue value && value.Value is string str &&
                 str.Trim() is string html && html.StartsWith('<') && html.EndsWith('>'))
@@ -244,11 +257,11 @@ namespace Microsoft.Docs.Build
             return (expectedHtml, actualHtml);
         }
 
-        private static JsonDiffBuilder UseLogFile(this JsonDiffBuilder builder)
+        private static JsonDiffBuilder UseLogFile(this JsonDiffBuilder builder, JsonDiff jsonDiff)
         {
             return builder.Use(
                 (expected, actual, name) => name.EndsWith(".txt") || name.EndsWith(".log"),
-                (expected, actual, name, jsonDiff) =>
+                (expected, actual, name, _) =>
                 {
                     if (expected.Type != JTokenType.String || actual.Type != JTokenType.String)
                     {
@@ -257,12 +270,12 @@ namespace Microsoft.Docs.Build
 
                     var expectedLines = expected.Value<string>()
                         .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                        .OrderBy(_ => _)
+                        .OrderBy(item => item)
                         .ToArray();
 
                     var actualLines = actual.Value<string>()
                         .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                        .OrderBy(_ => _)
+                        .OrderBy(item => item)
                         .ToArray();
 
                     for (var i = 0; i < Math.Min(expectedLines.Length, actualLines.Length); i++)
