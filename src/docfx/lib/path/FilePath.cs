@@ -31,12 +31,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string Commit { get; }
 
-        /// <summary>
-        /// Gets the path relative to docset root or dependency docset root
-        /// </summary>
-        public string PathWithoutDependencyName
-            => PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName ?? ".", Path));
-
         public FilePath(string path, FileOrigin origin = FileOrigin.Default)
         {
             Debug.Assert(origin != FileOrigin.Dependency);
@@ -58,6 +52,12 @@ namespace Microsoft.Docs.Build
             DependencyName = dependencyName;
             Origin = FileOrigin.Dependency;
         }
+
+        /// <summary>
+        /// Gets the path relative to docset root or dependency docset root
+        /// </summary>
+        public string GetPathToOrigin()
+            => PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName ?? ".", Path));
 
         public static bool operator ==(FilePath a, FilePath b) => Equals(a, b);
 
