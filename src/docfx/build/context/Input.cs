@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
 
                 case FileOrigin.Dependency:
                     var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithEntry(file.Origin, file.DependencyName);
-                    return (dependencyEntry, file.Path, file.Commit ?? dependencyRepository?.Commit);
+                    return (dependencyEntry, file.GetPathToOrigin(), file.Commit ?? dependencyRepository?.Commit);
 
                 case FileOrigin.Fallback:
                     var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithEntry(file.Origin);

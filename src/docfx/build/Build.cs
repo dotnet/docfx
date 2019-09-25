@@ -111,10 +111,12 @@ namespace Microsoft.Docs.Build
                 var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
                 var dependencyMap = context.DependencyMapBuilder.Build();
                 var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+                var fileLinkMap = context.FileLinkMapBuilder.Build();
 
                 context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
                 context.Output.WriteJson(publishModel, ".publish.json");
                 context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
+                context.Output.WriteJson(fileLinkMap, ".links.json");
 
                 if (options.Legacy)
                 {

@@ -292,7 +292,12 @@ namespace Microsoft.Docs.Build
             if (referencedTocContent != null)
             {
                 var (subErrors, nestedToc) = LoadInternal(
-                    context, referenceTocFilePath, rootPath, referencedFiles, referencedTocs, referencedTocContent);
+                    context,
+                    referenceTocFilePath,
+                    rootPath,
+                    tocHrefType == TocHrefType.RelativeFolder ? new List<Document>() : referencedFiles,
+                    referencedTocs,
+                    referencedTocContent);
                 errors.AddRange(subErrors);
 
                 if (tocHrefType == TocHrefType.RelativeFolder)
