@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -149,7 +148,7 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     List<Document> candidates;
-                    if (redirectionSourceMonikers.Count() == 0)
+                    if (!redirectionSourceMonikers.Any())
                     {
                         candidates = docs.Where(doc => monikerProvider.GetFileLevelMonikers(doc).monikers.Count() == 0).ToList();
                     }
