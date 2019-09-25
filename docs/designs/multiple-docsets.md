@@ -41,8 +41,8 @@ a/a.md:
 b/folder/docfx.yml:
 b/folder/b.md:
 # Outputs
-_site/a/a.json:
-_site/b/folder/b.md:
+a/a.json:
+b/folder/b.md:
 ```
 
 Build output for each docset contains its own copy of `.publish.json`, `.errors.json`, `.xrefmap.json` etc.
