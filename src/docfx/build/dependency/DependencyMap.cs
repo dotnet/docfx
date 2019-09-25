@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -21,8 +22,10 @@ namespace Microsoft.Docs.Build
             // TODO: Make dependency map a data model once we remove legacy.
             var dependencies = this
                 .OrderBy(d => d.Key.FilePath.Path)
+                .ThenBy(d => d.Key.FilePath.Origin)
+                .ThenBy(d => d.Key.FilePath.DependencyName ?? "")
                 .ToDictionary(
-                    d => d.Key.FilePath.Path,
+                    d => Path.Combine(d.Key.FilePath.DependencyName ?? "", d.Key.FilePath.Path).Replace("\\", "/"),
                     d => (from v in d.Value
                           orderby v.To.FilePath.Path, v.Type
                           select new DependencyManifestItem { Source = v.To.FilePath.Path, Type = v.Type }).ToArray());
