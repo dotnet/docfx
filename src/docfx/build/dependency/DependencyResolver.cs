@@ -318,7 +318,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.PathWithoutDependenyName), path));
+            return PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.PathWithoutDependencyName), path));
         }
 
         private static Dictionary<string, string> LoadResolveAlias(Config config)
