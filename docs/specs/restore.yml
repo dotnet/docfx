@@ -409,13 +409,13 @@ outputs:
       "dependencies": {
         "crrb/a.md": [
           {
-            "source": "b.md",
+            "source": "crrb/b.md",
             "type": "link"
            }
           ],
           "crrc/a.md": [
            {
-            "source": "b.md",
+            "source": "crrc/b.md",
             "type": "link"
            }
           ],
