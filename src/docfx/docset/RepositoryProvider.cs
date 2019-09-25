@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RepositoryProvider
     {
-        private readonly ConcurrentDictionary<(FileOrigin origin, string dependencyName), Lazy<(string docset, Repository repository)>> _repositories
+        private readonly ConcurrentDictionary<(FileOrigin origin, string dependencyName), Lazy<(string docset, Repository repository)>> _dependencyRepositories
             = new ConcurrentDictionary<(FileOrigin origin, string dependencyName), Lazy<(string docset, Repository repository)>>();
 
         private string _locale;
@@ -51,6 +51,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(_fallbackRepository is null);
             Debug.Assert(_restoreGitMap is null);
+            Debug.Assert(restoreGitMap != null);
 
             _restoreGitMap = restoreGitMap;
             _fallbackRepository = GetFallbackRepository(_docsetRepository, restoreGitMap);
@@ -84,7 +85,7 @@ namespace Microsoft.Docs.Build
                     return (_fallbackDocset, _fallbackRepository);
 
                 case FileOrigin.Template when _config != null && _restoreGitMap != null:
-                    return _repositories.GetOrAdd((origin, dependencyName), _ =>
+                    return _dependencyRepositories.GetOrAdd((origin, dependencyName), _ =>
                     new Lazy<(string docset, Repository repository)>(() =>
                     {
                         var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.Localization.DefaultLocale);
@@ -101,7 +102,7 @@ namespace Microsoft.Docs.Build
                     })).Value;
 
                 case FileOrigin.Dependency when _config != null && _restoreGitMap != null && dependencyName != null:
-                    return _repositories.GetOrAdd((origin, dependencyName), _ =>
+                    return _dependencyRepositories.GetOrAdd((origin, dependencyName), _ =>
                     new Lazy<(string docset, Repository repository)>(() =>
                     {
                         var dependency = _config.Dependencies[dependencyName];
@@ -124,8 +125,6 @@ namespace Microsoft.Docs.Build
             Repository repository,
             RestoreGitMap restoreGitMap)
         {
-            Debug.Assert(restoreGitMap != null);
-
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })

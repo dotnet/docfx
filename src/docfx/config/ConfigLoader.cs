@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, bool extend = true)
             => LoadCore(options, extend);
 
-        public bool TryGetConfigPath(out FilePath configPath)
+        private bool TryGetConfigPath(out FilePath configPath)
         {
             configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
 
