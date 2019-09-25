@@ -139,7 +139,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var (originalRedirectUrl, redirect) in redirectionsWithDocumentId)
             {
-                var (_, redirectionSourceMonikers) = monikerProvider.GetFileLevelMonikers(redirect);
+                var (error, redirectionSourceMonikers) = monikerProvider.GetFileLevelMonikers(redirect);
+                if (error != null)
+                {
+                    errorLog.Write(error);
+                }
                 var normalizedRedirectUrl = NormalizeRedirectUrl(redirect.RedirectionUrl);
                 if (!publishUrlMap.TryGetValue(normalizedRedirectUrl, out var docs))
                 {
@@ -150,11 +154,11 @@ namespace Microsoft.Docs.Build
                     List<Document> candidates;
                     if (!redirectionSourceMonikers.Any())
                     {
-                        candidates = docs.Where(doc => monikerProvider.GetFileLevelMonikers(doc).monikers.Count() == 0).ToList();
+                        candidates = docs.Where(doc => !monikerProvider.GetFileLevelMonikers(doc).monikers.Any()).ToList();
                     }
                     else
                     {
-                        candidates = docs.Where(doc => monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Count() > 0).ToList();
+                        candidates = docs.Where(doc => monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
                     }
                     foreach (var item in candidates)
                     {
