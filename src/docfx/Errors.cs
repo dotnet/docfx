@@ -569,7 +569,7 @@ namespace Microsoft.Docs.Build
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerConfigMissing(SourceInfo<string> source)
+        public static Error MonikerRangeUndefined(SourceInfo<string> source)
             => new Error(ErrorLevel.Error, "moniker-range-undefined", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
 
         /// <summary>
@@ -577,10 +577,10 @@ namespace Microsoft.Docs.Build
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error EmptyMonikers(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
+        public static Error MonikeRangeOutOfScope(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
             => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
 
-        public static Error EmptyMonikers(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+        public static Error MonikeRangeOutOfScope(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
             => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
 
         /// <summary>
