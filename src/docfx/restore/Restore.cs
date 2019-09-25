@@ -67,8 +67,11 @@ namespace Microsoft.Docs.Build
                     var restoredGitLock = new List<DependencyGitLock>();
                     foreach (var restoreResult in restoreDependencyResults.Concat(new[] { restoreFallbackResult }))
                     {
-                        DependencyLockProvider.SaveGitLock(docsetPath, locale, extendedConfig.DependencyLock, restoredGitLock);
+                        if (restoreResult != null)
+                            restoredGitLock.Add(new DependencyGitLock { Url = restoreResult.Remote, Branch = restoreResult.Branch, Commit = restoreResult.Commit });
                     }
+
+                    DependencyLockProvider.SaveGitLock(docsetPath, locale, extendedConfig.DependencyLock, restoredGitLock);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
