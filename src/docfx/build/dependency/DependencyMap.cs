@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 .ToDictionary(
                     d => GetSourcePath(d.Key.FilePath),
                     d => (from v in d.Value
-                          orderby v.To.FilePath.Path, v.Type
+                          orderby v.To.FilePath.Path, v.To.FilePath.Origin, v.To.FilePath.DependencyName ?? "", v.Type
                           select new DependencyManifestItem { Source = GetSourcePath(v.To.FilePath), Type = v.Type }).ToArray());
 
             return new { dependencies };
