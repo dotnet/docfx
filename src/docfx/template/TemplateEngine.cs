@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        public static TemplateEngine Create(Docset docset, RestoreGitMap restoreGitMap)
+        public static TemplateEngine Create(Docset docset, RepositoryProvider repositoryProvider)
         {
             Debug.Assert(docset != null);
 
@@ -148,9 +148,8 @@ namespace Microsoft.Docs.Build
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var theme = LocalizationUtility.GetLocalizedTheme(docset.Config.Template, docset.Locale, docset.Config.Localization.DefaultLocale);
-            var (themePath, _) = restoreGitMap.GetRestoreGitPath(theme, bare: false);
-            return new TemplateEngine(themePath);
+            var (templateEntry, _) = repositoryProvider.GetRepositoryWithEntry(FileOrigin.Template);
+            return new TemplateEngine(templateEntry);
         }
 
         private JObject LoadGlobalTokens()
