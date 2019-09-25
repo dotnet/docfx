@@ -8,19 +8,13 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreFileMap
     {
-        private readonly string _docsetPath;
-        private readonly string _fallbackDocsetPath;
+        private readonly Input _input;
 
-        public RestoreFileMap(string docsetPath, string fallbackDocsetPath = null)
+        public RestoreFileMap(Input input)
         {
-            Debug.Assert(docsetPath != null);
-            _docsetPath = docsetPath;
-            _fallbackDocsetPath = fallbackDocsetPath;
-        }
+            Debug.Assert(input != null);
 
-        public string GetRestoredFileContent(SourceInfo<string> url)
-        {
-            return GetRestoredFileContent(_docsetPath, url, _fallbackDocsetPath);
+            _input = input;
         }
 
         public string GetRestoredFilePath(SourceInfo<string> url)
@@ -29,19 +23,16 @@ namespace Microsoft.Docs.Build
             if (!fromUrl)
             {
                 // directly return the relative path
-                var fullPath = Path.Combine(_docsetPath, url);
-                if (File.Exists(fullPath))
+                var localFilePath = new FilePath(url, FileOrigin.Default);
+                if (_input.Exists(localFilePath))
                 {
-                    return fullPath;
+                    return _input.TryGetPhysicalPath(localFilePath, out var fullPath) ? fullPath : default;
                 }
 
-                if (!string.IsNullOrEmpty(_fallbackDocsetPath))
+                localFilePath = new FilePath(url, FileOrigin.Fallback);
+                if (_input.Exists(localFilePath))
                 {
-                    fullPath = Path.Combine(_fallbackDocsetPath, url);
-                    if (File.Exists(fullPath))
-                    {
-                        return fullPath;
-                    }
+                    return _input.TryGetPhysicalPath(localFilePath, out var fullPath) ? fullPath : default;
                 }
 
                 throw Errors.FileNotFound(url).ToException();
@@ -56,25 +47,26 @@ namespace Microsoft.Docs.Build
             return filePath;
         }
 
-        public static string GetRestoredFileContent(string docsetPath, SourceInfo<string> url, string fallbackDocset)
+        public string GetRestoredFileContent(SourceInfo<string> url)
+        {
+            return GetRestoredFileContent(_input, url);
+        }
+
+        public static string GetRestoredFileContent(Input input, SourceInfo<string> url)
         {
             var fromUrl = UrlUtility.IsHttp(url);
             if (!fromUrl)
             {
-                // directly return the relative path
-                var fullPath = Path.Combine(docsetPath, url);
-                if (File.Exists(fullPath))
+                var localFilePath = new FilePath(url, FileOrigin.Default);
+                if (input.Exists(localFilePath))
                 {
-                    return File.ReadAllText(fullPath);
+                    return input.ReadString(localFilePath);
                 }
 
-                if (!string.IsNullOrEmpty(fallbackDocset))
+                localFilePath = new FilePath(url, FileOrigin.Fallback);
+                if (input.Exists(localFilePath))
                 {
-                    fullPath = Path.Combine(fallbackDocset, url);
-                    if (File.Exists(fullPath))
-                    {
-                        return File.ReadAllText(fullPath);
-                    }
+                    return input.ReadString(localFilePath);
                 }
 
                 throw Errors.FileNotFound(url).ToException();

@@ -24,7 +24,6 @@ namespace Microsoft.Docs.Build
                 by git.remote;
 
             var results = new ListBuilder<RestoreGitResult>();
-
             ParallelUtility.ForEach(
                 gitDependencies,
                 group =>

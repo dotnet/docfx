@@ -944,6 +944,7 @@ inputs:
       ]
     }
 outputs:
+  docs/x.json:
   9d4e15fd/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",

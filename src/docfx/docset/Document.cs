@@ -347,7 +347,7 @@ namespace Microsoft.Docs.Build
         private static string ApplyRoutes(FilePath path, IReadOnlyDictionary<string, string> routes, string siteBasePath)
         {
             // the latter rule takes precedence of the former rule
-            var pathToMatch = Path.Combine(path.DependencyName ?? "", path.Path).Replace("\\", "/");
+            var pathToMatch = path.Path;
             foreach (var (source, dest) in routes)
             {
                 var result = ApplyRoutes(pathToMatch, source, dest);

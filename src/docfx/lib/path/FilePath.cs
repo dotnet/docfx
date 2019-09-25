@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         /// <summary>
-        /// Gets the file path relative to the main docset/dependency docset/template.
+        /// Gets the file path relative to the main docset(fallback docset).
         /// </summary>
         public string Path { get; }
 
@@ -48,9 +48,23 @@ namespace Microsoft.Docs.Build
 
         public FilePath(string path, string dependencyName)
         {
-            Path = PathUtility.NormalizeFile(path);
+            Path = PathUtility.NormalizeFile(System.IO.Path.Combine(dependencyName, path));
             DependencyName = dependencyName;
             Origin = FileOrigin.Dependency;
+        }
+
+        /// <summary>
+        /// Gets the path relative to docset root or dependency docset root
+        /// </summary>
+        public string GetPathToOrigin()
+        {
+            if (Origin == FileOrigin.Dependency)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(DependencyName));
+                return PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName, Path));
+            }
+
+            return Path;
         }
 
         public static bool operator ==(FilePath a, FilePath b) => Equals(a, b);

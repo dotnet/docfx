@@ -725,6 +725,7 @@ inputs:
       ]
     }
 outputs:
+  docs/c.json:
   .errors.log: |
     ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
     ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)'","docs/b.yml"]

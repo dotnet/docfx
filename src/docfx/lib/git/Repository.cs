@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
 
             if (repoPath is null)
                 return null;
+
             if (string.IsNullOrEmpty(branch) || string.IsNullOrEmpty(commit) || string.IsNullOrEmpty(repoUrl))
             {
                 var (remote, repoBranch, repoCommit) = GitUtility.GetRepoInfo(repoPath);
