@@ -57,7 +57,15 @@ namespace Microsoft.Docs.Build
         /// Gets the path relative to docset root or dependency docset root
         /// </summary>
         public string GetPathToOrigin()
-            => PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName ?? ".", Path));
+        {
+            if (Origin == FileOrigin.Dependency)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(DependencyName));
+                return PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName, Path));
+            }
+
+            return Path;
+        }
 
         public static bool operator ==(FilePath a, FilePath b) => Equals(a, b);
 
