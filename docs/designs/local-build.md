@@ -24,9 +24,9 @@ The initial MVP project can be a command line tool that satisfies the above requ
 - Open vscode integrated terminal
 - Run `docfx build` to build all files
 - Run `docfx build --changed` to build only changed files
-  > Due to techinical limitations, we currently does not have a way to reliably detect potential impact of a change.
+  > Due to techinical limitations, we currently do not have a way to reliably detect potential impact of a change.
   > When you run `docfx build --changed`, we can only build changed content files (markdowns, TOCs, schema documents files),
-  > changing a token or config does not trigger build, in this case use `docfx build` instead.
+  > changing a token or config does not trigger dependency build, in this case use `docfx build` instead.
 
 - If authentication is required, users are guided to sign in using the standard [Azure AD device login flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-device-code).
   > The command line pauses and shows: _To sign in, use a web browser to open the page https://aka.ms/devicelogin and enter the code XXXX to authenticate._
@@ -71,7 +71,7 @@ docs language service | A vscode extension that provides diagnostics, intellisen
 
 Server build uses the exact same way as local command line build, the only exceptions are:
 - Server build runs `docfx` as a service account while locale build runs `docfx` as your personal Microsoft account.
-- Server build may sets some server specific environment variables.
+- Server build may set some server specific environment variables.
 
 ![](./images/local-build-server-build.png)
 
@@ -99,14 +99,50 @@ For local build, `docfx` needs to recognize these config files by embedding conf
 
 #### Config Service
 
-Some config values are protected resources, they __MUST__ be gated behind an authenticated service. `docs build service` exposes a `/config/docfx` endpoint to retrieve these protected resources:
+Some config values are protected resources, they __MUST__ be gated behind an authenticated service. `docs build service` exposes an `/config/docfx` endpoint to retrieve these protected resources. The response is a JSON object that confirms to `docfx.yml` configuration schema.
 
+_Example Request:_
 
-url | url query parameters | allow public access | remarks
-----|----|---|---
-`/monikerdefinition` | | ❌ | Returns a JSON that confirms to docfx `monikerDefiniton` config 
-`/metadataschema` | repository, branch | ✔ | Returns metadata JSON schema converted from metadata validation service. OPS metadata schema is bundled inside docfx.
-`/xref/{basepath}` | exclude, branch, hostname | ✔ for public xrefmap. ❌ for private xrefmap | __TBD__ . _exclude_ represents docset name to exclude. when _branch_ missing, implies public xrefmap. When _hostname_ missing, implies _docs.microsoft.com_.
+```
+GET /config/docfx?repository=https%3A%2F%2Fgithub.com%2FMicrosoftDocs%2Fazure-docs-pr
+```
+
+_Example Response:_
+```json
+{
+   "monikerDefinition": "https://api.docs.com/config/monikerDefinition",
+   "metadataSchema": "https://api.docs.com/config/metadataSchema",
+   "customErrors": {
+     "h1-missing": {
+       "severity": "error"
+     }
+   }
+}
+```
+
+#### Config Parameterization
+
+The `docfx.yml` file at rest on disk uses `use` (currently named `extend`) to specify which configuration service to use:
+
+```yml
+name: Docs.azure-documents
+use: https://api.docs.com/config/docfx
+xref:
+- https://api.docs.com/xref/dotnet
+- https://api.docs.com/xref/java
+```
+The following variables are available as request headers when calling config service (as well as other outgoing HTTP calls):
+
+name | example
+----|----
+`Docfx-Name` | Docs.azure-documents
+`Docfx-Locale` | en-us
+`Docfx-Repository-Url` | https://github.com/MicrosoftDocs/azure-docs
+`Docfx-Repository-Branch` | master
+
+> An alternative is to pass these parameters explicitly use URL parameters, such design may produce tedious config like `https://api.docs.com/config/docfx?name={name}&locale={locale}&repository_url={repository_url}&repository_branch={repository_branch}` and it is hard to version.
+
+> The practise of using `X-` as custom http headers is __deprecated__, thus our headers are prefixed by `Docfx_`.
 
 #### Config Service Authentication
 
@@ -131,8 +167,18 @@ When a host enables Microsoft Identity, all requests to that host tries to use e
 
 ### Language Server
 
-LSP uses [JSON RPC](https://www.jsonrpc.org/specification), a simple, light-weight JSON based remote procedure call protocol as the base protocol. To integrate LSP with vscode, language servers are lauched as a seperate process and communicate with vscode using standard input and standard output streams.
+LSP defines the [standard communication protocol](https://microsoft.github.io/language-server-protocol/specifications/specification-3-14/) using [JSON RPC](https://www.jsonrpc.org/specification), a simple, light-weight JSON based remote procedure call protocol as the base protocol. To integrate LSP with vscode, language servers are lauched as a seperate process and communicate with vscode using standard input and standard output streams.
 
 `docfx serve` command launches `docfx` as a local web server. When `--language-server` option is specified, it also launches the language server.
 
 > The reason to use `docfx serve --language-server` as the command over `docfx watch` is that watching file changes is done in language clients (vscode) for [good reasons](https://microsoft.github.io/language-server-protocol/specification#workspace_didChangeWatchedFiles). If there is need to watch file system changes without a language client (vscode), we can choose to add a `--watch` flag to `docfx serve` that enables file system watching.
+
+To support basic local build, `docfx serve --language-server` exposes these custom APIs:
+
+#### `docfx/build`
+
+```csharp
+{
+  "changed": false
+}
+```
