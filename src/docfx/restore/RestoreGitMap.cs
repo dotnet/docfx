@@ -95,11 +95,9 @@ namespace Microsoft.Docs.Build
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static RestoreGitMap Create(string docsetPath, Config config, string locale)
+        public static RestoreGitMap Create(string docsetPath, string locale)
         {
-            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
-                    ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
-            var dependencyLockProvider = DependencyLockProvider.Create(docsetPath, dependencyLockPath);
+            var dependencyLockProvider = DependencyLockProvider.CreateFromAppData(docsetPath, locale);
 
             return new RestoreGitMap(dependencyLockProvider, docsetPath);
         }

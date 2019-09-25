@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     Files.UnionWith(dependencyFiles);
                 }
 
-                _fileNames.UnionWith(_input.ListFilesRecursive(FileOrigin.Dependency, dependencyName).Select(f => Path.Combine(dependencyName, f.Path).Replace("\\", "/")).ToList());
+                _fileNames.UnionWith(_input.ListFilesRecursive(FileOrigin.Dependency, dependencyName).Select(f => f.Path).ToList());
             }
         }
 

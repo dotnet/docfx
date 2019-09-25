@@ -23,26 +23,27 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var repository = Repository.Create(docsetPath);
+                    // load and trace entry repository
+                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
+                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+                    var locale = LocalizationUtility.GetLocale(repository, options);
 
-                    var localeToRestore = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
+                    // load configuration from current entry or fallback repository
+                    var input = new Input(docsetPath, repositoryProvider);
+                    var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
                     var configPath = docsetPath;
-                    (errors, config) = ConfigLoader.TryLoad(configPath, options, localeToRestore, extend: false);
-
+                    (errors, config) = configLoader.TryLoad(options, extend: false);
                     var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-                    if (!ConfigLoader.TryGetConfigPath(docsetPath, out _))
-                    {
-                        // build from loc directly with overwrite config
-                        // use the fallback config
-                        Log.Write("Use config from fallback repository");
-                        List<Error> fallbackConfigErrors;
-                        configPath = restoreFallbackResult.Path;
-                        (fallbackConfigErrors, config) = ConfigLoader.Load(configPath, options, localeToRestore, extend: false);
-                        errors.AddRange(fallbackConfigErrors);
-                    }
+                    if (restoreFallbackResult != null)
+                        repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit));
 
+                    List<Error> fallbackConfigErrors;
+                    (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);
+                    errors.AddRange(fallbackConfigErrors);
+
+                    // config error log, and return if config has errors
                     if (errorLog.Write(errors))
                         return;
 
@@ -52,7 +53,7 @@ namespace Microsoft.Docs.Build
                         restoreUrl => RestoreFile.Restore(restoreUrl, config));
 
                     // extend the config after the extend url being restored
-                    var (extendConfigErrors, extendedConfig) = ConfigLoader.Load(configPath, options, localeToRestore, extend: true);
+                    var (extendConfigErrors, extendedConfig) = configLoader.Load(options, extend: true);
                     errorLog.Write(extendConfigErrors);
 
                     // restore urls except extend url
@@ -60,21 +61,14 @@ namespace Microsoft.Docs.Build
                     await RestoreFile.Restore(restoreUrls, extendedConfig);
 
                     // restore git repos includes dependency repos, theme repo and loc repos
-                    var restoreDependencyResults = RestoreGit.Restore(extendedConfig, localeToRestore, repository, DependencyLockProvider.Create(docsetPath, extendedConfig.DependencyLock));
+                    var restoreDependencyResults = RestoreGit.Restore(extendedConfig, locale, repository, DependencyLockProvider.CreateFromConfig(input, extendedConfig));
 
                     // save dependency lock
                     var restoredGitLock = new List<DependencyGitLock>();
                     foreach (var restoreResult in restoreDependencyResults.Concat(new[] { restoreFallbackResult }))
                     {
-                        if (restoreResult != null)
-                            restoredGitLock.Add(new DependencyGitLock { Url = restoreResult.Remote, Branch = restoreResult.Branch, Commit = restoreResult.Commit });
+                        DependencyLockProvider.SaveGitLock(docsetPath, locale, extendedConfig.DependencyLock, restoredGitLock);
                     }
-
-                    var dependencyLockFilePath = string.IsNullOrEmpty(extendedConfig.DependencyLock)
-                        ? AppData.GetDependencyLockFile(docsetPath, localeToRestore)
-                        : extendedConfig.DependencyLock;
-
-                    DependencyLockProvider.SaveGitLock(docsetPath, dependencyLockFilePath, restoredGitLock);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
