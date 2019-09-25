@@ -12,29 +12,42 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
+        public static async Task Run(string docsetPath, CommandLineOptions options)
         {
-            var repository = Repository.Create(docsetPath);
-            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+            List<Error> errors;
+            Config config = null;
 
-            var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
-            using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
+            using (var errorLog = new ErrorLog("build", docsetPath, options.Output, () => config, options.Legacy))
             {
-                var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
+                try
+                {
+                    var repository = Repository.Create(docsetPath);
+                    Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-                var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
-                errorLog.Configure(config);
+                    var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
+                    using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
+                    {
+                        var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
 
-                // just return if config loading has errors
-                if (errorLog.Write(configErrors))
-                    return;
+                        (errors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
 
-                var (docset, fallbackDocset) = GetDocsetWithFallback(
-                    docsetPath, locale, config, repository, fallbackRepo, restoreGitMap);
-                var outputPath = Path.Combine(docsetPath, config.Output.Path);
-                var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
+                        // just return if config loading has errors
+                        if (errorLog.Write(errors))
+                            return;
 
-                await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, restoreGitMap);
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(
+                            docsetPath, locale, config, repository, fallbackRepo, restoreGitMap);
+                        var outputPath = Path.Combine(docsetPath, config.Output.Path);
+                        var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
+
+                        await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, restoreGitMap);
+                    }
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    Log.Write(dex);
+                    errorLog.Write(dex.Error, isException: true);
+                }
             }
         }
 
