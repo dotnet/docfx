@@ -351,6 +351,61 @@ outputs:
   xyz/b.json:
   crrc/c.json:
 ---
+# apply metadata to the files in dependency repository
+repos:
+  https://docs.com/crrmetadata/1:
+    - files:
+        docfx.yml: |
+          fileMetadata:
+            key:
+              docs/**/*: value
+              crrb/**/*: another value
+          dependencies:
+            crrb:
+              url: https://docs.com/crrmetadata/2
+              branch: master
+              includeInBuild: true
+        docs/b.md:
+  https://docs.com/crrmetadata/2:
+    - files:
+        b.md:
+outputs:
+  docs/b.json: |
+    {"key": "value"}
+  crrb/b.json: |
+    {"key": "another value"}
+---
+# build crr file with moniker
+repos:
+  https://docs.com/crrmoniker/1:
+    - files:
+        docfx.yml: |
+          monikerRange:
+            'docs/**': '>= netcore-1.0'
+            'crrb/**': '>= netcore-1.1'
+          dependencies:
+            crrb:
+              url: https://docs.com/crrmoniker/2
+              branch: master
+              includeInBuild: true
+          monikerDefinition: monikerDefinition.json
+        docs/b.md:
+        monikerDefinition.json: |
+          {
+            "monikers": [
+              { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+              { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+            ]
+          }
+  https://docs.com/crrmoniker/2:
+    - files:
+        b.md:
+outputs:
+  218c13d0/crrb/b.json:
+  9d4e15fd/docs/b.json:
+  .publish.json: |
+    {"files": [{"url": "/crrb/b", "monikers":["netcore-1.1"]}, {"url": "/docs/b", "monikers":["netcore-1.0","netcore-1.1"]}]}
+---
 # crr files have same name but in different crr
 legacy: true
 repos:
