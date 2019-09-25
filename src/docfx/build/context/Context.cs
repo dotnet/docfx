@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal sealed class Context : IDisposable
     {
+        public readonly Config Config;
+        public readonly RestoreFileMap RestoreFileMap;
         public readonly ErrorLog ErrorLog;
         public readonly Cache Cache;
         public readonly Output Output;
@@ -24,42 +26,44 @@ namespace Microsoft.Docs.Build
         public readonly BookmarkValidator BookmarkValidator;
         public readonly DependencyMapBuilder DependencyMapBuilder;
         public readonly DependencyResolver DependencyResolver;
+        public readonly XrefResolver XrefResolver;
         public readonly GitHubUserCache GitHubUserCache;
         public readonly MicrosoftGraphCache MicrosoftGraphCache;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
+        public readonly MarkdownEngine MarkdownEngine;
         public readonly TemplateEngine TemplateEngine;
-
-        public XrefResolver XrefResolver => _xrefResolver.Value;
+        public readonly FileLinkMapBuilder FileLinkMapBuilder;
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
-        private readonly Lazy<XrefResolver> _xrefResolver;
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, RestoreGitMap restoreGitMap)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, Input input, RepositoryProvider repositoryProvider)
         {
-            var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
-
+            var restoreFileMap = new RestoreFileMap(input);
             DependencyMapBuilder = new DependencyMapBuilder();
-            _xrefResolver = new Lazy<XrefResolver>(() => new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder));
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>();
 
+            Config = docset.Config;
+            RestoreFileMap = restoreFileMap;
             ErrorLog = errorLog;
-            Output = new Output(outputPath);
-            Input = new Input(docset.DocsetPath, docset.Config, restoreGitMap, fallbackDocset?.Repository);
+            Input = input;
+            Output = new Output(outputPath, input);
             Cache = new Cache(Input);
-            TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
-            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine);
+            TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
+            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+            FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);
+            XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
 
             DependencyResolver = new DependencyResolver(
                 docset,
@@ -75,8 +79,11 @@ namespace Microsoft.Docs.Build
                 GitCommitProvider,
                 BookmarkValidator,
                 DependencyMapBuilder,
-                _xrefResolver,
-                TemplateEngine);
+                XrefResolver,
+                TemplateEngine,
+                FileLinkMapBuilder);
+
+            MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
         }
 
         public void Dispose()

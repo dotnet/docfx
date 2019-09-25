@@ -122,10 +122,10 @@ outputs:
 # Manifest contains nested token or codesnippet dependencies
 inputs:
   docfx.yml:
-  docs/a.md: a [!INCLUDE[](b.md)
+  docs/a.md: a [!INCLUDE[](b.md)]
   docs/b.md: |
     Link to [c](c.md)
-    b [!INCLUDE[](c.md)
+    b [!INCLUDE[](c.md)]
   docs/c.md:
 outputs:
   docs/a.json:
@@ -173,9 +173,9 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md: |
-    one [!INCLUDE[](b.md)
+    one [!INCLUDE[](b.md)]
   docs/b.md: |
-    another [!INCLUDE[](a.md)
+    another [!INCLUDE[](a.md)]
 outputs:
   docs/a.json:
   docs/b.json:
@@ -412,3 +412,77 @@ outputs:
       }
     }
 ---
+# output .links.json
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    uid: a
+    title: netcore
+    monikerRange: '> netcore-1.0'
+    ---
+    Moniker: netcore-1.1
+  docs/v1/b.md: |
+    Link to @a
+    Link to [some text](../v2/c.md)
+    Link to [not existed](c.md)
+    Link to [absolute link](/docs/c)
+    Link to [relative link with bookmark](../v2/d.md#title-1)
+    Link to [absolute link with bookmark](/docs/d.md#title-1)
+    Link to [empty]()
+  docs/v2/b.md: |
+    Link to @a
+  docs/v2/c.md: |
+    some text
+  docs/v2/d.md: |
+    # title 1
+  docs/TOC.yml: |
+    - name: Toc Reference
+      href: v1/b.md
+    - name: Non-existed Toc reference
+      href: b.md
+  docs/v1/TOC.yml: |
+    - name: Toc Reference
+      href: b.md
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+  9d4e15fd/docs/b.json:
+  9d4e15fd/docs/toc.json:
+  218c13d0/docs/a.json:
+  23d205a5/docs/b.json:
+  23d205a5/docs/c.json:
+  23d205a5/docs/d.json:
+  docs/toc.json:
+  .links.json: |
+    {
+      "links":[
+        {"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md"},
+        {"source_url":"/docs/toc.json","target_url":"/docs/b"},
+        {"source_url":"/docs/toc.json","source_moniker_group": "9d4e15fd","target_url":"/docs/b"},
+        {"source_url":"/docs/toc.json","target_url":"b.md"},
+      ]
+    }
+  .errors.log: |
+    ["warning","file-not-found","Invalid file link: 'c.md'.","docs/v1/b.md",3,9]
+    ["warning","file-not-found","Invalid file link: 'b.md'.","docs/TOC.yml",4,9]

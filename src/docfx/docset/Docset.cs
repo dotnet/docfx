@@ -76,6 +76,7 @@ namespace Microsoft.Docs.Build
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
         }
 
+        // todo: use repository provider instead
         public Repository GetRepository(string filePath)
         {
             return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
