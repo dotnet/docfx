@@ -45,7 +45,7 @@ a/a.json:
 b/folder/b.md:
 ```
 
-Build output for each docset contains its own copy of `.publish.json`, `.errors.json`, `.xrefmap.json` etc.
+Build output for each docset contains its own copy of `.publish.json`, `.errors.log`, `.xrefmap.json` etc.
 
 > For backward compatibility, aggregated files like `op_aggregated_file_map_info.json`, `full-dependent-list.txt` are generated at output root folder. Or we can tweak build side components like reporting to adapt to the new output format. Theorically, 
 
