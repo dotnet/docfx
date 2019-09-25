@@ -33,6 +33,7 @@ namespace Microsoft.Docs.Build
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly MarkdownEngine MarkdownEngine;
         public readonly TemplateEngine TemplateEngine;
+        public readonly FileLinkMapBuilder FileLinkMapBuilder;
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
@@ -42,26 +43,27 @@ namespace Microsoft.Docs.Build
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath, fallbackDocset?.DocsetPath);
             DependencyMapBuilder = new DependencyMapBuilder();
-            XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder);
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<Document>();
 
             Config = docset.Config;
             RestoreFileMap = restoreFileMap;
             ErrorLog = errorLog;
-            Output = new Output(outputPath);
             Input = new Input(docset.DocsetPath, fallbackDocset?.DocsetPath, docset.Config, restoreGitMap);
+            Output = new Output(outputPath, Input);
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, restoreGitMap);
-            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
+            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder();
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+            FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);
+            XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
 
             DependencyResolver = new DependencyResolver(
                 docset,
@@ -78,7 +80,8 @@ namespace Microsoft.Docs.Build
                 BookmarkValidator,
                 DependencyMapBuilder,
                 XrefResolver,
-                TemplateEngine);
+                TemplateEngine,
+                FileLinkMapBuilder);
 
             MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
         }

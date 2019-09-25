@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
         {
-            return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, doc.FilePath.Path));
+            return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, Path.Combine(doc.FilePath.DependencyName ?? "", doc.FilePath.Path)));
         }
 
         public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, PublishItem manifestItem)

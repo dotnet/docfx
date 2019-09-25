@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Docset> _dependencies;
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
+        private readonly FileLinkMapBuilder _fileLinkMapBuilder;
 
         public DependencyResolver(
             Docset docset,
@@ -36,7 +37,8 @@ namespace Microsoft.Docs.Build
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
             XrefResolver xrefResolver,
-            TemplateEngine templateEngine)
+            TemplateEngine templateEngine,
+            FileLinkMapBuilder fileLinkMapBuilder)
         {
             _input = input;
             _docset = docset;
@@ -50,6 +52,7 @@ namespace Microsoft.Docs.Build
             _resolveAlias = LoadResolveAlias(docset.Config);
             _dependencies = dependencies;
             _templateEngine = templateEngine;
+            _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
         public (Error error, string content, Document file) ResolveContent(
@@ -92,6 +95,12 @@ namespace Microsoft.Docs.Build
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(
                     referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
+            }
+
+            // ignore self bookmark reference for FileLinkMap
+            if (!isSelfBookmark && !string.IsNullOrEmpty(link))
+            {
+                _fileLinkMapBuilder.AddFileLink(referencingFile, link);
             }
 
             return (error, link, file);

@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine)
+        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine, MonikerProvider monikerProvider)
         {
             var config = docset.Config;
 
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
+            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files, monikerProvider);
 
             Files.UnionWith(Redirections.Files);
 
