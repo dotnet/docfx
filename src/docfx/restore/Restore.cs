@@ -29,8 +29,9 @@ namespace Microsoft.Docs.Build
                 var configPath = docsetPath;
                 var (errors, config) = configLoader.TryLoad(options, extend: false);
                 var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-                if (restoreFallbackResult != null)
-                    repositoryProvider.ConfigFallbackRepository(GetRepository(restoreFallbackResult, bare: true));
+                var fallbackRepo = restoreFallbackResult != null ? Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit, true) : null;
+                if (fallbackRepo != null)
+                    repositoryProvider.ConfigFallbackRepository(fallbackRepo);
 
                 List<Error> fallbackConfigErrors;
                 (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);
@@ -66,13 +67,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 DependencyLockProvider.SaveGitLock(docsetPath, locale, extendedConfig.DependencyLock, restoredGitLock);
-            }
-
-            Repository GetRepository(RestoreGitResult restoreGitResult, bool bare)
-            {
-                var repo = Repository.Create(restoreGitResult.Path, restoreGitResult.Branch, restoreGitResult.Remote, restoreGitResult.Commit, bare);
-
-                return repo;
             }
         }
 
