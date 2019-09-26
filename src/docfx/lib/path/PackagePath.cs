@@ -9,34 +9,35 @@ namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// Define the location of a package.
-    /// A package is any of the following:
+    ///
+    /// A package is a collection of files, it can be any of the following:
     ///   a) A folder
     ///   b) A git url in the form of `{remote_url}#{commit-ish}`, when cloned, results in a)
-    /// The commit-sh can be any tag, sha, or branch. The default commit-ish is master.
+    /// The commit-ish can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class PackageUrl
+    internal class PackagePath
     {
         [JsonIgnore]
-        public PackageType Type { get; set; }
+        public PackageType Type { get; private set; }
 
-        public string Path { get; set; }
+        public string Path { get; private set; }
 
-        public string Url { get; set; }
+        public string Url { get; private set; }
 
-        public string Branch { get; set; }
+        public string Branch { get; private set; }
 
-        public PackageUrl()
+        public PackagePath()
         {
         }
 
-        public PackageUrl(string url)
+        public PackagePath(string url)
         {
             Url = url;
             OnDeserialized(default);
         }
 
-        public PackageUrl(string remote, string branch)
+        public PackagePath(string remote, string branch)
         {
             Debug.Assert(remote != null);
             Debug.Assert(branch != null);

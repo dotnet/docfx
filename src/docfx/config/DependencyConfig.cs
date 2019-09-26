@@ -3,19 +3,19 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyPackageUrl : PackageUrl
+    internal class DependencyConfig : PackagePath
     {
         /// <summary>
         /// Indicate the dependency repository may be added to <see cref="BuildScope"/> and treated as inScope.
         /// </summary>
-        public bool IncludeInBuild { get; set; }
+        public bool IncludeInBuild { get; private set; }
 
-        public DependencyPackageUrl()
+        public DependencyConfig()
             : base()
         {
         }
 
-        public DependencyPackageUrl(string url)
+        public DependencyConfig(string url)
             : base(url)
         {
         }

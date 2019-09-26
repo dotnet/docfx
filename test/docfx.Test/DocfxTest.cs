@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(basePath);
 
             var repos = spec.Repos
-                .Select(repo => new PackageUrl(repo.Key).Url)
+                .Select(repo => new PackagePath(repo.Key).Url)
                 .Distinct()
                 .Select((remote, index) => (remote, index))
                 .ToDictionary(
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
                 {
-                    var packageUrl = new PackageUrl(url);
+                    var packageUrl = new PackagePath(url);
                     TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, variables);
                 }
 
