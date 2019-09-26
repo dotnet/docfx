@@ -21,8 +21,6 @@ namespace Microsoft.Docs.Build
 
         public bool Legacy { get; set; }
 
-        public string Locale { get; set; }
-
         public string[] Environments { get; set; } = Array.Empty<string>();
 
         public Dictionary<string, TestGitCommit[]> Repos { get; set; } = new Dictionary<string, TestGitCommit[]>();

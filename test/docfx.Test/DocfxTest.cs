@@ -131,24 +131,10 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("Skip watch tests");
             }
 
-            if (!test.Summary.Contains("[from loc]", StringComparison.OrdinalIgnoreCase))
-            {
-                await RunBuild(docsetPath, outputPath, spec, spec.Locale);
-            }
-
-            // Verify build from localization docset also work
-            if (spec.Locale != null)
-            {
-                var locDocsetPath = t_repos.Value.FirstOrDefault(
-                    repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
-                if (locDocsetPath != null)
-                {
-                    await RunBuild(locDocsetPath, outputPath, spec, locale: null);
-                }
-            }
+            await RunBuild(docsetPath, outputPath, spec);
         }
 
-        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale)
+        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec)
         {
             Directory.CreateDirectory(outputPath);
             Directory.Delete(outputPath, recursive: true);
@@ -158,7 +144,7 @@ namespace Microsoft.Docs.Build
 
             using (TestUtility.EnsureFilesNotChanged(docsetPath))
             {
-                var options = $"{(spec.Legacy ? "--legacy" : "")} {(locale != null ? $"--locale {locale}" : "")}"
+                var options = $"{(spec.Legacy ? "--legacy" : "")}"
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                     .Concat(new[] { "--output", outputPath })
                     .ToArray();
