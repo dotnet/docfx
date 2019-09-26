@@ -30,9 +30,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <xref:""Microsoft.Build.Tasks?alt=ImmutableArray"">
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/>
 ";
-            // act
-            var marked = TestUtility.MarkupWithoutSourceInfo(content, "Topic.md");
-
             // assert
             var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref>
 &lt;xref:Microsoft.Build.Tasks&gt;
@@ -51,7 +48,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <xref href=""Microsoft.Build.Tasks?alt=ImmutableArray"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:&quot;Microsoft.Build.Tasks?alt=ImmutableArray&quot;&gt;""></xref>
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/></p>
 ";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.VerifyMarkup(content, expected);
         }
     }
 }

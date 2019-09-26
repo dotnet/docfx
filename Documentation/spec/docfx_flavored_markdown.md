@@ -330,6 +330,58 @@ DFM currently supports the following __`<language>`__ values to be able to retri
 > [!Note]
 > If dev-lang is not specified, file extension will be used to determine the language.
 
+## Code Snippet for Jupyter Notebooks
+
+Allows you to insert code from a code cell of a Jupyter Notebook. The `source` content in the specified code cell will expand. 
+
+Steps to use this:
+
+1.  In your Jupyter Notebook, add metadata to the code cell you will reference:
+    ```json
+      "metadata": {
+        "name": "{tagname}"
+       }
+    ```
+    
+1. In your .md file, use  `name` to identify the cell.  
+    ```md
+    [!notebook-<language>[](<codepath>?name={tagname})]]
+    ```
+    
+### Code Snippet for Jupyter Notebooks Sample
+
+For this Jupyter Notebook cell:
+
+```json
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "name": "import"
+   },
+   "outputs": [],
+   "source": [
+    "import azureml.core\n",
+    "print(azureml.core.VERSION)"
+   ]
+  },
+ ```
+ 
+Use the markup:
+
+ ```md
+[!notebook-python[](<codepath>?name={import})]]
+```
+
+to display the lines of code in the `source` part of the cell:
+
+```python
+import azureml.core
+print(azureml.core.VERSION)
+```
+
 ## Note (Warning/Tip/Important)
 Using specific syntax inside block quote to indicate the following content is Note.
 
