@@ -6,20 +6,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Xml;
-
-    using MarkdigEngine.Extensions;
-
-    using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
     public class QuoteSectionNoteTest
     {
-        private void TestMarkup(string source, string expected)
-        {
-            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-        }
-
         [Fact]
         [Trait("Related", "QuoteSectionNote")]
         public void QuoteSectionNoteTest_CornerCases()
@@ -41,7 +31,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <h5>WARNING</h5>
 </div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected, new[] { "invalid-note-section" });
         }
 
         [Fact]
@@ -53,7 +43,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <p>section</p>
 </div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -79,22 +69,13 @@ world</p>
 this is also warning</p>
 </div>
 ";
-            var parameter = new MarkdownServiceParameters
+            var tokens = new Dictionary<string, string>
             {
-                BasePath = ".",
-                Tokens = new Dictionary<string, string>
-                {
-                    {"note", "<h5>注意</h5>"},
-                    {"warning", "<h5>警告</h5>" }
-                }.ToImmutableDictionary(),
-                Extensions = new Dictionary<string, object>
-                {
-                    { "EnableSourceInfo", false }
-                }
+                {"note", "<h5>注意</h5>"},
+                {"warning", "<h5>警告</h5>" }
             };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(source, "Topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+
+            TestUtility.VerifyMarkup(source, expected, tokens: tokens);
         }
 
         [Fact]
@@ -112,7 +93,7 @@ this is also warning</p>
 <h5>WARNING</h5>
 </div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -154,7 +135,7 @@ world</p>
 <p>Hello world this IMPORTANT</p>
 </div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -180,7 +161,7 @@ world</p>
 this is also warning</p>
 </div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -188,7 +169,7 @@ this is also warning</p>
         public void TestDfmVideo_ConsecutiveVideos()
         {
             // 1. Prepare data
-            var root = @"The following is two videos.
+            var source = @"The following is two videos.
 > [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
 > [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]";
 
@@ -197,7 +178,7 @@ this is also warning</p>
 <div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
-            TestMarkup(root, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -205,7 +186,7 @@ this is also warning</p>
         public void TestDfmVideo_Video()
         {
             // 1. Prepare data
-            var root = @"The following is video.
+            var source = @"The following is video.
 > [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
 ";
 
@@ -213,7 +194,7 @@ this is also warning</p>
 <div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
-            TestMarkup(root, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -236,7 +217,7 @@ this is also warning</p>
 <div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Theory]
@@ -309,7 +290,7 @@ no-note text 2-2</p>
         #endregion
         public void TestSectionNoteInBlockQuote(string source, string expected)
         {
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Theory]
@@ -331,7 +312,8 @@ no-note text 2-2</p>
         public void TestSectionNoteMixture(string source)
         {
             var expected = "<blockquote>\n<p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\">\n<h5>NOTE</h5>\n<p>This is note text</p>\n</div>\n<div class=\"WARNING\">\n<h5>WARNING</h5>\n<p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"diva\">\n<p>this is div with class a and id diva\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"divb\">\n<p>this is div with class b and cause divb</p>\n</div>\n<div class=\"IMPORTANT\">\n<h5>IMPORTANT</h5>\n<p>This is imoprtant text follow div</p>\n</div>\n";
-            TestMarkup(source, expected);
+
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Theory]
@@ -359,22 +341,26 @@ no-note text 2-2</p>
 >```")]
         public void TestSectionBlockLevel(string source)
         {
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = "."
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var content = service.Markup(source, "Topic.md");
+            var expected = @"<div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar"">
+<pre><code class=""lang-cs-i"">   var outlookClient = await CreateOutlookClientAsync(&quot;Calendar&quot;);
+   var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
+           foreach (var calendarEvent in events.CurrentPage)
+           {
+               System.Diagnostics.Debug.WriteLine(&quot;Event '{0}'.&quot;, calendarEvent.Subject);
+           }
+</code></pre>
+<pre><code class=""lang-javascript-i"">outlookClient.me.events.getEvents().fetch().then(function(result) {
+       result.currentPage.forEach(function(event) {
+       console.log('Event &quot;' + event.subject + '&quot;')
+   });
+}, function(error)
+   {
+       console.log(error);
+   });
+</code></pre>
+</div>";
 
-            // assert
-            XmlDocument xdoc = new XmlDocument();
-            xdoc.LoadXml(content.Html);
-            var tabbedCodeNode = xdoc.SelectSingleNode("//div[@class='tabbedCodeSnippets' and @data-resources='OutlookServices.Calendar']");
-            Assert.True(tabbedCodeNode != null);
-            var csNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-cs-i']");
-            Assert.True(csNode != null);
-            var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
-            Assert.True(jsNode != null);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Theory]
@@ -397,7 +383,7 @@ no-note text 2-2</p>
 </div>
 </div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Theory]
@@ -407,7 +393,7 @@ no-note text 2-2</p>
         [InlineData(@"> [!div `id=""right""`]", "<div id=\"right\">\n</div>\n")]
         public void TestSectionCornerCase(string source, string expected)
         {
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Theory]
@@ -422,7 +408,7 @@ no-note text 2-2</p>
 We should support that.</p>
 </blockquote>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected, new[] { "invalid-note-section" });
         }
 
         [Fact]
@@ -435,7 +421,7 @@ We should support that.</p>
             var expected = $@"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://microsoft.com:8080/?query=value+A#bookmark"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -448,7 +434,7 @@ We should support that.</p>
             var expected = $@"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -461,7 +447,7 @@ We should support that.</p>
             var expected = $@"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?query=value+A&nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -474,7 +460,7 @@ We should support that.</p>
             var expected = $@"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://www.youtube-nocookie.com/foo"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
     }
 }

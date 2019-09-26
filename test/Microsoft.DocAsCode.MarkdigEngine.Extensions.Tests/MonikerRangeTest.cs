@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
     public class MonikerRangeTest
@@ -15,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         public void MonikerRangeTestGeneral()
         {
             //arange
-            var content = @"# Article 2
+            var source = @"# Article 2
 
 Shared content.
 
@@ -38,8 +36,6 @@ Inline ::: should not end moniker zone.
 Shared content.
 ";
 
-            var marked = TestUtility.Markup(content, "fake.md");
-
             // assert
             var expected = @"<h1 id=""article-2"" sourceFile=""fake.md"" sourceStartLineNumber=""1"">Article 2</h1>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""3"">Shared content.</p>
@@ -53,8 +49,8 @@ Inline ::: should not end moniker zone.</p>
 </div>
 <h2 id=""section-2"" sourceFile=""fake.md"" sourceStartLineNumber=""19"">Section 2</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""21"">Shared content.</p>
-".Replace("\r\n", "\n");
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+";
+            TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "fake.md");
         }
 
 
@@ -67,17 +63,7 @@ Inline ::: should not end moniker zone.</p>
             // assert
             var expected = @"<p>::: moniker range=&quot;azure-rest-1.0</p>
 ";
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
-
-            Logger.RegisterListener(listener);
-            using (new LoggerPhaseScope(LoggerPhase))
-            {
-                TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
-            }
-            Logger.UnregisterListener(listener);
-
-            Assert.Single(listener.Items);
-            Assert.Equal("MonikerRange does not have ending charactor (\").", listener.Items[0].Message);
+            TestUtility.VerifyMarkup(source, expected, new[] { "invalid-moniker-range" });
         }
 
         [Fact]
@@ -92,21 +78,8 @@ Inline ::: should not end moniker zone.</p>
             var expected = @"<div range=""start"">
 </div>
 ";
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
-
-            Logger.RegisterListener(listener);
-            using (new LoggerPhaseScope(LoggerPhase))
-            {
-                TestUtility.AssertEqual(expected, source2, TestUtility.MarkupWithoutSourceInfo);
-
-                Assert.Empty(listener.Items);
-
-                TestUtility.AssertEqual(expected, source1, TestUtility.MarkupWithoutSourceInfo);
-            }
-            Logger.UnregisterListener(listener);
-
-            Assert.Single(listener.Items);
-            Assert.Equal("No \"::: moniker-end\" found for \"start\", MonikerRange does not end explictly.", listener.Items[0].Message);
+            TestUtility.VerifyMarkup(source2, expected);
+            TestUtility.VerifyMarkup(source1, expected, new[] { "invalid-moniker-range" });
         }
 
         [Fact]
@@ -120,7 +93,7 @@ Inline ::: should not end moniker zone.</p>
 </code></pre>
 </div>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
     }
 }

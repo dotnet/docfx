@@ -23,6 +23,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty(Constants.PropertyName.Inheritance)]
         public List<ApiInheritanceTreeBuildOutput> Inheritance { get; set; }
 
+        [YamlMember(Alias = "level")]
+        [JsonProperty("level")]
+        public int Level { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

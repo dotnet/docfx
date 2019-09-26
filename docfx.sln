@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -189,6 +189,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{C533106C-5699-450C-A18C-249364CBF58B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PDF", "PDF", "{15381BB2-762E-4841-8E5B-ACE727A3F2DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests.csproj", "{4C9CF944-2489-4AC2-9B18-497D12B53769}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1004,6 +1006,18 @@ Global
 		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|x64.Build.0 = Release|Any CPU
 		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|x86.ActiveCfg = Release|Any CPU
 		{433A15DB-10E0-4B1F-B203-DB76CFEEEFD7}.Release|x86.Build.0 = Release|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Debug|x64.Build.0 = Debug|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Debug|x86.Build.0 = Debug|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Release|x64.ActiveCfg = Release|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Release|x64.Build.0 = Release|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Release|x86.ActiveCfg = Release|Any CPU
+		{4C9CF944-2489-4AC2-9B18-497D12B53769}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1095,6 +1109,7 @@ Global
 		{377A4748-C426-4D5E-9A25-6D1809A7B85C} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{C533106C-5699-450C-A18C-249364CBF58B} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{15381BB2-762E-4841-8E5B-ACE727A3F2DA} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{4C9CF944-2489-4AC2-9B18-497D12B53769} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}

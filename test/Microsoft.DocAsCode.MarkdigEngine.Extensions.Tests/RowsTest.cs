@@ -7,18 +7,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     public class RowTest
     {
-        private void TestMarkup(string source, string expected)
-        {
-            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-        }
-
-        private void TestMarkupProd(string source, string expected)
-        {
-            var marked = TestUtility.Markup(source, "Topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-        }
-
         [Fact]
         [Trait("Related", "Row")]
         public void RowTest_SimpleRow()
@@ -35,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 </section>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -54,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 </section>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -79,7 +67,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 </section>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -110,7 +98,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 </section>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -135,7 +123,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 </section>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -172,7 +160,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 </section>
 ";
-            TestMarkup(source, expected);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -209,7 +197,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </div>
 </section>
 ";
-            TestMarkupProd(source, expected);
+            TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
         }
     }
 }
