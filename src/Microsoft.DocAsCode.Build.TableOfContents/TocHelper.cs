@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             YamlDeserializerWithFallback.Create<TocViewModel>()
             .WithFallback<TocRootViewModel>();
 
-        public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host)
+        public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host, IDictionary<string, FileModel> referencedTocModels)
         {
             var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
             foreach (var model in models)
@@ -40,6 +40,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 {
                     model.Content = tocItemInfo.Content;
                     yield return model;
+                }
+                else
+                {
+                    if (referencedTocModels != null && !referencedTocModels.ContainsKey(model.Key))
+                    {
+                        model.Content = tocItemInfo.Content;
+                        referencedTocModels.Add(model.Key, model);
+                    }
                 }
             }
         }
