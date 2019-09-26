@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -9,20 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static void MoveFileSafe(string sourceFileName, string destFileName)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(sourceFileName));
-            Debug.Assert(!string.IsNullOrEmpty(destFileName));
-            Debug.Assert(File.Exists(sourceFileName));
-            if (PathUtility.NormalizeFile(sourceFileName) != PathUtility.NormalizeFile(destFileName))
-            {
-                PathUtility.CreateDirectoryFromFilePath(destFileName);
-
-                File.Delete(destFileName);
-                File.Move(sourceFileName, destFileName);
-            }
-        }
-
         public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
         {
             return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, doc.FilePath.Path));
@@ -54,14 +39,6 @@ namespace Microsoft.Docs.Build
                 && doc.ContentType != ContentType.Resource
                 ? $"{legacySiteUrlRelativeToSiteBasePath}/index"
                 : legacySiteUrlRelativeToSiteBasePath);
-        }
-
-        public static string ToLegacyOutputPath(this LegacyManifestOutputItem legacyManifestOutputItem, Docset docset, string groupId)
-            => Path.Combine(docset.SiteBasePath, $"{groupId}", legacyManifestOutputItem.RelativePath);
-
-        public static string GetAbsoluteOutputPathFromRelativePath(this Docset docset, string relativePath)
-        {
-            return Path.Combine(docset.DocsetPath, docset.Config.Output.Path, relativePath);
         }
 
         public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)

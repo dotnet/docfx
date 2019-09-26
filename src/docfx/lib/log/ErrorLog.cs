@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            ConsoleLog(level, error);
+            Log.Error(error, level);
         }
 
         private int GetMaxCount(Config config, ErrorLevel level)
@@ -245,37 +245,6 @@ namespace Microsoft.Docs.Build
             var log_item_type = "user";
 
             return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, date_time, origin });
-        }
-
-        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
-        private static void ConsoleLog(ErrorLevel level, Error error)
-        {
-            // https://github.com/dotnet/corefx/issues/2808
-            // Do not lock on objects with weak identity,
-            // but since this is the only way to synchronize console color
-            lock (Console.Out)
-            {
-                var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
-                Console.ForegroundColor = GetColor(level);
-                output.Write(error.Code + " ");
-                Console.ResetColor();
-                output.WriteLine($"{error.FilePath}({error.Line},{error.Column}): {error.Message}");
-            }
-        }
-
-        private static ConsoleColor GetColor(ErrorLevel level)
-        {
-            switch (level)
-            {
-                case ErrorLevel.Error:
-                    return ConsoleColor.Red;
-                case ErrorLevel.Warning:
-                    return ConsoleColor.Yellow;
-                case ErrorLevel.Suggestion:
-                    return ConsoleColor.Magenta;
-                default:
-                    return ConsoleColor.Cyan;
-            }
         }
     }
 }

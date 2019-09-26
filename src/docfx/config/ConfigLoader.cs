@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -23,6 +24,21 @@ namespace Microsoft.Docs.Build
             _docsetPath = docsetPath;
             _input = input;
             _repositoryProvider = repositoryProvider;
+        }
+
+        public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
+        {
+            return Directory.GetFiles(workingDirectory, "docfx.yml", SearchOption.AllDirectories)
+                .Concat(Directory.GetFiles(workingDirectory, "docfx.json", SearchOption.AllDirectories))
+                .Select(file => Path.GetDirectoryName(file))
+                .Distinct()
+                .Select(docsetPath =>
+                {
+                    var docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath);
+                    var outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder);
+                    return (docsetPath, outputPath);
+                })
+                .ToArray();
         }
 
         /// <summary>

@@ -11,14 +11,26 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options)
+        public static Task Run(string workingDirectory, CommandLineOptions options)
+        {
+            var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
+            if (docsets.Length == 0)
+            {
+                Log.Error(Errors.ConfigNotFound(workingDirectory));
+                return Task.CompletedTask;
+            }
+
+            return Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
+        }
+
+        private static async Task RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
 
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
-            using (var errorLog = new ErrorLog(docsetPath, options.Output, () => config, options.Legacy))
+            using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
             using (Progress.Start("Restore dependencies"))
             {
                 var stopwatch = Stopwatch.StartNew();

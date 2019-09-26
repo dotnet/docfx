@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
@@ -10,11 +10,17 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModelBuilder
     {
+        private readonly string _outputPath;
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
+
+        public PublishModelBuilder(string outputPath)
+        {
+            _outputPath = PathUtility.NormalizeFolder(outputPath);
+        }
 
         public void MarkError(Document file)
         {
@@ -132,16 +138,15 @@ namespace Microsoft.Docs.Build
             {
                 item.HasError = true;
 
-                if (item.Path != null && IsInsideOutputFolder(item, file.Docset))
+                if (item.Path != null && IsInsideOutputFolder(item))
                     context.Output.Delete(item.Path, legacy);
             }
         }
 
-        private bool IsInsideOutputFolder(PublishItem item, Docset docset)
+        private bool IsInsideOutputFolder(PublishItem item)
         {
-            var outputFilePath = PathUtility.NormalizeFolder(Path.Combine(docset.DocsetPath, docset.Config.Output.Path, item.Path));
-            var outputFolderPath = PathUtility.NormalizeFolder(Path.Combine(docset.DocsetPath, docset.Config.Output.Path));
-            return outputFilePath.StartsWith(outputFolderPath);
+            var outputFilePath = PathUtility.NormalizeFolder(Path.Combine(_outputPath, item.Path));
+            return outputFilePath.StartsWith(_outputPath);
         }
     }
 }

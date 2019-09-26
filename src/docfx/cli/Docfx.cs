@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            var (command, docset, options) = ParseCommandLineOptions(args);
+            var (command, workingDirectory, options) = ParseCommandLineOptions(args);
             if (string.IsNullOrEmpty(command))
             {
                 return 1;
@@ -78,23 +78,23 @@ namespace Microsoft.Docs.Build
                 switch (command)
                 {
                     case "restore":
-                        await Restore.Run(docset, options);
+                        await Restore.Run(workingDirectory, options);
                         break;
                     case "build":
-                        await Build.Run(docset, options);
+                        await Build.Run(workingDirectory, options);
                         break;
                     case "watch":
-                        await Watch.Run(docset, options);
+                        await Watch.Run(workingDirectory, options);
                         break;
                 }
                 return 0;
             }
         }
 
-        private static (string command, string docset, CommandLineOptions options) ParseCommandLineOptions(string[] args)
+        private static (string command, string workingDirectory, CommandLineOptions options) ParseCommandLineOptions(string[] args)
         {
             var command = "build";
-            var docset = ".";
+            var workingDirectory = ".";
             var options = new CommandLineOptions();
 
             if (args.Length == 0)
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                         "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains one or more docfx.yml/docfx.json in subdirectores.");
 
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains one or more docfx.yml/docfx.json in subdirectores.");
 
                     // Watch command
                     syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
@@ -137,11 +137,11 @@ namespace Microsoft.Docs.Build
                         "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains one or more docfx.yml/docfx.json in subdirectores.");
                 });
 
                 options.Locale = options.Locale?.ToLowerInvariant();
-                return (command, docset, options);
+                return (command, workingDirectory, options);
             }
             catch (ArgumentSyntaxException ex)
             {
