@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _outputPath;
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
@@ -49,10 +49,9 @@ namespace Microsoft.Docs.Build
             var monikers = item.Monikers;
             if (monikers.Count == 0)
             {
-                // TODO: report a warning if there are multiple files published to same url, one of them have no version
-                monikers = new List<string> { "NONE_VERSION" };
+                monikers = new List<string> { PublishModelBuilder.NonVersion };
             }
-            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
+            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, IReadOnlyList<string>>()).TryAdd(file, monikers);
 
             return true;
         }
@@ -60,19 +59,19 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context, bool legacy)
         {
             // Handle publish url conflicts
-            // TODO: Report more detail info for url conflict
             foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
                 var conflictMoniker = files
                     .SelectMany(file => file.Value)
                     .GroupBy(moniker => moniker)
                     .Where(group => group.Count() > 1)
-                    .Select(group => group.Key);
+                    .Select(group => group.Key)
+                    .ToList();
 
-                if (conflictMoniker.Count() > 0)
+                if (conflictMoniker.Count != 0
+                    || (files.Count() > 1 && files.Any(file => file.Value.Contains(PublishModelBuilder.NonVersion))))
                 {
-                    context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files.Keys, conflictMoniker));
-
+                    context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
                     {
                         HandleFileWithError(context, conflictingFile, legacy);
@@ -121,7 +120,7 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.RedirectUrl)
                     .ThenBy(item => item.MonikerGroup)
                     .ToArray(),
-                MonikerGroups = new SortedDictionary<string, List<string>>(_publishItems.Values
+                MonikerGroups = new SortedDictionary<string, IReadOnlyList<string>>(_publishItems.Values
                     .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
                     .GroupBy(item => item.MonikerGroup)
                     .ToDictionary(g => g.Key, g => g.First().Monikers)),

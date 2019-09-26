@@ -95,8 +95,7 @@ namespace Microsoft.Docs.Build
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    var path = Path.Combine(dependencyName ?? "", file.Path).Replace("\\", "/");
-                    if (glob(path))
+                    if (glob(file.Path))
                     {
                         files.Add(Document.Create(docset, file, _input, _templateEngine));
                     }
