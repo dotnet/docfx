@@ -41,6 +41,8 @@ namespace Microsoft.Docs.Build
 
         public FilePath(string path, string commit, FileOrigin origin)
         {
+            Debug.Assert(origin != FileOrigin.Dependency);
+
             Path = PathUtility.NormalizeFile(path);
             Origin = origin;
             Commit = commit;

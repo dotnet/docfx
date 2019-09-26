@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset, RestoreFileMap restoreFileMap)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Input input, Docset docset, RestoreFileMap restoreFileMap)
         {
             var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     var filePath = restoreFileMap.GetRestoredFilePath(url);
-                    foreach (var (uid, spec) in Load(filePath))
+                    foreach (var (uid, spec) in Load(input, filePath))
                     {
                         // for same uid with multiple specs, we should respect the order of the list
                         result.TryAdd(uid, spec);
@@ -47,10 +47,16 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static List<(string, Lazy<ExternalXrefSpec>)> Load(string filePath)
+        public static List<(string, Lazy<ExternalXrefSpec>)> Load(Input input, FilePath filePath)
         {
             var result = new List<(string, Lazy<ExternalXrefSpec>)>();
-            var content = File.ReadAllBytes(filePath);
+            byte[] content;
+            using (var stream = input.ReadStream(filePath))
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                content = memoryStream.ToArray();
+            }
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
             var xrefSpecPositions = GetXrefSpecPositions(content);
@@ -59,10 +65,10 @@ namespace Microsoft.Docs.Build
             {
                 result.Add((uid, new Lazy<ExternalXrefSpec>(() =>
                 {
-                    using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (var stream = input.ReadStream(filePath))
                     {
                         var json = ReadJsonFragment(stream, start, end);
-                        return JsonUtility.Deserialize<ExternalXrefSpec>(json, new FilePath(filePath));
+                        return JsonUtility.Deserialize<ExternalXrefSpec>(json, filePath);
                     }
                 })));
             }

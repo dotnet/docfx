@@ -28,6 +28,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool Exists(FilePath file)
         {
+            if (Path.IsPathRooted(file.Path))
+            {
+                return File.Exists(file.Path);
+            }
+
             var (basePath, path, commit) = ResolveFilePath(file);
 
             if (basePath is null)
@@ -50,6 +55,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool TryGetPhysicalPath(FilePath file, out string physicalPath)
         {
+            if (Path.IsPathRooted(file.Path))
+            {
+                physicalPath = file.Path;
+                return File.Exists(file.Path);
+            }
+
             var (basePath, path, commit) = ResolveFilePath(file);
 
             if (basePath != null && commit is null)
@@ -87,6 +98,11 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(FilePath file)
         {
+            if (Path.IsPathRooted(file.Path))
+            {
+                return File.OpenRead(file.Path);
+            }
+
             var (basePath, path, commit) = ResolveFilePath(file);
 
             if (basePath is null)

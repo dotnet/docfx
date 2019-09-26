@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             _input = input;
         }
 
-        public string GetRestoredFilePath(SourceInfo<string> url)
+        public FilePath GetRestoredFilePath(SourceInfo<string> url)
         {
             var fromUrl = UrlUtility.IsHttp(url);
             if (!fromUrl)
@@ -26,13 +26,13 @@ namespace Microsoft.Docs.Build
                 var localFilePath = new FilePath(url, FileOrigin.Default);
                 if (_input.Exists(localFilePath))
                 {
-                    return _input.TryGetPhysicalPath(localFilePath, out var fullPath) ? fullPath : default;
+                    return localFilePath;
                 }
 
                 localFilePath = new FilePath(url, FileOrigin.Fallback);
                 if (_input.Exists(localFilePath))
                 {
-                    return _input.TryGetPhysicalPath(localFilePath, out var fullPath) ? fullPath : default;
+                    return localFilePath;
                 }
 
                 throw Errors.FileNotFound(url).ToException();
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.NeedRestore(url).ToException();
             }
 
-            return filePath;
+            return new FilePath(filePath);
         }
 
         public string GetRestoredFileContent(SourceInfo<string> url)

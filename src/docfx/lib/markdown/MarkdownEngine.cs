@@ -46,7 +46,8 @@ namespace Microsoft.Docs.Build
             _markdownValidationRules = config.MarkdownValidationRules;
             if (!string.IsNullOrEmpty(_markdownValidationRules))
             {
-                _markdownValidationRules = restoreFileMap.GetRestoredFilePath(config.MarkdownValidationRules);
+                // todo: the markdown validation rule file may not exists on file system(from bare git repo)
+                _markdownValidationRules = restoreFileMap.GetRestoredFilePath(config.MarkdownValidationRules).Path;
             }
 
             _pipelines = new[]

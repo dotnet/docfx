@@ -43,7 +43,8 @@ namespace Microsoft.Docs.Build
         public void LoadXrefMapFile(string json, params string[] uids)
         {
             var filePath = WriteJsonToTempFile(json);
-            var result = ExternalXrefMapLoader.Load(filePath);
+            var input = new Input(Directory.GetCurrentDirectory(), null);
+            var result = ExternalXrefMapLoader.Load(input, new FilePath(filePath));
             var resultUids = new List<string>();
             foreach (var (uid, spec) in result)
             {
