@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         public void MaxErrors()
         {
             var maxErrors = 1000;
-            using (var errorLog = new ErrorLog(".", "DedupErrors", () => new Config()))
+            using (var errorLog = new ErrorLog(".", "MaxErrors", () => new Config()))
             {
                 for (var i = 0; i < maxErrors; i++)
                 {
