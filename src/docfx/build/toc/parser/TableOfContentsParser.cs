@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
             return (errors, newItems);
         }
 
-        private static List<string> GetMonikers(Context context, TableOfContentsItem currentItem, List<Error> errors)
+        private static IReadOnlyList<string> GetMonikers(Context context, TableOfContentsItem currentItem, List<Error> errors)
         {
             var monikers = new List<string>();
             if (!string.IsNullOrEmpty(currentItem.Href))
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
                 var linkType = UrlUtility.GetLinkType(currentItem.Href);
                 if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
                 {
-                    return new List<string>();
+                    return Array.Empty<string>();
                 }
                 else
                 {
@@ -193,9 +193,9 @@ namespace Microsoft.Docs.Build
 
                         if (referenceFileMonikers.Count == 0)
                         {
-                            return new List<string>();
+                            return Array.Empty<string>();
                         }
-                        monikers = referenceFileMonikers;
+                        monikers = referenceFileMonikers.ToList();
                     }
                 }
             }
@@ -205,15 +205,15 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in currentItem.Items)
                 {
-                    if (item.Monikers?.Count == 0)
+                    if (item.Monikers.Count == 0)
                     {
-                        return new List<string>();
+                        return Array.Empty<string>();
                     }
                     monikers = monikers.Union(item.Monikers).Distinct().ToList();
                 }
             }
-            monikers.Sort(context.MonikerProvider.Comparer);
-            return monikers;
+            monikers.Sort(StringComparer.OrdinalIgnoreCase);
+            return monikers.ToArray();
         }
 
         private static SourceInfo<string> GetTocHref(TableOfContentsItem tocInputModel, List<Error> errors)

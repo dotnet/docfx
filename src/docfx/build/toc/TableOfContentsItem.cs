@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,7 +30,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
-        public List<string> Monikers { get; set; } = new List<string>();
+        public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
 
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 

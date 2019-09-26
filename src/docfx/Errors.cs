@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -285,10 +286,10 @@ namespace Microsoft.Docs.Build
         /// Files published to the same url have no monikers or share common monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, List<string>> files, IEnumerable<string> conflictMonikers)
+        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, IReadOnlyList<string>> files, List<string> conflictMonikers)
         {
             var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
-            var message = conflictMonikers.Any() && !nonVersion ? $" of the same version({Join(conflictMonikers)})" : null;
+            var message = conflictMonikers.Count != 0 && !nonVersion ? $" of the same version({Join(conflictMonikers)})" : null;
             return new Error(
                 ErrorLevel.Error,
                 "publish-url-conflict",
@@ -577,10 +578,10 @@ namespace Microsoft.Docs.Build
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikeRangeOutOfScope(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
+        public static Error MonikeRangeOutOfScope(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
             => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
 
-        public static Error MonikeRangeOutOfScope(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+        public static Error MonikeRangeOutOfScope(string configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
             => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
 
         /// <summary>
