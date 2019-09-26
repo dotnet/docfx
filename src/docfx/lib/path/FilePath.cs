@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, DependencyName, Commit);
+            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, Commit);
         }
 
         public bool Equals(FilePath other)

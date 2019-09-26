@@ -302,7 +302,7 @@ repos:
         docfx.yml: |
           files:
             - "docs/**/*"
-            - "crrb/**/*"
+            - "crrb/folder/**/*"
           dependencies:
             crrb:
               url: https://docs.com/crrcontent/b
@@ -312,15 +312,15 @@ repos:
         docs/a.md:
   https://docs.com/crrcontent/b:
     - files:
-        b.md:
-        image.png: xxx
+        folder/b.md:
+        folder/image.png: xxx
   https://docs.com/crrcontent/c:
     - files:
         c.md:
 outputs:
   docs/a.json:
-  crrb/b.json:
-  crrb/image.png: xxx
+  crrb/folder/b.json:
+  crrb/folder/image.png: xxx
 ---
 # apply routes to the files in dependency repository
 # if no route applied, crr files will be built to `{dependencyName}/` folder
