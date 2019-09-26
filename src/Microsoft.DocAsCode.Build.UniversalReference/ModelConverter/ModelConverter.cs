@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 }).ToList();
         }
 
-        public static List<ApiLanguageValuePair<List<ApiInheritanceTreeBuildOutput>>> ToApiListInDevlangsResolvingApiNames(List<InheritanceTree> defaultValue, SortedList<string, List<InheritanceTree>> values, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
+        public static List<ApiLanguageValuePairWithLevel<List<ApiInheritanceTreeBuildOutput>>> ToApiListInDevLangsResolvingApiNames(List<InheritanceTree> defaultValue, SortedList<string, List<InheritanceTree>> values, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
         {
             if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0)
             {
@@ -125,10 +125,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
                 ?.Select(pair =>
                 {
-                    return new ApiLanguageValuePair<List<ApiInheritanceTreeBuildOutput>>
+                    var maxDepth = CalculateInheritanceDepth(pair.Value);
+                    return new ApiLanguageValuePairWithLevel<List<ApiInheritanceTreeBuildOutput>>
                     {
                         Language = pair.Language,
-                        Value = pair.Value.Select(item => ResolveInheritanceTree(item, supportedLanguages, references)).ToList()
+                        Value = pair.Value.Select(item => ResolveInheritanceTree(item, supportedLanguages, references, 0, maxDepth)).ToList(),
+                        Level = maxDepth
                     };
                 }).ToList();
         }
@@ -261,12 +263,23 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             return result;
         }
 
-        private static ApiInheritanceTreeBuildOutput ResolveInheritanceTree(InheritanceTree tree, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
+        private static int CalculateInheritanceDepth(InheritanceTree tree)
+        {
+            return CalculateInheritanceDepth(tree.Inheritance) + 1;
+        }
+
+        private static int CalculateInheritanceDepth(List<InheritanceTree> trees)
+        {
+            return trees == null ? 0 : trees.Max(CalculateInheritanceDepth);
+        }
+
+        private static ApiInheritanceTreeBuildOutput ResolveInheritanceTree(InheritanceTree tree, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references, int depth, int maxDepth)
         {
             return new ApiInheritanceTreeBuildOutput
             {
                 Type = ResolveApiNames(tree.Type, supportedLanguages, references),
-                Inheritance = tree.Inheritance?.Select(item => ResolveInheritanceTree(item, supportedLanguages, references)).ToList(),
+                Inheritance = tree.Inheritance?.Select(item => ResolveInheritanceTree(item, supportedLanguages, references, depth + 1, maxDepth)).ToList(),
+                Level = maxDepth - depth - 1,
                 Metadata = tree.Metadata
             };
         }

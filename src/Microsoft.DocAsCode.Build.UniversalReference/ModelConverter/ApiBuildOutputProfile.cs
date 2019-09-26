@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .ForMember(dest => dest.Metadata, opt => opt.ResolveUsing(new ApiBuildOutputMetadataResolver(metadata)))
                 .ForMember(dest => dest.Children, opt => opt.Ignore())
                 .ForMember(dest => dest.Parent, opt => opt.Ignore())
+                .ForMember(dest => dest.Package, opt => opt.Ignore())
                 .ForMember(dest => dest.NamespaceName, opt => opt.Ignore())
                 .ForMember(dest => dest.Overridden, opt => opt.Ignore())
                 .ForMember(dest => dest.Name, opt => opt.Ignore())
@@ -41,6 +42,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .AfterMap((src, dest) =>
                 {
                     dest.Parent = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.Parent, src.ParentInDevLangs, supportedLanguages, references);
+                    dest.Package = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.Package, src.PackageInDevLangs, supportedLanguages, references);
                     dest.NamespaceName = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.NamespaceName, src.NamespaceNameInDevLangs, supportedLanguages, references);
                     dest.Overridden = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.Overridden, src.OverriddenInDevLangs, supportedLanguages, references);
 
@@ -57,8 +59,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     dest.DerivedClasses = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.DerivedClasses, src.DerivedClassesInDevLangs, supportedLanguages, references);
 
                     dest.Exceptions = ModelConverter.ToApiListInDevlangsResolvingApiNames(src.Exceptions, src.ExceptionsInDevLangs, supportedLanguages, references);
-
-                    dest.Inheritance = ModelConverter.ToApiListInDevlangsResolvingApiNames(src.Inheritance, src.InheritanceInDevLangs, supportedLanguages, references);
+                    dest.Inheritance = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.Inheritance, src.InheritanceInDevLangs, supportedLanguages, references);
                 });
             CreateMap<ReferenceViewModel, ApiBuildOutput>()
                 .ForMember(dest => dest.Metadata, opt => opt.MapFrom(src => src.Additional))
@@ -89,6 +90,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .ForMember(dest => dest.ExtensionMethods, opt => opt.Ignore())
                 .ForMember(dest => dest.Conceptual, opt => opt.Ignore())
                 .ForMember(dest => dest.Platform, opt => opt.Ignore())
+                .ForMember(dest => dest.Package, opt => opt.Ignore())
                 .AfterMap((src, dest) =>
                 {
                     dest.Name = ModelConverter.ToApiListInDevLangs(src.Name, src.NameInDevLangs, supportedLanguages);
@@ -142,7 +144,8 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     opt.Condition(src => src.LinkType == LinkType.HRef);
                     opt.ResolveUsing(new ApiHrefLinkInfoBuildOutputUrlResolver());
                 });
-            CreateMap<InheritanceTree, ApiInheritanceTreeBuildOutput>();
+            CreateMap<InheritanceTree, ApiInheritanceTreeBuildOutput>()
+                .ForMember(dest => dest.Level, opt => opt.Ignore());
         }
     }
 }
