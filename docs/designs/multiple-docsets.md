@@ -47,13 +47,13 @@ b/folder/b.md:
 
 Build output for each docset contains its own copy of `.publish.json`, `.errors.log`, `.xrefmap.json` etc.
 
-> For backward compatibility, aggregated files like `op_aggregated_file_map_info.json`, `full-dependent-list.txt` are generated at output root folder. Or we can tweak build side components like reporting to adapt to the new output format. Theorically, 
+> For backward compatibility, aggregated files like `op_aggregated_file_map_info.json`, `full-dependent-list.txt` are generated at output root folder. Or we can tweak build side components like reporting to adapt to the new output format. 
 
 Path in output contents such as `source_path` in `.publish.json` and `file` in `.errors.log` are still relative to the docset instead of relative to the repository.
 
 - To make generating clickable links, `.publish.json` will have a new `source_url` property for each item that is an absolute URL pointing to the original git repository.
 - Similarly, `.errors.log` will have a `file_url` property that points to a specific line in GitHub or Azure Repos.
-- More information are added to `.publish.json` at the root level such as `name` as needed.
+- To identify the source docset, add `name` to `.publish.json`. `name` is defined as `{Product}.{DocsetName}`, e.g., `Docs.azure-documents`.
 
 ```yml
 repos:
