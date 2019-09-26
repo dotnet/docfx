@@ -285,10 +285,14 @@ namespace Microsoft.Docs.Build
         /// Files published to the same url have no monikers or share common monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error PublishUrlConflict(string url, IEnumerable<Document> files, IEnumerable<string> conflictMonikers)
+        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, List<string>> files, IEnumerable<string> conflictMonikers)
         {
-            var message = !conflictMonikers.Contains("NONE_VERSION") ? $" of the same version({Join(conflictMonikers)})" : null;
-            return new Error(ErrorLevel.Error, "publish-url-conflict", $"Two or more files{message} publish to the same url '{url}': {Join(files)}");
+            var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
+            var message = conflictMonikers.Any() && !nonVersion ? $" of the same version({Join(conflictMonikers)})" : null;
+            return new Error(
+                ErrorLevel.Error,
+                "publish-url-conflict",
+                $"Two or more files{message} publish to the same url '{url}': {Join(files.Select(file => $"{file.Key}{(nonVersion ? null : $"<{Join(file.Value)}>")}"))}");
         }
 
         /// <summary>
@@ -550,8 +554,8 @@ namespace Microsoft.Docs.Build
         /// and can't decide which article to use when referencing that uid with this overlapped version
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
-            => new Error(ErrorLevel.Warning, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
+        public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingmonikers)
+            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({Join(files)}) have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
         /// Failed to parse moniker string.
@@ -565,19 +569,19 @@ namespace Microsoft.Docs.Build
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerConfigMissing(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
+        public static Error MonikerRangeUndefined(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "moniker-range-undefined", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
 
         /// <summary>
         /// Config's monikerRange and monikerRange defined in yaml header has no intersection,
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error EmptyMonikers(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
-            => new Error(ErrorLevel.Warning, "empty-monikers", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
+        public static Error MonikeRangeOutOfScope(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
+            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
 
-        public static Error EmptyMonikers(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
-            => new Error(ErrorLevel.Warning, "empty-monikers", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
+        public static Error MonikeRangeOutOfScope(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
 
         /// <summary>
         /// Custom 404 page is not supported

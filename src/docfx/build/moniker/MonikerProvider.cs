@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             // User should not define it in moniker zone
             if (fileLevelMonikers.Count == 0)
             {
-                return (Errors.MonikerConfigMissing(rangeString), new List<string>());
+                return (Errors.MonikerRangeUndefined(rangeString), new List<string>());
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
             if (monikers.Count == 0)
             {
-                var error = Errors.EmptyMonikers(rangeString, zoneLevelMonikers, fileLevelMonikers);
+                var error = Errors.MonikeRangeOutOfScope(rangeString, zoneLevelMonikers, fileLevelMonikers);
                 return (error, monikers);
             }
             monikers.Sort(Comparer);
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                 // user should not define it in file metadata
                 if (configMonikers.Count == 0)
                 {
-                    return (Errors.MonikerConfigMissing(metadata.MonikerRange), configMonikers);
+                    return (Errors.MonikerRangeUndefined(metadata.MonikerRange), configMonikers);
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Count == 0)
                 {
-                    var error = Errors.EmptyMonikers(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
+                    var error = Errors.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                     return (error, intersection);
                 }
                 return (null, intersection);
