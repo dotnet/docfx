@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
                         localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
-                        localizationRepository = Repository.Create(localizationDocsetPath, branch: null, repoUrl: null, commit: null);
+                        localizationRepository = docset.Repository;
                         break;
                     }
                 default:
@@ -109,10 +109,10 @@ namespace Microsoft.Docs.Build
             return TryGetFallbackRepository(repository.Remote, repository.Branch, out fallbackRemote, out fallbackBranch, out locale);
         }
 
-        public static string GetLocale(string remote, string branch, CommandLineOptions options)
+        public static string GetLocale(Repository repository, CommandLineOptions options)
         {
-            return options.Locale ?? (TryRemoveLocale(branch, out _, out var branchLocale)
-                ? branchLocale : TryRemoveLocale(remote, out _, out var remoteLocale)
+            return options.Locale ?? (TryRemoveLocale(repository?.Branch, out _, out var branchLocale)
+                ? branchLocale : TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
                 ? remoteLocale : default);
         }
 

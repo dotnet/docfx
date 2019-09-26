@@ -71,11 +71,12 @@ namespace Microsoft.Docs.Build
             Culture = CreateCultureInfo(Locale);
             (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
 
-            Repository = repository ?? Repository.Create(DocsetPath, branch: null);
+            Repository = repository;
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
         }
 
+        // todo: use repository provider instead
         public Repository GetRepository(string filePath)
         {
             return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));

@@ -14,8 +14,14 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
+        private readonly FileLinkMapBuilder _fileLinkMapBuilder;
 
-        public XrefResolver(Context context, Docset docset, RestoreFileMap restoreFileMap, DependencyMapBuilder dependencyMapBuilder)
+        public XrefResolver(
+            Context context,
+            Docset docset,
+            RestoreFileMap restoreFileMap,
+            DependencyMapBuilder dependencyMapBuilder,
+            FileLinkMapBuilder fileLinkMapBuilder)
         {
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
                 () => InternalXrefMapBuilder.Build(context));
@@ -24,6 +30,7 @@ namespace Microsoft.Docs.Build
                 () => ExternalXrefMapLoader.Load(docset, restoreFileMap));
 
             _dependencyMapBuilder = dependencyMapBuilder;
+            _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
         public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referencingFile)
@@ -66,6 +73,10 @@ namespace Microsoft.Docs.Build
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment);
 
+            if (!string.IsNullOrEmpty(resolvedHref))
+            {
+                _fileLinkMapBuilder.AddFileLink(referencingFile, resolvedHref);
+            }
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 

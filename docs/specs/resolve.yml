@@ -295,7 +295,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
   .errors.log: |
-    ["warning","link-out-of-scope","File 'logo.svg [dep]' referenced by link '../dep/logo.svg' will not be built because it is not included in build scope","docs/a.md",1,9]
+    ["warning","link-out-of-scope","File 'dep/logo.svg [dep]' referenced by link '../dep/logo.svg' will not be built because it is not included in build scope","docs/a.md",1,9]
 ---
 # Show warning if link from a token in dependency repo to a file in dependency repo
 repos:
@@ -313,7 +313,7 @@ outputs:
   a.json: |
     {"conceptual":"<p><a href=\"logo.svg\"></a></p>"}
   .errors.log: |
-    ["warning","link-out-of-scope","File 'logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is not included in build scope","b.md",1,1,"dependency"]
+    ["warning","link-out-of-scope","File 'dep/logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is not included in build scope","dep/b.md",1,1,"dependency"]
 ---
 # Cannot include entry docset file from dependency
 repos:
@@ -330,7 +330,7 @@ outputs:
   a.json: |
     {"conceptual":"<p><a href=\"%7E/a.md\"></a></p>"}
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: '~/a.md'.","b.md",1,1,"dependency"]
+    ["warning","file-not-found","Invalid file link: '~/a.md'.","dep/b.md",1,1,"dependency"]
 ---
 # Don't show warning if include a file from dependency repo
 repos:

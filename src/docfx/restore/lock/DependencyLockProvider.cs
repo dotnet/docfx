@@ -34,29 +34,63 @@ namespace Microsoft.Docs.Build
             return _dependencyGitLock.Select(k => (k.Key.url, k.Key.branch, k.Value));
         }
 
-        public static DependencyLockProvider Create(string docsetPath, SourceInfo<string> dependencyLockPath)
+        public static DependencyLockProvider CreateFromAppData(string docset, string locale)
         {
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
+            var file = AppData.GetDependencyLockFile(docset, locale);
 
-            if (string.IsNullOrEmpty(dependencyLockPath))
+            if (!File.Exists(file))
             {
                 return new DependencyLockProvider(new Dictionary<(string url, string branch), DependencyGitLock>());
             }
 
-            // dependency lock path can be a place holder for saving usage
-            if (!UrlUtility.IsHttp(dependencyLockPath))
+            var content = File.ReadAllText(file);
+
+            return Create(file, content);
+        }
+
+        public static DependencyLockProvider CreateFromConfig(Input input, Config config)
+        {
+            Debug.Assert(input != null);
+
+            string content;
+            try
             {
-                if (!File.Exists(Path.Combine(docsetPath, dependencyLockPath)))
-                {
-                    return new DependencyLockProvider(new Dictionary<(string url, string branch), DependencyGitLock>());
-                }
+                content = RestoreFileMap.GetRestoredFileContent(input, config.DependencyLock);
+            }
+            catch (DocfxException ex) when (ex.Error.Code == "file-not-found")
+            {
+                return new DependencyLockProvider(new Dictionary<(string url, string branch), DependencyGitLock>());
             }
 
-            var content = RestoreFileMap.GetRestoredFileContent(docsetPath, dependencyLockPath, fallbackDocset: null);
+            return Create(config.DependencyLock, content);
+        }
 
-            Log.Write($"DependencyLock ({dependencyLockPath}):\n{content}");
+        public static void SaveGitLock(string docset, string locale, string dependencyLockPath, List<DependencyGitLock> dependencyGitLock)
+        {
+            var dependencyLock = new DependencyLock { Git = dependencyGitLock.ToDictionary(k => $"{new PackageUrl(k.Url, k.Branch)}", v => v) };
+            var content = JsonUtility.Serialize(dependencyLock, indent: true);
 
-            var dependencyLock = JsonUtility.Deserialize<DependencyLock>(content, new FilePath(dependencyLockPath));
+            string path;
+            if (!string.IsNullOrEmpty(dependencyLockPath))
+            {
+                // write to user specified place
+                path = Path.Combine(docset, dependencyLockPath);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                ProcessUtility.WriteFile(path, content);
+            }
+
+            // write to appdata, prepare for build
+            path = AppData.GetDependencyLockFile(docset, locale);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            ProcessUtility.WriteFile(path, content);
+        }
+
+        private static DependencyLockProvider Create(string path, string content)
+        {
+            Debug.Assert(!string.IsNullOrEmpty(content));
+            Log.Write($"DependencyLock ({path}):\n{content}");
+
+            var dependencyLock = JsonUtility.Deserialize<DependencyLock>(content, new FilePath(path));
 
             return new DependencyLockProvider(dependencyLock.Git.ToDictionary(
                 k =>
@@ -65,22 +99,6 @@ namespace Microsoft.Docs.Build
                     return (packageUrl.Url, packageUrl.Branch);
                 },
                 v => v.Value));
-        }
-
-        public static void SaveGitLock(string docset, string dependencyLockPath, List<DependencyGitLock> dependencyGitLock)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docset));
-            Debug.Assert(!string.IsNullOrEmpty(dependencyLockPath));
-
-            var dependencyLock = new DependencyLock { Git = dependencyGitLock.ToDictionary(k => $"{new PackageUrl(k.Url, k.Branch)}", v => v) };
-            var content = JsonUtility.Serialize(dependencyLock, indent: true);
-
-            if (!UrlUtility.IsHttp(dependencyLockPath))
-            {
-                var path = Path.Combine(docset, dependencyLockPath);
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                ProcessUtility.WriteFile(path, content);
-            }
         }
 
         private class DependencyLock

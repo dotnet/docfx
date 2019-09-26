@@ -605,9 +605,8 @@ repos:
 outputs:
   crr/b.json:
 ---
-# [skip] dependencyPackageUrl can use relative path by setting path or url
+# dependencyPackageUrl can use relative path by setting path or url
 # path has higher priority than url
-# todo: un-skip after handle dependency is relative folder case
 inputs:
   docfx.yml: |
     files:
