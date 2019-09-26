@@ -116,7 +116,6 @@ namespace Microsoft.Docs.Build
 
             return string.Equals(Path, other.Path, PathUtility.PathComparison) &&
                    other.Origin == Origin &&
-                   DependencyName == other.DependencyName &&
                    Commit == other.Commit;
         }
 
@@ -125,8 +124,6 @@ namespace Microsoft.Docs.Build
             var result = string.Compare(Path, other.Path, PathUtility.PathComparison);
             if (result == 0)
                 result = Origin.CompareTo(other.Origin);
-            if (result == 0)
-                result = DependencyName.CompareTo(other.DependencyName);
             if (result == 0)
                 result = Commit.CompareTo(other.Commit);
 
