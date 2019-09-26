@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     /// A package is a collection of files, it can be any of the following:
     ///   a) A folder
     ///   b) A git url in the form of `{remote_url}#{commit-ish}`, when cloned, results in a)
-    /// The commit-sh can be any tag, sha, or branch. The default commit-ish is master.
+    /// The commit-ish can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
     internal class PackagePath
