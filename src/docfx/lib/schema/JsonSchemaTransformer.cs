@@ -214,7 +214,7 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = context.DependencyResolver.ResolveRelativeLink(file, content, file);
+                    var (error, link, _) = context.LinkResolver.ResolveRelativeLink(file, content, file);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;
@@ -239,7 +239,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Html:
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
-                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveRelativeLink(
+                        var (htmlError, htmlLink, _) = context.LinkResolver.ResolveRelativeLink(
                             file, new SourceInfo<string>(href, content), file);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;

@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         // URLs starting with this magic string are transformed into relative URL after markup.
         private const string RelativeUrlMarker = "//////";
 
-        private readonly DependencyResolver _dependencyResolver;
+        private readonly LinkResolver _dependencyResolver;
         private readonly XrefResolver _xrefResolver;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
@@ -32,12 +32,12 @@ namespace Microsoft.Docs.Build
         public MarkdownEngine(
             Config config,
             RestoreFileMap restoreFileMap,
-            DependencyResolver dependencyResolver,
+            LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine)
         {
-            _dependencyResolver = dependencyResolver;
+            _dependencyResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _monikerProvider = monikerProvider;
             _templateEngine = templateEngine;

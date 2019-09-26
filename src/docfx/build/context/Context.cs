@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         public readonly GitCommitProvider GitCommitProvider;
         public readonly BookmarkValidator BookmarkValidator;
         public readonly DependencyMapBuilder DependencyMapBuilder;
-        public readonly DependencyResolver DependencyResolver;
+        public readonly LinkResolver LinkResolver;
         public readonly XrefResolver XrefResolver;
         public readonly GitHubUserCache GitHubUserCache;
         public readonly MicrosoftGraphCache MicrosoftGraphCache;
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);
             XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
 
-            DependencyResolver = new DependencyResolver(
+            LinkResolver = new LinkResolver(
                 docset,
                 fallbackDocset,
                 dependencyDocsets.
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
+            MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
         }
 
         public void Dispose()
