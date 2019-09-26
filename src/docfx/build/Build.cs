@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,8 +17,10 @@ namespace Microsoft.Docs.Build
             List<Error> errors;
             Config config = null;
 
-            using (var errorLog = new ErrorLog("build", docsetPath, options.Output, () => config, options.Legacy))
+            using (var errorLog = new ErrorLog(docsetPath, options.Output, () => config, options.Legacy))
             {
+                var stopwatch = Stopwatch.StartNew();
+
                 try
                 {
                     // load and trace entry repository
@@ -57,6 +60,12 @@ namespace Microsoft.Docs.Build
                 {
                     Log.Write(dex);
                     errorLog.Write(dex.Error, isException: true);
+                }
+                finally
+                {
+                    Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
+                    Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                    errorLog.PrintSummary();
                 }
             }
         }

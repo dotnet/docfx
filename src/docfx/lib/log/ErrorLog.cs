@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
@@ -12,8 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class ErrorLog : IDisposable
     {
-        private readonly string _command;
-        private readonly Stopwatch _stopwatch;
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
         private readonly Func<Config> _config;
@@ -33,13 +31,10 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public ErrorLog(
-            string command, string docsetPath, string outputPath, Func<Config> config, bool legacy = false)
+        public ErrorLog(string docsetPath, string outputPath, Func<Config> config, bool legacy = false)
         {
-            _command = command;
             _config = config;
             _legacy = legacy;
-            _stopwatch = Stopwatch.StartNew();
             _output = new Lazy<TextWriter>(() =>
             {
                 if (string.IsNullOrEmpty(outputPath))
@@ -132,6 +127,25 @@ namespace Microsoft.Docs.Build
             return level == ErrorLevel.Error;
         }
 
+        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
+        public void PrintSummary()
+        {
+            lock (Console.Out)
+            {
+                if (ErrorCount > 0 || WarningCount > 0 || SuggestionCount > 0)
+                {
+                    Console.ForegroundColor = ErrorCount > 0 ? ConsoleColor.Red
+                                            : WarningCount > 0 ? ConsoleColor.Yellow
+                                            : ConsoleColor.Magenta;
+                    Console.WriteLine();
+                    Console.WriteLine(
+                        $"  {ErrorCount} Error(s), {WarningCount} Warning(s), {SuggestionCount} Suggestion(s)");
+                }
+
+                Console.ResetColor();
+            }
+        }
+
         public void Dispose()
         {
             lock (_outputLock)
@@ -141,8 +155,6 @@ namespace Microsoft.Docs.Build
                     _output.Value.Dispose();
                 }
             }
-
-            Done();
         }
 
         private void WriteCore(Error error, ErrorLevel level)
@@ -235,51 +247,19 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, date_time, origin });
         }
 
+        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
         private static void ConsoleLog(ErrorLevel level, Error error)
         {
             // https://github.com/dotnet/corefx/issues/2808
             // Do not lock on objects with weak identity,
             // but since this is the only way to synchronize console color
-#pragma warning disable CA2002
             lock (Console.Out)
-#pragma warning restore CA2002
             {
                 var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
                 Console.ForegroundColor = GetColor(level);
                 output.Write(error.Code + " ");
                 Console.ResetColor();
                 output.WriteLine($"{error.FilePath}({error.Line},{error.Column}): {error.Message}");
-            }
-        }
-
-        private void Done()
-        {
-            _stopwatch.Stop();
-
-            var duration = _stopwatch.Elapsed;
-            var name = _config()?.Name;
-
-            Telemetry.TrackOperationTime(_command, duration);
-
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-            lock (Console.Out)
-#pragma warning restore CA2002
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{char.ToUpperInvariant(_command[0])}{_command.Substring(1)} {name} done in {Progress.FormatTimeSpan(duration)}");
-
-                if (ErrorCount > 0 || WarningCount > 0 || SuggestionCount > 0)
-                {
-                    Console.ForegroundColor = ErrorCount > 0 ? ConsoleColor.Red
-                                            : WarningCount > 0 ? ConsoleColor.Yellow
-                                            : ConsoleColor.Magenta;
-                    Console.WriteLine();
-                    Console.WriteLine(
-                        $"  {ErrorCount} Error(s), {WarningCount} Warning(s), {SuggestionCount} Suggestion(s)");
-                }
-
-                Console.ResetColor();
             }
         }
 
