@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -29,7 +28,7 @@ namespace Microsoft.Docs.Build
         public bool HasError { get; set; }
 
         [JsonIgnore]
-        public IReadOnlyCollection<string> Monikers { get; set; } = Array.Empty<string>();
+        public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }

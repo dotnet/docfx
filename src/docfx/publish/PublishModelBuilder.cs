@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     {
         public const string NonVersion = "NONE_VERSION";
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyCollection<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyCollection<string>>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             {
                 monikers = new List<string> { PublishModelBuilder.NonVersion };
             }
-            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, IReadOnlyCollection<string>>()).TryAdd(file, monikers);
+            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, IReadOnlyList<string>>()).TryAdd(file, monikers);
 
             return true;
         }
@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.RedirectUrl)
                     .ThenBy(item => item.MonikerGroup)
                     .ToArray(),
-                MonikerGroups = new SortedDictionary<string, IReadOnlyCollection<string>>(_publishItems.Values
+                MonikerGroups = new SortedDictionary<string, IReadOnlyList<string>>(_publishItems.Values
                     .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
                     .GroupBy(item => item.MonikerGroup)
                     .ToDictionary(g => g.Key, g => g.First().Monikers)),

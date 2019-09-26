@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly ConcurrentDictionary<string, string> _groupCache = new ConcurrentDictionary<string, string>();
 
-        public static string GetGroup(IReadOnlyCollection<string> monikers)
+        public static string GetGroup(IReadOnlyList<string> monikers)
         {
             if (monikers == null || !monikers.Any())
             {

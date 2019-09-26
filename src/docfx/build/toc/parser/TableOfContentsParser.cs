@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
             return (errors, newItems);
         }
 
-        private static IReadOnlyCollection<string> GetMonikers(Context context, TableOfContentsItem currentItem, List<Error> errors)
+        private static IReadOnlyList<string> GetMonikers(Context context, TableOfContentsItem currentItem, List<Error> errors)
         {
             var monikers = new List<string>();
             if (!string.IsNullOrEmpty(currentItem.Href))

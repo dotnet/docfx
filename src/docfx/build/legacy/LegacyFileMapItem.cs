@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         public bool IsMonikerRange { get; set; } = true;
 
         [JsonProperty(PropertyName = "monikers")]
-        public IReadOnlyCollection<string> Monikers { get; set; } = Array.Empty<string>();
+        public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
 
         public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
 
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             string legacySiteUrlRelativeToSiteBasePath,
             ContentType contentType,
             string version,
-            IReadOnlyCollection<string> monikers)
+            IReadOnlyList<string> monikers)
         {
             switch (contentType)
             {
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             string legacySiteUrlRelativeToSiteBasePath,
             ContentType contentType,
             string version,
-            IReadOnlyCollection<string> monikers)
+            IReadOnlyList<string> monikers)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {

@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
-        public IReadOnlyCollection<string> Monikers { get; set; } = Array.Empty<string>();
+        public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
 
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 

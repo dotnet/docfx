@@ -15,8 +15,8 @@ namespace Microsoft.Docs.Build
 
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentDictionary<Document, (Error, IReadOnlyCollection<string>)> _monikerCache
-                   = new ConcurrentDictionary<Document, (Error, IReadOnlyCollection<string>)>();
+        private readonly ConcurrentDictionary<Document, (Error, IReadOnlyList<string>)> _monikerCache
+                   = new ConcurrentDictionary<Document, (Error, IReadOnlyList<string>)>();
 
         public MonikerComparer Comparer { get; }
 
@@ -41,12 +41,12 @@ namespace Microsoft.Docs.Build
             _rules.Reverse();
         }
 
-        public (Error error, IReadOnlyCollection<string> monikers) GetFileLevelMonikers(Document file)
+        public (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikers(Document file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 
-        public (Error error, IReadOnlyCollection<string> monikers) GetZoneLevelMonikers(Document file, SourceInfo<string> rangeString)
+        public (Error error, IReadOnlyList<string> monikers) GetZoneLevelMonikers(Document file, SourceInfo<string> rangeString)
         {
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             return (null, monikers);
         }
 
-        private (Error error, IReadOnlyCollection<string> monikers) GetFileLevelMonikersCore(Document file)
+        private (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(Document file)
         {
             var errors = new List<Error>();
             var (_, metadata) = _metadataProvider.GetMetadata(file);

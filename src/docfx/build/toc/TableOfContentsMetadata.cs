@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class TableOfContentsMetadata
     {
-        public IReadOnlyCollection<string> Monikers { get; set; }
+        public IReadOnlyList<string> Monikers { get; set; }
 
         [JsonProperty(PropertyName = "monikerRange")]
         public SourceInfo<string> MonikerRange { get; set; }
