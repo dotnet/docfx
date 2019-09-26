@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
@@ -14,11 +14,10 @@ namespace Microsoft.Docs.Build
     {
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
-        private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
+        private readonly Func<Config> _config;
 
-        private readonly string _docsetPath;
-        private Lazy<TextWriter> _output;
-        private Config _config;
+        private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
+        private readonly Lazy<TextWriter> _output;
 
         private int _errorCount;
         private int _warningCount;
@@ -32,27 +31,30 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public ErrorLog(string docset = ".", bool legacy = false)
+        public ErrorLog(string docsetPath, string outputPath, Func<Config> config, bool legacy = false)
         {
-            _docsetPath = docset;
+            _config = config;
             _legacy = legacy;
-            _config = new Config();
             _output = new Lazy<TextWriter>(() =>
             {
-                // add default build log file output path
-                var outputFilePath = Path.GetFullPath(Path.Combine(_docsetPath, _config.Output.Path, ".errors.log"));
+                if (string.IsNullOrEmpty(outputPath))
+                {
+                    var conf = _config();
+                    if (conf == null)
+                    {
+                        return TextWriter.Null;
+                    }
 
-                PathUtility.CreateDirectoryFromFilePath(outputFilePath);
+                    outputPath = Path.Combine(docsetPath, conf.Output.Path);
+                }
+
+                // add default build log file output path
+                var outputFilePath = Path.GetFullPath(Path.Combine(outputPath, ".errors.log"));
+
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
 
                 return File.AppendText(outputFilePath);
             });
-        }
-
-        public void Configure(Config config)
-        {
-            Debug.Assert(!_output.IsValueCreated || _config.Output.Path == config.Output.Path, "Cannot change report output path");
-
-            _config = config;
         }
 
         public bool Write(IEnumerable<Error> errors)
@@ -92,7 +94,9 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Error error, bool isException = false)
         {
-            if (_config != null && _config.CustomErrors.TryGetValue(error.Code, out var customError))
+            var config = _config();
+
+            if (config != null && config.CustomErrors.TryGetValue(error.Code, out var customError))
             {
                 error = error.WithCustomError(customError);
             }
@@ -103,24 +107,43 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (_config != null && _config.WarningsAsErrors && level == ErrorLevel.Warning)
+            if (config != null && config.WarningsAsErrors && level == ErrorLevel.Warning)
             {
                 level = ErrorLevel.Error;
             }
 
-            if (ExceedMaxErrors(level))
+            if (ExceedMaxErrors(config, level))
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(GetMaxCount(level), level), level);
+                    WriteCore(Errors.ExceedMaxErrors(GetMaxCount(config, level), level), level);
                 }
             }
-            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(level))
+            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level))
             {
                 WriteCore(error, level);
             }
 
             return level == ErrorLevel.Error;
+        }
+
+        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
+        public void PrintSummary()
+        {
+            lock (Console.Out)
+            {
+                if (ErrorCount > 0 || WarningCount > 0 || SuggestionCount > 0)
+                {
+                    Console.ForegroundColor = ErrorCount > 0 ? ConsoleColor.Red
+                                            : WarningCount > 0 ? ConsoleColor.Yellow
+                                            : ConsoleColor.Magenta;
+                    Console.WriteLine();
+                    Console.WriteLine(
+                        $"  {ErrorCount} Error(s), {WarningCount} Warning(s), {SuggestionCount} Suggestion(s)");
+                }
+
+                Console.ResetColor();
+            }
         }
 
         public void Dispose()
@@ -150,9 +173,9 @@ namespace Microsoft.Docs.Build
             ConsoleLog(level, error);
         }
 
-        private int GetMaxCount(ErrorLevel level)
+        private int GetMaxCount(Config config, ErrorLevel level)
         {
-            if (_config == null)
+            if (config == null)
             {
                 return int.MaxValue;
             }
@@ -160,19 +183,19 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return _config.Output.MaxErrors;
+                    return config.Output.MaxErrors;
                 case ErrorLevel.Warning:
-                    return _config.Output.MaxWarnings;
+                    return config.Output.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return _config.Output.MaxSuggestions;
+                    return config.Output.MaxSuggestions;
                 default:
                     return int.MaxValue;
             }
         }
 
-        private bool ExceedMaxErrors(ErrorLevel level)
+        private bool ExceedMaxErrors(Config config, ErrorLevel level)
         {
-            if (_config == null)
+            if (config == null)
             {
                 return false;
             }
@@ -180,19 +203,19 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return Volatile.Read(ref _errorCount) >= _config.Output.MaxErrors;
+                    return Volatile.Read(ref _errorCount) >= config.Output.MaxErrors;
                 case ErrorLevel.Warning:
-                    return Volatile.Read(ref _warningCount) >= _config.Output.MaxWarnings;
+                    return Volatile.Read(ref _warningCount) >= config.Output.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return Volatile.Read(ref _suggestionCount) >= _config.Output.MaxSuggestions;
+                    return Volatile.Read(ref _suggestionCount) >= config.Output.MaxSuggestions;
                 default:
                     return false;
             }
         }
 
-        private bool IncrementExceedMaxErrors(ErrorLevel level)
+        private bool IncrementExceedMaxErrors(Config config, ErrorLevel level)
         {
-            if (_config == null)
+            if (config == null)
             {
                 return false;
             }
@@ -200,11 +223,11 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return Interlocked.Increment(ref _errorCount) > _config.Output.MaxErrors;
+                    return Interlocked.Increment(ref _errorCount) > config.Output.MaxErrors;
                 case ErrorLevel.Warning:
-                    return Interlocked.Increment(ref _warningCount) > _config.Output.MaxWarnings;
+                    return Interlocked.Increment(ref _warningCount) > config.Output.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return Interlocked.Increment(ref _suggestionCount) > _config.Output.MaxSuggestions;
+                    return Interlocked.Increment(ref _suggestionCount) > config.Output.MaxSuggestions;
                 default:
                     return false;
             }
@@ -224,14 +247,13 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, date_time, origin });
         }
 
+        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
         private static void ConsoleLog(ErrorLevel level, Error error)
         {
             // https://github.com/dotnet/corefx/issues/2808
             // Do not lock on objects with weak identity,
             // but since this is the only way to synchronize console color
-#pragma warning disable CA2002
             lock (Console.Out)
-#pragma warning restore CA2002
             {
                 var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
                 Console.ForegroundColor = GetColor(level);

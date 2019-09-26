@@ -60,7 +60,6 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            var stopwatch = Stopwatch.StartNew();
             var (command, docset, options) = ParseCommandLineOptions(args);
             if (string.IsNullOrEmpty(command))
             {
@@ -70,37 +69,25 @@ namespace Microsoft.Docs.Build
             CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = new CultureInfo("en-US");
 
             using (Log.BeginScope(options.Verbose))
-            using (var errorLog = new ErrorLog(docset, options.Legacy))
             {
                 Log.Write($"Using docfx {GetDocfxVersion()}");
 
                 var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
                 ThreadPool.SetMinThreads(minThreads, minThreads);
 
-                try
+                switch (command)
                 {
-                    switch (command)
-                    {
-                        case "restore":
-                            await Restore.Run(docset, options, errorLog);
-                            Done(command, stopwatch.Elapsed, errorLog);
-                            break;
-                        case "build":
-                            await Build.Run(docset, options, errorLog);
-                            Done(command, stopwatch.Elapsed, errorLog);
-                            break;
-                        case "watch":
-                            await Watch.Run(docset, options);
-                            break;
-                    }
-                    return 0;
+                    case "restore":
+                        await Restore.Run(docset, options);
+                        break;
+                    case "build":
+                        await Build.Run(docset, options);
+                        break;
+                    case "watch":
+                        await Watch.Run(docset, options);
+                        break;
                 }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    Log.Write(dex);
-                    errorLog.Write(dex.Error, isException: true);
-                    return 0;
-                }
+                return 0;
             }
         }
 
@@ -160,32 +147,6 @@ namespace Microsoft.Docs.Build
             {
                 Console.Write(ex.Message);
                 return default;
-            }
-        }
-
-        private static void Done(string command, TimeSpan duration, ErrorLog errorLog)
-        {
-            Telemetry.TrackOperationTime(command, duration);
-
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-            lock (Console.Out)
-#pragma warning restore CA2002
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{char.ToUpperInvariant(command[0])}{command.Substring(1)} done in {Progress.FormatTimeSpan(duration)}");
-
-                if (errorLog.ErrorCount > 0 || errorLog.WarningCount > 0 || errorLog.SuggestionCount > 0)
-                {
-                    Console.ForegroundColor = errorLog.ErrorCount > 0 ? ConsoleColor.Red
-                                            : errorLog.WarningCount > 0 ? ConsoleColor.Yellow
-                                            : ConsoleColor.Magenta;
-                    Console.WriteLine();
-                    Console.WriteLine(
-                        $"  {errorLog.ErrorCount} Error(s), {errorLog.WarningCount} Warning(s), {errorLog.SuggestionCount} Suggestion(s)");
-                }
-
-                Console.ResetColor();
             }
         }
 
