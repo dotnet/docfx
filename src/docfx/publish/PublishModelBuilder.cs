@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class PublishModelBuilder
     {
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, List<string>>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyCollection<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyCollection<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 // TODO: report a warning if there are multiple files published to same url, one of them have no version
                 monikers = new List<string> { "NONE_VERSION" };
             }
-            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, List<string>>()).TryAdd(file, monikers);
+            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, IReadOnlyCollection<string>>()).TryAdd(file, monikers);
 
             return true;
         }
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.RedirectUrl)
                     .ThenBy(item => item.MonikerGroup)
                     .ToArray(),
-                MonikerGroups = new SortedDictionary<string, List<string>>(_publishItems.Values
+                MonikerGroups = new SortedDictionary<string, IReadOnlyCollection<string>>(_publishItems.Values
                     .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
                     .GroupBy(item => item.MonikerGroup)
                     .ToDictionary(g => g.Key, g => g.First().Monikers)),

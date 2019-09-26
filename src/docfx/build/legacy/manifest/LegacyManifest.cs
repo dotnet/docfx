@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
                     new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
                 };
 
-                var dictionaryBuilder = new DictionaryBuilder<string, List<string>>();
-                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
+                var dictionaryBuilder = new DictionaryBuilder<string, IReadOnlyCollection<string>>();
+                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, IReadOnlyCollection<string> monikers)>();
                 Parallel.ForEach(fileManifests, fileManifest =>
                     {
                         var document = fileManifest.Key;

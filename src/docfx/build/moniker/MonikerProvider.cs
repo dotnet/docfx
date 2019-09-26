@@ -15,8 +15,8 @@ namespace Microsoft.Docs.Build
 
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentDictionary<Document, (Error, List<string>)> _monikerCache
-                   = new ConcurrentDictionary<Document, (Error, List<string>)>();
+        private readonly ConcurrentDictionary<Document, (Error, IReadOnlyCollection<string>)> _monikerCache
+                   = new ConcurrentDictionary<Document, (Error, IReadOnlyCollection<string>)>();
 
         public MonikerComparer Comparer { get; }
 
@@ -41,48 +41,47 @@ namespace Microsoft.Docs.Build
             _rules.Reverse();
         }
 
-        public (Error error, List<string> monikers) GetFileLevelMonikers(Document file)
+        public (Error error, IReadOnlyCollection<string> monikers) GetFileLevelMonikers(Document file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 
-        public (Error error, List<string> monikers) GetZoneLevelMonikers(Document file, SourceInfo<string> rangeString)
+        public (Error error, IReadOnlyCollection<string> monikers) GetZoneLevelMonikers(Document file, SourceInfo<string> rangeString)
         {
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (fileLevelMonikers.Count == 0)
+            if (!fileLevelMonikers.Any())
             {
-                return (Errors.MonikerConfigMissing(rangeString), new List<string>());
+                return (Errors.MonikerConfigMissing(rangeString), Array.Empty<string>());
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
-            var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToList();
+            var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToArray();
 
-            if (monikers.Count == 0)
+            if (!monikers.Any())
             {
                 var error = Errors.EmptyMonikers(rangeString, zoneLevelMonikers, fileLevelMonikers);
                 return (error, monikers);
             }
-            monikers.Sort(Comparer);
             return (null, monikers);
         }
 
-        private (Error error, List<string> monikers) GetFileLevelMonikersCore(Document file)
+        private (Error error, IReadOnlyCollection<string> monikers) GetFileLevelMonikersCore(Document file)
         {
             var errors = new List<Error>();
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
             string configMonikerRange = null;
-            var configMonikers = new List<string>();
+            var configMonikers = Array.Empty<string>();
 
             foreach (var (glob, (monikerRange, monikers)) in _rules)
             {
                 if (glob(file.FilePath.Path))
                 {
                     configMonikerRange = monikerRange;
-                    configMonikers.AddRange(monikers);
+                    configMonikers = monikers.ToArray();
                     break;
                 }
             }
@@ -91,17 +90,17 @@ namespace Microsoft.Docs.Build
             {
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (configMonikers.Count == 0)
+                if (!configMonikers.Any())
                 {
                     return (Errors.MonikerConfigMissing(metadata.MonikerRange), configMonikers);
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
-                var intersection = configMonikers.Intersect(fileMonikers).ToList();
+                var intersection = configMonikers.Intersect(fileMonikers).ToArray();
 
                 // With non-empty config monikers,
                 // warn if no intersection of config monikers and file monikers
-                if (intersection.Count == 0)
+                if (!intersection.Any())
                 {
                     var error = Errors.EmptyMonikers(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                     return (error, intersection);

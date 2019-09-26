@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Security;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -27,7 +29,7 @@ namespace Microsoft.Docs.Build
         public bool HasError { get; set; }
 
         [JsonIgnore]
-        public List<string> Monikers { get; set; } = new List<string>();
+        public IReadOnlyCollection<string> Monikers { get; set; } = Array.Empty<string>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; }

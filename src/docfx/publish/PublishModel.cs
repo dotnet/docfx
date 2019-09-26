@@ -13,6 +13,6 @@ namespace Microsoft.Docs.Build
     {
         public PublishItem[] Files { get; set; }
 
-        public IReadOnlyDictionary<string, List<string>> MonikerGroups { get; set; } = new Dictionary<string, List<string>>();
+        public IReadOnlyDictionary<string, IReadOnlyCollection<string>> MonikerGroups { get; set; } = new Dictionary<string, IReadOnlyCollection<string>>();
     }
 }

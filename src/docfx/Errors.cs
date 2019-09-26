@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -573,10 +574,10 @@ namespace Microsoft.Docs.Build
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error EmptyMonikers(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
+        public static Error EmptyMonikers(SourceInfo<string> rangeString, IReadOnlyCollection<string> zoneLevelMonikers, IReadOnlyCollection<string> fileLevelMonikers)
             => new Error(ErrorLevel.Warning, "empty-monikers", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
 
-        public static Error EmptyMonikers(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+        public static Error EmptyMonikers(string configMonikerRange, IReadOnlyCollection<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyCollection<string> fileMonikers)
             => new Error(ErrorLevel.Warning, "empty-monikers", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
 
         /// <summary>
