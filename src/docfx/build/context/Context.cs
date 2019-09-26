@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
+            MarkdownEngine = new MarkdownEngine(Config, Input, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
         }
 
         public void Dispose()

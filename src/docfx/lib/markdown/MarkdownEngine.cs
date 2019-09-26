@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
 
         public MarkdownEngine(
             Config config,
+            Input input,
             RestoreFileMap restoreFileMap,
             DependencyResolver dependencyResolver,
             XrefResolver xrefResolver,
@@ -47,7 +48,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(_markdownValidationRules))
             {
                 // todo: the markdown validation rule file may not exists on file system(from bare git repo)
-                _markdownValidationRules = restoreFileMap.GetRestoredFilePath(config.MarkdownValidationRules).Path;
+                _markdownValidationRules = input.TryGetPhysicalPath(restoreFileMap.GetRestoredFilePath(config.MarkdownValidationRules), out var physicalPath) ? physicalPath : default;
             }
 
             _pipelines = new[]
