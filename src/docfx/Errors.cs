@@ -286,10 +286,10 @@ namespace Microsoft.Docs.Build
         /// Files published to the same url have no monikers or share common monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, IReadOnlyList<string>> files, IEnumerable<string> conflictMonikers)
+        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, IReadOnlyList<string>> files, List<string> conflictMonikers)
         {
             var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
-            var message = conflictMonikers.Any() && !nonVersion ? $" of the same version({Join(conflictMonikers)})" : null;
+            var message = conflictMonikers.Count != 0 && !nonVersion ? $" of the same version({Join(conflictMonikers)})" : null;
             return new Error(
                 ErrorLevel.Error,
                 "publish-url-conflict",

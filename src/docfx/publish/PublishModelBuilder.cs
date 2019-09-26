@@ -60,9 +60,10 @@ namespace Microsoft.Docs.Build
                     .SelectMany(file => file.Value)
                     .GroupBy(moniker => moniker)
                     .Where(group => group.Count() > 1)
-                    .Select(group => group.Key);
+                    .Select(group => group.Key)
+                    .ToList();
 
-                if (conflictMoniker.Any()
+                if (conflictMoniker.Count != 0
                     || (files.Count() > 1 && files.Any(file => file.Value.Contains(PublishModelBuilder.NonVersion))))
                 {
                     context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));

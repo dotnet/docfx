@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
                         var (error, referenceFileMonikers) = context.MonikerProvider.GetFileLevelMonikers(currentItem.Document);
                         errors.AddIfNotNull(error);
 
-                        if (!referenceFileMonikers.Any())
+                        if (referenceFileMonikers.Count == 0)
                         {
                             return Array.Empty<string>();
                         }
@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in currentItem.Items)
                 {
-                    if (!item.Monikers.Any())
+                    if (item.Monikers.Count == 0)
                     {
                         return Array.Empty<string>();
                     }

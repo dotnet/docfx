@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetGroup(IReadOnlyList<string> monikers)
         {
-            if (monikers == null || !monikers.Any())
+            if (monikers == null || monikers.Count == 0)
             {
                 return null;
             }

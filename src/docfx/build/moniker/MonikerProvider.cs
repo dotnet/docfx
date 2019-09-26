@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (!fileLevelMonikers.Any())
+            if (fileLevelMonikers.Count == 0)
             {
                 return (Errors.MonikerRangeUndefined(rangeString), Array.Empty<string>());
             }
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
             var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers, StringComparer.OrdinalIgnoreCase).ToArray();
 
-            if (!monikers.Any())
+            if (monikers.Length == 0)
             {
                 var error = Errors.MonikeRangeOutOfScope(rangeString, zoneLevelMonikers, fileLevelMonikers);
                 return (error, monikers);
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             {
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (!configMonikers.Any())
+                if (configMonikers.Length == 0)
                 {
                     return (Errors.MonikerRangeUndefined(metadata.MonikerRange), configMonikers);
                 }
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
 
                 // With non-empty config monikers,
                 // warn if no intersection of config monikers and file monikers
-                if (!intersection.Any())
+                if (intersection.Length == 0)
                 {
                     var error = Errors.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                     return (error, intersection);
