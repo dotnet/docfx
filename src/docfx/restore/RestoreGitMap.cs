@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (string path, string commit) GetRestoreGitPath(PackageUrl packageUrl, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
+        public (string path, string commit) GetRestoreGitPath(PackagePath packageUrl, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
         {
             switch (packageUrl.Type)
             {
