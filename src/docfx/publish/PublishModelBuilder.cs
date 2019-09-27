@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModelBuilder
     {
+        public const string NonVersion = "NONE_VERSION";
+
         private readonly string _outputPath;
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>>(PathUtility.PathComparer);

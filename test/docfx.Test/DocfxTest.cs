@@ -29,6 +29,8 @@ namespace Microsoft.Docs.Build
         {
             AppData.GetCachePath = () => t_cachePath.Value;
             AppData.GetStatePath = () => t_statePath.Value;
+            ConfigLoader.DisableMultipleDocsets = () => t_disableMultipleDocsets.Value;
+
             GitUtility.GitRemoteProxy = remote =>
             {
                 var mockedRepos = t_repos.Value;
