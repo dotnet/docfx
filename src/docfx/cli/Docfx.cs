@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                         "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains one or more docfx.yml/docfx.json in subdirectores.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
 
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains one or more docfx.yml/docfx.json in subdirectores.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
 
                     // Watch command
                     syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
                         "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains one or more docfx.yml/docfx.json in subdirectores.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
                 });
 
                 options.Locale = options.Locale?.ToLowerInvariant();
