@@ -348,7 +348,7 @@ namespace Microsoft.Docs.Build
             var topicHrefType = GetHrefType(topicHref);
             Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
-            var (error, link, resolvedFile) = context.DependencyResolver.ResolveRelativeLink(rootPath, topicHref, filePath);
+            var (error, link, resolvedFile) = context.LinkResolver.ResolveRelativeLink(rootPath, topicHref, filePath);
             errors.AddIfNotNull(error);
 
             if (resolvedFile != null)
@@ -381,7 +381,7 @@ namespace Microsoft.Docs.Build
                     return default;
 
                 case TocHrefType.TocFile:
-                    var (error, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(
+                    var (error, referencedTocContent, referencedToc) = context.LinkResolver.ResolveContent(
                         href, filePath, DependencyType.TocInclusion);
                     errors.AddIfNotNull(error);
 
@@ -399,7 +399,7 @@ namespace Microsoft.Docs.Build
 
             (string content, Document filePath)? Resolve(string name)
             {
-                var (_, referencedTocContent, referencedToc) = context.DependencyResolver.ResolveContent(
+                var (_, referencedTocContent, referencedToc) = context.LinkResolver.ResolveContent(
                     new SourceInfo<string>(Path.Combine(href, name), href), filePath, DependencyType.TocInclusion);
 
                 if (referencedTocContent != null && referencedToc != null)

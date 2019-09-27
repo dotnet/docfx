@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
         public static void SaveGitLock(string docset, string locale, string dependencyLockPath, List<DependencyGitLock> dependencyGitLock)
         {
-            var dependencyLock = new DependencyLock { Git = dependencyGitLock.ToDictionary(k => $"{new PackageUrl(k.Url, k.Branch)}", v => v) };
+            var dependencyLock = new DependencyLock { Git = dependencyGitLock.ToDictionary(k => $"{new PackagePath(k.Url, k.Branch)}", v => v) };
             var content = JsonUtility.Serialize(dependencyLock, indent: true);
 
             string path;
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             return new DependencyLockProvider(dependencyLock.Git.ToDictionary(
                 k =>
                 {
-                    var packageUrl = new PackageUrl(k.Key);
+                    var packageUrl = new PackagePath(k.Key);
                     return (packageUrl.Url, packageUrl.Branch);
                 },
                 v => v.Value));

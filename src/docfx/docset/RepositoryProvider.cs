@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
                     {
-                        var (fallbackRepoPath, fallbackRepoCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(fallbackRemote, branch), bare: false);
+                        var (fallbackRepoPath, fallbackRepoCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(fallbackRemote, branch), bare: false);
                         return Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit);
                     }
                 }
