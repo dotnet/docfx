@@ -34,9 +34,6 @@ namespace Microsoft.Docs.Build
 
         public static void Error(Error error, ErrorLevel? level = null)
         {
-            // https://github.com/dotnet/corefx/issues/2808
-            // Do not lock on objects with weak identity,
-            // but since this is the only way to synchronize console color
             lock (Console.Out)
             {
                 var errorLevel = level ?? error.Level;
