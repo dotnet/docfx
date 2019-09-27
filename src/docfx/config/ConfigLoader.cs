@@ -40,7 +40,9 @@ namespace Microsoft.Docs.Build
             }
 
             return Directory.GetFiles(workingDirectory, "docfx.yml", SearchOption.AllDirectories)
-                .Concat(Directory.GetFiles(workingDirectory, "docfx.json", SearchOption.AllDirectories))
+
+                // TODO: look for docfx.json after config migration tool has been merged info docfx
+                // .Concat(Directory.GetFiles(workingDirectory, "docfx.json", SearchOption.AllDirectories))
                 .Select(file => Path.GetDirectoryName(file))
                 .Distinct()
                 .Select(docsetPath =>
