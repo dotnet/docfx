@@ -1,0 +1,12 @@
+# docfx build and restore against a folder with multiple docfx.yml should succeed
+# output files are structured based source docset layout
+inputs:
+  a/docfx.yml:
+  a/a.md:
+  b/c/docfx.yml:
+  b/c/b.md:
+outputs:
+  a/.publish.json:
+  a/a.json:
+  b/c/.publish.json:
+  b/c/b.json:
