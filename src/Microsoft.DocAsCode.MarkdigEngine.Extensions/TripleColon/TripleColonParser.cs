@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.Continue;
             }
 
-            if (!c.IsZero())
+            if (!c.IsZero() && !endingTripleColons)
             {
                 _context.LogWarning(
                     $"invalid-{extensionName}",
