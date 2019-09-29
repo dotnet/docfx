@@ -33,21 +33,21 @@ b/output_b/b.json:
 
 When `--output` option is specified from the command line, `output.path` is overwritten by `{cwd}/{cmd-output}/{docset-folder}`:
 
-> Server build alway passes `--output` and can assume multi docset build output layout even if the repository contains just a single docset.
-
-```yml
+``````yml
 # cmd: docfx build --output _site
-# Docsets
-a/docfx.yml:
-a/a.md:
-b/folder/docfx.yml:
-b/folder/b.md:
-# Outputs
-a/a.json:
-b/folder/b.md:
-```
+inputs:
+    a/docfx.yml:
+    a/a.md:
+    b/folder/docfx.yml:
+    b/folder/b.md:
+outputs:
+    a/a.json:
+    b/folder/b.json:
+``````
 
 Build output for each docset contains its own copy of `.publish.json`, `.errors.log`, `.xrefmap.json` etc.
+
+> Server build alway passes `--output` and can assume multi docset build output layout even if the repository contains just a single docset.
 
 > For backward compatibility, aggregated files like `op_aggregated_file_map_info.json`, `full-dependent-list.txt` are generated at output root folder. Or we can tweak build side components like reporting to adapt to the new output format. 
 
@@ -57,7 +57,7 @@ Path in output contents such as `source_path` in `.publish.json` and `file` in `
 - Similarly, `.errors.log` will have a `file_url` property that points to a specific line in GitHub or Azure Repos.
 - To identify the source docset, add `name` and `product` to `.publish.json`.
 
-```yml
+``````yml
 repos:
   https://github.com/multidocset/test:
   - files:
@@ -70,22 +70,24 @@ repos:
           product: MSDN
       b/folder/b.md:
 outputs:
+  a/a.json:
   a/.publish.json: |
     {
         "name": "azure-documents",
-        "product": "Docs"
+        "product": "Docs",
         "files": [{
             "source_path": "a.md",
-            "source_url": "https://github.com/multidocset/test/a/a.md"
+            //"source_url": "https://github.com/multidocset/test/a/a.md"
         }]
     }
+  b/folder/b.json:
   b/folder/.publish.json: |
     {
         "name": "azure-documents-2",
-        "product": "Docs"
+        "product": "MSDN",
         "files": [{
             "source_path": "b.md",
-            "source_url": "https://github.com/multidocset/test/b/folder/b.md"
+            //"source_url": "https://github.com/multidocset/test/b/folder/b.md"
         }]
     }
-```
+``````

@@ -13,14 +13,16 @@ namespace Microsoft.Docs.Build
         public const string NonVersion = "NONE_VERSION";
 
         private readonly string _outputPath;
+        private readonly Config _config;
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
 
-        public PublishModelBuilder(string outputPath)
+        public PublishModelBuilder(string outputPath, Config config)
         {
+            _config = config;
             _outputPath = PathUtility.NormalizeFolder(outputPath);
         }
 
@@ -115,6 +117,8 @@ namespace Microsoft.Docs.Build
 
             var model = new PublishModel
             {
+                Name = _config.Name,
+                Product = _config.Product,
                 Files = _publishItems.Values
                     .OrderBy(item => item.Locale)
                     .ThenBy(item => item.Path)
