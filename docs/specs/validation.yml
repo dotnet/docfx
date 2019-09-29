@@ -344,5 +344,5 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","h1-missing","H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","a.md",2]
+    ["warning","h1-missing","H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","a.md",1]
 ---
