@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
-            PublishModelBuilder = new PublishModelBuilder();
+            PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);

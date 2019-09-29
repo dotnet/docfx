@@ -23,11 +23,14 @@ namespace Microsoft.Docs.Build
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_cachePath = new AsyncLocal<string>();
         private static readonly AsyncLocal<string> t_statePath = new AsyncLocal<string>();
+        private static readonly AsyncLocal<bool> t_disableMultipleDocsets = new AsyncLocal<bool>();
 
         static DocfxTest()
         {
             AppData.GetCachePath = () => t_cachePath.Value;
             AppData.GetStatePath = () => t_statePath.Value;
+            ConfigLoader.DisableMultipleDocsets = () => t_disableMultipleDocsets.Value;
+
             GitUtility.GitRemoteProxy = remote =>
             {
                 var mockedRepos = t_repos.Value;
@@ -47,6 +50,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
+                t_disableMultipleDocsets.Value = spec.Locale != null;
                 t_repos.Value = repos;
                 t_cachePath.Value = cachePath;
                 t_statePath.Value = statePath;
@@ -62,6 +66,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
+                t_disableMultipleDocsets.Value = false;
                 t_repos.Value = null;
                 t_cachePath.Value = null;
                 t_statePath.Value = null;

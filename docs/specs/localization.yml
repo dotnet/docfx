@@ -1364,6 +1364,7 @@ outputs:
 ---
 # fallback to master if corresponding source branch doesn't exists
 # [branch mapping]
+locale: zh-cn
 repos:
   https://docs.com/branch-fallback3.loc#test.zh-cn:
     - files:

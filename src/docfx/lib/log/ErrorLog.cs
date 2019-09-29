@@ -146,6 +146,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
+        public static void PrintError(Error error, ErrorLevel? level = null)
+        {
+            lock (Console.Out)
+            {
+                var errorLevel = level ?? error.Level;
+                var output = errorLevel == ErrorLevel.Error ? Console.Error : Console.Out;
+                Console.ForegroundColor = GetColor(errorLevel);
+                output.Write(error.Code + " ");
+                Console.ResetColor();
+                output.WriteLine($"./{error.FilePath}({error.Line},{error.Column}): {error.Message}");
+            }
+        }
+
         public void Dispose()
         {
             lock (_outputLock)
@@ -170,7 +184,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            ConsoleLog(level, error);
+            PrintError(error, level);
         }
 
         private int GetMaxCount(Config config, ErrorLevel level)
@@ -233,36 +247,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string LegacyReport(Error error, ErrorLevel level)
-        {
-            var message_severity = level;
-            var code = error.Code;
-            var message = error.Message;
-            var file = error.FilePath?.Path;
-            var line = error.Line;
-            var date_time = DateTime.UtcNow;
-            var origin = error.FilePath?.Origin != null && error.FilePath.Origin != default ? error.FilePath.Origin : (FileOrigin?)null;
-            var log_item_type = "user";
-
-            return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, date_time, origin });
-        }
-
-        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
-        private static void ConsoleLog(ErrorLevel level, Error error)
-        {
-            // https://github.com/dotnet/corefx/issues/2808
-            // Do not lock on objects with weak identity,
-            // but since this is the only way to synchronize console color
-            lock (Console.Out)
-            {
-                var output = level == ErrorLevel.Error ? Console.Error : Console.Out;
-                Console.ForegroundColor = GetColor(level);
-                output.Write(error.Code + " ");
-                Console.ResetColor();
-                output.WriteLine($"{error.FilePath}({error.Line},{error.Column}): {error.Message}");
-            }
-        }
-
         private static ConsoleColor GetColor(ErrorLevel level)
         {
             switch (level)
@@ -276,6 +260,20 @@ namespace Microsoft.Docs.Build
                 default:
                     return ConsoleColor.Cyan;
             }
+        }
+
+        private static string LegacyReport(Error error, ErrorLevel level)
+        {
+            var message_severity = level;
+            var code = error.Code;
+            var message = error.Message;
+            var file = error.FilePath?.Path;
+            var line = error.Line;
+            var date_time = DateTime.UtcNow;
+            var origin = error.FilePath?.Origin != null && error.FilePath.Origin != default ? error.FilePath.Origin : (FileOrigin?)null;
+            var log_item_type = "user";
+
+            return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, date_time, origin });
         }
     }
 }
