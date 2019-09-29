@@ -53,20 +53,25 @@ Path in output contents such as `source_path` in `.publish.json` and `file` in `
 
 - To make generating clickable links, `.publish.json` will have a new `source_url` property for each item that is an absolute URL pointing to the original git repository.
 - Similarly, `.errors.log` will have a `file_url` property that points to a specific line in GitHub or Azure Repos.
-- To identify the source docset, add `name` to `.publish.json`. `name` is defined as `{Product}.{DocsetName}`, e.g., `Docs.azure-documents`.
+- To identify the source docset, add `name` and `product` to `.publish.json`.
 
 ```yml
 repos:
   https://github.com/multidocset/test:
   - files:
-      a/docfx.yml: 'name: a'
+      a/docfx.yml: |
+          name: azure-documents
+          product: Docs
       a/a.md:
-      b/folder/docfx.yml: 'name: b'
+      b/folder/docfx.yml: |
+          name: azure-documents-2
+          product: MSDN
       b/folder/b.md:
 outputs:
   a/.publish.json: |
     {
-        "name": "a",
+        "name": "azure-documents",
+        "product": "Docs"
         "files": [{
             "source_path": "a.md",
             "source_url": "https://github.com/multidocset/test/a/a.md"
@@ -74,7 +79,8 @@ outputs:
     }
   b/folder/.publish.json: |
     {
-        "name": "b",
+        "name": "azure-documents-2",
+        "product": "Docs"
         "files": [{
             "source_path": "b.md",
             "source_url": "https://github.com/multidocset/test/b/folder/b.md"
