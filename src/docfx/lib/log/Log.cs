@@ -32,19 +32,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Error(Error error, ErrorLevel? level = null)
-        {
-            lock (Console.Out)
-            {
-                var errorLevel = level ?? error.Level;
-                var output = errorLevel == ErrorLevel.Error ? Console.Error : Console.Out;
-                Console.ForegroundColor = GetColor(errorLevel);
-                output.Write(error.Code + " ");
-                Console.ResetColor();
-                output.WriteLine($"./{error.FilePath}({error.Line},{error.Column}): {error.Message}");
-            }
-        }
-
         public static void Write(Exception exception)
         {
             Write(exception.ToString(), ConsoleColor.DarkRed);
@@ -60,21 +47,6 @@ namespace Microsoft.Docs.Build
                     Console.WriteLine(message);
                     Console.ResetColor();
                 }
-            }
-        }
-
-        private static ConsoleColor GetColor(ErrorLevel level)
-        {
-            switch (level)
-            {
-                case ErrorLevel.Error:
-                    return ConsoleColor.Red;
-                case ErrorLevel.Warning:
-                    return ConsoleColor.Yellow;
-                case ErrorLevel.Suggestion:
-                    return ConsoleColor.Magenta;
-                default:
-                    return ConsoleColor.Cyan;
             }
         }
 

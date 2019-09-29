@@ -146,6 +146,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
+        public static void PrintError(Error error, ErrorLevel? level = null)
+        {
+            lock (Console.Out)
+            {
+                var errorLevel = level ?? error.Level;
+                var output = errorLevel == ErrorLevel.Error ? Console.Error : Console.Out;
+                Console.ForegroundColor = GetColor(errorLevel);
+                output.Write(error.Code + " ");
+                Console.ResetColor();
+                output.WriteLine($"./{error.FilePath}({error.Line},{error.Column}): {error.Message}");
+            }
+        }
+
         public void Dispose()
         {
             lock (_outputLock)
@@ -170,7 +184,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            Log.Error(error, level);
+            PrintError(error, level);
         }
 
         private int GetMaxCount(Config config, ErrorLevel level)
@@ -230,6 +244,21 @@ namespace Microsoft.Docs.Build
                     return Interlocked.Increment(ref _suggestionCount) > config.Output.MaxSuggestions;
                 default:
                     return false;
+            }
+        }
+
+        private static ConsoleColor GetColor(ErrorLevel level)
+        {
+            switch (level)
+            {
+                case ErrorLevel.Error:
+                    return ConsoleColor.Red;
+                case ErrorLevel.Warning:
+                    return ConsoleColor.Yellow;
+                case ErrorLevel.Suggestion:
+                    return ConsoleColor.Magenta;
+                default:
+                    return ConsoleColor.Cyan;
             }
         }
 

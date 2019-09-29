@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
-                Log.Error(Errors.ConfigNotFound(workingDirectory));
+                ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
                 return Task.CompletedTask;
             }
 
