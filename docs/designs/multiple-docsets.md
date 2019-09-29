@@ -9,6 +9,8 @@ This document describes the behavior for repositories with multiple docsets.
 
 Each docset is built seperately as a standalone, self-contained unit. No states are shared across docsets, e.g., you cannot reference contents in another docset using relative path.
 
+> We _may in the future_ add another config file that allows more explicit control over which docsets are included. For now, all docsets under the current and subdirectories are included as part of the build.
+
 ## Build Output
 
 Building against a folder is conceptually the same as building each docset that it contains. Output content and structure of building a folder is exactly the same as building each `docfx.yml`. There might be some additional aggregated information if necessary.
@@ -87,28 +89,3 @@ outputs:
         }]
     }
 ```
-
-## Configuration
-
-We _may_ add an optional config file named `docsets.yml` that describes a collection of docsets under multiple docsets setup for folder.
-It is conceptually equivalent to `.sln` files in .NET world or `lerna.json` in NodeJS world. Such config file:
-
-- Avoids running directory search on none docfx directories.
-- Allows explicit control over which docset are included for a build.
-
-It contains a `docsets` property that describes the location of docsets managed by this repository. The value is an array of glob patterns that matches the folder path of each docset relative to , it could be short circuited to a string if there is only one glob:
-
-```yml
-docsets:
-- '**'          # Matches all folders containing docfx.yml recursively
-- 'docsets/*'   # Matches folders under `docsets` that contains docfx.yml
-```
-
-## Work Items
-
-- Find docsets and build each docset (1)
-- Add `source_url` to `.publish.json` and `file_url` to `.errors.log` (2)
-- Produce aggregated outputs (4)
-- Server side config migration (2)
-- Server side publish
-- Migration tool
