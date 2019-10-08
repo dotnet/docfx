@@ -44,8 +44,7 @@ namespace Microsoft.Docs.Build
                     var fileName = $"{templateName}.html.liquid";
                     try
                     {
-                        var template = LoadTemplate(Path.Combine(_templateDir, fileName));
-                        return (null, template);
+                        return (null, LoadTemplate(Path.Combine(_templateDir, fileName)));
                     }
                     catch (Exception ex)
                     {
