@@ -16,10 +16,12 @@ namespace Microsoft.Docs.Build
         public void RenderLiquidTemplate(string name, string json, string html)
         {
             var model = JObject.Parse(json.Replace('\'', '"'));
+            var (error, result) = _template.Render(name, model);
 
+            Assert.Null(error);
             Assert.Equal(
                 JsonDiff.NormalizeHtml(html),
-                JsonDiff.NormalizeHtml(_template.Render(name, model)));
+                JsonDiff.NormalizeHtml(result));
         }
     }
 }

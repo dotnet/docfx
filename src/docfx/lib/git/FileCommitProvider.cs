@@ -45,11 +45,6 @@ namespace Microsoft.Docs.Build
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
         }
 
-        public List<GitCommit> GetCommitHistory(string committish = null)
-        {
-            return GetCommitHistory("", committish);
-        }
-
         public List<GitCommit> GetCommitHistory(string file, string committish = null)
         {
             Debug.Assert(!file.Contains('\\'));

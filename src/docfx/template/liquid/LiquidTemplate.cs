@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class LiquidTemplate
     {
-        private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
+        private readonly ConcurrentDictionary<string, Lazy<(Error, Template)>> _templates = new ConcurrentDictionary<string, Lazy<(Error, Template)>>();
         private readonly IncludeFileSystem _fileSystem;
         private readonly string _templateDir;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
@@ -35,12 +35,30 @@ namespace Microsoft.Docs.Build
             _localizedStrings = LoadLocalizedStrings(templateDir);
         }
 
-        public string Render(string templateName, JObject model)
+        public (Error, string) Render(string templateName, JObject model)
         {
-            var template = _templates.GetOrAdd(
+            var (error, template) = _templates.GetOrAdd(
                 templateName,
-                new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, templateName + ".html.liquid")))).Value;
+                new Lazy<(Error, Template)>(() =>
+                {
+                    var fileName = $"{templateName}.html.liquid";
+                    try
+                    {
+                        var template = LoadTemplate(Path.Combine(_templateDir, fileName));
+                        return (null, template);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is DirectoryNotFoundException || ex is FileNotFoundException)
+                        {
+                            return (Errors.LiquidTemplateMissing(fileName), null);
+                        }
+                        throw;
+                    }
+                })).Value;
 
+            if (template is null)
+                return (error, string.Empty);
             var registers = new Hash
             {
                 ["file_system"] = _fileSystem,
@@ -64,7 +82,7 @@ namespace Microsoft.Docs.Build
                     formatProvider: CultureInfo.InvariantCulture),
             };
 
-            return template.Render(parameters);
+            return (null, template.Render(parameters));
         }
 
         public static string GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
@@ -122,7 +140,18 @@ namespace Microsoft.Docs.Build
             {
                 return _templates.GetOrAdd(
                     templateName,
-                    new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid")))).Value;
+                    new Lazy<Template>(() =>
+                        {
+                            try
+                            {
+                                return LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid"));
+                            }
+                            catch (Exception e)
+                            {
+                                context.Errors.Add(e);
+                            }
+                            return null;
+                        })).Value;
             }
         }
     }

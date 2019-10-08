@@ -608,3 +608,13 @@ outputs:
                           <a href=\"a#\" data-linktype=\"relative-path\">a1</a>
                      </p>"
     }
+---
+# Liquid template file missing
+inputs: 
+  docfx.yml: |
+    output:
+      json: false
+  docs/a.md: Hello `docfx`! 
+outputs: 
+  .errors.log: |
+    ["error","liquid-template-missing","The liquid template '.html.liquid' is missing","docs/a.md"]
