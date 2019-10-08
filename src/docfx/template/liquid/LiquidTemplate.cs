@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                     formatProvider: CultureInfo.InvariantCulture),
             };
 
-            return (null, template.Render(parameters));
+            return (error, template.Render(parameters));
         }
 
         public static string GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
