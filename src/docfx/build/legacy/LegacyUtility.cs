@@ -21,7 +21,6 @@ namespace Microsoft.Docs.Build
                 outputPath = doc.GetOutputPath(manifestItem.Monikers, docset.SiteBasePath, isPage: false);
             }
             var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, outputPath);
-
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
         }
 
@@ -33,7 +32,10 @@ namespace Microsoft.Docs.Build
                 legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(
                     docset.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
             }
-
+            if (legacySiteUrlRelativeToSiteBasePath.StartsWith("/"))
+            {
+                legacySiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToSiteBasePath.Substring(1);
+            }
             return PathUtility.NormalizeFile(
                 Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison)
                 && doc.ContentType != ContentType.Resource
