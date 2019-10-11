@@ -56,12 +56,13 @@ namespace Microsoft.Docs.Build
 
         public static void Convert(Docset docset, Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
         {
+            var siteBasePath = docset.SiteBasePath == "." ? string.Empty : docset.SiteBasePath;
             context.Output.WriteJson(
                 new
                 {
                     host = docset.HostName,
                     locale = docset.Locale,
-                    base_path = $"/{docset.SiteBasePath}",
+                    base_path = $"/{siteBasePath}",
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
                     from_docfx_v3 = true,
@@ -79,7 +80,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.SiteBasePath, "filemap.json"));
+                Path.Combine(siteBasePath, "filemap.json"));
         }
     }
 }
