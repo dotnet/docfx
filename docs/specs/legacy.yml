@@ -265,7 +265,12 @@ inputs:
 outputs:
   a.mta.json:
   a.raw.page.json: |
-    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+    { 
+      "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>",
+      "rawMetadata": {
+        "_op_canonicalUrlPrefix": "https://docs.com/en-us/"
+      }
+    }
   redirect.mta.json:
   redirect.raw.page.json:
 ---

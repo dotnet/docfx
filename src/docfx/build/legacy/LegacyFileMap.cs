@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 {
                     host = docset.HostName,
                     locale = docset.Locale,
-                    base_path = $"/{docset.SiteBasePath}",
+                    base_path = $"/{PathUtility.NormalizeSiteBasePath(docset.SiteBasePath)}",
                     source_base_path = docset.Config.DocumentId.SourceBasePath,
                     version_info = new { },
                     from_docfx_v3 = true,
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.SiteBasePath, "filemap.json"));
+                Path.Combine(PathUtility.NormalizeSiteBasePath(docset.SiteBasePath), "filemap.json"));
         }
     }
 }

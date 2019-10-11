@@ -260,6 +260,16 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
+        /// <summary>
+        /// A normalized site base path, if it is '.', then return empty.
+        /// </summary>
+        /// <param name="siteBasePath">The site base path want to be normalized</param>
+        /// <returns>The normalized file path</returns>
+        public static string NormalizeSiteBasePath(string siteBasePath)
+        {
+            return siteBasePath == "." ? string.Empty : siteBasePath;
+        }
+        
         // For azure blob url, url without sas token should identify if the content has changed
         // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
         private static string RemoveQueryForBlobUrl(string url)

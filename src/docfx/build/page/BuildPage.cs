@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchDocsetName = file.Docset.Config.Name;
 
             systemMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
-            systemMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{systemMetadata.Locale}/{file.Docset.SiteBasePath}/";
+            systemMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{systemMetadata.Locale}/" + (string.IsNullOrEmpty(PathUtility.NormalizeSiteBasePath(file.Docset.SiteBasePath)) ? string.Empty : file.Docset.SiteBasePath + "/");
 
             if (file.Docset.Config.Output.Pdf)
             {
