@@ -6,8 +6,6 @@
 
 ## Getting Started
 
-# docastest-demo
-
 1. Create a new class library
 
 ```cmd
