@@ -2685,7 +2685,7 @@ namespace Test1
             Assert.Equal(1, foo.Items.Count);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.Int32)", bar.Name);
-            Assert.Equal("public int Bar(int x = default(int))", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public int Bar(int x = 0)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -2711,8 +2711,7 @@ namespace Test1
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
-            Assert.Equal("public int Bar((string prefix, string uri)namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public int Bar((string prefix, string uri) namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -2738,8 +2737,7 @@ namespace Test1
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
-            Assert.Equal("public int Bar((string, string)namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public int Bar((string, string) namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -2765,8 +2763,7 @@ namespace Test1
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
-            Assert.Equal("public int Bar((string, string uri)namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public int Bar((string, string uri) namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -2846,8 +2843,7 @@ namespace Test1
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before Bar
-            Assert.Equal("public (string prefix, string uri)Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public (string prefix, string uri) Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -2873,8 +2869,7 @@ namespace Test1
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before Bar
-            Assert.Equal("public (string, string)Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public (string, string) Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -2900,8 +2895,7 @@ namespace Test1
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before Bar
-            Assert.Equal("public (string, string uri)Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public (string, string uri) Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
