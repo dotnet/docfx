@@ -59,7 +59,7 @@ Each input file transforms to zero or more output files depending on its content
 `{output-dir}/{siteBasePath}/{monikerListHash}?/{site-path-relative-to-base-path}`
 
 ```
-  siteBasePath monikerListHash    site-path-relative-to-base-path
+  siteBasePath monikerListHash    site-path (relative-to-base-path)
       |--^-| |--^--| |----------------^----------|
 _site/dotnet/01ddf122/api/system.string/index.html
 ```
@@ -75,8 +75,8 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     |------ |----|
     | `url` | https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0 |
     | `site-url` | /dotnet/api/system.string |
-    | `site-path` | dotnet/api/system.string.json |
-    | `site-path-relative-to-base-path` | api/system.string.json |
+    | `base-path` | dotnet |
+    | `site-path` | api/system.string.json |
     | `output-path` | dotnet/01ddf122/api/system.string.json |
 
 - Content for static rendering using pretty url
@@ -85,7 +85,8 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     |------ |----|
     | `url` | https://docs.microsoft.com/en-us/dotnet/api/system.string/ |
     | `site-url` | /dotnet/api/system.string/ |
-    | `site-path` | dotnet/api/system.string/index.html |
+    | `base-path` | dotnet |
+    | `site-path` | api/system.string/index.html |
     | `output-path` | dotnet/api/system.string/index.html |
 
 - Content for static rendering using ugly url
@@ -94,7 +95,8 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     |------ |----|
     | `url` | https://docs.microsoft.com/en-us/dotnet/api/system.string.html |
     | `site-url` | /dotnet/api/system.string.html |
-    | `site-path` | dotnet/api/system.string.html |
+    | `base-path` | dotnet |
+    | `site-path` | api/system.string.html |
     | `output-path` | dotnet/api/system.string.html |
 
 - Table of Contents
@@ -103,7 +105,8 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     |------ |----|
     | `url` | https://docs.microsoft.com/en-us/dotnet/api/TOC.json |
     | `site-url` | /dotnet/api/TOC.json |
-    | `site-path` | dotnet/api/TOC.json |
+    | `base-path` | dotnet |
+    | `site-path` | api/TOC.json |
     | `output-path` | dotnet/api/TOC.json |
 
 - Image
