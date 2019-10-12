@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Config.Output.Pdf)
             {
-                model.Metadata.PdfAbsolutePath = UrlUtility.Combine(
+                model.Metadata.PdfAbsolutePath = "/" + UrlUtility.Combine(
                     file.Docset.SiteBasePath, "opbuildpdf", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
