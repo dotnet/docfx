@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
 
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(Document document, string committish = null)
-           => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath.Path), document.Repository, committish);
+           => GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath.GetPathToOrigin()), document.Repository, committish);
 
         public (Repository repo, string pathToRepo, List<GitCommit> commits) GetCommitHistory(Docset docset, string filePath, string committish = null)
         {
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             return _fileCommitProvidersByRepoPath.GetOrAdd(
                 repo.Path,
-                _ => new FileCommitProvider(repo.Path, AppData.GetCommitCachePath(repo.Remote)));
+                _ => new FileCommitProvider(repo, AppData.GetCommitCachePath(repo.Remote)));
         }
     }
 }

@@ -318,3 +318,31 @@ outputs:
   .errors.log: |
     ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","a.md",2,12]
 ---
+# Content validation end to end scenario 
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
+            "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
+            "severity": "WARNING",
+            "code": "h1-missing"
+          }
+        ]
+      }
+    }
+  a.md: |
+    This is test.
+outputs:
+  a.json:
+  .errors.log: |
+    ["warning","h1-missing","H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","a.md",1]
+---

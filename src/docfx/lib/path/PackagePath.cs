@@ -1,49 +1,43 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
     /// <summary>
     /// Define the location of a package.
-    /// A package is any of the following:
+    ///
+    /// A package is a collection of files, it can be any of the following:
     ///   a) A folder
     ///   b) A git url in the form of `{remote_url}#{commit-ish}`, when cloned, results in a)
-    /// The commit-sh can be any tag, sha, or branch. The default commit-ish is master.
+    /// The commit-ish can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class PackageUrl
+    internal class PackagePath
     {
-        public PackageType Type { get; set; }
+        [JsonIgnore]
+        public PackageType Type { get; private set; }
 
-        public string Path { get; set; }
+        public string Path { get; private set; }
 
-        public string Url { get; set; }
+        public string Url { get; private set; }
 
-        public string Branch { get; set; } = "master";
+        public string Branch { get; private set; }
 
-        public PackageUrl()
+        public PackagePath()
         {
         }
 
-        public PackageUrl(string url)
+        public PackagePath(string url)
         {
-            if (UrlUtility.IsHttp(url))
-            {
-                Type = PackageType.Git;
-                (Url, Branch) = SplitGitUrl(url);
-            }
-            else
-            {
-                Type = PackageType.Folder;
-                Path = url;
-            }
+            Url = url;
+            OnDeserialized(default);
         }
 
-        public PackageUrl(string remote, string branch)
+        public PackagePath(string remote, string branch)
         {
             Debug.Assert(remote != null);
             Debug.Assert(branch != null);
@@ -65,7 +59,7 @@ namespace Microsoft.Docs.Build
                     return $"{Url}#{Branch}";
 
                 default:
-                    return Type.ToString();
+                    return $"{Url}, (type: {Type.ToString()})";
             }
         }
 
@@ -77,9 +71,25 @@ namespace Microsoft.Docs.Build
 
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
-            var refspec = hasRefSpec ? fragment.Substring(1) : "master";
 
-            return (path, refspec);
+            return (path, hasRefSpec ? fragment.Substring(1) : "master");
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (UrlUtility.IsHttp(Url))
+            {
+                Type = PackageType.Git;
+                var (url, branch) = SplitGitUrl(Url);
+                Url = url;
+                Branch = Branch ?? branch;
+            }
+            else
+            {
+                Type = PackageType.Folder;
+                Path = Path ?? Url;
+            }
         }
     }
 }

@@ -27,9 +27,7 @@ namespace Microsoft.Docs.Build
                 context.Input.TryGetPhysicalPath(file.FilePath, out var physicalPath))
             {
                 copy = false;
-                publishPath = PathUtility.NormalizeFile(Path.GetRelativePath(
-                    Path.GetFullPath(Path.Combine(file.Docset.DocsetPath, file.Docset.Config.Output.Path)),
-                    Path.GetFullPath(physicalPath)));
+                publishPath = PathUtility.NormalizeFile(Path.GetRelativePath(context.Output.OutputPath, physicalPath));
             }
 
             var publishItem = new PublishItem

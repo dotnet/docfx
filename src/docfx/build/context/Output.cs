@@ -8,11 +8,14 @@ namespace Microsoft.Docs.Build
 {
     internal class Output
     {
-        private readonly string _outputPath;
+        private readonly Input _input;
 
-        public Output(string outputPath)
+        public string OutputPath { get; }
+
+        public Output(string outputPath, Input input)
         {
-            _outputPath = Path.GetFullPath(outputPath);
+            OutputPath = Path.GetFullPath(outputPath);
+            _input = input;
         }
 
         /// <summary>
@@ -42,16 +45,25 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void Copy(Document file, string destRelativePath)
         {
-            var sourcePath = Path.Combine(file.Docset.DocsetPath, file.FilePath.Path);
+            var targetPhysicalPath = GetDestinationPath(destRelativePath);
+            if (_input.TryGetPhysicalPath(file.FilePath, out var sourcePhysicalPath))
+            {
+                File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
+                return;
+            }
 
-            File.Copy(sourcePath, GetDestinationPath(destRelativePath), overwrite: true);
+            using (var sourceStream = _input.ReadStream(file.FilePath))
+            using (var targetStream = File.Create(targetPhysicalPath))
+            {
+                sourceStream.CopyTo(targetStream);
+            }
         }
 
         public void Delete(string destRelativePath, bool legacy = false)
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+            var destinationPath = Path.Combine(OutputPath, destRelativePath);
 
             if (File.Exists(destinationPath))
             {
@@ -72,7 +84,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+            var destinationPath = Path.Combine(OutputPath, destRelativePath);
 
             PathUtility.CreateDirectoryFromFilePath(destinationPath);
 

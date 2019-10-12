@@ -72,15 +72,15 @@ namespace Microsoft.Docs.Build
 
         private (List<Error> errors, InputMetadata metadata) GetMetadataCore(Document file)
         {
-            if (file.ContentType != ContentType.Page && file.ContentType != ContentType.TableOfContents)
-            {
-                return (new List<Error>(), new InputMetadata());
-            }
-
             var result = new JObject();
+            var errors = new List<Error>();
+            var yamlHeader = new JObject();
 
-            var (errors, yamlHeader) = LoadMetadata(file);
-            JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
+            {
+                (errors, yamlHeader) = LoadMetadata(file);
+                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+            }
 
             JsonUtility.Merge(result, _globalMetadata);
 

@@ -588,12 +588,11 @@ repos:
             - "crrb/**/*"
           dependencies:
             crrb:
-              type: git
               url: https://github.com/testowner/crr-content
-              branch: master
-              extendToBuild: true
+              branch: test
+              includeInBuild: true
         docs/a.md:
-  https://github.com/testowner/crr-content:
+  https://github.com/testowner/crr-content#test:
     - author: Charlie
       email: charlie@contoso.com
       files:
@@ -633,9 +632,9 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
-      "content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
-      "original_content_git_url": "https://github.com/testowner/crr-content/blob/master/b.md",
-      "original_content_git_url_template": "https://github.com/testowner/crr-content/blob/master/b.md",
+      "content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
+      "original_content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
+      "original_content_git_url_template": "https://github.com/testowner/crr-content/blob/test/b.md",
       "gitcommit": "https://github.com/testowner/crr-content/blob/44e7dd472e06b95898986635feccbcefde3c42f0/b.md",
       "updated_at": "2018-10-30 12:00 AM"
     }

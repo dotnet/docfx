@@ -110,7 +110,8 @@ namespace Microsoft.DocAsTest
         /// <example>
         /// Given the expectation { "a": 1 }, { "b": 1 } pass.
         /// </example>
-        public static JsonDiffBuilder UseAdditionalProperties(this JsonDiffBuilder builder, JsonDiffPredicate predicate = null)
+        public static JsonDiffBuilder UseAdditionalProperties(
+            this JsonDiffBuilder builder, JsonDiffPredicate predicate = null, Func<string, bool> isRequiredProperty = null)
         {
             if (builder is null)
                 throw new ArgumentNullException(nameof(builder));
@@ -119,12 +120,25 @@ namespace Microsoft.DocAsTest
             {
                 if (expected is JObject expectedObj && actual is JObject actualObj)
                 {
-                    var newActual = new JObject(actualObj.Properties().Where(p => expectedObj.ContainsKey(p.Name)));
+                    var newActual = new JObject(actualObj.Properties().Where(IsRequiredProperty));
 
                     return (expected, newActual);
                 }
 
                 return (expected, actual);
+
+                bool IsRequiredProperty(JProperty property)
+                {
+                    if (expectedObj.ContainsKey(property.Name))
+                    {
+                        return true;
+                    }
+                    if (isRequiredProperty != null && isRequiredProperty(property.Name))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
             });
         }
 

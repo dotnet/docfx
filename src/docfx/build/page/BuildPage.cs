@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.DependencyResolver.ResolveRelativeLink(
+                var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveRelativeLink(
                     file, inputMetadata.BreadcrumbPath, file);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
@@ -199,11 +199,7 @@ namespace Microsoft.Docs.Build
             var content = context.Input.ReadString(file.FilePath);
             GitUtility.CheckMergeConflictMarker(content, file.FilePath);
 
-            var (markupErrors, htmlDom) = MarkdownUtility.ToHtml(
-                context,
-                content,
-                file,
-                MarkdownPipelineType.Markdown);
+            var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
             var wordCount = HtmlUtility.CountWord(htmlDom);

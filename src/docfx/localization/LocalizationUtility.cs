@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(locRemote, locBranch), false);
+                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(locRemote, locBranch), false);
                         localizationDocsetPath = locRepoPath;
                         localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
                         break;
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
                         localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
-                        localizationRepository = Repository.Create(localizationDocsetPath, branch: null, repoUrl: null, commit: null);
+                        localizationRepository = docset.Repository;
                         break;
                     }
                 default:
@@ -109,10 +109,10 @@ namespace Microsoft.Docs.Build
             return TryGetFallbackRepository(repository.Remote, repository.Branch, out fallbackRemote, out fallbackBranch, out locale);
         }
 
-        public static string GetLocale(string remote, string branch, CommandLineOptions options)
+        public static string GetLocale(Repository repository, CommandLineOptions options)
         {
-            return options.Locale ?? (TryRemoveLocale(branch, out _, out var branchLocale)
-                ? branchLocale : TryRemoveLocale(remote, out _, out var remoteLocale)
+            return options.Locale ?? (TryRemoveLocale(repository?.Branch, out _, out var branchLocale)
+                ? branchLocale : TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
                 ? remoteLocale : default);
         }
 
@@ -155,16 +155,16 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static PackageUrl GetLocalizedTheme(PackageUrl theme, string locale, string defaultLocale)
+        public static PackagePath GetLocalizedTheme(PackagePath theme, string locale, string defaultLocale)
         {
             switch (theme.Type)
             {
                 case PackageType.Folder:
-                    return new PackageUrl(
+                    return new PackagePath(
                         GetLocalizationName(LocalizationMapping.Repository, theme.Path, locale, defaultLocale));
 
                 case PackageType.Git:
-                    return new PackageUrl(
+                    return new PackagePath(
                         GetLocalizationName(LocalizationMapping.Repository, theme.Url, locale, defaultLocale),
                         theme.Branch);
 

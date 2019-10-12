@@ -4,29 +4,39 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using YamlDotNet.Helpers;
 
 namespace Microsoft.Docs.Build
 {
     public static class RestoreTest
     {
         [Theory]
-        [InlineData("https://github.com/dotnet/docfx", "https://github.com/dotnet/docfx", "master")]
-        [InlineData("https://github.com/dotnet/docfx/", "https://github.com/dotnet/docfx", "master")]
-        [InlineData("https://visualstudio.com/dotnet/docfx", "https://visualstudio.com/dotnet/docfx", "master")]
-        [InlineData("https://github.com/dotnet/docfx#master", "https://github.com/dotnet/docfx", "master")]
-        [InlineData("https://github.com/dotnet/docfx#live", "https://github.com/dotnet/docfx", "live")]
-        [InlineData("https://github.com/dotnet/docfx#", "https://github.com/dotnet/docfx", "master")]
-        [InlineData("https://github.com/dotnet/docfx#986127a", "https://github.com/dotnet/docfx", "986127a")]
-        [InlineData("https://github.com/dotnet/docfx#a#a", "https://github.com/dotnet/docfx", "a#a")]
-        [InlineData("https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C", "https://github.com/dotnet/docfx", "a\\b/d<e>f*h|i%3C")]
-        public static void PackageUrlTest(string remote, string expectedUrl, string expectedRev)
+        [InlineData("'https://github.com/dotnet/docfx'", PackageType.Git, "https://github.com/dotnet/docfx", "master", null)]
+        [InlineData("'https://github.com/dotnet/docfx/'", PackageType.Git, "https://github.com/dotnet/docfx", "master", null)]
+        [InlineData("'https://visualstudio.com/dotnet/docfx'", PackageType.Git, "https://visualstudio.com/dotnet/docfx", "master", null)]
+        [InlineData("'https://github.com/dotnet/docfx#master'", PackageType.Git, "https://github.com/dotnet/docfx", "master", null)]
+        [InlineData("'https://github.com/dotnet/docfx#live'", PackageType.Git, "https://github.com/dotnet/docfx", "live", null)]
+        [InlineData("'https://github.com/dotnet/docfx#'", PackageType.Git, "https://github.com/dotnet/docfx", "master", null)]
+        [InlineData("'https://github.com/dotnet/docfx#986127a'", PackageType.Git, "https://github.com/dotnet/docfx", "986127a", null)]
+        [InlineData("'https://github.com/dotnet/docfx#a#a'", PackageType.Git, "https://github.com/dotnet/docfx", "a#a", null)]
+        [InlineData(@"'https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C'", PackageType.Git, "https://github.com/dotnet/docfx", @"a\b/d<e>f*h|i%3C", null)]
+        [InlineData("{'url': 'https://github.com/dotnet/docfx#unused', 'branch': 'used'}", PackageType.Git, "https://github.com/dotnet/docfx", "used", null)]
+        [InlineData("{'url': 'crr/local-path'}", PackageType.Folder, "crr/local-path", null, "crr/local-path")]
+        public static void PackageUrlTest(
+            string json,
+            PackageType expectedPackageType,
+            string expectedUrl,
+            string expectedRev,
+            string expectedPath)
         {
             // Act
-            var packageUrl = new PackageUrl(remote);
+            var packageUrl = JsonUtility.Deserialize<PackagePath>(json.Replace('\'', '"'), new FilePath("file"));
 
             // Assert
             Assert.Equal(expectedUrl, packageUrl.Url);
+            Assert.Equal(expectedPackageType, packageUrl.Type);
             Assert.Equal(expectedRev, packageUrl.Branch);
+            Assert.Equal(expectedPath, packageUrl.Path);
         }
 
         [Fact]

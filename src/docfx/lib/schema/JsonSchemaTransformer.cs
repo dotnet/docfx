@@ -214,18 +214,13 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = context.DependencyResolver.ResolveRelativeLink(file, content, file);
+                    var (error, link, _) = context.LinkResolver.ResolveRelativeLink(file, content, file);
                     errors.AddIfNotNull(error);
                     content = new SourceInfo<string>(link, content);
                     break;
 
                 case JsonSchemaContentType.Markdown:
-                    var (markupErrors, html) = MarkdownUtility.ToHtml(
-                        context,
-                        content,
-                        file,
-                        MarkdownPipelineType.Markdown);
-
+                    var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
@@ -233,12 +228,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JsonSchemaContentType.InlineMarkdown:
-                    var (inlineMarkupErrors, inlineHtml) = MarkdownUtility.ToHtml(
-                        context,
-                        content,
-                        file,
-                        MarkdownPipelineType.InlineMarkdown);
-
+                    var (inlineMarkupErrors, inlineHtml) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
@@ -249,7 +239,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Html:
                     var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
                     {
-                        var (htmlError, htmlLink, _) = context.DependencyResolver.ResolveRelativeLink(
+                        var (htmlError, htmlLink, _) = context.LinkResolver.ResolveRelativeLink(
                             file, new SourceInfo<string>(href, content), file);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;

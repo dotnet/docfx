@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, DependencyPackageUrl> Dependencies = new Dictionary<string, DependencyPackageUrl>(PathUtility.PathComparer);
+        public readonly Dictionary<string, DependencyConfig> Dependencies = new Dictionary<string, DependencyConfig>(PathUtility.PathComparer);
 
         /// <summary>
         /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
@@ -180,6 +180,11 @@ namespace Microsoft.Docs.Build
         public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>(string.Empty);
 
         /// <summary>
+        /// Get the file path of content validation rules
+        /// </summary>
+        public readonly SourceInfo<string> MarkdownValidationRules = new SourceInfo<string>(string.Empty);
+
+        /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -188,7 +193,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly PackageUrl Template = new PackageUrl();
+        public readonly PackagePath Template = new PackagePath();
 
         /// <summary>
         /// Gets the dependency lock file path

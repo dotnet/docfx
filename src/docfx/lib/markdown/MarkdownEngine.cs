@@ -12,22 +12,52 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class MarkdownUtility
+    internal class MarkdownEngine
     {
         // This magic string identifies if an URL was a relative URL in source,
         // URLs starting with this magic string are transformed into relative URL after markup.
         private const string RelativeUrlMarker = "//////";
 
-        private static readonly MarkdownPipeline[] s_markdownPipelines = new[]
-        {
-            CreateMarkdownPipeline(),
-            CreateInlineMarkdownPipeline(),
-            CreateTocMarkdownPipeline(),
-        };
+        private readonly LinkResolver _linkResolver;
+        private readonly XrefResolver _xrefResolver;
+        private readonly MonikerProvider _monikerProvider;
+        private readonly TemplateEngine _templateEngine;
+        private readonly string _markdownValidationRules;
+
+        private readonly MarkdownContext _markdownContext;
+        private readonly MarkdownPipeline[] _pipelines;
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        public static (List<Error> errors, MarkdownDocument ast) Parse(string content, MarkdownPipelineType piplineType)
+        public MarkdownEngine(
+            Config config,
+            RestoreFileMap restoreFileMap,
+            LinkResolver linkResolver,
+            XrefResolver xrefResolver,
+            MonikerProvider monikerProvider,
+            TemplateEngine templateEngine)
+        {
+            _linkResolver = linkResolver;
+            _xrefResolver = xrefResolver;
+            _monikerProvider = monikerProvider;
+            _templateEngine = templateEngine;
+
+            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
+            _markdownValidationRules = config.MarkdownValidationRules;
+            if (!string.IsNullOrEmpty(_markdownValidationRules))
+            {
+                _markdownValidationRules = restoreFileMap.GetRestoredFilePath(config.MarkdownValidationRules);
+            }
+
+            _pipelines = new[]
+            {
+                CreateMarkdownPipeline(),
+                CreateInlineMarkdownPipeline(),
+                CreateTocMarkdownPipeline(),
+            };
+        }
+
+        public (List<Error> errors, MarkdownDocument ast) Parse(string content, MarkdownPipelineType piplineType)
         {
             try
             {
@@ -35,7 +65,7 @@ namespace Microsoft.Docs.Build
 
                 t_status.Value.Push(status);
 
-                var ast = Markdown.Parse(content, s_markdownPipelines[(int)piplineType]);
+                var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
 
                 return (status.Errors, ast);
             }
@@ -45,11 +75,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static (List<Error> errors, HtmlNode html) ToHtml(
-            Context context,
-            string markdown,
-            Document file,
-            MarkdownPipelineType pipelineType)
+        public (List<Error> errors, HtmlNode html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -58,12 +84,11 @@ namespace Microsoft.Docs.Build
                     var status = new Status
                     {
                         Errors = new List<Error>(),
-                        Context = context,
                     };
 
                     t_status.Value.Push(status);
 
-                    var html = Markdown.ToHtml(markdown, s_markdownPipelines[(int)pipelineType]);
+                    var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
                     var htmlNode = HtmlUtility.LoadHtml(html);
 
                     var htmlNodeWithRelativeLink = HtmlUtility.TransformLinks(htmlNode, (href, _) =>
@@ -84,41 +109,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static MarkdownPipeline CreateMarkdownPipeline()
+        private MarkdownPipeline CreateMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(
-                GetToken,
-                LogInfo,
-                LogSuggestion,
-                LogWarning,
-                LogError,
-                ReadFile);
-
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
-                .UseDocfxExtensions(markdownContext)
+                .UseDocfxExtensions(_markdownContext)
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(_markdownContext, _markdownValidationRules)
                 .Build();
         }
 
-        private static MarkdownPipeline CreateInlineMarkdownPipeline()
+        private MarkdownPipeline CreateInlineMarkdownPipeline()
         {
-            var markdownContext = new MarkdownContext(
-                GetToken,
-                LogInfo,
-                LogSuggestion,
-                LogWarning,
-                LogError,
-                ReadFile);
-
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
-                .UseDocfxExtensions(markdownContext)
+                .UseDocfxExtensions(_markdownContext)
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(_markdownContext, _markdownValidationRules)
                 .UseInlineOnly()
                 .Build();
         }
@@ -143,14 +154,14 @@ namespace Microsoft.Docs.Build
             return builder.Build();
         }
 
-        private static string GetToken(string key)
+        private string GetToken(string key)
         {
-            return t_status.Value.Peek().Context.TemplateEngine.GetToken(key);
+            return _templateEngine.GetToken(key);
         }
 
         private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
         {
-            Log.Write($"{code} {message}");
+            Log.Write($"{code}: {message}");
         }
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
@@ -168,18 +179,18 @@ namespace Microsoft.Docs.Build
             t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
         }
 
-        private static (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
+        private (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value.Peek();
-            var (error, content, file) = status.Context.DependencyResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
+            var (error, content, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
             status.Errors.AddIfNotNull(error);
             return (content, file);
         }
 
-        private static string GetLink(SourceInfo<string> href)
+        private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value.Peek();
-            var (error, link, file) = status.Context.DependencyResolver.ResolveAbsoluteLink(
+            var (error, link, file) = _linkResolver.ResolveAbsoluteLink(
                 href, (Document)InclusionContext.File);
 
             if (file != null)
@@ -191,10 +202,10 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private static (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
+        private (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
         {
             var status = t_status.Value.Peek();
-            var (error, link, display, declaringFile) = status.Context.XrefResolver.ResolveAbsoluteXref(
+            var (error, link, display, declaringFile) = _xrefResolver.ResolveAbsoluteXref(
                 href, (Document)InclusionContext.File);
 
             if (declaringFile != null)
@@ -209,10 +220,10 @@ namespace Microsoft.Docs.Build
             return (link, display);
         }
 
-        private static List<string> GetMonikerRange(SourceInfo<string> monikerRange)
+        private IReadOnlyList<string> GetMonikerRange(SourceInfo<string> monikerRange)
         {
             var status = t_status.Value.Peek();
-            var (error, monikers) = status.Context.MonikerProvider.GetZoneLevelMonikers((Document)InclusionContext.RootFile, monikerRange);
+            var (error, monikers) = _monikerProvider.GetZoneLevelMonikers((Document)InclusionContext.RootFile, monikerRange);
             status.Errors.AddIfNotNull(error);
             return monikers;
         }
@@ -220,8 +231,6 @@ namespace Microsoft.Docs.Build
         private sealed class Status
         {
             public List<Error> Errors;
-
-            public Context Context;
         }
     }
 }

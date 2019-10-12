@@ -2,10 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
     internal static class Log
     {
         internal static bool ForceVerbose;
@@ -20,6 +22,16 @@ namespace Microsoft.Docs.Build
             return new LogScope(() => t_verbose.Value = false);
         }
 
+        public static void Important(string message, ConsoleColor color)
+        {
+            lock (Console.Out)
+            {
+                Console.ForegroundColor = color;
+                Console.WriteLine(message);
+                Console.ResetColor();
+            }
+        }
+
         public static void Write(Exception exception)
         {
             Write(exception.ToString(), ConsoleColor.DarkRed);
@@ -29,9 +41,7 @@ namespace Microsoft.Docs.Build
         {
             if (Verbose)
             {
-#pragma warning disable CA2002
                 lock (Console.Out)
-#pragma warning restore CA2002
                 {
                     Console.ForegroundColor = color;
                     Console.WriteLine(message);

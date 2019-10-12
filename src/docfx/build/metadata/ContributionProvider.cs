@@ -199,7 +199,7 @@ namespace Microsoft.Docs.Build
 
                 if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) && isWhitelisted)
                 {
-                    var contributionPackageUrl = new PackageUrl(document.Docset.Config.Contribution.Repository);
+                    var contributionPackageUrl = new PackagePath(document.Docset.Config.Contribution.Repository);
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Url, pathToRepo);
 
                     var hasBranch = (UrlUtility.SplitUrl(document.Docset.Config.Contribution.Repository).fragment ?? "").Length > 1;

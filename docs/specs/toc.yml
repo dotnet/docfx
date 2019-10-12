@@ -1152,6 +1152,22 @@ outputs:
   .dependencymap.json: |
     {}
 ---
+# Parent toc including child toc by relative path won't participate in child toc calculation
+inputs:
+  docfx.yml:
+  dir1/a.md:
+  dir1/TOC.yml: |
+    - name: Include dir2 toc
+      href: dir2/
+  dir1/dir2/TOC.yml: |
+    - name: reference a.md
+      href: ../a.md
+outputs:
+  dir1/a.json: |
+    {"_tocRel": "dir2/toc.json"}
+  dir1/toc.json:
+  dir1/dir2/toc.json:
+---
 # File referenced by multiple toc with same relative file path, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
   docfx.yml: 
