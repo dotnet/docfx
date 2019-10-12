@@ -69,13 +69,10 @@ namespace Microsoft.Docs.Build
                         await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, input, repositoryProvider);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    Log.Write(ex);
-                    if (DocfxException.IsDocfxException(ex, out var dex))
-                    {
-                        errorLog.Write(dex.Error, isException: true);
-                    }
+                    Log.Write(dex);
+                    errorLog.Write(dex.Error, isException: true);
                 }
                 finally
                 {
