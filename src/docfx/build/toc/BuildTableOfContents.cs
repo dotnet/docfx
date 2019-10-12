@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,13 +16,12 @@ namespace Microsoft.Docs.Build
             var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
 
             // enable pdf
-            var outputPath = file.GetOutputPath(model.Metadata.Monikers, file.Docset.SiteBasePath, isPage: false);
+            var outputPath = file.GetOutputPath(model.Metadata.Monikers, isPage: false);
 
             if (file.Docset.Config.Output.Pdf)
             {
-                var siteBasePath = file.Docset.SiteBasePath;
-                var relativePath = PathUtility.NormalizeFile(Path.GetRelativePath(siteBasePath, LegacyUtility.ChangeExtension(outputPath, ".pdf")));
-                model.Metadata.PdfAbsolutePath = $"/{siteBasePath}/opbuildpdf/{relativePath}";
+                model.Metadata.PdfAbsolutePath = UrlUtility.Combine(
+                    file.Docset.SiteBasePath, "opbuildpdf", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
             // TODO: Add experimental and experiment_id to publish item

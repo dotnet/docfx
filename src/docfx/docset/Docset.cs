@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
         public Repository Repository { get; }
 
         /// <summary>
-        /// Gets the site base path
+        /// Gets the site base path calculated from <see cref="Config.BaseUrl"/> or an empty string, it never starts with /
         /// </summary>
         public string SiteBasePath { get; }
 
@@ -69,11 +69,46 @@ namespace Microsoft.Docs.Build
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
             Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(Locale);
-            (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
+            (HostName, SiteBasePath) = UrlUtility.SplitBaseUrl(config.BaseUrl);
 
             Repository = repository;
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
+        }
+
+        public int CompareTo(Docset other)
+        {
+            return PathUtility.PathComparer.Compare(DocsetPath, other.DocsetPath);
+        }
+
+        public override int GetHashCode()
+        {
+            return PathUtility.PathComparer.GetHashCode(DocsetPath);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Docset);
+        }
+
+        public bool Equals(Docset other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return PathUtility.PathComparer.Equals(DocsetPath, other.DocsetPath);
+        }
+
+        public static bool operator ==(Docset obj1, Docset obj2)
+        {
+            return Equals(obj1, obj2);
+        }
+
+        public static bool operator !=(Docset obj1, Docset obj2)
+        {
+            return !Equals(obj1, obj2);
         }
 
         // todo: use repository provider instead
@@ -122,57 +157,6 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.LocaleInvalid(locale).ToException();
             }
-        }
-
-        private static (string hostName, string siteBasePath) SplitBaseUrl(string baseUrl)
-        {
-            string hostName = string.Empty;
-            string siteBasePath = ".";
-            if (!string.IsNullOrEmpty(baseUrl)
-                && Uri.TryCreate(baseUrl, UriKind.Absolute, out var uriResult))
-            {
-                if (uriResult.AbsolutePath != "/")
-                {
-                    siteBasePath = uriResult.AbsolutePath.Substring(1);
-                }
-                hostName = $"{uriResult.Scheme}://{uriResult.Host}";
-            }
-            return (hostName, siteBasePath);
-        }
-
-        public int CompareTo(Docset other)
-        {
-            return PathUtility.PathComparer.Compare(DocsetPath, other.DocsetPath);
-        }
-
-        public override int GetHashCode()
-        {
-            return PathUtility.PathComparer.GetHashCode(DocsetPath);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Docset);
-        }
-
-        public bool Equals(Docset other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return PathUtility.PathComparer.Equals(DocsetPath, other.DocsetPath);
-        }
-
-        public static bool operator ==(Docset obj1, Docset obj2)
-        {
-            return Equals(obj1, obj2);
-        }
-
-        public static bool operator !=(Docset obj1, Docset obj2)
-        {
-            return !Equals(obj1, obj2);
         }
     }
 }
