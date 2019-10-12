@@ -56,10 +56,10 @@ https://docs.microsoft.com/en-us/dotnet/api/system.string.html#Instantiation
 
 Each input file transforms to zero or more output files depending on its content type. `docfx` places output files in `output-path` relative to output directory. **Regardless of static rendering or dynamic rendering, output path shares the same schema**:
 
-`{output-dir}/{siteBasePath}/{monikerListHash}?/{site-path-relative-to-base-path}`
+`{output-dir}/{base-path}/{moniker-hash}?/{site-path}`
 
 ```
-  siteBasePath monikerListHash    site-path (relative-to-base-path)
+  base-path moniker-hash    site-path (relative-to-base-path)
       |--^-| |--^--| |----------------^----------|
 _site/dotnet/01ddf122/api/system.string/index.html
 ```
