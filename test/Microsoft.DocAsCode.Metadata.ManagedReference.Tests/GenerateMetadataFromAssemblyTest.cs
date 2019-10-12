@@ -81,8 +81,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                 Assert.Equal("XmlTasks.ToNamespace(String, String)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("TupleLibrary.XmlTasks.ToNamespace(System.String, System.String)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
-                // TODO: add whitespace after fix: https://github.com/dotnet/roslyn/issues/29390
-                Assert.Equal("public (string prefix, string uri)ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public (string prefix, string uri) ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
 
             {
