@@ -14,13 +14,13 @@ Doc-as-Code: Metadata Format Specification
 
 The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **RECOMMENDED**,  **MAY**, and **OPTIONAL** in this document are to be interpreted as described in [RFC 2119][1].
 
-Words in *italic* imply they are terms defined in an earlier section of this document.
+Words in *italic* indicate they are terms previously defined in this document.
 
 ## 1. Items and Identifiers
 
 ### 1.1 Items
 
-*Item* is the basic unit of metadata format. From documentation perspective, each *item* represents a "section" in the reference documentation. This "section" is the minimum unit that you can cross reference to, or customize in layout and content.
+*Item* is the basic unit of metadata format. From a documentation perspective, each *item* represents a "section" in the reference documentation. This "section" is the minimum unit that you can cross reference to, or customize in layout and content.
 
 > When implementing the metadata format for your own language, you can decide which elements are *items*. For example, usually namespaces, classes, and methods are *items*. However, you can also make smaller elements such as parameters be items if you want them to be referenceable and customizable.
 
@@ -30,7 +30,7 @@ Words in *italic* imply they are terms defined in an earlier section of this doc
 
 Each *item* has an identifier (ID) which is unique under its parent.
 
-As we're targeting to support multiple languages, there is no restrictions as to which characters are not allowed in identifiers. However, to make identifiers easier to recognize and resolve in Markdown, it's not **RECOMMENDED** to have whitespaces in identifiers. Markdown processor **MAY** implement some algorithm to tolerate whitespaces in handwritten Markdown. (Leading and trailing spaces **MUST** be removed from identifier.)
+As we're targeting to support multiple languages, there are no restrictions as to which characters are not allowed in identifiers. However, to make identifiers easier to recognize and resolve in Markdown, it's not **RECOMMENDED** to have whitespaces in identifiers. Markdown processor **MAY** implement some algorithm to tolerate whitespaces in handwritten Markdown. (Leading and trailing spaces **MUST** be removed from identifier.)
 
 Identifier **MUST** be treated as case-sensitive when comparing equality.
 
@@ -137,7 +137,7 @@ name     | The display name of the *item*.
 fullName | The full display name of the *item*. In programming languages, it's usually the full qualified name.
 type     | The type of the *item*, such as class, method, etc.
 url      | If it's a relative URL, then it's another metadata file that defines the *item*. If it's an absolute URL, it means the *item* is coming from an external library, and the URL is the documentation page of this *item*. If omitted, the URL is the location of the current file.
-source   | The source code information of the *item*. It's an object that contains following *properties*:<br>1. repo: The remote Git repository of the source code.<br>2. branch: the branch of the source code.<br>3. revision: The Git revision of the source code.<br>4. path: the path to the source code file where the *item* is defined.<br>5. startLine: the start line of the *item* definition.<br>6. endLine: the end line of the *item* definition.
+source   | The source code information of the *item*. It's an object that contains following *properties*:<br>1. repo: the remote Git repository of the source code.<br>2. branch: the branch of the source code.<br>3. revision: the Git revision of the source code.<br>4. path: the path to the source code file where the *item* is defined.<br>5. startLine: the start line of the *item* definition.<br>6. endLine: the end line of the *item* definition.
 
 Here is an example of a C# Dictionary class:
 
@@ -166,7 +166,7 @@ Besides the predefined *properties*, *item* can have its own *properties*. One r
 
 ### 2.5 Reference Section
 
-Reference section also contains a list of *items*. These *items* serve as the references by *items* in *item section* and won't show up in documentation. Also, reference *item* doesn't need to have full *properties*, it just contains necessary information needed by its referrer (for example, name or URL).
+The reference section also contains a list of *items*. These *items* serve as the references to *items* in the *item section* and won't show up in documentation. Also, a reference *item* doesn't need to have full *properties*, it just contains necessary information needed by its referrer (for example, name or URL).
 
 In metadata file, all *items* **MUST** be referenced by *UID*.
 
