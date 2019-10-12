@@ -46,12 +46,6 @@ namespace Microsoft.Docs.Build
 
             foreach (var (toc, (documents, _)) in _tocReferences.ToDictionary())
             {
-                if (includedTocs.Contains(toc))
-                {
-                    // TOC been included by other TOCs will be ignored
-                    continue;
-                }
-
                 if (toc.IsExperimental)
                 {
                     // experimental toc will be ignored
@@ -59,7 +53,6 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                allTocs.Add(toc);
                 foreach (var document in documents)
                 {
                     if (!documentToTocs.TryGetValue(document, out var tocs))
@@ -69,6 +62,14 @@ namespace Microsoft.Docs.Build
 
                     tocs.Add(toc);
                 }
+                
+                if (includedTocs.Contains(toc))
+                {
+                    // TOC been included by other TOCs will be ignored
+                    continue;
+                }
+                
+                allTocs.Add(toc);
             }
 
             return new TableOfContentsMap(
