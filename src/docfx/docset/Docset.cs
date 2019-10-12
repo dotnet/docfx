@@ -51,7 +51,8 @@ namespace Microsoft.Docs.Build
         public Repository Repository { get; }
 
         /// <summary>
-        /// Gets the site base path calculated from <see cref="Config.BaseUrl"/> or an empty string, it never starts with /
+        /// Gets the site base path calculated from <see cref="Config.BaseUrl"/>.
+        /// It is either an empty string, or a path without leading /
         /// </summary>
         public string SiteBasePath { get; }
 
