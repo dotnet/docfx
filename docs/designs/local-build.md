@@ -70,7 +70,7 @@ docs language service | A vscode extension that provides diagnostics, intellisen
 #### Server Command Line Build
 
 Server build uses the exact same way as local command line build, the only exceptions are:
-- Server build runs `docfx` as a service account while locale build runs `docfx` as your personal Microsoft account.
+- Server build runs `docfx` as a service account while local build runs `docfx` as your personal Microsoft account.
 - Server build may set some server specific environment variables.
 
 ![](./images/local-build-server-build.png)
