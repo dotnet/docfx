@@ -2685,7 +2685,7 @@ namespace Test1
             Assert.Equal(1, foo.Items.Count);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.Int32)", bar.Name);
-            Assert.Equal("public int Bar(int x = default(int))", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public int Bar(int x = 0)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
