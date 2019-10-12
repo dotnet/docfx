@@ -87,13 +87,10 @@ namespace Microsoft.Docs.Build
 
                     DependencyLockProvider.SaveGitLock(docsetPath, locale, extendedConfig.DependencyLock, restoredGitLock);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    Log.Write(ex);
-                    if (DocfxException.IsDocfxException(ex, out var dex))
-                    {
-                        errorLog.Write(dex.Error, isException: true);
-                    }
+                    Log.Write(dex);
+                    errorLog.Write(dex.Error, isException: true);
                 }
                 finally
                 {
