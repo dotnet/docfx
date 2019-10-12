@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -451,6 +451,45 @@ vb (alias: vbnet)</li>
 <h5>Note</h5>
 <p>If dev-lang is not specified, file extension will be used to determine the language.</p>
 </div>
+<h2 id="code-snippet-for-jupyter-notebooks">Code Snippet for Jupyter Notebooks</h2>
+<p>Allows you to insert code from a code cell of a Jupyter Notebook. The <code>source</code> content in the specified code cell will expand.</p>
+<p>Steps to use this:</p>
+<ol>
+<li><p>In your Jupyter Notebook, add metadata to the code cell you will reference:</p>
+<pre><code class="lang-json">  &quot;metadata&quot;: {
+    &quot;name&quot;: &quot;{tagname}&quot;
+   }
+</code></pre>
+</li>
+<li><p>In your .md file, use  <code>name</code> to identify the cell.</p>
+<pre><code class="lang-md">[!notebook-&lt;language&gt;[](&lt;codepath&gt;?name={tagname})]]
+</code></pre>
+</li>
+</ol>
+<h3 id="code-snippet-for-jupyter-notebooks-sample">Code Snippet for Jupyter Notebooks Sample</h3>
+<p>For this Jupyter Notebook cell:</p>
+<pre><code class="lang-json">{
+ &quot;cells&quot;: [
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {
+    &quot;name&quot;: &quot;import&quot;
+   },
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;import azureml.core\n&quot;,
+    &quot;print(azureml.core.VERSION)&quot;
+   ]
+  },
+</code></pre>
+<p>Use the markup:</p>
+<pre><code class="lang-md">[!notebook-python[](&lt;codepath&gt;?name={import})]]
+</code></pre>
+<p>to display the lines of code in the <code>source</code> part of the cell:</p>
+<pre><code class="lang-python">import azureml.core
+print(azureml.core.VERSION)
+</code></pre>
 <h2 id="note-warningtipimportant">Note (Warning/Tip/Important)</h2>
 <p>Using specific syntax inside block quote to indicate the following content is Note.</p>
 <pre><code>&gt; [!NOTE]

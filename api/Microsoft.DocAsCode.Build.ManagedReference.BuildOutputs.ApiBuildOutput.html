@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ApiBuildOutput
    | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -136,7 +136,8 @@ public class ApiBuildOutput</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[YamlMember(Alias = null)]
+    <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;additionalNotes&quot;)]
+[JsonProperty(&quot;additionalNotes&quot;)]
 public AdditionalNotes AdditionalNotes { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -149,7 +150,7 @@ public AdditionalNotes AdditionalNotes { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">AdditionalNotes</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.AdditionalNotes.html">AdditionalNotes</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -213,7 +214,7 @@ public List&lt;AttributeInfo&gt; Attributes { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<span class="xref">AttributeInfo</span>&gt;</td>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.AttributeInfo.html">AttributeInfo</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -296,6 +297,7 @@ public string Conceptual { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;derivedClasses&quot;)]
+[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;derivedClasses&quot;)]
 public List&lt;ApiReferenceBuildOutput&gt; DerivedClasses { get; set; }</code></pre>
   </div>
@@ -341,7 +343,7 @@ public SourceDetail Documentation { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">SourceDetail</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.SourceDetail.html">SourceDetail</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -552,6 +554,7 @@ public List&lt;ApiNames&gt; Implements { get; set; }</code></pre>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritance&quot;)]
+[MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;inheritance&quot;)]
 public List&lt;ApiReferenceBuildOutput&gt; Inheritance { get; set; }</code></pre>
   </div>
@@ -711,7 +714,8 @@ public int Level { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonExtensionData]
+    <pre><code class="lang-csharp hljs">[ExtensibleMember]
+[JsonExtensionData]
 public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -1076,7 +1080,7 @@ public SourceDetail Source { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">SourceDetail</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.SourceDetail.html">SourceDetail</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -1204,7 +1208,7 @@ public MemberType? Type { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.nullable-1">Nullable</a>&lt;<span class="xref">MemberType</span>&gt;</td>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.nullable-1">Nullable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.html">MemberType</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -1245,13 +1249,13 @@ public string Uid { get; set; }</code></pre>
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FromModel_PageViewModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FromModel(PageViewModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_ManagedReference_PageViewModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.ManagedReference.PageViewModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L164">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FromModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FromModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FromModel_PageViewModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FromModel(PageViewModel)">FromModel(PageViewModel)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_ManagedReference_PageViewModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.ManagedReference.PageViewModel)">FromModel(PageViewModel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1269,7 +1273,7 @@ public string Uid { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">PageViewModel</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.PageViewModel.html">PageViewModel</a></td>
         <td><span class="parametername">model</span></td>
         <td></td>
       </tr>
@@ -1290,6 +1294,10 @@ public string Uid { get; set; }</code></pre>
       </tr>
     </tbody>
   </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
+  </div>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE

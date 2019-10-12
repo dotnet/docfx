@@ -8,7 +8,7 @@
     <title>Walkthrough Part I: Generate a Simple Documentation Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part I: Generate a Simple Documentation Website | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -84,13 +84,13 @@
 <p>Download <em>docfx</em> from <a href="http://dotnet.github.io/docfx/">http://dotnet.github.io/docfx/</a>. <a href="http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-exe-directly">Getting Started with docfx</a> describes three ways to install <em>docfx</em>. This walkthrough uses the first one: Use <em>docfx.exe</em> directly.</p>
 <ol>
 <li>Download <em>docfx.zip</em> and unzip it to <code>D:\docfx\</code></li>
-<li>Add <code>D:\docfx\</code> to <code>PATH</code> so that command <code>docfx</code> and be directly called from everywhere for convenience. (for example, for Windows, <code>set PATH=%PATH%;D:\docfx\</code></li>
+<li>Add <code>D:\docfx\</code> to <code>PATH</code> so that the command <code>docfx</code> can be directly called from everywhere for convenience. (For example, for Windows, <code>set PATH=%PATH%;D:\docfx\</code>.)</li>
 </ol>
 <h2 id="step2-init-a-docfx-project">Step2. Init a DocFX project</h2>
 <ol>
 <li>Create a new folder <code>D:\docfx_walkthrough</code></li>
 <li>Start Command Line under <code>D:\docfx_walkthrough</code></li>
-<li>Call <code>docfx init -q</code>. This command generates a <code>docfx_project</code> folder with the default <code>docfx.json</code> file under it. <code>docfx.json</code> is the configuration file <code>docfx</code> uses to generate documentation. <code>-q</code> option means generating the project quietly using default value, you can also try <code>docfx init</code> and follow the instructions to provide your own settings.</li>
+<li>Call <code>docfx init -q</code>. This command generates a <code>docfx_project</code> folder with the default <code>docfx.json</code> file under it. <code>docfx.json</code> is the configuration file <code>docfx</code> uses to generate documentation. <code>-q</code> option means generating the project quietly using default values, you can also try <code>docfx init</code> and follow the instructions to provide your own settings.</li>
 </ol>
 <h2 id="step3-build-our-website">Step3. Build our website</h2>
 <p>Run command <code>docfx docfx_project/docfx.json</code>. Note that a new subfolder <code>_site</code> is generated under that folder. This is where the static website is generated.</p>
@@ -102,7 +102,7 @@
 <hr>
 <h2 id="step5-add-a-set-of-articles-to-the-website">Step5. Add a set of articles to the website</h2>
 <ol>
-<li><p>Place more <code>.md</code> files to <code>articles</code>, e.g. <code>details1.md</code>, <code>details2.md</code>, <code>details3.md</code>. If the file references any resources, put those resources into the <code>images</code> folder.</p>
+<li><p>Place more <code>.md</code> files into <code>articles</code>, e.g., <code>details1.md</code>, <code>details2.md</code>, <code>details3.md</code>. If the files reference any resources, put those resources into the <code>images</code> folder.</p>
 </li>
 <li><p>In order to organize these articles, we add these files into <code>toc.yml</code> under <code>articles</code> subfolder. The content of <code>toc.yml</code> is as below:</p>
 <pre><code class="lang-yml">- name: Introduction
@@ -133,7 +133,7 @@
 </ol>
 <p>Notice that more items are added to the sidebar for <em>Articles</em> nav page. The title inside the sidebar is exactly what we set in the <code>toc.yml</code> inside <code>articles</code> subfolder.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>In this walkthrough, we build a website from a set of <code>.md</code> files. We call these <code>.md</code> files <strong>Conceptual Documentation</strong>. In walkthrough part 2, we will learn to add <strong>API Documentation</strong> to our website. The <strong>API Documentation</strong> is extracted directly from .NET source code. In a series of advanced walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
+<p>In this walkthrough, we built a website from a set of <code>.md</code> files. We call these <code>.md</code> files <strong>Conceptual Documentation</strong>. In walkthrough part 2, we will learn to add <strong>API Documentation</strong> to our website. The <strong>API Documentation</strong> is extracted directly from .NET source code. In a series of advanced walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentation sets, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
 <h2 id="read-more">Read more</h2>
 <ul>
 <li><p><a href="walkthrough_create_a_docfx_project_2.html">Walkthrough Part II: Adding API Documentation to the Website</a></p>

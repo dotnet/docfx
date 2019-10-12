@@ -8,7 +8,7 @@
     <title>Links and Cross References | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Links and Cross References | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -119,7 +119,7 @@ output files to make sure source file path will resolve to correct output path. 
 <p>It's recommended to always use relative path to reference another file in the same project. Relative path will be resolved during build and produce build warning if the target file does not exist.</p>
 <div class="TIP">
 <h5>Tip</h5>
-<p>File must be included in <code>docfx.json</code> to be processed by DocFX, so if you see a build warning about broken link but the file
+<p>A file must be included in <code>docfx.json</code> to be processed by DocFX, so if you see a build warning about a broken link but the file
 actually exists in your file system, go and check whether this file is included in <code>docfx.json</code>.</p>
 </div>
 <p>You can also use absolute path (path starts with <code>/</code>) to link to another file, but DocFX won't check its correctness for you and will keep it as-is in the output HTML.
@@ -127,7 +127,7 @@ That means you should use the output file path as absolute path. For example, in
 <pre><code class="lang-markdown">[file2](/subfolder/file2.html)
 </code></pre>
 <p>Sometimes you may find it's complicated to calculate relative path between two files.
-DocFX also supports path starts with <code>~</code> to represent path relative to the root directory of your project (i.e. where <code>docfx.json</code> is located).
+DocFX also supports paths that start with <code>~</code> to represent a path relative to the root directory of your project (i.e., where <code>docfx.json</code> is located).
 This kind of path will also be validated and resolved during build. For example, in the above case, you can write the following links in <code>file2.md</code>:</p>
 <pre><code class="lang-markdown">[file1](~/file1.md)
 
@@ -140,7 +140,7 @@ This kind of path will also be validated and resolved during build. For example,
 If you write something like <code>&lt;file.md&gt;</code>, it will be treated as an HTML tag rather than a link.</p>
 </div>
 <h3 id="links-in-file-includes">Links in file includes</h3>
-<p>If you use <a href="../spec/docfx_flavored_markdown.html#file-inclusion">file include</a> to include another file, the links in included file is relative to the included file. For example, if <code>file1.md</code> includes <code>file2.md</code>:</p>
+<p>If you use <a href="../spec/docfx_flavored_markdown.html#file-inclusion">file include</a> to include another file, the links in the included file are relative to the included file. For example, if <code>file1.md</code> includes <code>file2.md</code>:</p>
 <pre><code class="lang-markdown">[!include[file2](subfolder/file2.md)]
 </code></pre>
 <p>All links in <code>file2.md</code> are relative to the <code>file2.md</code> itself, even when it's included by <code>file1.md</code>.</p>
@@ -160,9 +160,9 @@ topics. So it's not recommended to include them in <code>docfx.json</code>.</p>
 <h2 id="using-cross-reference">Using cross reference</h2>
 <p>Besides using file path to link to another file, DocFX also allows you to give a file a unique identifier so that you can reference this file using that identifier instead of its file path. This is useful in the following cases:</p>
 <ol>
-<li>Path to file is long and difficult to memorize or changes frequently.</li>
-<li>API reference documentation is usually auto generated so it's difficult to find its file path.</li>
-<li>You want to reference to files in another project without need to know its file structure.</li>
+<li>A path to a file is long and difficult to memorize or changes frequently.</li>
+<li>API reference documentation which is usually auto generated so it's difficult to find its file path.</li>
+<li>References to files in another project without needing to know the project's file structure.</li>
 </ol>
 <p>The basic syntax for cross referencing a file is:</p>
 <pre><code class="lang-markdown">&lt;xref:id_of_another_file&gt;
@@ -176,7 +176,7 @@ topics. So it's not recommended to include them in <code>docfx.json</code>.</p>
 <p>Title is extracted from the first heading of the Markdown file. Or you can also specify title using title metadata.</p>
 </div>
 <h3 id="define-uid">Define UID</h3>
-<p>The unique identifier of a file is called UID (stands for unique identifier) in DocFX. For Markdown file, you can specify its UID by adding a UID metadata in <a href="../spec/docfx_flavored_markdown.html#yaml-header">YAML header</a>. For example, the following Markdown defined a UID &quot;fileA&quot;.</p>
+<p>The unique identifier of a file in DocFX is called a UID. For a Markdown file, you can specify its UID by adding a UID metadata in the <a href="../spec/docfx_flavored_markdown.html#yaml-header">YAML header</a>. For example, the following Markdown defines a UID &quot;fileA&quot;.</p>
 <pre><code class="lang-markdown">---
 uid: fileA
 ---
@@ -188,7 +188,7 @@ uid: fileA
 <h5>Note</h5>
 <p>UID is supposed to be unique inside a project. If you define duplicate UID for two files, the resolve result is undetermined.</p>
 </div>
-<p>For API reference files, UID is auto generated by mangling API's signature. For example, System.String class's UID is <code>System.String</code>. You can open the generated YAML files to lookup the value of UID.</p>
+<p>For API reference files, UID is auto generated by mangling the API's signature. For example, the System.String class's UID is <code>System.String</code>. You can open a generated YAML file to lookup the value of its UID.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Conceptual Markdown file doesn't have UID generated by default. So it cannot be cross referenced unless you give it a UID.</p>
@@ -202,7 +202,7 @@ uid: fileA
 <p>This will resolve to:</p>
 <pre><code class="lang-html">&lt;a href=&quot;path_of_another_file&quot;&gt;link_text&lt;/a&gt;
 </code></pre>
-<p>In this case, we won't resolve the link text for you because you already specified it, unless the <code>link_text</code> is empty.</p>
+<p>In this case, DocFX won't resolve the link text for you because you already specified it, unless the <code>link_text</code> is empty.</p>
 <h4 id="shorthand-form">Shorthand form</h4>
 <p>You can also use <code>@uid_to_another_file</code> to quickly reference another file. There are some rules for DocFX to determine whether a string following <code>@</code> are UID:</p>
 <ol>
@@ -216,10 +216,10 @@ uid: fileA
 <li><p>A string enclosed by a pair of quotes (<code>'</code> or <code>&quot;</code>)</p>
 </li>
 </ol>
-<p>The render result of <code>@</code> form is same as auto link form. For example, <code>@System.String</code> is same as <code>&lt;xref:System.String&gt;</code>.</p>
+<p>The render result of <code>@</code> form is same as the auto link form. For example, <code>@System.String</code> is the same as <code>&lt;xref:System.String&gt;</code>.</p>
 <div class="WARNING">
 <h5>Warning</h5>
-<p>Since <code>@</code> is a common character in a document, DocFX doesn't show a warning if UID isn't found for a shorthand form xref link.
+<p>Since <code>@</code> is a common character in a document, DocFX doesn't show a warning if a UID isn't found for a shorthand form xref link.
 Warnings for missing links are shown for auto links and Markdown links.</p>
 </div>
 <h4 id="using-hashtag-in-cross-reference">Using hashtag in cross reference</h4>
@@ -237,7 +237,7 @@ Warnings for missing links are shown for auto links and Markdown links.</p>
 <h5>Note</h5>
 <p>Hashtag in <code>xref</code> is always treated as separator between file name and anchor name. That means if you have <code>#</code> in UID, it has
 to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <code>%23</code>.</p>
-<p>Actually <code>xref</code> format follows URI standard so all <a href="https://tools.ietf.org/html/rfc3986#section-2.2">reserved characters</a> should be encoded.</p>
+<p>The <code>xref</code> format follows the URI standard so that all <a href="https://tools.ietf.org/html/rfc3986#section-2.2">reserved characters</a> should be encoded.</p>
 </div>
 <h3 id="link-to-overwrite-files">Link to overwrite files</h3>
 <p><a href="intro_overwrite_files.html">Overwrite file</a> itself doesn't build into individual output file. It's merged with the API reference item model to build into a single file. If you want to link to the content inside an overwrite file (for example, an anchor), you cannot use the path to the overwrite file. Instead, you should either cross reference its UID, or link to the YAML file that contains the API.</p>

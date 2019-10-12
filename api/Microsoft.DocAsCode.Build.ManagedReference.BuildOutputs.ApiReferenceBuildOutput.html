@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ApiReferenceBuildOutput
    | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -136,7 +136,8 @@ public class ApiReferenceBuildOutput</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[YamlMember(Alias = null)]
+    <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;additionalNotes&quot;)]
+[JsonProperty(&quot;additionalNotes&quot;)]
 public AdditionalNotes AdditionalNotes { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -149,7 +150,7 @@ public AdditionalNotes AdditionalNotes { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">AdditionalNotes</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.AdditionalNotes.html">AdditionalNotes</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -213,7 +214,7 @@ public List&lt;AttributeInfo&gt; Attributes { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<span class="xref">AttributeInfo</span>&gt;</td>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.AttributeInfo.html">AttributeInfo</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -309,7 +310,7 @@ public SourceDetail Documentation { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">SourceDetail</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.SourceDetail.html">SourceDetail</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -743,7 +744,8 @@ public int Level { get; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonIgnore]
+    <pre><code class="lang-csharp hljs">[ExtensibleMember]
+[JsonIgnore]
 public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -774,7 +776,8 @@ public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonIgnore]
+    <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;modifiers.&quot;)]
+[JsonIgnore]
 public SortedList&lt;string, List&lt;string&gt;&gt; Modifiers { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -1107,7 +1110,7 @@ public SourceDetail Source { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">SourceDetail</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.SourceDetail.html">SourceDetail</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -1249,18 +1252,18 @@ public string Uid { get; set; }</code></pre>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_ItemViewModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(ItemViewModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_Common_ReferenceViewModel_System_String___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel%2CSystem.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiReferenceBuildOutput.cs/#L212">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiReferenceBuildOutput.cs/#L183">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_ItemViewModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(ItemViewModel)">FromModel(ItemViewModel)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_Common_ReferenceViewModel_System_String___" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel,System.String[])">FromModel(ReferenceViewModel, String[])</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ApiReferenceBuildOutput FromModel(ItemViewModel vm)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ApiReferenceBuildOutput FromModel(ReferenceViewModel vm, string[] supportedLanguages)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1273,8 +1276,13 @@ public string Uid { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">ItemViewModel</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.html">ReferenceViewModel</a></td>
         <td><span class="parametername">vm</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a>[]</td>
+        <td><span class="parametername">supportedLanguages</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -1296,18 +1304,18 @@ public string Uid { get; set; }</code></pre>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_ReferenceViewModel_System_String___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(ReferenceViewModel%2CSystem.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiReferenceBuildOutput.cs/#L183">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiReferenceBuildOutput.cs/#L212">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_ReferenceViewModel_System_String___" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(ReferenceViewModel,System.String[])">FromModel(ReferenceViewModel, String[])</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel)">FromModel(ItemViewModel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ApiReferenceBuildOutput FromModel(ReferenceViewModel vm, string[] supportedLanguages)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ApiReferenceBuildOutput FromModel(ItemViewModel vm)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1320,13 +1328,8 @@ public string Uid { get; set; }</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">ReferenceViewModel</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.html">ItemViewModel</a></td>
         <td><span class="parametername">vm</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a>[]</td>
-        <td><span class="parametername">supportedLanguages</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -1395,13 +1398,13 @@ public string Uid { get; set; }</code></pre>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_GetSpecNames_System_String_System_String___System_Collections_Generic_SortedList_System_String_System_Collections_Generic_List_SpecViewModel___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.GetSpecNames(System.String%2CSystem.String%5B%5D%2CSystem.Collections.Generic.SortedList%7BSystem.String%2CSystem.Collections.Generic.List%7BSpecViewModel%7D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_GetSpecNames_System_String_System_String___System_Collections_Generic_SortedList_System_String_System_Collections_Generic_List_Microsoft_DocAsCode_DataContracts_Common_SpecViewModel___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.GetSpecNames(System.String%2CSystem.String%5B%5D%2CSystem.Collections.Generic.SortedList%7BSystem.String%2CSystem.Collections.Generic.List%7BMicrosoft.DocAsCode.DataContracts.Common.SpecViewModel%7D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiReferenceBuildOutput.cs/#L274">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_GetSpecNames_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.GetSpecNames*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_GetSpecNames_System_String_System_String___System_Collections_Generic_SortedList_System_String_System_Collections_Generic_List_SpecViewModel___" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.GetSpecNames(System.String,System.String[],System.Collections.Generic.SortedList{System.String,System.Collections.Generic.List{SpecViewModel}})">GetSpecNames(String, String[], SortedList&lt;String, List&lt;SpecViewModel&gt;&gt;)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_GetSpecNames_System_String_System_String___System_Collections_Generic_SortedList_System_String_System_Collections_Generic_List_Microsoft_DocAsCode_DataContracts_Common_SpecViewModel___" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.GetSpecNames(System.String,System.String[],System.Collections.Generic.SortedList{System.String,System.Collections.Generic.List{Microsoft.DocAsCode.DataContracts.Common.SpecViewModel}})">GetSpecNames(String, String[], SortedList&lt;String, List&lt;SpecViewModel&gt;&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1429,7 +1432,7 @@ public string Uid { get; set; }</code></pre>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.sortedlist-2">SortedList</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<span class="xref">SpecViewModel</span>&gt;&gt;</td>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.sortedlist-2">SortedList</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a>, <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.SpecViewModel.html">SpecViewModel</a>&gt;&gt;</td>
         <td><span class="parametername">specs</span></td>
         <td></td>
       </tr>
@@ -1450,6 +1453,10 @@ public string Uid { get; set; }</code></pre>
       </tr>
     </tbody>
   </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
+  </div>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE

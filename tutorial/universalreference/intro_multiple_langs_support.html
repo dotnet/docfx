@@ -8,7 +8,7 @@
     <title>Introduction to Multiple Languages Support | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to Multiple Languages Support | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -80,19 +80,19 @@
 <h1 id="introduction-to-multiple-languages-support">Introduction to Multiple Languages Support</h1>
 
 <h2 id="1-introduction">1. Introduction</h2>
-<p>DocFX supports generate API documentation for C# and VB natively. However, it doesn't limit to these. DocFX is designed to support any languages. When generating document for a language, 2 steps is required: generating metadata and build documents from metadata.</p>
+<p>DocFX supports generating API documentation for C# and VB natively. However, it's not limited to these. DocFX is designed to support any language. When generating documents for a language, two steps are required: generating metadata and building documents from the metadata.</p>
 <h2 id="2-workflow">2. Workflow</h2>
 <h3 id="21-generate-metadata">2.1 Generate Metadata</h3>
 <p>As different programming language has different tool written with different language to generate API documentation, this step is not included in DocFX core. We call the tool used as <strong>Metadata Tool</strong>.</p>
-<p>As <a href="https://github.com/dotnet/docfx/tree/dev/src/Microsoft.DocAsCode.Build.UniversalReference">UniversalReferenceDocumentProcessor</a> is used to process these metadata files, metadata tool should generate files according the processor's input schema. It needs:</p>
+<p>As <a href="https://github.com/dotnet/docfx/tree/dev/src/Microsoft.DocAsCode.Build.UniversalReference">UniversalReferenceDocumentProcessor</a> is used to process these metadata files, the metadata tool should generate files according the processor's input schema. The files should:</p>
 <ol>
-<li>in YAML format and ends with <code>.yml</code> or <code>.yaml</code></li>
-<li>has YamlMime <code>### YamlMime:UniversalReference</code> at the first line</li>
-<li>confirms to the <a href="https://github.com/dotnet/docfx/tree/dev/src/Microsoft.DocAsCode.DataContracts.UniversalReference">data model defined for UniversalReference</a></li>
+<li>be in YAML format and end with <code>.yml</code> or <code>.yaml</code></li>
+<li>have YamlMime <code>### YamlMime:UniversalReference</code> as the first line</li>
+<li>conform to the <a href="https://github.com/dotnet/docfx/tree/dev/src/Microsoft.DocAsCode.DataContracts.UniversalReference">data model defined for UniversalReference</a></li>
 </ol>
-<p>Usually, a TOC should generate along with YAML files for easy navigation among files.</p>
+<p>Usually, a TOC should be generated along with YAML files for easy navigation among files.</p>
 <h3 id="22-build-document">2.2 Build Document</h3>
-<p>The YAML files generated is used as input of DocFX. DocFX will build these YAML files to HTML pages.</p>
+<p>The YAML files generated are used as input to DocFX. DocFX will build these YAML files into HTML pages.</p>
 <h2 id="3-supported-languages">3. Supported Languages</h2>
 <ul>
 <li><a href="gen_doc_for_js.html">JavaScript</a></li>

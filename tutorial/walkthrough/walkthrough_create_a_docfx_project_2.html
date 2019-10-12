@@ -8,7 +8,7 @@
     <title>Walkthrough Part II: Adding API Documentation to the Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part II: Adding API Documentation to the Website | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -79,7 +79,7 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="walkthrough-part-ii-adding-api-documentation-to-the-website">Walkthrough Part II: Adding API Documentation to the Website</h1>
 
-<p>After completing <a href="walkthrough_create_a_docfx_project.html">Walkthrough Part I: Generate a Simple Documentation Website</a>, we build a website from a set of <code>.md</code> files. We call it <strong>Conceptual Documentation</strong>. In this walkthrough, we will learn to build website from .NET source code, which is called <strong>API Documentation</strong>. We will also integrate <strong>Conceptual Documentation</strong> and <strong>API Documentation</strong> into one website, so that we can navigate from <strong>Conceptual</strong> to <strong>API</strong>, or <strong>API</strong> to <strong>Conceptual</strong> seamlessly. Download the files used in this walkthrough <a href="artifacts/walkthrough2.zip">here</a>.</p>
+<p>After completing <a href="walkthrough_create_a_docfx_project.html">Walkthrough Part I: Generate a Simple Documentation Website</a>, we built a website from a set of <code>.md</code> files. We call it <strong>Conceptual Documentation</strong>. In this walkthrough, we will learn to build a website from .NET source code, which is called <strong>API Documentation</strong>. We will also integrate <strong>Conceptual Documentation</strong> and <strong>API Documentation</strong> into one website so that we can navigate from <strong>Conceptual</strong> to <strong>API</strong>, or <strong>API</strong> to <strong>Conceptual</strong> seamlessly. Download the files used in this walkthrough <a href="artifacts/walkthrough2.zip">here</a>.</p>
 <p>After completing walkthrough part I, our <code>D:\docfx_walkthrough\docfx_project</code> folder is in the following structure:</p>
 <pre><code>|- index.md
 |- toc.yml
@@ -96,9 +96,7 @@
      |- toc.yml
 </code></pre>
 <h2 id="step1-add-a-c-project">Step1. Add a C# project</h2>
-<ol>
-<li>Create a subfolder <code>src</code> under <code>D:\docfx_walkthrough\docfx_project</code>. Open <em>Visual Studio Community 2015</em> (or an above version) and create a <strong>C# Class Library</strong> <code>HelloDocfx</code> under folder <code>src</code>. In the <code>Class1.cs</code>, add some comments and methods to this class, similar to:</li>
-</ol>
+<p>Create a subfolder <code>src</code> under <code>D:\docfx_walkthrough\docfx_project</code>. Open <em>Visual Studio Community 2015</em> (or an above version) and create a <strong>C# Class Library</strong> <code>HelloDocfx</code> under folder <code>src</code>. In the <code>Class1.cs</code>, add some comments and methods to this class, similar to:</p>
 <pre><code class="lang-csharp">namespace HelloDocfx
 {
     /// &lt;summary&gt;
@@ -142,7 +140,7 @@
 }
 </code></pre>
 <h2 id="step2-generate-metadata-for-the-c-project">Step2. Generate metadata for the C# project</h2>
-<p>Calling <code>docfx metadata</code> under <code>D:\docfx_walkthrough\docfx_project</code>. <code>docfx metadata</code> is a sub-command registered in <code>docfx</code>, and it reads configuration in the <code>metadata</code> section from <code>docfx.json</code>. <code>[ &quot;src/**.csproj&quot; ]</code> in <code>metadata/src/files</code> tells <code>docfx</code> to search all the <code>csproj</code> from <code>src</code> subfolder to generate metadata.</p>
+<p>Execute <code>docfx metadata</code> under <code>D:\docfx_walkthrough\docfx_project</code>. <code>docfx metadata</code> is a subcommand registered in <code>docfx</code>, and it reads configuration in the <code>metadata</code> section of <code>docfx.json</code>. <code>[ &quot;src/**.csproj&quot; ]</code> in <code>metadata/src/files</code> tells <code>docfx</code> to search for <code>csproj</code> files in the <code>src</code> subfolder to generate metadata.</p>
 <pre><code class="lang-json">&quot;metadata&quot;: [
     {
       &quot;src&quot;: [
@@ -161,13 +159,13 @@
     }
   ]
 </code></pre>
-<p>This generates several <code>YAML</code> files in the <code>api</code> folder. The <code>YAML</code> file contains the data model extracted from C# source code file. YAML is the metadata format used in <code>docfx</code>. <a href="http://dotnet.github.io/docfx/spec/metadata_format_spec.html">General Metadata Spec</a> defines the general schema, and <a href="http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html">.NET Metadata Spec</a> defines the metadata schema for .NET languages that <code>docfx</code> can consume.</p>
+<p>This generates several <code>YAML</code> files in the <code>api</code> folder. The <code>YAML</code> file contains the data model extracted from the C# source code file. YAML is the metadata format used in <code>docfx</code>. <a href="http://dotnet.github.io/docfx/spec/metadata_format_spec.html">General Metadata Spec</a> defines the general schema, and <a href="http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html">.NET Metadata Spec</a> defines the metadata schema for .NET languages that <code>docfx</code> can consume.</p>
 <pre><code>|- HelloDocfx.Class1.InnerClass.yml
 |- HelloDocfx.Class1.yml
 |- HelloDocfx.yml
 |- toc.yml
 </code></pre>
-<p>Also, note that if your csprojs are located outside of your docfx directory, and you need to use <code>../</code> you will need to use the <code>src</code> property:</p>
+<p>Also, note that if your csproj files are located outside of your docfx directory, you need to use the <code>src</code> property with <code>../</code> to find them:</p>
 <pre><code class="lang-json">&quot;metadata&quot;: [
     {
       &quot;src&quot;: [
@@ -188,7 +186,7 @@
   ]
 </code></pre>
 <h2 id="step3-build-and-preview-our-website">Step3. Build and preview our website</h2>
-<p>Running the command <code>docfx</code>. <code>docfx</code> reads <code>docfx.json</code> and execute subcommands defined in the config file one by one. Our <code>docfx.json</code> defines <code>metadata</code> and <code>build</code>, so by running <code>docfx</code>, we are actually executing <code>docfx metadata</code> and <code>docfx build</code>, and thus generating the website.</p>
+<p>Run the command <code>docfx</code>. <code>docfx</code> reads <code>docfx.json</code> and executes subcommands defined in the config file one by one. Our <code>docfx.json</code> defines <code>metadata</code> and <code>build</code>, so by running <code>docfx</code>, we are actually executing <code>docfx metadata</code> and <code>docfx build</code>, and thus generating the website.</p>
 <p>Run <code>docfx serve _site</code>, and the website is now:
 <img src="images/walkthrough2_step3.png" alt="Step3">.</p>
 <h2 id="step4-add-another-api-documentation">Step4. Add another API documentation</h2>
@@ -320,7 +318,7 @@
 <p>The <a href="https://github.com/docascode/docfx-seed">docfx-seed sample project repo</a> is another example of this kind of setup.</p>
 <p>More details: <a href="http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file">http://dotnet.github.io/docfx/tutorial/intro_toc.html#link-to-another-toc-file</a></p>
 <h2 id="conclusion">Conclusion</h2>
-<p>In this walkthrough, we build a website containing both <strong>Conceptual Documentation</strong> and <strong>API Documentation</strong>. In the upcoming series of advanced walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
+<p>In this walkthrough, we built a website containing both <strong>Conceptual Documentation</strong> and <strong>API Documentation</strong>. In the upcoming series of walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
 <h2 id="read-more">Read more</h2>
 <ul>
 <li><p><a href="walkthrough_create_a_docfx_project.html">Walkthrough Part I: Generate a Simple Documentation Website</a></p>

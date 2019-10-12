@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.45.1) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.46) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.45.1) | DocFX website ">
-    <meta name="generator" content="docfx 2.45.1.0">
+    <meta name="title" content="Version Notes (Current Version: v2.46) | DocFX website ">
+    <meta name="generator" content="docfx 2.46.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -70,8 +70,20 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2451">Version Notes (Current Version: v2.45.1)</h1>
+<h1 id="version-notes-current-version-v246">Version Notes (Current Version: v2.46)</h1>
 
+<h2 id="v246">v2.46</h2>
+<ol>
+<li>Support Jupyter Notebook in code snippet (#4989, #5000). Thanks @pravakarg, @sdgilley!</li>
+<li>Upgrade to Microsoft.CodeAnalysis 3.3.1 for C# 8.0 support (#5163). Thanks @dlech!</li>
+<li>Improve the default template for TypeScript documentation (#5128). Thanks @rbuckton!</li>
+<li>Improve logging of template preprocessor errors (#5099). Thanks @mcm-ham!</li>
+<li>Bug fix:
+<ol>
+<li>fix duplicate warnings when include the same file multiple times. (#5093)</li>
+</ol>
+</li>
+</ol>
 <h2 id="v2451">v2.45.1</h2>
 <ol>
 <li>Improve performance by upgrading Jint to 2.11.58. (#5032)</li>
@@ -1189,7 +1201,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <li>Improve performance for document build.</li>
 <li>Breaking changes:
 <ol>
-<li>modify interface @Microsoft.DocAsCode.Plugins.IDocumentBuildStep.</li>
+<li>modify interface <a class="xref" href="api/Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html">IDocumentBuildStep</a>.</li>
 </ol>
 </li>
 </ol>
@@ -1225,7 +1237,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </ol>
 </li>
 <li><p>Update yaml serializion:
-Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute</p>
+Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute.html">ExtensibleMemberAttribute</a></p>
 </li>
 <li><p>Improve <code>docfx init</code>, now with <code>docfx init</code>, a <code>docfx_project</code> seed project will will generated.</p>
 </li>
@@ -1287,10 +1299,10 @@ Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute</p>
 </li>
 <li>Code improvements
 <ol>
-<li>Add @Microsoft.DocAsCode.YamlSerialization
+<li>Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.html">Microsoft.DocAsCode.YamlSerialization</a>
 This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotNet</a>. It overrides classes like type converters to improve performance and fix bug existed in <em>YamlDotNet</em></li>
-<li>Refactor markdown engine @Microsoft.DocAsCode.MarkdownLite</li>
-<li>Add @Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable`1. It provides a way to operate markdown tokens.</li>
+<li>Refactor markdown engine <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.html">Microsoft.DocAsCode.MarkdownLite</a></li>
+<li>Add <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable-1.html">IMarkdownRewritable&lt;T&gt;</a>. It provides a way to operate markdown tokens.</li>
 </ol>
 </li>
 <li>Other improvements

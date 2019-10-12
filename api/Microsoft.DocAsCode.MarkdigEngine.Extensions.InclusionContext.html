@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class InclusionContext
+   | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class InclusionContext
+   | DocFX website ">
+    <meta name="generator" content="docfx 2.46.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext">
+  
+  
+  <h1 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext" class="text-break">Class InclusionContext
+  </h1>
+  <div class="markdown level0 summary"><p>Represents a thread static context of the current document.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">InclusionContext</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.equals#System_Object_Equals_System_Object_">Object.Equals(Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.equals#System_Object_Equals_System_Object_System_Object_">Object.Equals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.gethashcode#System_Object_GetHashCode">Object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.gettype#System_Object_GetType">Object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.memberwiseclone#System_Object_MemberwiseClone">Object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.referenceequals#System_Object_ReferenceEquals_System_Object_System_Object_">Object.ReferenceEquals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString">Object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.MarkdigEngine.Extensions.html">Microsoft.DocAsCode.MarkdigEngine.Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Microsoft.DocAsCode.MarkdigEngine.Extensions.dll</h6>
+  <h5 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class InclusionContext</code></pre>
+  </div>
+  <h5 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Due to markdig API design, it is not obvious to pass per document information and reusing the
+same markdown pipeline instance at the same time.
+Thus a thread static <a class="xref" href="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.html">InclusionContext</a> class is created to store per document information.</p>
+</div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_Dependencies.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.Dependencies%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L64">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_Dependencies_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.Dependencies*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_Dependencies" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.Dependencies">Dependencies</h4>
+  <div class="markdown level1 summary"><p>Gets all the dependencies referenced by the root markdown context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;object&gt; Dependencies { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_File.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.File%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L28">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_File_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.File*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_File" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.File">File</h4>
+  <div class="markdown level1 summary"><p>Gets the current file. This is the included file if the engine is currently parsing or rendering an include file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static object File { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_IsInclude.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.IsInclude%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L52">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_IsInclude_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.IsInclude*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_IsInclude" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.IsInclude">IsInclude</h4>
+  <div class="markdown level1 summary"><p>Whether the content is included by other markdown files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsInclude { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_RootFile.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.RootFile%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L40">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_RootFile_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.RootFile*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_RootFile" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.RootFile">RootFile</h4>
+  <div class="markdown level1 summary"><p>Gets the root file, this is always the first file pushed to the context regardless of file inclusion.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static object RootFile { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_IsCircularReference_System_Object_System_Collections_Generic_IEnumerable_System_Object___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.IsCircularReference(System.Object%2CSystem.Collections.Generic.IEnumerable%7BSystem.Object%7D%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L109">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_IsCircularReference_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.IsCircularReference*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_IsCircularReference_System_Object_System_Collections_Generic_IEnumerable_System_Object___" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.IsCircularReference(System.Object,System.Collections.Generic.IEnumerable{System.Object}@)">IsCircularReference(Object, out IEnumerable&lt;Object&gt;)</h4>
+  <div class="markdown level1 summary"><p>Checks if the input file results in a circular reference.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsCircularReference(object file, out IEnumerable&lt;object&gt; dependencyChain)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></td>
+        <td><span class="parametername">file</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a>&gt;</td>
+        <td><span class="parametername">dependencyChain</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushDependency_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushDependency(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L101">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushDependency_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushDependency*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushDependency_System_Object_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushDependency(System.Object)">PushDependency(Object)</h4>
+  <div class="markdown level1 summary"><p>Push dependency</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void PushDependency(object file)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></td>
+        <td><span class="parametername">file</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushFile_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushFile(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L76">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushFile_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushFile*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushFile_System_Object_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushFile(System.Object)">PushFile(Object)</h4>
+  <div class="markdown level1 summary"><p>Creates a scope for calling <span class="xref">Markdig.Markdown.ToHtml(System.String,Markdig.MarkdownPipeline)</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDisposable PushFile(object file)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></td>
+        <td><span class="parametername">file</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushInclusion_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushInclusion(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L90">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushInclusion_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushInclusion*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext_PushInclusion_System_Object_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext.PushInclusion(System.Object)">PushInclusion(Object)</h4>
+  <div class="markdown level1 summary"><p>Creates a scope for calling <span class="xref">Markdig.Markdown.ToHtml(System.String,Markdig.MarkdownPipeline)</span>
+when processing a markdown inclusion inside <a class="xref" href="Microsoft.DocAsCode.MarkdigEngine.Extensions.HtmlInclusionBlockRenderer.html">HtmlInclusionBlockRenderer</a> and <a class="xref" href="Microsoft.DocAsCode.MarkdigEngine.Extensions.HtmlInclusionInlineRenderer.html">HtmlInclusionInlineRenderer</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDisposable PushInclusion(object file)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></td>
+        <td><span class="parametername">file</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+<div id="disqus_thread"></div>
+                <script>
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://docfx-github.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionContext.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.InclusionContext%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/Inclusion/InclusionContext.cs/#L19" class="contribution-link">View Source</a>
+                  </li>
+                  <li>
+                    <a href="#disqus_thread" class="contribution-link">0 Comments</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <span>Copyright © Microsoft.<br>Generated by <strong>DocFX</strong></span>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+    <script id="dsq-count-scr" src="//docfx-github.disqus.com/count.js" async=""></script>
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-99241001-1', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
+  </body>
+</html>
