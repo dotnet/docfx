@@ -3,60 +3,57 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
+    using System.Collections.Generic;
     using Xunit;
 
-    [Collection("docfx STA")]
     public class InteractiveCodeTest
     {
         [Fact]
         [Trait("Related", "InteractiveCode")]
         public void TestInteractiveCode_CodeSnippetSimple()
         {
-            var source = @"[!code-azurecli-interactive[](InteractiveCode/sample.code)]";
-            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-
-            Assert.Equal(
+            TestUtility.VerifyMarkup(
+                @"[!code-azurecli-interactive[](InteractiveCode/sample.code)]",
                 @"<pre><code class=""lang-azurecli"" data-interactive=""azurecli"">hello world!
-</code></pre>".Replace("\r\n", "\n"), marked.Html);
+</code></pre>",
+                files: new Dictionary<string, string>
+                {
+                    { "InteractiveCode/sample.code", "hello world!" }
+                });
         }
 
         [Fact]
         [Trait("Related", "InteractiveCode")]
         public void TestInteractiveCode_FencedCodeSimple()
         {
-            var source = @"```csharp-interactive
+            TestUtility.VerifyMarkup(
+                @"```csharp-interactive
 test
-```";
-            var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-
-            Assert.Equal(
+```",
                 @"<pre><code class=""lang-csharp"" data-interactive=""csharp"">test
 </code></pre>
-".Replace("\r\n", "\n"), marked.Html);
+");
         }
 
         [Fact]
         [Trait("Related", "InteractiveCode")]
         public void TestInteractiveCode_FencedCodeNonInteractiveSimple()
         {
-            var source0 = @"```csharp
+            TestUtility.VerifyMarkup(
+                @"```csharp
 test
-```";
-            var source1 = @"```
-test
-```";
-            var marked0 = TestUtility.MarkupWithoutSourceInfo(source0, "Topic.md");
-            var marked1 = TestUtility.MarkupWithoutSourceInfo(source1, "Topic.md");
-
-            Assert.Equal(
+```",
                 @"<pre><code class=""lang-csharp"">test
 </code></pre>
-".Replace("\r\n", "\n"), marked0.Html);
+");
 
-            Assert.Equal(
+            TestUtility.VerifyMarkup(
+                @"```
+test
+```",
                 @"<pre><code>test
 </code></pre>
-".Replace("\r\n", "\n"), marked1.Html);
+");
         }
     }
 }

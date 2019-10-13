@@ -4,46 +4,30 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
-    using System.Linq;
-
-    using Microsoft.DocAsCode.Plugins;
-
     using Xunit;
 
-    [Collection("docfx STA")]
     public class CodeSnippetTest
     {
-        private static MarkupResult SimpleMarkup(string source)
-        {
-            return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-        }
-
         [Fact]
         public void CodeSnippetNotFound()
         {
-            var parameter = new MarkdownServiceParameters
-            {
-                BasePath = ".",
-                Tokens = new Dictionary<string, string>
-                {
-                    {"codeIncludeNotFound", "你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。"},
-                    {"warning", "<h5>警告</h5>" }
-                }.ToImmutableDictionary(),
-                Extensions = new Dictionary<string, object>
-                {
-                    { "EnableSourceInfo", false }
-                }
-            };
-            var service = new MarkdigMarkdownService(parameter);
-            var marked = service.Markup(@"[!code-csharp[name](Program1.cs)]", "Topic.md");
-            // assert
+            var source = @"[!code-csharp[name](Program1.cs)]";
+
             var expected = @"<div class=""WARNING"">
 <h5>警告</h5>
 <p>你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。</p>
 </div>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html.Replace("\r\n", "\n"));
+
+            TestUtility.VerifyMarkup(
+                source,
+                expected,
+                errors: new[] { "codesnippet-not-found" },
+                tokens: new Dictionary<string, string>
+                {
+                    { "codeIncludeNotFound", "你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。"},
+                    { "warning", "<h5>警告</h5>" }
+                });
         }
 
         [Fact]
@@ -56,45 +40,155 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     // </tag1>
 " + " \tline for indent & range";
 
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
-
-            var marked = TestUtility.MarkupWithoutSourceInfo(@"[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]", "Topic.md");
+            var source = @"[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]";
 
             // assert
             var expected = @"<pre><code class=""lang-csharp"" name=""name"" highlight-lines=""1,2,4-""> line1
 </code></pre>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+            {
+                { "Program.cs", content }
+            });
+        }
+
+        [Fact]
+        public void NotebookCodeSnippetGeneral()
+        {
+            var content = @"{
+ ""cells"": [
+  {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  }
+ ]
+}";
+            var source = @"[!notebook-python[](Program.ipynb?name=import)]";
+
+            var expected = @"<pre><code class=""lang-python"">import azureml.core
+print(azureml.core.VERSION)</code></pre>";
+
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+            {
+                { "Program.ipynb", content },
+            });
+        }
+
+        [Fact]
+        public void NotebookCodeSnippetTagNotFound()
+        {
+            var content = @"{
+ ""cells"": [
+  {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  }
+ ]
+}";
+
+            var source = @"[!notebook-python[](Program.ipynb?name=nonexistent)]";
+            var expected = @"<pre><code class=""lang-python""></code></pre>";
+
+            TestUtility.VerifyMarkup(
+                source,
+                expected,
+                errors: new[] { "tag-not-found" },
+                files: new Dictionary<string, string>
+                {
+                    { "Program.ipynb", content },
+                });
+        }
+
+        [Fact]
+        public void NotebookCodeSnippetMultipleTagFound()
+        {
+            //arange
+            var content = @"{
+ ""cells"": [
+  {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  },
+ {
+   ""cell_type"": ""code"",
+   ""execution_count"": null,
+   ""metadata"": {
+    ""name"": ""import""
+   },
+   ""outputs"": [],
+   ""source"": [
+    ""import azureml.core\n"",
+    ""print(azureml.core.VERSION)""
+   ]
+  }
+ ]
+}";
+
+            var source = @"[!notebook-python[](Program.ipynb?name=import)]";
+            var expected = @"<pre><code class=""lang-python""></code></pre>";
+
+            TestUtility.VerifyMarkup(
+                source,
+                expected,
+                errors: new[] { "mutiple-tags-with-same-name" },
+                files: new Dictionary<string, string>
+                {
+                    { "Program.ipynb", content },
+                });
         }
 
         [Fact]
         public void CodeSnippetShouldNotWorkInParagragh()
         {
-            var marked = TestUtility.MarkupWithoutSourceInfo("text [!code[test](CodeSnippet.cs)]", "Topic.md");
+            var source = "text [!code[test](CodeSnippet.cs)]";
 
-            // assert
-            var expected = @"<p>text [!code<a href=""CodeSnippet.cs"">test</a>]</p>
-";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            var expected = @"<p>text [!code<a href=""CodeSnippet.cs"">test</a>]</p>";
+
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
         public void CodeSnippetTagsShouldMatchCaseInsensitive()
         {
-            //arange
             var content = "\t// <tag1>\t\nline1\n// <tag2>\nline2\n// </tag2>\nline3\n// </TAG1>\n// <unmatched>\n";
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            var marked = TestUtility.MarkupWithoutSourceInfo("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
+            var source = "[!code[tag1](Program.cs#Tag1)]";
 
-            // assert
             var expected = "<pre><code name=\"tag1\">line1\nline2\nline3\n</code></pre>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+            {
+                { "Program.cs", content },
+            });
         }
 
         [Fact]
         public void CodeSnippetTagsShouldSucceedWhenDuplicateWithoutWarning()
         {
-            //arange
             var content = @"// <tag1>
 line1
 // <tag1>
@@ -106,19 +200,20 @@ line3
 line4
 // </tag2>
 ";
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            var marked = TestUtility.MarkupWithoutSourceInfo("[!code[tag2](Program.cs#Tag2)]", "Topic.md");
+            var source = "[!code[tag2](Program.cs#Tag2)]";
 
-            // assert
             var expected = "<pre><code name=\"tag2\">line4\n</code></pre>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+            {
+                { "Program.cs", content },
+            });
         }
 
         [Fact]
         public void CodeSnippetTagsShouldSucceedWhenDuplicateWithWarningWhenReferenced()
         {
-            //arange
             var content = @"// <tag1>
 line1
 // <tag1>
@@ -130,19 +225,20 @@ line3
 line4
 // </tag2>
 ";
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            var result = TestUtility.MarkupWithoutSourceInfo("[!code[tag1](Program.cs#Tag1)]", "Topic.md");
+            var source = "[!code[tag1](Program.cs#Tag1)]";
 
-            // assert
             var expected = "<pre><code name=\"tag1\">line2\n</code></pre>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+            {
+                { "Program.cs", content },
+            });
         }
 
         [Fact]
         public void CodeSnippetTagsShouldSucceedWhenReferencedFileContainsRegionWithoutName()
         {
-            // arrange
             var content = @"#region
 public class MyClass
 #region
@@ -155,16 +251,18 @@ public class MyClass
 }
 #endregion
 #endregion";
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            var marked = TestUtility.MarkupWithoutSourceInfo("[!code[MyClass](Program.cs#main)]", "Topic.md");
+            var source = "[!code[MyClass](Program.cs#main)]";
 
-            // assert
             var expected = @"<pre><code name=""MyClass"">static void Main()
 {
 }
 </code></pre>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+            {
+                { "Program.cs", content },
+            });
         }
 
         [Fact]
@@ -187,13 +285,12 @@ public class MyClass
                 ""Accept"": ""application/json""
    }
 }";
-            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
-            var dependency = new HashSet<string>();
-            var marked = SimpleMarkup(root);
-            Assert.Equal("<pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>", marked.Html);
-            Assert.Equal(
-                new[] { "api.json" },
-                marked.Dependency.OrderBy(x => x));
+            var expected = "<pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>";
+
+            TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
+            {
+                { "api.json", apiJsonContent },
+            });
         }
 
 
@@ -477,13 +574,11 @@ public static void Foo()
     }
     #endregion
 }";
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
-            // act
-            var marked = SimpleMarkup(fencesPath);
-
-            // assert
-            Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.VerifyMarkup(fencesPath, expectedContent, files: new Dictionary<string, string>
+            {
+                { "Program.cs", content },
+            });
         }
 
         [Fact]
@@ -506,12 +601,13 @@ public static void Foo()
                 ""Accept"": ""application/json""
    }
 }";
-            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
-            var marked = SimpleMarkup(root);
-            Assert.Equal("<pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>", marked.Html);
-            Assert.Equal(
-                new[] { "api.json" },
-                marked.Dependency.OrderBy(x => x));
+
+            var expected = "<pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>";
+
+            TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
+            {
+                { "api.json", apiJsonContent },
+            });
         }
 
         [Fact]
@@ -528,10 +624,8 @@ public static void Foo()
                 ""Accept"": ""application/json""
    }
 }";
-            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
-            var dependency = new HashSet<string>();
-            var marked = SimpleMarkup(root);
-            Assert.Equal(@"<pre><code class=""lang-REST"" name=""REST"">
+
+            var expected = @"<pre><code class=""lang-REST"" name=""REST"">
 {
    &quot;method&quot;: &quot;GET&quot;,
    &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
@@ -540,10 +634,12 @@ public static void Foo()
                 &quot;Accept&quot;: &quot;application/json&quot;
    }
 }
-</code></pre>".Replace("\r\n", "\n"), marked.Html);
-            Assert.Equal(
-                new[] { "api.json" },
-                marked.Dependency.OrderBy(x => x));
+</code></pre>";
+
+            TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
+            {
+                { "api.json", apiJsonContent },
+            });
         }
 
         [Fact]
@@ -557,15 +653,17 @@ public static void Foo()
     // </tag1>
 " + " \tline for indent & range";
 
-            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
-
-            var marked = TestUtility.MarkupWithoutSourceInfo(@"[!code-csharp[name](Program.cs#tag1)]", "Topic.md");
+            var markdown = @"[!code-csharp[name](Program.cs#tag1)]";
 
             // assert
             var expected = @"<pre><code class=""lang-csharp"" name=""name"">line1
 // &lt;Content=&quot;my&quot;&gt;
 </code></pre>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+
+            TestUtility.VerifyMarkup(markdown, expected, files: new Dictionary<string, string>
+            {
+                { "Program.cs", content },
+            });
         }
 
 
@@ -589,8 +687,7 @@ public static void Foo()
                 ""Accept"": ""application/json""
    }
 }";
-            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
-            var marked = SimpleMarkup(root);
+
             const string expected = @"<table>
 <thead>
 <tr>
@@ -646,10 +743,10 @@ public static void Foo()
 </tbody>
 </table>
 ";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-            Assert.Equal(
-                new[] { "api.json" },
-                marked.Dependency.OrderBy(x => x));
+            TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
+            {
+                { "api.json", apiJsonContent },
+            });
         }
 
         [Fact(Skip = "won't support")]
@@ -669,12 +766,12 @@ public static void Foo()
                 ""Accept"": ""application/json""
    }
 }";
-            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
-            var marked = SimpleMarkup(root);
-            Assert.Equal("<p><pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre></p>\n", marked.Html);
-            Assert.Equal(
-                new[] { "api.json" },
-                marked.Dependency.OrderBy(x => x));
+            var expected = "<p><pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre></p>\n";
+
+            TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
+            {
+                { "api.json", apiJsonContent },
+            });
         }
     }
 }
