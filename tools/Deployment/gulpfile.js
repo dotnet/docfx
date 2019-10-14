@@ -30,7 +30,6 @@ nconf.add("configuration", { type: "file", file: configFile });
 
 let config = {
     "docfx": nconf.get("docfx"),
-    "firefox": nconf.get("firefox"),
     "myget": nconf.get("myget"),
     "git": nconf.get("git"),
     "choco": nconf.get("choco"),
@@ -39,7 +38,6 @@ let config = {
 
 config.myget.exe = process.env.NUGETEXE || config.myget.exe;
 Guard.argumentNotNull(config.docfx, "config.docfx", "Can't find docfx configuration.");
-Guard.argumentNotNull(config.firefox, "config.docfx", "Can't find firefox configuration.");
 Guard.argumentNotNull(config.myget, "config.docfx", "Can't find myget configuration.");
 Guard.argumentNotNull(config.git, "config.docfx", "Can't find git configuration.");
 Guard.argumentNotNull(config.choco, "config.docfx", "Can't find choco configuration.");
@@ -70,13 +68,6 @@ gulp.task("clean", () => {
     });
 });
 
-gulp.task("e2eTest:installFirefox", () => {
-    Guard.argumentNotNullOrEmpty(config.firefox.version, "config.firefox.version", "Can't find firefox version in configuration.");
-
-    process.env.Path += ";C:/Program Files/Mozilla Firefox";
-    return Common.execAsync("choco", ["install", "firefox", "--version=" + config.firefox.version, "-y", "--force"]);
-});
-
 gulp.task("e2eTest:restoreSeed", async () => {
     Guard.argumentNotNullOrEmpty(config.docfx.docfxSeedRepoUrl, "config.docfx.docfxSeedRepoUrl", "Can't find docfx-seed repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.docfxSeedHome, "config.docfx.docfxSeedHome", "Can't find docfx-seed in configuration.");
@@ -91,19 +82,7 @@ gulp.task("e2eTest:buildSeed", () => {
     return Common.execAsync(path.resolve(config.docfx["exe"]), ["docfx.json"], config.docfx.docfxSeedHome);
 });
 
-gulp.task("e2eTest:restore", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.e2eTestsHome, "config.docfx.e2eTestsHome", "Can't find E2ETest directory in configuration.");
-
-    return Common.execAsync("dotnet", ["restore"], config.docfx.e2eTestsHome);
-});
-
-gulp.task("e2eTest:test", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.e2eTestsHome, "config.docfx.e2eTestsHome", "Can't find E2ETest directory in configuration.");
-
-    return Common.execAsync("dotnet", ["test"], config.docfx.e2eTestsHome);
-});
-
-gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:restoreSeed", "e2eTest:buildSeed", "e2eTest:restore", "e2eTest:test"));
+gulp.task("e2eTest", gulp.series("e2eTest:restoreSeed", "e2eTest:buildSeed"));
 
 gulp.task("publish:myget-dev", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
