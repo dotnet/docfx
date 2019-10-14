@@ -46,3 +46,9 @@ steps:
   inputs:
     pathtoPublish: 'target\Release\docfx'
     artifactName: target
+
+- task: PublishBuildArtifacts@1
+  condition: always()
+  inputs:
+    pathtoPublish: 'test\docfx-seed\_site'
+    artifactName: docfx-seed-site
