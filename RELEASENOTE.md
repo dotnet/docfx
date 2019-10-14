@@ -1,8 +1,18 @@
-Version Notes (Current Version: v2.46)
+Version Notes (Current Version: v2.47)
 =======================================
 
-v2.46(Pre-Release)
+v2.47(Pre-release)
 -----------
+
+v2.46
+-----------
+
+1. Support Jupyter Notebook in code snippet (#4989, #5000). Thanks @pravakarg, @sdgilley!
+2. Upgrade to Microsoft.CodeAnalysis 3.3.1 for C# 8.0 support (#5163). Thanks @dlech!
+3. Improve the default template for TypeScript documentation (#5128). Thanks @rbuckton!
+4. Improve logging of template preprocessor errors (#5099). Thanks @mcm-ham!
+5. Bug fix:
+    1. fix duplicate warnings when include the same file multiple times. (#5093)
 
 v2.45.1
 -----------
