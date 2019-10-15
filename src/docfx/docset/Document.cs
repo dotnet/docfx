@@ -37,10 +37,11 @@ namespace Microsoft.Docs.Build
         public FilePath FilePath { get; }
 
         /// <summary>
-        /// Gets file path relative to site root that is:
+        /// Gets file path relative to <see cref="Config.BaseUrl"/> that is:
         /// For dynamic rendering:
         ///       locale  moniker-list-hash    site-path
-        ///       |-^-| |--^---| |----------------^----------------|
+        ///                       base_path
+        ///       |-^-| |--^---| |--^--|----------^----------------|
         /// _site/en-us/603b739b/dotnet/api/system.string/index.json
         ///
         ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
@@ -142,12 +143,9 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
         }
 
-        public string GetOutputPath(IReadOnlyList<string> monikers, string siteBasePath, bool isPage = true)
+        public string GetOutputPath(IReadOnlyList<string> monikers, bool isPage = true)
         {
-            var outputPath = PathUtility.NormalizeFile(Path.Combine(
-                siteBasePath,
-                $"{MonikerUtility.GetGroup(monikers)}",
-                Path.GetRelativePath(siteBasePath, SitePath)));
+            var outputPath = UrlUtility.Combine(Docset.SiteBasePath, MonikerUtility.GetGroup(monikers) ?? "", SitePath);
 
             return Docset.Legacy && isPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
@@ -216,7 +214,7 @@ namespace Microsoft.Docs.Build
             var mime = type == ContentType.Page ? ReadMimeFromFile(input, path) : default;
             var isPage = templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(path, docset.Routes, docset.SiteBasePath);
+            var routedFilePath = PathUtility.NormalizeFile(ApplyRoutes(path, docset.Routes));
 
             var sitePath = FilePathToSitePath(routedFilePath, type, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
@@ -224,7 +222,7 @@ namespace Microsoft.Docs.Build
                 sitePath = sitePath.ToLowerInvariant();
             }
 
-            var siteUrl = PathToAbsoluteUrl(sitePath, type, mime, docset.Config.Output.Json, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(docset.SiteBasePath, sitePath), type, mime, docset.Config.Output.Json, isPage);
             var contentType = type;
             if (redirectionUrl != null)
             {
@@ -344,20 +342,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string ApplyRoutes(FilePath path, IReadOnlyDictionary<string, string> routes, string siteBasePath)
+        private static string ApplyRoutes(FilePath path, IReadOnlyDictionary<string, string> routes)
         {
             // the latter rule takes precedence of the former rule
-            var pathToMatch = path.Path;
             foreach (var (source, dest) in routes)
             {
-                var result = ApplyRoutes(pathToMatch, source, dest);
+                var result = ApplyRoutes(path.Path, source, dest);
                 if (result != null)
                 {
-                    pathToMatch = result;
-                    break;
+                    return result;
                 }
             }
-            return PathUtility.NormalizeFile(Path.Combine(siteBasePath, pathToMatch));
+            return path.Path;
         }
 
         private static string ApplyRoutes(string path, string source, string dest)
@@ -408,10 +404,10 @@ namespace Microsoft.Docs.Build
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
 
-            // get set path from site path
+            // remove file extension from site path
             // site path doesn't contain version info according to the output spec
-            var sitePathWithoutExtension = Path.Combine(Path.GetDirectoryName(SitePath), Path.GetFileNameWithoutExtension(SitePath));
-            var sitePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.SiteBasePath, sitePathWithoutExtension));
+            var i = SitePath.LastIndexOf('.');
+            var sitePath = i >= 0 ? SitePath.Substring(0, i) : SitePath;
 
             return (
                 HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),

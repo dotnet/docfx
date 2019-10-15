@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -64,6 +65,36 @@ namespace Microsoft.Docs.Build
             }
 
             return (path, query, fragment);
+        }
+
+        /// <summary>
+        /// Split an absolute URL into a host name (including https://) and a base path (never starts with /)
+        /// </summary>
+        public static (string host, string basePath) SplitBaseUrl(string url)
+        {
+            url = url.Replace('\\', '/');
+
+            var i = url.IndexOf("://");
+            if (i < 0)
+            {
+                return ("", url.Trim('/'));
+            }
+
+            i = url.IndexOf('/', i + 3);
+            if (i < 0)
+            {
+                return (url, "");
+            }
+
+            return (url.Substring(0, i), url.Substring(i).Trim('/'));
+        }
+
+        /// <summary>
+        /// Combines URL segments into a single URL.
+        /// </summary>
+        public static string Combine(params string[] urlSegments)
+        {
+            return Path.Combine(urlSegments).Replace('\\', '/');
         }
 
         /// <summary>
