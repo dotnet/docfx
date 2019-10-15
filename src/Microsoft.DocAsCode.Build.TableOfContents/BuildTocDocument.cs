@@ -30,11 +30,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// </summary>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var resolvedModels = TocHelper.Resolve(models, host).ToList();
+            var (resolvedTocModels, includedTocs) = TocHelper.Resolve(models, host);
 
-            ReportPreBuildDependency(resolvedModels, host, 8);
+            ReportPreBuildDependency(resolvedTocModels, host, 8, includedTocs);
 
-            return resolvedModels;
+            return resolvedTocModels;
         }
 
         public override void Build(FileModel model, IHostService host)
@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Private methods
 
-        private void ReportPreBuildDependency(List<FileModel> models, IHostService host, int parallelism)
+        private void ReportPreBuildDependency(List<FileModel> models, IHostService host, int parallelism, HashSet<string> includedTocs)
         {
             var nearest = new ConcurrentDictionary<string, RelativeInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
@@ -63,7 +63,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             foreach (var item in nearest)
             {
-                host.ReportDependencyFrom(item.Value.TocInfo.Model, item.Key, DependencyTypeName.Metadata);
+                if (includedTocs.Contains(item.Key))
+                {
+                    host.ReportDependencyTo(item.Value.TocInfo.Model, item.Key, DependencyTypeName.Include);
+                }
+                else
+                {
+                    host.ReportDependencyFrom(item.Value.TocInfo.Model, item.Key, DependencyTypeName.Metadata);
+                }
             }
         }
 
