@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                     }
                     else if (node is TripleColonBlock tripleColonBlock && tripleColonBlock.Extension is ImageExtension)
                     {
-                        var imageSrc = tripleColonBlock.GetAttributes().Properties.Where(kv => kv.Key == "src").FirstOrDefault().Value;
+                        var imageSrc = tripleColonBlock.GetAttributes().Properties.Single(kv => kv.Key == "src").Value;
                         var href = new SourceInfo<string>(imageSrc, tripleColonBlock.ToSourceInfo());
                         tripleColonBlock.GetAttributes().Properties.Remove(new KeyValuePair<string, string>("src", href));
                         tripleColonBlock.GetAttributes().AddPropertyIfNotExist("src", getLink(href) ?? href);
