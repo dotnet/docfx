@@ -2,14 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
