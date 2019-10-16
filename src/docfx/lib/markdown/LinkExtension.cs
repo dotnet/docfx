@@ -4,9 +4,12 @@
 using System;
 using Markdig;
 using Markdig.Helpers;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -35,6 +38,13 @@ namespace Microsoft.Docs.Build
                     else if (node is HtmlInline inline)
                     {
                         inline.Tag = ResolveLinks(inline.Tag, inline);
+                    }
+                    else if (node is TripleColonBlock tripleColonBlock && tripleColonBlock.Extension is ImageExtension)
+                    {
+                        var imageSrc = tripleColonBlock.GetAttributes().Properties.Where(kv => kv.Key == "src").FirstOrDefault().Value;
+                        var href = new SourceInfo<string>(imageSrc, tripleColonBlock.ToSourceInfo());
+                        tripleColonBlock.GetAttributes().Properties.Remove(new KeyValuePair<string, string>("src", href));
+                        tripleColonBlock.GetAttributes().AddPropertyIfNotExist("src", getLink(href) ?? href);
                     }
                     return false;
                 });

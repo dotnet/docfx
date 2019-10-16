@@ -608,3 +608,35 @@ outputs:
                           <a href=\"a#\" data-linktype=\"relative-path\">a1</a>
                      </p>"
     }
+---
+# Triple colon markdown extension
+inputs:
+  docfx.yml:
+  docs/a.png:
+  docs/b.png:
+  docs/a.md: |
+    :::image type="content" source="a.png" alt-text="Image":::
+    :::image type="content" source="~/docs/b.png" alt-text="Image":::
+outputs:
+  docs/a.png:
+  docs/b.png:
+  docs/a.json: |
+    { 
+      "conceptual": "<img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\">",
+    }
+  .links.json: |
+    {
+      "links": [
+        { "source_url": "/docs/a", "target_url": "/docs/a.png" },
+        { "source_url": "/docs/a", "target_url": "/docs/b.png" }
+      ]
+    }
+  .dependencymap.json: |
+    {
+      "dependencies": {
+        "docs/a.md": [
+            { "source": "docs/a.png", "type": "link" },
+            { "source": "docs/b.png", "type": "link" }
+        ]
+      }
+    }
