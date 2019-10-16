@@ -32,7 +32,8 @@ namespace Microsoft.Docs.Build
             if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.SiteBasePath}", PathUtility.PathComparison))
             {
                 legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(
-                    string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
+                    string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath,
+                    string.IsNullOrEmpty(legacySiteUrlRelativeToSiteBasePath.Substring(1)) ? "." : legacySiteUrlRelativeToSiteBasePath.Substring(1));
             }
 
             return PathUtility.NormalizeFile(
