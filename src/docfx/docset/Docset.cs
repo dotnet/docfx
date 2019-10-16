@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             {
                 if (GitUtility.IsRepo(fullPath))
                 {
-                    if (string.Equals(fullPath, Repository.Path.Substring(0, DocsetPath.Length - 1), PathUtility.PathComparison))
+                    if (Repository != null && string.Equals(fullPath, Repository.Path.Substring(0, Repository.Path.Length - 1), PathUtility.PathComparison))
                     {
                         return Repository;
                     }
