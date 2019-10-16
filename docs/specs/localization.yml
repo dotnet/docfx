@@ -213,7 +213,7 @@ repos:
           repository: https://github.com/dotnet/docfx.en-us
         localization:
           mapping: Folder
-      localization/zh-cn/docs/a.md:
+      _localization/zh-cn/docs/a.md:
       docs/a.md:
 outputs:
   docs/a.json: |
@@ -264,7 +264,7 @@ repos:
         docfx.yml: |
           localization:
             mapping: Folder
-        localization/zh-cn/docs/a.md:
+        _localization/zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
     { "content_git_url":"https://github.com/contribution/a/blob/master3/localization/zh-cn/docs/a.md","original_content_git_url":"https://github.com/contribution/a/blob/master3/localization/zh-cn/docs/a.md", "gitcommit":"https://github.com/contribution/a/blob/ffb8cfa5f33566a83770b90d647577a58e1d662d/localization/zh-cn/docs/a.md"}
@@ -450,7 +450,7 @@ inputs:
   docs/b.md: |
     [link to a](a.md)
   docs/a.md: a
-  localization/zh-cn/docs/a.md: |
+  _localization/zh-cn/docs/a.md: |
     [link to b](b.md)
     [!include[include b](b.md)]
 outputs:
@@ -511,8 +511,8 @@ inputs:
   docs/b/TOC.md: |
     # [reference b](b.md)
   docs/a/a.md:
-  localization/zh-cn/docs/b/b.md:
-  localization/zh-cn/docs/a/TOC.md: |
+  _localization/zh-cn/docs/b/b.md:
+  _localization/zh-cn/docs/a/TOC.md: |
     # [reference a](a.md)
 outputs:
   docs/b/b.json: |
@@ -552,11 +552,11 @@ inputs:
     ---
     uid: c
     ---
-  localization/zh-cn/docs/a.md: |
+  _localization/zh-cn/docs/a.md: |
     ---
     uid: a
     ---
-  localization/zh-cn/docs/b.md: link to @c
+  _localization/zh-cn/docs/b.md: link to @c
 outputs:
   docs/a.json:
   docs/b.json:
@@ -594,7 +594,7 @@ inputs:
     files: '**/*.md'
     localization:
       mapping: Folder
-  localization/zh-cn/docs/a.md: |
+  _localization/zh-cn/docs/a.md: |
     [link to a](~/localization/zh-cn/docs/a.md)
     [link to a](~/docs/a.md)
 outputs:
@@ -608,7 +608,7 @@ inputs:
     files: '**/*.md'
     localization:
       mapping: Folder
-  localization/zh-cn/docs/a.md:
+  _localization/zh-cn/docs/a.md:
   docs/b.md:
 outputs:
   docs/b.json:
@@ -652,7 +652,7 @@ inputs:
     baseUrl: https://docs.microsoft.com
     localization:
       mapping: Folder
-  localization/zh-cn/docs/a.md:
+  _localization/zh-cn/docs/a.md:
 outputs:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591"}
@@ -991,7 +991,7 @@ repos:
         docfx.yml: |
           localization:
             mapping: Folder
-        localization/zh-cn/docs/a/a.md:
+        _localization/zh-cn/docs/a/a.md:
 outputs:
   .errors.log: |
     ["error","config-not-found","Can't find config file 'docfx.yml/docfx.json' at *"]
@@ -1204,7 +1204,7 @@ repos:
             mapping: Folder
         docs/b.md: |
           [link in a](a.md)
-        localization/zh-cn/docs/a.md: |
+        _localization/zh-cn/docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
 outputs:
