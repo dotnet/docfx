@@ -7,6 +7,8 @@ namespace Microsoft.Docs.Build
     {
         public const string DefaultLocaleStr = "en-us";
 
+        public static string DefaultExclude = "localization/**"; // Localization file when using folder convention
+
         /// <summary>
         /// Gets the default locale of this docset.
         /// </summary>

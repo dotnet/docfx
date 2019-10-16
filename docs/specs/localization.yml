@@ -201,6 +201,40 @@ outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/docs/*"}
 ---
+# Should not exclude localization folder when it's not loc build and is not folder mapping
+# [loc build scope exclusion]
+inputs:
+  docfx.yml: 
+  localization/a.md:
+outputs:
+  localization/a.json:
+---
+# Should not exclude localization folder when it's loc build and is not folder mapping
+# [loc build scope exclusion]
+locale: ja-jp
+repos:
+  https://docs.com/localization-folder-exclude#master:
+    - files:
+        docfx.yml:
+        localization/a.md: source
+  https://docs.com/localization-folder-exclude.ja-jp#master:
+    - files:
+        localization/a.md: 日本語
+outputs:
+  localization/a.json: |
+    { "conceptual":"<p>日本語</p>\n"}
+---
+# Should exclude localization folder when it's not loc build and is folder mapping
+# [loc build scope exclusion]
+inputs:
+  docfx.yml: |
+    localization:
+      mapping: folder
+  localization/a.md:
+outputs:
+  .publish.json: |
+    {"files": undefined}
+---
 # edit url convention with source locale 3
 # all loc files are in source repo under different locale folder
 # [folder mapping]
