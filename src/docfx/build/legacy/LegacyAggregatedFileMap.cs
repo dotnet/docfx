@@ -52,6 +52,7 @@ namespace Microsoft.Docs.Build
                     aggregatedFileMapItem));
             }
 
+            var docsetPathToRoot = docset.Config.DocumentId.SourceBasePath.TrimStart(new char[] { '.', '/', '\\' });
             context.Output.WriteJson(
                 new
                 {
@@ -62,7 +63,7 @@ namespace Microsoft.Docs.Build
                         [docset.Config.Name] = new
                         {
                             docset_name = docset.Config.Name,
-                            docset_path_to_root = docset.Config.DocumentId.SourceBasePath.TrimStart(new char[] { '.', '/', '\\' }),
+                            docset_path_to_root = string.IsNullOrEmpty(docsetPathToRoot) ? "." : docsetPathToRoot,
                         },
                     },
                 }, "op_aggregated_file_map_info.json");

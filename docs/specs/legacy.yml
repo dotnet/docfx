@@ -85,7 +85,15 @@ outputs:
   toc.mta.json:
   .manifest.json:
   filemap.json:
-  op_aggregated_file_map_info.json:
+  op_aggregated_file_map_info.json: |
+    {     
+      "docset_infos": {
+          "": {
+              "docset_name": "",
+              "docset_path_to_root": "."
+          }
+      }
+    }
   .publish.json:
   .xrefmap.json:
   server-side-dependent-list.txt:
