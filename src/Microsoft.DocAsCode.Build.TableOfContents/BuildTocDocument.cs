@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// </summary>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var (resolvedTocModels, includedTocs) = TocHelper.Resolve(models, host);
+            var (resolvedTocModels, includedTocs) = TocHelper.ResolveToc(models, host);
 
             ReportPreBuildDependency(resolvedTocModels, host, 8, includedTocs);
 

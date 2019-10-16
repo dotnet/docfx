@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             YamlDeserializerWithFallback.Create<TocViewModel>()
             .WithFallback<TocRootViewModel>();
 
-        public static (List<FileModel> tocModels, HashSet<string> includedTocs) Resolve(ImmutableList<FileModel> models, IHostService host)
+        public static (List<FileModel> tocModels, HashSet<string> includedTocs) ResolveToc(ImmutableList<FileModel> models, IHostService host)
         {
             var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
             var nonReferencedTocModels = new List<FileModel>();
@@ -53,7 +53,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return (nonReferencedTocModels, referencedToc);
         }
 
-        // TODO: refactor the return value to TocRootViewModel
+        [Obsolete("Use ResolveToc")]
+        public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host)
+        {
+            var (result, _) = ResolveToc(models, host);
+            return result;
+        }
+
         public static TocItemViewModel LoadSingleToc(string file)
         {
             if (string.IsNullOrEmpty(file))
