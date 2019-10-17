@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -46,6 +47,25 @@ namespace Microsoft.DocAsCode.Tests
             }).Exec(null);
 
             CheckResult();
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        [Trait("Language", "CSharp")]
+        public void TestMetadataCommandFromCSProjectWithVsinstalldirEnvSet()
+        {
+            var envName = "VSINSTALLDIR";
+            var originalValue = Environment.GetEnvironmentVariable(envName);
+            Environment.SetEnvironmentVariable(envName, "c:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise");
+
+            try
+            {
+                TestMetadataCommandFromCSProject();
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(envName, originalValue);
+            }
         }
 
         [Fact]
