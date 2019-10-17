@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
             // load toc model
-            var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
+            var (errors, model, _, _) = context.TableOfContentsLoader.Load(file);
 
             // enable pdf
             var outputPath = file.GetOutputPath(model.Metadata.Monikers, isPage: false);

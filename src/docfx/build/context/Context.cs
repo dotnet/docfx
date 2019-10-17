@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
         public readonly Config Config;
         public readonly RestoreFileMap RestoreFileMap;
         public readonly ErrorLog ErrorLog;
-        public readonly Cache Cache;
         public readonly Output Output;
         public readonly Input Input;
         public readonly BuildScope BuildScope;
@@ -34,6 +33,7 @@ namespace Microsoft.Docs.Build
         public readonly MarkdownEngine MarkdownEngine;
         public readonly TemplateEngine TemplateEngine;
         public readonly FileLinkMapBuilder FileLinkMapBuilder;
+        public readonly TableOfContentsLoader TableOfContentsLoader;
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
@@ -51,7 +51,6 @@ namespace Microsoft.Docs.Build
             ErrorLog = errorLog;
             Input = input;
             Output = new Output(outputPath, input);
-            Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap);
@@ -84,6 +83,9 @@ namespace Microsoft.Docs.Build
                 FileLinkMapBuilder);
 
             MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
+
+            TableOfContentsLoader = new TableOfContentsLoader(
+                Input, LinkResolver, XrefResolver, MarkdownEngine, MonikerProvider, DependencyMapBuilder);
         }
 
         public void Dispose()
