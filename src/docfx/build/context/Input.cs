@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,6 +17,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _docsetPath;
         private readonly RepositoryProvider _repositoryProvider;
+        private readonly ConcurrentDictionary<FilePath, JToken> _tokenCache = new ConcurrentDictionary<FilePath, JToken>();
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
         public Input(string docsetPath, RepositoryProvider repositoryProvider)
@@ -74,6 +77,14 @@ namespace Microsoft.Docs.Build
             using (var reader = ReadText(file))
             {
                 return reader.ReadToEnd();
+            }
+        }
+
+        public (List<Error> errors, JToken token) ReadJson(FilePath file)
+        {
+            using (var reader = ReadText(file))
+            {
+                return JsonUtility.Parse(reader, file);
             }
         }
 

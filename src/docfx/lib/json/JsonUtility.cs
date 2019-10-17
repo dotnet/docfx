@@ -166,20 +166,14 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from JSON file, get from or add to cache
-        /// </summary>
-        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadJsonFile(file);
-
-        /// <summary>
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
+        public static (List<Error> errors, JToken value) Parse(TextReader textReader, FilePath file)
         {
             try
             {
-                using (var stringReader = new StringReader(json))
-                using (var reader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.None })
+                using (var reader = new JsonTextReader(textReader) { DateParseHandling = DateParseHandling.None })
                 {
                     return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
                 }
