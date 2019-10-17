@@ -33,8 +33,8 @@ Below kinds of mappings are considered to be supported and there is a **strong c
   - **Folder**, localization files are stored in the **same repository** with source files but under different **locale folder**
     ```txt
     source file         -->         localization files
-    /readme.md          -->         /localization/zh-cn/readme.md
-    /files/a.md         -->         /localization/de-de/files/a.md
+    /readme.md          -->         /_localization/zh-cn/readme.md
+    /files/a.md         -->         /_localization/de-de/files/a.md
     ```
   - **Repository**, localization files are stored in an **independent repository** per locale but keep the **same folder structure**
       
