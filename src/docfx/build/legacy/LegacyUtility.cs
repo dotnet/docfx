@@ -18,9 +18,10 @@ namespace Microsoft.Docs.Build
             var outputPath = manifestItem.Path;
             if (doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources)
             {
-                outputPath = doc.GetOutputPath(manifestItem.Monikers, docset.SiteBasePath, isPage: false);
+                outputPath = doc.GetOutputPath(manifestItem.Monikers, isPage: false);
             }
-            var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(docset.SiteBasePath, outputPath);
+            var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(
+                string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath, outputPath);
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
         }
@@ -30,8 +31,10 @@ namespace Microsoft.Docs.Build
             var legacySiteUrlRelativeToSiteBasePath = doc.SiteUrl;
             if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.SiteBasePath}", PathUtility.PathComparison))
             {
+                legacySiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToSiteBasePath.Substring(1);
                 legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(
-                    docset.SiteBasePath, legacySiteUrlRelativeToSiteBasePath.Substring(1));
+                    string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath,
+                    string.IsNullOrEmpty(legacySiteUrlRelativeToSiteBasePath) ? "." : legacySiteUrlRelativeToSiteBasePath);
             }
 
             return PathUtility.NormalizeFile(

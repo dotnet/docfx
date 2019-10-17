@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public static readonly string[] DefaultExclude = new[]
         {
             "_site/**",             // Default output location
-            "localization/**",      // Localization file when using folder convention
+            "_localization/**",     // Localization file when using folder convention
             "_themes/**",           // Default template location
         };
 

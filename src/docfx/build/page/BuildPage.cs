@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
             errors.AddIfNotNull(monikerError);
 
-            var outputPath = file.GetOutputPath(monikers, file.Docset.SiteBasePath, file.IsPage);
+            var outputPath = file.GetOutputPath(monikers, file.IsPage);
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? await CreatePageOutput(context, file, sourceModel)
@@ -164,13 +164,13 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchProduct = file.Docset.Config.Product;
             systemMetadata.SearchDocsetName = file.Docset.Config.Name;
 
-            systemMetadata.Path = PathUtility.NormalizeFile(Path.GetRelativePath(file.Docset.SiteBasePath, file.SitePath));
-            systemMetadata.CanonicalUrlPrefix = $"{file.Docset.HostName}/{systemMetadata.Locale}/{file.Docset.SiteBasePath}/";
+            systemMetadata.Path = file.SitePath;
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine(file.Docset.HostName, systemMetadata.Locale, file.Docset.SiteBasePath) + "/";
 
             if (file.Docset.Config.Output.Pdf)
             {
-                systemMetadata.PdfUrlPrefixTemplate = $"{file.Docset.HostName}/pdfstore/{systemMetadata.Locale}" +
-                    $"/{file.Docset.Config.Product}.{file.Docset.Config.Name}/{{branchName}}";
+                systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
+                    file.Docset.HostName, "pdfstore", systemMetadata.Locale, $"{file.Docset.Config.Product}.{file.Docset.Config.Name}", "{branchName}");
             }
 
             if (contributorErrors != null)
