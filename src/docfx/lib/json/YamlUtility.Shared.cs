@@ -14,14 +14,14 @@ namespace Microsoft.Docs.Build
     internal partial class YamlUtility
     {
         internal static JToken ToJToken(
-            string input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
+            TextReader input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
         {
             JToken result = null;
 
             onKeyDuplicate = onKeyDuplicate ?? (_ => { });
             onConvert = onConvert ?? ((token, _) => token);
 
-            var parser = new Parser(new StringReader(input));
+            var parser = new Parser(input);
             parser.Expect<StreamStart>();
             if (!parser.Accept<StreamEnd>())
             {

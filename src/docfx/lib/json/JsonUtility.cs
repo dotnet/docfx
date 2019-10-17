@@ -169,11 +169,16 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error> errors, JToken value) Parse(TextReader textReader, FilePath file)
+        public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
+        {
+            return Parse(new StringReader(json), file);
+        }
+
+        public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file)
         {
             try
             {
-                using (var reader = new JsonTextReader(textReader) { DateParseHandling = DateParseHandling.None })
+                using (var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None })
                 {
                     return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
                 }

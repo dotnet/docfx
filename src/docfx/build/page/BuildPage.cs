@@ -226,14 +226,14 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, JObject model)> LoadYaml(Context context, Document file)
         {
-            var (errors, token) = YamlUtility.Parse(file, context);
+            var (errors, token) = context.Input.ReadYaml(file.FilePath);
 
             return await LoadSchemaDocument(context, errors, token, file);
         }
 
         private static async Task<(List<Error> errors, JObject model)> LoadJson(Context context, Document file)
         {
-            var (errors, token) = JsonUtility.Parse(file, context);
+            var (errors, token) = context.Input.ReadJson(file.FilePath);
 
             return await LoadSchemaDocument(context, errors, token, file);
         }

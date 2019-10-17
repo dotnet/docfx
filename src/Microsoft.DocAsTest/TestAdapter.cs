@@ -273,7 +273,7 @@ namespace Microsoft.DocAsTest
             {
                 args[i] = parameters[i].ParameterType == typeof(TestData)
                     ? data
-                    : YamlUtility.ToJToken(data.Content).ToObject(parameters[i].ParameterType, s_jsonSerializer);
+                    : YamlUtility.ToJToken(new StringReader(data.Content)).ToObject(parameters[i].ParameterType, s_jsonSerializer);
             }
 
             var result = method.Invoke(instance, args);
