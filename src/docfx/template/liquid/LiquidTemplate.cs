@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class LiquidTemplate
     {
-        private readonly ConcurrentDictionary<string, Lazy<(Error, Template)>> _templates = new ConcurrentDictionary<string, Lazy<(Error, Template)>>();
+        private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
         private readonly IncludeFileSystem _fileSystem;
         private readonly string _templateDir;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
@@ -35,29 +35,31 @@ namespace Microsoft.Docs.Build
             _localizedStrings = LoadLocalizedStrings(templateDir);
         }
 
-        public (Error, string) Render(string templateName, JObject model)
+        public string Render(string templateName, JObject model)
         {
-            var (error, template) = _templates.GetOrAdd(
+            var template = _templates.GetOrAdd(
                 templateName,
-                new Lazy<(Error, Template)>(() =>
+                new Lazy<Template>(() =>
                 {
                     var fileName = $"{templateName}.html.liquid";
                     try
                     {
-                        return (null, LoadTemplate(Path.Combine(_templateDir, fileName)));
+                        return LoadTemplate(Path.Combine(_templateDir, fileName));
                     }
                     catch (Exception ex)
                     {
                         if (ex is DirectoryNotFoundException || ex is FileNotFoundException)
                         {
-                            return (Errors.LiquidTemplateMissing(fileName), null);
+                            return null;
                         }
                         throw;
                     }
                 })).Value;
 
+            // if liquid template not found, return the json
             if (template is null)
-                return (error, string.Empty);
+                return JsonUtility.Serialize(model);
+
             var registers = new Hash
             {
                 ["file_system"] = _fileSystem,
@@ -81,7 +83,7 @@ namespace Microsoft.Docs.Build
                     formatProvider: CultureInfo.InvariantCulture),
             };
 
-            return (error, template.Render(parameters));
+            return template.Render(parameters);
         }
 
         public static string GetThemeRelativePath(DotLiquid.Context context, string resourcePath)

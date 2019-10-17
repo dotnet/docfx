@@ -609,12 +609,11 @@ outputs:
                      </p>"
     }
 ---
-# Liquid template file missing
+# Liquid template file missing should not crash
 inputs: 
   docfx.yml: |
     output:
       json: false
   docs/a.md: Hello `docfx`! 
 outputs: 
-  .errors.log: |
-    ["error","liquid-template-missing","The liquid template '.html.liquid' is missing","docs/a.md"]
+  docs/a/index.html:

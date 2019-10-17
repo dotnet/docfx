@@ -585,13 +585,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
 
         /// <summary>
-        /// The liquid template file can not be found from the build resource
-        /// </summary>
-        /// Behavior: ❌ Message: ❌
-        public static Error LiquidTemplateMissing(string file)
-            => new Error(ErrorLevel.Error, "liquid-template-missing", $"The liquid template '{file}' is missing");
-
-        /// <summary>
         /// Custom 404 page is not supported
         /// Example:
         ///   - user want their 404.md to be built and shown as their 404 page of the website.

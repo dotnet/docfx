@@ -111,8 +111,7 @@ namespace Microsoft.Docs.Build
                 return (errors, templateModel, SortProperties(templateMetadata));
             }
 
-            var (error, html) = context.TemplateEngine.RunLiquid(file, templateModel);
-            errors.AddIfNotNull(error);
+            var html = context.TemplateEngine.RunLiquid(file, templateModel);
             return (errors, html, SortProperties(templateMetadata));
 
             JObject SortProperties(JObject obj)
