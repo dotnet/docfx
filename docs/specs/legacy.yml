@@ -484,3 +484,14 @@ outputs:
         <a data-linktype='external' href='https://github.com'></a>
         <img data-linktype='external' src='https://docs.com'></img>
         <p><a data-linktype='relative-path' href='a'></a></p>" }
+---
+# The site base path is empty.
+legacy: true
+inputs:
+  docfx.yml:
+  index.md:
+outputs:
+  index.mta.json:
+  index.raw.page.json:
+  .manifest.json: |
+    {"files":[{"asset_id":"index","original":"index.md","source_relative_path":"index.md","original_type":"Conceptual","type":"Content"}]}
