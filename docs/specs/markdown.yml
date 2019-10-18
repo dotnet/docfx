@@ -624,3 +624,12 @@ outputs:
     { 
       "conceptual": "<img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\">",
     }
+---
+# Liquid template file missing should not crash
+inputs: 
+  docfx.yml: |
+    output:
+      json: false
+  docs/a.md: Hello `docfx`! 
+outputs: 
+  docs/a/index.html:
