@@ -253,20 +253,17 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaValidationErrors);
 
             // transform model via json schema
-            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
-            errors.AddRange(schemaTransformError);
-            var pageModel = (JObject)transformedToken;
-
             if (file.IsPage)
             {
                 // transform metadata via json schema
                 var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-                var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(
-                    file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
+                obj["metadata"] = inputMetadata.RawJObject;
                 errors.AddRange(metadataErrors);
-                errors.AddRange(metadataTransformedErrors);
-                pageModel["metadata"] = ((JObject)transformedMetadata)["metadata"];
             }
+
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
+            errors.AddRange(schemaTransformError);
+            var pageModel = (JObject)transformedToken;
 
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
