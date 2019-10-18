@@ -18,12 +18,11 @@ namespace Microsoft.Docs.Build
 
             // enable pdf
             var outputPath = file.GetOutputPath(model.Metadata.Monikers, isPage: false);
+            var monikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers);
 
             if (file.Docset.Config.Output.Pdf)
             {
-                var siteBasePath = file.Docset.SiteBasePath;
-                var relativePath = Path.GetRelativePath(string.IsNullOrEmpty(siteBasePath) ? "." : siteBasePath, LegacyUtility.ChangeExtension(outputPath, ".pdf"));
-                model.Metadata.PdfAbsolutePath = PathUtility.NormalizeFile(Path.Combine("/", siteBasePath, "opbuildpdf", relativePath));
+                model.Metadata.PdfAbsolutePath = "/" + UrlUtility.Combine(file.Docset.SiteBasePath, "opbuildpdf", monikerGroup, LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
             // TODO: Add experimental and experiment_id to publish item
@@ -34,7 +33,7 @@ namespace Microsoft.Docs.Build
                 SourcePath = file.FilePath.Path,
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
-                MonikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers),
+                MonikerGroup = monikerGroup,
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem))
