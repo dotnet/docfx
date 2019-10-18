@@ -42,18 +42,11 @@ namespace Microsoft.Docs.Build
                 new Lazy<Template>(() =>
                 {
                     var fileName = $"{templateName}.html.liquid";
-                    try
+                    if (!File.Exists(Path.Combine(_templateDir, fileName)))
                     {
-                        return LoadTemplate(Path.Combine(_templateDir, fileName));
+                        return null;
                     }
-                    catch (Exception ex)
-                    {
-                        if (ex is DirectoryNotFoundException || ex is FileNotFoundException)
-                        {
-                            return null;
-                        }
-                        throw;
-                    }
+                    return LoadTemplate(Path.Combine(_templateDir, fileName));
                 })).Value;
 
             // if liquid template not found, return the json
@@ -141,18 +134,7 @@ namespace Microsoft.Docs.Build
             {
                 return _templates.GetOrAdd(
                     templateName,
-                    new Lazy<Template>(() =>
-                        {
-                            try
-                            {
-                                return LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid"));
-                            }
-                            catch (Exception e)
-                            {
-                                context.Errors.Add(e);
-                            }
-                            return null;
-                        })).Value;
+                    new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid")))).Value;
             }
         }
     }
