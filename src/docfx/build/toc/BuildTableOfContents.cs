@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -20,8 +21,9 @@ namespace Microsoft.Docs.Build
 
             if (file.Docset.Config.Output.Pdf)
             {
-                model.Metadata.PdfAbsolutePath = "/" + UrlUtility.Combine(
-                    file.Docset.SiteBasePath, "opbuildpdf", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
+                var siteBasePath = file.Docset.SiteBasePath;
+                var relativePath = Path.GetRelativePath(string.IsNullOrEmpty(siteBasePath) ? "." : siteBasePath, LegacyUtility.ChangeExtension(outputPath, ".pdf"));
+                model.Metadata.PdfAbsolutePath = PathUtility.NormalizeFile(Path.Combine("/", siteBasePath, "opbuildpdf", relativePath));
             }
 
             // TODO: Add experimental and experiment_id to publish item
