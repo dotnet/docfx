@@ -609,6 +609,22 @@ outputs:
                      </p>"
     }
 ---
+# Triple colon markdown extension
+inputs:
+  docfx.yml:
+  docs/a.png:
+  docs/b.png:
+  docs/a.md: |
+    :::image type="content" source="a.png" alt-text="Image":::
+    :::image type="content" source="~/docs/b.png" alt-text="Image":::
+outputs:
+  docs/a.png:
+  docs/b.png:
+  docs/a.json: |
+    { 
+      "conceptual": "<img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\">",
+    }
+---
 # Liquid template file missing should not crash
 inputs: 
   docfx.yml: |
