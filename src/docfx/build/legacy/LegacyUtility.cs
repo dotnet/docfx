@@ -8,11 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static string ToLegacyPathRelativeToBasePath(this Document doc, Docset docset)
-        {
-            return PathUtility.NormalizeFile(Path.GetRelativePath(docset.Config.DocumentId.SourceBasePath, doc.FilePath.Path));
-        }
-
         public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
