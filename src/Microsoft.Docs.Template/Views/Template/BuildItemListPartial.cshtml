@@ -155,6 +155,10 @@ else if (Model.Style == "cards")
                                                         <img alt="@listItem?.Image?.Alt" src="@listItem?.Image?.Src">
                                                     </a>
                                                 }
+                                                else if(!string.IsNullOrEmpty(listItem?.Image?.Src))
+                                                {
+                                                    <img alt="@listItem?.Image?.Alt" src="@listItem?.Image?.Src">
+                                                }
                                             </div>
                                         </div>
                                     }
