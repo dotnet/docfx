@@ -405,9 +405,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             var renderer = xref.TemplatePath == null ? null : _rendererLoader.Load(xref.TemplatePath);
-            var convertedNode = xref.ConvertToHtmlNode(language, renderer);
+            var (convertedNode, resolved) = xref.ConvertToHtmlNode(language, renderer);
             node.ParentNode.ReplaceChild(convertedNode, node);
-            var resolved = xrefSpec != null;
             var warn = xrefSpec == null && xref.ThrowIfNotResolved;
             return (resolved, warn);
         }
