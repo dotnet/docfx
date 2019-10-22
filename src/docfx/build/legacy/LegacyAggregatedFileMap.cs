@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                     type = fileMapItem.Type,
                 };
 
-                aggregatedFileMapItems.Add((legacyFilePathRelativeToBaseFolder,aggregatedFileMapItem));
+                aggregatedFileMapItems.Add((legacyFilePathRelativeToBaseFolder, aggregatedFileMapItem));
             }
 
             context.Output.WriteJson(
