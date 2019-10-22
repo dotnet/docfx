@@ -8,12 +8,13 @@ namespace Microsoft.Docs.Build
 {
     internal class Output
     {
-        private readonly string _outputPath;
         private readonly Input _input;
+
+        public string OutputPath { get; }
 
         public Output(string outputPath, Input input)
         {
-            _outputPath = Path.GetFullPath(outputPath);
+            OutputPath = Path.GetFullPath(outputPath);
             _input = input;
         }
 
@@ -62,7 +63,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+            var destinationPath = Path.Combine(OutputPath, destRelativePath);
 
             if (File.Exists(destinationPath))
             {
@@ -83,7 +84,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
-            var destinationPath = Path.Combine(_outputPath, destRelativePath);
+            var destinationPath = Path.Combine(OutputPath, destRelativePath);
 
             PathUtility.CreateDirectoryFromFilePath(destinationPath);
 

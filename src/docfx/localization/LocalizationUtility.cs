@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(locRemote, locBranch), false);
+                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(locRemote, locBranch), false);
                         localizationDocsetPath = locRepoPath;
                         localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
                         break;
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                         {
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
-                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
+                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "_localization", locale);
                         localizationRepository = docset.Repository;
                         break;
                     }
@@ -155,16 +155,16 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static PackageUrl GetLocalizedTheme(PackageUrl theme, string locale, string defaultLocale)
+        public static PackagePath GetLocalizedTheme(PackagePath theme, string locale, string defaultLocale)
         {
             switch (theme.Type)
             {
                 case PackageType.Folder:
-                    return new PackageUrl(
+                    return new PackagePath(
                         GetLocalizationName(LocalizationMapping.Repository, theme.Path, locale, defaultLocale));
 
                 case PackageType.Git:
-                    return new PackageUrl(
+                    return new PackagePath(
                         GetLocalizationName(LocalizationMapping.Repository, theme.Url, locale, defaultLocale),
                         theme.Branch);
 

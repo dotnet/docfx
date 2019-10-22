@@ -66,7 +66,6 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (path, redirectUrl) in items)
                 {
-                    // TODO: ensure `SourceInfo<T>` is always not null
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                     {
                         errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
@@ -152,9 +151,9 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     List<Document> candidates;
-                    if (!redirectionSourceMonikers.Any())
+                    if (redirectionSourceMonikers.Count == 0)
                     {
-                        candidates = docs.Where(doc => !monikerProvider.GetFileLevelMonikers(doc).monikers.Any()).ToList();
+                        candidates = docs.Where(doc => monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList();
                     }
                     else
                     {

@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
                     new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
                 };
 
-                var dictionaryBuilder = new DictionaryBuilder<string, List<string>>();
-                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, List<string> monikers)>();
+                var dictionaryBuilder = new DictionaryBuilder<string, IReadOnlyList<string>>();
+                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, IReadOnlyList<string> monikers)>();
                 Parallel.ForEach(fileManifests, fileManifest =>
                     {
                         var document = fileManifest.Key;
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                             };
                             if (!docset.Config.Output.CopyResources)
                             {
-                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.Path));
+                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.GetPathToOrigin()));
                             }
                             output.ResourceOutput = resourceOutput;
                         }

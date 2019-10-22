@@ -10,7 +10,7 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyResolver
+    internal class LinkResolver
     {
         private readonly Input _input;
         private readonly Docset _docset;
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
 
-        public DependencyResolver(
+        public LinkResolver(
             Docset docset,
             Docset fallbackDocset,
             Dictionary<string, Docset> dependencies,

@@ -2,8 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Markdig;
 using Markdig.Helpers;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -35,6 +38,19 @@ namespace Microsoft.Docs.Build
                     else if (node is HtmlInline inline)
                     {
                         inline.Tag = ResolveLinks(inline.Tag, inline);
+                    }
+                    else if (node is TripleColonBlock tripleColonBlock && tripleColonBlock.Extension is ImageExtension)
+                    {
+                        var blockProperties = tripleColonBlock.GetAttributes().Properties;
+                        for (var i = 0; i < blockProperties.Count; i++)
+                        {
+                            if (blockProperties[i].Key == "src")
+                            {
+                                var href = new SourceInfo<string>(blockProperties[i].Value, tripleColonBlock.ToSourceInfo());
+                                blockProperties[i] = new KeyValuePair<string, string>("src", getLink(href) ?? href);
+                                break;
+                            }
+                        }
                     }
                     return false;
                 });

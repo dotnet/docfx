@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,41 +12,74 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
+        public static Task Run(string workingDirectory, CommandLineOptions options)
         {
-            // load and trace entry repository
-            var repositoryProvider = new RepositoryProvider(docsetPath, options);
-            var repository = repositoryProvider.GetRepository(FileOrigin.Default);
-            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-            var locale = LocalizationUtility.GetLocale(repository, options);
-
-            using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
+            var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
+            if (docsets.Length == 0)
             {
-                // load configuration from current docset and fallback docset
-                var input = new Input(docsetPath, repositoryProvider);
-                var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
+                ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
+                return Task.CompletedTask;
+            }
 
-                repositoryProvider.ConfigRestoreMap(restoreGitMap);
-                var (errors, config) = configLoader.Load(options, extend: true);
+            return Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
+        }
 
-                errorLog.Configure(config);
+        private static async Task BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        {
+            List<Error> errors;
+            Config config = null;
 
-                // just return if config loading has errors
-                if (errorLog.Write(errors))
-                    return;
+            using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
+            {
+                var stopwatch = Stopwatch.StartNew();
 
-                // get docsets(build docset, fallback docset and dependency docsets)
-                repositoryProvider.Config(config);
-                var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider, restoreGitMap);
-                if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
+                try
                 {
-                    // entry docset is not the docset to build
-                    input = new Input(docset.DocsetPath, repositoryProvider);
-                }
-                var dependencyDocsets = LoadDependencies(docset, repositoryProvider);
+                    // load and trace entry repository
+                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
+                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+                    var locale = LocalizationUtility.GetLocale(repository, options);
 
-                // run build based on docsets
-                await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, Path.Combine(docsetPath, docset.Config.Output.Path), input, repositoryProvider);
+                    using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
+                    {
+                        // load configuration from current docset and fallback docset
+                        var input = new Input(docsetPath, repositoryProvider);
+                        var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
+
+                        repositoryProvider.ConfigRestoreMap(restoreGitMap);
+                        (errors, config) = configLoader.Load(options, extend: true);
+
+                        // just return if config loading has errors
+                        if (errorLog.Write(errors))
+                            return;
+
+                        // get docsets(build docset, fallback docset and dependency docsets)
+                        repositoryProvider.Config(config);
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider, restoreGitMap);
+                        if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
+                        {
+                            // entry docset is not the docset to build
+                            input = new Input(docset.DocsetPath, repositoryProvider);
+                        }
+                        var dependencyDocsets = LoadDependencies(docset, repositoryProvider);
+
+                        // run build based on docsets
+                        outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);
+                        await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, input, repositoryProvider);
+                    }
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    Log.Write(dex);
+                    errorLog.Write(dex.Error, isException: true);
+                }
+                finally
+                {
+                    Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
+                    Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                    errorLog.PrintSummary();
+                }
             }
         }
 

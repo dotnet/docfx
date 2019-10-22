@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         public readonly GitCommitProvider GitCommitProvider;
         public readonly BookmarkValidator BookmarkValidator;
         public readonly DependencyMapBuilder DependencyMapBuilder;
-        public readonly DependencyResolver DependencyResolver;
+        public readonly LinkResolver LinkResolver;
         public readonly XrefResolver XrefResolver;
         public readonly GitHubUserCache GitHubUserCache;
         public readonly MicrosoftGraphCache MicrosoftGraphCache;
@@ -59,13 +59,13 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
-            PublishModelBuilder = new PublishModelBuilder();
+            PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);
             XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
 
-            DependencyResolver = new DependencyResolver(
+            LinkResolver = new LinkResolver(
                 docset,
                 fallbackDocset,
                 dependencyDocsets.
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, Input, RestoreFileMap, DependencyResolver, XrefResolver, MonikerProvider, TemplateEngine);
+            MarkdownEngine = new MarkdownEngine(Config, Input, RestoreFileMap, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
         }
 
         public void Dispose()

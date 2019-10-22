@@ -27,6 +27,22 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("", "", "")]
+        [InlineData("/", "", "")]
+        [InlineData("/a", "", "a")]
+        [InlineData("https://github.com", "https://github.com", "")]
+        [InlineData("https://github.com/", "https://github.com", "")]
+        [InlineData("https://github.com/a", "https://github.com", "a")]
+        [InlineData("https://github.com/a/b", "https://github.com", "a/b")]
+        public static void SplitBaseUrl(string url, string host, string basePath)
+        {
+            var (ahost, abasePath) = UrlUtility.SplitBaseUrl(url);
+
+            Assert.Equal(host, ahost);
+            Assert.Equal(basePath, abasePath);
+        }
+
+        [Theory]
         [InlineData("", "", "", "")]
         [InlineData("", "?b", "#c", "?b#c")]
         [InlineData("a", "?b=1", "#c", "a?b=1#c")]

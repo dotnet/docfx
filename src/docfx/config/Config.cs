@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public static readonly string[] DefaultExclude = new[]
         {
             "_site/**",             // Default output location
-            "localization/**",      // Localization file when using folder convention
+            "_localization/**",     // Localization file when using folder convention
             "_themes/**",           // Default template location
         };
 
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, DependencyPackageUrl> Dependencies = new Dictionary<string, DependencyPackageUrl>(PathUtility.PathComparer);
+        public readonly Dictionary<string, DependencyConfig> Dependencies = new Dictionary<string, DependencyConfig>(PathUtility.PathComparer);
 
         /// <summary>
         /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly PackageUrl Template = new PackageUrl();
+        public readonly PackagePath Template = new PackagePath();
 
         /// <summary>
         /// Gets the dependency lock file path
