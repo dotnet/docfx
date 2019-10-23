@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     internal partial class YamlUtility
     {
         internal static JToken ToJToken(
-            TextReader input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
+            string input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
         {
             return ToJToken(new StringReader(input), onKeyDuplicate, onConvert);
         }
