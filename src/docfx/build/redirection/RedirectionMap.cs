@@ -66,7 +66,6 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (path, redirectUrl) in items)
                 {
-                    // TODO: ensure `SourceInfo<T>` is always not null
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                     {
                         errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));

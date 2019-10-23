@@ -16,6 +16,12 @@ namespace Microsoft.Docs.Build
         internal static JToken ToJToken(
             TextReader input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
         {
+            return ToJToken(new StringReader(input), onKeyDuplicate, onConvert);
+        }
+
+        internal static JToken ToJToken(
+            TextReader input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
+        {
             JToken result = null;
 
             onKeyDuplicate = onKeyDuplicate ?? (_ => { });
