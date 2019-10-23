@@ -223,7 +223,11 @@ repos:
     - files:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md","original_content_git_url":"https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md", "gitcommit":"https://github.com/c/contribution1.zh-cn/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"}
+    { 
+      "content_git_url":"https://github.com/contribution/a/blob/master3/_localization/zh-cn/docs/a.md",
+      "original_content_git_url":"https://github.com/contribution/a/blob/master3/_localization/zh-cn/docs/a.md",
+      "gitcommit": "https://github.com/contribution/a/blob/661dc2d3c446f976291d34241c0ebd85bf326dd5/_localization/zh-cn/docs/a.md"
+    }
 ---
 # loc file contributor info 3
 # [branch mapping]
@@ -1154,6 +1158,7 @@ outputs:
 ---
 # fallback to master if corresponding source branch doesn't exists
 # [branch mapping]
+locale: zh-cn
 repos:
   https://docs.com/branch-fallback3.loc#test.zh-cn:
     - files:

@@ -33,8 +33,8 @@ Below kinds of mappings are considered to be supported and there is a **strong c
   - **Folder**, localization files are stored in the **same repository** with source files but under different **locale folder**
     ```txt
     source file         -->         localization files
-    /readme.md          -->         /localization/zh-cn/readme.md
-    /files/a.md         -->         /localization/de-de/files/a.md
+    /readme.md          -->         /_localization/zh-cn/readme.md
+    /files/a.md         -->         /_localization/de-de/files/a.md
     ```
   - **Repository**, localization files are stored in an **independent repository** per locale but keep the **same folder structure**
       
@@ -46,25 +46,6 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     source repo       ->locale->      localization repo
     dotnet/docfx        zh-cn         dotnet/docfx.zh-cn
     dotnet/docfx        de-de         dotnet/docfx.de-de
-    ```
-    
-    > NOTE: The loc org name can be different, it should be configurable
-    
-  - **RepositoryAndFolder**, localization files are stored in ONE **different repository** for **all locales** under different **locale folder**
-  
-    Here is an string convention for loc repo name:
-    
-      - `{source-repo-name}` -> `{source-repo-name}.loc`
-  
-    ```txt
-    repo mapping example:
-    source repo       ->locale->      localization repo
-    dotnet/docfx        zh-cn         dotnet/docfx.loc
-    dotnet/docfx        de-de         dotnet/docfx.loc
-    folder mapping example:
-    source repo         -->           localization repo
-    /readme.md          -->           /zh-cn/readme.md
-    /files/a.md         -->           /zh-cn/files/a.md
     ```
     
     > NOTE: The loc org name can be different, it should be configurable

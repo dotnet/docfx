@@ -39,7 +39,19 @@ namespace Microsoft.Docs.Build
         {
             var template = _templates.GetOrAdd(
                 templateName,
-                new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, templateName + ".html.liquid")))).Value;
+                new Lazy<Template>(() =>
+                {
+                    var fileName = $"{templateName}.html.liquid";
+                    if (!File.Exists(Path.Combine(_templateDir, fileName)))
+                    {
+                        return null;
+                    }
+                    return LoadTemplate(Path.Combine(_templateDir, fileName));
+                })).Value;
+
+            // if liquid template not found, return the json
+            if (template is null)
+                return JsonUtility.Serialize(model);
 
             var registers = new Hash
             {

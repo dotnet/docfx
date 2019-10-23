@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
                 {
-                    var (yamlErrors, token) = YamlUtility.Parse(file, context);
+                    var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
                     errors.AddRange(yamlErrors);
                     var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
                     errors.AddRange(schemaErrors);
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
                 {
-                    var (jsonErrors, token) = JsonUtility.Parse(file, context);
+                    var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
                     errors.AddRange(jsonErrors);
                     var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
                     errors.AddRange(schemaErrors);

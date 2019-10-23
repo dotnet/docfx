@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,6 +17,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _docsetPath;
         private readonly RepositoryProvider _repositoryProvider;
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
         public Input(string docsetPath, RepositoryProvider repositoryProvider)
@@ -75,6 +79,34 @@ namespace Microsoft.Docs.Build
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        /// <summary>
+        /// Reads the specified file as JSON.
+        /// </summary>
+        public (List<Error> errors, JToken token) ReadJson(FilePath file)
+        {
+            return _jsonTokenCache.GetOrAdd(file, path =>
+            {
+                using (var reader = ReadText(path))
+                {
+                    return JsonUtility.Parse(reader, path);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Reads the specified file as YAML.
+        /// </summary>
+        public (List<Error> errors, JToken token) ReadYaml(FilePath file)
+        {
+            return _yamlTokenCache.GetOrAdd(file, path =>
+            {
+                using (var reader = ReadText(path))
+                {
+                    return YamlUtility.Parse(reader, path);
+                }
+            });
         }
 
         /// <summary>

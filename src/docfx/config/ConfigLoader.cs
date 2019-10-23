@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -18,11 +19,44 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly RepositoryProvider _repositoryProvider;
 
+        /// <summary>
+        /// Since we currently do not support multiple docsets for localized repos without config,
+        /// this hack makes test happy.
+        /// </summary>
+        internal static Func<bool> DisableMultipleDocsets;
+
         public ConfigLoader(string docsetPath, Input input, RepositoryProvider repositoryProvider)
         {
             _docsetPath = docsetPath;
             _input = input;
             _repositoryProvider = repositoryProvider;
+        }
+
+        public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
+        {
+            if (DisableMultipleDocsets != null && DisableMultipleDocsets())
+            {
+                return new[] { (workingDirectory, options.Output) };
+            }
+
+            if (!Directory.Exists(workingDirectory))
+            {
+                return Array.Empty<(string, string)>();
+            }
+
+            return Directory.GetFiles(workingDirectory, "docfx.yml", SearchOption.AllDirectories)
+
+                // TODO: look for docfx.json after config migration tool has been merged info docfx
+                // .Concat(Directory.GetFiles(workingDirectory, "docfx.json", SearchOption.AllDirectories))
+                .Select(file => Path.GetDirectoryName(file))
+                .Distinct()
+                .Select(docsetPath =>
+                {
+                    var docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath);
+                    var outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder);
+                    return (docsetPath, outputPath);
+                })
+                .ToArray();
         }
 
         /// <summary>

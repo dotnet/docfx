@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                         {
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
-                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "localization", locale);
+                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "_localization", locale);
                         localizationRepository = docset.Repository;
                         break;
                     }

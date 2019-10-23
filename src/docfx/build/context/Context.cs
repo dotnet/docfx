@@ -54,12 +54,12 @@ namespace Microsoft.Docs.Build
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
+            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
             BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
-            PublishModelBuilder = new PublishModelBuilder();
+            PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog);
