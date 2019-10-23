@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                t_disableMultipleDocsets.Value = spec.Locale != null;
+                t_disableMultipleDocsets.Value = spec.Locale != null && !spec.EnableMultipleDocSetForLocalization;
                 t_repos.Value = repos;
                 t_cachePath.Value = cachePath;
                 t_statePath.Value = statePath;
