@@ -100,10 +100,12 @@ namespace Microsoft.Docs.Build
                 }
 
                 // todo: get localization repository from repository provider
+                var docsetSourceFolder = Path.GetRelativePath(currentDocset.Repository.Path, currentDocset.DocsetPath);
                 if (LocalizationUtility.TryGetLocalizationDocset(
                     restoreGitMap,
                     currentDocset,
                     config,
+                    docsetSourceFolder,
                     currentDocset.Locale,
                     out var localizationDocset,
                     out var localizationRepository))
