@@ -68,6 +68,11 @@ namespace Microsoft.Docs.Build
             _docsetRepository = localizationRepository;
         }
 
+        public void ConfigFallbackDocsetPath(string docsetPath)
+        {
+            _fallbackDocsetPath = docsetPath;
+        }
+
         public Repository GetRepository(FileOrigin origin, string dependencyName = null)
         {
             return GetRepositoryWithEntry(origin, dependencyName).repository;

@@ -142,8 +142,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Verify build from localization docset also work
-            // TODO: support multiple docset for building from localization docset
-            if (spec.Locale != null && !spec.EnableMultipleDocSetForLocalization)
+            if (spec.Locale != null)
             {
                 var locDocsetPath = t_repos.Value.FirstOrDefault(
                     repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
