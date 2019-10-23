@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             Cache = new Cache(Input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Input, Cache, MicrosoftGraphCache, restoreFileMap);
+            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
             BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
