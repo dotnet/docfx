@@ -59,7 +59,10 @@ namespace Microsoft.Docs.Build
                         var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider, restoreGitMap);
 
                         // TODO: clean up all the RepositoryProvider config methods
-                        repositoryProvider.ConfigFallbackDocsetPath(fallbackDocset.DocsetPath);
+                        if (fallbackDocset != null)
+                        {
+                            repositoryProvider.ConfigFallbackDocsetPath(fallbackDocset.DocsetPath);
+                        }
 
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
                         {
