@@ -71,5 +71,11 @@ monikerDefinition: {url}");
             Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
             Assert.NotEqual("1", File.ReadAllText(filePath));
         }
+
+        [Fact]
+        public static async Task RestoreAgainstFileShouldNotCrash()
+        {
+            await Docfx.Run(new [] { "restore", "docfx.Test.dll" });
+        }
     }
 }

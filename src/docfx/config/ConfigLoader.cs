@@ -39,6 +39,11 @@ namespace Microsoft.Docs.Build
                 return new[] { (workingDirectory, options.Output) };
             }
 
+            if (!Directory.Exists(workingDirectory))
+            {
+                return Array.Empty<(string, string)>();
+            }
+
             return Directory.GetFiles(workingDirectory, "docfx.yml", SearchOption.AllDirectories)
 
                 // TODO: look for docfx.json after config migration tool has been merged info docfx
