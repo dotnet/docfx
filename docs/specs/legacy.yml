@@ -433,6 +433,7 @@ repos:
           ---
   https://docs.com/error-from-source-legacy.zh-cn#test:
     - files:
+        docfx.yml:
         docs/a.md: |
           @a
 outputs:
