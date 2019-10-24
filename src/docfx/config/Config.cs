@@ -196,8 +196,8 @@ namespace Microsoft.Docs.Build
         public readonly PackagePath Template = new PackagePath();
 
         /// <summary>
-        /// Gets the dependency lock file path
-        /// It should be absolute url or absolute/relative path
+        /// Gets the dependency lock file path.
+        /// It is an absolute file path or relative file path relative to docset folder.
         /// </summary>
         public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
 

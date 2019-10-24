@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                     await RestoreFile.Restore(restoreUrls, extendedConfig);
 
                     // restore git repos includes dependency repos, theme repo and loc repos
-                    var restoreDependencyResults = RestoreGit.Restore(extendedConfig, locale, repository, DependencyLockProvider.CreateFromConfig(input, extendedConfig));
+                    var restoreDependencyResults = RestoreGit.Restore(extendedConfig, locale, repository, DependencyLockProvider.CreateFromConfig(docsetPath, extendedConfig));
 
                     // save dependency lock
                     var restoredGitLock = new List<DependencyGitLock>();
