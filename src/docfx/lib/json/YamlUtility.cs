@@ -58,19 +58,22 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string input, FilePath file)
         {
-            var (_, token) = ParseAsJToken(input, file);
+            var (_, token) = ParseAsJToken(new StringReader(input), file);
             return token.ToObject<T>(JsonUtility.Serializer);
         }
-
-        /// <summary>
-        /// Deserialize from a YAML file, get from or add to cache
-        /// </summary>
-        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadYamlFile(file);
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
         public static (List<Error>, JToken) Parse(string input, FilePath file)
+        {
+            return Parse(new StringReader(input), file);
+        }
+
+        /// <summary>
+        /// Deserialize to JToken from string
+        /// </summary>
+        public static (List<Error>, JToken) Parse(TextReader input, FilePath file)
         {
             var (errors, token) = ParseAsJToken(input, file);
             var (nullErrors, result) = token.RemoveNulls();
@@ -91,7 +94,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static (List<Error>, JToken) ParseAsJToken(string input, FilePath file)
+        private static (List<Error>, JToken) ParseAsJToken(TextReader input, FilePath file)
         {
             try
             {

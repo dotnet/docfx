@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     public class DocfxTestSpec
     {
+        public bool EnableMultipleDocSetForLocalization { get; set; }
+
         public string OS { get; set; }
 
         public string Cwd { get; set; }
