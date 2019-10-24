@@ -61,16 +61,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             base.Dispose();
         }
 
-        [Fact]
-        public void ProcessMarkdownResultWithEncodedUrlShouldSucceed()
+        [Theory]
+        [InlineData(@"<p><a href=""%7E/docs/csharp/language-reference/keywords/select-clause.md""></p>", "~/docs/csharp/language-reference/keywords/select-clause.md")]
+        [InlineData(@"<p><a href=""%7E/../samples/readme.md""></p>", "~/../samples/readme.md")]
+        public void ProcessMarkdownResultWithEncodedUrlShouldSucceed(string htmlContent, string expectedFileLink)
         {
             var markdownResult = new MarkupResult
             {
-                Html = @"<p><a href=""%7E/docs/csharp/language-reference/keywords/select-clause.md""></p>"
+                Html = htmlContent
             };
 
             markdownResult = MarkupUtility.Parse(markdownResult, "docs/framework/data/wcf/how-to-project-query-results-wcf-data-services.md", ImmutableDictionary.Create<string, FileAndType>());
-            Assert.Equal("~/docs/csharp/language-reference/keywords/select-clause.md", markdownResult.LinkToFiles.First());
+            Assert.Equal(expectedFileLink, markdownResult.LinkToFiles.First());
         }
 
         [Fact]
