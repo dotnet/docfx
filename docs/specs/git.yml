@@ -371,6 +371,9 @@ repos:
             bilingual: true
   https://github.com/git/repo.zh-cn#live-sxs:
     - files:
+        docfx.yml: |
+          localization:
+            bilingual: true
         a.md:
   https://github.com/git/repo.zh-cn#live-none-existing:
     - files:
