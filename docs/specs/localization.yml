@@ -1185,24 +1185,19 @@ outputs:
   b.json:
 ---
 # Loc with not repo root config
-enableMultipleDocSetForLocalization: true
 locale: zh-cn
 repos:
-  https://docs.com/config-not-root#test:
-    - files:
-        docs/docfx.yml:
-        docs/c/b.md: |
-          test
-  https://docs.com/config-not-root#master:
-    - files:
-        docs/docfx.yml:
-        docs/c/b.md: |
-          master
   https://docs.com/config-not-root.zh-cn#test:
     - files:
         docs/docfx.yml:
         docs/a.md: |
           [!include[](./c/b.md)]
+  https://docs.com/config-not-root#test:
+    - files:
+        docs/c/b.md: test
+  https://docs.com/config-not-root#master:
+    - files:
+        docs/c/b.md: master
 outputs:
   docs/a.json: |
     { "conceptual":"<p>test</p>"}
