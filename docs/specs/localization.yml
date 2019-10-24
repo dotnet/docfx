@@ -12,6 +12,9 @@ repos:
         docs/child.md:
   https://docs.com/restore1.zh-cn#master:
     - files:
+        docfx.yml: |
+          dependencies:
+            restore-child: https://docs.com/restore-child1#child
         docs/loc.md: |
           [link to restore-child](~/restore-child/docs/child.md)
 outputs:
@@ -32,6 +35,9 @@ repos:
             restore-child: https://docs.com/restore-child2#child
   https://docs.com/restore2.zh-cn#master-sxs:
     - files:
+        docfx.yml: |
+          dependencies:
+            restore-child: https://docs.com/restore-child2#child
         docs/loc.md: |
           [link to restore-child](~/restore-child/docs/child.md)
   https://docs.com/restore2.zh-cn#master:
@@ -56,6 +62,7 @@ repos:
             mapping: Branch
   https://docs.com/restore3.loc#master.zh-cn:
     - files:
+        docfx.yml:
         docs/dep.md: loc-DEP
 outputs:
   docs/dep.json:
@@ -72,6 +79,7 @@ repos:
             bilingual: true
   https://docs.com/restore4.loc#master-sxs.zh-cn:
     - files:
+        docfx.yml:
         docs/dep.md: loc-DEP-sxs
   https://docs.com/restore4.loc#master.zh-cn:
     - files:
@@ -94,6 +102,10 @@ repos:
           { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
   https://github.com/d/restore5.zh-cn#master:
     - files:
+        docfx.yml: |
+          xref: xrefmap.json
+          dependencies:
+            child1: https://docs.com/d/restore5
         a.md: |
           @System.String [!include[](~/child1/d.md)]
   https://docs.com/d/restore5:
@@ -120,6 +132,10 @@ repos:
           { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
   https://github.com/d/restore6.loc#master-sxs.zh-cn:
     - files:
+        docfx.yml: |
+          xref: xrefmap.json
+          dependencies:
+            child1: https://docs.com/d/restore6
         a.md: |
           @System.String [!include[](~/child1/d.md)]
   https://github.com/d/restore6.loc#master.zh-cn:
@@ -143,6 +159,9 @@ repos:
             repository: https://github.com/dotnet/docfx
   https://docfx.com/edit-url1.zh-cn#live:
     - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -161,6 +180,11 @@ repos:
             repository: https://github.com/dotnet/docfx
   https://docfx.com/edit-url2.loc#live.zh-cn:
     - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+          contribution:
+            repository: https://github.com/dotnet/docfx
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -177,6 +201,9 @@ repos:
             repository: https://github.com/dotnet/docfx.en-us
   https://docfx.com/edit-url3.zh-cn#live:
     - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx.en-us
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -196,6 +223,11 @@ repos:
             mapping: Branch
   https://docfx.com/edit-url4.loc#live.zh-cn:
     - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx
+          localization:
+            mapping: Branch
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -233,6 +265,11 @@ repos:
             mapping: Branch
   https://docfx.com/edit-url5.loc#live-sxs.zh-cn:
     - files:
+        docfx.yml: |
+          contribution:
+            repository: https://github.com/dotnet/docfx#master
+          localization:
+            mapping: Branch
         docs/a.md:
   https://docfx.com/edit-url5.loc#live.zh-cn:
     - files:
@@ -250,10 +287,15 @@ repos:
         docfx.yml:
   https://github.com/c/contribution1.zh-cn#master:
     - files:
+        docfx.yml:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md","original_content_git_url":"https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md", "gitcommit":"https://github.com/c/contribution1.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    {
+      "content_git_url": "https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md",
+      "original_content_git_url": "https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md",
+      "gitcommit": "https://github.com/c/contribution1.zh-cn/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
+    }
 ---
 # loc file contributor info 2
 # [folder mapping]
@@ -284,10 +326,15 @@ repos:
             mapping: Branch
   https://github.com/c/contribution3.loc#master.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md","original_content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md", "gitcommit":"https://github.com/c/contribution3.loc/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    {
+      "content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md",
+      "original_content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md",
+      "gitcommit":"https://github.com/c/contribution3.loc/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
+    }
 ---
 # loc file contributor info 4
 # [repository mapping] & bilingual
@@ -300,13 +347,18 @@ repos:
             bilingual: true
   https://github.com/c/contribution4.zh-cn#master-sxs:
     - files:
+        docfx.yml:
         docs/a.md:
   https://github.com/c/contribution4.zh-cn#master:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master/docs/a.md","original_content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master-sxs/docs/a.md", "gitcommit":"https://github.com/c/contribution4.zh-cn/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    {
+      "content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master/docs/a.md",
+      "original_content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master-sxs/docs/a.md",
+      "gitcommit":"https://github.com/c/contribution4.zh-cn/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
+    }
 ---
 # loc file contributor info 5
 # [branch mapping] & bilingual
@@ -320,13 +372,18 @@ repos:
             mapping: Branch
   https://github.com/c/contribution5.loc#master-sxs.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md:
   https://github.com/c/contribution5.loc#master.zh-cn:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url":"https://github.com/c/contribution5.loc/blob/master.zh-cn/docs/a.md","original_content_git_url":"https://github.com/c/contribution5.loc/blob/master-sxs.zh-cn/docs/a.md", "gitcommit":"https://github.com/c/contribution5.loc/blob/f35b220adadfe88d1d4f1b043c8dc55db491c83e/docs/a.md"}
+    {
+      "content_git_url":"https://github.com/c/contribution5.loc/blob/master.zh-cn/docs/a.md",
+      "original_content_git_url":"https://github.com/c/contribution5.loc/blob/master-sxs.zh-cn/docs/a.md",
+      "gitcommit":"https://github.com/c/contribution5.loc/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
+    }
 ---
 # loc page link and content fallback 1
 # [repository mapping]
@@ -339,6 +396,7 @@ repos:
           [link in a](a.md)
   https://docs.com/page-fallback1.zh-cn#master:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -359,6 +417,7 @@ repos:
           [link in a](a.md)
   https://docs.com/page-fallback2.loc#master.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -380,6 +439,7 @@ repos:
           [link in a](a.md)
   https://docs.com/page-fallback3.loc#master-sxs.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -400,6 +460,7 @@ repos:
         docfx.yml:
   https://docs.com/resource-fallback1.zh-cn#master:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link to b](b.png)
 outputs:
@@ -418,6 +479,7 @@ repos:
             mapping: Branch
   https://docs.com/resource-fallback2.loc#live.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link to b](b.png)
 outputs:
@@ -436,6 +498,7 @@ repos:
             bilingual: true
   https://docs.com/resource-fallback3.zh-cn#master-sxs:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link to b](b.png)
   https://docs.com/resource-fallback3.zh-cn#master:
@@ -473,6 +536,7 @@ repos:
         docfx.yml:
   https://docs.com/toc1.zh-cn#master:
     - files:
+        docfx.yml:
         docs/a.md:
         docs/b.md:
         docs/TOC.md: |
@@ -497,6 +561,7 @@ repos:
         docfx.yml:
   https://docs.com/toc2.zh-cn#master:
     - files:
+        docfx.yml:
         docs/a/TOC.md: |
           # [reference a](a.md)
         docs/b/b.md:
@@ -536,6 +601,7 @@ repos:
         docfx.yml:
   https://docs.com/xref1.zh-cn#master:
     - files:
+        docfx.yml:
         docs/a.md: |
           ---
           uid: a
@@ -577,6 +643,7 @@ repos:
         docfx.yml:
   https://docs.com/xref2.zh-cn#master:
     - files:
+        docfx.yml:
         docs/a.md: |
           ---
           uid: a
@@ -626,6 +693,8 @@ repos:
           baseUrl: https://docs.microsoft.com
   https://docs.com/metadata1.zh-cn#master:
     - files:
+        docfx.yml: |
+          baseUrl: https://docs.microsoft.com
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -643,6 +712,8 @@ repos:
             mapping: Branch
   https://docs.com/metadata2.loc#live.zh-cn:
     - files:
+        docfx.yml: |
+          baseUrl: https://docs.microsoft.com
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -675,6 +746,8 @@ repos:
             bilingual: true
   https://docs.com/metadata4.loc#master.zh-cn:
     - files:
+        docfx.yml: |
+          baseUrl: https://docs.microsoft.com
         docs/a.md:
   https://docs.com/metadata4.loc#master-sxs.zh-cn:
     - files:
@@ -697,6 +770,10 @@ repos:
             bilingual: true
   https://github.com/ss/c.zh-cn#master-sxs:
     - files:
+        docfx.yml: |
+          # TODO: should be able to figure out bilingual automatically using convention
+          localization:
+            bilingual: true
         docs/a.md: |
           sxs content
           [link to b](b.md)
@@ -727,6 +804,10 @@ repos:
          docs/a.md: abc
   https://github.com/ss/a.loc#master-sxs.zh-cn:
     - files:
+        docfx.yml: |
+           localization:
+             mapping: Branch
+             bilingual: true
         docs/a.md: |
           sxs content
           [link to b](b.md)
@@ -755,6 +836,10 @@ repos:
             bilingual: true
   https://github.com/ss/b.loc#master-sxs.zh-cn:
     - files:
+        docfx.yml: |
+          localization:
+            mapping: Branch
+            bilingual: true
         docs/a.md: a
       author: Alice
       email: alice@contoso.com
@@ -796,6 +881,9 @@ repos:
             bilingual: true
   https://github.com/bilingual/a.zh-cn#master-sxs:
     - files:
+        docfx.yml: |
+          localization:
+            bilingual: true
         docs/a.md: |
           loc sxs content
   https://github.com/bilingual/a.zh-cn#master:
@@ -804,7 +892,7 @@ repos:
           loc content
 outputs:
   docs/a.json: |
-    {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/b1990a2c68f76bcf400e766c38480834a40e80fc/docs/a.md"}
+    {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/427086f2a28561ea018e74d0d95e99ab63399cc7/docs/a.md"}
 ---
 # conflicted toc files(source and loc)
 # 1. should not report warning
@@ -818,6 +906,7 @@ repos:
         docfx.yml:
   https://github.com/conflictedtoc/a.zh-cn:
     - files:
+        docfx.yml:
         docs/a/TOC.yml: |
           - href: a.md
             name: yml reference a
@@ -845,6 +934,7 @@ repos:
       author: b
   https://github.com/deletedtoken/a.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [!include[include deleted tokena](tokena.md)]
 outputs:
@@ -867,6 +957,7 @@ repos:
       author: b
   https://github.com/deletedres/a.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link to deleted resource](resource.png)
           [link to deleted markdown doesnt work](b.md)
@@ -893,6 +984,7 @@ repos:
       author: b
   https://github.com/deletedtoc/a.zh-cn:
     - files:
+        docfx.yml:
         docs/b/TOC.yml: |
           - href: ../a/TOC.yml
             name: reference toc a
@@ -959,6 +1051,7 @@ repos:
             name: reference markdown b
   https://github.com/inclusiontoc/a.zh-cn:
     - files:
+        docfx.yml:
         docs/a/TOC.yml: |
           - href: a.md
             name: reference markdown a
@@ -983,6 +1076,8 @@ repos:
           {}
   https://github.com/buildhistory/a.zh-cn:
     - files:
+        docfx.yml: |
+          monikerDefinition: monikers.json
         docs/a.md:
 outputs:
   docs/a.json:
@@ -1192,6 +1287,7 @@ repos:
         docfx.yml:
   https://docs.com/lrm.ar-sa#master:
     - files:
+        docfx.yml:
         docs/a.md: |
           Learn c#.
 outputs:
@@ -1227,6 +1323,7 @@ repos:
           [link in a](a.md)
   https://docascode.visualstudio.com/branch/_git/a.loc#live.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -1247,6 +1344,7 @@ repos:
           [link in a](a.md)
   https://docascode.visualstudio.com/branch/_git/b.loc#live-sxs.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -1267,6 +1365,7 @@ repos:
           [link in a](a.md)
   https://docascode.visualstudio.com/repo/_git/a.zh-cn#live:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -1286,6 +1385,7 @@ repos:
           [link in a](a.md)
   https://docascode.visualstudio.com/repo/_git/b.zh-cn#live-sxs:
     - files:
+        docfx.yml:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
@@ -1305,6 +1405,7 @@ repos:
       author: a
   https://github.com/neverexist/a.zh-cn:
     - files:
+        docfx.yml:
         docs/1.md: |
           [!include[include deleted tokena](tokenx.md)]
         docs/2.md: |
@@ -1333,6 +1434,7 @@ repos:
           master
   https://docs.com/branch-fallback1.zh-cn#test:
     - files:
+        docfx.yml:
         docs/a.md: |
           [!include[](b.md)]
 outputs:
@@ -1357,6 +1459,7 @@ repos:
           master
   https://docs.com/branch-fallback2.zh-cn#test-sxs:
     - files:
+        docfx.yml:
         docs/a.md: |
           [!include[](b.md)]
   https://docs.com/branch-fallback2.zh-cn#test:
@@ -1372,11 +1475,11 @@ locale: zh-cn
 repos:
   https://docs.com/branch-fallback3.loc#test.zh-cn:
     - files:
+        docfx.yml:
         docs/a.md: |
           [!include[](b.md)]
   https://docs.com/branch-fallback3#master:
     - files:
-        docfx.yml:
         docs/b.md: master
 outputs:
   docs/a.json: |
@@ -1397,7 +1500,6 @@ outputs:
   b.json:
 ---
 # Loc with not repo root config
-enableMultipleDocSetForLocalization: true
 locale: zh-cn
 repos:
   https://docs.com/config-not-root#test:

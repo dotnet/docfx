@@ -19,12 +19,6 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly RepositoryProvider _repositoryProvider;
 
-        /// <summary>
-        /// Since we currently do not support multiple docsets for localized repos without config,
-        /// this hack makes test happy.
-        /// </summary>
-        internal static Func<bool> DisableMultipleDocsets;
-
         public ConfigLoader(string docsetPath, Input input, RepositoryProvider repositoryProvider)
         {
             _docsetPath = docsetPath;
@@ -34,11 +28,6 @@ namespace Microsoft.Docs.Build
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
         {
-            if (DisableMultipleDocsets != null && DisableMultipleDocsets())
-            {
-                return new[] { (workingDirectory, options.Output) };
-            }
-
             if (!Directory.Exists(workingDirectory))
             {
                 return Array.Empty<(string, string)>();
