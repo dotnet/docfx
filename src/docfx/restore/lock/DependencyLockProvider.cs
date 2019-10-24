@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             var fullPath = Path.Combine(docsetPath, config.DependencyLock);
             if (!File.Exists(fullPath))
             {
-                throw Errors.FileNotFound(config.DependencyLock).ToException();
+                return new DependencyLockProvider(new Dictionary<(string url, string branch), DependencyGitLock>());
             }
 
             var content = ProcessUtility.ReadFile(Path.Combine(docsetPath, config.DependencyLock));
