@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
 
             if (committish.Equals(_repository.Commit))
             {
-                Telemetry.TrackBuildCommitCount(commits.Count());
+                Telemetry.TrackBuildCommitCount(commits.Count);
             }
 
             return (commits, commitsBySha);

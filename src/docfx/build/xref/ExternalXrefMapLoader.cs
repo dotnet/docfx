@@ -86,11 +86,11 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var entry in archive.Entries)
                 {
-                    using (var sr = new StreamReader(entry.Open()))
+                    using (var entryStream = entry.Open())
                     {
                         if (entry.FullName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                         {
-                            var xrefMap = YamlUtility.Deserialize<XrefMapModel>(sr, path);
+                            var xrefMap = YamlUtility.Deserialize<XrefMapModel>(new StreamReader(entryStream), path);
                             foreach (var spec in xrefMap.References)
                             {
                                 result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                         }
                         else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                         {
-                            var xrefMap = JsonUtility.Deserialize<XrefMapModel>(sr, path);
+                            var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(entryStream), path);
                             foreach (var spec in xrefMap.References)
                             {
                                 result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
