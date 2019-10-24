@@ -78,9 +78,6 @@ namespace Microsoft.Docs.Build
             yield return config.MonikerDefinition;
             yield return config.MarkdownValidationRules;
 
-            // todo: consider define this as local file only
-            yield return config.DependencyLock;
-
             foreach (var metadataSchema in config.MetadataSchema)
             {
                 yield return metadataSchema;
