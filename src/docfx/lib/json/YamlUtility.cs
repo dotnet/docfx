@@ -58,7 +58,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string input, FilePath file)
         {
-            var (_, token) = ParseAsJToken(new StringReader(input), file);
+            using (var reader = new StringReader(input))
+            {
+                return Deserialize<T>(reader, file);
+            }
+        }
+
+        /// <summary>
+        /// De-serialize from yaml string, which is not user input
+        /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
+        /// </summary>
+        public static T Deserialize<T>(TextReader input, FilePath file)
+        {
+            var (_, token) = ParseAsJToken(input, file);
             return token.ToObject<T>(JsonUtility.Serializer);
         }
 
