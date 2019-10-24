@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        var xrefMap = YamlUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
+                        var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
                         foreach (var spec in xrefMap.References)
                         {
                             result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
