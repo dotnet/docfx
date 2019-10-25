@@ -38,24 +38,23 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
+                    var repositoryProvider = new RepositoryProvider(docsetPath, () => config, () => null);
                     var repository = repositoryProvider.GetRepository(FileOrigin.Default);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var input = new Input(docsetPath, repositoryProvider);
+                    var input = new Input(docsetPath, () => config, repositoryProvider);
                     var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
                     var configPath = docsetPath;
-                    (errors, config) = configLoader.TryLoad(options, extend: false);
-                    var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-                    if (restoreFallbackResult != null)
-                        repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit));
 
-                    List<Error> fallbackConfigErrors;
-                    (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);
-                    errors.AddRange(fallbackConfigErrors);
+                    // TODO: Allow loc repo without config creates a paradox:
+                    //       - Try load config here depend on reading of fallback config
+                    //       - Read contents of fallback repo depends on restore map, which in turn depends on config
+                    var restoreFallbackResult = RestoreFallbackRepo(new Config(), repository);
+
+                    (errors, config) = configLoader.Load(options, extend: false);
 
                     // config error log, and return if config has errors
                     if (errorLog.Write(errors))

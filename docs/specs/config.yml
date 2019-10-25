@@ -437,90 +437,6 @@ repos:
       a.md:
 outputs:
 ---
-# locale overwrite config
-locale: zh-cn
-inputs:
-  docfx.yml: |
-    files: a.md
-    "locales: [zh-cn,de-de]":
-      files: b.md
-      name: test
-    localization:
-      defaultLocale: "zh-cn"
-  a.md:
-outputs:
----
-# branch | locale overwrite config
-locale: zh-cn
-repos:
-  https://docs.com/branch-or-locale-overwrite:
-  - files:
-      docfx.yml: |
-        localization:
-          defaultLocale: "zh-cn"
-        files: a.md
-        "locales: [zh-cn]":
-          files:
-            - b.md
-            - c.md
-        "branches: [master,live]":
-          exclude:
-            - b.md
-      a.md:
-      b.md:
-      c.md:
-outputs:
-  c.json:
----
-# branch & locale overwrite config
-locale: zh-cn
-repos:
-  https://docs.com/branch-and-locale-overwrite:
-  - files:
-      docfx.yml: |
-        localization:
-          defaultLocale: "zh-cn"
-        files: a.md
-        "locales: [zh-cn, de-de] branches: [live]":
-          files: b.md
-      a.md:
-outputs:
-  a.json:
----
-# branch & locale overwrite with null
-locale: zh-cn
-repo: https://github.com/docascode/docfx-test-dependencies#master
-inputs:
-  docfx.yml: |
-    files:
-      - a.md
-      - b.png
-    output:
-      copyResources: false
-    localization:
-      defaultLocale: "zh-cn"
-    "locales: [zh-cn]":
-      output:
-        copyResources:
-  a.md:
-  b.png:
-outputs:
-  a.json:
-  b.png:
----
-# invalid overwrite config
-locale: zh-cn
-inputs:
-  docfx.yml: |
-    localization:
-      defaultLocale: "zh-cn"
-    files: a.md
-    "locales: zh-cn":
-      files: b.md
-  a.md:
-outputs:
-  a.json:
----
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:
   docfx.yml: |
@@ -641,4 +557,4 @@ repos:
       b.md:
 outputs:
   .errors.log: |
-    ["error","need-restore","Cannot find dependency 'https://docs.com/crr-url-using-path/2', did you forget to run `docfx restore`?"]
+    ["error","directory-not-found","Invalid directory: 'https://docs.com/crr-url-using-path/2'."]

@@ -26,18 +26,10 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Create repository from environment variable(remote + branch), fallback to git info if they are not set
-        /// </summary>
-        public static Repository Create(string path)
-        {
-            return Create(path, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
-        }
-
-        /// <summary>
-        /// Repository's branch info ashould NOT depend on git, unless you are pretty sure about that
+        /// Repository's branch info should NOT depend on git, unless you are pretty sure about that
         /// Repository's url can also be overwritten
         /// </summary>
-        public static Repository Create(string path, string branch, string repoUrl = null, string commit = null)
+        public static Repository Create(string path, string branch = null, string repoUrl = null, string commit = null)
         {
             Debug.Assert(!string.IsNullOrEmpty(path));
 

@@ -421,21 +421,19 @@ outputs:
     {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
 ---
 # legacy errors from source repo [repo mapping]
-locale: zh-cn
 legacy: true
 repos:
-  https://docs.com/error-from-source-legacy#test:
-    - files:
-        docfx.yml:
-        docs/b.md: |
-          ---
-          title: []
-          ---
   https://docs.com/error-from-source-legacy.zh-cn#test:
     - files:
         docfx.yml:
         docs/a.md: |
           @a
+  https://docs.com/error-from-source-legacy#test:
+    - files:
+        docs/b.md: |
+          ---
+          title: []
+          ---
 outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:

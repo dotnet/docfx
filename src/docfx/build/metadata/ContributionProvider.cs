@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             Document document, SourceInfo<string> authorName)
         {
             Debug.Assert(document != null);
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document.FilePath);
             if (repo is null)
             {
                 return default;
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
                 var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
-                    (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
+                    (_, _, result) = _gitCommitProvider.GetCommitHistory(document.FilePath, contributionBranch);
                 }
 
                 return result;
@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(document != null);
 
             var isWhitelisted = document.FilePath.Origin == FileOrigin.Default || document.FilePath.Origin == FileOrigin.Fallback;
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document.FilePath);
             if (repo is null)
                 return default;
 

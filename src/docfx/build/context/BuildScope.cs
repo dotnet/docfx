@@ -17,9 +17,9 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _fileNames;
         private readonly Func<string, bool> _glob;
 
+        private readonly Config _config;
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
-        private readonly HashSet<string> _inScopeDependencyNames = new HashSet<string>();
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -28,11 +28,12 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine, MonikerProvider monikerProvider)
+        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, TemplateEngine templateEngine, MonikerProvider monikerProvider)
         {
             var config = docset.Config;
 
             _input = input;
+            _config = config;
             _glob = CreateGlob(config);
             _templateEngine = templateEngine;
 
@@ -50,12 +51,11 @@ namespace Microsoft.Docs.Build
 
             Files.UnionWith(Redirections.Files);
 
-            foreach (var (dependencyName, (dependencyDocset, inScope)) in dependencyDocsets)
+            foreach (var (dependencyName, dependency) in config.Dependencies)
             {
-                if (inScope)
+                if (dependency.IncludeInBuild)
                 {
-                    _inScopeDependencyNames.Add(dependencyName);
-                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob, dependencyName);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, docset, _glob, dependencyName);
                     Files.UnionWith(dependencyFiles);
                 }
 
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
         public bool OutOfScope(Document filePath)
         {
             // Link to dependent repo
-            if (filePath.FilePath.Origin == FileOrigin.Dependency && !_inScopeDependencyNames.Contains(filePath.FilePath.DependencyName))
+            if (filePath.FilePath.Origin == FileOrigin.Dependency && !_config.Dependencies[filePath.FilePath.DependencyName].IncludeInBuild)
             {
                 return true;
             }

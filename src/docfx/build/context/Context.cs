@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, Input input, RepositoryProvider repositoryProvider)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider)
         {
             var restoreFileMap = new RestoreFileMap(input);
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -55,9 +55,9 @@ namespace Microsoft.Docs.Build
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
-            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
+            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, TemplateEngine, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
-            GitCommitProvider = new GitCommitProvider();
+            GitCommitProvider = new GitCommitProvider(repositoryProvider);
             PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
@@ -67,11 +67,6 @@ namespace Microsoft.Docs.Build
             LinkResolver = new LinkResolver(
                 docset,
                 fallbackDocset,
-                dependencyDocsets.
-                    ToDictionary(
-                        k => k.Key,
-                        v => v.Value.docset,
-                        PathUtility.PathComparer),
                 Input,
                 BuildScope,
                 BuildQueue,

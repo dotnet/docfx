@@ -29,46 +29,28 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (string path, string commit) GetRestoreGitPath(PackagePath packageUrl, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
+        public (string path, string commit) GetRestoreGitPath(string url, string branch, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
         {
-            switch (packageUrl.Type)
+            var gitLock = _dependencyLockProvider.GetGitLock(url, branch);
+
+            if (gitLock is null || gitLock.Commit is null)
             {
-                case PackageType.Folder:
-                    var fullPath = Path.Combine(_docsetPath, packageUrl.Path);
-                    if (Directory.Exists(fullPath))
-                    {
-                        return (fullPath, default);
-                    }
-
-                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
-                    // TODO: populate source info
-                    throw Errors.NeedRestore(packageUrl.Path).ToException();
-
-                case PackageType.Git:
-                    var gitLock = _dependencyLockProvider.GetGitLock(packageUrl.Url, packageUrl.Branch);
-
-                    if (gitLock is null || gitLock.Commit is null)
-                    {
-                        throw Errors.NeedRestore($"{packageUrl}").ToException();
-                    }
-
-                    var path = AppData.GetGitDir(packageUrl.Url);
-
-                    if (!bare)
-                    {
-                        path = Path.Combine(path, "1");
-                    }
-
-                    if (!Directory.Exists(path))
-                    {
-                        throw Errors.NeedRestore($"{packageUrl}").ToException();
-                    }
-
-                    return (path, gitLock.Commit);
-
-                default:
-                    throw new NotSupportedException($"Unknown package url: '{packageUrl}'");
+                throw Errors.NeedRestore($"{url}#{branch}").ToException();
             }
+
+            var path = AppData.GetGitDir(url);
+
+            if (!bare)
+            {
+                path = Path.Combine(path, "1");
+            }
+
+            if (!Directory.Exists(path))
+            {
+                throw Errors.NeedRestore($"{url}#{branch}").ToException();
+            }
+
+            return (path, gitLock.Commit);
         }
 
         public bool IsBranchRestored(string remote, string branch)

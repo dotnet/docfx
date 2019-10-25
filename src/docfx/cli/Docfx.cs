@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
                 });
 
                 options.Locale = options.Locale?.ToLowerInvariant();
-                return (command, workingDirectory, options);
+                return (command, Path.GetFullPath(workingDirectory), options);
             }
             catch (ArgumentSyntaxException ex)
             {

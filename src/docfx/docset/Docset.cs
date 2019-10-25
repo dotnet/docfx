@@ -61,8 +61,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string HostName { get; }
 
-        private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
-
         public Docset(string docsetPath, string locale, Config config, Repository repository)
         {
             Config = config;
@@ -73,8 +71,6 @@ namespace Microsoft.Docs.Build
             (HostName, SiteBasePath) = UrlUtility.SplitBaseUrl(config.BaseUrl);
 
             Repository = repository;
-
-            _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
         }
 
         public int CompareTo(Docset other)
@@ -110,30 +106,6 @@ namespace Microsoft.Docs.Build
         public static bool operator !=(Docset obj1, Docset obj2)
         {
             return !Equals(obj1, obj2);
-        }
-
-        // todo: use repository provider instead
-        public Repository GetRepository(string filePath)
-        {
-            return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
-
-            Repository GetRepositoryInternal(string fullPath)
-            {
-                if (GitUtility.IsRepo(fullPath))
-                {
-                    if (Repository != null && string.Equals(fullPath, Repository.Path.Substring(0, Repository.Path.Length - 1), PathUtility.PathComparison))
-                    {
-                        return Repository;
-                    }
-
-                    return Repository.Create(fullPath, branch: null);
-                }
-
-                var parent = Path.GetDirectoryName(fullPath);
-                return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
-                    : null;
-            }
         }
 
         private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)

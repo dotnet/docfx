@@ -141,15 +141,17 @@ namespace Microsoft.Docs.Build
 
         public static TemplateEngine Create(Docset docset, RepositoryProvider repositoryProvider)
         {
-            Debug.Assert(docset != null);
-
-            if (docset.Config.Template.Type == PackageType.None)
+            switch (docset.Config.Template.Type)
             {
-                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
-            }
+                case PackageType.Folder:
+                    return new TemplateEngine(Path.Combine(docset.DocsetPath, docset.Config.Template.Path));
 
-            var (templateEntry, _) = repositoryProvider.GetRepositoryWithEntry(FileOrigin.Template);
-            return new TemplateEngine(templateEntry);
+                case PackageType.Git:
+                    return new TemplateEngine(repositoryProvider.GetRepository(FileOrigin.Template).Path);
+
+                default:
+                    return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
+            }
         }
 
         private JObject LoadGlobalTokens()

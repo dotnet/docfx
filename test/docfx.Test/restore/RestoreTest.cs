@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using YamlDotNet.Helpers;
 
 namespace Microsoft.Docs.Build
 {
@@ -22,7 +21,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"'https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C'", PackageType.Git, "https://github.com/dotnet/docfx", @"a\b/d<e>f*h|i%3C", null)]
         [InlineData("{'url': 'https://github.com/dotnet/docfx#unused', 'branch': 'used'}", PackageType.Git, "https://github.com/dotnet/docfx", "used", null)]
         [InlineData("{'url': 'crr/local-path'}", PackageType.Folder, "crr/local-path", null, "crr/local-path")]
-        public static void PackageUrlTest(
+        public static void PackagePathTest(
             string json,
             PackageType expectedPackageType,
             string expectedUrl,
@@ -52,8 +51,7 @@ namespace Microsoft.Docs.Build
             var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
             var restoreDir = AppData.GetFileDownloadDir(url);
 
-            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-monikerDefinition: {url}");
+            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"monikerDefinition: {url}");
 
             // run restore
             await Docfx.Run(new[] { "restore", docsetPath });

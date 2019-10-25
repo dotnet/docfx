@@ -94,13 +94,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsPage { get; }
 
-        /// <summary>
-        /// Gets the repository
-        /// </summary>
-        public Repository Repository => _repository.Value;
-
         private readonly Lazy<(string docId, string versionIndependentId)> _id;
-        private readonly Lazy<Repository> _repository;
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
@@ -134,7 +128,6 @@ namespace Microsoft.Docs.Build
             IsPage = isPage;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
-            _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
 
             Debug.Assert(IsValidRelativePath(FilePath.Path));
             Debug.Assert(IsValidRelativePath(SitePath));

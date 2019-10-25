@@ -255,6 +255,8 @@ namespace Microsoft.Docs.Build
 
         public static unsafe byte[] ReadBytes(string repoPath, string filePath, string committish)
         {
+            Debug.Assert(committish != null);
+
             if (git_repository_open(out var repo, repoPath) != 0)
             {
                 return null;

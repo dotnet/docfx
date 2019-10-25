@@ -21,7 +21,6 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
         private readonly IReadOnlyDictionary<string, string> _resolveAlias;
-        private readonly IReadOnlyDictionary<string, Docset> _dependencies;
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -29,7 +28,6 @@ namespace Microsoft.Docs.Build
         public LinkResolver(
             Docset docset,
             Docset fallbackDocset,
-            Dictionary<string, Docset> dependencies,
             Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
@@ -50,7 +48,6 @@ namespace Microsoft.Docs.Build
             _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
             _resolveAlias = LoadResolveAlias(docset.Config);
-            _dependencies = dependencies;
             _templateEngine = templateEngine;
             _fileLinkMapBuilder = fileLinkMapBuilder;
         }
@@ -258,7 +255,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from dependent docsets
-            foreach (var (dependencyName, dependentDocset) in _dependencies)
+            foreach (var (dependencyName, _) in _docset.Config.Dependencies)
             {
                 var (match, _, remainingPath) = PathUtility.Match(pathToDocset, dependencyName);
                 if (!match)
@@ -270,7 +267,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(remainingPath, dependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(dependentDocset, path, _input, _templateEngine);
+                    return Document.Create(_docset, path, _input, _templateEngine);
                 }
             }
 
@@ -293,7 +290,8 @@ namespace Microsoft.Docs.Build
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
-                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
+                    path = new FilePath(pathToDocset, FileOrigin.Fallback);
+                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(path);
                     var commit = repo != null && commits.Count > 1 ? commits[1] : default;
                     path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
 

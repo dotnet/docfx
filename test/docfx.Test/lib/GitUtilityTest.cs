@@ -35,13 +35,13 @@ namespace Microsoft.Docs.Build
             var repo = Repository.Create(Path.GetFullPath(file), branch: null);
             Assert.NotNull(repo);
 
-            using (var gitCommitProvider = new GitCommitProvider())
+            using (var gitCommitProvider = new FileCommitProvider(repo, "get-commits-test"))
             {
                 var pathToRepo = PathUtility.NormalizeFile(file);
 
                 // current branch
                 var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo.Path);
-                var (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo);
+                var lib = gitCommitProvider.GetCommitHistory(pathToRepo);
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
 
                 // another branch
                 exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
-                (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo, "a050eaf");
+                lib = gitCommitProvider.GetCommitHistory(pathToRepo, "a050eaf");
 
                 Assert.Equal(
                     exe.Replace("\r", ""),
