@@ -641,4 +641,4 @@ repos:
       b.md:
 outputs:
   .errors.log: |
-    ["error","need-restore","Cannot find dependency 'https://docs.com/crr-url-using-path/2', did you forget to run `docfx restore`?"]
+    ["error","directory-not-found","Invalid directory: 'https://docs.com/crr-url-using-path/2'."]

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -256,6 +255,14 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ✔️
         public static Error FileNotFound(SourceInfo<string> source)
             => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
+
+        /// <summary>
+        /// Can't find a folder.
+        /// Examples: pointing template to a local folder that does not exist
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DirectoryNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{source}'.", source);
 
         /// <summary>
         /// File contains git merge conflict.
