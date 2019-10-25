@@ -70,24 +70,24 @@ Besides using file path to link to another file, DocFX also allows you to give a
 ### External UID
 - Reference to an external UID without versioning. DHS always append the `branch` info within cookie cache, due to this limitation, docs build needs to append `branch` info for resolved URL. The complete list of all scenarios is as below
 
-    | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior |
-    | --- | --- | --- | --- | --- | --- |
-    | yes | commit | master | master | yes(Jump to external site with `?brnach=master`) | yes(Jump to external site with `?branch=master`) |
-    | yes | commit | test | master | yes(Jump to external site with `?branch=master`) | yes(append with `?branch=master`) |
-    | yes | commit | live | live(go-live) | no | no |
-    | yes | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
-    | yes | PR | test -> master | master | yes(Jump to external site with `?branch=master`) | yes(Jump to external site with `?branch=master`) |
-    | yes | PR | master -> test | master | yes | yes |
-    | yes | PR | test -> live | live(go-live) | no | yes(append with `?branch=live`, `branch` info is set on OPS service and it could not tell cross-site or not) |
-    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
-    | no | commit | master | master | yes(append `?branch=master` to avoid redirecting) | yes(append `?branch=master`) |
-    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
-    | no | commit | live | live(go-live) | no(`live` branch exists) | no |
-    | no | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
-    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
-    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) |
-    | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) |
-    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) |
+    | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior | output xrefmap host |
+    | --- | --- | --- | --- | --- | --- | --- |
+    | yes | commit | master | master | yes(Jump to external site with `?brnach=master`) | yes(Jump to external site with `?branch=master`) | review.xxx.com |
+    | yes | commit | test | master | yes(Jump to external site with `?branch=master`) | yes(append with `?branch=master`) | review.xxx.com |
+    | yes | commit | live | live(go-live) | no | no | xxx.com |
+    | yes | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | xxx.com |
+    | yes | PR | test -> master | master | yes(Jump to external site with `?branch=master`) | yes(Jump to external site with `?branch=master`) | review.xxx.com |
+    | yes | PR | master -> test | master | yes | yes | review.xxx.com |
+    | yes | PR | test -> live | live(go-live) | no | yes(append with `?branch=live`, `branch` info is set on OPS service and it could not tell cross-site or not) | review.xxx.com |
+    | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | review.xxx.com |
+    | no | commit | master | master | yes(append `?branch=master` to avoid redirecting) | yes(append `?branch=master`) | review.docs.microsoft.com |
+    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.docs.microsoft.com |
+    | no | commit | live | live(go-live) | no(`live` branch exists) | no | docs.microsoft.com |
+    | no | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | docs.microsoft.com |
+    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.docs.microsoft.com |
+    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.docs.microsoft.com |
+    | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) | review.docs.microsoft.com |
+    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | review.docs.microsoft.com |
     > For the second last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Confirmed with PM, this is not an legitimate concern.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
