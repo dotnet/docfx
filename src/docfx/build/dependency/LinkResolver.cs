@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
         private (Error error, string content, Document file) TryResolveContent(Document referencingFile, SourceInfo<string> href)
         {
-            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
+            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, isIncluded: true);
 
             if (file?.RedirectionUrl != null)
             {
@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, Document file, string query, string fragment, LinkType linkType) TryResolveFile(
-            Document referencingFile, SourceInfo<string> href, bool inclusion = false)
+            Document referencingFile, SourceInfo<string> href, bool isIncluded = false)
         {
             href = href.Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -196,8 +196,8 @@ namespace Microsoft.Docs.Build
                     }
 
                     // resolve file
-                    var lookupFallbackCommits = inclusion || Document.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile, path, lookupFallbackCommits);
+                    var lookupFallbackCommits = isIncluded || Document.GetContentType(path) == ContentType.Resource;
+                    var file = TryResolveRelativePath(referencingFile, path, lookupFallbackCommits, isIncluded);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupFallbackCommits, isIncluded);
                         }
 
                         // Do not report error for landing page
@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Document TryResolveRelativePath(Document referencingFile, string relativePath, bool lookupFallbackCommits)
+        private Document TryResolveRelativePath(Document referencingFile, string relativePath, bool lookupFallbackCommits, bool isIncluded)
         {
             FilePath path;
 
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(referencingFile.Docset, path, _input, _templateEngine);
+                    return Document.Create(referencingFile.Docset, path, _input, _templateEngine, isIncluded: isIncluded);
                 }
                 return null;
             }
@@ -254,7 +254,7 @@ namespace Microsoft.Docs.Build
             // resolve from redirection files
             if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
             {
-                return redirectFile;
+                return redirectFile.With(isIncluded);
             }
 
             // resolve from dependent docsets
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(remainingPath, dependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(dependentDocset, path, _input, _templateEngine);
+                    return Document.Create(dependentDocset, path, _input, _templateEngine, isIncluded: isIncluded);
                 }
             }
 
@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
             path = new FilePath(pathToDocset);
             if (_input.Exists(path))
             {
-                return Document.Create(_docset, path, _input, _templateEngine);
+                return Document.Create(_docset, path, _input, _templateEngine, isIncluded: isIncluded);
             }
 
             // resolve from fallback docset
@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(pathToDocset, FileOrigin.Fallback);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                    return Document.Create(_fallbackDocset, path, _input, _templateEngine, isIncluded: isIncluded);
                 }
 
                 // resolve from fallback docset git commit history
@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
 
                     if (_input.Exists(path))
                     {
-                        return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                        return Document.Create(_fallbackDocset, path, _input, _templateEngine, isIncluded: isIncluded);
                     }
                 }
             }

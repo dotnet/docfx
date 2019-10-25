@@ -74,6 +74,11 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var yamlHeader = new JObject();
 
+            if (file.IsIncluded)
+            {
+                return (errors, new InputMetadata());
+            }
+
             if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
             {
                 (errors, yamlHeader) = LoadMetadata(file);

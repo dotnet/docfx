@@ -95,6 +95,11 @@ namespace Microsoft.Docs.Build
         public bool IsPage { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the current document is included file
+        /// </summary>
+        public bool IsIncluded { get; }
+
+        /// <summary>
         /// Gets the repository
         /// </summary>
         public Repository Repository => _repository.Value;
@@ -115,6 +120,7 @@ namespace Microsoft.Docs.Build
             ContentType contentType,
             SourceInfo<string> mime,
             bool isExperimental,
+            bool isIncluded,
             string redirectionUrl = null,
             bool isPage = true)
         {
@@ -132,6 +138,7 @@ namespace Microsoft.Docs.Build
             IsExperimental = isExperimental;
             RedirectionUrl = redirectionUrl;
             IsPage = isPage;
+            IsIncluded = isIncluded;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
             _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
@@ -205,7 +212,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="docset">The current docset</param>
         /// <param name="path">The path relative to docset root</param>
-        public static Document Create(Docset docset, FilePath path, Input input, TemplateEngine templateEngine, string redirectionUrl = null, bool combineRedirectUrl = false)
+        public static Document Create(Docset docset, FilePath path, Input input, TemplateEngine templateEngine, string redirectionUrl = null, bool combineRedirectUrl = false, bool isIncluded = false)
         {
             Debug.Assert(docset != null);
 
@@ -234,7 +241,12 @@ namespace Microsoft.Docs.Build
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
             var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage);
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, isIncluded, redirectionUrl, isPage);
+        }
+
+        public Document With(bool isIncluded)
+        {
+            return new Document(Docset, FilePath, SitePath, SiteUrl, CanonicalUrlWithoutLocale, CanonicalUrl, ContentType, Mime, IsExperimental, isIncluded, RedirectionUrl, IsPage);
         }
 
         internal static ContentType GetContentType(string path)
