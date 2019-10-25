@@ -233,3 +233,21 @@ inputs:
 outputs:
   a.json: |
     {"markdown":"<h1 id=\"h1\">h1</h1><div></div>"}
+---
+# Loc build uses localized template with naming convention
+locale: zh-cn
+repos:
+  https://docs.com/loc-template-test:
+    - files:
+        docfx.yml: |
+          template: https://docs.com/loc-template
+  https://docs.com/loc-template-test.zh-cn:
+    - files:
+        docfx.yml: |
+          template: https://docs.com/loc-template
+        a.yml: '#YamlMime:TestLocTemplate'
+  https://docs.com/loc-template.zh-cn:
+    - files:
+        ContentTemplate/schemas/TestLocTemplate.schema.json: "{}"
+outputs:
+  a.json:
