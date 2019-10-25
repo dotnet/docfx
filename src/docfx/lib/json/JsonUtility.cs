@@ -109,8 +109,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string json, FilePath file)
         {
-            using (var stringReader = new StringReader(json))
-            using (var reader = new JsonTextReader(stringReader))
+            using (var reader = new StringReader(json))
+            {
+                return Deserialize<T>(reader, file);
+            }
+        }
+
+        /// <summary>
+        /// De-serialize a data string, which is not user input, to an object
+        /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
+        /// </summary>
+        public static T Deserialize<T>(TextReader json, FilePath file)
+        {
+            using (var reader = new JsonTextReader(json))
             {
                 try
                 {

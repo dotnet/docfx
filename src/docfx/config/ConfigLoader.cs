@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             {
                 if (extend is JValue value && value.Value is string str)
                 {
-                    var content = RestoreFileMap.GetRestoredFileContent(
+                    var content = RestoreFileMap.ReadString(
                         _input, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
                     var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
                     errors.AddRange(extendErrors);
