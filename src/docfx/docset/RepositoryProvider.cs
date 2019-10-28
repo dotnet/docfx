@@ -3,9 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.IO;
 
 namespace Microsoft.Docs.Build
 {
