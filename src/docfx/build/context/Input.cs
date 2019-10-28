@@ -16,7 +16,6 @@ namespace Microsoft.Docs.Build
     internal class Input
     {
         private readonly string _docsetPath;
-        private readonly string _repoPath;
         private readonly RepositoryProvider _repositoryProvider;
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
@@ -26,7 +25,6 @@ namespace Microsoft.Docs.Build
         {
             _repositoryProvider = repositoryProvider;
             _docsetPath = Path.GetFullPath(docsetPath);
-            _repoPath = GitUtility.FindRepo(_docsetPath);
         }
 
         /// <summary>
@@ -34,19 +32,21 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool Exists(FilePath file)
         {
-            var (basePath, path, commit) = ResolveFilePath(file);
+            var (docsetPath, pathToDocset, commit) = ResolveFilePath(file);
 
-            if (basePath is null)
+            if (docsetPath is null)
             {
                 return false;
             }
 
             if (commit is null)
             {
-                return File.Exists(PathUtility.NormalizeFile(Path.Combine(basePath, path)));
+                return File.Exists(PathUtility.NormalizeFile(Path.Combine(docsetPath, pathToDocset)));
             }
 
-            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit)) != null;
+            var repoPath = GitUtility.FindRepo(docsetPath);
+            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, PathUtility.NormalizeFile(Path.Combine(docsetPath, pathToDocset))));
+            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(repoPath, pathToRepo, commit)) != null;
         }
 
         /// <summary>
@@ -190,32 +190,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (string repoPath, string pathToRepo, string commit) ResolveFilePath(FilePath file)
+        private (string docsetPath, string pathToDocset, string commit) ResolveFilePath(FilePath file)
         {
             switch (file.Origin)
             {
                 case FileOrigin.Default:
-                    return (_repoPath, PathUtility.NormalizeFile(Path.GetRelativePath(_repoPath, PathUtility.NormalizeFile(Path.Combine(_docsetPath, file.Path)))), file.Commit);
+                    return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
                     var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin, file.DependencyName);
                     return (dependencyEntry, file.GetPathToOrigin(), file.Commit ?? dependencyRepository?.Commit);
 
                 case FileOrigin.Fallback:
-                    var (fallbackDocsetPath, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin);
-                    if (string.IsNullOrEmpty(fallbackDocsetPath))
-                    {
-                        return (null, file.Path, file.Commit);
-                    }
-                    else
-                    {
-                        var repoPath = GitUtility.FindRepo(fallbackDocsetPath);
-                        return (repoPath, PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, PathUtility.NormalizeFile(Path.Combine(fallbackDocsetPath, file.Path)))), file.Commit);
-                    }
-
                 case FileOrigin.Template:
-                    var (templateEntry, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Template);
-                    return (templateEntry, file.Path, file.Commit);
+                    var (docsetPath, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin);
+                    return (docsetPath, file.Path, file.Commit);
 
                 default:
                     return default;
