@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
 
             using (Log.BeginScope(options.Verbose))
             {
