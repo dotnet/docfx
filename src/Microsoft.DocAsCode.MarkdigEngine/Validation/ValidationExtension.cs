@@ -29,10 +29,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.DocumentProcessed += document =>
             {
                 if (InclusionContext.IsInclude 
-                && (string.Equals(Path.GetExtension((RelativePath)InclusionContext.RootFile), ".yml", StringComparison.OrdinalIgnoreCase) 
-                || string.Equals(Path.GetExtension((RelativePath)InclusionContext.RootFile), ".yaml", StringComparison.OrdinalIgnoreCase)))
+                && (string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yml", StringComparison.OrdinalIgnoreCase) 
+                || string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yaml", StringComparison.OrdinalIgnoreCase)))
                 {
-                    document.SetData("yamlMime", YamlMime.ReadMime((RelativePath)InclusionContext.RootFile));
+                    document.SetData("yamlMime", YamlMime.ReadMime(InclusionContext.RootFile?.ToString()));
                 }
 
                 visitor.Visit(document);
