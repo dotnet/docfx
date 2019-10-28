@@ -97,11 +97,7 @@ namespace Microsoft.Docs.Build
                     referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
-            // ignore self bookmark reference for FileLinkMap
-            if (!isSelfBookmark && !string.IsNullOrEmpty(link))
-            {
-                _fileLinkMapBuilder.AddFileLink(relativeToFile, link);
-            }
+            _fileLinkMapBuilder.AddFileLink(relativeToFile, link);
 
             return (error, link, file);
         }

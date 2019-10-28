@@ -24,13 +24,18 @@ namespace Microsoft.Docs.Build
         public void AddFileLink(Document file, string targetUrl)
         {
             Debug.Assert(file != null);
-            Debug.Assert(targetUrl != null);
+
+            if (string.IsNullOrEmpty(targetUrl) || file.SiteUrl == targetUrl)
+            {
+                return;
+            }
 
             var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
             if (error != null)
             {
                 _errorLog.Write(file, error);
             }
+
             _links.Add(new FileLinkItem()
             {
                 SourceUrl = file.SiteUrl,
@@ -43,9 +48,9 @@ namespace Microsoft.Docs.Build
             => new
             {
                 Links = _links.ToList()
-                .OrderBy(x => x.SourceUrl, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(x => x.TargetUrl, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(x => x.SourceMonikerGroup, StringComparer.OrdinalIgnoreCase),
+                .OrderBy(x => x.SourceUrl)
+                .ThenBy(x => x.TargetUrl)
+                .ThenBy(x => x.SourceMonikerGroup),
             };
     }
 }
