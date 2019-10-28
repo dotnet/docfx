@@ -291,8 +291,8 @@ namespace Microsoft.Docs.Build
                 {
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
                     var commit = repo != null && commits.Count > 1 ? commits[1] : default;
-                    path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
-
+                    var docsetSourceFolder = PathUtility.NormalizeFolder(Path.GetRelativePath(_docset.Repository.Path, _docset.DocsetPath));
+                    path = new FilePath(string.IsNullOrEmpty(docsetSourceFolder) ? pathToDocset : PathUtility.NormalizeFile(Path.Combine(docsetSourceFolder, pathToDocset)), commit?.Sha, FileOrigin.Fallback);
                     if (_input.Exists(path))
                     {
                         return Document.Create(_fallbackDocset, path, _input, _templateEngine);

@@ -44,14 +44,14 @@ namespace Microsoft.Docs.Build
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var input = new Input(repository.Path, docsetPath, repositoryProvider, null);
+                    var input = new Input(docsetPath, repositoryProvider, null);
                     var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
                     var configPath = docsetPath;
                     (errors, config) = configLoader.TryLoad(options, extend: false);
                     var restoreFallbackResult = RestoreFallbackRepo(config, repository);
                     if (restoreFallbackResult != null)
-                        repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit));
+                        repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit), null);
 
                     List<Error> fallbackConfigErrors;
                     (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);

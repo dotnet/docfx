@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class Input
     {
-        private readonly string _repoPath;
         private readonly string _docsetPath;
         private readonly string _docsetSourceFolder;
         private readonly RepositoryProvider _repositoryProvider;
@@ -23,11 +22,10 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
-        public Input(string repoPath, string docsetPath, RepositoryProvider repositoryProvider, string docsetSourceFolder)
+        public Input(string docsetPath, RepositoryProvider repositoryProvider, string docsetSourceFolder)
         {
             _repositoryProvider = repositoryProvider;
             _docsetSourceFolder = docsetSourceFolder;
-            _repoPath = Path.GetFullPath(repoPath);
             _docsetPath = Path.GetFullPath(docsetPath);
         }
 
@@ -197,7 +195,7 @@ namespace Microsoft.Docs.Build
             switch (file.Origin)
             {
                 case FileOrigin.Default:
-                    return (_repoPath, PathUtility.NormalizeFolder(!string.IsNullOrEmpty(_docsetSourceFolder) ? Path.Combine(_docsetSourceFolder, file.Path) : file.Path), file.Commit);
+                    return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
                     var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithEntry(file.Origin, file.DependencyName);
@@ -205,7 +203,8 @@ namespace Microsoft.Docs.Build
 
                 case FileOrigin.Fallback:
                     var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithEntry(file.Origin);
-                    return (fallbackEntry, PathUtility.NormalizeFolder(!string.IsNullOrEmpty(_docsetSourceFolder) ? Path.Combine(_docsetSourceFolder, file.Path) : file.Path), file.Commit);
+                    return (fallbackEntry, file.Path, file.Commit);
+                    //return (fallbackEntry, PathUtility.NormalizeFolder(!string.IsNullOrEmpty(_docsetSourceFolder) ? Path.Combine(_docsetSourceFolder, file.Path) : file.Path), file.Commit);
 
                 case FileOrigin.Template:
                     var (templateEntry, _) = _repositoryProvider.GetRepositoryWithEntry(FileOrigin.Template);
