@@ -20,13 +20,16 @@ namespace Microsoft.Docs.Build
         [InlineData("'https://github.com/dotnet/docfx#986127a'", PackageType.Git, "https://github.com/dotnet/docfx", "986127a", null)]
         [InlineData("'https://github.com/dotnet/docfx#a#a'", PackageType.Git, "https://github.com/dotnet/docfx", "a#a", null)]
         [InlineData(@"'https://github.com/dotnet/docfx#a\\b/d<e>f*h|i%3C'", PackageType.Git, "https://github.com/dotnet/docfx", @"a\b/d<e>f*h|i%3C", null)]
-        [InlineData("{'url': 'https://github.com/dotnet/docfx#unused', 'branch': 'used'}", PackageType.Git, "https://github.com/dotnet/docfx", "used", null)]
-        [InlineData("{'url': 'crr/local-path'}", PackageType.Folder, "crr/local-path", null, "crr/local-path")]
+        [InlineData("{'url': 'https://github.com/dotnet/docfx', 'branch': 'used'}", PackageType.Git, "https://github.com/dotnet/docfx", "used", null)]
+        [InlineData("{'url': 'https://github.com/dotnet/docfx', 'path': 'a-path'}", PackageType.Git, "https://github.com/dotnet/docfx", "master", null)]
+        [InlineData("{'url': 'https://github.com/dotnet/docfx#unused', 'branch': 'used'}", PackageType.Git, "https://github.com/dotnet/docfx#unused", "used", null)]
+        [InlineData("{'url': 'crr/local-path'}", PackageType.Git, "crr/local-path", "master", null)]
+        [InlineData("{'path': 'crr/local-path'}", PackageType.Folder, null, null, "crr/local-path")]
         public static void PackageUrlTest(
             string json,
             PackageType expectedPackageType,
             string expectedUrl,
-            string expectedRev,
+            string expectedBranch,
             string expectedPath)
         {
             // Act
@@ -35,7 +38,7 @@ namespace Microsoft.Docs.Build
             // Assert
             Assert.Equal(expectedUrl, packageUrl.Url);
             Assert.Equal(expectedPackageType, packageUrl.Type);
-            Assert.Equal(expectedRev, packageUrl.Branch);
+            Assert.Equal(expectedBranch, packageUrl.Branch);
             Assert.Equal(expectedPath, packageUrl.Path);
         }
 
