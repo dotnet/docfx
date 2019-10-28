@@ -132,10 +132,10 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("Skip watch tests");
             }
 
-            //if (!test.Summary.Contains("[from loc]", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    await RunBuild(docsetPath, outputPath, spec, spec.Locale);
-            //}
+            if (!test.Summary.Contains("[from loc]", StringComparison.OrdinalIgnoreCase))
+            {
+                await RunBuild(docsetPath, outputPath, spec, spec.Locale);
+            }
 
             // Verify build from localization docset also work
             if (spec.Locale != null)

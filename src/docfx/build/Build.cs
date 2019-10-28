@@ -59,6 +59,12 @@ namespace Microsoft.Docs.Build
                         repositoryProvider.Config(config);
                         var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider, restoreGitMap);
 
+                        // TODO: clean up all the RepositoryProvider config methods
+                        if (fallbackDocset != null)
+                        {
+                            repositoryProvider.ConfigFallbackDocsetPath(fallbackDocset.DocsetPath);
+                        }
+
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
                         {
                             // entry docset is not the docset to build
@@ -248,7 +254,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (name, dependency) in config.Dependencies)
             {
-                var (entry, repository) = repositoryProvider.GetRepositoryWithEntry(FileOrigin.Dependency, name);
+                var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
                 if (!string.IsNullOrEmpty(entry))
                 {
                     result.TryAdd(name, (new Docset(entry, docset.Locale, config, repository), dependency.IncludeInBuild));

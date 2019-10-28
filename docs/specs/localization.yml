@@ -940,7 +940,7 @@ repos:
 outputs:
   a/docs/a.json: |
     {"conceptual":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
-  .dependencymap.json: |
+  a/.dependencymap.json: |
     {"dependencies": {"a/docs/tokena.md": undefined}}
 ---
 # fallback to deleted resource
