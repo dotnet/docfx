@@ -16,16 +16,14 @@ namespace Microsoft.Docs.Build
     internal class Input
     {
         private readonly string _docsetPath;
-        private readonly string _docsetSourceFolder;
         private readonly RepositoryProvider _repositoryProvider;
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
-        public Input(string docsetPath, RepositoryProvider repositoryProvider, string docsetSourceFolder)
+        public Input(string docsetPath, RepositoryProvider repositoryProvider)
         {
             _repositoryProvider = repositoryProvider;
-            _docsetSourceFolder = docsetSourceFolder;
             _docsetPath = Path.GetFullPath(docsetPath);
         }
 
@@ -204,7 +202,6 @@ namespace Microsoft.Docs.Build
                 case FileOrigin.Fallback:
                     var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithEntry(file.Origin);
                     return (fallbackEntry, file.Path, file.Commit);
-                    //return (fallbackEntry, PathUtility.NormalizeFolder(!string.IsNullOrEmpty(_docsetSourceFolder) ? Path.Combine(_docsetSourceFolder, file.Path) : file.Path), file.Commit);
 
                 case FileOrigin.Template:
                     var (templateEntry, _) = _repositoryProvider.GetRepositoryWithEntry(FileOrigin.Template);

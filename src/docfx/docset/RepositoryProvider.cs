@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             _config = default;
         }
 
-        public void ConfigFallbackRepository(Repository fallbackRepository, string docsetSourceFolder)
+        public void ConfigFallbackRepository(Repository fallbackRepository)
         {
             Debug.Assert(_fallbackRepository is null);
 
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             _config = config;
         }
 
-        public void ConfigRestoreMap(RestoreGitMap restoreGitMap, string docsetSourceFolder)
+        public void ConfigRestoreMap(RestoreGitMap restoreGitMap)
         {
             Debug.Assert(_fallbackRepository is null);
             Debug.Assert(_restoreGitMap is null);

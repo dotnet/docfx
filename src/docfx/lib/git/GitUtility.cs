@@ -272,8 +272,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            var temp = git_tree_entry_bypath(out var entry, tree, filePath);
-            if (temp != 0)
+            if (git_tree_entry_bypath(out var entry, tree, filePath) != 0)
             {
                 git_repository_free(repo);
                 return null;

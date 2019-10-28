@@ -45,10 +45,10 @@ namespace Microsoft.Docs.Build
                     using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
                         // load configuration from current docset and fallback docset
-                        var input = new Input(docsetPath, repositoryProvider, docsetSourceFolder);
+                        var input = new Input(docsetPath, repositoryProvider);
                         var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
-                        repositoryProvider.ConfigRestoreMap(restoreGitMap, docsetSourceFolder);
+                        repositoryProvider.ConfigRestoreMap(restoreGitMap);
                         (errors, config) = configLoader.Load(options, extend: true);
 
                         // just return if config loading has errors
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
                         {
                             // entry docset is not the docset to build
-                            input = new Input(docset.DocsetPath, repositoryProvider, docsetSourceFolder);
+                            input = new Input(docset.DocsetPath, repositoryProvider);
                         }
                         var dependencyDocsets = LoadDependencies(docset, repositoryProvider);
 
