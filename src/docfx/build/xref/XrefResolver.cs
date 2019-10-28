@@ -75,6 +75,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(resolvedHref))
             {
+                // TODO: this should also be relative to root file
                 _fileLinkMapBuilder.AddFileLink(referencingFile, resolvedHref);
             }
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
