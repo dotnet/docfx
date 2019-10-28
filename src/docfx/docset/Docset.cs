@@ -129,9 +129,9 @@ namespace Microsoft.Docs.Build
                     return Repository.Create(fullPath, branch: null);
                 }
 
-                var parent = Path.GetDirectoryName(fullPath);
+                var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath));
                 return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
+                    ? _repositories.GetOrAdd(parent, k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
                     : null;
             }
         }
