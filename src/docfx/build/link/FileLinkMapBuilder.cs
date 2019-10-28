@@ -47,10 +47,13 @@ namespace Microsoft.Docs.Build
         public object Build()
             => new
             {
+                // TODO: OrderBy is not stable across platform,
+                // need a way to consistently apply this to all sort calls.
+                // https://github.com/dotnet/corefx/issues/15825
                 Links = _links.ToList()
-                .OrderBy(x => x.SourceUrl)
-                .ThenBy(x => x.TargetUrl)
-                .ThenBy(x => x.SourceMonikerGroup),
+                .OrderBy(x => x.SourceUrl, StringComparer.Ordinal)
+                .ThenBy(x => x.TargetUrl, StringComparer.Ordinal)
+                .ThenBy(x => x.SourceMonikerGroup, StringComparer.Ordinal),
             };
     }
 }
