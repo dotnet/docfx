@@ -15,15 +15,19 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class Input
     {
+        private readonly string _repoPath;
         private readonly string _docsetPath;
+        private readonly string _docsetSourceFolder;
         private readonly RepositoryProvider _repositoryProvider;
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
-        public Input(string docsetPath, RepositoryProvider repositoryProvider)
+        public Input(string repoPath, string docsetPath, RepositoryProvider repositoryProvider, string docsetSourceFolder)
         {
             _repositoryProvider = repositoryProvider;
+            _docsetSourceFolder = docsetSourceFolder;
+            _repoPath = Path.GetFullPath(repoPath);
             _docsetPath = Path.GetFullPath(docsetPath);
         }
 
@@ -41,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             if (commit is null)
             {
-                return File.Exists(Path.Combine(basePath, path));
+                return File.Exists(PathUtility.NormalizeFile(Path.Combine(basePath, path)));
             }
 
             return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit)) != null;
@@ -128,7 +132,7 @@ namespace Microsoft.Docs.Build
 
             if (commit is null)
             {
-                return File.OpenRead(Path.Combine(basePath, path));
+                return File.OpenRead(PathUtility.NormalizeFile(Path.Combine(basePath, path)));
             }
 
             var bytes = _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit))
@@ -193,7 +197,7 @@ namespace Microsoft.Docs.Build
             switch (file.Origin)
             {
                 case FileOrigin.Default:
-                    return (_docsetPath, file.Path, file.Commit);
+                    return (_repoPath, PathUtility.NormalizeFolder(!string.IsNullOrEmpty(_docsetSourceFolder) ? Path.Combine(_docsetSourceFolder, file.Path) : file.Path), file.Commit);
 
                 case FileOrigin.Dependency:
                     var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithEntry(file.Origin, file.DependencyName);
@@ -201,7 +205,7 @@ namespace Microsoft.Docs.Build
 
                 case FileOrigin.Fallback:
                     var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithEntry(file.Origin);
-                    return (fallbackEntry, file.Path, file.Commit);
+                    return (fallbackEntry, PathUtility.NormalizeFolder(!string.IsNullOrEmpty(_docsetSourceFolder) ? Path.Combine(_docsetSourceFolder, file.Path) : file.Path), file.Commit);
 
                 case FileOrigin.Template:
                     var (templateEntry, _) = _repositoryProvider.GetRepositoryWithEntry(FileOrigin.Template);

@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var input = new Input(docsetPath, repositoryProvider);
+                    var input = new Input(repository.Path, docsetPath, repositoryProvider, null);
                     var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
                     var configPath = docsetPath;

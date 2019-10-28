@@ -40,11 +40,12 @@ namespace Microsoft.Docs.Build
                     var repository = repositoryProvider.GetRepository(FileOrigin.Default);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
+                    var docsetSourceFolder = PathUtility.NormalizeFolder(Path.GetRelativePath(repository.Path, docsetPath));
 
                     using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
                         // load configuration from current docset and fallback docset
-                        var input = new Input(docsetPath, repositoryProvider);
+                        var input = new Input(repository.Path, docsetPath, repositoryProvider, docsetSourceFolder);
                         var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
 
                         repositoryProvider.ConfigRestoreMap(restoreGitMap);
@@ -67,7 +68,7 @@ namespace Microsoft.Docs.Build
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
                         {
                             // entry docset is not the docset to build
-                            input = new Input(docset.DocsetPath, repositoryProvider);
+                            input = new Input(repository.Path, docset.DocsetPath, repositoryProvider, docsetSourceFolder);
                         }
                         var dependencyDocsets = LoadDependencies(docset, repositoryProvider);
 
