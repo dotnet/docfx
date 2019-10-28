@@ -493,20 +493,20 @@ outputs:
 ---
 # source_url is the includer for links and xrefs in markdown token
 inputs:
-  docfx.yml:
-  a.md: |
+  docfx.yml: 'exclude: token.md'
+  a.md: '[!include[](token.md)]'
+  b.md: |
     ---
-    uid: a
+    uid: b
     ---
-    [!include[](b.md)]
-  b.md: '[](/a-link), @a'
+    @b
+  token.md: '[](/a-link), @b'
 outputs:
   .links.json: |
     {
       "links": [
         { "source_url": "/a", "target_url": "/a-link" },
-        { "source_url": "/b", "target_url": "/a" },
-        { "source_url": "/b", "target_url": "/a-link" },
+        { "source_url": "/a", "target_url": "/b" },
       ]
     }
   a.json:
