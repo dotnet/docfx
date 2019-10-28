@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                     return Repository.Create(fullPath, branch: null);
                 }
 
-                var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath));
+                var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath) ?? "");
                 return !string.IsNullOrEmpty(parent)
                     ? _repositories.GetOrAdd(parent, k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
                     : null;
