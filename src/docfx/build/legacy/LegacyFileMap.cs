@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                             fileManifest.Value.Monikers);
                         if (fileItem != null)
                         {
-                            listBuilder.Add((PathUtility.NormalizeFile(document.ToLegacyPathRelativeToBasePath(docset)), fileItem));
+                            listBuilder.Add((document.FilePath.Path, fileItem));
                         }
                     });
 
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                     host = docset.HostName,
                     locale = docset.Locale,
                     base_path = $"/{docset.SiteBasePath}",
-                    source_base_path = docset.Config.DocumentId.SourceBasePath,
+                    source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,
                     file_mapping = items.OrderBy(item => item.path).ToDictionary(
