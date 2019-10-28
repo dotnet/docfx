@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -73,10 +74,9 @@ namespace Microsoft.Docs.Build
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment);
 
-            if (!string.IsNullOrEmpty(resolvedHref))
-            {
-                _fileLinkMapBuilder.AddFileLink(referencingFile, resolvedHref);
-            }
+            // NOTE: this should also be relative to root file
+            _fileLinkMapBuilder.AddFileLink((Document)InclusionContext.RootFile ?? referencingFile, resolvedHref);
+
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 

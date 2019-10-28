@@ -24,13 +24,18 @@ namespace Microsoft.Docs.Build
         public void AddFileLink(Document file, string targetUrl)
         {
             Debug.Assert(file != null);
-            Debug.Assert(targetUrl != null);
+
+            if (string.IsNullOrEmpty(targetUrl) || file.SiteUrl == targetUrl)
+            {
+                return;
+            }
 
             var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
             if (error != null)
             {
                 _errorLog.Write(file, error);
             }
+
             _links.Add(new FileLinkItem()
             {
                 SourceUrl = file.SiteUrl,
@@ -42,10 +47,13 @@ namespace Microsoft.Docs.Build
         public object Build()
             => new
             {
+                // TODO: OrderBy is not stable across platform,
+                // need a way to consistently apply this to all sort calls.
+                // https://github.com/dotnet/corefx/issues/15825
                 Links = _links.ToList()
-                .OrderBy(x => x.SourceUrl, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(x => x.TargetUrl, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(x => x.SourceMonikerGroup, StringComparer.OrdinalIgnoreCase),
+                .OrderBy(x => x.SourceUrl, StringComparer.Ordinal)
+                .ThenBy(x => x.TargetUrl, StringComparer.Ordinal)
+                .ThenBy(x => x.SourceMonikerGroup, StringComparer.Ordinal),
             };
     }
 }

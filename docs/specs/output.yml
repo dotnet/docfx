@@ -490,3 +490,24 @@ outputs:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'c.md'.","docs/v1/b.md",3,9]
     ["warning","file-not-found","Invalid file link: 'b.md'.","docs/a/TOC.yml",4,9]
+---
+# source_url is the includer for links and xrefs in markdown token
+inputs:
+  docfx.yml: 'exclude: token.md'
+  a.md: '[!include[](token.md)]'
+  b.md: |
+    ---
+    uid: b
+    ---
+    @b
+  token.md: '[](/a-link), @b'
+outputs:
+  .links.json: |
+    {
+      "links": [
+        { "source_url": "/a", "target_url": "/a-link" },
+        { "source_url": "/a", "target_url": "/b" },
+      ]
+    }
+  a.json:
+  b.json:
