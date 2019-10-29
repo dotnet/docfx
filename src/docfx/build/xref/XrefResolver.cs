@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
-            _xrefHostName = context.Config.XrefHostName;
+            _xrefHostName = string.IsNullOrEmpty(context.Config.XrefHostName) ? docset.HostName : context.Config.XrefHostName;
         }
 
         public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referencingFile)

@@ -1,6 +1,5 @@
 # default config for specs in docfx
 baseUrl: https://docs.com
-xrefHostName: https://docs.com
 output:
   json: true
 gitHub:
