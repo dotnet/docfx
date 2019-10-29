@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
             }
 
-            var (templateEntry, _) = repositoryProvider.GetRepositoryWithEntry(FileOrigin.Template);
+            var (templateEntry, _) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Template);
             return new TemplateEngine(templateEntry);
         }
 

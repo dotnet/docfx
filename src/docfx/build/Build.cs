@@ -253,7 +253,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (name, dependency) in config.Dependencies)
             {
-                var (entry, repository) = repositoryProvider.GetRepositoryWithEntry(FileOrigin.Dependency, name);
+                var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
                 if (!string.IsNullOrEmpty(entry))
                 {
                     result.TryAdd(name, (new Docset(entry, docset.Locale, config, repository), dependency.IncludeInBuild));
