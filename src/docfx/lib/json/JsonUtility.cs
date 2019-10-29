@@ -223,6 +223,37 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static JToken ShallowClone(JToken token)
+        {
+            if (token is JValue)
+            {
+                return token;
+            }
+
+            if (token is JObject obj)
+            {
+                var result = new JObject();
+                foreach (var prop in obj.Properties())
+                {
+                    result[prop.Name] = prop.Value;
+                    SetSourceInfo(result.Property(prop.Name), prop.Annotation<SourceInfo>());
+                }
+                return SetSourceInfo(result, token.Annotation<SourceInfo>());
+            }
+
+            if (token is JArray array)
+            {
+                var result = new JArray();
+                foreach (var item in array)
+                {
+                    result.Add(item);
+                }
+                return SetSourceInfo(result, token.Annotation<SourceInfo>());
+            }
+
+            throw new NotSupportedException();
+        }
+
         public static JToken DeepClone(JToken token)
         {
             if (token is JValue v)

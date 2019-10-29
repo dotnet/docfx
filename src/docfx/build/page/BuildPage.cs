@@ -252,6 +252,8 @@ namespace Microsoft.Docs.Build
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
+            obj = (JObject)JsonUtility.ShallowClone(obj);
+
             // transform model via json schema
             if (file.IsPage)
             {
