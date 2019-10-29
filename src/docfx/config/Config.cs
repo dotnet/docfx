@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// host name used for generating .xrefmap.json
         /// </summary>
-        public string XrefHostName { get; private set; } = string.Empty;
+        public string XrefBaseUrl { get; private set; } = string.Empty;
 
         /// <summary>
         /// The extend file addresses

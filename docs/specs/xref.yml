@@ -106,7 +106,7 @@ repos:
     - files:
         docfx.yml: |
           baseUrl: https://docs.com/base_path
-          xrefHostName: https://test.docs.com
+          xrefBaseUrl: https://test.docs.com
         docs/a.md: |
           ---
           title: Title from yaml header a
