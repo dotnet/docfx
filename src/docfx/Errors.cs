@@ -265,21 +265,6 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{source}'.", source);
 
         /// <summary>
-        /// File contains git merge conflict.
-        /// Examples:
-        ///   - <![CDATA[
-        ///     <<<<<<< HEAD
-        ///     head content
-        ///     =======
-        ///     branch content
-        ///     >>>>>>> refs/heads/branch
-        /// ]]>
-        /// </summary>
-        /// Behavior: ✔️ Message: ❌
-        public static Error MergeConflict(SourceInfo source)
-            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", source);
-
-        /// <summary>
         /// Failed to resolve uid defined by @ syntax.
         /// </summary>
         /// Behavior: ❌ Message: ✔️
