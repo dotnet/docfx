@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 && (string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yml", StringComparison.OrdinalIgnoreCase) 
                 || string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yaml", StringComparison.OrdinalIgnoreCase)))
                 {
-                    document.SetData("rootFileYamlMime", YamlMime.ReadMime(InclusionContext.RootFile?.ToString()));
+                    document.SetData("SchemaName", YamlMime.ReadMime(InclusionContext.RootFile?.ToString()));
                 }
 
                 visitor.Visit(document);
