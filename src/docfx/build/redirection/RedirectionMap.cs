@@ -66,7 +66,6 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (path, redirectUrl) in items)
                 {
-                    // TODO: ensure `SourceInfo<T>` is always not null
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                     {
                         errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
@@ -98,7 +97,7 @@ namespace Microsoft.Docs.Build
                             case LinkType.AbsolutePath:
                                 break;
                             default:
-                                errorLog.Write(Errors.RedirectionUrlNotExisted(redirectUrl));
+                                errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
                                 continue;
                         }
                     }
@@ -147,7 +146,7 @@ namespace Microsoft.Docs.Build
                 var normalizedRedirectUrl = NormalizeRedirectUrl(redirect.RedirectionUrl);
                 if (!publishUrlMap.TryGetValue(normalizedRedirectUrl, out var docs))
                 {
-                    errorLog.Write(Errors.RedirectionUrlNotExisted(originalRedirectUrl));
+                    errorLog.Write(Errors.RedirectionUrlNotFound(redirect.FilePath.Path, originalRedirectUrl));
                 }
                 else
                 {

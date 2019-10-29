@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                     .ToList();
 
                 if (conflictMoniker.Count != 0
-                    || (files.Count() > 1 && files.Any(file => file.Value.Contains(PublishModelBuilder.NonVersion))))
+                    || (files.Count > 1 && files.Any(file => file.Value.Contains(NonVersion))))
                 {
                     context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)

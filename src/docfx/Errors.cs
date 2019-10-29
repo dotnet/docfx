@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -43,9 +42,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
         /// </summary>
-        public static Error RedirectionUrlNotExisted(SourceInfo<string> source)
+        /// Behavior: ✔️ Message: ✔️
+        public static Error RedirectionUrlNotFound(string from, SourceInfo<string> source)
         {
-            return new Error(ErrorLevel.Suggestion, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`", source);
+            var message = $"Can't preserve document ID for redirected file '{from}' " +
+                          $"because redirect URL '{source}' is invalid or is a relative path to a file in another repo. " +
+                          "Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.";
+            return new Error(ErrorLevel.Suggestion, "redirection-url-not-found", message, source);
         }
 
         /// <summary>
@@ -252,6 +255,14 @@ namespace Microsoft.Docs.Build
         /// Behavior: ✔️ Message: ✔️
         public static Error FileNotFound(SourceInfo<string> source)
             => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
+
+        /// <summary>
+        /// Can't find a folder.
+        /// Examples: pointing template to a local folder that does not exist
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DirectoryNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{source}'.", source);
 
         /// <summary>
         /// File contains git merge conflict.

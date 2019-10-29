@@ -14,14 +14,14 @@ namespace Microsoft.Docs.Build
         {
             var builder = new StringBuilder("\n");
             var errors = new List<Error>();
-            if (reader.ReadLine()?.TrimEnd() != "---")
+            var line = reader.ReadLine();
+            if (line?.TrimEnd() != "---")
             {
                 return (errors, new JObject());
             }
 
-            while (reader.Peek() != -1)
+            while ((line = reader.ReadLine()) != null)
             {
-                var line = reader.ReadLine();
                 var trimEnd = line.TrimEnd();
                 if (trimEnd == "---" || trimEnd == "...")
                 {

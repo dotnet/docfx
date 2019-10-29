@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, Docset docset, Config config, string locale, out string localizationDocsetPath, out Repository localizationRepository)
+        public static bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, Docset docset, Config config, string docsetSourceFolder, string locale, out string localizationDocsetPath, out Repository localizationRepository)
         {
             Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                             locale,
                             config.Localization.DefaultLocale);
                         var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(locRemote, locBranch), false);
-                        localizationDocsetPath = locRepoPath;
+                        localizationDocsetPath = PathUtility.NormalizeFolder(Path.Combine(locRepoPath, docsetSourceFolder));
                         localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
                         break;
                     }

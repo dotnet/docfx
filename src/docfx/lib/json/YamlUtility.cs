@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public static string ReadMime(TextReader reader)
         {
-            var mime = ReadMime(reader.ReadLine());
+            var mime = ReadMime(reader.ReadLine() ?? "");
             if (string.Compare(mime, "YamlDocument", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 return ReadDocumentType(reader);
@@ -58,19 +58,34 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string input, FilePath file)
         {
+            using (var reader = new StringReader(input))
+            {
+                return Deserialize<T>(reader, file);
+            }
+        }
+
+        /// <summary>
+        /// De-serialize from yaml string, which is not user input
+        /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
+        /// </summary>
+        public static T Deserialize<T>(TextReader input, FilePath file)
+        {
             var (_, token) = ParseAsJToken(input, file);
             return token.ToObject<T>(JsonUtility.Serializer);
         }
 
         /// <summary>
-        /// Deserialize from a YAML file, get from or add to cache
+        /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadYamlFile(file);
+        public static (List<Error>, JToken) Parse(string input, FilePath file)
+        {
+            return Parse(new StringReader(input), file);
+        }
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(string input, FilePath file)
+        public static (List<Error>, JToken) Parse(TextReader input, FilePath file)
         {
             var (errors, token) = ParseAsJToken(input, file);
             var (nullErrors, result) = token.RemoveNulls();
@@ -91,7 +106,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static (List<Error>, JToken) ParseAsJToken(string input, FilePath file)
+        private static (List<Error>, JToken) ParseAsJToken(TextReader input, FilePath file)
         {
             try
             {

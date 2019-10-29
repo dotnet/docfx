@@ -109,8 +109,19 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string json, FilePath file)
         {
-            using (var stringReader = new StringReader(json))
-            using (var reader = new JsonTextReader(stringReader))
+            using (var reader = new StringReader(json))
+            {
+                return Deserialize<T>(reader, file);
+            }
+        }
+
+        /// <summary>
+        /// De-serialize a data string, which is not user input, to an object
+        /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
+        /// </summary>
+        public static T Deserialize<T>(TextReader json, FilePath file)
+        {
+            using (var reader = new JsonTextReader(json))
             {
                 try
                 {
@@ -166,20 +177,19 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from JSON file, get from or add to cache
-        /// </summary>
-        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadJsonFile(file);
-
-        /// <summary>
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
         public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
         {
+            return Parse(new StringReader(json), file);
+        }
+
+        public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file)
+        {
             try
             {
-                using (var stringReader = new StringReader(json))
-                using (var reader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.None })
+                using (var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None })
                 {
                     return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
                 }

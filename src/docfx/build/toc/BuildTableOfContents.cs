@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -13,15 +14,16 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
             // load toc model
-            var (errors, model, _, _) = context.Cache.LoadTocModel(context, file);
+            var (errors, model, _, _) = context.TableOfContentsLoader.Load(file);
 
             // enable pdf
             var outputPath = file.GetOutputPath(model.Metadata.Monikers, isPage: false);
+            var monikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers);
 
             if (file.Docset.Config.Output.Pdf)
             {
-                model.Metadata.PdfAbsolutePath = "/" + UrlUtility.Combine(
-                    file.Docset.SiteBasePath, "opbuildpdf", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
+                model.Metadata.PdfAbsolutePath = "/" +
+                    UrlUtility.Combine(file.Docset.SiteBasePath, "opbuildpdf", monikerGroup ?? string.Empty, LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
             // TODO: Add experimental and experiment_id to publish item
@@ -32,7 +34,7 @@ namespace Microsoft.Docs.Build
                 SourcePath = file.FilePath.Path,
                 Locale = file.Docset.Locale,
                 Monikers = model.Metadata.Monikers,
-                MonikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers),
+                MonikerGroup = monikerGroup,
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem))

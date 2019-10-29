@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using HtmlAgilityPack;
 using Markdig;
@@ -46,7 +47,11 @@ namespace Microsoft.Docs.Build
             _markdownValidationRules = config.MarkdownValidationRules;
             if (!string.IsNullOrEmpty(_markdownValidationRules))
             {
-                _markdownValidationRules = restoreFileMap.GetRestoredFilePath(config.MarkdownValidationRules);
+                using (var stream = restoreFileMap.ReadStream(config.MarkdownValidationRules))
+                {
+                    // TODO: validation rules currently only supports physical file.
+                    _markdownValidationRules = ((FileStream)stream).Name;
+                }
             }
 
             _pipelines = new[]

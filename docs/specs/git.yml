@@ -1,3 +1,12 @@
+# Can build a folder without a git repository
+temp: true
+inputs:
+  docfx.yml:
+  a.md:
+outputs:
+  a.json: |
+    { "content_git_url": undefined }
+---
 # Show git contribution info when userProfile is set to relative file path
 repos:
   https://github.com/testowner/testrepo#master-file-cache:
@@ -371,6 +380,9 @@ repos:
             bilingual: true
   https://github.com/git/repo.zh-cn#live-sxs:
     - files:
+        docfx.yml: |
+          localization:
+            bilingual: true
         a.md:
   https://github.com/git/repo.zh-cn#live-none-existing:
     - files:

@@ -48,19 +48,20 @@ namespace Microsoft.Docs.Build
             return Create(file, content);
         }
 
-        public static DependencyLockProvider CreateFromConfig(Input input, Config config)
+        public static DependencyLockProvider CreateFromConfig(string docsetPath, Config config)
         {
-            Debug.Assert(input != null);
-
-            string content;
-            try
-            {
-                content = RestoreFileMap.GetRestoredFileContent(input, config.DependencyLock);
-            }
-            catch (DocfxException ex) when (ex.Error.Code == "file-not-found")
+            if (string.IsNullOrEmpty(config.DependencyLock))
             {
                 return new DependencyLockProvider(new Dictionary<(string url, string branch), DependencyGitLock>());
             }
+
+            var fullPath = Path.Combine(docsetPath, config.DependencyLock);
+            if (!File.Exists(fullPath))
+            {
+                return new DependencyLockProvider(new Dictionary<(string url, string branch), DependencyGitLock>());
+            }
+
+            var content = ProcessUtility.ReadFile(Path.Combine(docsetPath, config.DependencyLock));
 
             return Create(config.DependencyLock, content);
         }

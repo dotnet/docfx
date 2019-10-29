@@ -97,11 +97,7 @@ namespace Microsoft.Docs.Build
                     referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
-            // ignore self bookmark reference for FileLinkMap
-            if (!isSelfBookmark && !string.IsNullOrEmpty(link))
-            {
-                _fileLinkMapBuilder.AddFileLink(referencingFile, link);
-            }
+            _fileLinkMapBuilder.AddFileLink(relativeToFile, link);
 
             return (error, link, file);
         }
@@ -296,7 +292,6 @@ namespace Microsoft.Docs.Build
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
                     var commit = repo != null && commits.Count > 1 ? commits[1] : default;
                     path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
-
                     if (_input.Exists(path))
                     {
                         return Document.Create(_fallbackDocset, path, _input, _templateEngine);

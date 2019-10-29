@@ -69,6 +69,11 @@ namespace Microsoft.Docs.Build
         public string BaseUrl { get; private set; } = string.Empty;
 
         /// <summary>
+        /// host name used for generating .xrefmap.json
+        /// </summary>
+        public string XrefBaseUrl { get; private set; } = string.Empty;
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>
@@ -196,8 +201,8 @@ namespace Microsoft.Docs.Build
         public readonly PackagePath Template = new PackagePath();
 
         /// <summary>
-        /// Gets the dependency lock file path
-        /// It should be absolute url or absolute/relative path
+        /// Gets the dependency lock file path.
+        /// It is an absolute file path or relative file path relative to docset folder.
         /// </summary>
         public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
 

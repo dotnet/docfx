@@ -13,7 +13,6 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
-        private readonly Cache _cache;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
         private readonly HashSet<string> _reservedMetadata;
@@ -29,16 +28,15 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
-        public MetadataProvider(Docset docset, Input input, Cache cache, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
+        public MetadataProvider(Docset docset, Input input, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
         {
             _input = input;
-            _cache = cache;
             _globalMetadata = docset.Config.GlobalMetadata;
 
             MetadataSchemas = Array.ConvertAll(
                 docset.Config.MetadataSchema,
                 schema => JsonUtility.Deserialize<JsonSchema>(
-                    restoreFileMap.GetRestoredFileContent(schema), schema.Source.File));
+                    restoreFileMap.ReadString(schema), schema.Source.File));
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
@@ -155,12 +153,12 @@ namespace Microsoft.Docs.Build
 
             if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return LoadSchemaDocumentMetadata(_cache.LoadYamlFile(file), file);
+                return LoadSchemaDocumentMetadata(_input.ReadYaml(file.FilePath), file);
             }
 
             if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
             {
-                return LoadSchemaDocumentMetadata(_cache.LoadJsonFile(file), file);
+                return LoadSchemaDocumentMetadata(_input.ReadJson(file.FilePath), file);
             }
 
             return (new List<Error>(), new JObject());

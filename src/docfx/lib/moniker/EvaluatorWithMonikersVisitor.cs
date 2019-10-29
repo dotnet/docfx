@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             var result = new Dictionary<string, (string, int)>(StringComparer.OrdinalIgnoreCase);
             foreach (var (productName, productMonikerList) in _productMoniker)
             {
-                for (var i = 0; i < productMonikerList.Count(); i++)
+                for (var i = 0; i < productMonikerList.Count; i++)
                 {
                     result[productMonikerList[i].MonikerName] = (productName, i);
                 }

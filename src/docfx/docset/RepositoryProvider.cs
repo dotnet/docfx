@@ -12,9 +12,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<(FileOrigin origin, string dependencyName), Lazy<(string docset, Repository repository)>> _dependencyRepositories
             = new ConcurrentDictionary<(FileOrigin origin, string dependencyName), Lazy<(string docset, Repository repository)>>();
 
-        private string _locale;
-        private string _docset;
-        private string _fallbackDocset;
+        private readonly string _locale;
+        private string _docsetPath;
+        private string _fallbackDocsetPath;
         private Repository _docsetRepository;
         private Repository _fallbackRepository;
         private RestoreGitMap _restoreGitMap;
@@ -22,11 +22,10 @@ namespace Microsoft.Docs.Build
 
         public RepositoryProvider(string docsetPath, CommandLineOptions options)
         {
-            _docset = docsetPath;
+            _docsetPath = docsetPath;
             _docsetRepository = Repository.Create(docsetPath);
             _locale = LocalizationUtility.GetLocale(_docsetRepository, options);
 
-            _fallbackDocset = default;
             _fallbackRepository = default;
             _restoreGitMap = default;
             _config = default;
@@ -36,7 +35,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(_fallbackRepository is null);
 
-            _fallbackDocset = fallbackRepository.Path;
             _fallbackRepository = fallbackRepository;
         }
 
@@ -55,34 +53,37 @@ namespace Microsoft.Docs.Build
 
             _restoreGitMap = restoreGitMap;
             _fallbackRepository = GetFallbackRepository(_docsetRepository, restoreGitMap);
-            _fallbackDocset = _fallbackRepository?.Path;
         }
 
         public void ConfigLocalizationRepo(string localizationDocsetPath, Repository localizationRepository)
         {
             Debug.Assert(_fallbackRepository is null);
 
-            _fallbackDocset = _docset;
             _fallbackRepository = _docsetRepository;
-            _docset = localizationDocsetPath;
+            _docsetPath = localizationDocsetPath;
             _docsetRepository = localizationRepository;
+        }
+
+        public void ConfigFallbackDocsetPath(string fallbackDocsetPath)
+        {
+            _fallbackDocsetPath = fallbackDocsetPath;
         }
 
         public Repository GetRepository(FileOrigin origin, string dependencyName = null)
         {
-            return GetRepositoryWithEntry(origin, dependencyName).repository;
+            return GetRepositoryWithDocsetEntry(origin, dependencyName).repository;
         }
 
-        public (string entry, Repository repository) GetRepositoryWithEntry(FileOrigin origin, string dependencyName = null)
+        public (string docsetPath, Repository repository) GetRepositoryWithDocsetEntry(FileOrigin origin, string dependencyName = null)
         {
             switch (origin)
             {
                 case FileOrigin.Redirection:
                 case FileOrigin.Default:
-                    return (_docset, _docsetRepository);
+                    return (_docsetPath, _docsetRepository);
 
                 case FileOrigin.Fallback:
-                    return (_fallbackDocset, _fallbackRepository);
+                    return (_fallbackDocsetPath, _fallbackRepository);
 
                 case FileOrigin.Template when _config != null && _restoreGitMap != null:
                     return _dependencyRepositories.GetOrAdd((origin, dependencyName), _ =>
