@@ -252,18 +252,19 @@ namespace Microsoft.Docs.Build
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
-            obj = (JObject)JsonUtility.ShallowClone(obj);
+            var validatedObj = new JObject();
+            JsonUtility.Merge(validatedObj, obj);
 
             // transform model via json schema
             if (file.IsPage)
             {
                 // transform metadata via json schema
                 var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-                obj["metadata"] = inputMetadata.RawJObject;
+                JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = inputMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
             }
 
-            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, validatedObj);
             errors.AddRange(schemaTransformError);
             var pageModel = (JObject)transformedToken;
 
