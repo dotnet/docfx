@@ -17,8 +17,8 @@ inputs:
     >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
 outputs:
   .errors.log: |
-    ["error","merge-conflict","File contains merge conflict","docs/toc.md",1,1]
-    ["error","merge-conflict","File contains merge conflict","docs/a.md",2,1]
+    ["warning","merge-conflict","File contains merge conflict","docs/toc.md",1,1]
+    ["warning","merge-conflict","File contains merge conflict","docs/a.md",2,1]
 ---
 # Metadata value must be scalar or scalar array
 inputs:
