@@ -84,7 +84,6 @@ namespace Microsoft.Docs.Build
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 content = content ?? _input.ReadString(file.FilePath);
-                GitUtility.CheckMergeConflictMarker(content, file.FilePath);
                 return MarkdownTocMarkup.Parse(_markdownEngine, content, file);
             }
 

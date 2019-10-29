@@ -236,23 +236,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static void CheckMergeConflictMarker(string content, FilePath file)
-        {
-            var start = content.StartsWith("<<<<<<<") ? 0 : content.IndexOf("\n<<<<<<<");
-            if (start >= 0 && content.Contains("\n>>>>>>>") && content.Contains("\n======="))
-            {
-                var line = 1;
-                for (var i = 0; i <= start; i++)
-                {
-                    if (content[i] == '\n')
-                        line++;
-                }
-
-                var source = new SourceInfo(file, line, 1);
-                throw Errors.MergeConflict(source).ToException();
-            }
-        }
-
         public static unsafe byte[] ReadBytes(string repoPath, string filePath, string committish)
         {
             if (git_repository_open(out var repo, repoPath) != 0)
