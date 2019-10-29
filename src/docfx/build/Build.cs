@@ -40,7 +40,6 @@ namespace Microsoft.Docs.Build
                     var repository = repositoryProvider.GetRepository(FileOrigin.Default);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
-                    var docsetSourceFolder = repository is null ? string.Empty : PathUtility.NormalizeFolder(Path.GetRelativePath(repository.Path, docsetPath));
 
                     using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
