@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
-                    var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
+                    var path = $"{EnvironmentVariable.XrefHostName}{xref.DeclaringFile.SiteUrl}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
                     return xrefSpec;
