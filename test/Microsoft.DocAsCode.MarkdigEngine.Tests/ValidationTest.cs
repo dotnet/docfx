@@ -365,7 +365,7 @@ uid: learn.azure.introduction";
                MarkdownObjectValidatorFactory.FromLambda<MarkdownDocument>(
                    root =>
                    {
-                       schemaName = root.GetData("SchemaName").ToString();
+                       schemaName = root.GetData("SchemaName")?.ToString();
                    })
                );
             var html = Markup("# Hello World", rewriter, null);
@@ -382,7 +382,11 @@ uid: learn.azure.introduction";
                     && (string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yml", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yaml", StringComparison.OrdinalIgnoreCase)))
                 {
-                    document.SetData("SchemaName", YamlMime.ReadMime(InclusionContext.RootFile?.ToString()));
+                    var schemaName = YamlMime.ReadMime(InclusionContext.RootFile?.ToString());
+                    if (!string.IsNullOrEmpty(schemaName))
+                    {
+                        document.SetData("SchemaName", schemaName);
+                    }
                 }
 
                 documentRewriter.Visit(document);
