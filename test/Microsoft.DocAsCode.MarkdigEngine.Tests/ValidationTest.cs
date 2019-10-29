@@ -379,17 +379,7 @@ uid: learn.azure.introduction";
             var documentRewriter = new MarkdownDocumentVisitor(rewriter);
             pipelineBuilder.DocumentProcessed += document =>
             {
-                if (InclusionContext.IsInclude
-                    && (string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yml", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yaml", StringComparison.OrdinalIgnoreCase)))
-                {
-                    var schemaName = YamlMime.ReadMime(InclusionContext.RootFile?.ToString());
-                    if (!string.IsNullOrEmpty(schemaName))
-                    {
-                        document.SetData("SchemaName", schemaName);
-                    }
-                }
-
+                ValidationExtension.SetSchemaName(document);
                 documentRewriter.Visit(document);
             };
             var pipeline = pipelineBuilder.Build();
