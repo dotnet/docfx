@@ -397,6 +397,7 @@ namespace Microsoft.DocAsCode.Common
                 switch (parts[i])
                 {
                     case "~":
+                    case "%7E":
                         if (parentCount > 0 || stack.Count > 0 || isFromWorkingFolder)
                         {
                             throw new InvalidOperationException($"Invalid path: {path}");
