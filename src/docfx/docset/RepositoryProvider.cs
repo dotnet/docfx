@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 return Repository.Create(fullPath, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
             }
 
-            var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath));
+            var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath) ?? "");
             return !string.IsNullOrEmpty(parent)
                 ? _repositories.GetOrAdd(parent, GetRepository)
                 : null;
