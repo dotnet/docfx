@@ -479,7 +479,6 @@ outputs:
         {"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png"},

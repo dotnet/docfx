@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly MonikerProvider _monikerProvider;
         private readonly ErrorLog _errorLog;
-        private readonly ListBuilder<FileLinkItem> _links = new ListBuilder<FileLinkItem>();
+        private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
 
         public FileLinkMapBuilder(MonikerProvider monikerProvider, ErrorLog errorLog)
         {
@@ -36,7 +35,7 @@ namespace Microsoft.Docs.Build
                 _errorLog.Write(file, error);
             }
 
-            _links.Add(new FileLinkItem()
+            _links.TryAdd(new FileLinkItem()
             {
                 SourceUrl = file.SiteUrl,
                 SourceMonikerGroup = MonikerUtility.GetGroup(monikers),
@@ -44,16 +43,6 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public object Build()
-            => new
-            {
-                // TODO: OrderBy is not stable across platform,
-                // need a way to consistently apply this to all sort calls.
-                // https://github.com/dotnet/corefx/issues/15825
-                Links = _links.ToList()
-                .OrderBy(x => x.SourceUrl, StringComparer.Ordinal)
-                .ThenBy(x => x.TargetUrl, StringComparer.Ordinal)
-                .ThenBy(x => x.SourceMonikerGroup, StringComparer.Ordinal),
-            };
+        public object Build() => new { Links = _links.OrderBy(_ => _) };
     }
 }
