@@ -352,13 +352,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Trait("Related", "Validation")]
         public void TestGetSchemaName()
         {
+            const string expectedSchemaName = "YamlMime:ModuleUnit";
+            const string yamlFilename = "moduleunit.yml";
             const string yamlContent = @"### YamlMime:ModuleUnit
 uid: learn.azure.introduction";
-            File.WriteAllText("moduleunit.yml", yamlContent);
-            InclusionContext.PushFile("moduleunit.yml");
+            File.WriteAllText(yamlFilename, yamlContent);
+            InclusionContext.PushFile(yamlFilename);
             InclusionContext.PushInclusion("introduction-included.md");
 
-            const string expectedSchemaName = "YamlMime:ModuleUnit";
             string schemaName = string.Empty;
 
             var rewriter = MarkdownObjectRewriterFactory.FromValidator(
