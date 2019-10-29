@@ -84,8 +84,9 @@ namespace Microsoft.Docs.Build
             else if (filePath.EndsWith(".md", PathUtility.PathComparison))
             {
                 content = content ?? _input.ReadString(file.FilePath);
-                GitUtility.CheckMergeConflictMarker(content, file.FilePath);
-                return MarkdownTocMarkup.Parse(_markdownEngine, content, file);
+                var (errors, model) = MarkdownTocMarkup.Parse(_markdownEngine, content, file);
+                errors.AddIfNotNull(GitUtility.CheckMergeConflictMarker(content, file.FilePath));
+                return (errors, model);
             }
 
             throw new NotSupportedException($"{filePath} is an unknown TOC file");
