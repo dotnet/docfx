@@ -269,11 +269,14 @@ namespace Microsoft.Docs.Build
             var message = error.Message;
             var file = error.FilePath?.Path;
             var line = error.Line;
+            var end_line = error.EndLine;
+            var column = error.Column;
+            var end_column = error.EndColumn;
             var date_time = DateTime.UtcNow;
             var origin = error.FilePath?.Origin != null && error.FilePath.Origin != default ? error.FilePath.Origin : (FileOrigin?)null;
             var log_item_type = "user";
 
-            return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, date_time, origin });
+            return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, end_line, column, end_column, date_time, origin });
         }
     }
 }

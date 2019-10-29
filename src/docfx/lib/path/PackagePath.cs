@@ -31,10 +31,18 @@ namespace Microsoft.Docs.Build
         {
         }
 
-        public PackagePath(string url)
+        public PackagePath(string value)
         {
-            Url = url;
-            OnDeserialized(default);
+            if (UrlUtility.IsHttp(value))
+            {
+                Type = PackageType.Git;
+                (Url, Branch) = SplitGitUrl(value);
+            }
+            else
+            {
+                Type = PackageType.Folder;
+                Path = value;
+            }
         }
 
         public PackagePath(string remote, string branch)
@@ -45,7 +53,6 @@ namespace Microsoft.Docs.Build
             Type = PackageType.Git;
             Url = remote;
             Branch = branch;
-            Path = null;
         }
 
         public override string ToString()
@@ -78,17 +85,19 @@ namespace Microsoft.Docs.Build
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            if (UrlUtility.IsHttp(Url))
+            if (Url != null)
             {
                 Type = PackageType.Git;
-                var (url, branch) = SplitGitUrl(Url);
-                Url = url;
-                Branch = Branch ?? branch;
+                Branch = Branch ?? "master";
+
+                // Explicitly set path to null here,
+                // we might want to represent a subfolder inside a repository by setting both url and path,
+                // but for now it is not supported.
+                Path = null;
             }
-            else
+            else if (Path != null)
             {
                 Type = PackageType.Folder;
-                Path = Path ?? Url;
             }
         }
     }

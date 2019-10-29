@@ -65,11 +65,6 @@ namespace Microsoft.Docs.Build
         public string SiteUrl { get; }
 
         /// <summary>
-        /// Gets the canonical URL without locale
-        /// </summary>
-        public string CanonicalUrlWithoutLocale { get; }
-
-        /// <summary>
         /// Gets the canonical URL
         /// </summary>
         public string CanonicalUrl { get; }
@@ -104,7 +99,6 @@ namespace Microsoft.Docs.Build
             FilePath filePath,
             string sitePath,
             string siteUrl,
-            string canonicalUrlWithoutLocale,
             string canonicalUrl,
             ContentType contentType,
             SourceInfo<string> mime,
@@ -119,7 +113,6 @@ namespace Microsoft.Docs.Build
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
-            CanonicalUrlWithoutLocale = canonicalUrlWithoutLocale;
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
@@ -225,9 +218,8 @@ namespace Microsoft.Docs.Build
             }
 
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
-            var canonicalUrlWithoutLocale = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage, withLocale: false);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrlWithoutLocale, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage);
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage);
         }
 
         internal static ContentType GetContentType(string path)
@@ -317,7 +309,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, string mime, bool isPage, bool withLocale = true)
+        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, string mime, bool isPage)
         {
             var config = docset.Config;
             if (isExperimental)
@@ -326,7 +318,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, config.Output.Json, isPage);
             }
 
-            return withLocale ? $"{docset.HostName}/{docset.Locale}{siteUrl}" : $"{docset.HostName}{siteUrl}";
+            return $"{docset.HostName}/{docset.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {
@@ -375,7 +367,7 @@ namespace Microsoft.Docs.Build
 
         private (string docId, string versionIndependentId) LoadDocumentId()
         {
-            var sourcePath = PathUtility.NormalizeFile(Path.GetRelativePath(Docset.Config.DocumentId.SourceBasePath, FilePath.Path));
+            var sourcePath = FilePath.Path;
 
             var (mappedDepotName, mappedSourcePath) = Docset.Config.DocumentId.GetMapping(sourcePath);
 

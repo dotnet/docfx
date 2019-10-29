@@ -675,24 +675,26 @@ outputs:
 repos:
   https://github.com/deletedtoken/a.zh-cn:
     - files:
-        docfx.yml:
-        docs/a.md: |
-          [!include[include deleted tokena](tokena.md)]
-  https://github.com/deletedtoken/a:
-    - files:
+        a/docfx.yml:
       author: a
     - files:
-        docs/tokena.md: |
+        a/docfx.yml:
+        a/docs/tokena.md: |
           [!include[include deleted tokenb](tokenb.md)]
           [!code-csharp[Main](program.cs)]
-        docs/tokenb.md: b
-        docs/program.cs:
+        a/docs/tokenb.md: b
+        a/docs/program.cs:
       author: b
+  https://github.com/deletedtoken/a.zh-cn:
+    - files:
+        a/docfx.yml:
+        a/docs/a.md: |
+          [!include[include deleted tokena](tokena.md)]
 outputs:
-  docs/a.json: |
+  a/docs/a.json: |
     {"conceptual":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
-  .dependencymap.json: |
-    {"dependencies": {"docs/tokena.md": undefined}}
+  a/.dependencymap.json: |
+    {"dependencies": {"a/docs/tokena.md": undefined}}
 ---
 # fallback to deleted resource
 repos:
@@ -807,7 +809,8 @@ outputs:
     {"items":[{"name":"reference toc a","items":[{"name":"reference markdown a","href":"../a/a"}]}]}
 ---
 # loc build gets restored files
-# from current docset firestly, then from fallback docset if has
+# from current docset firstly, then from fallback docset if has
+locale: zh-cn
 repos:
   https://github.com/buildhistory/a.zh-cn:
     - files:

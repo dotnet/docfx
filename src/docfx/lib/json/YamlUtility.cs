@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public static string ReadMime(TextReader reader)
         {
-            var mime = ReadMime(reader.ReadLine());
+            var mime = ReadMime(reader.ReadLine() ?? "");
             if (string.Compare(mime, "YamlDocument", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 return ReadDocumentType(reader);

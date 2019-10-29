@@ -73,18 +73,13 @@ outputs:
 # document id = md5("Win.sccm|mdt/release-notes.md")
 # version independent id = md5("Win.sccm|mdt/release-notes")
 inputs:
-  docfx.yml: |
-    documentId:
-      sourceBasePath: sccm
+  sccm/docfx.yml: |
     name: sccm
     product: Win
-    files: sccm/**/*
     baseUrl: https://docs.com/sccm
-    routes:
-      sccm/: .
   sccm/mdt/release-notes.md:
 outputs:
-  sccm/mdt/release-notes.json: |
+  sccm/sccm/mdt/release-notes.json: |
     { "document_id": "0b1c8a5d-b639-d555-0850-b98a9010023c", "document_version_independent_id": "b20fdb1c-8d40-c3b2-2265-779a3f2dfe98", "depot_name": "Win.sccm" }
 ---
 # generate index document id and version id
@@ -92,105 +87,90 @@ outputs:
 # document id = md5("Win.sccm|index.md") || md5("Win.sccm|mdm/index.md")
 # version independent id = md5("Win.sccm|index") || md5("Win.sccm|mdm/index")
 inputs:
-  docfx.yml: |
-    documentId:
-      sourceBasePath: sccm
+  sccm/docfx.yml: |
     name: sccm
     product: Win
     files: "**/*"
     baseUrl: https://docs.com/sccm
-    routes:
-      sccm/: .
   sccm/mdm/index.md:
   sccm/index.md:
 outputs:
-  sccm/index.json: |
+  sccm/sccm/index.json: |
     { "document_id": "29602e3e-439e-865c-f1c9-2eb706f97b31", "document_version_independent_id": "34196fc5-28d6-b496-a21f-8661876802c7" }
-  sccm/mdm/index.json: |
+  sccm/sccm/mdm/index.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
 ---
 # generate same document id and version id with 'redirection with document id'
 # A => B, B's ids should be same with A's
 inputs:
-  docfx.yml: |
-    documentId:
-      sourceBasePath: docs/
+  docs/docfx.yml: |
     baseUrl: https://docs.com/docs
     routes:
       docs/: .
     redirections:
-      docs/a.md: /docs/x
-      docs/b.md: /docs/y?query=value#bookmark
-      docs/c.md: /docs/folder1/index
-      docs/d.md: /docs/folder2/
-      docs/e.md: /docs/z
-      docs/f.md: /docs/e
+      a.md: /docs/x
+      b.md: /docs/y?query=value#bookmark
+      c.md: /docs/folder1/index
+      d.md: /docs/folder2/
+      e.md: /docs/z
+      f.md: /docs/e
   docs/x.md:
   docs/y.md:
   docs/z.md:
   docs/folder1/index.md:
   docs/folder2/index.md:
 outputs:
-  docs/x.json: |
+  docs/docs/x.json: |
     { "document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5" }
-  docs/y.json: |
+  docs/docs/y.json: |
     { "document_id": "746406e9-2aac-1b22-259a-b6712b49c610", "document_version_independent_id": "d93f906b-e1e0-e950-45b4-ce1e777af3e6" }
-  docs/z.json: |
+  docs/docs/z.json: |
     { "document_id": "3c1b64b6-2acf-2a8d-0b02-687e4c6751b6", "document_version_independent_id": "b7faa2da-5935-b5fb-4609-dd030b0e74ab" }
-  docs/folder1/index.json: |
+  docs/docs/folder1/index.json: |
     { "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902", "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608" }
-  docs/folder2/index.json: |
+  docs/docs/folder2/index.json: |
     { "document_id": "64dd67d2-325f-bc70-d1b3-0106d0cb71e3", "document_version_independent_id": "5f485788-9aee-232c-f1f0-66c205d6e9a9" }
 ---
 # generate different document id and version id with 'redirection without document id'
 inputs:
-  docfx.yml: |
-    documentId:
-      sourceBasePath: sccm
+  sccm/docfx.yml: |
     name: sccm
     product: Win
     files: "**/*"
     baseUrl: https://docs.com/sccm
-    routes:
-      sccm/: .
     redirectionsWithoutId:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
 outputs:
-  sccm/mdm/understand/hybrid-mobile-device-management.json: |
+  sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
 ---
 # redirect with document id resolve relative redirect_url
 # publish item's redirect_url keeps user's input
 inputs:
-  docfx.yml: |
-    documentId:
-      sourceBasePath: develop
+  develop/docfx.yml: |
     name: partner-center-sdk
     product: MSDN
-    files: "develop/**/*"
     baseUrl: https://docs.com/partner-center-sdk
-    routes:
-      develop/: .
     redirections:
-      develop/agreement-metadata.md: agreement-metadata-resources
+      agreement-metadata.md: agreement-metadata-resources
   develop/agreement-metadata-resources.md:
 outputs:
-  partner-center-sdk/agreement-metadata-resources.json: |
+  develop/partner-center-sdk/agreement-metadata-resources.json: |
     { "document_id": "ad740933-6e60-291e-14ba-8a4e81133047", "document_version_independent_id": "e8a46a09-153a-2eac-1bd0-0aad104a6616" }
-  .publish.json: |
+  develop/.publish.json: |
     {
       "files": [
           {
               "url": "/partner-center-sdk/agreement-metadata",
-              "source_path": "develop/agreement-metadata.md",
+              "source_path": "agreement-metadata.md",
               "locale": "en-us",
               "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
           },
           {
               "url": "/partner-center-sdk/agreement-metadata-resources",
               "path": "partner-center-sdk/agreement-metadata-resources.json",
-              "source_path": "develop/agreement-metadata-resources.md",
+              "source_path": "agreement-metadata-resources.md",
               "locale": "en-us"
           }
       ]
@@ -198,24 +178,20 @@ outputs:
 ---
 # Show warning if two or more files redirect to the same file with document id
 inputs:
-  docfx.yml: |
-    documentId:
-      sourceBasePath: sccm
+  sccm/docfx.yml: |
     name: sccm
     product: Win
     files: "**/*"
     baseUrl: https://docs.com/sccm
-    routes:
-      sccm/: .
     redirections:
-      sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
-      sccm/mdm/index2.md: /sccm/mdm/understand/hybrid-mobile-device-management
+      mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
+      mdm/index2.md: /sccm/mdm/understand/hybrid-mobile-device-management
   sccm/mdm/understand/hybrid-mobile-device-management.md:
 outputs:
-  sccm/mdm/understand/hybrid-mobile-device-management.json: |
+  sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
-  .errors.log: |
-    ["warning","redirection-url-conflict","The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings","docfx.yml",11,23]
+  sccm/.errors.log: |
+    ["warning","redirection-url-conflict","The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings","docfx.yml",7,18]
 ---
 # redirect to empty URL
 inputs:
@@ -242,12 +218,12 @@ inputs:
       docs/h.md: "/docs/folder0/index"
 outputs:
   .errors.log: |
-    ["suggestion","redirection-url-not-found","Can’t preserve document ID for redirected file ‘docs/b.md’ because redirect URL ‘http://hostname/test’ is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",4,14]
-    ["suggestion","redirection-url-not-found","Can’t preserve document ID for redirected file ‘docs/a.md’ because redirect URL ‘/docs/x’ is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",2,14]
-    ["suggestion","redirection-url-not-found","Can’t preserve document ID for redirected file ‘docs/c.md’ because redirect URL ‘/docs/x#bookmark’ is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",3,14]
-    ["suggestion","redirection-url-not-found","Can’t preserve document ID for redirected file ‘docs/d.md’ because redirect URL ‘/docs/folder0’ is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",5,14]
-    ["suggestion","redirection-url-not-found","Can’t preserve document ID for redirected file ‘docs/f.md’ because redirect URL ‘/docs/folder0/’ is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",6,14]
-    ["suggestion","redirection-url-not-found","Can’t preserve document ID for redirected file ‘docs/h.md’ because redirect URL ‘/docs/folder0/index’ is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",7,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/b.md' because redirect URL 'http://hostname/test' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",4,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/a.md' because redirect URL '/docs/x' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",2,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/c.md' because redirect URL '/docs/x#bookmark' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",3,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/d.md' because redirect URL '/docs/folder0' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",5,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/f.md' because redirect URL '/docs/folder0/' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",6,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/h.md' because redirect URL '/docs/folder0/index' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",7,14]
 
 ---
 # generate document id with depot mapping and directory mapping
