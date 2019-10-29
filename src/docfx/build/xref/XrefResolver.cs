@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
+        private readonly string _xrefHostName;
 
         public XrefResolver(
             Context context,
@@ -32,6 +33,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
+            _xrefHostName = string.IsNullOrEmpty(context.Config.XrefBaseUrl) ? docset.HostName : context.Config.XrefBaseUrl;
         }
 
         public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referencingFile)
@@ -119,7 +121,7 @@ namespace Microsoft.Docs.Build
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
-                    var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
+                    var path = $"{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
                     return xrefSpec;
