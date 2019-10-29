@@ -69,6 +69,11 @@ namespace Microsoft.Docs.Build
         public string BaseUrl { get; private set; } = string.Empty;
 
         /// <summary>
+        /// host name used for generating .xrefmap.json
+        /// </summary>
+        public string XrefHostName { get; private set; } = string.Empty;
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>
