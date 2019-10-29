@@ -277,7 +277,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MergeConflict(SourceInfo source)
-            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", source);
+            => new Error(ErrorLevel.Warning, "merge-conflict", "File contains merge conflict", source);
 
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
