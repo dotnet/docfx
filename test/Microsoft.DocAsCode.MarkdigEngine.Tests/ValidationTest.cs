@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Composition.Hosting;
     using System.Linq;
+    using System.IO;
 
     using MarkdigEngine.Extensions;
 
@@ -346,12 +348,45 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             Assert.Equal(expectedMessage, message);
         }
 
+        [Fact]
+        [Trait("Related", "Validation")]
+        public void TestGetSchemaName()
+        {
+            const string yamlContent = @"### YamlMime:ModuleUnit
+uid: learn.azure.introduction";
+            File.WriteAllText("moduleunit.yml", yamlContent);
+            InclusionContext.PushFile("moduleunit.yml");
+            InclusionContext.PushInclusion("introduction-included.md");
+
+            const string expectedSchemaName = "YamlMime:ModuleUnit";
+            string schemaName = string.Empty;
+
+            var rewriter = MarkdownObjectRewriterFactory.FromValidator(
+               MarkdownObjectValidatorFactory.FromLambda<MarkdownDocument>(
+                   root =>
+                   {
+                       schemaName = root.GetData("SchemaName").ToString();
+                   })
+               );
+            var html = Markup("# Hello World", rewriter, null);
+            Assert.Equal(expectedSchemaName, schemaName);
+        }
+
         private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)
         {
             var pipelineBuilder = new MarkdownPipelineBuilder();
             var documentRewriter = new MarkdownDocumentVisitor(rewriter);
-            pipelineBuilder.DocumentProcessed += document => documentRewriter.Visit(document);
+            pipelineBuilder.DocumentProcessed += document =>
+            {
+                if (InclusionContext.IsInclude
+                    && (string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yml", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yaml", StringComparison.OrdinalIgnoreCase)))
+                {
+                    document.SetData("SchemaName", YamlMime.ReadMime(InclusionContext.RootFile?.ToString()));
+                }
 
+                documentRewriter.Visit(document);
+            };
             var pipeline = pipelineBuilder.Build();
 
             if (listener != null)
