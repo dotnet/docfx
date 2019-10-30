@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         public RepositoryProvider(
             string docsetPath,
             CommandLineOptions options,
-            Repository docsetRepository,
+            Repository docsetRepository = null,
             RestoreGitMap restoreGitMap = null,
             Func<Config> config = null)
         {

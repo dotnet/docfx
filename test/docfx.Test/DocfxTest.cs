@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
                 await RunBuild(docsetPath, outputPath, spec, spec.Locale);
             }
 
-            //Verify build from localization docset also work
+            // Verify build from localization docset also work
             if (spec.Locale != null)
             {
                 var locDocsetPath = t_repos.Value.FirstOrDefault(
