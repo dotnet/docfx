@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
 
                     using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        var repositoryProvider = new RepositoryProvider(docsetPath, options, repository, restoreGitMap);
+                        var repositoryProvider = new RepositoryProvider(docsetPath, options, repository, restoreGitMap, () => config);
                         var input = new Input(docsetPath, repositoryProvider);
                         var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
                         (errors, config) = configLoader.Load(options, extend: true);
@@ -52,7 +52,6 @@ namespace Microsoft.Docs.Build
                             return;
 
                         // get docsets(build docset, fallback docset and dependency docsets)
-                        repositoryProvider.Config(config);
                         var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
 
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
@@ -86,17 +85,20 @@ namespace Microsoft.Docs.Build
             Config config,
             RepositoryProvider repositoryProvider)
         {
+            Docset currentDocset;
             var (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
-            var currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
-            if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+            if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.Localization.DefaultLocale))
             {
                 var (fallbackDocsetPath, fallbackRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Fallback);
+                (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+                currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
                 if (fallbackRepo != null)
                 {
                     return (currentDocset, new Docset(fallbackDocsetPath, locale, config, fallbackRepo));
                 }
             }
 
+            currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
             return (currentDocset, default);
         }
 
