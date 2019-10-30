@@ -197,7 +197,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var content = context.Input.ReadString(file.FilePath);
-            GitUtility.CheckMergeConflictMarker(content, file.FilePath);
+            errors.AddIfNotNull(GitUtility.CheckMergeConflictMarker(content, file.FilePath));
 
             var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
@@ -252,21 +252,21 @@ namespace Microsoft.Docs.Build
             var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
-            // transform model via json schema
-            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, obj);
-            errors.AddRange(schemaTransformError);
-            var pageModel = (JObject)transformedToken;
+            var validatedObj = new JObject();
+            JsonUtility.Merge(validatedObj, obj);
 
+            // transform model via json schema
             if (file.IsPage)
             {
                 // transform metadata via json schema
                 var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-                var (metadataTransformedErrors, transformedMetadata) = schemaTemplate.JsonSchemaTransformer.TransformContent(
-                    file, context, new JObject { ["metadata"] = inputMetadata.RawJObject });
+                JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = inputMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
-                errors.AddRange(metadataTransformedErrors);
-                pageModel["metadata"] = ((JObject)transformedMetadata)["metadata"];
             }
+
+            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, validatedObj);
+            errors.AddRange(schemaTransformError);
+            var pageModel = (JObject)transformedToken;
 
             if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
