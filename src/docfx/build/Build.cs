@@ -86,8 +86,8 @@ namespace Microsoft.Docs.Build
             Config config,
             RepositoryProvider repositoryProvider)
         {
-            Docset currentDocset;
             var (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+            var currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
             if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.Localization.DefaultLocale))
             {
                 var (fallbackDocsetPath, fallbackRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Fallback);
@@ -99,7 +99,6 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
             return (currentDocset, default);
         }
 
