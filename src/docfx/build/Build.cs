@@ -94,7 +94,12 @@ namespace Microsoft.Docs.Build
                 var fallbackRepo = repositoryProvider.GetRepository(FileOrigin.Fallback);
                 if (fallbackRepo != null)
                 {
+                    if (repositoryProvider.FallBackIsLoc)
+                    {
+                        return (new Docset(PathUtility.NormalizeFolder(Path.Combine(fallbackRepo.Path, docsetSourceFolder)), locale, config, fallbackRepo), currentDocset);
+                    }
                     return (currentDocset, new Docset(PathUtility.NormalizeFolder(Path.Combine(fallbackRepo.Path, docsetSourceFolder)), locale, config, fallbackRepo));
+
                 }
             }
 
