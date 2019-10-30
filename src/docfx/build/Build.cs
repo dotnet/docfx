@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
+            RestoreGitMap restoreGitMap = null;
 
             using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
             {
@@ -36,13 +37,13 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repository = Repository.Create(docsetPath);
+                    var repositoryProvider = new RepositoryProvider(docsetPath, options, () => restoreGitMap, () => config);
+                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
-                    using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
+                    using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        var repositoryProvider = new RepositoryProvider(docsetPath, options, repository, restoreGitMap, () => config);
                         var input = new Input(docsetPath, repositoryProvider);
                         var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
                         (errors, config) = configLoader.Load(options, extend: true);

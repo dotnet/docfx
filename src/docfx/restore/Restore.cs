@@ -38,8 +38,8 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repository = Repository.Create(docsetPath);
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options, repository);
+                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
+                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
