@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     public static class TocTest
     {
         private static readonly string s_docsetPath = Directory.GetCurrentDirectory();
-        private static readonly RepositoryProvider s_repositoryProvider = new RepositoryProvider(s_docsetPath, new CommandLineOptions());
+        private static readonly RepositoryProvider s_repositoryProvider = new RepositoryProvider(s_docsetPath, new CommandLineOptions(), null);
         private static readonly Input s_input = new Input(s_docsetPath, s_repositoryProvider);
         private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null);
         private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory(), "en-us", s_config, null);

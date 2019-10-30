@@ -36,18 +36,15 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
-                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    var repository = Repository.Create(docsetPath);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        // load configuration from current docset and fallback docset
+                        var repositoryProvider = new RepositoryProvider(docsetPath, options, repository, restoreGitMap);
                         var input = new Input(docsetPath, repositoryProvider);
                         var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
-
-                        repositoryProvider.ConfigRestoreMap(restoreGitMap);
                         (errors, config) = configLoader.Load(options, extend: true);
 
                         // just return if config loading has errors
@@ -56,13 +53,7 @@ namespace Microsoft.Docs.Build
 
                         // get docsets(build docset, fallback docset and dependency docsets)
                         repositoryProvider.Config(config);
-                        var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider, restoreGitMap);
-
-                        // TODO: clean up all the RepositoryProvider config methods
-                        if (fallbackDocset != null)
-                        {
-                            repositoryProvider.ConfigFallbackDocsetPath(fallbackDocset.DocsetPath);
-                        }
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider);
 
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
                         {
@@ -94,8 +85,7 @@ namespace Microsoft.Docs.Build
             string docsetPath,
             string locale,
             Config config,
-            RepositoryProvider repositoryProvider,
-            RestoreGitMap restoreGitMap)
+            RepositoryProvider repositoryProvider)
         {
             var currentDocset = new Docset(docsetPath, locale, config, repositoryProvider.GetRepository(FileOrigin.Default));
             if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
@@ -105,25 +95,6 @@ namespace Microsoft.Docs.Build
                 if (fallbackRepo != null)
                 {
                     return (currentDocset, new Docset(PathUtility.NormalizeFolder(Path.Combine(fallbackRepo.Path, docsetSourceFolder)), locale, config, fallbackRepo));
-                }
-
-                // todo: get localization repository from repository provider
-                if (LocalizationUtility.TryGetLocalizationDocset(
-                    restoreGitMap,
-                    currentDocset,
-                    config,
-                    docsetSourceFolder,
-                    currentDocset.Locale,
-                    out var localizationDocset,
-                    out var localizationRepository))
-                {
-                    repositoryProvider.ConfigLocalizationRepo(localizationDocset, localizationRepository);
-                    return (new Docset(
-                        localizationDocset,
-                        currentDocset.Locale,
-                        config,
-                        localizationRepository),
-                        currentDocset);
                 }
             }
 

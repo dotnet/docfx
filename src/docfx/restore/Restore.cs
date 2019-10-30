@@ -38,8 +38,8 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
-                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    var repository = Repository.Create(docsetPath);
+                    var repositoryProvider = new RepositoryProvider(docsetPath, options, repository);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
@@ -50,8 +50,6 @@ namespace Microsoft.Docs.Build
                     var configPath = docsetPath;
                     (errors, config) = configLoader.TryLoad(options, extend: false);
                     var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-                    if (restoreFallbackResult != null)
-                        repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit));
 
                     List<Error> fallbackConfigErrors;
                     (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);
