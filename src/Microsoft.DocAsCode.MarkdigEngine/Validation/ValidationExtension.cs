@@ -41,6 +41,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static void SetSchemaName(MarkdownDocument document)
         {
+            // TODO: add this detection logic in terms of performance optimization, should remove once mime is available in context
             if (InclusionContext.IsInclude
                 && (string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yml", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yaml", StringComparison.OrdinalIgnoreCase)))
