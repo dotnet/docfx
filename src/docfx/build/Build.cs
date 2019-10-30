@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
                         // get docsets(build docset, fallback docset and dependency docsets)
                         repositoryProvider.Config(config);
-                        var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider);
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
 
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
                         {
@@ -82,24 +82,18 @@ namespace Microsoft.Docs.Build
         }
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
-            string docsetPath,
             string locale,
             Config config,
             RepositoryProvider repositoryProvider)
         {
-            var currentDocset = new Docset(docsetPath, locale, config, repositoryProvider.GetRepository(FileOrigin.Default));
+            var (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+            var currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
             if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
             {
-                var docsetSourceFolder = Path.GetRelativePath(currentDocset.Repository.Path, currentDocset.DocsetPath);
-                var fallbackRepo = repositoryProvider.GetRepository(FileOrigin.Fallback);
+                var (fallbackDocsetPath, fallbackRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Fallback);
                 if (fallbackRepo != null)
                 {
-                    if (repositoryProvider.FallBackIsLoc)
-                    {
-                        return (new Docset(PathUtility.NormalizeFolder(Path.Combine(fallbackRepo.Path, docsetSourceFolder)), locale, config, fallbackRepo), currentDocset);
-                    }
-                    return (currentDocset, new Docset(PathUtility.NormalizeFolder(Path.Combine(fallbackRepo.Path, docsetSourceFolder)), locale, config, fallbackRepo));
-
+                    return (currentDocset, new Docset(fallbackDocsetPath, locale, config, fallbackRepo));
                 }
             }
 

@@ -137,16 +137,16 @@ namespace Microsoft.Docs.Build
                 await RunBuild(docsetPath, outputPath, spec, spec.Locale);
             }
 
-            // Verify build from localization docset also work
-            //if (spec.Locale != null)
-            //{
-            //    var locDocsetPath = t_repos.Value.FirstOrDefault(
-            //        repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
-            //    if (locDocsetPath != null)
-            //    {
-            //        await RunBuild(locDocsetPath, outputPath, spec, locale: null);
-            //    }
-            //}
+            //Verify build from localization docset also work
+            if (spec.Locale != null)
+            {
+                var locDocsetPath = t_repos.Value.FirstOrDefault(
+                    repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
+                if (locDocsetPath != null)
+                {
+                    await RunBuild(locDocsetPath, outputPath, spec, locale: null);
+                }
+            }
         }
 
         private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale)
