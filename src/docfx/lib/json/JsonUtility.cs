@@ -121,20 +121,32 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(TextReader json, FilePath file)
         {
-            using (var reader = new JsonTextReader(json))
+            try
             {
-                try
+                var errors = new List<Error>();
+                var status = new Status { FilePath = file };
+
+                t_status.Value.Push(status);
+
+                using (var reader = new JsonTextReader(json))
                 {
-                    return s_serializer.Deserialize<T>(reader);
+                    try
+                    {
+                        return s_serializer.Deserialize<T>(reader);
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        throw ToError(ex, file).ToException(ex);
+                    }
+                    catch (JsonSerializationException ex)
+                    {
+                        throw ToError(ex, file).ToException(ex);
+                    }
                 }
-                catch (JsonReaderException ex)
-                {
-                    throw ToError(ex, file).ToException(ex);
-                }
-                catch (JsonSerializationException ex)
-                {
-                    throw ToError(ex, file).ToException(ex);
-                }
+            }
+            finally
+            {
+                t_status.Value.Pop();
             }
         }
 
@@ -155,9 +167,7 @@ namespace Microsoft.Docs.Build
             return (errors, (T)obj);
         }
 
-        public static (List<Error> errors, object value) ToObject(
-            JToken token,
-            Type type)
+        public static (List<Error> errors, object value) ToObject(JToken token, Type type)
         {
             try
             {
@@ -498,6 +508,8 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
+            public FilePath FilePath { get; set; }
+
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }
