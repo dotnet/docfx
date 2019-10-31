@@ -224,7 +224,17 @@ outputs:
     ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/d.md' because redirect URL '/docs/folder0' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",5,14]
     ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/f.md' because redirect URL '/docs/folder0/' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",6,14]
     ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/h.md' because redirect URL '/docs/folder0/index' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",7,14]
-
+  .publish.json: |
+    {
+      "files": [
+        { "source_path": "docs/a.md", "redirect_url": "/docs/x" },
+        { "source_path": "docs/b.md", "redirect_url": "http://hostname/test" },
+        { "source_path": "docs/c.md", "redirect_url": "/docs/x#bookmark" },
+        { "source_path": "docs/d.md", "redirect_url": "/docs/folder0" },
+        { "source_path": "docs/f.md", "redirect_url": "/docs/folder0/" },
+        { "source_path": "docs/h.md", "redirect_url": "/docs/folder0/" }
+      ]
+    }
 ---
 # generate document id with depot mapping and directory mapping
 # id = hash({mapped_depot_name}|{mapped_file_in_docset})

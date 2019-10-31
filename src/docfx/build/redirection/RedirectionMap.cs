@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                                 break;
                             default:
                                 errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
-                                continue;
+                                break;
                         }
                     }
 
