@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
-        private readonly IReadOnlyDictionary<string, string> _resolveAlias;
         private readonly IReadOnlyDictionary<string, Docset> _dependencies;
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
@@ -49,7 +48,6 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
-            _resolveAlias = LoadResolveAlias(docset.Config);
             _dependencies = dependencies;
             _templateEngine = templateEngine;
             _fileLinkMapBuilder = fileLinkMapBuilder;
@@ -226,9 +224,19 @@ namespace Microsoft.Docs.Build
         private Document TryResolveRelativePath(Document referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
+            string pathToDocset;
 
-            // apply resolve alias
-            var pathToDocset = ApplyResolveAlias(referencingFile, relativePath);
+            if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
+            {
+                // Treat ~/ as path relative to docset
+                pathToDocset = PathUtility.NormalizeFile(relativePath.Substring(2).TrimStart('/', '\\'));
+            }
+            else
+            {
+                // Path relative to referencing file
+                var baseDirectory = Path.GetDirectoryName(referencingFile.FilePath.GetPathToOrigin());
+                pathToDocset = PathUtility.NormalizeFile(Path.Combine(baseDirectory, relativePath));
+            }
 
             // use the actual file name case
             if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
@@ -300,32 +308,6 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
-        }
-
-        private string ApplyResolveAlias(Document referencingFile, string path)
-        {
-            foreach (var (alias, aliasPath) in _resolveAlias)
-            {
-                var (match, _, remainingPath) = PathUtility.Match(path, alias);
-                if (match)
-                {
-                    return PathUtility.NormalizeFile(aliasPath + remainingPath);
-                }
-            }
-
-            return PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.GetPathToOrigin()), path));
-        }
-
-        private static Dictionary<string, string> LoadResolveAlias(Config config)
-        {
-            var result = new Dictionary<string, string>(PathUtility.PathComparer);
-
-            foreach (var (alias, aliasPath) in config.ResolveAlias)
-            {
-                result.TryAdd(alias, PathUtility.NormalizeFolder(aliasPath));
-            }
-
-            return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
     }
 }
