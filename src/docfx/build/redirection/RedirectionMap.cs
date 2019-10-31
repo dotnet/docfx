@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     var combineRedirectUrl = false;
-                    var mutableRedirectUrl = redirectUrl.Value;
+                    var mutableRedirectUrl = redirectUrl.Value.Trim();
                     if (redirectDocumentId)
                     {
                         switch (UrlUtility.GetLinkType(redirectUrl))

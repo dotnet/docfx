@@ -153,8 +153,6 @@ namespace Microsoft.Docs.Build
                 (errors, config) = JsonUtility.Parse(content, new FilePath(fileName));
             }
 
-            JsonUtility.TrimStringValues(config);
-
             return (errors, config as JObject ?? new JObject());
         }
 

@@ -175,20 +175,29 @@ outputs:
   docs/a.json: |
     { "key": "another value" }
 ---
-# String values are trimmed in config
+# Metadatata value should be directly passed through
+# Redirect URL should be trimmed
 inputs:
   docfx.yml: |
     globalMetadata:
       key: ' value   '
     redirectionsWithoutId:
       docs/redirect.md: '/absolute/path '
-  docs/a.md: |
-    [redirect](redirect.md?a#b)
+  docs/a.md:
 outputs:
   docs/a.json: |
     {
-      "key": "value",
-      "conceptual": "<p><a href=\"redirect?a#b\">redirect</a></p>"
+      "key": " value   "
+    }
+  .publish.json: |
+    {
+      "files": [
+        {
+          "source_path": "docs/redirect.md",
+          "redirect_url": "/absolute/path"
+        },
+        { "url": "/docs/a" }
+      ]
     }
 ---
 # routes
