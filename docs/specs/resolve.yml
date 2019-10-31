@@ -359,7 +359,7 @@ outputs:
     {"conceptual":"<p>DEP</p>"}
   dependencies/dep.json:
 ---
-# Link with `~` - default resolveAlias config
+# Link with `~`
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -375,16 +375,12 @@ outputs:
     ["warning","file-not-found","Invalid file link: '~/b.md'.","docs/a.md",1,9]
     ["warning","file-not-found","Invalid file link: '~docs/b.md'.","docs/a.md",3,9]
 ---
-# Link or Image with resolve alias
+# Links starting with ~ are treated as path relative to docset path
 inputs:
-  docfx.yml: |
-    resolveAlias:
-      ~: docs
-      $ROOT: .
+  docs/docfx.yml:
   docs/a.md: |
     Link to [B1.1](~/b.md)
     Link to [B1.2](~////b.md)
-    Link to [B2]($ROOT/docs/b.md)
     Link to [B3](~/docs/b.md)
     ![C](~/c.png)
   docs/b.md:
@@ -393,53 +389,17 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"b\">B1.1</a>
                         Link to <a href=\"b\">B1.2</a>
-                        Link to <a href=\"b\">B2</a>
                         Link to <a href=\"%7E/docs/b.md\">B3</a>
                         <img src=\"c.png\" alt=\"C\"></p>" 
     }
   docs/b.json:
   docs/c.png:
-  .errors.log: |
-    ["warning","file-not-found","Invalid file link: '~/docs/b.md'.","docs/a.md",4,9]
+  docs/.errors.log: |
+    ["warning","file-not-found","Invalid file link: '~/docs/b.md'.","a.md",3,9]
 ---
-# Multiple matched alias, use the last one
+# Links in <a> or <img> tags startings with ~
 inputs:
-  docfx.yml: |
-    resolveAlias:
-      ~: docs
-      ~/test: docs
-  docs/a.md: |
-    Link to [B1](~/b.md)
-    Link to [B2](~/test/b.md)
-  docs/b.md:
-outputs:
-  docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"b\">B1</a>\nLink to <a href=\"b\">B2</a></p>\n" }
-  docs/b.json:
----
-# If the alias is conflict with the physical path, peek alias first
-inputs:	
-  docfx.yml: |
-    resolveAlias:
-      test: docs/test-test
-  docs/a.md: |
-    Link to [B](test/b.md)
-    Link to [C](test/c.md)
-  docs/test/b.md:
-  docs/test-test/b.md:
-  docs/test-test/c.md:
-outputs:
-  docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"test-test/b\">B</a>\nLink to <a href=\"test-test/c\">C</a></p>\n" }
-  docs/test/b.json:
-  docs/test-test/b.json:
-  docs/test-test/c.json:
----
-# <a> or <img> tag with resolve alias
-inputs:
-  docfx.yml: |
-    resolveAlias:
-      ~: docs
+  docs/docfx.yml:
   docs/a.md: |
     Link to <a href="~/b.md">b</a>
     <div>Link to <img src="~/c.png" /></div>
@@ -451,12 +411,9 @@ outputs:
   docs/b.json:
   docs/c.png:
 ---
-# Include with resolve alias
+# Markdown inclusion using links starting with ~
 inputs:
-  docfx.yml: |
-    exclude: '*'
-    resolveAlias:
-      ~: docs
+  docs/docfx.yml:
   docs/a.md: |
     [!include[B1](~/b.md)]
     [!include[B2](~/../b.md)]
@@ -464,8 +421,8 @@ inputs:
 outputs:
   docs/a.json: |
     { "conceptual": "[!include[B1](~/b.md)]<p>Token</p>\n" }
-  .errors.log: |
-    ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'docs/a.md'.","docs/a.md",1,1]
+  docs/.errors.log: |
+    ["warning","include-not-found","Cannot resolve '~/b.md' relative to 'a.md'.","a.md",1,1]
 ---
 # Links to self with empty href or query string only
 inputs:

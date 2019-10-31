@@ -39,7 +39,7 @@ repos:
         docfx.yml: |
           dependencies:
             dep: https://github.com/dep-resolver/dep
-        docs/a.md: '[!include[dep](~/DEP/DEP.md)]'
+        docs/a.md: '[!include[dep](~\\DEP/DEP.md)]'
   https://github.com/dep-resolver/dep:
     - files:
         dep.md: DEP
