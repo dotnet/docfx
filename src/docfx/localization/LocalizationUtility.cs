@@ -48,9 +48,8 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, Docset docset, Config config, string docsetSourceFolder, string locale, out string localizationDocsetPath, out Repository localizationRepository)
+        public static bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, string docsetPath, Repository docsetRepository, Config config, string docsetSourceFolder, string locale, out string localizationDocsetPath, out Repository localizationRepository)
         {
-            Debug.Assert(docset != null);
             Debug.Assert(!string.IsNullOrEmpty(locale));
             Debug.Assert(config != null);
 
@@ -61,7 +60,7 @@ namespace Microsoft.Docs.Build
                 case LocalizationMapping.Repository:
                 case LocalizationMapping.Branch:
                     {
-                        var repo = docset.Repository;
+                        var repo = docsetRepository;
                         if (repo is null)
                         {
                             return false;
@@ -84,8 +83,8 @@ namespace Microsoft.Docs.Build
                         {
                             throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
                         }
-                        localizationDocsetPath = Path.Combine(docset.DocsetPath, "_localization", locale);
-                        localizationRepository = docset.Repository;
+                        localizationDocsetPath = Path.Combine(docsetPath, "_localization", locale);
+                        localizationRepository = docsetRepository;
                         break;
                     }
                 default:

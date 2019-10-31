@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
+            RestoreGitMap restoreGitMap = null;
 
             using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
             {
@@ -36,18 +37,15 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
+                    var repositoryProvider = new RepositoryProvider(docsetPath, options, () => restoreGitMap, () => config);
                     var repository = repositoryProvider.GetRepository(FileOrigin.Default);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
-                    using (var restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
+                    using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        // load configuration from current docset and fallback docset
                         var input = new Input(docsetPath, repositoryProvider);
                         var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
-
-                        repositoryProvider.ConfigRestoreMap(restoreGitMap);
                         (errors, config) = configLoader.Load(options, extend: true);
 
                         // just return if config loading has errors
@@ -55,14 +53,7 @@ namespace Microsoft.Docs.Build
                             return;
 
                         // get docsets(build docset, fallback docset and dependency docsets)
-                        repositoryProvider.Config(config);
-                        var (docset, fallbackDocset) = GetDocsetWithFallback(docsetPath, locale, config, repositoryProvider, restoreGitMap);
-
-                        // TODO: clean up all the RepositoryProvider config methods
-                        if (fallbackDocset != null)
-                        {
-                            repositoryProvider.ConfigFallbackDocsetPath(fallbackDocset.DocsetPath);
-                        }
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
 
                         if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
                         {
@@ -91,39 +82,20 @@ namespace Microsoft.Docs.Build
         }
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
-            string docsetPath,
             string locale,
             Config config,
-            RepositoryProvider repositoryProvider,
-            RestoreGitMap restoreGitMap)
+            RepositoryProvider repositoryProvider)
         {
-            var currentDocset = new Docset(docsetPath, locale, config, repositoryProvider.GetRepository(FileOrigin.Default));
-            if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+            var (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+            var currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
+            if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.Localization.DefaultLocale))
             {
-                var docsetSourceFolder = Path.GetRelativePath(currentDocset.Repository.Path, currentDocset.DocsetPath);
-                var fallbackRepo = repositoryProvider.GetRepository(FileOrigin.Fallback);
+                var (fallbackDocsetPath, fallbackRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Fallback);
+                (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+                currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
                 if (fallbackRepo != null)
                 {
-                    return (currentDocset, new Docset(PathUtility.NormalizeFolder(Path.Combine(fallbackRepo.Path, docsetSourceFolder)), locale, config, fallbackRepo));
-                }
-
-                // todo: get localization repository from repository provider
-                if (LocalizationUtility.TryGetLocalizationDocset(
-                    restoreGitMap,
-                    currentDocset,
-                    config,
-                    docsetSourceFolder,
-                    currentDocset.Locale,
-                    out var localizationDocset,
-                    out var localizationRepository))
-                {
-                    repositoryProvider.ConfigLocalizationRepo(localizationDocset, localizationRepository);
-                    return (new Docset(
-                        localizationDocset,
-                        currentDocset.Locale,
-                        config,
-                        localizationRepository),
-                        currentDocset);
+                    return (currentDocset, new Docset(fallbackDocsetPath, locale, config, fallbackRepo));
                 }
             }
 

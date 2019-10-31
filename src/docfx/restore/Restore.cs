@@ -50,8 +50,6 @@ namespace Microsoft.Docs.Build
                     var configPath = docsetPath;
                     (errors, config) = configLoader.TryLoad(options, extend: false);
                     var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-                    if (restoreFallbackResult != null)
-                        repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit));
 
                     List<Error> fallbackConfigErrors;
                     (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);

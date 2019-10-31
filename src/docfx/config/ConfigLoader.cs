@@ -70,12 +70,6 @@ namespace Microsoft.Docs.Build
         private bool TryGetConfigPath(out FilePath configPath)
         {
             configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
-
-            if (configPath == null)
-            {
-                configPath = _input.FindYamlOrJson(FileOrigin.Fallback, "docfx");
-            }
-
             return configPath != null;
         }
 
