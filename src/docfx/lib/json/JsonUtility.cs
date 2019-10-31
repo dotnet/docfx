@@ -265,33 +265,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Trims all string values
-        /// </summary>
-        public static void TrimStringValues(JToken token)
-        {
-            switch (token)
-            {
-                case JValue scalar when scalar.Value is string str:
-                    scalar.Value = str.Trim();
-                    break;
-
-                case JArray array:
-                    foreach (var item in array)
-                    {
-                        TrimStringValues(item);
-                    }
-                    break;
-
-                case JObject map:
-                    foreach (var (key, value) in map)
-                    {
-                        TrimStringValues(value);
-                    }
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Report warnings for null values inside arrays and remove nulls inside arrays.
         /// </summary>
         public static (List<Error>, JToken) RemoveNulls(this JToken root)
