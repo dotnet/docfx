@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
     using Newtonsoft.Json.Linq;
     using Xunit;
-    using Xunit.Sdk;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "ManagedReferenceDocumentProcessor")]
