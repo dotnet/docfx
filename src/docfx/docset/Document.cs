@@ -394,7 +394,7 @@ namespace Microsoft.Docs.Build
                 ? sourcePath
                 : mappedSourcePath;
 
-            // if source is landing page, change it to *.md
+            // if source is redirection or landing page, change it to *.md
             if (ContentType == ContentType.Redirection || TemplateEngine.IsLandingData(Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");

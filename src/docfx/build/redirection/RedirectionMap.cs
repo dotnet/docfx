@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
             return new RedirectionMap(redirectionsBySourcePath, redirectionsByTargetSourcePath);
 
-            void AddRedirections(IEnumerable<RedirectionItem> items, bool redirectDocumentId = false)
+            void AddRedirections(IEnumerable<RedirectionItem> items)
             {
                 foreach (var item in items)
                 {
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
 
                     var combineRedirectUrl = false;
                     var mutableRedirectUrl = redirectUrl.Value.Trim();
-                    if (redirectDocumentId)
+                    if (item.RedirectDocumentId)
                     {
                         switch (UrlUtility.GetLinkType(redirectUrl))
                         {
