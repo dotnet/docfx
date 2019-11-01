@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
     using Newtonsoft.Json.Linq;
     using Xunit;
+    using Xunit.Sdk;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "ManagedReferenceDocumentProcessor")]
@@ -355,6 +356,38 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta" && key != "anotherMeta"))
             {
                 Assert.Contains(key, systemKeys);
+            }
+        }
+
+        [Fact]
+        public void LoadArticleWithEmptyFileShouldWarnAndReturnNull()
+        {
+            var fileWithNoContent = "TestData/mref/FileWithNoContent.yml";
+            var ft = new FileAndType(Directory.GetCurrentDirectory(), fileWithNoContent, DocumentType.Article);
+            var p = new ManagedReferenceDocumentProcessor();
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull), LogLevel.Info);
+            try
+            {
+                Logger.RegisterListener(listener);
+
+                FileModel actualFileModel;
+                using (new LoggerPhaseScope(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull)))
+                {
+                    actualFileModel = p.Load(ft, null);
+                }
+
+                var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
+                Assert.Single(warnings);
+                var warning = warnings.Single();
+                Assert.Equal("Please add `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`, otherwise the file will be not treated as ManagedReference source file in near future.", warning.Message);
+                Assert.Equal(fileWithNoContent, warning.File);
+
+                Assert.Null(actualFileModel);
+            }
+            finally
+            {
+                Logger.UnregisterListener(listener);
             }
         }
 
