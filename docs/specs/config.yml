@@ -361,61 +361,6 @@ outputs:
   .errors.log: |
     ["error","file-not-found","Invalid file link: 'b.md'.","docs/a.md",1,1]
 ---
-# Redirection file content type invalid
-inputs:
-  docfx.yml: |
-    redirections:
-      docs/TOC.md: /absolute/path
-outputs:
-  .errors.log: |
-    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
----
-# Redirection url conflict
-inputs:
-  docfx.yml: |
-    redirections:
-      docs/a.md: /docs/b
-    redirectionsWithoutId:
-      docs/a.md: /absolute/path2
-  docs/b.md:
-outputs:
-  docs/b.json:
-  .errors.log: |
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",4,14]
----
-# Redirection file out of build scope
-inputs:
-  docfx.yml: |
-    exclude: '*'
-    redirectionsWithoutId:
-      docs/a.md: /absolute/path1
-      b.md: /absolute/path2
-outputs:
----
-# Redirection file out of build scope with conflicted id
-inputs:
-  docfx.yml: |
-    exclude: '*'
-    redirections:
-      a.md: /absolute/path1
-      b.md: /absolute/path1
-outputs:
----
-# Multiple redirection errors
-inputs:
-  docfx.yml: |
-    redirections:
-      docs/TOC.md: /absolute/path
-      docs/a.md: /docs/b
-    redirectionsWithoutId:
-      docs/a.md: /absolute/path2
-  docs/b.md:
-outputs:
-  docs/b.json:
-  .errors.log: |
-    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",5,14]
----
 # Wrong locale
 os: windows
 inputs:
@@ -521,14 +466,6 @@ inputs:
 outputs:
   a.json:
 ---
-# redirect to not starting with '/' is allowed in config.redirectionWithoutIds
-inputs:
-  docfx.yml: |
-    redirectionsWithoutId:
-      a.md: https://docs.microsoft.com/docfx/a
-      b.md: a
-outputs:
----
 # file metadata schema violation
 inputs:
   docfx.yml: |  
@@ -556,35 +493,6 @@ outputs:
   .publish.json:
   .errors.log: |
       ["error","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]
----
-# Redirection files have conflicted ids
-# all redirection files will be built
-# redirection document id is retrieved from the first redirection file (a.md for below case)
-inputs:
-  docfx.yml: |
-    redirections:
-      a.md: /docs/path1
-      b.md: /docs/path1
-  docs/path1.md:
-outputs:
-  .errors.log: |
-    ["warning","redirection-url-conflict","The '/docs/path1' appears twice or more in the redirection mappings","docfx.yml",3,9]
-  .publish.json: |
-    {
-        "files": [
-            {
-                "url": "/a"
-            },
-            {
-                "url": "/b"
-            },
-            {
-                "url": "/docs/path1"
-            }
-        ]
-    }
-  docs/path1.json: |
-    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5",}
 ---
 # dependencyPackageUrl's path using git url won't restore the git repo
 repos:

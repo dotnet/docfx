@@ -1,0 +1,328 @@
+# Redirection file content type invalid
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/TOC.md: /absolute/path
+outputs:
+  .errors.log: |
+    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
+---
+# Redirection url conflict
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/a.md: /docs/b
+    redirectionsWithoutId:
+      docs/a.md: /absolute/path2
+  docs/b.md:
+outputs:
+  docs/b.json:
+  .errors.log: |
+    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",4,14]
+---
+# Redirection file out of build scope
+inputs:
+  docfx.yml: |
+    exclude: '*'
+    redirectionsWithoutId:
+      docs/a.md: /absolute/path1
+      b.md: /absolute/path2
+outputs:
+---
+# Redirection file out of build scope with conflicted id
+inputs:
+  docfx.yml: |
+    exclude: '*'
+    redirections:
+      a.md: /absolute/path1
+      b.md: /absolute/path1
+outputs:
+---
+# Multiple redirection errors
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/TOC.md: /absolute/path
+      docs/a.md: /docs/b
+    redirectionsWithoutId:
+      docs/a.md: /absolute/path2
+  docs/b.md:
+outputs:
+  docs/b.json:
+  .errors.log: |
+    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
+    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",5,14]
+---
+# redirect to not starting with '/' is allowed in config.redirectionWithoutIds
+inputs:
+  docfx.yml: |
+    redirectionsWithoutId:
+      a.md: https://docs.microsoft.com/docfx/a
+      b.md: a
+outputs:
+---
+# Redirection files have conflicted ids
+# all redirection files will be built
+# redirection document id is retrieved from the first redirection file (a.md for below case)
+inputs:
+  docfx.yml: |
+    redirections:
+      a.md: /docs/path1
+      b.md: /docs/path1
+  docs/path1.md:
+outputs:
+  .errors.log: |
+    ["warning","redirection-url-conflict","The '/docs/path1' appears twice or more in the redirection mappings","docfx.yml",3,9]
+  .publish.json: |
+    {
+        "files": [
+            {
+                "url": "/a"
+            },
+            {
+                "url": "/b"
+            },
+            {
+                "url": "/docs/path1"
+            }
+        ]
+    }
+  docs/path1.json: |
+    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5",}
+---
+# generate same document id and version id with 'redirection with document id'
+# A => B, B's ids should be same with A's
+inputs:
+  docs/docfx.yml: |
+    baseUrl: https://docs.com/docs
+    routes:
+      docs/: .
+    redirections:
+      a.md: /docs/x
+      b.md: /docs/y?query=value#bookmark
+      c.md: /docs/folder1/index
+      d.md: /docs/folder2/
+      e.md: /docs/z
+      f.md: /docs/e
+  docs/x.md:
+  docs/y.md:
+  docs/z.md:
+  docs/folder1/index.md:
+  docs/folder2/index.md:
+outputs:
+  docs/docs/x.json: |
+    { "document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5" }
+  docs/docs/y.json: |
+    { "document_id": "746406e9-2aac-1b22-259a-b6712b49c610", "document_version_independent_id": "d93f906b-e1e0-e950-45b4-ce1e777af3e6" }
+  docs/docs/z.json: |
+    { "document_id": "3c1b64b6-2acf-2a8d-0b02-687e4c6751b6", "document_version_independent_id": "b7faa2da-5935-b5fb-4609-dd030b0e74ab" }
+  docs/docs/folder1/index.json: |
+    { "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902", "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608" }
+  docs/docs/folder2/index.json: |
+    { "document_id": "64dd67d2-325f-bc70-d1b3-0106d0cb71e3", "document_version_independent_id": "5f485788-9aee-232c-f1f0-66c205d6e9a9" }
+---
+# generate different document id and version id with 'redirection without document id'
+inputs:
+  sccm/docfx.yml: |
+    name: sccm
+    product: Win
+    files: "**/*"
+    baseUrl: https://docs.com/sccm
+    redirectionsWithoutId:
+      sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
+  sccm/mdm/understand/hybrid-mobile-device-management.md:
+outputs:
+  sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
+    { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
+---
+# redirect with document id resolve relative redirect_url
+# publish item's redirect_url keeps user's input
+inputs:
+  develop/docfx.yml: |
+    name: partner-center-sdk
+    product: MSDN
+    baseUrl: https://docs.com/partner-center-sdk
+    redirections:
+      agreement-metadata.md: agreement-metadata-resources
+  develop/agreement-metadata-resources.md:
+outputs:
+  develop/partner-center-sdk/agreement-metadata-resources.json: |
+    { "document_id": "ad740933-6e60-291e-14ba-8a4e81133047", "document_version_independent_id": "e8a46a09-153a-2eac-1bd0-0aad104a6616" }
+  develop/.publish.json: |
+    {
+      "files": [
+          {
+              "url": "/partner-center-sdk/agreement-metadata",
+              "source_path": "agreement-metadata.md",
+              "locale": "en-us",
+              "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
+          },
+          {
+              "url": "/partner-center-sdk/agreement-metadata-resources",
+              "path": "partner-center-sdk/agreement-metadata-resources.json",
+              "source_path": "agreement-metadata-resources.md",
+              "locale": "en-us"
+          }
+      ]
+    }
+---
+# Show warning if two or more files redirect to the same file with document id
+inputs:
+  sccm/docfx.yml: |
+    name: sccm
+    product: Win
+    files: "**/*"
+    baseUrl: https://docs.com/sccm
+    redirections:
+      mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
+      mdm/index2.md: /sccm/mdm/understand/hybrid-mobile-device-management
+  sccm/mdm/understand/hybrid-mobile-device-management.md:
+outputs:
+  sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
+    { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+  sccm/.errors.log: |
+    ["warning","redirection-url-conflict","The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings","docfx.yml",7,18]
+---
+# redirect to empty URL
+inputs:
+  docfx.yml: |
+    redirections:
+      sccm/mdm/index.md: ""
+      "": /docfx/test
+      a.md:
+outputs:
+  .errors.log: |
+    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","docfx.yml",2,22]
+    ["error","redirection-is-empty","The key or value of redirection ': /docfx/test' is null or empty","docfx.yml",3,7]
+    ["error","redirection-is-empty","The key or value of redirection 'a.md: ' is null or empty","docfx.yml",4,8]
+---
+# The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
+inputs:
+  docfx.yml: |
+    redirections:
+      docs/a.md: "/docs/x"
+      docs/c.md: "/docs/x#bookmark"
+      docs/b.md: "http://hostname/test"
+      docs/d.md: "/docs/folder0"
+      docs/f.md: "/docs/folder0/"
+      docs/h.md: "/docs/folder0/index"
+outputs:
+  .errors.log: |
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/b.md' because redirect URL 'http://hostname/test' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",4,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/a.md' because redirect URL '/docs/x' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",2,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/c.md' because redirect URL '/docs/x#bookmark' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",3,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/d.md' because redirect URL '/docs/folder0' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",5,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/f.md' because redirect URL '/docs/folder0/' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",6,14]
+    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/h.md' because redirect URL '/docs/folder0/index' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","docfx.yml",7,14]
+  .publish.json: |
+    {
+      "files": [
+        { "source_path": "docs/a.md", "redirect_url": "/docs/x" },
+        { "source_path": "docs/b.md", "redirect_url": "http://hostname/test" },
+        { "source_path": "docs/c.md", "redirect_url": "/docs/x#bookmark" },
+        { "source_path": "docs/d.md", "redirect_url": "/docs/folder0" },
+        { "source_path": "docs/f.md", "redirect_url": "/docs/folder0/" },
+        { "source_path": "docs/h.md", "redirect_url": "/docs/folder0/" }
+      ]
+    }
+---
+# generate document id with depot mapping and directory mapping
+# id = hash({mapped_depot_name}|{mapped_file_in_docset})
+# version_independent_id = hash({mapped_depot_name}|{file_path})
+inputs:
+  docfx.yml: |
+    documentId:
+      depotMappings:
+        articles/iot-central/: MSDN.microsoft-iot-central
+      directoryMappings:
+        articles\iot-central: articles
+        articles\billing/billing-add-change-azure-subscription-administrator.md: articles
+    name: azure-documents
+    product: Azure
+    files: "**/*"
+    baseUrl: https://docs.com/Azure
+    routes:
+      articles/: .
+  articles/iot-central/concepts-architecture.md:
+  articles/billing/billing-add-change-azure-subscription-administrator.md:
+outputs:
+  azure/iot-central/concepts-architecture.json: |
+    {"document_id":"7e13132e-7847-dc4f-90d5-32a233d1c81a","document_version_independent_id":"d9cc5ab8-926a-8a5a-312c-10ca36619bad"}
+  azure/billing/billing-add-change-azure-subscription-administrator.json: |
+    {"document_id":"f5624f3e-5fbf-6f0f-93cf-a4d5aa93ccf8","document_version_independent_id":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
+---
+# redirect to redirect
+inputs:
+  docfx.yml: |
+    name: azure-documents
+    product: Azure
+    files: "**/*"
+    baseUrl: https://docs.com/azure
+    routes:
+      articles/: .
+    redirections:
+      articles/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial.md: /azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial
+      articles/active-directory/active-directory-saas-splunk-enterprise-and-splunk-cloud-tutorial.md: /azure/active-directory/active-directory-saas-splunkenterpriseandsplunkcloud-tutorial
+  articles/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.md:
+outputs:
+  azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.json: |
+    {"document_id":"b1cdf77e-673b-8b3a-3232-78f3d2b225dd","document_version_independent_id":"bde2976d-40d3-f729-128d-0caa664da662"}
+---
+# landing page is treated as *.md when calculating document id
+# id: 
+#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|articles/active-directory-b2c/*.md")))).ToString()
+# document_version_independent_id : 
+#   new Guid(md5.ComputeHash(new MemoryStream(Encoding.UTF8.GetBytes("Azure.azure-documents|active-directory-b2c/*")))).ToString()
+inputs:
+  docfx.yml: |
+    product: Azure
+    name: azure-documents
+    files: "**/*"
+    baseUrl: https://docs.com/articles
+    routes:
+      articles/: .
+  articles/active-directory-b2c/index.yml : |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+  articles/active-directory-b2c/test.yml : |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+outputs:
+  articles/active-directory-b2c/index.json: |
+    {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
+  articles/active-directory-b2c/test.json: |
+    {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
+---
+# index.yml's document id also follows the redirection rules
+# trailing 'index' redirect-to will be trimmed
+inputs:
+  docfx.yml: |
+    product: Azure
+    name: azure-documents
+    files: "**/*"
+    baseUrl: https://docs.com/azure
+    routes:
+      articles/: .
+    redirections:
+      articles/virtual-machines/windows/classic/web-app-visual-studio.md: /azure/app-service/index
+  articles/app-service/index.yml : |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+outputs:
+  azure/app-service/index.json: |
+    {"metadata":{ "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}}
+---
+# redirection defined in markdown yaml metadata is not supported
+inputs:
+  docfx.yml: |
+    redirectionsWithoutId:
+      docs/a.md: /a
+  docs/a.md: |
+    ---
+    redirect_url: https://docfx.com/b
+    ---
+outputs:
+  .errors.log: |
+    ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
+    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/a.md [redirection]'"]
+---
