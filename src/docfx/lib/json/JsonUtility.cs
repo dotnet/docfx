@@ -125,6 +125,10 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
+                    var status = new Status { FilePath = file };
+
+                    t_status.Value.Push(status);
+
                     return s_serializer.Deserialize<T>(reader);
                 }
                 catch (JsonReaderException ex)
@@ -134,6 +138,10 @@ namespace Microsoft.Docs.Build
                 catch (JsonSerializationException ex)
                 {
                     throw ToError(ex, file).ToException(ex);
+                }
+                finally
+                {
+                    t_status.Value.Pop();
                 }
             }
         }
@@ -155,9 +163,7 @@ namespace Microsoft.Docs.Build
             return (errors, (T)obj);
         }
 
-        public static (List<Error> errors, object value) ToObject(
-            JToken token,
-            Type type)
+        public static (List<Error> errors, object value) ToObject(JToken token, Type type)
         {
             try
             {
@@ -471,6 +477,8 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
+            public FilePath FilePath { get; set; }
+
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }
