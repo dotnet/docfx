@@ -7,9 +7,10 @@ repos:
     files:
       docfx.yml: |
         template: https://docs.com/theme
-        redirectionsWithoutId:
-          a.md: /b
         metadataSchema: schema.json
+      redirections.yml: |
+        redirections:
+          a.md: /b
       c.md: |
         ---
         api_name:
@@ -100,9 +101,10 @@ repos:
     files:
       docfx.yml: |
         template: https://docs.com/template1
+        baseUrl: https://docs.com/rawmetadata
+      redirections.yml: |
         redirections:
           a.md: /b
-        baseUrl: https://docs.com/rawmetadata
       c.md: |
         ---
         api_name:
@@ -176,7 +178,7 @@ outputs:
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/9ded2c661b9c6de62811c4954a8a03a7e24d4e52/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/e8f058141f57d856be5a0c86b55cba07e0a8bace/c.md",
         "site_name": "Docs",
         "depot_name": ".",
         "search.ms_docsetname": "",
@@ -247,6 +249,7 @@ legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
+  redirections.yml: |
     redirections:
       docs/a.md: /asdf
   docs/a.md:
@@ -258,7 +261,8 @@ legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
-    redirectionsWithoutId:
+  redirections.yml: |
+    redirections:
       redirect.md: /redirect/to
   a.md: |
     [link](redirect.md)

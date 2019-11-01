@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -46,26 +47,32 @@ namespace Microsoft.Docs.Build
             Input input,
             TemplateEngine templateEngine,
             IReadOnlyCollection<Document> buildFiles,
-            MonikerProvider monikerProvider)
+            MonikerProvider monikerProvider,
+            RepositoryProvider repositoryProvider)
         {
             var redirections = new HashSet<Document>();
             var redirectionsWithDocumentId = new List<(SourceInfo<string> originalRedirectUrl, Document redirect)>();
 
+            var redirectionItems = LoadRedirectionModel(docset.DocsetPath, repositoryProvider);
+
             // load redirections with document id
-            AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
+            AddRedirections(redirectionItems.Where(item => item.RedirectDocumentId), redirectDocumentId: true);
 
             // load redirections without document id
-            AddRedirections(docset.Config.RedirectionsWithoutId);
+            AddRedirections(redirectionItems.Where(item => !item.RedirectDocumentId));
 
             var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, file => file, PathUtility.PathComparer);
             var redirectionsByTargetSourcePath = GetRedirectionsByTargetSourcePath(errorLog, redirectionsWithDocumentId, buildFiles.Concat(redirections).ToList(), monikerProvider);
 
             return new RedirectionMap(redirectionsBySourcePath, redirectionsByTargetSourcePath);
 
-            void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool redirectDocumentId = false)
+            void AddRedirections(IEnumerable<RedirectionItem> items, bool redirectDocumentId = false)
             {
-                foreach (var (path, redirectUrl) in items)
+                foreach (var item in items)
                 {
+                    var path = item.SourcePath;
+                    var redirectUrl = item.RedirectUrl;
+
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                     {
                         errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
@@ -77,8 +84,7 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    var pathToDocset = PathUtility.NormalizeFile(path);
-                    var type = Document.GetContentType(pathToDocset);
+                    var type = Document.GetContentType(path);
                     if (type != ContentType.Page)
                     {
                         errorLog.Write(Errors.RedirectionInvalid(redirectUrl, path));
@@ -102,12 +108,12 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    var filePath = new FilePath(pathToDocset, FileOrigin.Redirection);
+                    var filePath = new FilePath(path, FileOrigin.Redirection);
                     var redirect = Document.Create(docset, filePath, input, templateEngine, mutableRedirectUrl, combineRedirectUrl);
 
                     if (!redirections.Add(redirect))
                     {
-                        errorLog.Write(Errors.RedirectionConflict(redirectUrl, pathToDocset));
+                        errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
                     }
                     else if (redirectDocumentId)
                     {
@@ -115,6 +121,55 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
+
+        private static RedirectionItem[] LoadRedirectionModel(string docsetPath, RepositoryProvider repositoryProvider)
+        {
+            var filesToProbe = new List<string> { "redirections.json", "redirections.yml" };
+
+            var mainRepo = repositoryProvider.GetRepository(FileOrigin.Default);
+            if (mainRepo != null)
+            {
+                filesToProbe.Add(PathUtility.NormalizeFile(
+                    Path.GetRelativePath(docsetPath, Path.Combine(mainRepo.Path, ".openpublishing.redirection.json"))));
+            }
+
+            foreach (var file in filesToProbe)
+            {
+                var fullPath = Path.GetFullPath(Path.Combine(docsetPath, file));
+                if (File.Exists(fullPath))
+                {
+                    var content = File.ReadAllText(fullPath);
+                    var model = file.EndsWith(".yml")
+                        ? YamlUtility.Deserialize<RedirectionModel>(content, new FilePath(file))
+                        : JsonUtility.Deserialize<RedirectionModel>(content, new FilePath(file));
+
+                    // Expand redirect items array or object form
+                    var redirections = model.Redirections.arrayForm
+                        ?? model.Redirections.objectForm?.Select(
+                                pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value })
+                        ?? Array.Empty<RedirectionItem>();
+
+                    var renames = model.Renames.Select(
+                        pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value, RedirectDocumentId = true });
+
+                    // Rebase source_path based on redirection definition file path
+                    var basedir = Path.GetDirectoryName(fullPath);
+
+                    return (
+                        from item in redirections.Concat(renames)
+                        let sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath))
+                        where !sourcePath.StartsWith(".")
+                        select new RedirectionItem
+                        {
+                            SourcePath = PathUtility.NormalizeFile(sourcePath),
+                            RedirectUrl = item.RedirectUrl,
+                            RedirectDocumentId = item.RedirectDocumentId,
+                        }).ToArray();
+                }
+            }
+
+            return Array.Empty<RedirectionItem>();
         }
 
         private static string NormalizeRedirectUrl(string redirectionUrl)

@@ -247,6 +247,10 @@ namespace Microsoft.Docs.Build
             {
                 return ContentType.Unknown;
             }
+            if (name.Equals("redirections", PathUtility.PathComparison))
+            {
+                return ContentType.Unknown;
+            }
 
             return ContentType.Page;
         }
@@ -391,7 +395,7 @@ namespace Microsoft.Docs.Build
                 : mappedSourcePath;
 
             // if source is landing page, change it to *.md
-            if (TemplateEngine.IsLandingData(Mime))
+            if (ContentType == ContentType.Redirection || TemplateEngine.IsLandingData(Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
