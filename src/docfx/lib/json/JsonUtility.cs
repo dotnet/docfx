@@ -121,32 +121,29 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(TextReader json, FilePath file)
         {
-            try
+            using (var reader = new JsonTextReader(json))
             {
-                var errors = new List<Error>();
-                var status = new Status { FilePath = file };
-
-                t_status.Value.Push(status);
-
-                using (var reader = new JsonTextReader(json))
+                try
                 {
-                    try
-                    {
-                        return s_serializer.Deserialize<T>(reader);
-                    }
-                    catch (JsonReaderException ex)
-                    {
-                        throw ToError(ex, file).ToException(ex);
-                    }
-                    catch (JsonSerializationException ex)
-                    {
-                        throw ToError(ex, file).ToException(ex);
-                    }
+                    var errors = new List<Error>();
+                    var status = new Status { FilePath = file };
+
+                    t_status.Value.Push(status);
+
+                    return s_serializer.Deserialize<T>(reader);
                 }
-            }
-            finally
-            {
-                t_status.Value.Pop();
+                catch (JsonReaderException ex)
+                {
+                    throw ToError(ex, file).ToException(ex);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    throw ToError(ex, file).ToException(ex);
+                }
+                finally
+                {
+                    t_status.Value.Pop();
+                }
             }
         }
 
