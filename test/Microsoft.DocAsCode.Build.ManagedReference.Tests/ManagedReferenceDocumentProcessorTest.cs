@@ -362,8 +362,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         public void LoadArticleWithEmptyFileShouldWarnAndReturnNull()
         {
             var fileWithNoContent = "TestData/mref/FileWithNoContent.yml";
-            var ft = new FileAndType(Directory.GetCurrentDirectory(), fileWithNoContent, DocumentType.Article);
-            var p = new ManagedReferenceDocumentProcessor();
+            var file = new FileAndType(Directory.GetCurrentDirectory(), fileWithNoContent, DocumentType.Article);
+            var processor = new ManagedReferenceDocumentProcessor();
 
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull), LogLevel.Info);
             try
@@ -373,7 +373,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 FileModel actualFileModel;
                 using (new LoggerPhaseScope(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull)))
                 {
-                    actualFileModel = p.Load(ft, null);
+                    actualFileModel = processor.Load(file, null);
                 }
 
                 var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
