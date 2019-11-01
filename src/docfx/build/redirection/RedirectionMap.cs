@@ -47,13 +47,12 @@ namespace Microsoft.Docs.Build
             Input input,
             TemplateEngine templateEngine,
             IReadOnlyCollection<Document> buildFiles,
-            MonikerProvider monikerProvider,
-            RepositoryProvider repositoryProvider)
+            MonikerProvider monikerProvider)
         {
             var redirections = new HashSet<Document>();
             var redirectionsWithDocumentId = new List<(SourceInfo<string> originalRedirectUrl, Document redirect)>();
 
-            var redirectionItems = LoadRedirectionModel(docset.DocsetPath, repositoryProvider);
+            var redirectionItems = LoadRedirectionModel(docset.DocsetPath);
 
             // load redirections with document id
             AddRedirections(redirectionItems.Where(item => item.RedirectDocumentId), redirectDocumentId: true);
@@ -123,7 +122,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static RedirectionItem[] LoadRedirectionModel(string docsetPath, RepositoryProvider repositoryProvider)
+        private static RedirectionItem[] LoadRedirectionModel(string docsetPath)
         {
             foreach (var fullPath in ProbeRedirectionFiles(docsetPath))
             {
