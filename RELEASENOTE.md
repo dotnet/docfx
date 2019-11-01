@@ -1,8 +1,16 @@
-Version Notes (Current Version: v2.47)
+Version Notes (Current Version: v2.48)
 =======================================
 
-v2.47(Pre-release)
+v2.48(Pre-release)
 -----------
+
+v2.47
+-----------
+
+1. Add persistence to the TOC filter (#5164). Thanks @jo3w4rd!
+2. Bug fix:
+    1. Fix StackOverflowExcpetion when resolving cross reference. (#4857)
+    2. Fix parsing `~/` in link path. (#5223)
 
 v2.46
 -----------
