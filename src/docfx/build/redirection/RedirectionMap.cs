@@ -125,24 +125,15 @@ namespace Microsoft.Docs.Build
 
         private static RedirectionItem[] LoadRedirectionModel(string docsetPath, RepositoryProvider repositoryProvider)
         {
-            var filesToProbe = new List<string> { "redirections.json", "redirections.yml" };
-
-            var mainRepo = repositoryProvider.GetRepository(FileOrigin.Default);
-            if (mainRepo != null)
+            foreach (var fullPath in ProbeRedirectionFiles(docsetPath))
             {
-                filesToProbe.Add(PathUtility.NormalizeFile(
-                    Path.GetRelativePath(docsetPath, Path.Combine(mainRepo.Path, ".openpublishing.redirection.json"))));
-            }
-
-            foreach (var file in filesToProbe)
-            {
-                var fullPath = Path.GetFullPath(Path.Combine(docsetPath, file));
                 if (File.Exists(fullPath))
                 {
                     var content = File.ReadAllText(fullPath);
-                    var model = file.EndsWith(".yml")
-                        ? YamlUtility.Deserialize<RedirectionModel>(content, new FilePath(file))
-                        : JsonUtility.Deserialize<RedirectionModel>(content, new FilePath(file));
+                    var filePath = new FilePath(PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, fullPath)));
+                    var model = fullPath.EndsWith(".yml")
+                        ? YamlUtility.Deserialize<RedirectionModel>(content, filePath)
+                        : JsonUtility.Deserialize<RedirectionModel>(content, filePath);
 
                     // Expand redirect items array or object form
                     var redirections = model.Redirections.arrayForm
@@ -170,6 +161,20 @@ namespace Microsoft.Docs.Build
             }
 
             return Array.Empty<RedirectionItem>();
+        }
+
+        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath)
+        {
+            yield return Path.Combine(docsetPath, "redirections.yml");
+            yield return Path.Combine(docsetPath, "redirections.json");
+
+            var directory = docsetPath;
+            do
+            {
+                yield return Path.Combine(directory, ".openpublishing.redirection.json");
+                directory = Path.GetDirectoryName(directory);
+            }
+            while (!string.IsNullOrEmpty(directory));
         }
 
         private static string NormalizeRedirectUrl(string redirectionUrl)
