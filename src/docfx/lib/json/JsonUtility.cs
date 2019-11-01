@@ -125,7 +125,6 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var errors = new List<Error>();
                     var status = new Status { FilePath = file };
 
                     t_status.Value.Push(status);
