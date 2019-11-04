@@ -133,7 +133,9 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveRelativeLink(
-                    file, inputMetadata.BreadcrumbPath, file);
+                    file,
+                    inputMetadata.BreadcrumbPath,
+                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File));
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
