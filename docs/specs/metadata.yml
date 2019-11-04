@@ -255,6 +255,18 @@ outputs:
     { "breadcrumb_path": "breadcrumbs/toc.json" }
   breadcrumbs/toc.json:
 ---
+# resolve breadcrumb_path relative to the declaring file
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      breadcrumb_path: breadcrumbs/TOC.json
+  a-folder/a.md:
+  breadcrumbs/TOC.json: '{}'
+outputs:
+  a-folder/a.json: |
+    { "breadcrumb_path": "../breadcrumbs/toc.json" }
+  breadcrumbs/toc.json:
+---
 # Metadata should work for fields marked with SourceInfo<T>
 inputs:
   docfx.yml: |
