@@ -77,13 +77,27 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var configObject = new JObject();
-            if (TryGetConfigPath(out var configPath))
+
+            // apply .openpublishing.config.json
+            var opsConfig = LoadOpsDocsetConfig(_docsetPath);
+            if (opsConfig != null)
             {
-                var configFileName = configPath.Path;
-                (errors, configObject) = LoadConfigObject(configFileName, _input.ReadString(configPath));
+                configObject["name"] = opsConfig.DocsetName;
+                configObject["globalMetadata"] = new JObject
+                {
+                    ["open_to_public_contributors"] = opsConfig.OpenToPublicContributors,
+                };
             }
 
-            // apply options
+            // apply docfx.json or docfx.yml
+            if (TryGetConfigPath(out var configPath))
+            {
+                var (mainErrors, mainConfigObject) = LoadConfigObject(configPath.Path, _input.ReadString(configPath));
+                errors.AddRange(mainErrors);
+                JsonUtility.Merge(configObject, mainConfigObject);
+            }
+
+            // apply command line options
             var optionConfigObject = options?.ToJObject();
 
             JsonUtility.Merge(configObject, optionConfigObject);
@@ -207,6 +221,32 @@ namespace Microsoft.Docs.Build
             {
                 config.Remove(overwriteConfigIdentifier);
             }
+        }
+
+        private static OpsDocsetConfig LoadOpsDocsetConfig(string docsetPath)
+        {
+            var directory = docsetPath;
+
+            do
+            {
+                var fullPath = Path.Combine(directory, ".openpublishing.config.json");
+                if (!File.Exists(fullPath))
+                {
+                    directory = Path.GetDirectoryName(directory);
+                    continue;
+                }
+
+                var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
+                var opsConfig = JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
+                var buildSourceFolder = PathUtility.NormalizeFolder(Path.GetRelativePath(directory, docsetPath));
+
+                return opsConfig.DocsetsToPublish.FirstOrDefault(config =>
+                    PathUtility.PathComparer.Equals(
+                        PathUtility.NormalizeFolder(config.BuildSourceFolder), buildSourceFolder));
+            }
+            while (!string.IsNullOrEmpty(directory));
+
+            return null;
         }
     }
 }

@@ -515,3 +515,25 @@ repos:
 outputs:
   .errors.log: |
     ["error","directory-not-found","Invalid directory: 'https://docs.com/crr-url-using-path/2'."]
+---
+# Peek .openpublishing.config.json for docset name and open_to_public_contributors
+inputs:
+  .openpublishing.config.json: |
+    {
+      "docsets_to_publish": [
+        { "docset_name": "a", "build_source_folder": ".", "open_to_public_contributors": true },
+        { "docset_name": "b", "build_source_folder": "b", "open_to_public_contributors": true }
+      ]
+    }
+  docfx.yml: |
+    files: 'a.md'
+  a.md:
+  b/docfx.yml: |
+    globalMetadata:
+      open_to_public_contributors: false
+  b/b.md:
+outputs:
+  a.json: '{ "open_to_public_contributors": true }'
+  .publish.json: '{ "name": "a" }'
+  b/b.json: '{ "open_to_public_contributors": false }'
+  b/.publish.json: '{ "name": "b" }'
