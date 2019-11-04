@@ -53,12 +53,7 @@ namespace Microsoft.Docs.Build
             var redirectionsWithDocumentId = new List<(SourceInfo<string> originalRedirectUrl, Document redirect)>();
 
             var redirectionItems = LoadRedirectionModel(docset.DocsetPath);
-
-            // load redirections with document id
-            AddRedirections(redirectionItems.Where(item => item.RedirectDocumentId), redirectDocumentId: true);
-
-            // load redirections without document id
-            AddRedirections(redirectionItems.Where(item => !item.RedirectDocumentId));
+            AddRedirections(redirectionItems);
 
             var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, file => file, PathUtility.PathComparer);
             var redirectionsByTargetSourcePath = GetRedirectionsByTargetSourcePath(errorLog, redirectionsWithDocumentId, buildFiles.Concat(redirections).ToList(), monikerProvider);
@@ -114,7 +109,7 @@ namespace Microsoft.Docs.Build
                     {
                         errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
                     }
-                    else if (redirectDocumentId)
+                    else if (item.RedirectDocumentId)
                     {
                         redirectionsWithDocumentId.Add((redirectUrl, redirect));
                     }
@@ -155,7 +150,7 @@ namespace Microsoft.Docs.Build
                             SourcePath = PathUtility.NormalizeFile(sourcePath),
                             RedirectUrl = item.RedirectUrl,
                             RedirectDocumentId = item.RedirectDocumentId,
-                        }).ToArray();
+                        }).OrderBy(item => item.RedirectUrl.Source).ToArray();
                 }
             }
 

@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             if (result == 0)
                 result = Origin.CompareTo(other.Origin);
             if (result == 0)
-                result = Commit.CompareTo(other.Commit);
+                result = string.CompareOrdinal(Commit, other.Commit);
 
             return result;
         }
