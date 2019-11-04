@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                 if (File.Exists(fullPath))
                 {
                     var content = File.ReadAllText(fullPath);
-                    var filePath = new FilePath(PathUtility.NormalizeFile(Path.GetRelativePath(docsetPath, fullPath)));
+                    var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
                     var model = fullPath.EndsWith(".yml")
                         ? YamlUtility.Deserialize<RedirectionModel>(content, filePath)
                         : JsonUtility.Deserialize<RedirectionModel>(content, filePath);
