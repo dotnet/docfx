@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -39,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, Input input, RepositoryProvider repositoryProvider)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider)
         {
             var restoreFileMap = new RestoreFileMap(input);
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -52,7 +51,7 @@ namespace Microsoft.Docs.Build
             Input = input;
             Output = new Output(outputPath, input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
-            DocumentProvider = new DocumentProvider(docset, fallbackDocset, input, TemplateEngine);
+            DocumentProvider = new DocumentProvider(docset, fallbackDocset, input, repositoryProvider, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
