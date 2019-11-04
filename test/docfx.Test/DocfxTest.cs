@@ -144,6 +144,10 @@ namespace Microsoft.Docs.Build
                     repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
                 if (locDocsetPath != null)
                 {
+                    // Give loc build some delay since outptuPath is reused
+                    // https://dev.azure.com/ceapex/Engineering/_build/results?buildId=97101&view=logs&j=133bd042-0fac-58b5-e6e7-01018e6dc4d4&t=b907bda6-23f1-5af4-47fe-b951a88dbb9a&l=10898
+                    await Task.Delay(200);
+
                     await RunBuild(locDocsetPath, outputPath, spec, locale: null);
                 }
             }
