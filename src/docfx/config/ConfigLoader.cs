@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var configObject = new JObject();
 
-            // apply .openpublishing.config.json
+            // apply .openpublishing.publish.config.json
             var opsConfig = LoadOpsDocsetConfig(_docsetPath);
             if (opsConfig != null)
             {
@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
 
             do
             {
-                var fullPath = Path.Combine(directory, ".openpublishing.config.json");
+                var fullPath = Path.Combine(directory, ".openpublishing.publish.config.json");
                 if (!File.Exists(fullPath))
                 {
                     directory = Path.GetDirectoryName(directory);
