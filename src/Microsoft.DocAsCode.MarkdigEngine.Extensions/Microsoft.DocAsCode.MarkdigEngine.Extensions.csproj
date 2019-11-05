@@ -2,7 +2,7 @@
   <Import Project="../Shared/base.netstandard.props" />
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.16.0" />
+    <PackageReference Include="Markdig" Version="0.18.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
