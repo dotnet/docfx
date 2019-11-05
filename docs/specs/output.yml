@@ -38,8 +38,9 @@ outputs:
 ---
 # Redirections outputs redirect_url to .publish.json, but does not have output file
 inputs:
-  docfx.yml: |
-    redirectionsWithoutId:
+  docfx.yml:
+  redirections.yml: |
+    redirections:
       a.md: /b
 outputs:
   .publish.json: |
@@ -437,15 +438,17 @@ inputs:
     Link to [relative link with bookmark](../v2/d.md#title-1)
     Link to [absolute link with bookmark](/docs/d.md#title-1)
     Link to [empty]()
+    :::image type="content" source="e.png" alt-text="Link to image":::
+  docs/v1/e.png:
   docs/v2/b.md: |
     Link to @a
   docs/v2/c.md: |
     some text
   docs/v2/d.md: |
     # title 1
-  docs/TOC.yml: |
+  docs/a/TOC.yml: |
     - name: Toc Reference
-      href: v1/b.md
+      href: ../v1/b.md
     - name: Non-existed Toc reference
       href: b.md
   docs/v1/TOC.yml: |
@@ -463,25 +466,48 @@ inputs:
 outputs:
   9d4e15fd/docs/b.json:
   9d4e15fd/docs/toc.json:
+  9d4e15fd/docs/e.png:
   218c13d0/docs/a.json:
   23d205a5/docs/b.json:
   23d205a5/docs/c.json:
-  docs/toc.json:
+  23d205a5/docs/d.json:
+  docs/a/toc.json:
   .links.json: |
     {
       "links":[
+        {"source_url":"/docs/a/toc.json","target_url":"/docs/b"},
+        {"source_url":"/docs/a/toc.json","target_url":"b.md"},
         {"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1"},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png"},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md"},
-        {"source_url":"/docs/toc.json","target_url":"/docs/b"},
-        {"source_url":"/docs/toc.json","source_moniker_group": "9d4e15fd","target_url":"/docs/b"},
-        {"source_url":"/docs/toc.json","target_url":"b.md"},
+        {"source_url":"/docs/toc.json","source_moniker_group": "9d4e15fd","target_url":"/docs/b"}
       ]
     }
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'c.md'.","docs/v1/b.md",3,9]
-    ["warning","file-not-found","Invalid file link: 'b.md'.","docs/TOC.yml",4,9]
+    ["warning","file-not-found","Invalid file link: 'b.md'.","docs/a/TOC.yml",4,9]
+---
+# source_url is the includer for links and xrefs in markdown token
+inputs:
+  docfx.yml: 'exclude: token.md'
+  a.md: '[!include[](token.md)]'
+  b.md: |
+    ---
+    uid: b
+    ---
+    @b
+  token.md: '[](/a-link), @b'
+outputs:
+  .links.json: |
+    {
+      "links": [
+        { "source_url": "/a", "target_url": "/a-link" },
+        { "source_url": "/a", "target_url": "/b" },
+      ]
+    }
+  a.json:
+  b.json:

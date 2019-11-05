@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
+        private readonly string _xrefHostName;
 
         public XrefResolver(
             Context context,
@@ -31,6 +33,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
+            _xrefHostName = string.IsNullOrEmpty(context.Config.XrefBaseUrl) ? docset.HostName : context.Config.XrefBaseUrl;
         }
 
         public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referencingFile)
@@ -73,10 +76,9 @@ namespace Microsoft.Docs.Build
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment);
 
-            if (!string.IsNullOrEmpty(resolvedHref))
-            {
-                _fileLinkMapBuilder.AddFileLink(referencingFile, resolvedHref);
-            }
+            // NOTE: this should also be relative to root file
+            _fileLinkMapBuilder.AddFileLink((Document)InclusionContext.RootFile ?? referencingFile, resolvedHref);
+
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
@@ -119,7 +121,7 @@ namespace Microsoft.Docs.Build
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
-                    var path = xref.DeclaringFile.CanonicalUrlWithoutLocale;
+                    var path = $"{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
                     return xrefSpec;

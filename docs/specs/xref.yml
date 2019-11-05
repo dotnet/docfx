@@ -106,6 +106,7 @@ repos:
     - files:
         docfx.yml: |
           baseUrl: https://docs.com/base_path
+          xrefBaseUrl: https://test.docs.com
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -127,12 +128,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://docs.com/base_path/docs/a",
+          "href": "https://test.docs.com/base_path/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://docs.com/base_path/docs/b",
+          "href": "https://test.docs.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
       ],
@@ -725,6 +726,7 @@ inputs:
       ]
     }
 outputs:
+  docs/c.json:
   .errors.log: |
     ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
     ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)'","docs/b.yml"]

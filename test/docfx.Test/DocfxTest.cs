@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         {
             AppData.GetCachePath = () => t_cachePath.Value;
             AppData.GetStatePath = () => t_statePath.Value;
+
             GitUtility.GitRemoteProxy = remote =>
             {
                 var mockedRepos = t_repos.Value;
@@ -72,7 +73,7 @@ namespace Microsoft.Docs.Build
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = Path.GetFullPath(Path.Combine("docfx-test", testName));
+            var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-test", testName));
             var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs/"));
             var cachePath = Path.Combine(basePath, "cache/");
             var statePath = Path.Combine(basePath, "state/");
@@ -97,7 +98,7 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(basePath);
 
             var repos = spec.Repos
-                .Select(repo => new PackageUrl(repo.Key).Url)
+                .Select(repo => new PackagePath(repo.Key).Url)
                 .Distinct()
                 .Select((remote, index) => (remote, index))
                 .ToDictionary(
@@ -110,7 +111,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
                 {
-                    var packageUrl = new PackageUrl(url);
+                    var packageUrl = new PackagePath(url);
                     TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, variables);
                 }
 
@@ -143,6 +144,10 @@ namespace Microsoft.Docs.Build
                     repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
                 if (locDocsetPath != null)
                 {
+                    // Give loc build some delay since outptuPath is reused
+                    // https://dev.azure.com/ceapex/Engineering/_build/results?buildId=97101&view=logs&j=133bd042-0fac-58b5-e6e7-01018e6dc4d4&t=b907bda6-23f1-5af4-47fe-b951a88dbb9a&l=10898
+                    await Task.Delay(200);
+
                     await RunBuild(locDocsetPath, outputPath, spec, locale: null);
                 }
             }
@@ -195,29 +200,42 @@ namespace Microsoft.Docs.Build
 
         private static JsonDiff CreateJsonDiff()
         {
-            return new JsonDiffBuilder()
+            var fileJsonDiff = new JsonDiffBuilder()
                 .UseAdditionalProperties()
                 .UseNegate()
                 .UseRegex()
                 .UseWildcard()
-                .UseIgnoreNull(IsOutputFile)
-                .UseJson()
                 .UseHtml(IsHtml)
                 .Use(IsHtml, RemoveDataLinkType)
-                .UseLogFile()
+                .Build();
+
+            return new JsonDiffBuilder()
+                .UseAdditionalProperties(null, IsRequiredOutput)
+                .UseIgnoreNull()
+                .UseJson(null, fileJsonDiff)
+                .UseLogFile(fileJsonDiff)
+                .UseHtml(IsHtml)
+                .Use(IsHtml, RemoveDataLinkType)
                 .Build();
         }
 
-        private static bool IsOutputFile(JToken expected, JToken actual, string name)
+        private static bool IsRequiredOutput(string name)
         {
-            // TODO: this will also match first property inside JSON file.
-            return expected.Parent?.Parent == expected.Root;
+            var fileName = Path.GetFileName(name);
+
+            return (fileName == ".errors.log" || !fileName.StartsWith("."))
+                && fileName != "filemap.json"
+                && fileName != "op_aggregated_file_map_info.json"
+                && fileName != "full-dependent-list.txt"
+                && fileName != "server-side-dependent-list.txt";
         }
 
         private static bool IsHtml(JToken expected, JToken actual, string name)
         {
             if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
+            }
 
             if (expected is JValue value && value.Value is string str &&
                 str.Trim() is string html && html.StartsWith('<') && html.EndsWith('>'))
@@ -244,11 +262,11 @@ namespace Microsoft.Docs.Build
             return (expectedHtml, actualHtml);
         }
 
-        private static JsonDiffBuilder UseLogFile(this JsonDiffBuilder builder)
+        private static JsonDiffBuilder UseLogFile(this JsonDiffBuilder builder, JsonDiff jsonDiff)
         {
             return builder.Use(
                 (expected, actual, name) => name.EndsWith(".txt") || name.EndsWith(".log"),
-                (expected, actual, name, jsonDiff) =>
+                (expected, actual, name, _) =>
                 {
                     if (expected.Type != JTokenType.String || actual.Type != JTokenType.String)
                     {
@@ -257,12 +275,12 @@ namespace Microsoft.Docs.Build
 
                     var expectedLines = expected.Value<string>()
                         .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                        .OrderBy(_ => _)
+                        .OrderBy(item => item)
                         .ToArray();
 
                     var actualLines = actual.Value<string>()
                         .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                        .OrderBy(_ => _)
+                        .OrderBy(item => item)
                         .ToArray();
 
                     for (var i = 0; i < Math.Min(expectedLines.Length, actualLines.Length); i++)

@@ -42,9 +42,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
         /// </summary>
-        public static Error RedirectionUrlNotExisted(SourceInfo<string> source)
+        /// Behavior: ✔️ Message: ✔️
+        public static Error RedirectionUrlNotFound(string from, SourceInfo<string> source)
         {
-            return new Error(ErrorLevel.Suggestion, "redirection-url-not-existed", $"The redirect url '{source}' does not match any file's publish URL, but the redirect_with_id flag has been set as true, please use a valid redirection url or add this rule to `redirectionsWithoutId`", source);
+            var message = $"Can't preserve document ID for redirected file '{from}' " +
+                          $"because redirect URL '{source}' is invalid or is a relative path to a file in another repo. " +
+                          "Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.";
+            return new Error(ErrorLevel.Suggestion, "redirection-url-not-found", message, source);
         }
 
         /// <summary>
@@ -66,7 +70,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' at {docsetPath}");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' in '{docsetPath}' or subdirectories");
 
         /// <summary>
         /// Two files include each other.
@@ -253,6 +257,14 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
 
         /// <summary>
+        /// Can't find a folder.
+        /// Examples: pointing template to a local folder that does not exist
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DirectoryNotFound(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{source}'.", source);
+
+        /// <summary>
         /// File contains git merge conflict.
         /// Examples:
         ///   - <![CDATA[
@@ -265,7 +277,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MergeConflict(SourceInfo source)
-            => new Error(ErrorLevel.Error, "merge-conflict", "File contains merge conflict", source);
+            => new Error(ErrorLevel.Warning, "merge-conflict", "File contains merge conflict", source);
 
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
@@ -285,10 +297,14 @@ namespace Microsoft.Docs.Build
         /// Files published to the same url have no monikers or share common monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error PublishUrlConflict(string url, IEnumerable<Document> files, IEnumerable<string> conflictMonikers)
+        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, IReadOnlyList<string>> files, List<string> conflictMonikers)
         {
-            var message = !conflictMonikers.Contains("NONE_VERSION") ? $" of the same version({Join(conflictMonikers)})" : null;
-            return new Error(ErrorLevel.Error, "publish-url-conflict", $"Two or more files{message} publish to the same url '{url}': {Join(files)}");
+            var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
+            var message = conflictMonikers.Count != 0 && !nonVersion ? $" of the same version({Join(conflictMonikers)})" : null;
+            return new Error(
+                ErrorLevel.Error,
+                "publish-url-conflict",
+                $"Two or more files{message} publish to the same url '{url}': {Join(files.Select(file => $"{file.Key}{(nonVersion ? null : $"<{Join(file.Value)}>")}"))}");
         }
 
         /// <summary>
@@ -550,8 +566,8 @@ namespace Microsoft.Docs.Build
         /// and can't decide which article to use when referencing that uid with this overlapped version
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerOverlapping(IEnumerable<string> overlappingmonikers)
-            => new Error(ErrorLevel.Warning, "moniker-overlapping", $"Two or more documents have defined overlapping moniker: {Join(overlappingmonikers)}");
+        public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingmonikers)
+            => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({Join(files)}) have defined overlapping moniker: {Join(overlappingmonikers)}");
 
         /// <summary>
         /// Failed to parse moniker string.
@@ -565,19 +581,19 @@ namespace Microsoft.Docs.Build
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerConfigMissing(SourceInfo<string> source)
-            => new Error(ErrorLevel.Warning, "moniker-config-missing", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
+        public static Error MonikerRangeUndefined(SourceInfo<string> source)
+            => new Error(ErrorLevel.Error, "moniker-range-undefined", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
 
         /// <summary>
         /// Config's monikerRange and monikerRange defined in yaml header has no intersection,
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error EmptyMonikers(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, List<string> fileLevelMonikers)
-            => new Error(ErrorLevel.Warning, "empty-monikers", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
+        public static Error MonikeRangeOutOfScope(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
+            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
 
-        public static Error EmptyMonikers(string configMonikerRange, List<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
-            => new Error(ErrorLevel.Warning, "empty-monikers", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
+        public static Error MonikeRangeOutOfScope(string configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
 
         /// <summary>
         /// Custom 404 page is not supported

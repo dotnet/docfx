@@ -11,8 +11,12 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class PublishModel
     {
+        public string Name { get; set; }
+
+        public string Product { get; set; }
+
         public PublishItem[] Files { get; set; }
 
-        public IReadOnlyDictionary<string, List<string>> MonikerGroups { get; set; } = new Dictionary<string, List<string>>();
+        public IReadOnlyDictionary<string, IReadOnlyList<string>> MonikerGroups { get; set; } = new Dictionary<string, IReadOnlyList<string>>();
     }
 }

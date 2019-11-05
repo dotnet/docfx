@@ -5,34 +5,32 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyResolver
+    internal class LinkResolver
     {
         private readonly Input _input;
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly WorkQueue<Document> _buildQueue;
+        private readonly DocumentProvider _documentProvider;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
-        private readonly IReadOnlyDictionary<string, string> _resolveAlias;
-        private readonly IReadOnlyDictionary<string, Docset> _dependencies;
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
 
-        public DependencyResolver(
+        public LinkResolver(
             Docset docset,
             Docset fallbackDocset,
-            Dictionary<string, Docset> dependencies,
             Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
+            DocumentProvider documentProvider,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
@@ -45,12 +43,11 @@ namespace Microsoft.Docs.Build
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
+            _documentProvider = documentProvider;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
-            _resolveAlias = LoadResolveAlias(docset.Config);
-            _dependencies = dependencies;
             _templateEngine = templateEngine;
             _fileLinkMapBuilder = fileLinkMapBuilder;
         }
@@ -97,11 +94,7 @@ namespace Microsoft.Docs.Build
                     referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
             }
 
-            // ignore self bookmark reference for FileLinkMap
-            if (!isSelfBookmark && !string.IsNullOrEmpty(link))
-            {
-                _fileLinkMapBuilder.AddFileLink(referencingFile, link);
-            }
+            _fileLinkMapBuilder.AddFileLink(relativeToFile, link);
 
             return (error, link, file);
         }
@@ -155,7 +148,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
+                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, _docset.Config.Output.Json, file.IsPage);
 
                 return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
@@ -197,7 +190,7 @@ namespace Microsoft.Docs.Build
 
                     // resolve file
                     var lookupFallbackCommits = inclusion || Document.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile, path, lookupFallbackCommits);
+                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -207,7 +200,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
                         }
 
                         // Do not report error for landing page
@@ -227,12 +220,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Document TryResolveRelativePath(Document referencingFile, string relativePath, bool lookupFallbackCommits)
+        private Document TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
+            string pathToDocset;
 
-            // apply resolve alias
-            var pathToDocset = ApplyResolveAlias(referencingFile, relativePath);
+            if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
+            {
+                // Treat ~/ as path relative to docset
+                pathToDocset = PathUtility.NormalizeFile(relativePath.Substring(2).TrimStart('/', '\\'));
+            }
+            else
+            {
+                // Path relative to referencing file
+                var baseDirectory = Path.GetDirectoryName(referencingFile.GetPathToOrigin());
+                pathToDocset = PathUtility.NormalizeFile(Path.Combine(baseDirectory, relativePath));
+            }
 
             // use the actual file name case
             if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
@@ -241,12 +244,12 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from the current docset for files in dependencies
-            if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
+            if (referencingFile.Origin == FileOrigin.Dependency)
             {
-                path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
+                path = new FilePath(pathToDocset, referencingFile.DependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(referencingFile.Docset, path, _input, _templateEngine);
+                    return _documentProvider.GetDocument(path);
                 }
                 return null;
             }
@@ -258,7 +261,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from dependent docsets
-            foreach (var (dependencyName, dependentDocset) in _dependencies)
+            foreach (var (dependencyName, _) in _docset.Config.Dependencies)
             {
                 var (match, _, remainingPath) = PathUtility.Match(pathToDocset, dependencyName);
                 if (!match)
@@ -270,7 +273,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(remainingPath, dependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(dependentDocset, path, _input, _templateEngine);
+                    return _documentProvider.GetDocument(path);
                 }
             }
 
@@ -278,7 +281,7 @@ namespace Microsoft.Docs.Build
             path = new FilePath(pathToDocset);
             if (_input.Exists(path))
             {
-                return Document.Create(_docset, path, _input, _templateEngine);
+                return _documentProvider.GetDocument(path);
             }
 
             // resolve from fallback docset
@@ -287,7 +290,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(pathToDocset, FileOrigin.Fallback);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                    return _documentProvider.GetDocument(path);
                 }
 
                 // resolve from fallback docset git commit history
@@ -296,41 +299,14 @@ namespace Microsoft.Docs.Build
                     var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
                     var commit = repo != null && commits.Count > 1 ? commits[1] : default;
                     path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
-
                     if (_input.Exists(path))
                     {
-                        return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                        return _documentProvider.GetDocument(path);
                     }
                 }
             }
 
             return default;
-        }
-
-        private string ApplyResolveAlias(Document referencingFile, string path)
-        {
-            foreach (var (alias, aliasPath) in _resolveAlias)
-            {
-                var (match, _, remainingPath) = PathUtility.Match(path, alias);
-                if (match)
-                {
-                    return PathUtility.NormalizeFile(aliasPath + remainingPath);
-                }
-            }
-
-            return PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.Path), path));
-        }
-
-        private static Dictionary<string, string> LoadResolveAlias(Config config)
-        {
-            var result = new Dictionary<string, string>(PathUtility.PathComparer);
-
-            foreach (var (alias, aliasPath) in config.ResolveAlias)
-            {
-                result.TryAdd(alias, PathUtility.NormalizeFolder(aliasPath));
-            }
-
-            return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
     }
 }

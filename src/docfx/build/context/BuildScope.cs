@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -18,8 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly Func<string, bool> _glob;
 
         private readonly Input _input;
-        private readonly TemplateEngine _templateEngine;
-        private readonly HashSet<string> _inScopeDependencyNames = new HashSet<string>();
+        private readonly Docset _docset;
+        private readonly DocumentProvider _documentProvider;
 
         /// <summary>
         /// Gets all the files to build, including redirections and fallback files.
@@ -28,45 +27,45 @@ namespace Microsoft.Docs.Build
 
         public RedirectionMap Redirections { get; }
 
-        public BuildScope(ErrorLog errorLog, Input input, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, TemplateEngine templateEngine)
+        public BuildScope(
+            ErrorLog errorLog, Input input, DocumentProvider documentProvider, TemplateEngine templateEngine, Docset docset, Docset fallbackDocset, MonikerProvider monikerProvider)
         {
-            var config = docset.Config;
-
             _input = input;
-            _glob = CreateGlob(config);
-            _templateEngine = templateEngine;
+            _docset = docset;
+            _documentProvider = documentProvider;
+            _glob = CreateGlob(_docset.Config);
 
-            var (fileNames, files) = GetFiles(FileOrigin.Default, docset, _glob);
+            var (fileNames, files) = GetFiles(FileOrigin.Default, _glob);
 
             var fallbackFiles = fallbackDocset != null
-                ? GetFiles(FileOrigin.Fallback, fallbackDocset, CreateGlob(fallbackDocset.Config)).files
+                ? GetFiles(FileOrigin.Fallback, CreateGlob(fallbackDocset.Config)).files
                 : Enumerable.Empty<Document>();
 
             _fileNames = fileNames;
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files);
+            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files, monikerProvider);
 
             Files.UnionWith(Redirections.Files);
 
-            foreach (var (dependencyName, (dependencyDocset, inScope)) in dependencyDocsets)
+            foreach (var (dependencyName, dependency) in _docset.Config.Dependencies)
             {
-                if (inScope)
+                if (dependency.IncludeInBuild)
                 {
-                    _inScopeDependencyNames.Add(dependencyName);
-                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyDocset, _glob, dependencyName);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, _glob, dependencyName);
                     Files.UnionWith(dependencyFiles);
                 }
 
-                _fileNames.UnionWith(_input.ListFilesRecursive(FileOrigin.Dependency, dependencyName).Select(f => Path.Combine(dependencyName, f.Path).Replace("\\", "/")).ToList());
+                _fileNames.UnionWith(_input.ListFilesRecursive(FileOrigin.Dependency, dependencyName).Select(f => f.Path).ToList());
             }
         }
 
         public bool OutOfScope(Document filePath)
         {
             // Link to dependent repo
-            if (filePath.FilePath.Origin == FileOrigin.Dependency && !_inScopeDependencyNames.Contains(filePath.FilePath.DependencyName))
+            if (filePath.FilePath.Origin == FileOrigin.Dependency &&
+                !_docset.Config.Dependencies[filePath.FilePath.DependencyName].IncludeInBuild)
             {
                 return true;
             }
@@ -86,7 +85,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(
-            FileOrigin origin, Docset docset, Func<string, bool> glob, string dependencyName = null)
+            FileOrigin origin, Func<string, bool> glob, string dependencyName = null)
         {
             using (Progress.Start("Globbing files"))
             {
@@ -95,10 +94,9 @@ namespace Microsoft.Docs.Build
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    var path = Path.Combine(dependencyName ?? "", file.Path).Replace("\\", "/");
-                    if (glob(path))
+                    if (glob(file.Path))
                     {
-                        files.Add(Document.Create(docset, file, _input, _templateEngine));
+                        files.Add(_documentProvider.GetDocument(file));
                     }
                 });
 

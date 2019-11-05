@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,17 +16,15 @@ namespace Microsoft.Docs.Build
     internal class Input
     {
         private readonly string _docsetPath;
-        private readonly string _fallbackPath;
-        private readonly Config _config;
-        private readonly RestoreGitMap _restoreMap;
+        private readonly RepositoryProvider _repositoryProvider;
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
-        public Input(string docsetPath, string fallbackPath, Config config, RestoreGitMap restoreMap)
+        public Input(string docsetPath, RepositoryProvider repositoryProvider)
         {
-            _config = config;
-            _restoreMap = restoreMap;
+            _repositoryProvider = repositoryProvider;
             _docsetPath = Path.GetFullPath(docsetPath);
-            _fallbackPath = fallbackPath is null ? null : Path.GetFullPath(fallbackPath);
         }
 
         /// <summary>
@@ -32,19 +32,21 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool Exists(FilePath file)
         {
-            var (basePath, path, commit) = ResolveFilePath(file);
+            var (docsetPath, pathToDocset, commit) = ResolveFilePath(file);
 
-            if (basePath is null)
+            if (docsetPath is null)
             {
                 return false;
             }
 
             if (commit is null)
             {
-                return File.Exists(Path.Combine(basePath, path));
+                return File.Exists(PathUtility.NormalizeFile(Path.Combine(docsetPath, pathToDocset)));
             }
 
-            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit)) != null;
+            var repoPath = GitUtility.FindRepo(docsetPath);
+            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, PathUtility.NormalizeFile(Path.Combine(docsetPath, pathToDocset))));
+            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(repoPath, pathToRepo, commit)) != null;
         }
 
         /// <summary>
@@ -82,6 +84,34 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Reads the specified file as JSON.
+        /// </summary>
+        public (List<Error> errors, JToken token) ReadJson(FilePath file)
+        {
+            return _jsonTokenCache.GetOrAdd(file, path =>
+            {
+                using (var reader = ReadText(path))
+                {
+                    return JsonUtility.Parse(reader, path);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Reads the specified file as YAML.
+        /// </summary>
+        public (List<Error> errors, JToken token) ReadYaml(FilePath file)
+        {
+            return _yamlTokenCache.GetOrAdd(file, path =>
+            {
+                using (var reader = ReadText(path))
+                {
+                    return YamlUtility.Parse(reader, path);
+                }
+            });
+        }
+
+        /// <summary>
         /// Open the specified file and read it as text.
         /// </summary>
         public TextReader ReadText(FilePath file)
@@ -100,7 +130,7 @@ namespace Microsoft.Docs.Build
 
             if (commit is null)
             {
-                return File.OpenRead(Path.Combine(basePath, path));
+                return File.OpenRead(PathUtility.NormalizeFile(Path.Combine(basePath, path)));
             }
 
             var bytes = _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit))
@@ -117,35 +147,50 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Default:
-                    return Directory
-                        .GetFiles(_docsetPath, "*", SearchOption.AllDirectories)
-                        .Select(path => new FilePath(
-                            Path.GetRelativePath(_docsetPath, path).Replace('\\', '/'), FileOrigin.Default))
-                        .ToArray();
+                    return ListFilesRecursive(_docsetPath, null);
 
                 case FileOrigin.Fallback:
-                    return Directory
-                        .GetFiles(_fallbackPath, "*", SearchOption.AllDirectories)
-                        .Select(path => new FilePath(
-                            Path.GetRelativePath(_fallbackPath, path).Replace('\\', '/'), FileOrigin.Fallback))
-                        .ToArray();
+                    var (fallbackEntry, fallbackRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin);
+
+                    return ListFilesRecursive(fallbackEntry, null);
 
                 case FileOrigin.Dependency:
-                    var (dependencyPath, commit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[dependencyName], true);
+                    var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin, dependencyName);
 
-                    // todo: get tree list from repository
-                    // todo: handle dependency is a relative folder
-                    return GitUtility.ListTree(dependencyPath, commit)
-                        .Select(path => new FilePath(
-                            path.Replace('\\', '/'), dependencyName))
-                        .ToArray();
+                    return ListFilesRecursive(dependencyEntry, dependencyRepository);
 
                 default:
                     throw new NotSupportedException($"{nameof(ListFilesRecursive)}: {origin}");
             }
+
+            FilePath[] ListFilesRecursive(string entry, Repository repository)
+            {
+                if (repository != null)
+                {
+                    // todo: get tree list from repository
+                    return GitUtility.ListTree(repository.Path, repository.Commit)
+                        .Select(path => CreateFilePath(path.Replace('\\', '/')))
+                        .ToArray();
+                }
+
+                if (!Directory.Exists(entry))
+                {
+                    return Array.Empty<FilePath>();
+                }
+
+                return Directory
+                .GetFiles(entry, "*", SearchOption.AllDirectories)
+                    .Select(path => CreateFilePath(Path.GetRelativePath(entry, path).Replace('\\', '/')))
+                    .ToArray();
+            }
+
+            FilePath CreateFilePath(string path)
+            {
+                return dependencyName is null ? new FilePath(path, origin) : new FilePath(path, dependencyName);
+            }
         }
 
-        private (string basePath, string path, string commit) ResolveFilePath(FilePath file)
+        private (string docsetPath, string pathToDocset, string commit) ResolveFilePath(FilePath file)
         {
             switch (file.Origin)
             {
@@ -153,15 +198,13 @@ namespace Microsoft.Docs.Build
                     return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
-                    var (dependencyPath, dependencyCommit) = _restoreMap.GetRestoreGitPath(_config.Dependencies[file.DependencyName], true);
-                    return (dependencyPath, file.Path, file.Commit ?? dependencyCommit);
+                    var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin, file.DependencyName);
+                    return (dependencyEntry, file.GetPathToOrigin(), file.Commit ?? dependencyRepository?.Commit);
 
                 case FileOrigin.Fallback:
-                    return (_fallbackPath, file.Path, file.Commit);
-
                 case FileOrigin.Template:
-                    var (templatePath, _) = _restoreMap.GetRestoreGitPath(_config.Template, false);
-                    return (templatePath, file.Path, file.Commit);
+                    var (docsetPath, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin);
+                    return (docsetPath, file.Path, file.Commit);
 
                 default:
                     return default;

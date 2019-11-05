@@ -29,30 +29,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (string path, string commit) GetRestoreGitPath(PackageUrl packageUrl, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
+        public (string path, string commit) GetRestoreGitPath(PackagePath packagePath, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
         {
-            switch (packageUrl.Type)
+            switch (packagePath.Type)
             {
                 case PackageType.Folder:
-                    var fullPath = Path.Combine(_docsetPath, packageUrl.Path);
+                    var fullPath = Path.Combine(_docsetPath, packagePath.Path);
                     if (Directory.Exists(fullPath))
                     {
                         return (fullPath, default);
                     }
 
-                    // TODO: Intentionally don't fallback to fallbackDocset for git restore path,
                     // TODO: populate source info
-                    throw Errors.NeedRestore(packageUrl.Path).ToException();
+                    throw Errors.DirectoryNotFound(new SourceInfo<string>(packagePath.ToString())).ToException();
 
                 case PackageType.Git:
-                    var gitLock = _dependencyLockProvider.GetGitLock(packageUrl.Url, packageUrl.Branch);
+                    var gitLock = _dependencyLockProvider.GetGitLock(packagePath.Url, packagePath.Branch);
 
                     if (gitLock is null || gitLock.Commit is null)
                     {
-                        throw Errors.NeedRestore($"{packageUrl}").ToException();
+                        throw Errors.NeedRestore($"{packagePath}").ToException();
                     }
 
-                    var path = AppData.GetGitDir(packageUrl.Url);
+                    var path = AppData.GetGitDir(packagePath.Url);
 
                     if (!bare)
                     {
@@ -61,13 +60,13 @@ namespace Microsoft.Docs.Build
 
                     if (!Directory.Exists(path))
                     {
-                        throw Errors.NeedRestore($"{packageUrl}").ToException();
+                        throw Errors.NeedRestore($"{packagePath}").ToException();
                     }
 
                     return (path, gitLock.Commit);
 
                 default:
-                    throw new NotSupportedException($"Unknown package url: '{packageUrl}'");
+                    throw new NotSupportedException($"Unknown package url: '{packagePath}'");
             }
         }
 
@@ -95,11 +94,9 @@ namespace Microsoft.Docs.Build
         /// Acquired all shared git based on dependency lock
         /// The dependency lock must be loaded before using this method
         /// </summary>
-        public static RestoreGitMap Create(string docsetPath, Config config, string locale)
+        public static RestoreGitMap Create(string docsetPath, string locale)
         {
-            var dependencyLockPath = string.IsNullOrEmpty(config.DependencyLock)
-                    ? new SourceInfo<string>(AppData.GetDependencyLockFile(docsetPath, locale)) : config.DependencyLock;
-            var dependencyLockProvider = DependencyLockProvider.Create(docsetPath, dependencyLockPath);
+            var dependencyLockProvider = DependencyLockProvider.CreateFromAppData(docsetPath, locale);
 
             return new RestoreGitMap(dependencyLockProvider, docsetPath);
         }

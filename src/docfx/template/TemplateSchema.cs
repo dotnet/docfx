@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!string.IsNullOrEmpty(schemaName));
 
-            SchemaName = SchemaName;
+            SchemaName = schemaName;
             IsPage = GetIsPageCore(schemaName, contentTemplateDir);
             (JsonSchemaValidator, JsonSchemaTransformer) = GetJsonSchemaCore(schemaDir, schemaName);
         }

@@ -51,7 +51,8 @@ namespace Microsoft.Docs.Build
         public Repository Repository { get; }
 
         /// <summary>
-        /// Gets the site base path
+        /// Gets the site base path calculated from <see cref="Config.BaseUrl"/>.
+        /// It is either an empty string, or a path without leading /
         /// </summary>
         public string SiteBasePath { get; }
 
@@ -69,74 +70,11 @@ namespace Microsoft.Docs.Build
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
             Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(Locale);
-            (HostName, SiteBasePath) = SplitBaseUrl(config.BaseUrl);
+            (HostName, SiteBasePath) = UrlUtility.SplitBaseUrl(config.BaseUrl);
 
-            Repository = repository ?? Repository.Create(DocsetPath, branch: null);
+            Repository = repository;
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
-        }
-
-        public Repository GetRepository(string filePath)
-        {
-            return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
-
-            Repository GetRepositoryInternal(string fullPath)
-            {
-                if (GitUtility.IsRepo(fullPath))
-                {
-                    if (string.Equals(fullPath, DocsetPath.Substring(0, DocsetPath.Length - 1), PathUtility.PathComparison))
-                    {
-                        return Repository;
-                    }
-
-                    return Repository.Create(fullPath, branch: null);
-                }
-
-                var parent = Path.GetDirectoryName(fullPath);
-                return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(PathUtility.NormalizeFile(parent), k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
-                    : null;
-            }
-        }
-
-        private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
-        {
-            var result = new Dictionary<string, string>();
-            foreach (var (key, value) in routes.Reverse())
-            {
-                result.Add(
-                    key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
-                    PathUtility.NormalizeFile(value));
-            }
-            return result;
-        }
-
-        private CultureInfo CreateCultureInfo(string locale)
-        {
-            try
-            {
-                return new CultureInfo(locale);
-            }
-            catch (CultureNotFoundException)
-            {
-                throw Errors.LocaleInvalid(locale).ToException();
-            }
-        }
-
-        private static (string hostName, string siteBasePath) SplitBaseUrl(string baseUrl)
-        {
-            string hostName = string.Empty;
-            string siteBasePath = ".";
-            if (!string.IsNullOrEmpty(baseUrl)
-                && Uri.TryCreate(baseUrl, UriKind.Absolute, out var uriResult))
-            {
-                if (uriResult.AbsolutePath != "/")
-                {
-                    siteBasePath = uriResult.AbsolutePath.Substring(1);
-                }
-                hostName = $"{uriResult.Scheme}://{uriResult.Host}";
-            }
-            return (hostName, siteBasePath);
         }
 
         public int CompareTo(Docset other)
@@ -172,6 +110,54 @@ namespace Microsoft.Docs.Build
         public static bool operator !=(Docset obj1, Docset obj2)
         {
             return !Equals(obj1, obj2);
+        }
+
+        // todo: use repository provider instead
+        public Repository GetRepository(string filePath)
+        {
+            return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
+
+            Repository GetRepositoryInternal(string fullPath)
+            {
+                if (GitUtility.IsRepo(fullPath))
+                {
+                    if (Repository != null && string.Equals(fullPath, Repository.Path.Substring(0, Repository.Path.Length - 1), PathUtility.PathComparison))
+                    {
+                        return Repository;
+                    }
+
+                    return Repository.Create(fullPath, branch: null);
+                }
+
+                var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath) ?? "");
+                return !string.IsNullOrEmpty(parent)
+                    ? _repositories.GetOrAdd(parent, k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
+                    : null;
+            }
+        }
+
+        private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
+        {
+            var result = new Dictionary<string, string>();
+            foreach (var (key, value) in routes.Reverse())
+            {
+                result.Add(
+                    key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
+                    PathUtility.NormalizeFile(value));
+            }
+            return result;
+        }
+
+        private CultureInfo CreateCultureInfo(string locale)
+        {
+            try
+            {
+                return new CultureInfo(locale);
+            }
+            catch (CultureNotFoundException)
+            {
+                throw Errors.LocaleInvalid(locale).ToException();
+            }
         }
     }
 }

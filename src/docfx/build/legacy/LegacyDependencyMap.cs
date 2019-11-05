@@ -40,8 +40,8 @@ namespace Microsoft.Docs.Build
                         {
                             legacyDependencyMap.Add(new LegacyDependencyMapItem
                             {
-                                From = $"~/{document.ToLegacyPathRelativeToBasePath(docset)}",
-                                To = $"~/{toc.ToLegacyPathRelativeToBasePath(docset)}",
+                                From = $"~/{document.FilePath.Path}",
+                                To = $"~/{toc.FilePath.Path}",
                                 Type = LegacyDependencyMapType.Metadata,
                                 Version = legacyVersionProvider.GetLegacyVersion(document),
                             });
@@ -59,8 +59,8 @@ namespace Microsoft.Docs.Build
 
                         legacyDependencyMap.Add(new LegacyDependencyMapItem
                         {
-                            From = $"~/{source.ToLegacyPathRelativeToBasePath(docset)}",
-                            To = $"~/{dependencyItem.To.ToLegacyPathRelativeToBasePath(docset)}",
+                            From = $"~/{source.FilePath.Path}",
+                            To = $"~/{dependencyItem.To.FilePath.Path}",
                             Type = dependencyItem.Type.ToLegacyDependencyMapType(),
                             Version = legacyVersionProvider.GetLegacyVersion(source),
                         });
@@ -77,10 +77,8 @@ namespace Microsoft.Docs.Build
                     select JsonUtility.Serialize(new
                     {
                         dependency_type = dep.Type,
-                        from_file_path = Path.GetFullPath(
-                            Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, dep.From.Substring(2))),
-                        to_file_path = Path.GetFullPath(
-                            Path.Combine(docset.DocsetPath, docset.Config.DocumentId.SourceBasePath, dep.To.Substring(2))),
+                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, dep.From.Substring(2))),
+                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, dep.To.Substring(2))),
                         version = dep.Version,
                     });
 

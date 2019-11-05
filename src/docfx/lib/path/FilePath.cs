@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         /// <summary>
-        /// Gets the file path relative to the main docset/dependency docset/template.
+        /// Gets the file path relative to the main docset(fallback docset).
         /// </summary>
         public string Path { get; }
 
@@ -48,9 +48,23 @@ namespace Microsoft.Docs.Build
 
         public FilePath(string path, string dependencyName)
         {
-            Path = PathUtility.NormalizeFile(path);
+            Path = PathUtility.NormalizeFile(System.IO.Path.Combine(dependencyName, path));
             DependencyName = dependencyName;
             Origin = FileOrigin.Dependency;
+        }
+
+        /// <summary>
+        /// Gets the path relative to docset root or dependency docset root
+        /// </summary>
+        public string GetPathToOrigin()
+        {
+            if (Origin == FileOrigin.Dependency)
+            {
+                Debug.Assert(!string.IsNullOrEmpty(DependencyName));
+                return PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName, Path));
+            }
+
+            return Path;
         }
 
         public static bool operator ==(FilePath a, FilePath b) => Equals(a, b);
@@ -90,7 +104,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, DependencyName, Commit);
+            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, Commit);
         }
 
         public bool Equals(FilePath other)
@@ -102,7 +116,6 @@ namespace Microsoft.Docs.Build
 
             return string.Equals(Path, other.Path, PathUtility.PathComparison) &&
                    other.Origin == Origin &&
-                   DependencyName == other.DependencyName &&
                    Commit == other.Commit;
         }
 
@@ -112,9 +125,7 @@ namespace Microsoft.Docs.Build
             if (result == 0)
                 result = Origin.CompareTo(other.Origin);
             if (result == 0)
-                result = DependencyName.CompareTo(other.DependencyName);
-            if (result == 0)
-                result = Commit.CompareTo(other.Commit);
+                result = string.CompareOrdinal(Commit, other.Commit);
 
             return result;
         }

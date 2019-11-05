@@ -175,20 +175,27 @@ outputs:
   docs/a.json: |
     { "key": "another value" }
 ---
-# String values are trimmed in config
+# Metadatata value should be directly passed through
+# Redirect URL should be trimmed
 inputs:
   docfx.yml: |
     globalMetadata:
       key: ' value   '
-    redirectionsWithoutId:
+  redirections.yml: |
+    redirections:
       docs/redirect.md: '/absolute/path '
-  docs/a.md: |
-    [redirect](redirect.md?a#b)
+  docs/a.md:
 outputs:
   docs/a.json: |
     {
-      "key": "value",
-      "conceptual": "<p><a href=\"redirect?a#b\">redirect</a></p>"
+      "key": " value   "
+    }
+  .publish.json: |
+    {
+      "files": [
+        { "source_path": "docs/redirect.md", "redirect_url": "/absolute/path" },
+        { "url": "/docs/a" }
+      ]
     }
 ---
 # routes
@@ -361,61 +368,6 @@ outputs:
   .errors.log: |
     ["error","file-not-found","Invalid file link: 'b.md'.","docs/a.md",1,1]
 ---
-# Redirection file content type invalid
-inputs:
-  docfx.yml: |
-    redirections:
-      docs/TOC.md: /absolute/path
-outputs:
-  .errors.log: |
-    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
----
-# Redirection url conflict
-inputs:
-  docfx.yml: |
-    redirections:
-      docs/a.md: /docs/b
-    redirectionsWithoutId:
-      docs/a.md: /absolute/path2
-  docs/b.md:
-outputs:
-  docs/b.json:
-  .errors.log: |
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",4,14]
----
-# Redirection file out of build scope
-inputs:
-  docfx.yml: |
-    exclude: '*'
-    redirectionsWithoutId:
-      docs/a.md: /absolute/path1
-      b.md: /absolute/path2
-outputs:
----
-# Redirection file out of build scope with conflicted id
-inputs:
-  docfx.yml: |
-    exclude: '*'
-    redirections:
-      a.md: /absolute/path1
-      b.md: /absolute/path1
-outputs:
----
-# Multiple redirection errors
-inputs:
-  docfx.yml: |
-    redirections:
-      docs/TOC.md: /absolute/path
-      docs/a.md: /docs/b
-    redirectionsWithoutId:
-      docs/a.md: /absolute/path2
-  docs/b.md:
-outputs:
-  docs/b.json:
-  .errors.log: |
-    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","docfx.yml",2,16]
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","docfx.yml",5,14]
----
 # Wrong locale
 os: windows
 inputs:
@@ -521,14 +473,6 @@ inputs:
 outputs:
   a.json:
 ---
-# redirect to not starting with '/' is allowed in config.redirectionWithoutIds
-inputs:
-  docfx.yml: |
-    redirectionsWithoutId:
-      a.md: https://docs.microsoft.com/docfx/a
-      b.md: a
-outputs:
----
 # file metadata schema violation
 inputs:
   docfx.yml: |  
@@ -557,77 +501,6 @@ outputs:
   .errors.log: |
       ["error","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]
 ---
-# Redirection files have conflicted ids
-# all redirection files will be built
-# redirection document id is retrieved from the first redirection file (a.md for below case)
-inputs:
-  docfx.yml: |
-    redirections:
-      a.md: /docs/path1
-      b.md: /docs/path1
-  docs/path1.md:
-outputs:
-  .errors.log: |
-    ["warning","redirection-url-conflict","The '/docs/path1' appears twice or more in the redirection mappings","docfx.yml",3,9]
-  .publish.json: |
-    {
-        "files": [
-            {
-                "url": "/a"
-            },
-            {
-                "url": "/b"
-            },
-            {
-                "url": "/docs/path1"
-            }
-        ]
-    }
-  docs/path1.json: |
-    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5",}
----
-# branch property has higher priority than branch defined in url
-repos:
-  https://docs.com/branch-priority/1:
-    - files:
-        docfx.yml: |
-          dependencies:
-            crr:
-              url: https://docs.com/branch-priority/2#unused
-              branch: master
-              includeInBuild: true
-  https://docs.com/branch-priority/2#master:
-    - files:
-        b.md: 
-  https://docs.com/branch-priority/2#unused:
-    - files:
-        c.md: 
-outputs:
-  crr/b.json:
----
-# [skip] dependencyPackageUrl can use relative path by setting path or url
-# path has higher priority than url
-# todo: un-skip after handle dependency is relative folder case
-inputs:
-  docfx.yml: |
-    files:
-    - crr1/**/*.md
-    - crr2/**/*.md
-    dependencies:
-      crr1:
-        path: crr-by-path
-        includeInBuild: true
-      crr2:
-        url: crr-priority-url
-        path: crr-priority-path
-        includeInBuild: true
-  crr-by-path/crr-by-path.md:
-  crr-priority-url/crr-priority-url.md:
-  crr-priority-path/crr-priority-path.md:
-outputs:
-  crr1/crr-by-path.json:
-  crr2/crr-priority-path.json:
----
 # dependencyPackageUrl's path using git url won't restore the git repo
 repos:
   https://docs.com/crr-url-using-path/1:
@@ -642,4 +515,4 @@ repos:
       b.md:
 outputs:
   .errors.log: |
-    ["error","need-restore","Cannot find dependency 'https://docs.com/crr-url-using-path/2', did you forget to run `docfx restore`?"]
+    ["error","directory-not-found","Invalid directory: 'https://docs.com/crr-url-using-path/2'."]

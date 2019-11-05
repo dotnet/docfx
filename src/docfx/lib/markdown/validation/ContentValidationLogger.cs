@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(code))
             {
-                _markdownContext.LogInfo(code, message, origin, line);
+                _markdownContext.LogInfo(code, message, origin, line - 1);
             }
         }
 
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(code))
             {
-                _markdownContext.LogSuggestion(code, message, origin, line);
+                _markdownContext.LogSuggestion(code, message, origin, line - 1);
             }
         }
 
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(code))
             {
-                _markdownContext.LogWarning(code, message, origin, line);
+                _markdownContext.LogWarning(code, message, origin, line - 1);
             }
         }
 
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(code))
             {
-                _markdownContext.LogError(code, message, origin, line);
+                _markdownContext.LogError(code, message, origin, line - 1);
             }
         }
     }

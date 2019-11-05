@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public static readonly string[] DefaultExclude = new[]
         {
             "_site/**",             // Default output location
-            "localization/**",      // Localization file when using folder convention
+            "_localization/**",     // Localization file when using folder convention
             "_themes/**",           // Default template location
         };
 
@@ -69,6 +69,11 @@ namespace Microsoft.Docs.Build
         public string BaseUrl { get; private set; } = string.Empty;
 
         /// <summary>
+        /// host name used for generating .xrefmap.json
+        /// </summary>
+        public string XrefBaseUrl { get; private set; } = string.Empty;
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>
@@ -102,29 +107,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, DependencyPackageUrl> Dependencies = new Dictionary<string, DependencyPackageUrl>(PathUtility.PathComparer);
-
-        /// <summary>
-        /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
-        /// Default will be `~: .`
-        /// </summary>
-        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer) { { "~", "." } };
-
-        /// <summary>
-        /// Gets the redirection mappings
-        /// The default value is empty mappings
-        /// The redirection always transfer the document id
-        /// </summary>
-        public readonly Dictionary<string, SourceInfo<string>> Redirections
-            = new Dictionary<string, SourceInfo<string>>(PathUtility.PathComparer);
-
-        /// <summary>
-        /// Gets the redirection mappings without document id
-        /// The default value is empty mappings
-        /// The redirection doesn't transfer the document id
-        /// </summary>
-        public readonly Dictionary<string, SourceInfo<string>> RedirectionsWithoutId
-            = new Dictionary<string, SourceInfo<string>>(PathUtility.PathComparer);
+        public readonly Dictionary<string, DependencyConfig> Dependencies = new Dictionary<string, DependencyConfig>(PathUtility.PathComparer);
 
         /// <summary>
         /// Gets the document id configuration section
@@ -193,11 +176,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly PackageUrl Template = new PackageUrl();
+        public readonly PackagePath Template = new PackagePath();
 
         /// <summary>
-        /// Gets the dependency lock file path
-        /// It should be absolute url or absolute/relative path
+        /// Gets the dependency lock file path.
+        /// It is an absolute file path or relative file path relative to docset folder.
         /// </summary>
         public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
 

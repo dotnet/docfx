@@ -31,6 +31,8 @@ namespace Microsoft.DocAsTest
     [Category("managed")]
     internal class TestAdapter : ITestDiscoverer, ITestExecutor
     {
+        private static readonly object s_lock = new object();
+
         private static readonly Lazy<string> s_repositoryRoot = new Lazy<string>(FindRepositoryPath);
 
         private static readonly JsonSerializer s_jsonSerializer = new JsonSerializer { NullValueHandling = NullValueHandling.Ignore };
@@ -124,7 +126,10 @@ namespace Microsoft.DocAsTest
 
             try
             {
-                log.RecordStart(test);
+                lock (s_lock)
+                {
+                    log.RecordStart(test);
+                }
                 result.StartTime = DateTime.UtcNow;
 
                 await RunTest(test);
@@ -155,8 +160,12 @@ namespace Microsoft.DocAsTest
             finally
             {
                 result.EndTime = DateTime.UtcNow;
-                log.RecordEnd(test, result.Outcome);
-                log.RecordResult(result);
+
+                lock (s_lock)
+                {
+                    log.RecordResult(result);
+                    log.RecordEnd(test, result.Outcome);
+                }
             }
         }
 

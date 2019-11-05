@@ -25,8 +25,6 @@ namespace Microsoft.Docs.Build
 
         public static string StateRoot => GetStatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
 
-        public static string DependencyLockRoot => Path.Combine(s_root, "lock");
-
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
         public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
@@ -47,7 +45,7 @@ namespace Microsoft.Docs.Build
         public static string GetDependencyLockFile(string docsetPath, string locale)
         {
             return PathUtility.NormalizeFile(
-                Path.Combine(DependencyLockRoot, PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
+                    Path.Combine(s_root, "lock", PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
         }
 
         public static string GetCommitCachePath(string remote)

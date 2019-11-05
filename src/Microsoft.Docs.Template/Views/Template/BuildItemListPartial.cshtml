@@ -123,19 +123,19 @@ else if (Model.Style == "cards")
                         <a class="card" href="@listItem.Href">
                             @if (listItem.Image?.Src != null)
                             {
-                                <img class="cardImage" role="presentation" src="@listItem.Image.Src">
-                                <div class="cardText">
-                                    <h3>@listItem.Title</h3>
-                                    @if (!string.IsNullOrEmpty(listItem.Text))
-                                    {
-                                        <p>@listItem.Text</p>
-                                    }
-                                    else if (!string.IsNullOrEmpty(listItem.Html))
-                                    {
-                                        <p>@Html.Raw(removeTagsAndComments(listItem.Html))</p>
-                                    }
-                                </div>
+                            <img class="cardImage" role="presentation" src="@listItem.Image.Src">
                             }
+                            <div class="cardText">
+                                <h3>@listItem.Title</h3>
+                                @if (!string.IsNullOrEmpty(listItem.Text))
+                                {
+                                    <p>@listItem.Text</p>
+                                }
+                                else if (!string.IsNullOrEmpty(listItem.Html))
+                                {
+                                    <p>@Html.Raw(removeTagsAndComments(listItem.Html))</p>
+                                }
+                            </div>
                         </a>
                     </li>
                 }
@@ -151,9 +151,13 @@ else if (Model.Style == "cards")
                                             <div class="cardImage">
                                                 @if (!string.IsNullOrEmpty(listItem?.Image?.Href))
                                                 {
-                                                    <a href="@listItem?.Image?.Href">
+                                                    <a href="@listItem?.Image?.Href" title="@listItem?.Title">
                                                         <img alt="@listItem?.Image?.Alt" src="@listItem?.Image?.Src">
                                                     </a>
+                                                }
+                                                else if(!string.IsNullOrEmpty(listItem?.Image?.Src))
+                                                {
+                                                    <img alt="@listItem?.Image?.Alt" src="@listItem?.Image?.Src">
                                                 }
                                             </div>
                                         </div>

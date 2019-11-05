@@ -437,6 +437,17 @@ namespace Microsoft.Docs.Build
             Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
 
+        [Fact]
+        public void TestDeserializeWithSourceInfo()
+        {
+            var result = JsonUtility.Deserialize<ClassWithSourceInfo>("{\"a\": \"a value\"}", new FilePath("path"));
+            Assert.NotNull(result.A.Source);
+            Assert.Equal("path", result.A.Source.File.Path);
+            Assert.Equal(1, result.A.Source.Line);
+            Assert.Equal(15, result.A.Source.Column);
+            Assert.Equal("a value", result.A.Value);
+        }
+
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>

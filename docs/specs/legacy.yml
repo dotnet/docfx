@@ -7,9 +7,10 @@ repos:
     files:
       docfx.yml: |
         template: https://docs.com/theme
-        redirectionsWithoutId:
-          a.md: /b
         metadataSchema: schema.json
+      redirections.yml: |
+        redirections:
+          a.md: /b
       c.md: |
         ---
         api_name:
@@ -100,9 +101,10 @@ repos:
     files:
       docfx.yml: |
         template: https://docs.com/template1
+        baseUrl: https://docs.com/rawmetadata
+      redirections.yml: |
         redirections:
           a.md: /b
-        baseUrl: https://docs.com/rawmetadata
       c.md: |
         ---
         api_name:
@@ -176,7 +178,7 @@ outputs:
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/9ded2c661b9c6de62811c4954a8a03a7e24d4e52/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/e8f058141f57d856be5a0c86b55cba07e0a8bace/c.md",
         "site_name": "Docs",
         "depot_name": ".",
         "search.ms_docsetname": "",
@@ -247,6 +249,7 @@ legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
+  redirections.yml: |
     redirections:
       docs/a.md: /asdf
   docs/a.md:
@@ -258,7 +261,8 @@ legacy: true
 inputs:
   docfx.yml: |
     template: {APP_BASE_PATH}data/template
-    redirectionsWithoutId:
+  redirections.yml: |
+    redirections:
       redirect.md: /redirect/to
   a.md: |
     [link](redirect.md)
@@ -298,7 +302,7 @@ inputs:
 outputs:
   docs/a.json:
   .manifest.json: |
-    {"files":[{"asset_id":"/docs/a.json","original":"docs/a.yml","source_relative_path":"docs/a.yml","original_type":"Conceptual","type":"Toc"}]}
+    {"files":[{"asset_id":"docs/a.json","original":"docs/a.yml","source_relative_path":"docs/a.yml","original_type":"Conceptual","type":"Toc"}]}
 ---
 # Do not copy resource when the copyResources is false
 legacy: true
@@ -312,7 +316,7 @@ outputs:
   .publish.json: |
     {"files":[{"url":"/a.png","path":"../inputs/a.png"}]}
   .manifest.json: |
-    {"files":[{"asset_id":"/a.png","output":{"resource":{"is_raw_page":false,"relative_path":"a.png"}}}]}
+    {"files":[{"asset_id":"a.png","output":{"resource":{"is_raw_page":false,"relative_path":"a.png"}}}]}
 ---
 # Build versioning repository
 legacy: true
@@ -330,8 +334,6 @@ inputs:
     monikerDefinition: monikerDefinition.json
   docs/v1/a.md: |
   docs/v2/a.md: |
-  docs/a.md: |
-    No version
   monikerDefinition.json: |
     {
       "monikers": [
@@ -341,8 +343,6 @@ inputs:
       ]
     }
 outputs:
-  docs/a.mta.json:
-  docs/a.raw.page.json:
   docs/4667fedf/a.mta.json:
   docs/4667fedf/a.raw.page.json:
   docs/9d4e15fd/a.mta.json:
@@ -351,7 +351,6 @@ outputs:
   docs/.manifest.json: |
     {
       "files":[
-        {"asset_id":"a","original":"docs/a.md","source_relative_path":"docs/a.md","output":{".mta.json":{"relative_path":"a.mta.json"},".raw.page.json":{"relative_path":"a.raw.page.json"}}},
         {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"},
         {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","output":{".mta.json":{"relative_path":"4667fedf/a.mta.json"},".raw.page.json":{"relative_path":"4667fedf/a.raw.page.json"}},"group":"4667fedf"}
       ],
@@ -363,7 +362,6 @@ outputs:
   docs/filemap.json: |
     {
       "file_mapping":{
-        "docs/a.md":{"type":"Content","output_relative_path":"a.html","asset_id":"a"},
         "docs/v1/a.md:< netcore-2.0":{
           "type":"Content",
           "output_relative_path":"9d4e15fd/a.html",
@@ -439,13 +437,14 @@ repos:
           ---
   https://docs.com/error-from-source-legacy.zh-cn#test:
     - files:
+        docfx.yml:
         docs/a.md: |
           @a
 outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"origin":"fallback"}
+    {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"end_line":2,"column":8,"end_column":8,"origin":"fallback"}
 ---
 # Replace empty content with <div></div>
 legacy: true
@@ -490,3 +489,14 @@ outputs:
         <a data-linktype='external' href='https://github.com'></a>
         <img data-linktype='external' src='https://docs.com'></img>
         <p><a data-linktype='relative-path' href='a'></a></p>" }
+---
+# The site base path is empty.
+legacy: true
+inputs:
+  docfx.yml:
+  index.md:
+outputs:
+  index.mta.json:
+  index.raw.page.json:
+  .manifest.json: |
+    {"files":[{"asset_id":"index","original":"index.md","source_relative_path":"index.md","original_type":"Conceptual","type":"Content"}]}

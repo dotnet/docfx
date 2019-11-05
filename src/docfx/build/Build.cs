@@ -12,62 +12,89 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task Run(string docsetPath, CommandLineOptions options, ErrorLog errorLog)
+        public static Task Run(string workingDirectory, CommandLineOptions options)
         {
-            var repository = Repository.Create(docsetPath);
-            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-
-            var locale = LocalizationUtility.GetLocale(repository?.Remote, repository?.Branch, options);
-            using (var restoreGitMap = GetRestoreGitMap(docsetPath, locale, options))
+            var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
+            if (docsets.Length == 0)
             {
-                var fallbackRepo = GetFallbackRepository(docsetPath, repository, restoreGitMap);
+                ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
+                return Task.CompletedTask;
+            }
 
-                var (configErrors, config) = GetBuildConfig(docsetPath, options, locale, fallbackRepo);
-                errorLog.Configure(config);
+            return Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
+        }
 
-                // just return if config loading has errors
-                if (errorLog.Write(configErrors))
-                    return;
+        private static async Task BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        {
+            List<Error> errors;
+            Config config = null;
+            RestoreGitMap restoreGitMap = null;
 
-                var (docset, fallbackDocset) = GetDocsetWithFallback(
-                    docsetPath, locale, config, repository, fallbackRepo, restoreGitMap);
-                var outputPath = Path.Combine(docsetPath, config.Output.Path);
-                var dependencyDocsets = LoadDependencies(docset, restoreGitMap);
+            using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
+            {
+                var stopwatch = Stopwatch.StartNew();
 
-                await Run(docset, fallbackDocset, dependencyDocsets, options, errorLog, outputPath, restoreGitMap);
+                try
+                {
+                    // load and trace entry repository
+                    var repositoryProvider = new RepositoryProvider(docsetPath, options, () => restoreGitMap, () => config);
+                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+                    var locale = LocalizationUtility.GetLocale(repository, options);
+
+                    using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
+                    {
+                        var input = new Input(docsetPath, repositoryProvider);
+                        var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
+                        (errors, config) = configLoader.Load(options, extend: true);
+
+                        // just return if config loading has errors
+                        if (errorLog.Write(errors))
+                            return;
+
+                        // get docsets(build docset, fallback docset and dependency docsets)
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
+
+                        if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
+                        {
+                            // entry docset is not the docset to build
+                            input = new Input(docset.DocsetPath, repositoryProvider);
+                        }
+
+                        // run build based on docsets
+                        outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);
+                        await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider);
+                    }
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    Log.Write(dex);
+                    errorLog.Write(dex.Error, isException: true);
+                }
+                finally
+                {
+                    Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
+                    Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                    errorLog.PrintSummary();
+                }
             }
         }
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
-            string docsetPath,
             string locale,
             Config config,
-            Repository repository,
-            Repository fallbackRepo,
-            RestoreGitMap restoreGitMap)
+            RepositoryProvider repositoryProvider)
         {
-            var currentDocset = new Docset(docsetPath, locale, config, repository);
-            if (!string.IsNullOrEmpty(currentDocset.Locale) && !string.Equals(currentDocset.Locale, config.Localization.DefaultLocale))
+            var (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+            var currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
+            if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.Localization.DefaultLocale))
             {
+                var (fallbackDocsetPath, fallbackRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Fallback);
+                (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+                currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
                 if (fallbackRepo != null)
                 {
-                    return (currentDocset, new Docset(fallbackRepo.Path, locale, config, fallbackRepo));
-                }
-
-                if (LocalizationUtility.TryGetLocalizationDocset(
-                    restoreGitMap,
-                    currentDocset,
-                    config,
-                    currentDocset.Locale,
-                    out var localizationDocset,
-                    out var localizationRepository))
-                {
-                    return (new Docset(
-                        localizationDocset,
-                        currentDocset.Locale,
-                        config,
-                        localizationRepository),
-                        currentDocset);
+                    return (currentDocset, new Docset(fallbackDocsetPath, locale, config, fallbackRepo));
                 }
             }
 
@@ -77,13 +104,13 @@ namespace Microsoft.Docs.Build
         private static async Task Run(
             Docset docset,
             Docset fallbackDocset,
-            Dictionary<string, (Docset, bool)> dependencyDocsets,
             CommandLineOptions options,
             ErrorLog errorLog,
             string outputPath,
-            RestoreGitMap restoreGitMap)
+            Input input,
+            RepositoryProvider repositoryProvider)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, dependencyDocsets, restoreGitMap))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files);
 
@@ -187,71 +214,6 @@ namespace Microsoft.Docs.Build
             }
 
             return file.FilePath.Origin != FileOrigin.Fallback;
-        }
-
-        private static RestoreGitMap GetRestoreGitMap(
-            string docsetPath,
-            string locale,
-            CommandLineOptions commandLineOptions)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
-
-            var (_, config) = ConfigLoader.TryLoad(docsetPath, commandLineOptions);
-
-            return RestoreGitMap.Create(docsetPath, config, locale);
-        }
-
-        private static Repository GetFallbackRepository(
-            string docsetPath,
-            Repository repository,
-            RestoreGitMap restoreGitMap)
-        {
-            Debug.Assert(restoreGitMap != null);
-            Debug.Assert(!string.IsNullOrEmpty(docsetPath));
-
-            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out string fallbackBranch, out _))
-            {
-                foreach (var branch in new[] { fallbackBranch, "master" })
-                {
-                    if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
-                    {
-                        var (fallbackRepoPath, fallbackRepoCommit) = restoreGitMap.GetRestoreGitPath(new PackageUrl(fallbackRemote, branch), bare: false);
-                        return Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit);
-                    }
-                }
-            }
-
-            return default;
-        }
-
-        private static (List<Error> errors, Config config) GetBuildConfig(
-            string docset,
-            CommandLineOptions options,
-            string locale,
-            Repository fallbackRepo = null)
-        {
-            if (ConfigLoader.TryGetConfigPath(docset, out _) || fallbackRepo is null)
-            {
-                return ConfigLoader.Load(docset, options, locale);
-            }
-
-            return ConfigLoader.Load(fallbackRepo.Path, options, locale);
-        }
-
-        private static Dictionary<string, (Docset docset, bool inScope)> LoadDependencies(Docset docset, RestoreGitMap restoreGitMap)
-        {
-            var config = docset.Config;
-            var result = new Dictionary<string, (Docset docset, bool inScope)>(config.Dependencies.Count, PathUtility.PathComparer);
-
-            foreach (var (name, dependency) in config.Dependencies)
-            {
-                var (dir, commit) = restoreGitMap.GetRestoreGitPath(dependency, true);
-
-                var repository = Repository.Create(dir, dependency.Branch, dependency.Url, commit);
-                result.TryAdd(name, (new Docset(dir, docset.Locale, config, repository), dependency.IncludeInBuild));
-            }
-
-            return result;
         }
     }
 }

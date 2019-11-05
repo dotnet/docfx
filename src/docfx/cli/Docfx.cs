@@ -60,8 +60,7 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            var stopwatch = Stopwatch.StartNew();
-            var (command, docset, options) = ParseCommandLineOptions(args);
+            var (command, workingDirectory, options) = ParseCommandLineOptions(args);
             if (string.IsNullOrEmpty(command))
             {
                 return 1;
@@ -70,44 +69,32 @@ namespace Microsoft.Docs.Build
             CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = new CultureInfo("en-US");
 
             using (Log.BeginScope(options.Verbose))
-            using (var errorLog = new ErrorLog(docset, options.Legacy))
             {
                 Log.Write($"Using docfx {GetDocfxVersion()}");
 
                 var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
                 ThreadPool.SetMinThreads(minThreads, minThreads);
 
-                try
+                switch (command)
                 {
-                    switch (command)
-                    {
-                        case "restore":
-                            await Restore.Run(docset, options, errorLog);
-                            Done(command, stopwatch.Elapsed, errorLog);
-                            break;
-                        case "build":
-                            await Build.Run(docset, options, errorLog);
-                            Done(command, stopwatch.Elapsed, errorLog);
-                            break;
-                        case "watch":
-                            await Watch.Run(docset, options);
-                            break;
-                    }
-                    return 0;
+                    case "restore":
+                        await Restore.Run(workingDirectory, options);
+                        break;
+                    case "build":
+                        await Build.Run(workingDirectory, options);
+                        break;
+                    case "watch":
+                        await Watch.Run(workingDirectory, options);
+                        break;
                 }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    Log.Write(dex);
-                    errorLog.Write(dex.Error, isException: true);
-                    return 0;
-                }
+                return 0;
             }
         }
 
-        private static (string command, string docset, CommandLineOptions options) ParseCommandLineOptions(string[] args)
+        private static (string command, string workingDirectory, CommandLineOptions options) ParseCommandLineOptions(string[] args)
         {
             var command = "build";
-            var docset = ".";
+            var workingDirectory = ".";
             var options = new CommandLineOptions();
 
             if (args.Length == 0)
@@ -131,7 +118,7 @@ namespace Microsoft.Docs.Build
                         "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
 
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
@@ -141,7 +128,7 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
                     syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
 
                     // Watch command
                     syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
@@ -150,42 +137,16 @@ namespace Microsoft.Docs.Build
                         "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                     syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("docset", ref docset, "Docset directory that contains docfx.yml/docfx.json.");
+                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
                 });
 
                 options.Locale = options.Locale?.ToLowerInvariant();
-                return (command, docset, options);
+                return (command, workingDirectory, options);
             }
             catch (ArgumentSyntaxException ex)
             {
                 Console.Write(ex.Message);
                 return default;
-            }
-        }
-
-        private static void Done(string command, TimeSpan duration, ErrorLog errorLog)
-        {
-            Telemetry.TrackOperationTime(command, duration);
-
-#pragma warning disable CA2002 // Do not lock on objects with weak identity
-            lock (Console.Out)
-#pragma warning restore CA2002
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{char.ToUpperInvariant(command[0])}{command.Substring(1)} done in {Progress.FormatTimeSpan(duration)}");
-
-                if (errorLog.ErrorCount > 0 || errorLog.WarningCount > 0 || errorLog.SuggestionCount > 0)
-                {
-                    Console.ForegroundColor = errorLog.ErrorCount > 0 ? ConsoleColor.Red
-                                            : errorLog.WarningCount > 0 ? ConsoleColor.Yellow
-                                            : ConsoleColor.Magenta;
-                    Console.WriteLine();
-                    Console.WriteLine(
-                        $"  {errorLog.ErrorCount} Error(s), {errorLog.WarningCount} Warning(s), {errorLog.SuggestionCount} Suggestion(s)");
-                }
-
-                Console.ResetColor();
             }
         }
 

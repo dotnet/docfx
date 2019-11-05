@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/docs/theme.zh-cn#live", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#live")]
         public static void LocConfigConventionTheme(string theme, string locale, string defaultLocale, string expectedTheme)
         {
-            var locTheme = LocalizationUtility.GetLocalizedTheme(new PackageUrl(theme), locale, defaultLocale);
+            var locTheme = LocalizationUtility.GetLocalizedTheme(new PackagePath(theme), locale, defaultLocale);
             Assert.Equal(expectedTheme, locTheme.ToString());
         }
 

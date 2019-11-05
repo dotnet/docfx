@@ -60,13 +60,13 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string FindYamlOrJson(string pathWithoutExtension)
         {
-            var fullPath = PathUtility.NormalizeFile(pathWithoutExtension + ".yml");
+            var fullPath = NormalizeFile(pathWithoutExtension + ".yml");
             if (File.Exists(fullPath))
             {
                 return fullPath;
             }
 
-            fullPath = PathUtility.NormalizeFile(pathWithoutExtension + ".json");
+            fullPath = NormalizeFile(pathWithoutExtension + ".json");
             if (File.Exists(fullPath))
             {
                 return fullPath;

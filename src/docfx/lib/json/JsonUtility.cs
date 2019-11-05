@@ -109,11 +109,26 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string json, FilePath file)
         {
-            using (var stringReader = new StringReader(json))
-            using (var reader = new JsonTextReader(stringReader))
+            using (var reader = new StringReader(json))
+            {
+                return Deserialize<T>(reader, file);
+            }
+        }
+
+        /// <summary>
+        /// De-serialize a data string, which is not user input, to an object
+        /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
+        /// </summary>
+        public static T Deserialize<T>(TextReader json, FilePath file)
+        {
+            using (var reader = new JsonTextReader(json))
             {
                 try
                 {
+                    var status = new Status { FilePath = file };
+
+                    t_status.Value.Push(status);
+
                     return s_serializer.Deserialize<T>(reader);
                 }
                 catch (JsonReaderException ex)
@@ -123,6 +138,10 @@ namespace Microsoft.Docs.Build
                 catch (JsonSerializationException ex)
                 {
                     throw ToError(ex, file).ToException(ex);
+                }
+                finally
+                {
+                    t_status.Value.Pop();
                 }
             }
         }
@@ -144,9 +163,7 @@ namespace Microsoft.Docs.Build
             return (errors, (T)obj);
         }
 
-        public static (List<Error> errors, object value) ToObject(
-            JToken token,
-            Type type)
+        public static (List<Error> errors, object value) ToObject(JToken token, Type type)
         {
             try
             {
@@ -166,20 +183,19 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Deserialize from JSON file, get from or add to cache
-        /// </summary>
-        public static (List<Error>, JToken) Parse(Document file, Context context) => context.Cache.LoadJsonFile(file);
-
-        /// <summary>
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
         public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
         {
+            return Parse(new StringReader(json), file);
+        }
+
+        public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file)
+        {
             try
             {
-                using (var stringReader = new StringReader(json))
-                using (var reader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.None })
+                using (var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None })
                 {
                     return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
                 }
@@ -252,33 +268,6 @@ namespace Microsoft.Docs.Build
             }
 
             throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Trims all string values
-        /// </summary>
-        public static void TrimStringValues(JToken token)
-        {
-            switch (token)
-            {
-                case JValue scalar when scalar.Value is string str:
-                    scalar.Value = str.Trim();
-                    break;
-
-                case JArray array:
-                    foreach (var item in array)
-                    {
-                        TrimStringValues(item);
-                    }
-                    break;
-
-                case JObject map:
-                    foreach (var (key, value) in map)
-                    {
-                        TrimStringValues(value);
-                    }
-                    break;
-            }
         }
 
         /// <summary>
@@ -488,6 +477,8 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
+            public FilePath FilePath { get; set; }
+
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }

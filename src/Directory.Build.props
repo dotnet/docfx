@@ -5,6 +5,10 @@
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)stylecop.ruleset</CodeAnalysisRuleSet>
     <NoWarn>NU1701</NoWarn>
     <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
   </ItemGroup>
 

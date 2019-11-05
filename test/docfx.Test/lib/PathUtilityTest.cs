@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         [InlineData("a\\", "a/")]
         [InlineData("a/b/c/../d", "a/b/d")]
         [InlineData("a/b/c/../d/", "a/b/d/")]
+        [InlineData("a/../.b", ".b")]
         public static void Normalize(string path, string expected)
             => Assert.Equal(expected, PathUtility.Normalize(path));
 
