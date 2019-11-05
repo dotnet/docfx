@@ -28,7 +28,7 @@ These are the config files stored in git repos (`docfx.json`, `.openpublishing.c
 
 ### Environment specific Config
 
-Environment specific configs are global per envionment. They are passed in as environment variables. Configs specific for server build or local build (github credential, output path, dependency lock...)
+Environment specific configs are global per envionment (local build or server build). They are passed in as environment variables or command line options. E.g., github access token for server build.
 
 ### Server Configs
 
