@@ -26,15 +26,15 @@ There are 3 sources of config that affects build: config at rest, environment sp
 
 These are the config files stored in git repos (`docfx.json`, `.openpublishing.config.json`, `.openpublishing.redirection.json`). `docfx` need to provide backward compatibility support of these v2 configuration schemas.
 
-### Environment specific Config
+#### Environment specific Config
 
 Environment specific configs are global per envionment (local build or server build). They are passed in as environment variables or command line options. E.g., github access token for server build.
 
-### Server Configs
+#### Server Configs
 
 Some configs are MicrosoftDocs specific and are controlled by a separate service. They are not checked into repos. Examples include metadata validation rules, xref, base path, product name.
 
-#### Retrieving server configs
+##### Retrieving server configs
 
 `docfx` calls a web API to retrieve these configs. The API endpoint is specified in `docfx.yml` using the `use` (currently named `extend`) property:
 
@@ -71,7 +71,7 @@ _Example Response:_
 }
 ```
 
-#### Config parameterization
+##### Config parameterization
 
 Server side config is different between repos, docsets or locals. `docfx` parameterizes outgoing HTTP requests using HTTP headers:
 
@@ -86,7 +86,7 @@ name | example
 
 > The practise of using `X-` as custom http headers is __deprecated__, thus our headers are prefixed by `Docfx_`.
 
-#### Config Authentication
+##### Config Authentication
 
 `docfx` access protected resources using standard HTTP headers as described in [Credential.md](./credential.md). The config service exposed by build service uses the current OPS token based authentication.
 
