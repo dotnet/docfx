@@ -75,11 +75,6 @@ namespace Microsoft.Docs.Build
         public (string id, string versionIndependentId) Id => _id.Value;
 
         /// <summary>
-        /// Gets the redirection URL if <see cref="ContentType"/> is <see cref="ContentType.Redirection"/>
-        /// </summary>
-        public string RedirectionUrl { get; }
-
-        /// <summary>
         /// Gets a value indicating whether it's an experimental content
         /// </summary>
         public bool IsExperimental { get; }
@@ -109,11 +104,9 @@ namespace Microsoft.Docs.Build
             ContentType contentType,
             SourceInfo<string> mime,
             bool isExperimental,
-            string redirectionUrl = null,
             bool isPage = true)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
-            Debug.Assert(ContentType == ContentType.Redirection ? redirectionUrl != null : true);
 
             Docset = docset;
             FilePath = filePath;
@@ -123,7 +116,6 @@ namespace Microsoft.Docs.Build
             ContentType = contentType;
             Mime = mime;
             IsExperimental = isExperimental;
-            RedirectionUrl = redirectionUrl;
             IsPage = isPage;
 
             _id = new Lazy<(string docId, string versionId)>(() => LoadDocumentId());
@@ -217,16 +209,9 @@ namespace Microsoft.Docs.Build
 
             var siteUrl = PathToAbsoluteUrl(Path.Combine(docset.SiteBasePath, sitePath), type, mime, docset.Config.Output.Json, isPage);
             var contentType = type;
-            if (redirectionUrl != null)
-            {
-                contentType = ContentType.Redirection;
-                redirectionUrl = combineRedirectUrl ? PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), redirectionUrl)) : redirectionUrl;
-                redirectionUrl = redirectionUrl.EndsWith("/index") ? redirectionUrl.Substring(0, redirectionUrl.Length - "index".Length) : redirectionUrl;
-            }
-
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, redirectionUrl, isPage);
+            return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
 
         internal static ContentType GetContentType(string path)

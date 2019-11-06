@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
+        private readonly RedirectionProvider _redirectionProvider;
         private readonly WorkQueue<Document> _buildQueue;
         private readonly DocumentProvider _documentProvider;
         private readonly BookmarkValidator _bookmarkValidator;
@@ -30,6 +31,7 @@ namespace Microsoft.Docs.Build
             Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
+            RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
@@ -43,6 +45,7 @@ namespace Microsoft.Docs.Build
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
+            _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
@@ -103,7 +106,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
 
-            if (file?.RedirectionUrl != null)
+            if (file.ContentType == ContentType.Redirection)
             {
                 return default;
             }

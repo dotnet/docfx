@@ -8,19 +8,26 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class RedirectionMap
+    internal class RedirectionProvider
     {
         private readonly IReadOnlyDictionary<string, Document> _redirectionsBySourcePath;
         private readonly IReadOnlyDictionary<string, Document> _redirectionsByTargetSourcePath;
 
         public IEnumerable<Document> Files => _redirectionsBySourcePath.Values;
 
-        private RedirectionMap(
-            IReadOnlyDictionary<string, Document> redirectionsBySourcePath,
-            IReadOnlyDictionary<string, Document> redirectionsByTargetSourcePath)
+        public RedirectionProvider(
+            string docsetPath, ErrorLog errorLog, BuildScope buildScope, DocumentProvider documentProvider, MonikerProvider monikerProvider)
         {
-            _redirectionsBySourcePath = redirectionsBySourcePath;
-            _redirectionsByTargetSourcePath = redirectionsByTargetSourcePath;
+            var redirections = new HashSet<Document>();
+            var renames = new List<(SourceInfo<string> originalRedirectUrl, Document redirect)>();
+
+            var redirectionItems = LoadRedirectionModel(docsetPath);
+
+            AddRedirections(redirectionItems);
+
+            _redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, file => file, PathUtility.PathComparer);
+            _redirectionsByTargetSourcePath = GetRedirectionsByTargetSourcePath(
+                errorLog, renames, buildScope.Files.Concat(redirections), monikerProvider);
         }
 
         public bool TryGetRedirection(string sourcePath, out Document file)
@@ -40,79 +47,58 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static RedirectionMap Create(
-            ErrorLog errorLog,
-            Docset docset,
-            Func<string, bool> glob,
-            Input input,
-            TemplateEngine templateEngine,
-            IReadOnlyCollection<Document> buildFiles,
-            MonikerProvider monikerProvider)
+        private static void AddRedirections(IEnumerable<RedirectionItem> items)
         {
-            var redirections = new HashSet<Document>();
-            var redirectionsWithDocumentId = new List<(SourceInfo<string> originalRedirectUrl, Document redirect)>();
-
-            var redirectionItems = LoadRedirectionModel(docset.DocsetPath);
-            AddRedirections(redirectionItems);
-
-            var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, file => file, PathUtility.PathComparer);
-            var redirectionsByTargetSourcePath = GetRedirectionsByTargetSourcePath(errorLog, redirectionsWithDocumentId, buildFiles.Concat(redirections).ToList(), monikerProvider);
-
-            return new RedirectionMap(redirectionsBySourcePath, redirectionsByTargetSourcePath);
-
-            void AddRedirections(IEnumerable<RedirectionItem> items)
+            foreach (var item in items)
             {
-                foreach (var item in items)
+                var path = item.SourcePath;
+                var redirectUrl = item.RedirectUrl;
+
+                if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                 {
-                    var path = item.SourcePath;
-                    var redirectUrl = item.RedirectUrl;
+                    errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
+                    continue;
+                }
 
-                    if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
-                    {
-                        errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
-                        continue;
-                    }
+                if (!glob(path))
+                {
+                    continue;
+                }
 
-                    if (!glob(path))
-                    {
-                        continue;
-                    }
+                var type = Document.GetContentType(path);
+                if (type != ContentType.Page)
+                {
+                    errorLog.Write(Errors.RedirectionInvalid(redirectUrl, path));
+                    continue;
+                }
 
-                    var type = Document.GetContentType(path);
-                    if (type != ContentType.Page)
+                var combineRedirectUrl = false;
+                var mutableRedirectUrl = redirectUrl.Value.Trim();
+                if (item.RedirectDocumentId)
+                {
+                    switch (UrlUtility.GetLinkType(redirectUrl))
                     {
-                        errorLog.Write(Errors.RedirectionInvalid(redirectUrl, path));
-                        continue;
+                        case LinkType.RelativePath:
+                            combineRedirectUrl = true;
+                            break;
+                        case LinkType.AbsolutePath:
+                            break;
+                        default:
+                            errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
+                            break;
                     }
+                }
 
-                    var combineRedirectUrl = false;
-                    var mutableRedirectUrl = redirectUrl.Value.Trim();
-                    if (item.RedirectDocumentId)
-                    {
-                        switch (UrlUtility.GetLinkType(redirectUrl))
-                        {
-                            case LinkType.RelativePath:
-                                combineRedirectUrl = true;
-                                break;
-                            case LinkType.AbsolutePath:
-                                break;
-                            default:
-                                errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
-                                break;
-                        }
-                    }
+                var filePath = new FilePath(path, FileOrigin.Redirection);
+                var redirect = Document.Create(docset, filePath, input, templateEngine, mutableRedirectUrl, combineRedirectUrl);
 
-                    var filePath = new FilePath(path, FileOrigin.Redirection);
-                    var redirect = Document.Create(docset, filePath, input, templateEngine, mutableRedirectUrl, combineRedirectUrl);
-
-                    if (!redirections.Add(redirect))
-                    {
-                        errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
-                    }
-                    else if (item.RedirectDocumentId)
-                    {
-                        redirectionsWithDocumentId.Add((redirectUrl, redirect));
-                    }
+                if (!redirections.Add(redirect))
+                {
+                    errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
+                }
+                else if (item.RedirectDocumentId)
+                {
+                    redirectionsWithDocumentId.Add((redirectUrl, redirect));
                 }
             }
         }
@@ -179,8 +165,8 @@ namespace Microsoft.Docs.Build
 
         private static IReadOnlyDictionary<string, Document> GetRedirectionsByTargetSourcePath(
             ErrorLog errorLog,
-            List<(SourceInfo<string> originalRedirectUrl, Document redirect)> redirectionsWithDocumentId,
-            IReadOnlyCollection<Document> buildFiles,
+            List<(SourceInfo<string> originalRedirectUrl, Document redirect)> renames,
+            IEnumerable<Document> buildFiles,
             MonikerProvider monikerProvider)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
@@ -190,7 +176,7 @@ namespace Microsoft.Docs.Build
                 .GroupBy(file => file.SiteUrl)
                 .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
 
-            foreach (var (originalRedirectUrl, redirect) in redirectionsWithDocumentId)
+            foreach (var (originalRedirectUrl, redirect) in renames)
             {
                 var (error, redirectionSourceMonikers) = monikerProvider.GetFileLevelMonikers(redirect);
                 if (error != null)
