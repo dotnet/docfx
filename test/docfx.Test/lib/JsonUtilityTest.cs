@@ -448,6 +448,17 @@ namespace Microsoft.Docs.Build
             Assert.Equal("a value", result.A.Value);
         }
 
+        [Fact]
+        public void TestExtensionDataWithSourceInfo()
+        {
+            var (_, result) = DeserializeWithValidation<ClassWithExtensionData>("{\"a\": 1}");
+            Assert.NotNull(result.ExtensionData["a"]);
+            var source = JsonUtility.GetSourceInfo(result.ExtensionData["a"]);
+            Assert.NotNull(source);
+            Assert.Equal(1, source.Line);
+            Assert.Equal(7, source.Column);
+        }
+
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
@@ -547,6 +558,12 @@ namespace Microsoft.Docs.Build
         internal sealed class NestedClass
         {
             public string ValueWithLengthRestriction { get; set; }
+        }
+
+        internal class ClassWithExtensionData
+        {
+            [JsonExtensionData]
+            public JObject ExtensionData { get; set; } = new JObject();
         }
 
         internal enum BasicEnum
