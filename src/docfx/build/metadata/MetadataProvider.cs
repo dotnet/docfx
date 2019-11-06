@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -19,8 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules
             = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)> _metadataCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)>();
+        private readonly ConcurrentDictionary<Document, (List<Error> errors, UserMetadata metadata)> _metadataCache
+                   = new ConcurrentDictionary<Document, (List<Error> errors, UserMetadata metadata)>();
 
         public JsonSchema[] MetadataSchemas { get; }
 
@@ -31,7 +30,7 @@ namespace Microsoft.Docs.Build
         public MetadataProvider(Docset docset, Input input, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
         {
             _input = input;
-            _globalMetadata = docset.Config.GlobalMetadata;
+            _globalMetadata = docset.Config.GlobalMetadata.ExtensionData;
 
             MetadataSchemas = Array.ConvertAll(
                 docset.Config.MetadataSchema,
@@ -45,7 +44,7 @@ namespace Microsoft.Docs.Build
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
                 .Concat(MetadataSchemas.SelectMany(schema => schema.Reserved))
-                .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
+                .Except(JsonUtility.GetPropertyNames(typeof(UserMetadata)))
                 .ToHashSet();
 
             HtmlMetaHidden = MetadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
@@ -63,12 +62,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, InputMetadata metadata) GetMetadata(Document file)
+        public (List<Error> errors, UserMetadata metadata) GetMetadata(Document file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, InputMetadata metadata) GetMetadataCore(Document file)
+        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
         {
             var result = new JObject();
             var errors = new List<Error>();
@@ -117,7 +116,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
+            var (validationErrors, metadata) = JsonUtility.ToObject<UserMetadata>(result);
 
             metadata.RawJObject = result;
 
