@@ -351,6 +351,15 @@ outputs:
   a/.publish.json: |
     { "files": [{ "source_path": "index.md", "redirect_url": "/a" }] }
 ---
+# redirect_url is case insensitive
+inputs:
+  docfx.yml:
+  .openpublishing.redirection.json: |
+    { "redirections": [{"source_path": "a.md", "redirect_URL": "/"}] }
+outputs:
+  .publish.json: |
+    { "files": [{ "source_path": "a.md", "redirect_url": "/" }] }
+---
 # document_id of .yml redirections are calculated as .md
 inputs:
   docfx.yml:

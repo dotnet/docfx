@@ -20,18 +20,6 @@ namespace Microsoft.Docs.Build
             return (Func<T, TField>)getter.CreateDelegate(typeof(Func<T, TField>));
         }
 
-        public static Action<T, TField> CreateInstanceFieldSetter<T, TField>(string fieldName)
-        {
-            var field = typeof(T).GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
-            var setter = new DynamicMethod(Guid.NewGuid().ToString(), null, new[] { typeof(T), typeof(TField) }, true);
-            var il = setter.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Stfld, field);
-            il.Emit(OpCodes.Ret);
-            return (Action<T, TField>)setter.CreateDelegate(typeof(Action<T, TField>));
-        }
-
         public static TDelegate CreateInstanceMethod<T, TDelegate>(string methodName, Type[] types = null) where TDelegate : Delegate
         {
             var methodInfo = typeof(T).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance, null, types, null);
