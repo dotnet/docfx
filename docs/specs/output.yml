@@ -38,8 +38,9 @@ outputs:
 ---
 # Redirections outputs redirect_url to .publish.json, but does not have output file
 inputs:
-  docfx.yml: |
-    redirectionsWithoutId:
+  docfx.yml:
+  redirections.yml: |
+    redirections:
       a.md: /b
 outputs:
   .publish.json: |

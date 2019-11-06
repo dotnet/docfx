@@ -181,7 +181,8 @@ inputs:
   docfx.yml: |
     globalMetadata:
       key: ' value   '
-    redirectionsWithoutId:
+  redirections.yml: |
+    redirections:
       docs/redirect.md: '/absolute/path '
   docs/a.md:
 outputs:

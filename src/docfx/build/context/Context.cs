@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -19,6 +17,7 @@ namespace Microsoft.Docs.Build
         public readonly Input Input;
         public readonly BuildScope BuildScope;
         public readonly WorkQueue<Document> BuildQueue;
+        public readonly DocumentProvider DocumentProvider;
         public readonly MetadataProvider MetadataProvider;
         public readonly MonikerProvider MonikerProvider;
         public readonly GitCommitProvider GitCommitProvider;
@@ -39,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Dictionary<string, (Docset docset, bool inScope)> dependencyDocsets, Input input, RepositoryProvider repositoryProvider)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider)
         {
             var restoreFileMap = new RestoreFileMap(input);
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -52,10 +51,11 @@ namespace Microsoft.Docs.Build
             Input = input;
             Output = new Output(outputPath, input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
+            DocumentProvider = new DocumentProvider(docset, fallbackDocset, input, repositoryProvider, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
-            BuildScope = new BuildScope(errorLog, Input, docset, fallbackDocset, dependencyDocsets, TemplateEngine, MonikerProvider);
+            BuildScope = new BuildScope(errorLog, Input, DocumentProvider, TemplateEngine, docset, fallbackDocset, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
@@ -67,14 +67,10 @@ namespace Microsoft.Docs.Build
             LinkResolver = new LinkResolver(
                 docset,
                 fallbackDocset,
-                dependencyDocsets.
-                    ToDictionary(
-                        k => k.Key,
-                        v => v.Value.docset,
-                        PathUtility.PathComparer),
                 Input,
                 BuildScope,
                 BuildQueue,
+                DocumentProvider,
                 GitCommitProvider,
                 BookmarkValidator,
                 DependencyMapBuilder,

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -51,21 +52,21 @@ namespace Microsoft.Docs.Build
             var redirections = new HashSet<Document>();
             var redirectionsWithDocumentId = new List<(SourceInfo<string> originalRedirectUrl, Document redirect)>();
 
-            // load redirections with document id
-            AddRedirections(docset.Config.Redirections, redirectDocumentId: true);
-
-            // load redirections without document id
-            AddRedirections(docset.Config.RedirectionsWithoutId);
+            var redirectionItems = LoadRedirectionModel(docset.DocsetPath);
+            AddRedirections(redirectionItems);
 
             var redirectionsBySourcePath = redirections.ToDictionary(file => file.FilePath.Path, file => file, PathUtility.PathComparer);
             var redirectionsByTargetSourcePath = GetRedirectionsByTargetSourcePath(errorLog, redirectionsWithDocumentId, buildFiles.Concat(redirections).ToList(), monikerProvider);
 
             return new RedirectionMap(redirectionsBySourcePath, redirectionsByTargetSourcePath);
 
-            void AddRedirections(Dictionary<string, SourceInfo<string>> items, bool redirectDocumentId = false)
+            void AddRedirections(IEnumerable<RedirectionItem> items)
             {
-                foreach (var (path, redirectUrl) in items)
+                foreach (var item in items)
                 {
+                    var path = item.SourcePath;
+                    var redirectUrl = item.RedirectUrl;
+
                     if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                     {
                         errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
@@ -77,8 +78,7 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    var pathToDocset = PathUtility.NormalizeFile(path);
-                    var type = Document.GetContentType(pathToDocset);
+                    var type = Document.GetContentType(path);
                     if (type != ContentType.Page)
                     {
                         errorLog.Write(Errors.RedirectionInvalid(redirectUrl, path));
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
 
                     var combineRedirectUrl = false;
                     var mutableRedirectUrl = redirectUrl.Value.Trim();
-                    if (redirectDocumentId)
+                    if (item.RedirectDocumentId)
                     {
                         switch (UrlUtility.GetLinkType(redirectUrl))
                         {
@@ -102,19 +102,73 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
-                    var filePath = new FilePath(pathToDocset, FileOrigin.Redirection);
+                    var filePath = new FilePath(path, FileOrigin.Redirection);
                     var redirect = Document.Create(docset, filePath, input, templateEngine, mutableRedirectUrl, combineRedirectUrl);
 
                     if (!redirections.Add(redirect))
                     {
-                        errorLog.Write(Errors.RedirectionConflict(redirectUrl, pathToDocset));
+                        errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
                     }
-                    else if (redirectDocumentId)
+                    else if (item.RedirectDocumentId)
                     {
                         redirectionsWithDocumentId.Add((redirectUrl, redirect));
                     }
                 }
             }
+        }
+
+        private static RedirectionItem[] LoadRedirectionModel(string docsetPath)
+        {
+            foreach (var fullPath in ProbeRedirectionFiles(docsetPath))
+            {
+                if (File.Exists(fullPath))
+                {
+                    var content = File.ReadAllText(fullPath);
+                    var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
+                    var model = fullPath.EndsWith(".yml")
+                        ? YamlUtility.Deserialize<RedirectionModel>(content, filePath)
+                        : JsonUtility.Deserialize<RedirectionModel>(content, filePath);
+
+                    // Expand redirect items array or object form
+                    var redirections = model.Redirections.arrayForm
+                        ?? model.Redirections.objectForm?.Select(
+                                pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value })
+                        ?? Array.Empty<RedirectionItem>();
+
+                    var renames = model.Renames.Select(
+                        pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value, RedirectDocumentId = true });
+
+                    // Rebase source_path based on redirection definition file path
+                    var basedir = Path.GetDirectoryName(fullPath);
+
+                    return (
+                        from item in redirections.Concat(renames)
+                        let sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath))
+                        where !sourcePath.StartsWith(".")
+                        select new RedirectionItem
+                        {
+                            SourcePath = PathUtility.NormalizeFile(sourcePath),
+                            RedirectUrl = item.RedirectUrl,
+                            RedirectDocumentId = item.RedirectDocumentId,
+                        }).OrderBy(item => item.RedirectUrl.Source).ToArray();
+                }
+            }
+
+            return Array.Empty<RedirectionItem>();
+        }
+
+        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath)
+        {
+            yield return Path.Combine(docsetPath, "redirections.yml");
+            yield return Path.Combine(docsetPath, "redirections.json");
+
+            var directory = docsetPath;
+            do
+            {
+                yield return Path.Combine(directory, ".openpublishing.redirection.json");
+                directory = Path.GetDirectoryName(directory);
+            }
+            while (!string.IsNullOrEmpty(directory));
         }
 
         private static string NormalizeRedirectUrl(string redirectionUrl)

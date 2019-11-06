@@ -72,10 +72,10 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestJsonDeserializeIsCaseSensitive()
+        public void TestJsonDeserializeCaseInsensitive()
         {
             var (errors, value) = DeserializeWithValidation<BasicClass>("{\"B\":1}");
-            Assert.Equal(0, value.B);
+            Assert.Equal(1, value.B);
         }
 
         [Fact]
@@ -385,6 +385,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}")]
         [InlineData("{'a':{'b':1}}", "{'a':{'b':{}}}", "{'a':{'b':{}}}")]
         [InlineData("{'a':{'b':1}}", "{'a':{'b':2}}", "{'a':{'b':2}}")]
+        [InlineData("{'a':1}", "{'A':2}", "{'a':1,'A':2}")]
         public void TestJsonMerge(string a, string b, string result)
         {
             var container = JObject.Parse(a.Replace('\'', '\"'));

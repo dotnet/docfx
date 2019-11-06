@@ -110,22 +110,6 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, DependencyConfig> Dependencies = new Dictionary<string, DependencyConfig>(PathUtility.PathComparer);
 
         /// <summary>
-        /// Gets the redirection mappings
-        /// The default value is empty mappings
-        /// The redirection always transfer the document id
-        /// </summary>
-        public readonly Dictionary<string, SourceInfo<string>> Redirections
-            = new Dictionary<string, SourceInfo<string>>(PathUtility.PathComparer);
-
-        /// <summary>
-        /// Gets the redirection mappings without document id
-        /// The default value is empty mappings
-        /// The redirection doesn't transfer the document id
-        /// </summary>
-        public readonly Dictionary<string, SourceInfo<string>> RedirectionsWithoutId
-            = new Dictionary<string, SourceInfo<string>>(PathUtility.PathComparer);
-
-        /// <summary>
         /// Gets the document id configuration section
         /// </summary>
         public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
