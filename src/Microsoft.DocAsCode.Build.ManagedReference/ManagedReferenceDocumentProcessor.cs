@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             var page = YamlUtility.Deserialize<PageViewModel>(file.File);
-            if (page.Items == null || page.Items.Count == 0)
+            if (page?.Items == null || page.Items.Count == 0)
             {
                 return null;
             }

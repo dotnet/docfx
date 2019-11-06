@@ -358,6 +358,38 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             }
         }
 
+        [Fact]
+        public void LoadArticleWithEmptyFileShouldWarnAndReturnNull()
+        {
+            var fileWithNoContent = "TestData/mref/FileWithNoContent.yml";
+            var file = new FileAndType(Directory.GetCurrentDirectory(), fileWithNoContent, DocumentType.Article);
+            var processor = new ManagedReferenceDocumentProcessor();
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull), LogLevel.Info);
+            try
+            {
+                Logger.RegisterListener(listener);
+
+                FileModel actualFileModel;
+                using (new LoggerPhaseScope(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull)))
+                {
+                    actualFileModel = processor.Load(file, null);
+                }
+
+                var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
+                Assert.Single(warnings);
+                var warning = warnings.Single();
+                Assert.Equal("Please add `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`, otherwise the file will be not treated as ManagedReference source file in near future.", warning.Message);
+                Assert.Equal(fileWithNoContent, warning.File);
+
+                Assert.Null(actualFileModel);
+            }
+            finally
+            {
+                Logger.UnregisterListener(listener);
+            }
+        }
+
         private void BuildDocument(FileCollection files)
         {
             var parameters = new DocumentBuildParameters
