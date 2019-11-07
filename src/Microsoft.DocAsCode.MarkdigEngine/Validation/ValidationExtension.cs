@@ -3,8 +3,12 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using System;
+    using System.IO;
     using Markdig;
     using Markdig.Renderers;
+    using Markdig.Syntax;
+    using Microsoft.DocAsCode.Common;
 
     public class ValidationExtension : IMarkdownExtension
     {
@@ -25,6 +29,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             pipeline.DocumentProcessed += document =>
             {
+                SetSchemaName(document);
                 visitor.Visit(document);
             };
         }
@@ -32,6 +37,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
 
+        }
+
+        public static void SetSchemaName(MarkdownDocument document)
+        {
+            // TODO: add this detection logic in terms of performance optimization, should remove once mime is available in context
+            if (InclusionContext.IsInclude
+                && (string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yml", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(Path.GetExtension(InclusionContext.RootFile?.ToString()), ".yaml", StringComparison.OrdinalIgnoreCase)))
+            {
+                var schemaName = YamlMime.ReadMime(InclusionContext.RootFile?.ToString());
+                if (!string.IsNullOrEmpty(schemaName))
+                {
+                    document.SetData("SchemaName", schemaName);
+                }
+            }
         }
     }
 }
