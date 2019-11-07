@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (contract.ExtensionDataValueType == typeof(JToken))
                     {
-                        var currentToken = JsonUtility.State.Reader?.CurrentToken;
+                        var currentToken = JsonUtility.State?.Reader?.CurrentToken;
                         if (currentToken != null)
                         {
                             extensionDataSetter(o, key, JsonUtility.DeepClone(currentToken));
