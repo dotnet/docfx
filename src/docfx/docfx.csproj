@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.2.0" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.11" />
-    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.46.0-b-190924010-gb2fc2c" />
+    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.48.0-b-191105003-g1e6ae2" />
     <PackageReference Include="Microsoft.Graph" Version="1.16.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
