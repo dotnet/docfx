@@ -214,7 +214,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",3,16]
+    ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",2,3]
 ---
 # document_id defined in YAML file metadata is not supported
 inputs:
