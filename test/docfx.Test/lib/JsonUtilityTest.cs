@@ -454,10 +454,16 @@ namespace Microsoft.Docs.Build
         {
             var (_, result) = DeserializeWithValidation<ClassWithExtensionData>("{\"a\": 1}");
             Assert.NotNull(result.ExtensionData["a"]);
-            var source = JsonUtility.GetSourceInfo(result.ExtensionData["a"]);
-            Assert.NotNull(source);
-            Assert.Equal(1, source.Line);
-            Assert.Equal(7, source.Column);
+
+            var valueSource = JsonUtility.GetSourceInfo(result.ExtensionData["a"]);
+            Assert.NotNull(valueSource);
+            Assert.Equal(1, valueSource.Line);
+            Assert.Equal(7, valueSource.Column);
+
+            var keySource = JsonUtility.GetKeySourceInfo(result.ExtensionData["a"]);
+            Assert.NotNull(keySource);
+            Assert.Equal(1, keySource.Line);
+            Assert.Equal(5, keySource.Column);
         }
 
         /// <summary>

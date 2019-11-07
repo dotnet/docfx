@@ -55,8 +55,9 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, item) in docset.Config.FileMetadata)
             {
-                foreach (var (glob, value) in item)
+                foreach (var (glob, value) in item.Value)
                 {
+                    JsonUtility.SetKeySourceInfo(value, item.Source?.KeySourceInfo);
                     _rules.Add((GlobUtility.CreateGlobMatcher(glob), key, value));
                 }
             }
@@ -89,21 +90,20 @@ namespace Microsoft.Docs.Build
                     // Assign a JToken to a property erases line info, so clone here.
                     // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055
                     fileMetadata[key] = JsonUtility.DeepClone(value);
-                    JsonUtility.SetSourceInfo(fileMetadata.Property(key), JsonUtility.GetSourceInfo(value));
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
             JsonUtility.Merge(result, yamlHeader);
 
-            foreach (var property in result.Properties())
+            foreach (var (key, value) in result)
             {
-                if (_reservedMetadata.Contains(property.Name))
+                if (_reservedMetadata.Contains(key))
                 {
-                    errors.Add(Errors.AttributeReserved(JsonUtility.GetSourceInfo(property), property.Name));
+                    errors.Add(Errors.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
                 }
-                else if (!IsValidMetadataType(property.Value))
+                else if (!IsValidMetadataType(value))
                 {
-                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(property.Value), property.Name));
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
                 }
             }
 
