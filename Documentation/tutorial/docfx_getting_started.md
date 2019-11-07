@@ -6,7 +6,7 @@ Getting Started with *DocFX*
 *DocFX* is an API documentation generator for .NET, which currently supports C#, VB and F#.
 It generates API reference documentation from triple-slash comments in your source code.
 It also allows you to use Markdown files to create additional topics such as tutorials and how-tos, and to customize the generated reference documentation.
-*DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web servers (for example, *github.io*).
+*DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web server (for example, *github.io*).
 Also, *DocFX* provides you the flexibility to customize the layout and style of your website through templates.
 If you are interested in creating your own website with your own styles, you can follow [how to create custom template](howto_create_custom_template.md) to create custom templates.
 
@@ -16,7 +16,7 @@ If you are interested in creating your own website with your own styles, you can
 * Cross-platform support. We have an exe version that runs natively on Windows and with Mono it can also run on Linux and macOS.
 * Integration with Visual Studio. You can seamlessly use *DocFX* within Visual Studio.
 * Markdown extensions. We introduced *DocFX Flavored Markdown(DFM)* to help you write API documentation. DFM is *100%* compatible with *GitHub Flavored Markdown(GFM)* with some useful extensions, like *file inclusion*, *code snippet*, *cross reference*, and *yaml header*.
-For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
+For a detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
 > [!Warning]
 > **Prerequisites** [Visual Studio 2019](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
@@ -79,7 +79,7 @@ Now you can view the generated website on http://localhost:8080.
 
 *DocFX* can be used in a Continuous Integration (CI) environment. 
 
-Consider a typical scenario: I want to set up a job on a CI service (e.g. [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)) to build documents automatically and publish to a website (e.g. [GitHub Pages](https://pages.github.com/)). We can achieve this by a script on CI jobs with following steps:
+Consider a typical scenario: We want to set up a job on a CI service (e.g. [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)) to build documents automatically and publish to a website (e.g. [GitHub Pages](https://pages.github.com/)). We can achieve this with a script in a CI job with the following steps:
 
 1. clone repo
 2. `choco install docfx`
