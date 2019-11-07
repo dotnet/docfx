@@ -23,7 +23,7 @@ outputs:
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;amp;b'>a&amp;amp;b.md</a>
-          <a href='http://foo%20b%C3%A4'>http://foo%20bä</a>
+          <a href='http://xn--foo%20b-cxa'>http://foo%20bä</a>
           <a href='a++.png'>a++.png</a>
         </p>"
     }
