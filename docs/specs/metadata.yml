@@ -241,7 +241,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",2,17]
+    ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs. Remove it from your file metadata.","docfx.yml",2,3]
 ---
 # resolve breadcrumb_path
 inputs:
