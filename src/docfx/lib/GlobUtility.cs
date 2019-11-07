@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text.RegularExpressions;
 using GlobExpressions;
 
 namespace Microsoft.Docs.Build
@@ -10,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public static Func<string, bool> CreateGlobMatcher(string pattern)
         {
-            var glob = CreateGlob(pattern);
+            var glob = CreateGlob(PreProcessPattern(pattern));
 
             return path => !IsFileStartingWithDot(path) && glob.IsMatch(path);
         }
@@ -65,6 +66,13 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.GlobPatternInvalid(pattern, ex).ToException(ex);
             }
+        }
+
+        private static string PreProcessPattern(string pattern)
+        {
+            // Pre process glob pattern for v2 backward compatibility
+            // **** => **, **.md => **/*.md
+            return Regex.Replace(pattern, @"\*{2,}", "**").Replace("**.", "**/*");
         }
     }
 }
