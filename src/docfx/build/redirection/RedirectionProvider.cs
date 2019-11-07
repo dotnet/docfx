@@ -79,12 +79,17 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var mutableRedirectUrl = redirectUrl.Value.Trim();
+                var absoluteRedirectUrl = redirectUrl.Value.Trim();
+                var filePath = new FilePath(path, FileOrigin.Redirection);
+
                 if (item.RedirectDocumentId)
                 {
-                    switch (UrlUtility.GetLinkType(redirectUrl))
+                    switch (UrlUtility.GetLinkType(absoluteRedirectUrl))
                     {
                         case LinkType.RelativePath:
+                            var siteUrl = _documentProvider.GetDocument(filePath).SiteUrl;
+                            absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), absoluteRedirectUrl));
+                            break;
                         case LinkType.AbsolutePath:
                             break;
                         default:
@@ -93,9 +98,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var filePath = new FilePath(path, FileOrigin.Redirection);
-
-                if (!redirectUrls.TryAdd(filePath, redirectUrl))
+                if (!redirectUrls.TryAdd(filePath, absoluteRedirectUrl))
                 {
                     _errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
                 }
