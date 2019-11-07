@@ -168,15 +168,12 @@ namespace Microsoft.Docs.Build
             if (schema.MinProperties.HasValue && map.Count < schema.MinProperties.Value)
                 errors.Add((name, Errors.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), name, $">= {schema.MinProperties}")));
 
-            foreach (var property in map.Properties())
+            foreach (var (key, value) in map)
             {
-                var key = property.Name;
-                var value = property.Value;
-
                 if (schema.PropertyNames != null)
                 {
                     var propertyName = new JValue(key);
-                    JsonUtility.SetSourceInfo(propertyName, JsonUtility.GetSourceInfo(property));
+                    JsonUtility.SetSourceInfo(propertyName, JsonUtility.GetKeySourceInfo(value));
                     Validate(schema.PropertyNames, key, propertyName, errors);
                 }
 

@@ -233,10 +233,8 @@ namespace Microsoft.Docs.Build
         {
             var result = new StringBuilder();
 
-            foreach (var property in metadata.Properties())
+            foreach (var (key, value) in metadata)
             {
-                var key = property.Name;
-                var value = property.Value;
                 if (value is JObject || htmlMetaHidden.Contains(key))
                 {
                     continue;
