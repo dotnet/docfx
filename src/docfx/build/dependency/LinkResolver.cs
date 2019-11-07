@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
                 return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
 
-            if (file?.RedirectionUrl != null)
+            if (file?.FilePath.Origin == FileOrigin.Redirection)
             {
                 return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), null, linkType, file, false);
             }
@@ -258,9 +258,10 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from redirection files
-            if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
+            path = new FilePath(pathToDocset, FileOrigin.Redirection);
+            if (_redirectionProvider.Contains(path))
             {
-                return redirectFile;
+                return _documentProvider.GetDocument(path);
             }
 
             // resolve from dependent docsets

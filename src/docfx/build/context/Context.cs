@@ -72,6 +72,7 @@ namespace Microsoft.Docs.Build
                 Input,
                 BuildScope,
                 BuildQueue,
+                RedirectionProvider,
                 DocumentProvider,
                 GitCommitProvider,
                 BookmarkValidator,

@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
                 Url = file.SiteUrl,
                 SourcePath = file.FilePath.Path,
                 Locale = file.Docset.Locale,
-                RedirectUrl = file.RedirectionUrl,
+                RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath),
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
             };
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 {
                     locale = file.Docset.Locale,
                     monikers,
-                    redirect_url = file.RedirectionUrl,
+                    redirect_url = publishItem.RedirectUrl,
                     is_dynamic_rendering = true,
                 };
 

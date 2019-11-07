@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.Monikers = monikers;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
-                = context.RedirectionProvider.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+                = context.DocumentProvider.GetDocument(context.RedirectionProvider.GetOriginalFile(file.FilePath)).Id;
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
                 systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
