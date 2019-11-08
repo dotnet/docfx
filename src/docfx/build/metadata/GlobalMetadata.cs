@@ -12,10 +12,10 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class GlobalMetadata
     {
-        // Backward compatibility with v2
+        [Obsolete("v2 backward compatibility")]
         public string[] ContributorsToExclude { get; set; } = Array.Empty<string>();
 
-        // Backward compatibility with v2
+        [Obsolete("v2 backward compatibility")]
         [JsonProperty("_op_documentIdPathDepotMapping")]
         public Dictionary<string, DocumentIdDepotMapping> DocumentIdDepotMapping { get; set; }
          = new Dictionary<string, DocumentIdDepotMapping>(PathUtility.PathComparer);

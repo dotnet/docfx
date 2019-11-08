@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
         private static string PreProcessPattern(string pattern)
         {
-            // Pre process glob pattern for v2 backward compatibility
+            // Pre process glob pattern so `**.md` means `**/*.md`
             // **** => **, **.md => **/*.md
             return Regex.Replace(pattern, @"\*{2,}", "**").Replace("**.", "**/*");
         }
