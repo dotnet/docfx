@@ -63,14 +63,14 @@ namespace Microsoft.Docs.Build
 
         // For backward compatibility with v2
         [InlineData("****", "a.md, a/b.md", true)]
-        [InlineData("**.*", "a.md a/b.md", true)]
-        [InlineData("**.**", "a.md a/b.md", true)]
+        [InlineData("**.*", "a.md, a/b.md", true)]
+        [InlineData("**.**", "a.md, a/b.md", true)]
         [InlineData("*.**", "a.md", true)]
         [InlineData("*.**", "a/b.md", false)]
         [InlineData("**.md", "a.md, a/b.md", true)]
         [InlineData("**.md", "a.json, a/b.json", false)]
-        [InlineData("**/**/**", "a.md, a/b.md a/b/c.md a/b/c/d.md", true)]
-        [InlineData("a.**", "a.md a.", true)]
+        [InlineData("**/**/**", "a.md, a/b.md, a/b/c.md, a/b/c/d.md", true)]
+        [InlineData("a.**", "a.md, a.", true)]
         public void MatchFilesUsingGlobPattern(string pattern, string files, bool match)
         {
             var glob = GlobUtility.CreateGlobMatcher(pattern);
