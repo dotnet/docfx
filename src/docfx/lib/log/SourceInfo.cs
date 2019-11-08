@@ -32,6 +32,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly int EndColumn;
 
+        // A special storage for source info of the JObject property key
+        // if this is a JObject property value.
+        internal SourceInfo KeySourceInfo { get; set; }
+
         public SourceInfo(FilePath file, int line, int column)
             : this(file, line, column, line, column)
         { }

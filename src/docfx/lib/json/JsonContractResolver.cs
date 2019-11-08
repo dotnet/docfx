@@ -1,15 +1,24 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections;
 using System.Reflection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
     internal class JsonContractResolver : DefaultContractResolver
     {
+        protected override JsonObjectContract CreateObjectContract(Type objectType)
+        {
+            var contract = base.CreateObjectContract(objectType);
+            PropagateSourceInfoToExtensionData(contract);
+            return contract;
+        }
+
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
@@ -78,6 +87,27 @@ namespace Microsoft.Docs.Build
                     }
 
                     return originalShouldSerialize?.Invoke(target) ?? true;
+                };
+            }
+        }
+
+        private static void PropagateSourceInfoToExtensionData(JsonObjectContract contract)
+        {
+            var extensionDataSetter = contract.ExtensionDataSetter;
+            if (extensionDataSetter != null)
+            {
+                contract.ExtensionDataSetter = (o, key, value) =>
+                {
+                    if (contract.ExtensionDataValueType == typeof(JToken))
+                    {
+                        var currentToken = JsonUtility.State?.Reader?.CurrentToken;
+                        if (currentToken != null)
+                        {
+                            extensionDataSetter(o, key, JsonUtility.DeepClone(currentToken));
+                            return;
+                        }
+                    }
+                    extensionDataSetter(o, key, value);
                 };
             }
         }

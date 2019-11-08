@@ -114,7 +114,19 @@ namespace Microsoft.Docs.Build
                 var result = ToJToken(
                     input,
                     onKeyDuplicate: key => errors.Add(Errors.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
-                    onConvert: (token, node) => JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file)));
+                    onConvert: (token, node) =>
+                    {
+                        if (token is JProperty property)
+                        {
+                            var sourceInfo = JsonUtility.GetSourceInfo(property.Value);
+                            if (sourceInfo != null)
+                            {
+                                sourceInfo.KeySourceInfo = ToSourceInfo(node, file);
+                            }
+                            return token;
+                        }
+                        return JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file));
+                    });
 
                 return (errors, result);
             }
