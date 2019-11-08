@@ -60,9 +60,21 @@ namespace Microsoft.Docs.Build
         [InlineData("**/[EJ]/*.{md,cs,csproj}", "Root/M/K.md, Root/J\\K.csp", false)]
         [InlineData("a**/*.md", "ab/c.md, a/b.md", true)]
         [InlineData("a**/*.md", "a/b/c.md, a/b.cs", false)]
+
+        // For backward compatibility with v2
+        [InlineData("****", "a.md, a/b.md", true)]
+        [InlineData("**.*", "a.md, a/b.md", true)]
+        [InlineData("**.**", "a.md, a/b.md", true)]
+        [InlineData("*.**", "a.md", true)]
+        [InlineData("*.**", "a/b.md", false)]
+        [InlineData("**.md", "a.md, a/b.md", true)]
+        [InlineData("**.md", "a.json, a/b.json", false)]
+        [InlineData("**/**/**", "a.md, a/b.md, a/b/c.md, a/b/c/d.md", true)]
+        [InlineData("a.**", "a.md, a.", true)]
         public void MatchFilesUsingGlobPattern(string pattern, string files, bool match)
         {
             var glob = GlobUtility.CreateGlobMatcher(pattern);
+
             foreach (var file in files.Split(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 Assert.True(match == glob(file.Trim()), pattern + " " + files);

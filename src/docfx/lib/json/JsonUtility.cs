@@ -332,7 +332,16 @@ namespace Microsoft.Docs.Build
 
         public static SourceInfo GetSourceInfo(JToken token)
         {
-            return token.Annotation<SourceInfo>();
+            var result = token.Annotation<SourceInfo>();
+
+            // When JObject is used as JsonExtensionData, it is hard to populate source info
+            // of the key to JProperty due to the limitation of ExtensionDataSetter interface,
+            // thus fallback to use value source info.
+            if (result is null && token is JProperty property)
+            {
+                return property.Value.Annotation<SourceInfo>();
+            }
+            return result;
         }
 
         public static JToken SetSourceInfo(JToken token, SourceInfo source)
