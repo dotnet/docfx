@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(
-            Context context, Document file, InputMetadata inputMetadata)
+            Context context, Document file, UserMetadata inputMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();

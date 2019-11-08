@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
-        public readonly JObject GlobalMetadata = new JObject();
+        public readonly GlobalMetadata GlobalMetadata = new GlobalMetadata();
 
         /// <summary>
         /// {Schema}://{Hostname}/{SiteBasePath}: https://docs.microsoft.com/dotnet

@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, InputMetadata metadata, Document file)
+        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, UserMetadata metadata, Document file)
         {
             var xref = new InternalXrefSpec
             {

@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             {
                 return new JValue(l);
             }
-            if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var d) &&
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var d) &&
                 !double.IsNaN(d) && !double.IsPositiveInfinity(d) && !double.IsNegativeInfinity(d))
             {
                 return new JValue(d);
