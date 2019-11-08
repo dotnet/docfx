@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
 
-            if (file.ContentType == ContentType.Redirection)
+            if (file?.ContentType == ContentType.Redirection)
             {
                 return default;
             }

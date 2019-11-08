@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+            var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
             if (error != null)
             {
                 _errorLog.Write(file, error);

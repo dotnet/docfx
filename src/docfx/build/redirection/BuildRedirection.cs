@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
             var errors = new List<Error>();
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
             var publishItem = new PublishItem

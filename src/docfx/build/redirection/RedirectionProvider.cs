@@ -28,7 +28,9 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
 
-            (_redirectUrls, _renameHistory) = LoadRedirections(docsetPath);
+            var redirections = LoadRedirectionModel(docsetPath);
+            _redirectUrls = GetRedirectUrls(redirections);
+            _renameHistory = GetRenameHistory(redirections, _redirectUrls);
         }
 
         public bool Contains(FilePath file)
@@ -50,13 +52,11 @@ namespace Microsoft.Docs.Build
             return file;
         }
 
-        private (Dictionary<FilePath, string> _redirectUrls, Dictionary<FilePath, FilePath> _renameHistory)
-            LoadRedirections(string docsetPath)
+        private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections)
         {
             var redirectUrls = new Dictionary<FilePath, string>();
-            var renameHistory = new Dictionary<FilePath, FilePath>();
 
-            foreach (var item in LoadRedirectionModel(docsetPath))
+            foreach (var item in redirections)
             {
                 var path = item.SourcePath;
                 var redirectUrl = item.RedirectUrl;
@@ -102,13 +102,9 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
                 }
-                else if (item.RedirectDocumentId)
-                {
-                    renameHistory.Add(redirectUrl, redirect);
-                }
             }
 
-            return (redirectUrls, renameHistory);
+            return redirectUrls;
         }
 
         private static RedirectionItem[] LoadRedirectionModel(string docsetPath)
@@ -165,54 +161,62 @@ namespace Microsoft.Docs.Build
             while (!string.IsNullOrEmpty(directory));
         }
 
-        private static string NormalizeRedirectUrl(string redirectionUrl)
-        {
-            var (url, _, _) = UrlUtility.SplitUrl(redirectionUrl);
-            return url.EndsWith("/index", PathUtility.PathComparison) ? url.Substring(0, url.Length - "index".Length) : url;
-        }
-
-        private IReadOnlyDictionary<FilePath, Document> GetRenameHistory()
+        private IReadOnlyDictionary<FilePath, FilePath> GetRenameHistory(
+            RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
-            var renameHistory = new Dictionary<FilePath, Document>();
+            var renameHistory = new Dictionary<FilePath, FilePath>();
 
-            var publishUrlMap = _buildScope.Files.Concat(redirections)
+            var publishUrlMap = _buildScope.Files.Concat(redirectUrls.Keys.Select(_documentProvider.GetDocument))
                 .GroupBy(file => file.SiteUrl)
                 .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
 
-            foreach (var (originalRedirectUrl, redirect) in renames)
+            foreach (var item in redirections.Where(item => item.RedirectDocumentId))
             {
-                var (error, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(redirect);
+                var file = new FilePath(item.SourcePath, FileOrigin.Redirection);
+                if (!redirectUrls.TryGetValue(file, out var redirectUrl))
+                {
+                    continue;
+                }
+
+                redirectUrl = RemoveTrailingIndex(redirectUrl);
+                if (!publishUrlMap.TryGetValue(redirectUrl, out var docs))
+                {
+                    _errorLog.Write(Errors.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                    continue;
+                }
+
+                var (error, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
                 if (error != null)
                 {
                     _errorLog.Write(error);
                 }
-                var normalizedRedirectUrl = NormalizeRedirectUrl(redirect.RedirectionUrl);
-                if (!publishUrlMap.TryGetValue(normalizedRedirectUrl, out var docs))
+
+                List<Document> candidates;
+                if (redirectionSourceMonikers.Count == 0)
                 {
-                    _errorLog.Write(Errors.RedirectionUrlNotFound(redirect.FilePath.Path, originalRedirectUrl));
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc.FilePath).monikers.Count == 0).ToList();
                 }
                 else
                 {
-                    List<Document> candidates;
-                    if (redirectionSourceMonikers.Count == 0)
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc.FilePath).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
+                }
+
+                foreach (var candidate in candidates)
+                {
+                    if (!renameHistory.TryAdd(candidate.FilePath, file))
                     {
-                        candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList();
-                    }
-                    else
-                    {
-                        candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
-                    }
-                    foreach (var item in candidates)
-                    {
-                        if (!renameHistory.TryAdd(item.FilePath, redirect))
-                        {
-                            _errorLog.Write(Errors.RedirectionUrlConflict(originalRedirectUrl));
-                        }
+                        _errorLog.Write(Errors.RedirectionUrlConflict(item.RedirectUrl));
                     }
                 }
             }
             return renameHistory;
+        }
+
+        private static string RemoveTrailingIndex(string redirectionUrl)
+        {
+            var (url, _, _) = UrlUtility.SplitUrl(redirectionUrl);
+            return url.EndsWith("/index", PathUtility.PathComparison) ? url.Substring(0, url.Length - "index".Length) : url;
         }
     }
 }
