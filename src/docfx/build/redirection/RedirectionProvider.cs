@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                     {
                         case LinkType.RelativePath:
                             var siteUrl = _documentProvider.GetDocument(filePath).SiteUrl;
-                            absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), absoluteRedirectUrl));
+                            absoluteRedirectUrl = UrlUtility.Combine(Path.GetDirectoryName(siteUrl), absoluteRedirectUrl);
                             break;
                         case LinkType.AbsolutePath:
                             break;
