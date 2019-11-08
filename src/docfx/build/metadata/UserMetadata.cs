@@ -25,10 +25,6 @@ namespace Microsoft.Docs.Build
         [JsonProperty("_tocRel")]
         public string TocRel { get; set; }
 
-        [JsonProperty("_op_documentIdPathDepotMapping")]
-        public Dictionary<string, DocumentIdDepotMapping> DocumentIdDepotMapping { get; set; }
-         = new Dictionary<string, DocumentIdDepotMapping>(PathUtility.PathComparer);
-
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();
     }
