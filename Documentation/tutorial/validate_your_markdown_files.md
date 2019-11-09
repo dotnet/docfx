@@ -38,28 +38,16 @@ To define a new HTML tag rule, create a `md.style` file with content similar to 
 
 With this rule in place, anytime a `<H1>` or `<H2>` tag is used in a Markdown file, the DocFX build will produce a warning.
 
-You can use the following proprties to configure the HTML tag rule:
+You can use the following properties to configure the HTML tag rule:
 
-1.  `tagNames` is the list of HTML tag names to validate, *required*, *case-insensitive*.
-2.  `relation` is optional for `tagNames`:
-    * `In` means when html tag is in `tagNames`, this is default value.
-    * `NotIn` means when html tag is not in `tagNames`.
-3.  `behavior` defines the behavior when the HTML tag is met, *required*. Its value can be following:
-    * None: Do nothing.
-    * Warning: Log a warning.
-    * Error: Log an error, it will break current build.
-4.  `messageFormatter` is the log message when the HTML tag is hit, *required*.
-    It can contain following variables:
-    * `{0}` the name of tag.
-    * `{1}` the whole tag.
-
-    For example, the `messageFormatter` is `{0} is the tag name of {1}.`, and the tag is `<H1 class="heading">` match the rule, then it will output following message: `H1 is the tag name of <H1 class="heading">.`
-5.  `customValidatorContractName` is an extension tag rule contract name for complex validation rule, *optional*.
-
-    see [Create a custom HTML tag rule](#create-a-custom-html-tag-rule).
-6.  `openingTagOnly` is a boolean, *option*, default is `false`
-
-    if `true`, it will only apply to opening tag, e.g. `<H1>`, otherwise, it will also apply to closing tag, e.g. `</H1>`.
+| Property | Description |
+|:---------|:------------|
+| `tagNames` | The list of HTML tag names to validate, *required*, *case-insensitive*. |
+| `relation` | Optional for `tagNames`.<br/><br/>Possible values:<br/><ul><li>`In` - when HTML tag is in `tagNames`, this is default value.</li><li>`NotIn` - when HTML tag is not in `tagNames`.</li></ul> |
+| `behavior` | (**Required**) Defines the behavior for when the HTML tag rule is triggered.<br/></br>Possible values:<br/><ul><li>`None` - Do nothing.</li><li>`Warning` - Log a warning.</li><li>`Error` - Log an error and stop the build.</li></ul> |
+| `messageFormatter` | (**Required**) The log message displayed in the build output when the rule is triggered.<br/><br/>Can contain the following variables:<br/><ul><li>`{0}` - the name of tag.</li><li>`{1}` - the whole tag.<li></ul><br/><br/>For example, the `messageFormatter` can be set to `{0} is the tag name of {1}.`. When the `<H1 class="heading">` string will trigger the rule, the build output will contain: `H1 is the tag name of <H1 class="heading">.` |
+| `customValidatorContractName` | An optional extension tag rule contract name for complex validation rules. See [Create a custom HTML tag rule](#create-a-custom-html-tag-rule) for details on creating custom rules. |
+| `openingTagOnly` | Optional Boolean value that determines whether the document is scanned for opening tags only, or whether closing tags are required. Default is `false`. |
 
 ### Test your rule
 
