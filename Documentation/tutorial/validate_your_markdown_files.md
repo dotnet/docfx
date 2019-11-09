@@ -49,22 +49,22 @@ You can use the following properties to configure the HTML tag rule:
 | `customValidatorContractName` | An optional extension tag rule contract name for complex validation rules. See [Create a custom HTML tag rule](#create-a-custom-html-tag-rule) for details on creating custom rules. |
 | `openingTagOnly` | Optional Boolean value that determines whether the document is scanned for opening tags only, or whether closing tags are required. Default is `false`. |
 
-### Test your rule
+### Testing the rule
 
-To enable your rule, put `md.style` in the same folder of `docfx.json`, then run `docfx`, warning will be shown if it encounters `<H1>` or `<H2>` during build.
+To enable and test the newly-created rule, place the `md.style` file in the same folder where `docfx.json` is located, then run `docfx`. If you followed the example above, a warning will be shown if `<H1>` or `<H2>` tags are encountered during build.
 
-### Create a custom HTML tag rule
+### Creating a custom HTML tag rule
 
-By default HTML tag rule only validates whether an HTML tag exists in Markdown. Sometimes you may want to have additional validation against the content of the tag.
-For example, you may not want a tag to contain `onclick` attribute as it can inject javascript to the page.
-You can create a custom HTML tag rule to achieve this. 
+By default HTML tag rules only validate whether a HTML tag exists in Markdown files. In certain scenarios it might be important to validate the contents of the tag in addition to its presence. For example, you may not want a tag to contain `onclick` attributes,  as that can result in injected JavaScript on the documentation page.
 
-1.  Create a project in your code editor (e.g. Visual Studio).
-2.  Add nuget package `Microsoft.DocAsCode.Plugins` and `Microsoft.Composition`.
-3.  Create a class and implement @Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.
-4.  Add ExportAttribute with contract name.
+To perform tag content validation, it is possible to create a custom rule. To do so, follow the steps below.
 
-For example, we require HTML link (`<a>`) should not contain `onclick` attribute:
+1. Create a new .NET project in your code editor (e.g. Visual Studio).
+2. Add a reference to the [`Microsoft.DocAsCode.Plugins`](https://www.nuget.org/packages/Microsoft.DocAsCode.Plugins/) and [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/) NuGet packages.
+3. Create a new class and implement the `@Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator` interface.
+4. Add the `ExportAttribute` decorator with your contract name.
+
+For example, to require for HTML links (`<a>`) to not include the `onclick` attribute, the code can be written as such:
 
 ```csharp
 [Export("should_not_contain_onclick", typeof(ICustomMarkdownTagValidator))]
@@ -78,7 +78,7 @@ public class MyMarkdownTagValidator : ICustomMarkdownTagValidator
 }
 ```
 
-And update your `md.style` with following content:
+Subsequently, the `md.style` file can be updated with a reference to the rule:
 
 ```json
 {
