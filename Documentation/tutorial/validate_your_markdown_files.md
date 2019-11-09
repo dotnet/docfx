@@ -17,9 +17,9 @@ There are three kinds of validation rules provided by DocFX:
 
 ## HTML tag validation rules
 
-For most cases, you may want to prohibit using certain html tags in markdown, so we built a built-in html tag rule for you.
+In most cases, there is a need to limit the use of specific HTML tags in Markdown files. This is helpful in ensuring that the content is consistent and follows a documentation standard that is applicable to your project or organization.
 
-To define a HTML tag rule, simply create a `md.style` with following content:
+To define a new HTML tag rule, create a `md.style` file with content similar to the snippet below:
 
 ```json
 {
@@ -36,7 +36,7 @@ To define a HTML tag rule, simply create a `md.style` with following content:
 }
 ```
 
-Then when anyone write `<H1>` or `<H2>` in Markdown file, it will give a warning.
+With this rule in place, anytime a `<H1>` or `<H2>` tag is used in a Markdown file, the DocFX build will produce a warning.
 
 You can use the following proprties to configure the HTML tag rule:
 
