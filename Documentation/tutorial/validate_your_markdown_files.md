@@ -78,7 +78,7 @@ public class MyMarkdownTagValidator : ICustomMarkdownTagValidator
 }
 ```
 
-Subsequently, the `md.style` file can be updated with a reference to the rule:
+Build the project, to make sure that you have an assembly that contains the compiled contract. Subsequently, the `md.style` file can be updated with a reference to the contract, as specified in code:
 
 ```json
 {
@@ -94,13 +94,12 @@ Subsequently, the `md.style` file can be updated with a reference to the rule:
 }
 ```
 
-### How to enable custom HTML tag rules
+### Integrating the custom rule into the build
 
-1. Same as default HTML tag rule, config the rule in `md.style`.
-2. Create a folder (`rules` for example) in your DocFX project folder, put all your custom rule assemblies to a `plugins` folder under `rules` folder.
-   Now your DocFX project should look like this:
+1. Just as it's done for built-in HTML tag rules, configure the rule in the `md.style` file.
+2. Create a new folder in your DocFX project directory (`rules`, for example) and place all your custom rule assemblies to a `plugins` folder under the `rules` directory. Your DocFX project should look like this:
 
-   ```
+   ```text
    /
    |- docfx.json
    |- md.style
@@ -108,22 +107,24 @@ Subsequently, the `md.style` file can be updated with a reference to the rule:
       \- plugins
          \- <your_rule>.dll
    ```
-3. Update your `docfx.json` with following content:
+
+3. Update your `docfx.json` to include a reference to the `rules` folder:
 
    ```json
    {
      ...
      "dest": "_site",
      "template": [
-      "default", "rules"
+        "default", "rules"
      ]
    }
    ```
-4. Run `docfx` you'll see your rule being executed.
 
-> [!Note]
-> The folder `rules` is actually a template folder. In DocFX, template is a place for you to customize build, render, validation behavior.
-> For more information about template, please refer to our [template](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [plugin](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) documentation.
+4. Run `docfx` in your project folder. New rules will be executed and the build output will capture any triggers.
+
+>[!NOTE]
+>The `rules` folder is a template folder. In DocFX, templates are a place to customize the build, rendering and validation behaviors.
+>For more information about templates, please refer to our [template](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [plugin](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) documentation.
 
 ## Markdown token validation rules
 
