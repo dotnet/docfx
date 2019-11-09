@@ -44,8 +44,8 @@ footer{
       <div class="col-md-8 col-md-offset-2 text-center">
         <i class="glyphicon glyphicon-transfer"></i>
         <section>
-          <h2>Run Everywhere</h2>
-          <p class="lead">DocFX runs on Linux, macOS, and Windows. The generated website can be deployed to any web host with no additional configurations, e.g. Github Pages, Azure Websites...</p>
+          <h2>Run everywhere</h2>
+          <p class="lead">DocFX can run on Linux, macOS, and Windows. The generated static website can be deployed to any host such as GitHub Pages or Azure Websites with no additional configuration.</p>
         </section>
       </div>
     </div>
@@ -57,8 +57,8 @@ footer{
       <div class="col-md-8 col-md-offset-2 text-center">
         <i class="glyphicon glyphicon-cutlery"></i>
         <section>
-          <h2>Easy Customization</h2>
-          <p class="lead">DocFX provides a flexible way to customize templates and themes easily.</p>
+          <h2>Easily customize the output</h2>
+          <p class="lead">DocFX provides a flexible way to customize templates and themes.</p>
         </section>
       </div>
     </div>

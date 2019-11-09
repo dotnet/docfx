@@ -1,18 +1,19 @@
-# Validate Your Markdown Files
+# Validate your Markdown files
 
-In Markdown, we can write any document with valid syntax. For example, Markdown supports to directly write HTML tag, we can write HTML tag `<h1>title</h1>` instead of Markdown syntax `#title`.
-But for some purpose, some behaviors are unwanted, for example, you may not want to allow `<script>` tag in Markdown that can insert any javascript.
+In Markdown, it is possible to write any type of content, as long as the used syntax is valid. For example, Markdown supports the direct use of HTML tags - one can use the `<h1>title</h1>` syntax instead of conventional Markdown, such as `#title`.
 
-In this document, you'll learn how to define markdown validation rules, which will help you to validate markdown documents in an efficient way.
+With full-fledged HTML support, some behaviors might not be desirable. For example, you may not want to allow `<script>` tags included in Markdown, as that can introduce arbitrary JavaScript into documentation.
 
-> [!Note]
-> Markdown validation is part of DFM, if you switch Markdown engine to other engine, validation might not work.
+In this document, you'll learn how to define Markdown validation rules, which will help you ensure that your document follows strict conventions.
 
-There're three kinds of validation rules provided by DocFX:
+>[!NOTE]
+>Markdown validation is part of the Markdown processor in DocFX. If you switch the Markdown engine, validation rules might not apply the same way.
 
-1. HTML tag rule, which is used to validate HTML tags in Markdown. There is a common need to restrict usage of HTML tags in Markdown to only allow "safe" HTML tags, so we created this built-in rule for you.
-2. Markdown token rule. This can be used to validate different kinds of Markdown syntax elements, like headings, links, images, etc.
-3. Metadata rule. This can be used to validate metadata of documents. Metadata can be defined in YAML header, `docfx.json`, or a single JSON file. Metadata rule gives you a central place to validate metadata against certain principle.
+There are three kinds of validation rules provided by DocFX:
+
+1. [**HTML tag rules**](#html-tag-validation-rules). Used to validate HTML tags in Markdown content. There is often a need to restrict usage of HTML tags in Markdown to only allow safe markup.
+2. [**Markdown token rules**](#markdown-token-validation-rules). This rule type can be used to validate different kinds of Markdown syntax elements, such as headings, links or images.
+3. [**Metadata rules**](#validate-metadata-in-markdown-files). This rule type can be used to validate document metadata. Metadata can be defined in YAML front-matter in individual Markdown files, the `docfx.json` configuration file, or a standalone JSON file. Metadata rules give you a central place to validate metadata against specific document tagging conventions.
 
 ## HTML tag validation rules
 
