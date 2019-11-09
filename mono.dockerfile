@@ -12,6 +12,11 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vendor="Microsoft" \
       org.label-schema.schema-version="1.0"
 
+# Copy downloaded and extracted DocFX sources to runtime container
+COPY --chown=docfx:docfx ./target/Release/docfx /opt/docfx
+
+# Copy launcher script to mimic CLI behavior
+COPY ./tools/Deployment/docfx /usr/bin/docfx
 
 RUN apt-get update && \
     apt-get install -y \
@@ -20,6 +25,7 @@ RUN apt-get update && \
 		    git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
+    sed -i -e "s/\r//g" /usr/bin/docfx && \
     adduser \
         --home /nonexistent \
         --shell /bin/false \
@@ -29,11 +35,7 @@ RUN apt-get update && \
         --disabled-login \
         docfx
 
-# Copy downloaded and extracted DocFX sources to runtime container
-COPY --chown=docfx:docfx ./target/Release/docfx /opt/docfx
 
-# Copy launcher script to mimic CLI behavior
-COPY ./tools/Deployment/docfx /usr/bin/docfx
 
 # set user-context to unpriviledged user
 USER docfx
