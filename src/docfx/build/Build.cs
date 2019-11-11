@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
         {
             using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider))
             {
-                context.BuildQueue.Enqueue(context.BuildScope.Files);
+                context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 
                 using (Progress.Start("Building files"))
                 {

@@ -15,8 +15,8 @@ namespace Microsoft.Docs.Build
 
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentDictionary<Document, (Error, IReadOnlyList<string>)> _monikerCache
-                   = new ConcurrentDictionary<Document, (Error, IReadOnlyList<string>)>();
+        private readonly ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)> _monikerCache
+                   = new ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)>();
 
         public MonikerComparer Comparer { get; }
 
@@ -41,12 +41,12 @@ namespace Microsoft.Docs.Build
             _rules.Reverse();
         }
 
-        public (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikers(Document file)
+        public (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 
-        public (Error error, IReadOnlyList<string> monikers) GetZoneLevelMonikers(Document file, SourceInfo<string> rangeString)
+        public (Error error, IReadOnlyList<string> monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
         {
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             return (null, monikers);
         }
 
-        private (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(Document file)
+        private (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(FilePath file)
         {
             var errors = new List<Error>();
             var (_, metadata) = _metadataProvider.GetMetadata(file);
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (glob, (monikerRange, monikers)) in _rules)
             {
-                if (glob(file.FilePath.Path))
+                if (glob(file.Path))
                 {
                     configMonikerRange = monikerRange;
                     configMonikers = monikers.ToArray();

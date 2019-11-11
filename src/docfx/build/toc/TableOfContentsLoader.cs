@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
 
                 var (errors, model) = LoadInternal(file, file, referencedFiles, referencedTocs);
 
-                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
                 errors.AddIfNotNull(error);
 
                 model.Metadata.Monikers = monikers;
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (currentItem.Document != null)
                     {
-                        var (error, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document);
+                        var (error, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
                         errors.AddIfNotNull(error);
 
                         if (referenceFileMonikers.Count == 0)
