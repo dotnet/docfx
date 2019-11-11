@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                 {
                 }
 
-                return 1;
+                return -1;
             }
             finally
             {
