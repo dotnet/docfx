@@ -21,10 +21,10 @@ namespace Microsoft.Docs.Build
             }
 
             var result = await Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.All(x => x == 0) ? 0 : 1;
+            return result.All(x => x) ? 0 : 1;
         }
 
-        private static async Task<int> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static async Task<bool> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
 
                     // config error log, and return if config has errors
                     if (errorLog.Write(errors))
-                        return 1;
+                        return false;
 
                     // restore extend url firstly
                     await ParallelUtility.ForEach(
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                 {
                     Log.Write(dex);
                     errorLog.Write(dex.Error, isException: true);
-                    return 1;
+                    return false;
                 }
                 finally
                 {
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
-                return 0;
+                return true;
             }
         }
 

@@ -22,10 +22,10 @@ namespace Microsoft.Docs.Build
             }
 
             var result = await Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.All(x => x == 0) ? 0 : 1;
+            return result.All(x => x) ? 0 : 1;
         }
 
-        private static async Task<int> BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static async Task<bool> BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
                         // just return if config loading has errors
                         if (errorLog.Write(errors))
-                            return 1;
+                            return false;
 
                         // get docsets(build docset, fallback docset and dependency docsets)
                         var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                 {
                     Log.Write(dex);
                     errorLog.Write(dex.Error, isException: true);
-                    return 1;
+                    return false;
                 }
                 finally
                 {
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
-                return 0;
+                return true;
             }
         }
 
