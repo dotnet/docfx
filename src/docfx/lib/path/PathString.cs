@@ -29,6 +29,10 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(PathString other) => PathUtility.PathComparer.Compare(Value, other.Value);
 
+        public static bool operator ==(PathString a, PathString b) => Equals(a, b);
+
+        public static bool operator !=(PathString a, PathString b) => !Equals(a, b);
+
         public static implicit operator string(PathString value) => value.Value;
 
         private class PathStringJsonConverter : JsonConverter
