@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<PathString> _fileNames;
-        private readonly Func<string, bool> _glob;
 
         private readonly Input _input;
         private readonly Docset _docset;

@@ -406,7 +406,7 @@ namespace Microsoft.Docs.Build
         {
             SourceInfo<string> mime = default;
 
-            if (filePath.EndsWith(".json", PathUtility.PathComparison))
+            if (filePath.EndsWith(".json"))
             {
                 // TODO: we could have not depend on this exists check, but currently
                 //       LinkResolver works with Document and return a Document for token files,
@@ -421,7 +421,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
+            else if (filePath.EndsWith(".yml"))
             {
                 if (input.Exists(filePath))
                 {
