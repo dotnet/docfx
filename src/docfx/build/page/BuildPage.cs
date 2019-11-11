@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             var (loadErrors, sourceModel) = await Load(context, file);
             errors.AddRange(loadErrors);
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
             var outputPath = file.GetOutputPath(monikers, file.IsPage);
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             var outputMetadata = new JObject();
             var outputModel = new JObject();
 
-            var (inputMetadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            var (inputMetadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(inputMetadataErrors);
             var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, inputMetadata);
             errors.AddRange(systemMetadataErrors);
@@ -147,12 +147,12 @@ namespace Microsoft.Docs.Build
             systemMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             systemMetadata.SiteName = file.Docset.Config.SiteName;
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
             systemMetadata.Monikers = monikers;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
-                = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+                = context.DocumentProvider.GetDocument(context.RedirectionProvider.GetOriginalFile(file.FilePath)).Id;
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
                 systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
@@ -261,7 +261,7 @@ namespace Microsoft.Docs.Build
             if (file.IsPage)
             {
                 // transform metadata via json schema
-                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                 JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = inputMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
             }

@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                 var callStack = new List<Document> { file };
                 if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                     errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
             return (error, xref, file);
         }

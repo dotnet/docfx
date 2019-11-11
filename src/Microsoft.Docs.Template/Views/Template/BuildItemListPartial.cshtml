@@ -178,7 +178,7 @@ else if (Model.Style == "cards")
                                         }
                                         @if (!string.IsNullOrEmpty(listItem?.Content))
                                         {
-                                            @listItem?.Content
+                                            @Html.Raw(listItem?.Content)
                                         }
                                         else if (!string.IsNullOrEmpty(listItem?.Html))
                                         {

@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
+        private readonly RedirectionProvider _redirectionProvider;
         private readonly WorkQueue<Document> _buildQueue;
         private readonly DocumentProvider _documentProvider;
         private readonly BookmarkValidator _bookmarkValidator;
@@ -30,6 +31,7 @@ namespace Microsoft.Docs.Build
             Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
+            RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
@@ -43,6 +45,7 @@ namespace Microsoft.Docs.Build
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
+            _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
@@ -103,7 +106,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
 
-            if (file?.RedirectionUrl != null)
+            if (file?.ContentType == ContentType.Redirection)
             {
                 return default;
             }
@@ -153,7 +156,7 @@ namespace Microsoft.Docs.Build
                 return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
 
-            if (file?.RedirectionUrl != null)
+            if (file?.FilePath.Origin == FileOrigin.Redirection)
             {
                 return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), null, linkType, file, false);
             }
@@ -255,9 +258,10 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from redirection files
-            if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
+            path = new FilePath(pathToDocset, FileOrigin.Redirection);
+            if (_redirectionProvider.Contains(path))
             {
-                return redirectFile;
+                return _documentProvider.GetDocument(path);
             }
 
             // resolve from dependent docsets

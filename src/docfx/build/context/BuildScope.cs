@@ -21,21 +21,21 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
 
         /// <summary>
-        /// Gets all the files to build, including redirections and fallback files.
+        /// Gets all the files and fallback files to build, excluding redirections.
         /// </summary>
         public HashSet<Document> Files { get; }
 
-        public RedirectionMap Redirections { get; }
+        public Func<string, bool> Glob { get; }
 
-        public BuildScope(
-            ErrorLog errorLog, Input input, DocumentProvider documentProvider, TemplateEngine templateEngine, Docset docset, Docset fallbackDocset, MonikerProvider monikerProvider)
+        public BuildScope(Input input, DocumentProvider documentProvider, Docset docset, Docset fallbackDocset)
         {
             _input = input;
             _docset = docset;
             _documentProvider = documentProvider;
-            _glob = CreateGlob(_docset.Config);
 
-            var (fileNames, files) = GetFiles(FileOrigin.Default, _glob);
+            Glob = CreateGlob(_docset.Config);
+
+            var (fileNames, files) = GetFiles(FileOrigin.Default, Glob);
 
             var fallbackFiles = fallbackDocset != null
                 ? GetFiles(FileOrigin.Fallback, CreateGlob(fallbackDocset.Config)).files
@@ -45,15 +45,11 @@ namespace Microsoft.Docs.Build
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            Redirections = RedirectionMap.Create(errorLog, docset, _glob, _input, templateEngine, Files, monikerProvider);
-
-            Files.UnionWith(Redirections.Files);
-
             foreach (var (dependencyName, dependency) in _docset.Config.Dependencies)
             {
                 if (dependency.IncludeInBuild)
                 {
-                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, _glob, dependencyName);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, Glob, dependencyName);
                     Files.UnionWith(dependencyFiles);
                 }
 

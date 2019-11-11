@@ -85,6 +85,16 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public void TestDisallowThousands()
+        {
+            var yaml = "a: 123,456";
+            var (errors, value) = DeserializeWithValidation<Dictionary<string, object>>(yaml);
+            Assert.Empty(errors);
+            Assert.NotNull(value);
+            Assert.Equal("123,456", value["a"]);
+        }
+
+        [Fact]
         public void TestNotprimitiveKey()
         {
             var yaml = @"
