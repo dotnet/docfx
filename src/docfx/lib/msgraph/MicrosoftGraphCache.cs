@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
                 var content = JsonUtility.Serialize(new MicrosoftGraphCacheFile { Aliases = aliases });
 
-                PathUtility.CreateDirectoryFromFilePath(_cachePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_cachePath)));
                 ProcessUtility.WriteFile(_cachePath, content);
                 _needUpdate = false;
             }

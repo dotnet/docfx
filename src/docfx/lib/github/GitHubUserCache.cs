@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 {
                     var content = JsonUtility.Serialize(new GitHubUserCacheFile { Users = Users.ToArray() });
 
-                    PathUtility.CreateDirectoryFromFilePath(_cachePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_cachePath)));
                     ProcessUtility.WriteFile(_cachePath, content);
                     _updated = false;
                 }

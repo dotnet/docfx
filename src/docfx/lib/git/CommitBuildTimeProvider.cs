@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            PathUtility.CreateDirectoryFromFilePath(_commitBuildTimePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)));
             File.WriteAllText(
                 _commitBuildTimePath,
                 JsonUtility.Serialize(new CommitBuildTime { Commits = commits }));
