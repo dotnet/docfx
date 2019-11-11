@@ -25,9 +25,12 @@ namespace Microsoft.Docs.Build
 
             return builder.Use(document =>
             {
-                foreach (var validator in validators)
+                if (((Document)InclusionContext.File).FilePath.EndsWith(".md", PathUtility.PathComparison))
                 {
-                    validator.Validate(document);
+                    foreach (var validator in validators)
+                    {
+                        validator.Validate(document);
+                    }
                 }
             });
         }
