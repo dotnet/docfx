@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode() => Value is null ? 0 : PathUtility.PathComparer.GetHashCode(Value);
 
-        public int CompareTo(PathString other) => PathUtility.PathComparer.Compare(Value, other.Value);
+        public int CompareTo(PathString other) => string.CompareOrdinal(Value, other.Value);
 
         public static bool operator ==(PathString a, PathString b) => Equals(a, b);
 

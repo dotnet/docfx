@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(Document other)
         {
-            var result = PathUtility.PathComparer.Compare(Docset.DocsetPath, other.Docset.DocsetPath);
+            var result = string.CompareOrdinal(Docset.DocsetPath, other.Docset.DocsetPath);
             if (result == 0)
                 result = ContentType.CompareTo(other.ContentType);
             if (result == 0)

@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(Docset other)
         {
-            return PathUtility.PathComparer.Compare(DocsetPath, other.DocsetPath);
+            return string.CompareOrdinal(DocsetPath, other.DocsetPath);
         }
 
         public override int GetHashCode()
