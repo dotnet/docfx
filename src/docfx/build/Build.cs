@@ -21,16 +21,8 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            var buildDocsets = docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options));
-            await Task.WhenAll(buildDocsets);
-            foreach (var build in buildDocsets)
-            {
-                if (await build != 0)
-                {
-                    return 1;
-                }
-            }
-            return 0;
+            var result = await Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
+            return result.All(x => x == 0) ? 0 : 1;
         }
 
         private static async Task<int> BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)

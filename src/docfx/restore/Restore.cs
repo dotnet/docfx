@@ -20,16 +20,8 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            var restoreDocsets = docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options));
-            await Task.WhenAll(restoreDocsets);
-            foreach (var restore in restoreDocsets)
-            {
-                if (await restore != 0)
-                {
-                    return 1;
-                }
-            }
-            return 0;
+            var result = await Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
+            return result.All(x => x == 0) ? 0 : 1;
         }
 
         private static async Task<int> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
