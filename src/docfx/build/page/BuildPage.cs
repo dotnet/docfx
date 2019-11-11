@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
-            var outputPath = file.GetOutputPath(monikers, file.IsPage);
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? await CreatePageOutput(context, file, sourceModel)
@@ -152,7 +152,8 @@ namespace Microsoft.Docs.Build
             systemMetadata.Monikers = monikers;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
-                = context.DocumentProvider.GetDocument(context.RedirectionProvider.GetOriginalFile(file.FilePath)).Id;
+                = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
+
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
                 systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
