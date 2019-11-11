@@ -378,7 +378,7 @@ namespace Microsoft.Docs.Build
 
         private (string docId, string versionIndependentId) LoadDocumentId()
         {
-            var sourcePath = FilePath.Path;
+            var sourcePath = FilePath.Path.Value;
 
             var (mappedDepotName, mappedSourcePath) = Docset.Config.DocumentId.GetMapping(sourcePath);
 
@@ -414,7 +414,7 @@ namespace Microsoft.Docs.Build
         {
             SourceInfo<string> mime = default;
 
-            if (filePath.Path.EndsWith(".json", PathUtility.PathComparison))
+            if (filePath.EndsWith(".json", PathUtility.PathComparison))
             {
                 // TODO: we could have not depend on this exists check, but currently
                 //       LinkResolver works with Document and return a Document for token files,
@@ -429,7 +429,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            else if (filePath.Path.EndsWith(".yml", PathUtility.PathComparison))
+            else if (filePath.EndsWith(".yml", PathUtility.PathComparison))
             {
                 if (input.Exists(filePath))
                 {

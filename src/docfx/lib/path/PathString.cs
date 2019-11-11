@@ -2,15 +2,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
+using System.Globalization;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// Represents a normalized file path string.
+    /// Represents a normalized file path, directory path, or URL path string.
     /// </summary>
-    [JsonConverter(typeof(JsonFilePathConverter))]
-    internal readonly struct PathString : IEquatable<PathString>
+    [JsonConverter(typeof(PathStringJsonConverter))]
+    [TypeConverter(typeof(PathStringTypeConverter))]
+    internal readonly struct PathString : IEquatable<PathString>, IComparable<PathString>
     {
         public readonly string Value;
 
@@ -22,11 +25,13 @@ namespace Microsoft.Docs.Build
 
         public override bool Equals(object obj) => obj is PathString && Equals((PathString)obj);
 
-        public override int GetHashCode() => PathUtility.PathComparer.GetHashCode(Value);
+        public override int GetHashCode() => Value is null ? 0 : PathUtility.PathComparer.GetHashCode(Value);
 
-        public static implicit operator string(PathString value) => value.Value ?? ".";
+        public int CompareTo(PathString other) => PathUtility.PathComparer.Compare(Value, other.Value);
 
-        private class JsonFilePathConverter : JsonConverter
+        public static implicit operator string(PathString value) => value.Value;
+
+        private class PathStringJsonConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType) => objectType == typeof(PathString);
 
@@ -39,6 +44,29 @@ namespace Microsoft.Docs.Build
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
                 writer.WriteValue(((PathString)value).Value);
+            }
+        }
+
+        private class PathStringTypeConverter : TypeConverter
+        {
+            public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+            {
+                return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
+            }
+
+            public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+            {
+                return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
+            }
+
+            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+            {
+                return value is string str ? new PathString(str) : base.ConvertFrom(context, culture, value);
+            }
+
+            public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+            {
+                return destinationType == typeof(string) ? ((PathString)value).Value : base.ConvertTo(context, culture, value, destinationType);
             }
         }
     }

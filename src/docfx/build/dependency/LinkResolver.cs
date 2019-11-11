@@ -223,18 +223,18 @@ namespace Microsoft.Docs.Build
         private Document TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
-            string pathToDocset;
+            PathString pathToDocset;
 
             if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
             {
                 // Treat ~/ as path relative to docset
-                pathToDocset = PathUtility.NormalizeFile(relativePath.Substring(2).TrimStart('/', '\\'));
+                pathToDocset = new PathString(relativePath.Substring(2).TrimStart('/', '\\'));
             }
             else
             {
                 // Path relative to referencing file
                 var baseDirectory = Path.GetDirectoryName(referencingFile.GetPathToOrigin());
-                pathToDocset = PathUtility.NormalizeFile(Path.Combine(baseDirectory, relativePath));
+                pathToDocset = new PathString(Path.Combine(baseDirectory, relativePath));
             }
 
             // use the actual file name case
