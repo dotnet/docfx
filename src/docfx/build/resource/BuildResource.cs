@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Resource);
 
             var errors = new List<Error>();
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
             var outputPath = file.GetOutputPath(monikers, isPage: false);

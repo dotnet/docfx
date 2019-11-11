@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
 
                 var (errors, model) = LoadInternal(file, file, referencedFiles, referencedTocs);
 
-                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
                 errors.AddIfNotNull(error);
 
                 model.Metadata.Monikers = monikers;
@@ -67,21 +67,21 @@ namespace Microsoft.Docs.Build
         {
             var filePath = file.FilePath;
 
-            if (filePath.EndsWith(".yml", PathUtility.PathComparison))
+            if (filePath.EndsWith(".yml"))
             {
                 var (errors, tocToken) = content is null ? _input.ReadYaml(file.FilePath) : YamlUtility.Parse(content, file.FilePath);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
-            else if (filePath.EndsWith(".json", PathUtility.PathComparison))
+            else if (filePath.EndsWith(".json"))
             {
                 var (errors, tocToken) = content is null ? _input.ReadJson(file.FilePath) : JsonUtility.Parse(content, file.FilePath);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
-            else if (filePath.EndsWith(".md", PathUtility.PathComparison))
+            else if (filePath.EndsWith(".md"))
             {
                 content = content ?? _input.ReadString(file.FilePath);
                 return MarkdownTocMarkup.Parse(_markdownEngine, content, file);
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (currentItem.Document != null)
                     {
-                        var (error, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document);
+                        var (error, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
                         errors.AddIfNotNull(error);
 
                         if (referenceFileMonikers.Count == 0)

@@ -12,14 +12,15 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
+        private readonly DocumentProvider _documentProvider;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules
             = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, UserMetadata metadata)> _metadataCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, UserMetadata metadata)>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)> _metadataCache
+                   = new ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)>();
 
         public JsonSchema[] MetadataSchemas { get; }
 
@@ -27,9 +28,11 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
-        public MetadataProvider(Docset docset, Input input, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
+        public MetadataProvider(
+            Docset docset, Input input, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap, DocumentProvider documentProvider)
         {
             _input = input;
+            _documentProvider = documentProvider;
             _globalMetadata = docset.Config.GlobalMetadata.ExtensionData;
 
             MetadataSchemas = Array.ConvertAll(
@@ -63,16 +66,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, UserMetadata metadata) GetMetadata(Document file)
+        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
+        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath path)
         {
             var result = new JObject();
             var errors = new List<Error>();
             var yamlHeader = new JObject();
+
+            var file = _documentProvider.GetDocument(path);
 
             if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
             {
@@ -142,7 +147,7 @@ namespace Microsoft.Docs.Build
 
         private (List<Error> errors, JObject metadata) LoadMetadata(Document file)
         {
-            if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".md"))
             {
                 using (var reader = _input.ReadText(file.FilePath))
                 {
@@ -150,12 +155,12 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".yml"))
             {
                 return LoadSchemaDocumentMetadata(_input.ReadYaml(file.FilePath), file);
             }
 
-            if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".json"))
             {
                 return LoadSchemaDocumentMetadata(_input.ReadJson(file.FilePath), file);
             }

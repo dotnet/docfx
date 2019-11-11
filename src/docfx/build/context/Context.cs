@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         public readonly Output Output;
         public readonly Input Input;
         public readonly BuildScope BuildScope;
+        public readonly RedirectionProvider RedirectionProvider;
         public readonly WorkQueue<Document> BuildQueue;
         public readonly DocumentProvider DocumentProvider;
         public readonly MetadataProvider MetadataProvider;
@@ -53,9 +54,10 @@ namespace Microsoft.Docs.Build
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             DocumentProvider = new DocumentProvider(docset, fallbackDocset, input, repositoryProvider, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap);
+            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap, DocumentProvider);
             MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
-            BuildScope = new BuildScope(errorLog, Input, DocumentProvider, TemplateEngine, docset, fallbackDocset, MonikerProvider);
+            BuildScope = new BuildScope(Input, DocumentProvider, docset, fallbackDocset);
+            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
@@ -70,6 +72,7 @@ namespace Microsoft.Docs.Build
                 Input,
                 BuildScope,
                 BuildQueue,
+                RedirectionProvider,
                 DocumentProvider,
                 GitCommitProvider,
                 BookmarkValidator,
