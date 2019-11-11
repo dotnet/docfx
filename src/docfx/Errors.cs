@@ -540,7 +540,7 @@ namespace Microsoft.Docs.Build
         ///   - both files with no monikers defined same uid
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error UidConflict(string uid, IEnumerable<string> conflicts = null)
+        public static Error UidConflict(string uid, IEnumerable<FilePath> conflicts = null)
         {
             if (conflicts is null)
             {

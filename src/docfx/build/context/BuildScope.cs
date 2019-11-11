@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
-        private readonly HashSet<string> _fileNames;
+        private readonly HashSet<PathString> _fileNames;
 
         private readonly Input _input;
         private readonly Docset _docset;
@@ -74,13 +74,13 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public bool GetActualFileName(string fileName, out string actualFileName)
+        public bool GetActualFileName(PathString fileName, out PathString actualFileName)
         {
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        private (HashSet<string> fileNames, IReadOnlyList<Document> files) GetFiles(
-            FileOrigin origin, Func<string, bool> glob, string dependencyName = null)
+        private (HashSet<PathString> fileNames, IReadOnlyList<Document> files) GetFiles(
+            FileOrigin origin, Func<string, bool> glob, PathString? dependencyName = null)
         {
             using (Progress.Start("Globbing files"))
             {
@@ -89,13 +89,13 @@ namespace Microsoft.Docs.Build
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file.Path))
+                    if (glob(file.Path.Value))
                     {
                         files.Add(_documentProvider.GetDocument(file));
                     }
                 });
 
-                return (fileNames.Select(item => item.Path).ToHashSet(PathUtility.PathComparer), files.ToList());
+                return (fileNames.Select(item => item.Path).ToHashSet(), files.ToList());
             }
         }
 

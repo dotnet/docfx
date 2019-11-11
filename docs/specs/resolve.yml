@@ -60,9 +60,9 @@ inputs:
   docs/includes/b.md: |
     ## test
     Link to [valid self](#test)
-    Link to [valid parent](../a.md/#heading)
+    Link to [valid parent](../a.md#heading)
     Link to [invalid self](#heading1)
-    Link to [invalid parent](../a.md/#heading2)
+    Link to [invalid parent](../a.md#heading2)
 outputs:
   docs/a.json: |
     {
