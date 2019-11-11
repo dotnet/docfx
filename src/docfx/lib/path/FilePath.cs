@@ -130,7 +130,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public bool EndsWith(string value, StringComparison stringComparison)
-            => Path.EndsWith(value, stringComparison);
+        public bool EndsWith(string value) => Path.EndsWith(value, PathUtility.PathComparison);
     }
 }
