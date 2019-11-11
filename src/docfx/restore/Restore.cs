@@ -11,19 +11,28 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static Task Run(string workingDirectory, CommandLineOptions options)
+        public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
         {
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
                 ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
-                return Task.CompletedTask;
+                return 1;
             }
 
-            return Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
+            var restoreDocsets = docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options));
+            await Task.WhenAll(restoreDocsets);
+            foreach (var restore in restoreDocsets)
+            {
+                if (await restore != 0)
+                {
+                    return 1;
+                }
+            }
+            return 0;
         }
 
-        private static async Task RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static async Task<int> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
@@ -57,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                     // config error log, and return if config has errors
                     if (errorLog.Write(errors))
-                        return;
+                        return 1;
 
                     // restore extend url firstly
                     await ParallelUtility.ForEach(
@@ -89,6 +98,7 @@ namespace Microsoft.Docs.Build
                 {
                     Log.Write(dex);
                     errorLog.Write(dex.Error, isException: true);
+                    return 1;
                 }
                 finally
                 {
@@ -96,6 +106,7 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
+                return 0;
             }
         }
 
