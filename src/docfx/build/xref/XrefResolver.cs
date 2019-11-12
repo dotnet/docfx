@@ -36,7 +36,8 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(context.Config.XrefBaseUrl) ? docset.HostName : context.Config.XrefBaseUrl;
         }
 
-        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(SourceInfo<string> href, Document referencingFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(
+            SourceInfo<string> href, Document referencingFile, Document relativeToFile = null)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -77,7 +78,7 @@ namespace Microsoft.Docs.Build
                 fragment.Length == 0 ? "" : fragment);
 
             // NOTE: this should also be relative to root file
-            _fileLinkMapBuilder.AddFileLink((Document)InclusionContext.RootFile ?? referencingFile, resolvedHref);
+            _fileLinkMapBuilder.AddFileLink(relativeToFile ?? (Document)InclusionContext.RootFile ?? referencingFile, resolvedHref);
 
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
@@ -85,7 +86,7 @@ namespace Microsoft.Docs.Build
         public (Error error, string href, string display, Document declaringFile) ResolveRelativeXref(
             Document relativeToFile, SourceInfo<string> href, Document referencingFile)
         {
-            var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referencingFile);
+            var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referencingFile, relativeToFile);
 
             if (declaringFile != null)
             {

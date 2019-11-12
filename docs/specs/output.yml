@@ -511,3 +511,46 @@ outputs:
     }
   a.json:
   b.json:
+---
+# source_url should be the includer of TOC
+inputs:
+  docfx.yml: 'exclude: docs/a/TOC.yml'
+  docs/TOC.yml: |
+    - name: TOC Ref
+      tocHref: a/TOC.yml
+    - name: link
+      href: c.md
+  docs/a/TOC.yml: |
+    - name: Link
+      href: ../b.md
+    - name: Uid ref
+      uid: a
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/b.md:
+  docs/c.md:
+outputs:
+  .links.json: |
+    {
+      "links": [
+        {
+          "source_url": "/docs/toc.json",
+          "target_url": "/docs/a"
+        },
+        {
+          "source_url": "/docs/toc.json",
+          "target_url": "/docs/b"
+        },
+        {
+          "source_url": "/docs/toc.json",
+          "target_url": "/docs/c"
+        }
+      ]
+    }
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/toc.json:

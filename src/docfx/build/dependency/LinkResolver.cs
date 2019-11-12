@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
         public (Error error, string link, Document file) ResolveRelativeLink(
             Document relativeToFile, SourceInfo<string> path, Document referencingFile)
         {
-            var (error, link, file) = ResolveAbsoluteLink(path, referencingFile);
+            var (error, link, file) = ResolveAbsoluteLink(path, referencingFile, relativeToFile);
 
             if (file != null)
             {
@@ -78,9 +78,9 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string link, Document file) ResolveAbsoluteLink(SourceInfo<string> path, Document referencingFile)
+        public (Error error, string link, Document file) ResolveAbsoluteLink(SourceInfo<string> path, Document referencingFile, Document relativeToFile = null)
         {
-            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(referencingFile, path);
+            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(referencingFile, path, relativeToFile);
 
             if (file != null)
             {
@@ -88,7 +88,8 @@ namespace Microsoft.Docs.Build
             }
 
             // NOTE: bookmark validation result depend on current inclusion stack
-            var relativeToFile = (Document)InclusionContext.RootFile ?? referencingFile;
+            // var relativeToFile = (Document)InclusionContext.RootFile ?? referencingFile;
+            relativeToFile = relativeToFile ?? (Document)InclusionContext.RootFile ?? referencingFile;
             var isSelfBookmark = linkType == LinkType.SelfBookmark || relativeToFile == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
@@ -115,14 +116,14 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(
-            Document referencingFile, SourceInfo<string> href)
+            Document referencingFile, SourceInfo<string> href, Document relativeToFile)
         {
             Debug.Assert(href != null);
 
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveAbsoluteXref(uid, referencingFile);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveAbsoluteXref(uid, referencingFile, relativeToFile);
                 var xrefLinkType = declaringFile != null ? LinkType.RelativePath : LinkType.External;
 
                 return (uidError, uidHref, null, xrefLinkType, declaringFile, true);
