@@ -79,17 +79,17 @@ namespace Microsoft.Docs.Build
             var outputMetadata = new JObject();
             var outputModel = new JObject();
 
-            var (inputMetadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+            var (inputMetadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(inputMetadataErrors);
-            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, inputMetadata);
+            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
             if (string.IsNullOrEmpty(file.Mime))
             {
                 // conceptual raw metadata and raw model
-                JsonUtility.Merge(outputMetadata, inputMetadata.RawJObject, systemMetadataJObject);
-                JsonUtility.Merge(outputModel, inputMetadata.RawJObject, sourceModel, systemMetadataJObject);
+                JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
+                JsonUtility.Merge(outputModel, userMetadata.RawJObject, sourceModel, systemMetadataJObject);
             }
             else
             {
@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+            var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
                 Conceptual = CreateHtmlContent(file, htmlDom),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
-                Title = inputMetadata.Title ?? title,
+                Title = userMetadata.Title ?? title,
             });
 
             return (errors, pageModel);
@@ -261,8 +261,8 @@ namespace Microsoft.Docs.Build
             if (file.IsPage)
             {
                 // transform metadata via json schema
-                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-                JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = inputMetadata.RawJObject });
+                var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+                JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = userMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
             }
 
