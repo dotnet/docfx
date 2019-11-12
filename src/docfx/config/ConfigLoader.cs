@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
                 // For v2 backward compatibility, treat `build` section as config if it exist
                 if (obj.TryGetValue("build", out var build) && build is JObject buildObj)
                 {
-                    // `template` property has different sematic, so remove it
+                    // `template` property has different semantic, so remove it
                     buildObj.Remove("template");
                     return (errors, buildObj);
                 }
