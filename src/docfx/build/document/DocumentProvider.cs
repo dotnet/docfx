@@ -16,6 +16,9 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<string> _configReferences;
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
+
+        private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
+
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
@@ -26,7 +29,9 @@ namespace Microsoft.Docs.Build
             _dependencyDocsets = LoadDependencies(docset, repositoryProvider);
             _input = input;
             _templateEngine = templateEngine;
+
             _configReferences = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).ToHashSet(PathUtility.PathComparer);
+            _documentIdRules = docset.Config.DocumentIdMapping.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
         public Document GetDocument(FilePath path)
@@ -78,9 +83,9 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
             var config = _docset.Config;
-            var sourcePath = file.FilePath.Path.Value;
+            var sourcePath = file.FilePath.Path;
 
-            var (mappedDepotName, mappedSourcePath) = config.DocumentId.GetMapping(sourcePath);
+            var (mappedDepotName, mappedSourcePath) =  config.DocumentId.GetMapping(sourcePath);
 
             // get depot name from config or depot mapping
             var depotName = string.IsNullOrEmpty(mappedDepotName)
@@ -108,6 +113,14 @@ namespace Microsoft.Docs.Build
             return (
                 HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
+        }
+
+        private bool TryMapDocumentId(PathString path, out PathString resultPath, out string resultDepotName)
+        {
+            foreach (var (basePath, config) in _documentIdRules)
+            {
+                if (path.M)
+            }
         }
 
         private Document GetDocumentCore(FilePath path)

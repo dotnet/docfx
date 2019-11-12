@@ -17,8 +17,8 @@ namespace Microsoft.Docs.Build
 
         [Obsolete("v2 backward compatibility")]
         [JsonProperty("_op_documentIdPathDepotMapping")]
-        public Dictionary<string, DocumentIdDepotMapping> DocumentIdDepotMapping { get; set; }
-         = new Dictionary<string, DocumentIdDepotMapping>(PathUtility.PathComparer);
+        public Dictionary<string, DocumentIdConfig> DocumentIdDepotMapping { get; set; }
+         = new Dictionary<string, DocumentIdConfig>(PathUtility.PathComparer);
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();
