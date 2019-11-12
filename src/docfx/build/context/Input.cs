@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// List all the file path.
         /// </summary>
-        public FilePath[] ListFilesRecursive(FileOrigin origin, string dependencyName = null)
+        public FilePath[] ListFilesRecursive(FileOrigin origin, PathString? dependencyName = null)
         {
             switch (origin)
             {
@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
 
             FilePath CreateFilePath(string path)
             {
-                return dependencyName is null ? new FilePath(path, origin) : new FilePath(path, dependencyName);
+                return dependencyName is null ? new FilePath(path, origin) : new FilePath(path, dependencyName.Value);
             }
         }
 

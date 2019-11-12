@@ -78,13 +78,6 @@ namespace Microsoft.Docs.Build
         public bool IsPage { get; }
 
         /// <summary>
-        /// Gets the repository
-        /// </summary>
-        public Repository Repository => _repository.Value;
-
-        private readonly Lazy<Repository> _repository;
-
-        /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
         /// </summary>
         public Document(
@@ -110,15 +103,13 @@ namespace Microsoft.Docs.Build
             IsExperimental = isExperimental;
             IsPage = isPage;
 
-            _repository = new Lazy<Repository>(() => Docset.GetRepository(FilePath.Path));
-
             Debug.Assert(SiteUrl.StartsWith('/'));
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
         }
 
         public int CompareTo(Document other)
         {
-            var result = PathUtility.PathComparer.Compare(Docset.DocsetPath, other.Docset.DocsetPath);
+            var result = string.CompareOrdinal(Docset.DocsetPath, other.Docset.DocsetPath);
             if (result == 0)
                 result = ContentType.CompareTo(other.ContentType);
             if (result == 0)
@@ -133,6 +124,10 @@ namespace Microsoft.Docs.Build
                 PathUtility.PathComparer.GetHashCode(FilePath),
                 ContentType);
         }
+
+        public static bool operator ==(Document a, Document b) => Equals(a, b);
+
+        public static bool operator !=(Document a, Document b) => !Equals(a, b);
 
         public bool Equals(Document other)
         {

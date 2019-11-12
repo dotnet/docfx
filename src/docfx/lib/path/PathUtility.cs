@@ -194,20 +194,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Create a new directory from specified file path.
-        /// </summary>
-        /// <param name="filePath">The file path containing the directory to create</param>
-        public static void CreateDirectoryFromFilePath(string filePath)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(filePath));
-
-            var directoryPath = Path.GetDirectoryName(filePath);
-            if (string.IsNullOrEmpty(directoryPath))
-                return;
-            Directory.CreateDirectory(directoryPath);
-        }
-
-        /// <summary>
         /// Converts an URL to a human readable short name for directory or file
         /// </summary>
         public static string UrlToShortName(string url)

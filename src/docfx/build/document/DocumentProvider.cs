@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
             var config = _docset.Config;
-            var sourcePath = file.FilePath.Path;
+            var sourcePath = file.FilePath.Path.Value;
 
             var (mappedDepotName, mappedSourcePath) = config.DocumentId.GetMapping(sourcePath);
 
@@ -277,16 +277,11 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static bool IsValidRelativePath(string path)
-        {
-            return path != null && path.IndexOf('\\') == -1 && !path.StartsWith('/');
-        }
-
         private static SourceInfo<string> ReadMimeFromFile(Input input, FilePath filePath)
         {
             SourceInfo<string> mime = default;
 
-            if (filePath.Path.EndsWith(".json", PathUtility.PathComparison))
+            if (filePath.EndsWith(".json"))
             {
                 // TODO: we could have not depend on this exists check, but currently
                 //       LinkResolver works with Document and return a Document for token files,
@@ -301,7 +296,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            else if (filePath.Path.EndsWith(".yml", PathUtility.PathComparison))
+            else if (filePath.EndsWith(".yml"))
             {
                 if (input.Exists(filePath))
                 {

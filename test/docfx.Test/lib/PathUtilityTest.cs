@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             if (File.Exists(filePath))
                 File.Delete(filePath);
 
-            PathUtility.CreateDirectoryFromFilePath(filePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
             Assert.Equal(Directory.Exists(Path.GetDirectoryName(filePath)), isDirectoryCreated);
         }
 

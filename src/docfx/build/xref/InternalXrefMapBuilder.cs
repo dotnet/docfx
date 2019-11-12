@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Length > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclaringFile);
-                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath.Path)));
+                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
             }
 
             // uid conflicts with overlapping monikers

@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, DependencyConfig> Dependencies = new Dictionary<string, DependencyConfig>(PathUtility.PathComparer);
+        public readonly Dictionary<PathString, DependencyConfig> Dependencies = new Dictionary<PathString, DependencyConfig>();
 
         /// <summary>
         /// Gets the document id configuration section
