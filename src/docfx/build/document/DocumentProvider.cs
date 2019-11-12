@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
 
+        private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
         private readonly HashSet<string> _configReferences;
@@ -31,9 +32,13 @@ namespace Microsoft.Docs.Build
             _input = input;
             _templateEngine = templateEngine;
 
-            _configReferences = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).ToHashSet(PathUtility.PathComparer);
-            _documentIdRules = docset.Config.DocumentIdMapping.Reverse().Select(item => (item.Key, item.Value)).ToArray();
-            _routes = docset.Config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
+            var config = _docset.Config;
+            var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
+
+            _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
+            _configReferences = config.Extend.Concat(docset.Config.GetFileReferences()).ToHashSet(PathUtility.PathComparer);
+            _documentIdRules = documentIdConfig.Reverse().Select(item => (item.Key, item.Value)).ToArray();
+            _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
         public Document GetDocument(FilePath path)
@@ -84,22 +89,10 @@ namespace Microsoft.Docs.Build
         public (string documentId, string versionIndependentId) GetDocumentId(FilePath path)
         {
             var file = GetDocument(path);
-            var config = _docset.Config;
-            var sourcePath = file.FilePath.Path;
 
-            var (mappedDepotName, mappedSourcePath) =  config.DocumentId.GetMapping(sourcePath);
-
-            // get depot name from config or depot mapping
-            var depotName = string.IsNullOrEmpty(mappedDepotName)
-                ? !string.IsNullOrEmpty(config.Product)
-                    ? $"{config.Product}.{config.Name}"
-                    : config.Name
-                : mappedDepotName;
-
-            // get source path from source file path or directory mapping
-            sourcePath = string.IsNullOrEmpty(mappedSourcePath)
-                ? sourcePath
-                : mappedSourcePath;
+            var (sourcePath, depotName) = TryGetDocumentIdConfig(file.FilePath.Path, out var map)
+                ? (map.FolderRelativePathInDocset.Value, map.DepotName)
+                : (file.FilePath.Path.Value, _depotName);
 
             // if source is redirection or landing page, change it to *.md
             if (file.ContentType == ContentType.Redirection || TemplateEngine.IsLandingData(file.Mime))
@@ -117,12 +110,18 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
-        private bool TryMapDocumentId(PathString path, out PathString resultPath, out string resultDepotName)
+        private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result)
         {
             foreach (var (basePath, config) in _documentIdRules)
             {
-                if (path.M)
+                if (path.StartsWithPath(basePath, out _))
+                {
+                    result = config;
+                    return true;
+                }
             }
+            result = default;
+            return false;
         }
 
         private Document GetDocumentCore(FilePath path)

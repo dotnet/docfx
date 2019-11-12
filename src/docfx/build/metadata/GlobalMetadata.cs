@@ -15,10 +15,9 @@ namespace Microsoft.Docs.Build
         [Obsolete("v2 backward compatibility")]
         public string[] ContributorsToExclude { get; set; } = Array.Empty<string>();
 
-        [Obsolete("v2 backward compatibility")]
+        // For v2 backward compatibility
         [JsonProperty("_op_documentIdPathDepotMapping")]
-        public Dictionary<string, DocumentIdConfig> DocumentIdDepotMapping { get; set; }
-         = new Dictionary<string, DocumentIdConfig>(PathUtility.PathComparer);
+        public Dictionary<PathString, DocumentIdConfig> DocumentIdDepotMapping { get; set; }
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();

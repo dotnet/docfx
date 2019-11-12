@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the document id configuration section
         /// </summary>
-        public readonly Dictionary<PathString, DocumentIdConfig> DocumentIdMapping = new Dictionary<PathString, DocumentIdConfig>();
+        public readonly Dictionary<PathString, DocumentIdConfig> DocumentId = new Dictionary<PathString, DocumentIdConfig>();
 
         /// <summary>
         /// Gets allow custom error code, severity and message.
