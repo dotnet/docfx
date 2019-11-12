@@ -35,9 +35,7 @@ namespace Microsoft.Docs.Build
                 {
                 }
 
-                // An exit code of 0 means docfx completed successfully, including user errors.
-                // A non zero exit code means docfx encountered expected errors due to a bug.
-                return 1;
+                return -99999;
             }
             finally
             {
@@ -78,11 +76,9 @@ namespace Microsoft.Docs.Build
                 switch (command)
                 {
                     case "restore":
-                        await Restore.Run(workingDirectory, options);
-                        break;
+                        return await Restore.Run(workingDirectory, options);
                     case "build":
-                        await Build.Run(workingDirectory, options);
-                        break;
+                        return await Build.Run(workingDirectory, options);
                     case "watch":
                         await Watch.Run(workingDirectory, options);
                         break;
