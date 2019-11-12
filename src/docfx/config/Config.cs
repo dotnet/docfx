@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         /// Gets a map from source folder path and output URL path.
         /// We rely on a Dictionary behavior that the enumeration order is the same as insertion order if there is no other mutations.
         /// </summary>
-        public readonly Dictionary<string, string> Routes = new Dictionary<string, string>();
+        public readonly Dictionary<PathString, PathString> Routes = new Dictionary<PathString, PathString>();
 
         /// <summary>
         /// Gets the configuration about contribution scenario.

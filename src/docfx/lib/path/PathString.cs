@@ -13,11 +13,20 @@ namespace Microsoft.Docs.Build
     /// </summary>
     [JsonConverter(typeof(PathStringJsonConverter))]
     [TypeConverter(typeof(PathStringTypeConverter))]
-    internal readonly struct PathString : IEquatable<PathString>, IComparable<PathString>
+    internal struct PathString : IEquatable<PathString>, IComparable<PathString>
     {
-        public readonly string Value;
+        /// <summary>
+        /// A nullable string that can never contains
+        ///     - backslashes
+        ///     - consegtive dots
+        ///     - consegtive forward slashes
+        ///     - leading ./
+        /// </summary>
+        private string _value;
 
-        public PathString(string value) => Value = PathUtility.Normalize(value);
+        public string Value => _value ?? "";
+
+        public PathString(string value) => _value = PathUtility.Normalize(value);
 
         public override string ToString() => Value?.ToString();
 
@@ -25,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         public override bool Equals(object obj) => obj is PathString && Equals((PathString)obj);
 
-        public override int GetHashCode() => Value is null ? 0 : PathUtility.PathComparer.GetHashCode(Value);
+        public override int GetHashCode() => PathUtility.PathComparer.GetHashCode(Value);
 
         public int CompareTo(PathString other) => string.CompareOrdinal(Value, other.Value);
 
@@ -34,6 +43,76 @@ namespace Microsoft.Docs.Build
         public static bool operator !=(PathString a, PathString b) => !Equals(a, b);
 
         public static implicit operator string(PathString value) => value.Value;
+
+        /// <summary>
+        /// Concat two <see cref="PathString"/>s together.
+        /// </summary>
+        public static PathString operator +(PathString a, PathString b)
+        {
+            if (string.IsNullOrEmpty(a._value))
+                return b;
+
+            if (string.IsNullOrEmpty(b._value))
+                return a;
+
+            if (b._value[0] == '/')
+                return b;
+
+            var str = a._value[a._value.Length - 1] == '/'
+                ? a._value + b._value
+                : a.Value + '/' + b._value;
+
+            if (b._value[0] == '.')
+                return new PathString { _value = PathUtility.Normalize(str) };
+
+            return new PathString { _value = str };
+        }
+
+        /// <summary>
+        /// Check if the file is the same as matcher or is inside the directory specified by matcher.
+        /// </summary>
+        public bool StartsWithPath(PathString basePath, out PathString remainingPath)
+        {
+            var basePathValue = basePath.Value;
+            var pathValue = Value;
+
+            if (basePathValue.Length == 0)
+            {
+                remainingPath = this;
+                return true;
+            }
+
+            if (!pathValue.StartsWith(basePathValue, PathUtility.PathComparison))
+            {
+                remainingPath = default;
+                return false;
+            }
+
+            var i = basePathValue.Length;
+            if (basePathValue[i - 1] == '/')
+            {
+                // a/b starts with a/
+                remainingPath = new PathString { _value = pathValue.Substring(i) };
+                return true;
+            }
+
+            if (pathValue.Length <= i)
+            {
+                // a starts with a
+                remainingPath = default;
+                return true;
+            }
+
+            if (pathValue[i] == '/')
+            {
+                // a/b starts with a
+                remainingPath = new PathString { _value = pathValue.Substring(i + 1) };
+                return true;
+            }
+
+            remainingPath = default;
+            return false;
+        }
 
         private class PathStringJsonConverter : JsonConverter
         {

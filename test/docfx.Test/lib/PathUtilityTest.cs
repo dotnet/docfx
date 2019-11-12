@@ -12,6 +12,9 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData(".", "")]
+        [InlineData("./", "")]
+        [InlineData("../", "../")]
+        [InlineData("..", "../")]
         [InlineData("a", "a")]
         [InlineData("a.b", "a.b")]
         [InlineData("\\a", "/a")]
@@ -55,29 +58,48 @@ namespace Microsoft.Docs.Build
         [InlineData("a/b", "a/c", "c")]
         [InlineData("a/b", "c/d", "../c/d")]
         [InlineData("a/b", "a", "../a")]
-        // Disable temporarily due to behavior differences between .NET core versions
-        // [InlineData("a/b/c", "a", "../../a")]
+        [InlineData("a/b/c", "a", "..")]
         [InlineData("a/b", "a/b", "b")]
         public static void GetRelativePathToFile(string relativeTo, string path, string expected)
             => Assert.Equal(expected, PathUtility.GetRelativePathToFile(relativeTo, path).Replace("\\", "/"));
 
         [Theory]
-        [InlineData("a", "a", true, true, "a")]
-        [InlineData("a/b", "a/b", true, true, "a/b")]
-        [InlineData("a/b", "a/", true, false, "b")]
-        [InlineData("a", "./", true, false, "a")]
-        [InlineData("a/b", "./", true, false, "a/b")]
-        [InlineData("a/b", "c/", false, false, null)]
-        [InlineData("a/b", "c", false, false, null)]
-        [InlineData("a", "a/b", false, false, null)]
-        [InlineData("a/b/c", "a", true, false, "b/c")]
-        [InlineData("ab/c", "a", false, false, null)]
-        public static void PathMatch(string file, string matcher, bool expectedMatch, bool expectedIsFileMatch, string expectedRemainingPath)
+        [InlineData("", "", true, "")]
+        [InlineData("a", "a", true, "")]
+        [InlineData("a/b", "a/b", true, "")]
+        [InlineData("a/b", "a/", true, "b")]
+        [InlineData("a", "./", true, "a")]
+        [InlineData("a/b", "./", true, "a/b")]
+        [InlineData("a/b", "c/", false, "")]
+        [InlineData("a/b", "c", false, "")]
+        [InlineData("a", "a/b", false, "")]
+        [InlineData("a/b/c", "a", true, "b/c")]
+        [InlineData("ab/c", "a", false, "")]
+        public static void PathMatch(string file, string matcher, bool expectedMatch, string expectedRemainingPath)
         {
-            var (match, isFileMatch, remaniningPath) = PathUtility.Match(file, matcher);
+            var (match, _, remainingPath) = PathUtility.Match(file, matcher);
             Assert.Equal(expectedMatch, match);
-            Assert.Equal(expectedIsFileMatch, isFileMatch);
-            Assert.Equal(expectedRemainingPath, remaniningPath);
+            Assert.Equal(expectedRemainingPath, remainingPath);
+
+            var matches = new PathString(file).StartsWithPath(new PathString(matcher), out var remaining);
+            Assert.Equal(expectedMatch, matches);
+            Assert.Equal(expectedRemainingPath, remaining);
+        }
+
+        [Theory]
+        [InlineData("", "", "")]
+        [InlineData("a", "", "a")]
+        [InlineData("", "a", "a")]
+        [InlineData("a", "b", "a/b")]
+        [InlineData("a/", "b", "a/b")]
+        [InlineData("a/", "/b", "/b")]
+        [InlineData("a/", "./b", "a/b")]
+        [InlineData("a/", "../b", "b")]
+        [InlineData("a", "../b", "b")]
+        [InlineData("a", "../b/", "b/")]
+        public static void PathConcatTest(string a, string b, string match)
+        {
+            Assert.Equal(match, new PathString(a) + new PathString(b));
         }
 
         [Theory]
