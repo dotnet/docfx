@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             var outputPath = manifestItem.Path;
             if (doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources)
             {
-                outputPath = doc.GetOutputPath(manifestItem.Monikers, isPage: false);
+                outputPath = UrlUtility.Combine(docset.SiteBasePath, MonikerUtility.GetGroup(manifestItem.Monikers) ?? "", doc.SitePath);
             }
             var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(
                 string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath, outputPath);

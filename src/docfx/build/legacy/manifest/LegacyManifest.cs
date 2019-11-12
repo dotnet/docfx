@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = !document.IsPage || document.ContentType == ContentType.Resource
+                            MetadataOutput = (document.ContentType == ContentType.Page && !document.IsPage) || document.ContentType == ContentType.Resource
                             ? null
                             : new LegacyManifestOutputItem
                             {
