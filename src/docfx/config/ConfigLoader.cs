@@ -78,15 +78,12 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var configObject = new JObject();
 
+            var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
+
             // apply .openpublishing.publish.config.json
-            var opsConfig = LoadOpsDocsetConfig(_docsetPath);
-            if (opsConfig != null)
+            if (OpsConfig.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
             {
-                configObject["name"] = opsConfig.DocsetName;
-                configObject["globalMetadata"] = new JObject
-                {
-                    ["open_to_public_contributors"] = opsConfig.OpenToPublicContributors,
-                };
+                JsonUtility.Merge(configObject, opsConfig);
             }
 
             // apply docfx.json or docfx.yml
@@ -116,7 +113,6 @@ namespace Microsoft.Docs.Build
             }
 
             // apply overwrite
-            var repository = _repositoryProvider.GetRepository(configPath?.Origin ?? FileOrigin.Default);
             OverwriteConfig(configObject, LocalizationUtility.GetLocale(repository, options), repository?.Branch);
 
             var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
@@ -149,19 +145,24 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, JObject) LoadConfigObject(string fileName, string content)
         {
-            // todo: config may come from source repo/fallback repo
-            var errors = new List<Error>();
-            JToken config = null;
-            if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            var source = new FilePath(fileName);
+            var (errors, config) = fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+                ? YamlUtility.Parse(content, source)
+                : JsonUtility.Parse(content, source);
+
+            if (config is JObject obj)
             {
-                (errors, config) = YamlUtility.Parse(content, new FilePath(fileName));
-            }
-            else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-            {
-                (errors, config) = JsonUtility.Parse(content, new FilePath(fileName));
+                // For v2 backward compatibility, treat `build` section as config if it exist
+                if (obj.TryGetValue("build", out var build) && build is JObject buildObj)
+                {
+                    // `template` property has different sematic, so remove it
+                    buildObj.Remove("template");
+                    return (errors, buildObj);
+                }
+                return (errors, obj);
             }
 
-            return (errors, config as JObject ?? new JObject());
+            throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
         private static (List<Error>, JObject) ApplyGlobalConfig(JObject config)

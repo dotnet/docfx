@@ -538,3 +538,36 @@ outputs:
   .publish.json: '{ "name": "a" }'
   b/b.json: '{ "open_to_public_contributors": false }'
   b/.publish.json: '{ "name": "b" }'
+---
+# Peak .openpublishing.publish.config.json for dependencies and themes
+repos:
+  https://github.com/ops1/dep#live:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "dependent_repositories": [{
+              "path_to_root": "_themes",
+              "url": "https://github.com/ops1/template",
+              "branch": "test"
+            }, {
+              "path_to_root": "crr",
+              "url": "https://github.com/ops1/crr",
+              "branch_mapping": { "live": "live1" }
+            }]
+        }
+      articles/docfx.yml:
+      articles/a.yml: '#YamlMime:TestData'
+      articles/b.md: '[!INCLUDE[](../crr/token.md)]'
+  https://github.com/ops1/template#test:
+  - files:
+      ContentTemplate/schemas/TestData.schema.json: "{}"
+  https://github.com/ops1/crr#live:
+  - files:
+      token.md: live
+  https://github.com/ops1/crr#live1:
+  - files:
+      token.md: live1
+outputs:
+  articles/a.json:
+  articles/b.json: |
+    { "conceptual": "<p>live1</p>" }
