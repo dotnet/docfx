@@ -257,7 +257,11 @@ namespace Microsoft.Docs.Build
             {
                 if (path.StartsWithPath(source, out var remainingPath))
                 {
-                    return path + remainingPath;
+                    if (remainingPath.IsEmpty)
+                    {
+                        return dest + path.GetFileName();
+                    }
+                    return dest + remainingPath;
                 }
             }
             return path;

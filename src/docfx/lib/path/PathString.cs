@@ -4,6 +4,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -26,7 +27,11 @@ namespace Microsoft.Docs.Build
 
         public string Value => _value ?? "";
 
+        public bool IsEmpty => string.IsNullOrEmpty(_value);
+
         public PathString(string value) => _value = PathUtility.Normalize(value);
+
+        public PathString GetFileName() => new PathString { _value = Path.GetFileName(Value) };
 
         public override string ToString() => Value?.ToString();
 
@@ -120,7 +125,7 @@ namespace Microsoft.Docs.Build
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                var value = reader.ReadAsString();
+                var value = serializer.Deserialize<string>(reader);
                 return new PathString(value is null ? null : PathUtility.NormalizeFile(value));
             }
 

@@ -75,6 +75,7 @@ namespace Microsoft.Docs.Build
         [InlineData("a", "a/b", false, "")]
         [InlineData("a/b/c", "a", true, "b/c")]
         [InlineData("ab/c", "a", false, "")]
+        [InlineData("a", "/", false, "")]
         public static void PathMatch(string file, string matcher, bool expectedMatch, string expectedRemainingPath)
         {
             var (match, _, remainingPath) = PathUtility.Match(file, matcher);
