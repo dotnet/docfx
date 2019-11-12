@@ -13,11 +13,12 @@ namespace Microsoft.Docs.Build
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly IReadOnlyDictionary<string, Docset> _dependencyDocsets;
-        private readonly HashSet<string> _configReferences;
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
 
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
+        private readonly (PathString src, PathString dest)[] _routes;
+        private readonly HashSet<string> _configReferences;
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
@@ -32,6 +33,7 @@ namespace Microsoft.Docs.Build
 
             _configReferences = docset.Config.Extend.Concat(docset.Config.GetFileReferences()).ToHashSet(PathUtility.PathComparer);
             _documentIdRules = docset.Config.DocumentIdMapping.Reverse().Select(item => (item.Key, item.Value)).ToArray();
+            _routes = docset.Config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
         public Document GetDocument(FilePath path)
@@ -162,7 +164,7 @@ namespace Microsoft.Docs.Build
             var mime = contentType == ContentType.Page ? ReadMimeFromFile(_input, path) : default;
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = PathUtility.NormalizeFile(ApplyRoutes(path, docset.Routes));
+            var routedFilePath = ApplyRoutes(path.Path);
 
             var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
@@ -259,35 +261,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string ApplyRoutes(FilePath path, IReadOnlyDictionary<string, string> routes)
+        private PathString ApplyRoutes(PathString path)
         {
             // the latter rule takes precedence of the former rule
-            foreach (var (source, dest) in routes)
+            foreach (var (source, dest) in _routes)
             {
-                var result = ApplyRoutes(path.Path, source, dest);
-                if (result != null)
+                if (path.StartsWithPath(source, out var remainingPath))
                 {
-                    return result;
+                    if (remainingPath.IsEmpty)
+                    {
+                        return dest + path.GetFileName();
+                    }
+                    return dest + remainingPath;
                 }
             }
-            return path.Path;
-        }
-
-        private static string ApplyRoutes(string path, string source, string dest)
-        {
-            var (match, isFileMatch, remainingPath) = PathUtility.Match(path, source);
-
-            if (match)
-            {
-                if (isFileMatch)
-                {
-                    return Path.Combine(dest, Path.GetFileName(path));
-                }
-
-                return Path.Combine(dest, remainingPath);
-            }
-
-            return null;
+            return path;
         }
 
         private static SourceInfo<string> ReadMimeFromFile(Input input, FilePath filePath)
