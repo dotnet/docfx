@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error error, string link, Document file) ResolveAbsoluteLink(
-            SourceInfo<string> path, Document referencingFile, Document relativeToFile = null)
+            SourceInfo<string> path, Document referencingFile, Document relativeToFile)
         {
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(referencingFile, path, relativeToFile);
 
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             }
 
             // NOTE: bookmark validation result depend on current inclusion stack
-            relativeToFile = relativeToFile ?? (Document)InclusionContext.RootFile ?? referencingFile;
+            relativeToFile = relativeToFile ?? referencingFile;
             var isSelfBookmark = linkType == LinkType.SelfBookmark || relativeToFile == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
