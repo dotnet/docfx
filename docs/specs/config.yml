@@ -550,14 +550,15 @@ repos:
               "url": "https://github.com/ops1/template",
               "branch": "test"
             }, {
-              "path_to_root": "crr",
+              "path_to_root": "articles/crr",
               "url": "https://github.com/ops1/crr",
-              "branch_mapping": { "live": "live1" }
+              "branch_mapping": { "live": "live1" },
+              "include_in_build": true
             }]
         }
       articles/docfx.yml:
       articles/a.yml: '#YamlMime:TestData'
-      articles/b.md: '[!INCLUDE[](../crr/token.md)]'
+      articles/b.md: '[!INCLUDE[](crr/token.md)]'
   https://github.com/ops1/template#test:
   - files:
       ContentTemplate/schemas/TestData.schema.json: "{}"
@@ -570,4 +571,6 @@ repos:
 outputs:
   articles/a.json:
   articles/b.json: |
+    { "conceptual": "<p>live1</p>" }
+  articles/crr/token.json: |
     { "conceptual": "<p>live1</p>" }
