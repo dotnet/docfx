@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
-        private readonly IReadOnlyDictionary<string, Docset> _dependencyDocsets;
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
 
@@ -20,6 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
         private readonly HashSet<string> _configReferences;
+        private readonly IReadOnlyDictionary<string, Docset> _dependencyDocsets;
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 

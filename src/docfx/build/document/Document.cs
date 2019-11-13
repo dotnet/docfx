@@ -74,6 +74,7 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets a value indicating whether the current document is schema data
+        /// TODO: merge this with ContentType
         /// </summary>
         public bool IsPage { get; }
 
