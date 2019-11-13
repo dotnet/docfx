@@ -90,9 +90,16 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
 
-            var (sourcePath, depotName) = TryGetDocumentIdConfig(file.FilePath.Path, out var map)
-                ? (map.FolderRelativePathInDocset.Value, map.DepotName)
-                : (file.FilePath.Path.Value, _depotName);
+            var depotName = _depotName;
+            var sourcePath = file.FilePath.Path.Value;
+
+            if (TryGetDocumentIdConfig(file.FilePath.Path, out var map))
+            {
+                if (!string.IsNullOrEmpty(map.DepotName))
+                    depotName = map.DepotName;
+                if (!map.FolderRelativePathInDocset.IsEmpty)
+                    sourcePath = Path.GetRelativePath(map.FolderRelativePathInDocset, sourcePath).Replace('\\', '/');
+            }
 
             // if source is redirection or landing page, change it to *.md
             if (file.ContentType == ContentType.Redirection || TemplateEngine.IsLandingData(file.Mime))

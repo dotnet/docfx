@@ -245,6 +245,7 @@ inputs:
         folder_relative_path_in_docset: articles
     name: azure-documents
     product: Azure
+    baseUrl: https://docs.com/Azure
     routes:
       articles/: .
   articles/iot-central/concepts-architecture.md:
