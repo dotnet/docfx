@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         {
             var host = context.Host;
 
-            var mr = host.Markup(content, context.GetOriginalContentFile(path), false, true);
+            var mr = host.Markup(content, context.GetOriginalContentFile(path));
             (context.FileLinkSources).Merge(mr.FileLinkSources);
             (context.UidLinkSources).Merge(mr.UidLinkSources);
             (context.Dependency).UnionWith(mr.Dependency);
