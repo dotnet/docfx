@@ -589,11 +589,11 @@ namespace Microsoft.Docs.Build
         /// or moniker-zone defined in article.md has no intersection with file-level monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikeRangeOutOfScope(SourceInfo<string> rangeString, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
-            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{rangeString}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.");
+        public static Error MonikeRangeOutOfScope(SourceInfo<string> source, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
+            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{source}' is {Join(zoneLevelMonikers)}, while file level monikers is {Join(fileLevelMonikers)}.", source);
 
-        public static Error MonikeRangeOutOfScope(string configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
-            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}");
+        public static Error MonikeRangeOutOfScope(SourceInfo<string> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+            => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {Join(configMonikers)}, while file moniker range '{monikerRange}' is {Join(fileMonikers)}", monikerRange);
 
         /// <summary>
         /// Custom 404 page is not supported

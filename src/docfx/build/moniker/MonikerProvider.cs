@@ -10,35 +10,33 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerProvider
     {
-        private readonly List<(Func<string, bool> glob, (string monikerRange, IEnumerable<string> monikers))>
-            _rules = new List<(Func<string, bool>, (string, IEnumerable<string>))>();
-
+        private readonly Config _config;
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
+
+        private readonly (Func<string, bool> glob, SourceInfo<string>)[] _rules;
+
         private readonly ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)> _monikerCache
                    = new ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)>();
 
         public MonikerComparer Comparer { get; }
 
-        public MonikerProvider(Docset docset, MetadataProvider metadataProvider, RestoreFileMap restoreFileMap)
+        public MonikerProvider(Config config, MetadataProvider metadataProvider, RestoreFileMap restoreFileMap)
         {
+            _config = config;
             _metadataProvider = metadataProvider;
 
             var monikerDefinition = new MonikerDefinitionModel();
-            if (!string.IsNullOrEmpty(docset.Config.MonikerDefinition))
+            if (!string.IsNullOrEmpty(_config.MonikerDefinition))
             {
-                var content = restoreFileMap.ReadString(docset.Config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, new FilePath(docset.Config.MonikerDefinition));
+                var content = restoreFileMap.ReadString(_config.MonikerDefinition);
+                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, new FilePath(_config.MonikerDefinition));
             }
             var monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
             _rangeParser = new MonikerRangeParser(monikersEvaluator);
             Comparer = new MonikerComparer(monikersEvaluator.MonikerOrder);
 
-            foreach (var (key, monikerRange) in docset.Config.MonikerRange)
-            {
-                _rules.Add((GlobUtility.CreateGlobMatcher(key), (monikerRange, _rangeParser.Parse(monikerRange))));
-            }
-            _rules.Reverse();
+            _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
         }
 
         public (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
@@ -70,21 +68,10 @@ namespace Microsoft.Docs.Build
 
         private (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(FilePath file)
         {
-            var errors = new List<Error>();
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
-            string configMonikerRange = null;
-            var configMonikers = Array.Empty<string>();
-
-            foreach (var (glob, (monikerRange, monikers)) in _rules)
-            {
-                if (glob(file.Path))
-                {
-                    configMonikerRange = monikerRange;
-                    configMonikers = monikers.ToArray();
-                    break;
-                }
-            }
+            var monikerRange = GetFileLevelMonikerRange(file);
+            var configMonikers = _rangeParser.Parse(monikerRange);
 
             if (!string.IsNullOrEmpty(metadata.MonikerRange))
             {
@@ -102,13 +89,26 @@ namespace Microsoft.Docs.Build
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Length == 0)
                 {
-                    var error = Errors.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
+                    var error = Errors.MonikeRangeOutOfScope(monikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                     return (error, intersection);
                 }
                 return (null, intersection);
             }
 
             return (null, configMonikers);
+        }
+
+        private SourceInfo<string> GetFileLevelMonikerRange(FilePath file)
+        {
+            foreach (var (glob, monikerRange) in _rules)
+            {
+                if (glob(file.Path))
+                {
+                    return monikerRange;
+                }
+            }
+
+            return default;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider = new DocumentProvider(docset, fallbackDocset, input, repositoryProvider, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap, DocumentProvider);
-            MonikerProvider = new MonikerProvider(docset, MetadataProvider, restoreFileMap);
+            MonikerProvider = new MonikerProvider(docset.Config, MetadataProvider, restoreFileMap);
             BuildScope = new BuildScope(Input, DocumentProvider, docset, fallbackDocset);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
