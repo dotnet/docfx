@@ -202,7 +202,7 @@ outputs:
 inputs:
   docfx.yml: |
     routes:
-      /: outputB
+      ./: outputB
       docs/a.md: output
       docs/b: output
   docs/a.md: |

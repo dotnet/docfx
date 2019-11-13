@@ -262,17 +262,13 @@ namespace Microsoft.Docs.Build
             // resolve from dependent docsets
             foreach (var (dependencyName, _) in _docset.Config.Dependencies)
             {
-                var (match, _, remainingPath) = PathUtility.Match(pathToDocset, dependencyName);
-                if (!match)
+                if (pathToDocset.StartsWithPath(dependencyName, out var remainingPath))
                 {
-                    // the file stored in the dependent docset should start with dependency name
-                    continue;
-                }
-
-                path = new FilePath(remainingPath, dependencyName);
-                if (_input.Exists(path))
-                {
-                    return _documentProvider.GetDocument(path);
+                    path = new FilePath(remainingPath, dependencyName);
+                    if (_input.Exists(path))
+                    {
+                        return _documentProvider.GetDocument(path);
+                    }
                 }
             }
 
