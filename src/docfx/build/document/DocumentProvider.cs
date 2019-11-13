@@ -93,12 +93,19 @@ namespace Microsoft.Docs.Build
             var depotName = _depotName;
             var sourcePath = file.FilePath.Path.Value;
 
-            if (TryGetDocumentIdConfig(file.FilePath.Path, out var map))
+            if (TryGetDocumentIdConfig(file.FilePath.Path, out var config, out var remainingPath))
             {
-                if (!string.IsNullOrEmpty(map.DepotName))
-                    depotName = map.DepotName;
-                if (!map.FolderRelativePathInDocset.IsEmpty)
-                    sourcePath = Path.GetRelativePath(map.FolderRelativePathInDocset, sourcePath).Replace('\\', '/');
+                if (!string.IsNullOrEmpty(config.DepotName))
+                {
+                    depotName = config.DepotName;
+                }
+
+                if (!config.FolderRelativePathInDocset.IsEmpty)
+                {
+                    sourcePath = remainingPath.IsEmpty
+                        ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
+                        : config.FolderRelativePathInDocset + remainingPath;
+                }
             }
 
             // if source is redirection or landing page, change it to *.md
@@ -117,17 +124,18 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
-        private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result)
+        private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result, out PathString remainingPath)
         {
             foreach (var (basePath, config) in _documentIdRules)
             {
-                if (path.StartsWithPath(basePath, out _))
+                if (path.StartsWithPath(basePath, out remainingPath))
                 {
                     result = config;
                     return true;
                 }
             }
             result = default;
+            remainingPath = default;
             return false;
         }
 
