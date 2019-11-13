@@ -511,7 +511,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0', 'netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md"]
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0', 'netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md",2,15]
 ---
 # No intersection of file level monikers and zone monikers
 inputs:
@@ -536,7 +536,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-out-of-scope","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0', 'netcore-1.1'.","docs/v1/a.md"]
+    ["error","moniker-range-out-of-scope","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0', 'netcore-1.1'.","docs/v1/a.md",2,1]
 ---
 # Define uid with moniker range, refer to it with valid moniker in the same docset
 inputs:
@@ -1288,7 +1288,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","docs/v1/TOC.md"]
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","docs/v1/TOC.md",2,15]
 ---
 # Build resource file with moniker
 inputs:
