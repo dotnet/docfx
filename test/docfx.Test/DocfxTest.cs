@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
             {
                 return (expectedHtml, actualHtml);
             }
-            if (!expectedHtml.Contains("data-linktype"))
+            if (!expectedHtml.Contains("data-linktype") && !string.IsNullOrEmpty(actualHtml))
             {
                 actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");
             }
