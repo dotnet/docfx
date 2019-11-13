@@ -12,19 +12,20 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static Task Run(string workingDirectory, CommandLineOptions options)
+        public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
         {
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
                 ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
-                return Task.CompletedTask;
+                return 1;
             }
 
-            return Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
+            var result = await Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
+            return result.All(x => x) ? 0 : 1;
         }
 
-        private static async Task BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static async Task<bool> BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
@@ -50,7 +51,7 @@ namespace Microsoft.Docs.Build
 
                         // just return if config loading has errors
                         if (errorLog.Write(errors))
-                            return;
+                            return false;
 
                         // get docsets(build docset, fallback docset and dependency docsets)
                         var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
@@ -70,6 +71,7 @@ namespace Microsoft.Docs.Build
                 {
                     Log.Write(dex);
                     errorLog.Write(dex.Error, isException: true);
+                    return false;
                 }
                 finally
                 {
@@ -77,6 +79,7 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
+                return true;
             }
         }
 
