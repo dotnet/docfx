@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
         private static readonly Input s_input = new Input(s_docsetPath, s_repositoryProvider);
         private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null);
         private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory(), "en-us", s_config, null);
+        private static readonly TemplateEngine s_templateEngine = TemplateEngine.Create(s_docset, s_repositoryProvider);
+        private static readonly DocumentProvider s_documentProvider = new DocumentProvider(s_docset, null, s_input, s_repositoryProvider, s_templateEngine);
 
         [Theory]
         // same level
@@ -50,13 +52,12 @@ namespace Microsoft.Docs.Build
         {
             // TODO: This test depend too much on the details of our implementation and it needs some refactoring.
             var builder = new TableOfContentsMapBuilder();
-            var templateEngine = TemplateEngine.Create(s_docset, s_repositoryProvider);
-            var document = Document.Create(s_docset, new FilePath(file), s_input, templateEngine);
+            var document = s_documentProvider.GetDocument(new FilePath(file));
 
             // test multiple reference case
             foreach (var tocFile in tocFiles)
             {
-                var toc = Document.Create(s_docset, new FilePath(tocFile), s_input, templateEngine);
+                var toc = s_documentProvider.GetDocument(new FilePath(tocFile));
                 builder.Add(toc, new List<Document> { document }, new List<Document>());
             }
 
@@ -67,7 +68,7 @@ namespace Microsoft.Docs.Build
             builder = new TableOfContentsMapBuilder();
             foreach (var tocFile in tocFiles)
             {
-                var toc = Document.Create(s_docset, new FilePath(tocFile), s_input, templateEngine);
+                var toc = s_documentProvider.GetDocument(new FilePath(tocFile));
                 builder.Add(toc, new List<Document>(), new List<Document>());
             }
             tocMap = builder.Build();

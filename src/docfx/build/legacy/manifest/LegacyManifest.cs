@@ -26,12 +26,12 @@ namespace Microsoft.Docs.Build
                     {
                         var document = fileManifest.Key;
                         var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
-                            docset, fileManifest.Value);
+                            context, docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var output = new LegacyManifestOutput
                         {
-                            MetadataOutput = !document.IsPage || document.ContentType == ContentType.Resource
+                            MetadataOutput = (document.ContentType == ContentType.Page && !document.IsPage) || document.ContentType == ContentType.Resource
                             ? null
                             : new LegacyManifestOutputItem
                             {
