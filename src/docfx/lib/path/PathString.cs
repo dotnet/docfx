@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     internal struct PathString : IEquatable<PathString>, IComparable<PathString>
     {
         /// <summary>
-        /// A nullable string that can never contains
+        /// A nullable string that can never contain
         ///     - backslashes
         ///     - consegtive dots
         ///     - consegtive forward slashes
