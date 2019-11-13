@@ -511,3 +511,71 @@ outputs:
     }
   a.json:
   b.json:
+---
+# source_url should be the includer of TOC
+inputs:
+  docfx.yml: |
+    exclude: 
+      - docs/a/TOC.yml
+    globalMetadata:
+      "breadcrumb_path": "/docs/breadcrumbs/toc.json"
+  docs/breadcrumbs/TOC.yml: |
+    - name: Docs
+      tocHref: /
+      topicHref: /
+  docs/TOC.yml: |
+    - name: TOC Ref
+      tocHref: a/TOC.yml
+    - name: link
+      href: c.md
+  docs/a/TOC.yml: |
+    - name: Link
+      href: ../b.md
+    - name: Uid ref
+      uid: a
+  docs/a.md: |
+    ---
+    title: Title from yaml header a
+    uid: a
+    ---
+  docs/b.md:
+  docs/c.md:
+outputs:
+  .links.json: |
+    {
+      "links": [
+        {
+          "source_url": "/docs/a",
+          "target_url": "/docs/breadcrumbs/toc.json"
+        },
+        {
+          "source_url": "/docs/b",
+          "target_url": "/docs/breadcrumbs/toc.json"
+        },
+        {
+          "source_url": "/docs/breadcrumbs/toc.json",
+          "target_url": "/"
+        },
+        {
+          "source_url": "/docs/c",
+          "target_url": "/docs/breadcrumbs/toc.json"
+        },
+        {
+          "source_url": "/docs/toc.json",
+          "target_url": "/docs/a"
+        },
+        {
+          "source_url": "/docs/toc.json",
+          "target_url": "/docs/b"
+        },
+        {
+          "source_url": "/docs/toc.json",
+          "target_url": "/docs/c"
+        },
+      ]
+    }
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  docs/toc.json:
+  docs/breadcrumbs/toc.json:

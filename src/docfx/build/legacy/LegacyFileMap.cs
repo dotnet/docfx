@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                             return;
                         }
                         var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
-                            docset, fileManifest.Value);
+                            context, docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var version = legacyVersionProvider.GetLegacyVersion(document);

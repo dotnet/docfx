@@ -8,12 +8,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Docset docset, PublishItem manifestItem)
+        public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Context context, Docset docset, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
             if (doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources)
             {
-                outputPath = UrlUtility.Combine(docset.SiteBasePath, MonikerUtility.GetGroup(manifestItem.Monikers) ?? "", doc.SitePath);
+                outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath, manifestItem.Monikers);
             }
             var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(
                 string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath, outputPath);

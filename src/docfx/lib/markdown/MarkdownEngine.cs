@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var (error, link, file) = _linkResolver.ResolveAbsoluteLink(
-                href, (Document)InclusionContext.File);
+                href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
             if (file != null)
             {
@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value.Peek();
             var (error, link, display, declaringFile) = _xrefResolver.ResolveAbsoluteXref(
-                href, (Document)InclusionContext.File);
+                href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
             if (declaringFile != null)
             {

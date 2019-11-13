@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
     {
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
-        private readonly IReadOnlyDictionary<string, Docset> _dependencyDocsets;
         private readonly Input _input;
         private readonly TemplateEngine _templateEngine;
 
-        private readonly (PathString src, PathString dest)[] _routes;
         private readonly HashSet<string> _configReferences;
+        private readonly (PathString src, PathString dest)[] _routes;
+        private readonly IReadOnlyDictionary<string, Docset> _dependencyDocsets;
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
@@ -154,7 +154,6 @@ namespace Microsoft.Docs.Build
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path);
-
             var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
             if (docset.Config.Output.LowerCaseUrl)
             {

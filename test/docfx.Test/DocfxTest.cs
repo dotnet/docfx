@@ -170,11 +170,11 @@ namespace Microsoft.Docs.Build
 
                 if (spec.Restore)
                 {
-                    Assert.Equal(0, await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray()));
+                    await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
                 }
                 if (spec.Build)
                 {
-                    Assert.Equal(0, await Docfx.Run(new[] { "build", docsetPath }.Concat(options).ToArray()));
+                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).ToArray());
                 }
             }
 
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
             {
                 return (expectedHtml, actualHtml);
             }
-            if (!expectedHtml.Contains("data-linktype"))
+            if (!expectedHtml.Contains("data-linktype") && !string.IsNullOrEmpty(actualHtml))
             {
                 actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");
             }
