@@ -146,13 +146,7 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == referencingFile)
             {
-                if (linkType == LinkType.SelfBookmark)
-                {
-                    return (error, UrlUtility.MergeUrl("", query, fragment), fragment, linkType, null, false);
-                }
-
-                var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, _docset.Config.Output.Json, file.IsPage);
+                var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(file.SiteUrl);
 
                 return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
@@ -193,7 +187,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     // resolve file
-                    var lookupFallbackCommits = inclusion || Document.GetContentType(path) == ContentType.Resource;
+                    var lookupFallbackCommits = inclusion || _documentProvider.GetContentType(path) == ContentType.Resource;
                     var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,

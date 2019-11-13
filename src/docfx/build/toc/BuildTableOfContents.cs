@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,7 +16,7 @@ namespace Microsoft.Docs.Build
             var (errors, model, _, _) = context.TableOfContentsLoader.Load(file);
 
             // enable pdf
-            var outputPath = file.GetOutputPath(model.Metadata.Monikers, isPage: false);
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, model.Metadata.Monikers);
             var monikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers);
 
             if (file.Docset.Config.Output.Pdf)

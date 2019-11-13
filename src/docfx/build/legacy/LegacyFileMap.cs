@@ -27,12 +27,12 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        if (!document.IsPage)
+                        if (document.ContentType == ContentType.Page && !document.IsPage)
                         {
                             return;
                         }
                         var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
-                            docset, fileManifest.Value);
+                            context, docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
                         var version = legacyVersionProvider.GetLegacyVersion(document);
