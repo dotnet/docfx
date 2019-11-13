@@ -258,26 +258,18 @@ outputs:
 ---
 # generate document id with _op_documentIdPathDepotMapping config
 inputs:
-  docfx.yml: |
+  articles/docfx.yml: |
     globalMetadata:
       _op_documentIdPathDepotMapping:
-        articles/iot-central/:
-          depot_name: MSDN.microsoft-iot-central
-          folder_relative_path_in_docset: articles
-        articles\billing/billing-add-change-azure-subscription-administrator.md:
-          folder_relative_path_in_docset: articles
-    name: azure-documents
+        retail/:
+          depot_name: MSDN.d365OpsRetail
+          folder_relative_path_in_docset: .
+    name: d365F-O-ppe
     product: Azure
-    baseUrl: https://docs.com/Azure
-    routes:
-      articles/: .
-  articles/iot-central/concepts-architecture.md:
-  articles/billing/billing-add-change-azure-subscription-administrator.md:
+  articles/retail/analyze-sales-trends-patterns.md:
 outputs:
-  azure/iot-central/concepts-architecture.json: |
-    {"document_id":"7e13132e-7847-dc4f-90d5-32a233d1c81a","document_version_independent_id":"d9cc5ab8-926a-8a5a-312c-10ca36619bad"}
-  azure/billing/billing-add-change-azure-subscription-administrator.json: |
-    {"document_id":"f5624f3e-5fbf-6f0f-93cf-a4d5aa93ccf8","document_version_independent_id":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
+  articles/retail/analyze-sales-trends-patterns.json: |
+    { "document_id":"5ce4c7ff-69be-ea10-c8e0-d3288fd3bd93" }
 ---
 # redirect to redirect
 inputs:

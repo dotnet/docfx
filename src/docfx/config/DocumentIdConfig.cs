@@ -11,6 +11,6 @@ namespace Microsoft.Docs.Build
     {
         public readonly string DepotName;
 
-        public readonly PathString FolderRelativePathInDocset;
+        public readonly PathString? FolderRelativePathInDocset;
     }
 }

@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                     depotName = config.DepotName;
                 }
 
-                if (!config.FolderRelativePathInDocset.IsEmpty)
+                if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsEmpty
                         ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
