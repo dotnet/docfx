@@ -16,15 +16,15 @@ namespace Microsoft.Docs.Build
     [TypeConverter(typeof(PathStringTypeConverter))]
     internal struct PathString : IEquatable<PathString>, IComparable<PathString>
     {
+        private string _value;
+
         /// <summary>
-        /// A nullable string that can never contain
+        /// A non-nullable string that can never contains
         ///     - backslashes
         ///     - consegtive dots
         ///     - consegtive forward slashes
         ///     - leading ./
         /// </summary>
-        private string _value;
-
         public string Value => _value ?? "";
 
         public bool IsEmpty => string.IsNullOrEmpty(_value);
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
         public PathString GetFileName() => new PathString { _value = Path.GetFileName(Value) };
 
-        public override string ToString() => Value?.ToString();
+        public override string ToString() => Value;
 
         public bool Equals(PathString other) => PathUtility.PathComparer.Equals(Value, other.Value);
 
@@ -78,40 +78,43 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool StartsWithPath(PathString basePath, out PathString remainingPath)
         {
-            var basePathValue = basePath.Value;
-            var pathValue = Value;
-
-            if (basePathValue.Length == 0)
+            if (string.IsNullOrEmpty(basePath._value))
             {
                 remainingPath = this;
                 return true;
             }
 
-            if (!pathValue.StartsWith(basePathValue, PathUtility.PathComparison))
+            if (string.IsNullOrEmpty(_value))
             {
                 remainingPath = default;
                 return false;
             }
 
-            var i = basePathValue.Length;
-            if (basePathValue[i - 1] == '/')
+            if (!_value.StartsWith(basePath._value, PathUtility.PathComparison))
+            {
+                remainingPath = default;
+                return false;
+            }
+
+            var i = basePath._value.Length;
+            if (basePath._value[i - 1] == '/')
             {
                 // a/b starts with a/
-                remainingPath = new PathString { _value = pathValue.Substring(i) };
+                remainingPath = new PathString { _value = _value.Substring(i) };
                 return true;
             }
 
-            if (pathValue.Length <= i)
+            if (_value.Length <= i)
             {
                 // a starts with a
                 remainingPath = default;
                 return true;
             }
 
-            if (pathValue[i] == '/')
+            if (_value[i] == '/')
             {
                 // a/b starts with a
-                remainingPath = new PathString { _value = pathValue.Substring(i + 1) };
+                remainingPath = new PathString { _value = _value.Substring(i + 1) };
                 return true;
             }
 
