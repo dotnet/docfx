@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
 
         internal static JsonSerializer Serializer => s_serializer;
 
-        internal static Status State => t_status.Value.Peek();
+        internal static Status State => t_status.Value.TryPeek(out var result) ? result : null;
 
         static JsonUtility()
         {
@@ -125,6 +125,10 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
+                    var status = new Status { FilePath = file };
+
+                    t_status.Value.Push(status);
+
                     return s_serializer.Deserialize<T>(reader);
                 }
                 catch (JsonReaderException ex)
@@ -134,6 +138,10 @@ namespace Microsoft.Docs.Build
                 catch (JsonSerializationException ex)
                 {
                     throw ToError(ex, file).ToException(ex);
+                }
+                finally
+                {
+                    t_status.Value.Pop();
                 }
             }
         }
@@ -155,9 +163,7 @@ namespace Microsoft.Docs.Build
             return (errors, (T)obj);
         }
 
-        public static (List<Error> errors, object value) ToObject(
-            JToken token,
-            Type type)
+        public static (List<Error> errors, object value) ToObject(JToken token, Type type)
         {
             try
             {
@@ -216,11 +222,8 @@ namespace Microsoft.Docs.Build
             if (overwrite is null)
                 return;
 
-            foreach (var property in overwrite.Properties())
+            foreach (var (key, value) in overwrite)
             {
-                var key = property.Name;
-                var value = property.Value;
-
                 if (container[key] is JObject containerObj && value is JObject overwriteObj)
                 {
                     Merge(containerObj, overwriteObj);
@@ -228,7 +231,6 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     container[key] = DeepClone(value);
-                    SetSourceInfo(container.Property(key), property.Annotation<SourceInfo>());
                 }
             }
         }
@@ -243,10 +245,9 @@ namespace Microsoft.Docs.Build
             if (token is JObject obj)
             {
                 var result = new JObject();
-                foreach (var prop in obj.Properties())
+                foreach (var (key, value) in obj)
                 {
-                    result[prop.Name] = DeepClone(prop.Value);
-                    SetSourceInfo(result.Property(prop.Name), prop.Annotation<SourceInfo>());
+                    result[key] = DeepClone(value);
                 }
                 return SetSourceInfo(result, token.Annotation<SourceInfo>());
             }
@@ -262,33 +263,6 @@ namespace Microsoft.Docs.Build
             }
 
             throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Trims all string values
-        /// </summary>
-        public static void TrimStringValues(JToken token)
-        {
-            switch (token)
-            {
-                case JValue scalar when scalar.Value is string str:
-                    scalar.Value = str.Trim();
-                    break;
-
-                case JArray array:
-                    foreach (var item in array)
-                    {
-                        TrimStringValues(item);
-                    }
-                    break;
-
-                case JObject map:
-                    foreach (var (key, value) in map)
-                    {
-                        TrimStringValues(value);
-                    }
-                    break;
-            }
         }
 
         /// <summary>
@@ -328,11 +302,11 @@ namespace Microsoft.Docs.Build
                 }
                 else if (token is JObject obj)
                 {
-                    foreach (var prop in obj.Properties())
+                    foreach (var (key, value) in obj)
                     {
-                        if (!prop.Value.IsNullOrUndefined())
+                        if (!value.IsNullOrUndefined())
                         {
-                            RemoveNullsCore(prop.Value, prop.Name);
+                            RemoveNullsCore(value, key);
                         }
                     }
                 }
@@ -358,15 +332,39 @@ namespace Microsoft.Docs.Build
 
         public static SourceInfo GetSourceInfo(JToken token)
         {
-            return token.Annotation<SourceInfo>();
+            var result = token.Annotation<SourceInfo>();
+
+            // When JObject is used as JsonExtensionData, it is hard to populate source info
+            // of the key to JProperty due to the limitation of ExtensionDataSetter interface,
+            // thus fallback to use value source info.
+            if (result is null && token is JProperty property)
+            {
+                return property.Value.Annotation<SourceInfo>();
+            }
+            return result;
         }
 
-        internal static JToken SetSourceInfo(JToken token, SourceInfo source)
+        public static JToken SetSourceInfo(JToken token, SourceInfo source)
         {
             token.RemoveAnnotations<SourceInfo>();
             if (source != null)
             {
                 token.AddAnnotation(source);
+            }
+            return token;
+        }
+
+        public static SourceInfo GetKeySourceInfo(JToken token)
+        {
+            return token.Annotation<SourceInfo>()?.KeySourceInfo;
+        }
+
+        public static JToken SetKeySourceInfo(JToken token, SourceInfo source)
+        {
+            var sourceInfo = token.Annotation<SourceInfo>();
+            if (sourceInfo != null)
+            {
+                sourceInfo.KeySourceInfo = source;
             }
             return token;
         }
@@ -423,10 +421,16 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static JToken SetSourceInfo(JToken token, FilePath file)
+        private static JToken SetSourceInfo(JToken token, FilePath file, JProperty property = null)
         {
             var lineInfo = (IJsonLineInfo)token;
-            SetSourceInfo(token, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition);
+            if (property != null)
+            {
+                var keyLineInfo = (IJsonLineInfo)property;
+                sourceInfo.KeySourceInfo = new SourceInfo(file, keyLineInfo.LineNumber, keyLineInfo.LinePosition);
+            }
+            SetSourceInfo(token, sourceInfo);
 
             switch (token)
             {
@@ -444,7 +448,7 @@ namespace Microsoft.Docs.Build
                 case JObject obj:
                     foreach (var prop in obj.Properties())
                     {
-                        SetSourceInfo(prop, file);
+                        SetSourceInfo(prop.Value, file, prop);
                     }
                     break;
             }
@@ -498,6 +502,8 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
+            public FilePath FilePath { get; set; }
+
             public JTokenReader Reader { get; set; }
 
             public List<Error> Errors { get; set; }

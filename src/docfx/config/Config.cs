@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
-        public readonly JObject GlobalMetadata = new JObject();
+        public readonly GlobalMetadata GlobalMetadata = new GlobalMetadata();
 
         /// <summary>
         /// {Schema}://{Hostname}/{SiteBasePath}: https://docs.microsoft.com/dotnet
@@ -89,13 +89,13 @@ namespace Microsoft.Docs.Build
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public readonly Dictionary<string, Dictionary<string, JToken>> FileMetadata = new Dictionary<string, Dictionary<string, JToken>>();
+        public readonly Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata = new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
 
         /// <summary>
         /// Gets a map from source folder path and output URL path.
         /// We rely on a Dictionary behavior that the enumeration order is the same as insertion order if there is no other mutations.
         /// </summary>
-        public readonly Dictionary<string, string> Routes = new Dictionary<string, string>();
+        public readonly Dictionary<PathString, PathString> Routes = new Dictionary<PathString, PathString>();
 
         /// <summary>
         /// Gets the configuration about contribution scenario.
@@ -107,29 +107,7 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<string, DependencyConfig> Dependencies = new Dictionary<string, DependencyConfig>(PathUtility.PathComparer);
-
-        /// <summary>
-        /// Gets the map from resolve alias to relative path relatived to `docfx.yml` file
-        /// Default will be `~: .`
-        /// </summary>
-        public readonly Dictionary<string, string> ResolveAlias = new Dictionary<string, string>(PathUtility.PathComparer) { { "~", "." } };
-
-        /// <summary>
-        /// Gets the redirection mappings
-        /// The default value is empty mappings
-        /// The redirection always transfer the document id
-        /// </summary>
-        public readonly Dictionary<string, SourceInfo<string>> Redirections
-            = new Dictionary<string, SourceInfo<string>>(PathUtility.PathComparer);
-
-        /// <summary>
-        /// Gets the redirection mappings without document id
-        /// The default value is empty mappings
-        /// The redirection doesn't transfer the document id
-        /// </summary>
-        public readonly Dictionary<string, SourceInfo<string>> RedirectionsWithoutId
-            = new Dictionary<string, SourceInfo<string>>(PathUtility.PathComparer);
+        public readonly Dictionary<PathString, DependencyConfig> Dependencies = new Dictionary<PathString, DependencyConfig>();
 
         /// <summary>
         /// Gets the document id configuration section

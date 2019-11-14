@@ -3,27 +3,19 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
     internal class JsonContractResolver : DefaultContractResolver
     {
-        // HACK: Json.NET property deserialization is case insensitive:
-        // https://github.com/JamesNK/Newtonsoft.Json/issues/815,
-        // Force property deserialization to be case sensitive by hijacking GetClosestMatchProperty implementation.
-        private static readonly Action<JsonPropertyCollection, List<JsonProperty>> s_makeJsonCaseSensitive =
-            ReflectionUtility.CreateInstanceFieldSetter<JsonPropertyCollection, List<JsonProperty>>("_list");
-
-        private static readonly List<JsonProperty> s_emptyPropertyList = new List<JsonProperty>();
-
         protected override JsonObjectContract CreateObjectContract(Type objectType)
         {
             var contract = base.CreateObjectContract(objectType);
-            s_makeJsonCaseSensitive(contract.Properties, s_emptyPropertyList);
+            PropagateSourceInfoToExtensionData(contract);
             return contract;
         }
 
@@ -95,6 +87,27 @@ namespace Microsoft.Docs.Build
                     }
 
                     return originalShouldSerialize?.Invoke(target) ?? true;
+                };
+            }
+        }
+
+        private static void PropagateSourceInfoToExtensionData(JsonObjectContract contract)
+        {
+            var extensionDataSetter = contract.ExtensionDataSetter;
+            if (extensionDataSetter != null)
+            {
+                contract.ExtensionDataSetter = (o, key, value) =>
+                {
+                    if (contract.ExtensionDataValueType == typeof(JToken))
+                    {
+                        var currentToken = JsonUtility.State?.Reader?.CurrentToken;
+                        if (currentToken != null)
+                        {
+                            extensionDataSetter(o, key, JsonUtility.DeepClone(currentToken));
+                            return;
+                        }
+                    }
+                    extensionDataSetter(o, key, value);
                 };
             }
         }

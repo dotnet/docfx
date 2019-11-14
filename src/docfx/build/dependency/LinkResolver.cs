@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
@@ -16,12 +15,12 @@ namespace Microsoft.Docs.Build
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
+        private readonly RedirectionProvider _redirectionProvider;
         private readonly WorkQueue<Document> _buildQueue;
+        private readonly DocumentProvider _documentProvider;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly GitCommitProvider _gitCommitProvider;
-        private readonly IReadOnlyDictionary<string, string> _resolveAlias;
-        private readonly IReadOnlyDictionary<string, Docset> _dependencies;
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -29,10 +28,11 @@ namespace Microsoft.Docs.Build
         public LinkResolver(
             Docset docset,
             Docset fallbackDocset,
-            Dictionary<string, Docset> dependencies,
             Input input,
             BuildScope buildScope,
             WorkQueue<Document> buildQueue,
+            RedirectionProvider redirectionProvider,
+            DocumentProvider documentProvider,
             GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
@@ -45,12 +45,12 @@ namespace Microsoft.Docs.Build
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
+            _redirectionProvider = redirectionProvider;
+            _documentProvider = documentProvider;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
             _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
-            _resolveAlias = LoadResolveAlias(docset.Config);
-            _dependencies = dependencies;
             _templateEngine = templateEngine;
             _fileLinkMapBuilder = fileLinkMapBuilder;
         }
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
         public (Error error, string link, Document file) ResolveRelativeLink(
             Document relativeToFile, SourceInfo<string> path, Document referencingFile)
         {
-            var (error, link, file) = ResolveAbsoluteLink(path, referencingFile);
+            var (error, link, file) = ResolveAbsoluteLink(path, referencingFile, relativeToFile);
 
             if (file != null)
             {
@@ -78,9 +78,10 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public (Error error, string link, Document file) ResolveAbsoluteLink(SourceInfo<string> path, Document referencingFile)
+        public (Error error, string link, Document file) ResolveAbsoluteLink(
+            SourceInfo<string> path, Document referencingFile, Document relativeToFile)
         {
-            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(referencingFile, path);
+            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(referencingFile, path, relativeToFile);
 
             if (file != null)
             {
@@ -88,7 +89,7 @@ namespace Microsoft.Docs.Build
             }
 
             // NOTE: bookmark validation result depend on current inclusion stack
-            var relativeToFile = (Document)InclusionContext.RootFile ?? referencingFile;
+            relativeToFile = relativeToFile ?? referencingFile;
             var isSelfBookmark = linkType == LinkType.SelfBookmark || relativeToFile == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
@@ -106,7 +107,7 @@ namespace Microsoft.Docs.Build
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
 
-            if (file?.RedirectionUrl != null)
+            if (file?.ContentType == ContentType.Redirection)
             {
                 return default;
             }
@@ -115,14 +116,14 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(
-            Document referencingFile, SourceInfo<string> href)
+            Document referencingFile, SourceInfo<string> href, Document relativeToFile)
         {
             Debug.Assert(href != null);
 
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveAbsoluteXref(uid, referencingFile);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveAbsoluteXref(uid, referencingFile, relativeToFile);
                 var xrefLinkType = declaringFile != null ? LinkType.RelativePath : LinkType.External;
 
                 return (uidError, uidHref, null, xrefLinkType, declaringFile, true);
@@ -145,18 +146,12 @@ namespace Microsoft.Docs.Build
             // Self reference, don't build the file, leave href as is
             if (file == referencingFile)
             {
-                if (linkType == LinkType.SelfBookmark)
-                {
-                    return (error, UrlUtility.MergeUrl("", query, fragment), fragment, linkType, null, false);
-                }
-
-                var selfUrl = Document.PathToRelativeUrl(
-                    Path.GetFileName(file.SitePath), file.ContentType, file.Mime, file.Docset.Config.Output.Json, file.IsPage);
+                var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(file.SiteUrl);
 
                 return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
 
-            if (file?.RedirectionUrl != null)
+            if (file?.FilePath.Origin == FileOrigin.Redirection)
             {
                 return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), null, linkType, file, false);
             }
@@ -192,8 +187,8 @@ namespace Microsoft.Docs.Build
                     }
 
                     // resolve file
-                    var lookupFallbackCommits = inclusion || Document.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile, path, lookupFallbackCommits);
+                    var lookupFallbackCommits = inclusion || _documentProvider.GetContentType(path) == ContentType.Resource;
+                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -203,7 +198,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
                         }
 
                         // Do not report error for landing page
@@ -223,12 +218,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Document TryResolveRelativePath(Document referencingFile, string relativePath, bool lookupFallbackCommits)
+        private Document TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
+            PathString pathToDocset;
 
-            // apply resolve alias
-            var pathToDocset = ApplyResolveAlias(referencingFile, relativePath);
+            if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
+            {
+                // Treat ~/ as path relative to docset
+                pathToDocset = new PathString(relativePath.Substring(2).TrimStart('/', '\\'));
+            }
+            else
+            {
+                // Path relative to referencing file
+                var baseDirectory = Path.GetDirectoryName(referencingFile.GetPathToOrigin());
+                pathToDocset = new PathString(Path.Combine(baseDirectory, relativePath));
+            }
 
             // use the actual file name case
             if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
@@ -237,36 +242,33 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from the current docset for files in dependencies
-            if (referencingFile.FilePath.Origin == FileOrigin.Dependency)
+            if (referencingFile.Origin == FileOrigin.Dependency)
             {
-                path = new FilePath(pathToDocset, referencingFile.FilePath.DependencyName);
+                path = new FilePath(pathToDocset, referencingFile.DependencyName);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(referencingFile.Docset, path, _input, _templateEngine);
+                    return _documentProvider.GetDocument(path);
                 }
                 return null;
             }
 
             // resolve from redirection files
-            if (_buildScope.Redirections.TryGetRedirection(pathToDocset, out var redirectFile))
+            path = new FilePath(pathToDocset, FileOrigin.Redirection);
+            if (_redirectionProvider.Contains(path))
             {
-                return redirectFile;
+                return _documentProvider.GetDocument(path);
             }
 
             // resolve from dependent docsets
-            foreach (var (dependencyName, dependentDocset) in _dependencies)
+            foreach (var (dependencyName, _) in _docset.Config.Dependencies)
             {
-                var (match, _, remainingPath) = PathUtility.Match(pathToDocset, dependencyName);
-                if (!match)
+                if (pathToDocset.StartsWithPath(dependencyName, out var remainingPath))
                 {
-                    // the file stored in the dependent docset should start with dependency name
-                    continue;
-                }
-
-                path = new FilePath(remainingPath, dependencyName);
-                if (_input.Exists(path))
-                {
-                    return Document.Create(dependentDocset, path, _input, _templateEngine);
+                    path = new FilePath(remainingPath, dependencyName);
+                    if (_input.Exists(path))
+                    {
+                        return _documentProvider.GetDocument(path);
+                    }
                 }
             }
 
@@ -274,7 +276,7 @@ namespace Microsoft.Docs.Build
             path = new FilePath(pathToDocset);
             if (_input.Exists(path))
             {
-                return Document.Create(_docset, path, _input, _templateEngine);
+                return _documentProvider.GetDocument(path);
             }
 
             // resolve from fallback docset
@@ -283,7 +285,7 @@ namespace Microsoft.Docs.Build
                 path = new FilePath(pathToDocset, FileOrigin.Fallback);
                 if (_input.Exists(path))
                 {
-                    return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                    return _documentProvider.GetDocument(path);
                 }
 
                 // resolve from fallback docset git commit history
@@ -294,38 +296,12 @@ namespace Microsoft.Docs.Build
                     path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
                     if (_input.Exists(path))
                     {
-                        return Document.Create(_fallbackDocset, path, _input, _templateEngine);
+                        return _documentProvider.GetDocument(path);
                     }
                 }
             }
 
             return default;
-        }
-
-        private string ApplyResolveAlias(Document referencingFile, string path)
-        {
-            foreach (var (alias, aliasPath) in _resolveAlias)
-            {
-                var (match, _, remainingPath) = PathUtility.Match(path, alias);
-                if (match)
-                {
-                    return PathUtility.NormalizeFile(aliasPath + remainingPath);
-                }
-            }
-
-            return PathUtility.NormalizeFile(Path.Combine(Path.GetDirectoryName(referencingFile.FilePath.GetPathToOrigin()), path));
-        }
-
-        private static Dictionary<string, string> LoadResolveAlias(Config config)
-        {
-            var result = new Dictionary<string, string>(PathUtility.PathComparer);
-
-            foreach (var (alias, aliasPath) in config.ResolveAlias)
-            {
-                result.TryAdd(alias, PathUtility.NormalizeFolder(aliasPath));
-            }
-
-            return result.Reverse().ToDictionary(item => item.Key, item => item.Value);
         }
     }
 }

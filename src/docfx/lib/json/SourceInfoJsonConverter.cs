@@ -16,7 +16,19 @@ namespace Microsoft.Docs.Build
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var source = reader is JTokenReader tokenReader ? JsonUtility.GetSourceInfo(tokenReader.CurrentToken) : null;
+            SourceInfo source = null;
+
+            switch (reader)
+            {
+                case JTokenReader tokenReader:
+                    source = JsonUtility.GetSourceInfo(tokenReader.CurrentToken);
+                    break;
+
+                case JsonTextReader textReader:
+                    source = new SourceInfo(JsonUtility.State.FilePath, textReader.LineNumber, textReader.LinePosition);
+                    break;
+            }
+
             var valueType = objectType.GenericTypeArguments[0];
             var value = serializer.Deserialize(reader, valueType);
 

@@ -11,19 +11,20 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static Task Run(string workingDirectory, CommandLineOptions options)
+        public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
         {
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
                 ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
-                return Task.CompletedTask;
+                return 1;
             }
 
-            return Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
+            var result = await Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
+            return result.All(x => x) ? 0 : 1;
         }
 
-        private static async Task RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static async Task<bool> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
@@ -50,8 +51,6 @@ namespace Microsoft.Docs.Build
                     var configPath = docsetPath;
                     (errors, config) = configLoader.TryLoad(options, extend: false);
                     var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-                    if (restoreFallbackResult != null)
-                        repositoryProvider.ConfigFallbackRepository(Repository.Create(restoreFallbackResult.Path, restoreFallbackResult.Branch, restoreFallbackResult.Remote, restoreFallbackResult.Commit));
 
                     List<Error> fallbackConfigErrors;
                     (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);
@@ -59,7 +58,7 @@ namespace Microsoft.Docs.Build
 
                     // config error log, and return if config has errors
                     if (errorLog.Write(errors))
-                        return;
+                        return false;
 
                     // restore extend url firstly
                     await ParallelUtility.ForEach(
@@ -91,6 +90,7 @@ namespace Microsoft.Docs.Build
                 {
                     Log.Write(dex);
                     errorLog.Write(dex.Error, isException: true);
+                    return false;
                 }
                 finally
                 {
@@ -98,6 +98,7 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
+                return true;
             }
         }
 

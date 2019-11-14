@@ -543,38 +543,17 @@ outputs:
     {
         "dependencies": {
             "docs/f1/TOC.md": [
-                {
-                    "source": "docs/f1/b.md",
-                    "type": "link"
-                }
+                { "source": "docs/f1/b.md", "type": "link" }
             ],
             "docs/f2/TOC.md": [
-                {
-                    "source": "docs/f2/a.md",
-                    "type": "link"
-                },
-                {
-                    "source": "docs/f2/b.md",
-                    "type": "link"
-                }
+                { "source": "docs/f2/a.md", "type": "link" },
+                { "source": "docs/f2/b.md", "type": "link" }
             ],
             "docs/TOC.md": [
-                {
-                  "source": "docs/f1/b.md",
-                  "type": "link"
-                },
-                {
-                  "source": "docs/f1/TOC.md",
-                  "type": "tocInclusion"
-                },
-                {
-                  "source": "docs/f2/a.md",
-                  "type": "link"
-                },
-                {
-                  "source": "docs/f2/TOC.md",
-                  "type": "tocInclusion"
-                }
+                { "source": "docs/f1/TOC.md", "type": "tocInclusion" },
+                { "source": "docs/f1/b.md", "type": "link" },
+                { "source": "docs/f2/TOC.md", "type": "tocInclusion" },
+                { "source": "docs/f2/a.md", "type": "link" }
             ]
         }
     }

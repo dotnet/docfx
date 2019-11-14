@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -13,14 +12,15 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
+        private readonly DocumentProvider _documentProvider;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
         private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules
             = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)> _metadataCache
-                   = new ConcurrentDictionary<Document, (List<Error> errors, InputMetadata metadata)>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)> _metadataCache
+                   = new ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)>();
 
         public JsonSchema[] MetadataSchemas { get; }
 
@@ -28,10 +28,12 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
-        public MetadataProvider(Docset docset, Input input, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap)
+        public MetadataProvider(
+            Docset docset, Input input, MicrosoftGraphCache microsoftGraphCache, RestoreFileMap restoreFileMap, DocumentProvider documentProvider)
         {
             _input = input;
-            _globalMetadata = docset.Config.GlobalMetadata;
+            _documentProvider = documentProvider;
+            _globalMetadata = docset.Config.GlobalMetadata.ExtensionData;
 
             MetadataSchemas = Array.ConvertAll(
                 docset.Config.MetadataSchema,
@@ -45,7 +47,7 @@ namespace Microsoft.Docs.Build
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
                 .Concat(MetadataSchemas.SelectMany(schema => schema.Reserved))
-                .Except(JsonUtility.GetPropertyNames(typeof(InputMetadata)))
+                .Except(JsonUtility.GetPropertyNames(typeof(UserMetadata)))
                 .ToHashSet();
 
             HtmlMetaHidden = MetadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
@@ -56,23 +58,26 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, item) in docset.Config.FileMetadata)
             {
-                foreach (var (glob, value) in item)
+                foreach (var (glob, value) in item.Value)
                 {
+                    JsonUtility.SetKeySourceInfo(value, item.Source?.KeySourceInfo);
                     _rules.Add((GlobUtility.CreateGlobMatcher(glob), key, value));
                 }
             }
         }
 
-        public (List<Error> errors, InputMetadata metadata) GetMetadata(Document file)
+        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath file)
         {
             return _metadataCache.GetOrAdd(file, GetMetadataCore);
         }
 
-        private (List<Error> errors, InputMetadata metadata) GetMetadataCore(Document file)
+        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath path)
         {
             var result = new JObject();
             var errors = new List<Error>();
             var yamlHeader = new JObject();
+
+            var file = _documentProvider.GetDocument(path);
 
             if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
             {
@@ -90,21 +95,20 @@ namespace Microsoft.Docs.Build
                     // Assign a JToken to a property erases line info, so clone here.
                     // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055
                     fileMetadata[key] = JsonUtility.DeepClone(value);
-                    JsonUtility.SetSourceInfo(fileMetadata.Property(key), JsonUtility.GetSourceInfo(value));
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
             JsonUtility.Merge(result, yamlHeader);
 
-            foreach (var property in result.Properties())
+            foreach (var (key, value) in result)
             {
-                if (_reservedMetadata.Contains(property.Name))
+                if (_reservedMetadata.Contains(key))
                 {
-                    errors.Add(Errors.AttributeReserved(JsonUtility.GetSourceInfo(property), property.Name));
+                    errors.Add(Errors.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
                 }
-                else if (!IsValidMetadataType(property.Value))
+                else if (!IsValidMetadataType(value))
                 {
-                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(property.Value), property.Name));
+                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
                 }
             }
 
@@ -117,7 +121,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (validationErrors, metadata) = JsonUtility.ToObject<InputMetadata>(result);
+            var (validationErrors, metadata) = JsonUtility.ToObject<UserMetadata>(result);
 
             metadata.RawJObject = result;
 
@@ -143,7 +147,7 @@ namespace Microsoft.Docs.Build
 
         private (List<Error> errors, JObject metadata) LoadMetadata(Document file)
         {
-            if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".md"))
             {
                 using (var reader = _input.ReadText(file.FilePath))
                 {
@@ -151,12 +155,12 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".yml"))
             {
                 return LoadSchemaDocumentMetadata(_input.ReadYaml(file.FilePath), file);
             }
 
-            if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".json"))
             {
                 return LoadSchemaDocumentMetadata(_input.ReadJson(file.FilePath), file);
             }

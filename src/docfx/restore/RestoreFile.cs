@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                PathUtility.CreateDirectoryFromFilePath(filePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
 
                 if (File.Exists(filePath))
                     File.Delete(filePath);

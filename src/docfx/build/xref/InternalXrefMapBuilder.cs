@@ -40,9 +40,9 @@ namespace Microsoft.Docs.Build
                 var errors = new List<Error>();
                 var content = context.Input.ReadString(file.FilePath);
                 var callStack = new List<Document> { file };
-                if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
+                if (file.FilePath.EndsWith(".md"))
                 {
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file);
+                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                     errors.AddRange(fileMetaErrors);
 
                     if (!string.IsNullOrEmpty(fileMetadata.Uid))
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                         xrefs.Add(spec);
                     }
                 }
-                else if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+                else if (file.FilePath.EndsWith(".yml"))
                 {
                     var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
                     errors.AddRange(yamlErrors);
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(schemaErrors);
                     xrefs.AddRange(specs);
                 }
-                else if (file.FilePath.EndsWith(".json", PathUtility.PathComparison))
+                else if (file.FilePath.EndsWith(".json"))
                 {
                     var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
                     errors.AddRange(jsonErrors);
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, InputMetadata metadata, Document file)
+        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, UserMetadata metadata, Document file)
         {
             var xref = new InternalXrefSpec
             {
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             };
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
             return (error, xref, file);
         }
@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Length > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclaringFile);
-                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath.Path)));
+                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
             }
 
             // uid conflicts with overlapping monikers

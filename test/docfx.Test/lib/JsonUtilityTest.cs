@@ -72,10 +72,10 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestJsonDeserializeIsCaseSensitive()
+        public void TestJsonDeserializeCaseInsensitive()
         {
             var (errors, value) = DeserializeWithValidation<BasicClass>("{\"B\":1}");
-            Assert.Equal(0, value.B);
+            Assert.Equal(1, value.B);
         }
 
         [Fact]
@@ -385,6 +385,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}")]
         [InlineData("{'a':{'b':1}}", "{'a':{'b':{}}}", "{'a':{'b':{}}}")]
         [InlineData("{'a':{'b':1}}", "{'a':{'b':2}}", "{'a':{'b':2}}")]
+        [InlineData("{'a':1}", "{'A':2}", "{'a':1,'A':2}")]
         public void TestJsonMerge(string a, string b, string result)
         {
             var container = JObject.Parse(a.Replace('\'', '\"'));
@@ -435,6 +436,34 @@ namespace Microsoft.Docs.Build
             };
             var result = JsonUtility.Serialize(basic);
             Assert.Equal("{\"b\":1,\"d\":false}", result);
+        }
+
+        [Fact]
+        public void TestDeserializeWithSourceInfo()
+        {
+            var result = JsonUtility.Deserialize<ClassWithSourceInfo>("{\"a\": \"a value\"}", new FilePath("path"));
+            Assert.NotNull(result.A.Source);
+            Assert.Equal("path", result.A.Source.File.Path);
+            Assert.Equal(1, result.A.Source.Line);
+            Assert.Equal(15, result.A.Source.Column);
+            Assert.Equal("a value", result.A.Value);
+        }
+
+        [Fact]
+        public void TestExtensionDataWithSourceInfo()
+        {
+            var (_, result) = DeserializeWithValidation<ClassWithExtensionData>("{\"a\": 1}");
+            Assert.NotNull(result.ExtensionData["a"]);
+
+            var valueSource = JsonUtility.GetSourceInfo(result.ExtensionData["a"]);
+            Assert.NotNull(valueSource);
+            Assert.Equal(1, valueSource.Line);
+            Assert.Equal(7, valueSource.Column);
+
+            var keySource = JsonUtility.GetKeySourceInfo(result.ExtensionData["a"]);
+            Assert.NotNull(keySource);
+            Assert.Equal(1, keySource.Line);
+            Assert.Equal(5, keySource.Column);
         }
 
         /// <summary>
@@ -536,6 +565,12 @@ namespace Microsoft.Docs.Build
         internal sealed class NestedClass
         {
             public string ValueWithLengthRestriction { get; set; }
+        }
+
+        internal class ClassWithExtensionData
+        {
+            [JsonExtensionData]
+            public JObject ExtensionData { get; set; } = new JObject();
         }
 
         internal enum BasicEnum

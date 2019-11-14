@@ -22,10 +22,10 @@ namespace Microsoft.Docs.Build
             var (loadErrors, sourceModel) = await Load(context, file);
             errors.AddRange(loadErrors);
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
-            var outputPath = file.GetOutputPath(monikers, file.IsPage);
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? await CreatePageOutput(context, file, sourceModel)
@@ -79,17 +79,17 @@ namespace Microsoft.Docs.Build
             var outputMetadata = new JObject();
             var outputModel = new JObject();
 
-            var (inputMetadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            var (inputMetadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(inputMetadataErrors);
-            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, inputMetadata);
+            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
             if (string.IsNullOrEmpty(file.Mime))
             {
                 // conceptual raw metadata and raw model
-                JsonUtility.Merge(outputMetadata, inputMetadata.RawJObject, systemMetadataJObject);
-                JsonUtility.Merge(outputModel, inputMetadata.RawJObject, sourceModel, systemMetadataJObject);
+                JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
+                JsonUtility.Merge(outputModel, userMetadata.RawJObject, sourceModel, systemMetadataJObject);
             }
             else
             {
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(
-            Context context, Document file, InputMetadata inputMetadata)
+            Context context, Document file, UserMetadata inputMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
@@ -133,7 +133,9 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveRelativeLink(
-                    file, inputMetadata.BreadcrumbPath, file);
+                    file,
+                    inputMetadata.BreadcrumbPath,
+                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File));
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -145,12 +147,13 @@ namespace Microsoft.Docs.Build
             systemMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
             systemMetadata.SiteName = file.Docset.Config.SiteName;
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
             systemMetadata.Monikers = monikers;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
-                = context.BuildScope.Redirections.TryGetDocumentId(file, out var docId) ? docId : file.Id;
+                = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
+
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
                 systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
@@ -180,16 +183,16 @@ namespace Microsoft.Docs.Build
 
         private static async Task<(List<Error> errors, JObject model)> Load(Context context, Document file)
         {
-            if (file.FilePath.EndsWith(".md", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".md"))
             {
                 return LoadMarkdown(context, file);
             }
-            if (file.FilePath.EndsWith(".yml", PathUtility.PathComparison))
+            if (file.FilePath.EndsWith(".yml"))
             {
                 return await LoadYaml(context, file);
             }
 
-            Debug.Assert(file.FilePath.EndsWith(".json", PathUtility.PathComparison));
+            Debug.Assert(file.FilePath.EndsWith(".json"));
             return await LoadJson(context, file);
         }
 
@@ -210,7 +213,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.HeadingNotFound(file));
             }
 
-            var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
+            var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
@@ -218,7 +221,7 @@ namespace Microsoft.Docs.Build
                 Conceptual = CreateHtmlContent(file, htmlDom),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
-                Title = inputMetadata.Title ?? title,
+                Title = userMetadata.Title ?? title,
             });
 
             return (errors, pageModel);
@@ -259,8 +262,8 @@ namespace Microsoft.Docs.Build
             if (file.IsPage)
             {
                 // transform metadata via json schema
-                var (metadataErrors, inputMetadata) = context.MetadataProvider.GetMetadata(file);
-                JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = inputMetadata.RawJObject });
+                var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+                JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = userMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
             }
 

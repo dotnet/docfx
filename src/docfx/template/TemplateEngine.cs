@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                     Parallel.ForEach(Directory.EnumerateFiles(srcDir, "*", SearchOption.AllDirectories), file =>
                     {
                         var outputFilePath = Path.Combine(outputPath, "_themes", file.Substring(_templateDir.Length + 1));
-                        PathUtility.CreateDirectoryFromFilePath(outputFilePath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(outputFilePath)));
                         File.Copy(file, outputFilePath, overwrite: true);
                     });
                 }

@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
             var errors = new List<Error>();
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
             var publishItem = new PublishItem
@@ -21,14 +21,14 @@ namespace Microsoft.Docs.Build
                 Url = file.SiteUrl,
                 SourcePath = file.FilePath.Path,
                 Locale = file.Docset.Locale,
-                RedirectUrl = file.RedirectionUrl,
+                RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath),
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
             };
 
             if (file.Docset.Legacy)
             {
-                publishItem.Path = file.GetOutputPath(monikers);
+                publishItem.Path = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
             }
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy)
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 {
                     locale = file.Docset.Locale,
                     monikers,
-                    redirect_url = file.RedirectionUrl,
+                    redirect_url = publishItem.RedirectUrl,
                     is_dynamic_rendering = true,
                 };
 

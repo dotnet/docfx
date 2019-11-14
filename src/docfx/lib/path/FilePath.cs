@@ -14,12 +14,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the file path relative to the main docset(fallback docset).
         /// </summary>
-        public string Path { get; }
+        public PathString Path { get; }
 
         /// <summary>
         /// Gets the name of the dependency if it is from dependency repo.
         /// </summary>
-        public string DependencyName { get; }
+        public PathString DependencyName { get; }
 
         /// <summary>
         /// Gets the value to indicate where is this file from.
@@ -35,20 +35,20 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(origin != FileOrigin.Dependency);
 
-            Path = PathUtility.NormalizeFile(path);
+            Path = new PathString(path);
             Origin = origin;
         }
 
         public FilePath(string path, string commit, FileOrigin origin)
         {
-            Path = PathUtility.NormalizeFile(path);
+            Path = new PathString(path);
             Origin = origin;
             Commit = commit;
         }
 
-        public FilePath(string path, string dependencyName)
+        public FilePath(string path, PathString dependencyName)
         {
-            Path = PathUtility.NormalizeFile(System.IO.Path.Combine(dependencyName, path));
+            Path = new PathString(System.IO.Path.Combine(dependencyName, path));
             DependencyName = dependencyName;
             Origin = FileOrigin.Dependency;
         }
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                 tags += $"[{Commit}]";
             }
 
-            return tags.Length > 0 ? $"{Path} {tags}" : Path;
+            return tags.Length > 0 ? $"{Path} {tags}" : $"{Path}";
         }
 
         public override bool Equals(object obj)
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PathUtility.PathComparer.GetHashCode(Path), Origin, Commit);
+            return HashCode.Combine(Path, DependencyName, Origin, Commit);
         }
 
         public bool Equals(FilePath other)
@@ -114,23 +114,25 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return string.Equals(Path, other.Path, PathUtility.PathComparison) &&
+            return Path.Equals(other.Path) &&
+                   DependencyName.Equals(other.DependencyName) &&
                    other.Origin == Origin &&
                    Commit == other.Commit;
         }
 
         public int CompareTo(FilePath other)
         {
-            var result = string.Compare(Path, other.Path, PathUtility.PathComparison);
+            var result = Path.CompareTo(other.Path);
             if (result == 0)
                 result = Origin.CompareTo(other.Origin);
             if (result == 0)
-                result = Commit.CompareTo(other.Commit);
+                result = DependencyName.CompareTo(other.DependencyName);
+            if (result == 0)
+                result = string.CompareOrdinal(Commit, other.Commit);
 
             return result;
         }
 
-        public bool EndsWith(string value, StringComparison stringComparison)
-            => Path.EndsWith(value, stringComparison);
+        public bool EndsWith(string value) => Path.Value.EndsWith(value, PathUtility.PathComparison);
     }
 }

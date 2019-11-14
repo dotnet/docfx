@@ -32,9 +32,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (bool match, bool isFileMatch, string remainingPath) Match(this string file, string matcher)
         {
+            // TODO: Retire this method in favor of PathString
             if (string.Equals(file, matcher, PathComparison))
             {
-                return (true, true, file);
+                return (true, true, "");
             }
 
             if (matcher == "./")
@@ -52,7 +53,7 @@ namespace Microsoft.Docs.Build
                 return (true, false, file.Substring(matcher.Length).Replace('\\', '/'));
             }
 
-            return default;
+            return (false, false, "");
         }
 
         /// <summary>
@@ -151,7 +152,6 @@ namespace Microsoft.Docs.Build
                 return path;
             }
 
-            var isDirectory = path.EndsWith('/');
             var parentCount = 0;
             var rooted = path[0] == '/';
             var stack = new List<string>();
@@ -190,21 +190,13 @@ namespace Microsoft.Docs.Build
                     res.Append(segment);
                 }
             }
-            return isDirectory ? $"{res.ToString()}/" : res.ToString();
-        }
 
-        /// <summary>
-        /// Create a new directory from specified file path.
-        /// </summary>
-        /// <param name="filePath">The file path containing the directory to create</param>
-        public static void CreateDirectoryFromFilePath(string filePath)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(filePath));
+            if (path[path.Length - 1] == '/' && res.Length > 0 && res[res.Length - 1] != '/')
+            {
+                res.Append('/');
+            }
 
-            var directoryPath = Path.GetDirectoryName(filePath);
-            if (string.IsNullOrEmpty(directoryPath))
-                return;
-            Directory.CreateDirectory(directoryPath);
+            return res.ToString();
         }
 
         /// <summary>

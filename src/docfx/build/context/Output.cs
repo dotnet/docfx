@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
 
             var destinationPath = Path.Combine(OutputPath, destRelativePath);
 
-            PathUtility.CreateDirectoryFromFilePath(destinationPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(destinationPath)));
 
             return destinationPath;
         }

@@ -41,11 +41,6 @@ namespace Microsoft.Docs.Build
         public bool Legacy => Config.Legacy;
 
         /// <summary>
-        /// Gets the reversed <see cref="Config.Routes"/> for faster lookup.
-        /// </summary>
-        public IReadOnlyDictionary<string, string> Routes { get; }
-
-        /// <summary>
         /// Gets the root repository of docset
         /// </summary>
         public Repository Repository { get; }
@@ -68,7 +63,6 @@ namespace Microsoft.Docs.Build
             Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
-            Routes = NormalizeRoutes(config.Routes);
             Culture = CreateCultureInfo(Locale);
             (HostName, SiteBasePath) = UrlUtility.SplitBaseUrl(config.BaseUrl);
 
@@ -79,7 +73,7 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(Docset other)
         {
-            return PathUtility.PathComparer.Compare(DocsetPath, other.DocsetPath);
+            return string.CompareOrdinal(DocsetPath, other.DocsetPath);
         }
 
         public override int GetHashCode()
@@ -134,18 +128,6 @@ namespace Microsoft.Docs.Build
                     ? _repositories.GetOrAdd(parent, k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
                     : null;
             }
-        }
-
-        private static IReadOnlyDictionary<string, string> NormalizeRoutes(Dictionary<string, string> routes)
-        {
-            var result = new Dictionary<string, string>();
-            foreach (var (key, value) in routes.Reverse())
-            {
-                result.Add(
-                    key.EndsWith('/') || key.EndsWith('\\') ? PathUtility.NormalizeFolder(key) : PathUtility.NormalizeFile(key),
-                    PathUtility.NormalizeFile(value));
-            }
-            return result;
         }
 
         private CultureInfo CreateCultureInfo(string locale)

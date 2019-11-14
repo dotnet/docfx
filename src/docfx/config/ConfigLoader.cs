@@ -70,12 +70,6 @@ namespace Microsoft.Docs.Build
         private bool TryGetConfigPath(out FilePath configPath)
         {
             configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
-
-            if (configPath == null)
-            {
-                configPath = _input.FindYamlOrJson(FileOrigin.Fallback, "docfx");
-            }
-
             return configPath != null;
         }
 
@@ -83,13 +77,24 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var configObject = new JObject();
-            if (TryGetConfigPath(out var configPath))
+
+            var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
+
+            // apply .openpublishing.publish.config.json
+            if (OpsConfig.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
             {
-                var configFileName = configPath.Path;
-                (errors, configObject) = LoadConfigObject(configFileName, _input.ReadString(configPath));
+                JsonUtility.Merge(configObject, opsConfig);
             }
 
-            // apply options
+            // apply docfx.json or docfx.yml
+            if (TryGetConfigPath(out var configPath))
+            {
+                var (mainErrors, mainConfigObject) = LoadConfigObject(configPath.Path, _input.ReadString(configPath));
+                errors.AddRange(mainErrors);
+                JsonUtility.Merge(configObject, mainConfigObject);
+            }
+
+            // apply command line options
             var optionConfigObject = options?.ToJObject();
 
             JsonUtility.Merge(configObject, optionConfigObject);
@@ -108,7 +113,6 @@ namespace Microsoft.Docs.Build
             }
 
             // apply overwrite
-            var repository = _repositoryProvider.GetRepository(configPath?.Origin ?? FileOrigin.Default);
             OverwriteConfig(configObject, LocalizationUtility.GetLocale(repository, options), repository?.Branch);
 
             var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
@@ -141,21 +145,24 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, JObject) LoadConfigObject(string fileName, string content)
         {
-            // todo: config may come from source repo/fallback repo
-            var errors = new List<Error>();
-            JToken config = null;
-            if (fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            var source = new FilePath(fileName);
+            var (errors, config) = fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+                ? YamlUtility.Parse(content, source)
+                : JsonUtility.Parse(content, source);
+
+            if (config is JObject obj)
             {
-                (errors, config) = YamlUtility.Parse(content, new FilePath(fileName));
-            }
-            else if (fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-            {
-                (errors, config) = JsonUtility.Parse(content, new FilePath(fileName));
+                // For v2 backward compatibility, treat `build` section as config if it exist
+                if (obj.TryGetValue("build", out var build) && build is JObject buildObj)
+                {
+                    // `template` property has different semantic, so remove it
+                    buildObj.Remove("template");
+                    return (errors, buildObj);
+                }
+                return (errors, obj);
             }
 
-            JsonUtility.TrimStringValues(config);
-
-            return (errors, config as JObject ?? new JObject());
+            throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
         private static (List<Error>, JObject) ApplyGlobalConfig(JObject config)
@@ -215,6 +222,32 @@ namespace Microsoft.Docs.Build
             {
                 config.Remove(overwriteConfigIdentifier);
             }
+        }
+
+        private static OpsDocsetConfig LoadOpsDocsetConfig(string docsetPath)
+        {
+            var directory = docsetPath;
+
+            do
+            {
+                var fullPath = Path.Combine(directory, ".openpublishing.publish.config.json");
+                if (!File.Exists(fullPath))
+                {
+                    directory = Path.GetDirectoryName(directory);
+                    continue;
+                }
+
+                var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
+                var opsConfig = JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
+                var buildSourceFolder = PathUtility.NormalizeFolder(Path.GetRelativePath(directory, docsetPath));
+
+                return opsConfig.DocsetsToPublish.FirstOrDefault(config =>
+                    PathUtility.PathComparer.Equals(
+                        PathUtility.NormalizeFolder(config.BuildSourceFolder), buildSourceFolder));
+            }
+            while (!string.IsNullOrEmpty(directory));
+
+            return null;
         }
     }
 }

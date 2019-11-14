@@ -21,8 +21,9 @@ outputs:
 # Redirection config is case insensitive on windows and mac
 os: windows, osx
 inputs:
-  docfx.yml: |
-    redirectionsWithoutId:
+  docfx.yml:
+  redirections.yml: |
+    redirections:
       docs/redirect.md: /path
       docs/redirect1.md: /PATH1
   docs/a.md: |
@@ -31,15 +32,15 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"redirect\">redirect</a></p>"}
 ---
-# Dependency resolve is case insensitive on windows and mac
+# Dependency resolve is case insensitive on windows and mac, \ and / can be used interchangeably
 os: windows, osx
 repos:
   https://github.com/dep-resolver/case-in:
     - files:
         docfx.yml: |
           dependencies:
-            dep: https://github.com/dep-resolver/dep
-        docs/a.md: '[!include[dep](~/DEP/DEP.md)]'
+            dep\\a: https://github.com/dep-resolver/dep
+        docs/a.md: '[!include[dep](~\\DEP/a/DEP.md)]'
   https://github.com/dep-resolver/dep:
     - files:
         dep.md: DEP

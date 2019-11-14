@@ -162,12 +162,13 @@ inputs:
       docs/v1/: .
       docs/v2/: .
     monikerDefinition: monikerDefinition.json
-    redirections:
-      docs/v1/c.md: /docs/a
-      docs/v2/c.md: /docs/b
     fileMetadata:
       monikerRange:
         docs/v2/**/*.md: netcore-2.0
+  redirections.yml: |
+    redirections:
+      docs/v1/c.md: /docs/a
+      docs/v2/c.md: /docs/b
   docs/v1/a.md: |
   docs/v2/b.md: |
   monikerDefinition.json: |
@@ -206,7 +207,8 @@ inputs:
       docs/v1/: docs/
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
-    redirections:
+  redirections.yml: |
+    renames:
       docs/v1/a-old.md: /docs/a
       docs/v2/a-old.md: /docs/a
       docs/b-old.md: /docs/b
@@ -263,7 +265,8 @@ inputs:
       docs/v2/: docs/
       docs/v12/: docs/
     monikerDefinition: monikerDefinition.json
-    redirections:
+  redirections.yml: |
+    renames:
       docs/v12/a-old.md: /docs/a
   docs/v1/a.md: |
     Moniker: netcore-1.0
@@ -314,7 +317,8 @@ inputs:
       docs/v2/: docs/
       docs/v12/: docs/
     monikerDefinition: monikerDefinition.json
-    redirections:
+  redirections.yml: |
+    renames:
       docs/v1/a-old.md: /docs/a
       docs/v2/a-old.md: /docs/a
   docs/v12/a.md: |
@@ -345,7 +349,7 @@ outputs:
       }
     }
   .errors.log: |
-    ["warning","redirection-url-conflict","The '/docs/a' appears twice or more in the redirection mappings","docfx.yml",12,21]
+    ["warning","redirection-url-conflict","The '/docs/a' appears twice or more in the redirection mappings","redirections.yml",3,21]
 ---
 # Redirection file with monikers - moniker overlap
 inputs:
@@ -357,9 +361,10 @@ inputs:
       docs/v1/: docs/
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
-    redirections:
+  redirections.yml: |
+    renames:
       docs/v1/a-old.md: /docs/a
-    redirectionsWithoutId:
+    redirections:
       docs/v2/a-old.md: /docs/a
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
@@ -506,7 +511,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0', 'netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md"]
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0', 'netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","docs/v1/a.md",2,15]
 ---
 # No intersection of file level monikers and zone monikers
 inputs:
@@ -531,7 +536,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-out-of-scope","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0', 'netcore-1.1'.","docs/v1/a.md"]
+    ["error","moniker-range-out-of-scope","No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0', 'netcore-1.1'.","docs/v1/a.md",2,1]
 ---
 # Define uid with moniker range, refer to it with valid moniker in the same docset
 inputs:
@@ -1283,7 +1288,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","docs/v1/TOC.md"]
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","docs/v1/TOC.md",2,15]
 ---
 # Build resource file with moniker
 inputs:
