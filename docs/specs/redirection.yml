@@ -271,6 +271,18 @@ outputs:
   articles/retail/analyze-sales-trends-patterns.json: |
     { "document_id":"5ce4c7ff-69be-ea10-c8e0-d3288fd3bd93" }
 ---
+# document_id of _op_documentIdPathDepotMapping without folder_relative_path_in_docset
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      _op_documentIdPathDepotMapping:
+        ./:
+          depot_name: Azure.azure-documents
+  articles/active-directory/active-directory-conditional-access-azure-portal.md:
+outputs:
+  articles/active-directory/active-directory-conditional-access-azure-portal.json: |
+    { "document_id":"ffdaa549-8f3b-75e0-9d27-a1a10417d86b" }
+---
 # redirect to redirect
 inputs:
   docfx.yml: |
