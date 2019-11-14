@@ -48,10 +48,19 @@ namespace Microsoft.Docs.Build
         public readonly string[] Exclude = Array.Empty<string>();
 
         /// <summary>
-        /// Gets the file groups config.
+        /// Gets content build scope config for v2 backward compatibility.
         /// </summary>
-        [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly FileGroupConfig[] FileGroups = Array.Empty<FileGroupConfig>();
+        public readonly FileMappingConfig[] Content = Array.Empty<FileMappingConfig>();
+
+        /// <summary>
+        /// Gets resource build scope config for v2 backward compatibility.
+        /// </summary>
+        public readonly FileMappingConfig[] Resource = Array.Empty<FileMappingConfig>();
+
+        /// <summary>
+        /// Gets moniker range group configuration for v2 backward compatibility.
+        /// </summary>
+        public readonly Dictionary<string, GroupConfig> Groups = new Dictionary<string, GroupConfig>();
 
         /// <summary>
         /// Gets the output config.

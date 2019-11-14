@@ -46,21 +46,10 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Support specify build scope in fileGroups object
+# Support specify build scope in content array
 inputs:
   docfx.yml: |
-    fileGroups:
-      files: docs/**/*.md
-      exclude: docs/**/ignore.md
-  docs/index.md:
-  docs/ignore.md:
-outputs:
-  docs/index.json:
----
-# Support specify build scope in fileGroups array
-inputs:
-  docfx.yml: |
-    fileGroups:
+    content:
     - files: docs/**/*.md
       exclude: docs/**/ignore.md
   docs/index.md:
@@ -68,22 +57,11 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Support fileGroups as object
-inputs:
-  docfx.yml: |
-    fileGroups:
-      files: docs/b.md
-      exclude: docs/**/ignore.md
-  docs/a.md:
-  docs/b.md:
-outputs:
-  docs/b.json:
----
 # Use FileGroups and ignore root build scope if FileGroups is defined
 inputs:
   docfx.yml: |
     files: docs/a.md
-    fileGroups:
+    content:
     - files: docs/b.md
   docs/a.md:
   docs/b.md:
@@ -93,7 +71,7 @@ outputs:
 # FileGroup a's exclude won't influence b's include
 inputs:
   docfx.yml: |
-    fileGroups:
+    content:
     - files: docs/**/*.md
       exclude: docs/**/*.png
     - files: docs/**/*.png

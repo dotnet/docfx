@@ -4,20 +4,22 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class BuildScope
     {
+        private readonly Input _input;
+        private readonly Config _config;
+        private readonly DocumentProvider _documentProvider;
+
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<PathString> _fileNames;
-
-        private readonly Input _input;
-        private readonly Docset _docset;
-        private readonly DocumentProvider _documentProvider;
+        private readonly FileMappingConfig[] _groups;
 
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
@@ -26,29 +28,29 @@ namespace Microsoft.Docs.Build
 
         public Func<string, bool> Glob { get; }
 
-        public BuildScope(Input input, DocumentProvider documentProvider, Docset docset, Docset fallbackDocset)
+        public BuildScope(Config config, Input input, DocumentProvider documentProvider, Docset fallbackDocset)
         {
             _input = input;
-            _docset = docset;
+            _config = config;
             _documentProvider = documentProvider;
 
-            Glob = CreateGlob(_docset.Config);
+            _groups = _config.Content.Concat(_config.Resource).ToArray();
 
-            var (fileNames, files) = GetFiles(FileOrigin.Default, Glob);
+            Glob = CreateGlob();
 
-            var fallbackFiles = fallbackDocset != null
-                ? GetFiles(FileOrigin.Fallback, CreateGlob(fallbackDocset.Config)).files
-                : Enumerable.Empty<Document>();
+            var (fileNames, files) = GetFiles(FileOrigin.Default);
+
+            var fallbackFiles = fallbackDocset != null ? GetFiles(FileOrigin.Fallback).files : Enumerable.Empty<Document>();
 
             _fileNames = fileNames;
 
             Files = files.Concat(fallbackFiles.Where(file => !_fileNames.Contains(file.FilePath.Path))).ToHashSet();
 
-            foreach (var (dependencyName, dependency) in _docset.Config.Dependencies)
+            foreach (var (dependencyName, dependency) in _config.Dependencies)
             {
                 if (dependency.IncludeInBuild)
                 {
-                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, Glob, dependencyName);
+                    var (_, dependencyFiles) = GetFiles(FileOrigin.Dependency, dependencyName);
                     Files.UnionWith(dependencyFiles);
                 }
 
@@ -60,7 +62,7 @@ namespace Microsoft.Docs.Build
         {
             // Link to dependent repo
             if (filePath.FilePath.Origin == FileOrigin.Dependency &&
-                !_docset.Config.Dependencies[filePath.FilePath.DependencyName].IncludeInBuild)
+                !_config.Dependencies[filePath.FilePath.DependencyName].IncludeInBuild)
             {
                 return true;
             }
@@ -79,8 +81,23 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
+        public bool TryGetFileMapping(FilePath path, out FileMappingConfig result)
+        {
+            foreach (var group in _groups)
+            {
+                if (path.Path.Value.StartsWith(group.Src))
+                {
+                    result = group;
+                    return true;
+                }
+            }
+
+            result = null;
+            return false;
+        }
+
         private (HashSet<PathString> fileNames, IReadOnlyList<Document> files) GetFiles(
-            FileOrigin origin, Func<string, bool> glob, PathString? dependencyName = null)
+            FileOrigin origin, PathString? dependencyName = null)
         {
             using (Progress.Start("Globbing files"))
             {
@@ -89,7 +106,7 @@ namespace Microsoft.Docs.Build
 
                 ParallelUtility.ForEach(fileNames, file =>
                 {
-                    if (glob(file.Path.Value))
+                    if (Glob(file.Path.Value))
                     {
                         files.Add(_documentProvider.GetDocument(file));
                     }
@@ -99,20 +116,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Func<string, bool> CreateGlob(Config config)
+        private Func<string, bool> CreateGlob()
         {
-            if (config.FileGroups.Length > 0)
+            if (_groups.Length > 0)
             {
-                var globs = config.FileGroups.Select(fileGroup => GlobUtility.CreateGlobMatcher(
-                    fileGroup.Files,
-                    fileGroup.Exclude.Concat(Config.DefaultExclude).ToArray()))
+                var globs = _groups.Select(group => GlobUtility.CreateGlobMatcher(
+                    group.Files.Select(item => Path.Combine(group.Src, item)).ToArray(),
+                    group.Exclude.Concat(Config.DefaultExclude).Select(item => Path.Combine(group.Src, item)).ToArray()))
                    .ToArray();
+
                 return new Func<string, bool>((file) => globs.Any(glob => glob(file)));
             }
 
             return GlobUtility.CreateGlobMatcher(
-                config.Files,
-                config.Exclude.Concat(Config.DefaultExclude).ToArray());
+                _config.Files,
+                _config.Exclude.Concat(Config.DefaultExclude).ToArray());
         }
     }
 }
