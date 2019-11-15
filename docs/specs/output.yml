@@ -515,6 +515,7 @@ outputs:
 # source_url should be the includer of TOC
 inputs:
   docfx.yml: |
+    warningsAsErrors: true
     globalMetadata:
       "breadcrumb_path": "/docs/breadcrumbs/toc.json"
   docs/breadcrumbs/TOC.yml: |
@@ -538,6 +539,9 @@ inputs:
     ---
   docs/b.md:
   docs/c.md:
+  docs/fileWithInvalidBookmark.md: |
+    [text](#invalid-bookmark)
+    [c](c.md)
 outputs:
   .links.json: |
     {
@@ -577,3 +581,4 @@ outputs:
   docs/c.json:
   docs/toc.json:
   docs/breadcrumbs/toc.json:
+  .errors.log: 

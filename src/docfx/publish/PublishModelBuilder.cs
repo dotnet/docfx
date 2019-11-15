@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
-        private readonly ListBuilder<Document> _filesWithErrors = new ListBuilder<Document>();
+        private readonly ConcurrentHashSet<Document> _excludedFiles = new ConcurrentHashSet<Document>();
 
         public PublishModelBuilder(string outputPath, Config config)
         {
@@ -26,12 +26,12 @@ namespace Microsoft.Docs.Build
             _outputPath = PathUtility.NormalizeFolder(outputPath);
         }
 
-        public void MarkError(Document file)
+        public void ExcludeFromOutput(Document file)
         {
-            // TODO: If Error has a Document identifier, we can retrieve files with errors from
-            //       error log without explicitly call PublishModelBuilder.MarkError
-            _filesWithErrors.Add(file);
+            _excludedFiles.TryAdd(file);
         }
+
+        public bool IsIncludedInOutput(Document file) => !_excludedFiles.Contains(file);
 
         public bool TryAdd(Document file, PublishItem item)
         {
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                     context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
                     {
-                        HandleFileWithError(context, conflictingFile, legacy);
+                        HandleExcludedFile(context, conflictingFile, legacy);
                     }
                 }
             }
@@ -102,16 +102,16 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    HandleFileWithError(context, conflictingFile, legacy);
+                    HandleExcludedFile(context, conflictingFile, legacy);
                 }
             }
 
-            // Handle files with errors
-            foreach (var file in _filesWithErrors.ToList())
+            // Handle files excluded from output
+            foreach (var file in _excludedFiles.ToList())
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    HandleFileWithError(context, file, legacy);
+                    HandleExcludedFile(context, file, legacy);
                 }
             }
 
@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
             return (model, fileManifests);
         }
 
-        private void HandleFileWithError(Context context, Document file, bool legacy)
+        private void HandleExcludedFile(Context context, Document file, bool legacy)
         {
             if (_publishItems.TryGetValue(file, out var item))
             {

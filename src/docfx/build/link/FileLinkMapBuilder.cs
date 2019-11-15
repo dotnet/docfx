@@ -49,9 +49,8 @@ namespace Microsoft.Docs.Build
         public object Build() =>
             new
             {
-                // if source file is TOC and not included in the build scope, should be excluded from .links.json
                 Links = _links
-                .Where(x => !(x.SourceFile.ContentType == ContentType.TableOfContents && !_context.TocMap.Contains(x.SourceFile)))
+                .Where(x => _context.PublishModelBuilder.IsIncludedInOutput(x.SourceFile))
                 .OrderBy(_ => _),
             };
     }

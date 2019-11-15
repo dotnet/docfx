@@ -181,10 +181,9 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                var hasErrors = context.ErrorLog.Write(file, errors);
-                if (hasErrors)
+                if (context.ErrorLog.Write(file, errors))
                 {
-                    context.PublishModelBuilder.MarkError(file);
+                    context.PublishModelBuilder.ExcludeFromOutput(file);
                 }
 
                 Telemetry.TrackBuildItemCount(file.ContentType);
@@ -192,7 +191,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.ErrorLog.Write(file, dex.Error, isException: true);
-                context.PublishModelBuilder.MarkError(file);
+                context.PublishModelBuilder.ExcludeFromOutput(file);
             }
             catch
             {
@@ -207,6 +206,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.TocMap.Contains(file))
                 {
+                    context.PublishModelBuilder.ExcludeFromOutput(file);
                     return false;
                 }
 
