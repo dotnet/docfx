@@ -124,21 +124,22 @@ Build the project, to make sure that you have an assembly that contains the comp
 
 >[!NOTE]
 >The `rules` folder is a template folder. In DocFX, templates are a place to customize the build, rendering and validation behaviors.
->For more information about templates, please refer to our [template](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [plugin](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) documentation.
+>For more information about templates, please refer to our [template documentation](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [plugin documentation](howto_build_your_own_type_of_documentation_with_custom_plug-in.md).
 
 ## Markdown token validation rules
 
-Besides HTML tags, you may also want to validate Markdown syntax like heading or links. For example, in Markdown, you may want to limit code snippet to only support a set of languages.
+Besides HTML tags, you may also want to validate Markdown syntax like headings or links. This is helpful if you want to implement scenarios such as limiting code snippets to only support a set of pre-defined programming language identifiers.
 
-To create such rule, follow the following steps:
+To create a rule, follow the steps below:
 
-1.  Create a project in your code editor (e.g. Visual Studio).
-2.  Add nuget package `Microsoft.DocAsCode.MarkdownLite` and `Microsoft.Composition`.
-3.  Create a class and implements @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider
-    > @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory contains some helper methods to create a validator.
-4.  Add ExportAttribute with rule name.
+1. Create a new project in your IDE (e.g. Visual Studio).
+2. Add a reference to the [`Microsoft.DocAsCode.MarkdownLite`](https://www.nuget.org/packages/Microsoft.DocAsCode.MarkdownLite/) and [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/) NuGet packages.
+3. Create a class that implements the `@Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider` interface.
+    > `@Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory` contains some helper methods to create a validator.
+4. Decorate your class with the `ExportAttribute`, that contains the rule name.
 
-For example, the following rule require all code block to be `csharp`:
+For example, the following rule will require all code blocks to use the `csharp` language identifier:
+
 ```csharp
 [Export("code_snippet_should_be_csharp", typeof(IMarkdownTokenValidatorProvider))]
 public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
@@ -157,7 +158,7 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 }
 ```
 
-To enable this rule, update your `md.style` to the following:
+To enable this rule, update your `md.style` with the following rule flag:
 
 ```json
 {
@@ -165,16 +166,16 @@ To enable this rule, update your `md.style` to the following:
 }
 ```
 
-Then follow the same steps in [How to enable custom HTML tag rules](#how-to-enable-custom-html-tag-rules), run `docfx` you'll see your rule executed.
+Follow the steps in [How to enable custom HTML tag rules](#how-to-enable-custom-html-tag-rules) to configure the plugin and run `docfx` in the project folder. You'll see your rule picked up by the build.
 
 ### Logging in your rules
 
-As you can see in the above example, you can throw @Microsoft.DocAsCode.Plugins.DocumentException to raise an error, this will stop the build immediately.
+You can throw `@Microsoft.DocAsCode.Plugins.DocumentException` to raise an error with the rules. This will stop the build immediately.
 
-You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String) and @Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String) to report a warning and an error respectively.
+You can also use `@Microsoft.DocAsCode.Common.Logger.LogWarning` and `@Microsoft.DocAsCode.Common.Logger.LogError` to report a warning or an error, respectively.
 
-> [!Note]
-> To use these methods, you need to install nuget package `Microsoft.DocAsCode.Common` first.
+>[!NOTE]
+>To use these methods, you need to install nuget package `Microsoft.DocAsCode.Common` first.
 
 The different between `ReportError` and throw `DocumentException` is throwing exception will stop the build immediately but `ReportError` won't stop build but will eventually fail the build after rules are run.
 
