@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         public readonly Input Input;
         public readonly BuildScope BuildScope;
         public readonly RedirectionProvider RedirectionProvider;
-        public readonly WorkQueue<Document> BuildQueue;
+        public readonly WorkQueue<FilePath> BuildQueue;
         public readonly DocumentProvider DocumentProvider;
         public readonly MetadataProvider MetadataProvider;
         public readonly MonikerProvider MonikerProvider;
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             var restoreFileMap = new RestoreFileMap(input);
             DependencyMapBuilder = new DependencyMapBuilder();
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
-            BuildQueue = new WorkQueue<Document>();
+            BuildQueue = new WorkQueue<FilePath>();
 
             Config = docset.Config;
             RestoreFileMap = restoreFileMap;
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap, DocumentProvider);
             MonikerProvider = new MonikerProvider(docset.Config, MetadataProvider, restoreFileMap);
-            BuildScope = new BuildScope(Input, DocumentProvider, docset, fallbackDocset);
+            BuildScope = new BuildScope(Config, Input, fallbackDocset);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
             GitCommitProvider = new GitCommitProvider();

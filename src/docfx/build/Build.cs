@@ -154,8 +154,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task BuildFile(Context context, Document file)
+        private static async Task BuildFile(Context context, FilePath path)
         {
+            var file = context.DocumentProvider.GetDocument(path);
             if (!ShouldBuildFile(context, file))
             {
                 context.PublishModelBuilder.ExcludeFromOutput(file);
@@ -182,7 +183,7 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                if (context.ErrorLog.Write(file, errors))
+                if (context.ErrorLog.Write(path, errors))
                 {
                     context.PublishModelBuilder.ExcludeFromOutput(file);
                 }
@@ -191,7 +192,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file, dex.Error, isException: true);
+                context.ErrorLog.Write(path, dex.Error, isException: true);
                 context.PublishModelBuilder.ExcludeFromOutput(file);
             }
             catch

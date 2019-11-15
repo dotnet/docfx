@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
-                    context.BuildScope.Files.Where(f => f.ContentType == ContentType.Page),
+                    context.BuildScope.Files,
                     file => Load(context, builder, file),
                     Progress.Update);
             }
@@ -33,10 +33,16 @@ namespace Microsoft.Docs.Build
             return result.ToDictionary(item => item.uid, item => item.spec);
         }
 
-        private static void Load(Context context, ListBuilder<InternalXrefSpec> xrefs, Document file)
+        private static void Load(Context context, ListBuilder<InternalXrefSpec> xrefs, FilePath path)
         {
             try
             {
+                var file = context.DocumentProvider.GetDocument(path);
+                if (file.ContentType != ContentType.Page)
+                {
+                    return;
+                }
+
                 var errors = new List<Error>();
                 var content = context.Input.ReadString(file.FilePath);
                 var callStack = new List<Document> { file };
@@ -68,15 +74,15 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(schemaErrors);
                     xrefs.AddRange(specs);
                 }
-                context.ErrorLog.Write(file, errors);
+                context.ErrorLog.Write(path, errors);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file, dex.Error, isException: true);
+                context.ErrorLog.Write(path, dex.Error, isException: true);
             }
             catch
             {
-                Console.WriteLine($"Load {file.FilePath} xref failed");
+                Console.WriteLine($"Load {path} xref failed");
                 throw;
             }
         }
