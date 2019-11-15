@@ -17,6 +17,9 @@ namespace Microsoft.Docs.Build
 
         private readonly (Func<string, bool> glob, SourceInfo<string>)[] _rules;
 
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string>> _monikerRangeCache
+                   = new ConcurrentDictionary<FilePath, SourceInfo<string>>();
+
         private readonly ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)> _monikerCache
                    = new ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)>();
 
@@ -39,6 +42,11 @@ namespace Microsoft.Docs.Build
             Comparer = new MonikerComparer(monikersEvaluator.MonikerOrder);
 
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
+        }
+
+        public SourceInfo<string> GetFileLevelMonikerRange(FilePath file)
+        {
+            return _monikerRangeCache.GetOrAdd(file, GetFileLevelMonikerRangeCore);
         }
 
         public (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
@@ -100,7 +108,7 @@ namespace Microsoft.Docs.Build
             return (null, configMonikers);
         }
 
-        private SourceInfo<string> GetFileLevelMonikerRange(FilePath file)
+        private SourceInfo<string> GetFileLevelMonikerRangeCore(FilePath file)
         {
             var (_, mapping) = _buildScope.MapPath(file.Path);
 
