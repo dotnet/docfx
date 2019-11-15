@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public Error Error { get; }
 
         public DocfxException(Error error, Exception innerException = null)
-            : base(error.Message, innerException)
+            : base($"{error.Code}: {error.Message}", innerException)
         {
             Error = error;
         }

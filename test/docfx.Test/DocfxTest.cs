@@ -132,24 +132,22 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("Skip watch tests");
             }
 
-            if (!test.Summary.Contains("[from loc]", StringComparison.OrdinalIgnoreCase))
-            {
-                await RunBuild(docsetPath, outputPath, spec, spec.Locale);
-            }
-
-            // Verify build from localization docset also work
             if (spec.Locale != null)
             {
+                // Verify build from localization docset also work
+                // Disable build from English test to see if it helps with loc test instability
+                // https://dev.azure.com/ceapex/Engineering/_build/results?buildId=97101&view=logs&j=133bd042-0fac-58b5-e6e7-01018e6dc4d4&t=b907bda6-23f1-5af4-47fe-b951a88dbb9a&l=10898
                 var locDocsetPath = t_repos.Value.FirstOrDefault(
                     repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
+
                 if (locDocsetPath != null)
                 {
-                    // Give loc build some delay since outptuPath is reused
-                    // https://dev.azure.com/ceapex/Engineering/_build/results?buildId=97101&view=logs&j=133bd042-0fac-58b5-e6e7-01018e6dc4d4&t=b907bda6-23f1-5af4-47fe-b951a88dbb9a&l=10898
-                    await Task.Delay(200);
-
                     await RunBuild(locDocsetPath, outputPath, spec, locale: null);
                 }
+            }
+            else
+            {
+                await RunBuild(docsetPath, outputPath, spec, spec.Locale);
             }
         }
 
