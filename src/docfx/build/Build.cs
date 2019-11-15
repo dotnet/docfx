@@ -158,6 +158,7 @@ namespace Microsoft.Docs.Build
         {
             if (!ShouldBuildFile(context, file))
             {
+                context.PublishModelBuilder.ExcludeFromOutput(file);
                 return;
             }
 
@@ -206,7 +207,6 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.TocMap.Contains(file))
                 {
-                    context.PublishModelBuilder.ExcludeFromOutput(file);
                     return false;
                 }
 
