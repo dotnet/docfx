@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
                 {
                     // todo: get tree list from repository
                     return GitUtility.ListTree(repository.Path, repository.Commit)
-                        .Select(path => CreateFilePath(path.Replace('\\', '/')))
+                        .Select(path => CreateFilePath(path))
                         .ToArray();
                 }
 
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
 
                 return Directory
                 .GetFiles(entry, "*", SearchOption.AllDirectories)
-                    .Select(path => CreateFilePath(Path.GetRelativePath(entry, path).Replace('\\', '/')))
+                    .Select(path => CreateFilePath(Path.GetRelativePath(entry, path)))
                     .ToArray();
             }
 

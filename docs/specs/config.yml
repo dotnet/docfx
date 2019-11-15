@@ -46,16 +46,21 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Support specify build scope in content array
+# Support specifing build scope in content or resource
 inputs:
   docfx.yml: |
     content:
     - files: docs/**/*.md
       exclude: docs/**/ignore.md
+    resource:
+      files: '*.png'
   docs/index.md:
   docs/ignore.md:
+  docs/a.png:
+  b.png:
 outputs:
   docs/index.json:
+  b.png:
 ---
 # Use content and resource and ignore root build scope if content or resource is defined
 inputs:
@@ -90,9 +95,9 @@ outputs:
 inputs:
   docfx.yml: |
     content:
-    - cwd: a
+    - src: a
       dest: url-a
-    - cwd: b
+    - src: b
       dest: .
   a/a.md:
   b/b.md:

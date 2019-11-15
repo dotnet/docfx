@@ -49,11 +49,13 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets content build scope config for v2 backward compatibility.
         /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
         public readonly FileMappingConfig[] Content = Array.Empty<FileMappingConfig>();
 
         /// <summary>
         /// Gets resource build scope config for v2 backward compatibility.
         /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
         public readonly FileMappingConfig[] Resource = Array.Empty<FileMappingConfig>();
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the document id configuration section
         /// </summary>
-        public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
+        public readonly Dictionary<PathString, DocumentIdConfig> DocumentId = new Dictionary<PathString, DocumentIdConfig>();
 
         /// <summary>
         /// Gets allow custom error code, severity and message.
