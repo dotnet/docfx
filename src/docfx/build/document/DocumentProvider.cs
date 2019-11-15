@@ -251,6 +251,8 @@ namespace Microsoft.Docs.Build
 
         private PathString ApplyRoutes(PathString path)
         {
+            (path, _) = _buildScope.MapPath(path);
+
             // the latter rule takes precedence of the former rule
             foreach (var (source, dest) in _routes)
             {

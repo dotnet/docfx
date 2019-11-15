@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             DocumentProvider = new DocumentProvider(docset, fallbackDocset, input, repositoryProvider, TemplateEngine);
             MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
-            BuildScope = new BuildScope(Config, Input, DocumentProvider, fallbackDocset);
+            BuildScope = new BuildScope(Config, Input, fallbackDocset);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, restoreFileMap);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);

@@ -57,18 +57,22 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Use FileGroups and ignore root build scope if FileGroups is defined
+# Use content and resource and ignore root build scope if content or resource is defined
 inputs:
   docfx.yml: |
-    files: docs/a.md
+    files: a.md
     content:
-    - files: docs/b.md
-  docs/a.md:
-  docs/b.md:
+    - files: b.md
+    resource:
+    - files: c.png
+  a.md:
+  b.md:
+  c.png:
 outputs:
-  docs/b.json:
+  b.json:
+  c.png:
 ---
-# FileGroup a's exclude won't influence b's include
+# content a's exclude won't influence b's include
 inputs:
   docfx.yml: |
     content:
@@ -81,6 +85,20 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.png:
+---
+# content with src, dest config
+inputs:
+  docfx.yml: |
+    content:
+    - cwd: a
+      dest: url-a
+    - cwd: b
+      dest: .
+  a/a.md:
+  b/b.md:
+outputs:
+  url-a/a.json:
+  b.json:
 ---
 # Global metadata
 inputs:

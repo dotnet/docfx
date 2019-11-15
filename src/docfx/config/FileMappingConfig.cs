@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         /// Gets the file glob patterns included by the group.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Files = Array.Empty<string>();
+        public readonly string[] Files = Config.DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from the group.

@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class RedirectionItem
     {
-        public string SourcePath { get; set; }
+        public PathString SourcePath { get; set; }
 
         public SourceInfo<string> RedirectUrl { get; set; }
 

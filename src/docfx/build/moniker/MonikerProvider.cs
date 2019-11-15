@@ -102,9 +102,11 @@ namespace Microsoft.Docs.Build
 
         private SourceInfo<string> GetFileLevelMonikerRange(FilePath file)
         {
-            if (_buildScope.TryGetFileMapping(file, out var mapping))
+            var (_, mapping) = _buildScope.MapPath(file.Path);
+
+            if (mapping != null && _config.Groups.TryGetValue(mapping.Group, out var group))
             {
-                return _config.Groups.TryGetValue(mapping.Group, out var group) ? group.MonikerRange : default;
+                return group.MonikerRange;
             }
 
             foreach (var (glob, monikerRange) in _rules)
