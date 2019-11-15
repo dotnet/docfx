@@ -181,12 +181,11 @@ The difference between `LogError` and throwing `DocumentException` is in the fac
 
 ### Advanced: validating tokens with file context
 
-For some cases, we need to validate some tokens with file context.
+In certain cases, we might need to validate tokens with the file context. For example, it might be necessary to enforce a rule that ensures that each topic has one title (i.e. H1 written in standard Markdown syntax, e.g. `# <title>`).
 
-For example, we want each topic has one title (i.e. h1 written by markdown syntax, e.g. `# <title>`).
-But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will never be hit when there is no heading.
+You can't directly count the tokens with `@Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator` since the context is shared by all files - the rule will never be hit when there is no heading in a file.
 
-For this purpose, we need to create validator like following:
+We can create a custom validator as such:
 
 ```csharp
 MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
@@ -214,20 +213,20 @@ MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
 ```
 
 The [FromLambda](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.FromLambda``1(System.Action{``0},System.Action{Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine})) method takes two callbacks:
-* The first will be invoked on @Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken matched in all files.
-  And the static property @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine will provide current context object.
-* The second will be invoked on starting a new file.
-  And you can initialize some variables for each file, and register some callbacks when the file completed.
+
+* The first callback will be invoked in `@Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken`, matched against all files. The static `@Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine` property will provide current context object.
+* The second callback will be invoked when starting the processing of a new file. You can initialize some variables for each file, and register some callbacks when the file processing is complete.
 
 ## Advanced usage of `md.style`
 
 ### Default rules
 
-If a rule has the contract name of `default`, it will be enabled by default. You don't need to enable it in `md.style`.
+If a rule has the `default` contract name, it will be enabled by default. You don't need to enable it in `md.style`.
 
 ### Enable/disable rules in `md.style`
 
-You can add use `disable` to specify whether disable a rule:
+You can use the `disable` property to specify whether a rule needs to be disabled:
+
 ```json
 {
    "rules": [ { "contractName": "<contract_name>", "disable": true } ]
@@ -236,28 +235,29 @@ You can add use `disable` to specify whether disable a rule:
 
 This gives you an opportunity to disable the rules enabled by default.
 
-## Validate metadata in markdown files
+## Validate metadata in Markdown files
 
-In markdown file, we can write some metadata in [conceptual](../spec/docfx_flavored_markdown.md#yaml-header) or [overwrite document](intro_overwrite_files.md).
-And we allow to add some plug-ins to validate metadata written in markdown files.
+In Markdown files, we can write metadata in [the front-matter](../spec/docfx_flavored_markdown.md#yaml-header) or [an overwrite document](intro_overwrite_files.md).
+DocFX allows you to create a plug-in to validate metadata.
 
 ### Scope of metadata validation
 
-Metadata is coming from multiple sources, the following metadata will be validated during build: 
-1.  YAML header in markdown.
-2.  Global metadata and file metadata in `docfx.json`.
-3.  Global metadata and file metadata defined in separate `.json` files.
+Metadata will be validated by the DocFX build in the following order:
 
-> [!Tip]
-> For more information about global metadata and global metadata, see [docfx.json format](docfx.exe_user_manual.md#3-docfxjson-format).
+1. YAML front-matter in the Markdown file.
+2. Global metadata and file metadata in `docfx.json`.
+3. Global metadata and file metadata defined in separate `.json` files.
+
+>[!TIP]
+>For more information about global metadata, check out the [documentation on `docfx.json`](docfx.exe_user_manual.md#3-docfxjson-format).
 
 ### Create validation plug-ins
 
-1.  Create a project in your code editor (e.g. Visual Studio).
-2.  Add nuget package `Microsoft.DocAsCode.Plugins` and `Microsoft.Composition`.
-3.  Create a class and implement @Microsoft.DocAsCode.Plugins.IInputMetadataValidator
+1. Create a new project in your IDE (e.g. Visual Studio).
+2. Add a reference to [`Microsoft.DocAsCode.Plugins`](https://www.nuget.org/packages/Microsoft.DocAsCode.Plugins/) and [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/) NuGet packages.
+3. Create a new class and implement the `@Microsoft.DocAsCode.Plugins.IInputMetadataValidator`.
 
-For example, the following validator prohibits any metadata with name `hello`:
+For example, the following validator prohibits any metadata with the name set to `hello`:
 
 ```csharp
 [Export(typeof(IInputMetadataValidator))]
@@ -273,23 +273,22 @@ public class MyInputMetadataValidator : IInputMetadataValidator
 }
 ```
 
-Enable metadata rule is same as other rules, just copy the assemblies to the `plugins` of your template folder and run `docfx`.
+Enable the metadata rule the same way as outlined above - copy the compiled assemblies to the `plugins` directory in your project and run `docfx`.
 
 ### Create configurable metadata validation plug-ins
 
 There are two steps to create a metadata validator:
 
-1.  We need to modify export attribute for metadata validator plug-in:
+1. Modify the `ExportAttribute` for the metadata validator plug-in class to specify its type:
 
     ```csharp
     [Export("hello_is_not_valid", typeof(IInputMetadataValidator))]
     ```
 
-    > [!Note]
-    > If the rule doesn't have a contract name, it will be always enabled,
-    > i.e., there is no way to disable it unless delete the assembly file.
+    >[!NOTE]
+    >If the rule doesn't have a contract name, it will be always enabled, i.e. there is no way to disable it unless the assembly files are deleted.
 
-2.  Modify `md.style` with following content:
+2. Modify the `md.style` file with the following content:
 
     ```json
     {
@@ -299,14 +298,15 @@ There are two steps to create a metadata validator:
     }
     ```
 
-## Advanced: Share your rules
+## Advanced: Sharing your rules
 
-Some users have a lot of document projects, and want to share validations for all of them, and don't want to write `md.style` file repeatedly.
+Some users might have a number of documentation projects, and may want to share validation rules between them. In such a scenario, writing `md.style` files repeatedly is sub-optimal.
 
-### Create template
+### Create a template
+
 For this propose, we can create a template with following structure:
 
-```
+```text
 /  (root folder for plug-in)
 \- md.styles
    |- <category-1>.md.style
@@ -315,11 +315,11 @@ For this propose, we can create a template with following structure:
    \- <your_rule>.dll 
 ```
 
-In `md.styles` folder, there is a set of definition files, with file extension `.md.style`, each file is a category.
+The `md.styles` folder will contain a set of definition files, with the file extension set to `.md.style` (_each file is a category_).
 
-In one category, there is a set of rule definition.
+Each category file contains a set of rule definitions.
 
-For example, create a file with name `test.md.style`, then write following content:
+For example, you can create a `test.md.style` file, then include the following rules:
 
 ```json
 {
@@ -340,17 +340,15 @@ For example, create a file with name `test.md.style`, then write following conte
 }
 ```
 
-Then `test` is the category name (from file name) for three rules, and apply different `id` for each rule, they are `heading`, `code` and `hello`.
+`test` is the category name (_taken from file name_) for three rules. A different identifier is applied for each rule - `heading`, `code` and `hello`.
 
-When you build document with this template, all rules will be active when `disable` property is `false`.
+When you build your documentation with this template, all aforementioned rules will be active when the `disable` property is set to `false`.
 
 ### Config rules
 
-Some rules need to be enabled/disabled in some special document project.
+Some rules need to be enabled or disabled in certain documentation projects. For example, the `hello` rule might not be required for most of your projects, but for others it might be necessary.
 
-For example, `hello` rule is not required for most project, but for a special project, we want to enable it.
-
-We need to modify `md.style` file in this document project with following content:
+To configure this scenario, you will need to modify the `md.style` file in your document project with the following settings:
 
 ```json
 {
@@ -360,7 +358,7 @@ We need to modify `md.style` file in this document project with following conten
 }
 ```
 
-And for some project we need to disable all rules in test category:
+And for other projects, you will need to disable all rules in test category:
 
 ```json
 {
@@ -370,10 +368,11 @@ And for some project we need to disable all rules in test category:
 }
 ```
 
-> [!Note]
-> `disable` property is applied by following order:
-> 1.  `tagRules`, `rules` and `metadataRules` in `md.style`.
-> 2.  auto enabled `rules` with contract name `default`.
-> 3.  `settings` with `category` and `id` in `md.style`.
-> 4.  `settings` with `category` in `md.style`.
-> 5.  `disable` property in definition file.
+>[!NOTE]
+>The `disable` property is applied in the following order:
+>
+>1. `tagRules`, `rules` and `metadataRules` in `md.style`.
+>2. Automatically enabled `rules` with contract names set to `default`.
+>3. `settings` with `category` and `id` in `md.style`.
+>4. `settings` with `category` in `md.style`.
+>5. `disable` property in definition file.
