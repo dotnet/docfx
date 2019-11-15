@@ -9,15 +9,17 @@ namespace Microsoft.Docs.Build
 {
     internal class FileLinkMapBuilder
     {
+        private readonly Context _context;
         private readonly MonikerProvider _monikerProvider;
         private readonly ErrorLog _errorLog;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
 
-        public FileLinkMapBuilder(MonikerProvider monikerProvider, ErrorLog errorLog)
+        public FileLinkMapBuilder(MonikerProvider monikerProvider, ErrorLog errorLog, Context context)
         {
             Debug.Assert(monikerProvider != null);
             _monikerProvider = monikerProvider;
             _errorLog = errorLog;
+            _context = context;
         }
 
         public void AddFileLink(Document file, string targetUrl)
@@ -37,12 +39,20 @@ namespace Microsoft.Docs.Build
 
             _links.TryAdd(new FileLinkItem()
             {
+                SourceFile = file,
                 SourceUrl = file.SiteUrl,
                 SourceMonikerGroup = MonikerUtility.GetGroup(monikers),
                 TargetUrl = targetUrl,
             });
         }
 
-        public object Build() => new { Links = _links.OrderBy(_ => _) };
+        public object Build() =>
+            new
+            {
+                // if source file is TOC and not included in the build scope, should be excluded from .links.json
+                Links = _links
+                .Where(x => !(x.SourceFile.ContentType == ContentType.TableOfContents && !_context.TocMap.Contains(x.SourceFile)))
+                .OrderBy(_ => _),
+            };
     }
 }

@@ -10,6 +10,9 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal struct FileLinkItem : IEquatable<FileLinkItem>, IComparable<FileLinkItem>
     {
+        [JsonIgnore]
+        public Document SourceFile { get; set; }
+
         public string SourceUrl { get; set; }
 
         public string SourceMonikerGroup { get; set; }
