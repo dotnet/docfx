@@ -48,8 +48,6 @@ namespace Microsoft.Docs.Build
                 Files = files.ToList().ToHashSet();
                 _fileNames = fileNames;
             }
-
-            _fileNames = Files.Select(file => file.Path).ToHashSet();
         }
 
         public bool Glob(PathString path)

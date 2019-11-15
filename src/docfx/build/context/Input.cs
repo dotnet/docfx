@@ -41,11 +41,11 @@ namespace Microsoft.Docs.Build
 
             if (commit is null)
             {
-                return File.Exists(PathUtility.NormalizeFile(Path.Combine(docsetPath, pathToDocset)));
+                return File.Exists(PathUtility.Normalize(Path.Combine(docsetPath, pathToDocset)));
             }
 
             var repoPath = GitUtility.FindRepo(docsetPath);
-            var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repoPath, PathUtility.NormalizeFile(Path.Combine(docsetPath, pathToDocset))));
+            var pathToRepo = PathUtility.Normalize(Path.GetRelativePath(repoPath, PathUtility.Normalize(Path.Combine(docsetPath, pathToDocset))));
             return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(repoPath, pathToRepo, commit)) != null;
         }
 
