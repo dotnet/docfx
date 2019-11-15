@@ -175,9 +175,9 @@ You can throw `@Microsoft.DocAsCode.Plugins.DocumentException` to raise an error
 You can also use `@Microsoft.DocAsCode.Common.Logger.LogWarning` and `@Microsoft.DocAsCode.Common.Logger.LogError` to report a warning or an error, respectively.
 
 >[!NOTE]
->To use these methods, you need to install nuget package `Microsoft.DocAsCode.Common` first.
+>To use the aforementioned methods, you will need to install the [`Microsoft.DocAsCode.Common`](https://www.nuget.org/packages/Microsoft.DocAsCode.Common/) NuGet package.
 
-The different between `ReportError` and throw `DocumentException` is throwing exception will stop the build immediately but `ReportError` won't stop build but will eventually fail the build after rules are run.
+The difference between `LogError` and throwing `DocumentException` is in the fact that throwing the exception will stop the build immediately. `LogError` won't stop the build but will report a failure once the rest of the execution is complete.
 
 ### Advanced: validating tokens with file context
 
