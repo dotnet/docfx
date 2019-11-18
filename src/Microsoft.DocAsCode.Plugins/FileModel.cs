@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Plugins
             Key = key;
             if (Key == null)
             {
-                if (OriginalFileAndType.File.StartsWith("~/"))
+                if (OriginalFileAndType.File.StartsWith("~/", StringComparison.Ordinal))
                 {
                     Key = OriginalFileAndType.File;
                 }

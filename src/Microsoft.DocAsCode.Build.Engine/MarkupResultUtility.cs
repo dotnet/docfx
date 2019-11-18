@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sources.Add(new LinkSourceInfo
                     {
                         Target = file,
-                        Anchor = anchor,
+                        Anchor = anchor, // Actually this contains both query and bookmark
                         SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
                         LineNumber = pair.Node.GetAttributeValue("sourceStartLineNumber", 0),
                     });

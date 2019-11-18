@@ -27,8 +27,8 @@ namespace Microsoft.DocAsCode.Common
                 throw new DirectoryNotFoundException($"Directory ({inputFolder}) not found.");
             }
             if (inputFolder.Length > 0 &&
-                !inputFolder.EndsWith("\\") &&
-                !inputFolder.EndsWith("/"))
+                !inputFolder.EndsWith("\\", StringComparison.Ordinal) &&
+                !inputFolder.EndsWith("/", StringComparison.Ordinal))
             {
                 inputFolder += "/";
             }

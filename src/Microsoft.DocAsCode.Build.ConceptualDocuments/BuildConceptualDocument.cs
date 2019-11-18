@@ -35,59 +35,23 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             var result = host.Markup(markdown, model.OriginalFileAndType, false, true);
 
             var htmlInfo = HtmlDocumentUtility.SeparateHtml(result.Html);
-            model.Properties.IsUserDefinedTitle = false;
-            content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;
+            if (!string.IsNullOrEmpty(htmlInfo.RawTitle))
+            {
+                model.ManifestProperties.rawTitle = htmlInfo.RawTitle;
+            }
             content[ConceptualKey] = htmlInfo.Content;
 
             if (result.YamlHeader?.Count > 0)
             {
                 foreach (var item in result.YamlHeader)
                 {
-                    if (item.Key == Constants.PropertyName.Uid)
-                    {
-                        var uid = item.Value as string;
-                        if (!string.IsNullOrWhiteSpace(uid))
-                        {
-                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRoot) }.ToImmutableArray();
-                            content[Constants.PropertyName.Uid] = item.Value;
-                        }
-                    }
-                    else
-                    {
-                        content[item.Key] = item.Value;
-                        if (item.Key == DocumentTypeKey)
-                        {
-                            model.DocumentType = item.Value as string;
-                        }
-                        else if (item.Key == Constants.PropertyName.Title)
-                        {
-                            model.Properties.IsUserDefinedTitle = true;
-                        }
-                        else if (item.Key == Constants.PropertyName.OutputFileName)
-                        {
-                            var outputFileName = item.Value as string;
-                            if (!string.IsNullOrWhiteSpace(outputFileName))
-                            {
-                                string fn = null;
-                                try
-                                {
-                                    fn = Path.GetFileName(outputFileName);
-                                }
-                                catch (ArgumentException) { }
-                                if (fn == outputFileName)
-                                {
-                                    model.File = (RelativePath)model.File + (RelativePath)outputFileName;
-                                }
-                                else
-                                {
-                                    Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
-                                }
-                            }
-                        }
-                    }
+                    HandleYamlHeaderPair(item.Key, item.Value);
                 }
             }
+
+            (content[Constants.PropertyName.Title], model.Properties.IsUserDefinedTitle) = GetTitle(result.YamlHeader, htmlInfo);
+
             model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
             model.LinkToUids = result.LinkToUids;
             model.FileLinkSources = result.FileLinkSources;
@@ -95,10 +59,11 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             model.Properties.XrefSpec = null;
             if (model.Uids.Length > 0)
             {
+                var title = content[Constants.PropertyName.Title] as string;
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0].Name,
-                    Name = content[Constants.PropertyName.Title] as string ?? model.Uids[0].Name,
+                    Name = string.IsNullOrEmpty(title) ? model.Uids[0].Name : title,
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
@@ -106,6 +71,93 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             foreach (var d in result.Dependency)
             {
                 host.ReportDependencyTo(model, d, DependencyTypeName.Include);
+            }
+
+            void HandleYamlHeaderPair(string key, object value)
+            {
+                switch (key)
+                {
+                    case Constants.PropertyName.Uid:
+                        var uid = value as string;
+                        if (!string.IsNullOrWhiteSpace(uid))
+                        {
+                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRoot) }.ToImmutableArray();
+                            content[Constants.PropertyName.Uid] = value;
+                        }
+                        break;
+                    case DocumentTypeKey:
+                        content[key] = value;
+                        model.DocumentType = value as string;
+                        break;
+                    case Constants.PropertyName.OutputFileName:
+                        content[key] = value;
+                        var outputFileName = value as string;
+                        if (!string.IsNullOrWhiteSpace(outputFileName))
+                        {
+                            string fn = null;
+                            try
+                            {
+                                fn = Path.GetFileName(outputFileName);
+                            }
+                            catch (ArgumentException) { }
+                            if (fn == outputFileName)
+                            {
+                                model.File = (RelativePath)model.File + (RelativePath)outputFileName;
+                            }
+                            else
+                            {
+                                Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
+                            }
+                        }
+                        break;
+                    default:
+                        content[key] = value;
+                        break;
+                }
+            }
+
+            (string title, bool isUserDefined) GetTitle(ImmutableDictionary<string, object> yamlHeader, SeparatedHtmlInfo info)
+            {
+                // title from YAML header
+                if (yamlHeader != null
+                    && TryGetStringValue(yamlHeader, Constants.PropertyName.Title, out var yamlHeaderTitle))
+                {
+                    return (yamlHeaderTitle, true);
+                }
+
+                // title from metadata/titleOverwriteH1
+                if (TryGetStringValue(content, Constants.PropertyName.TitleOverwriteH1, out var titleOverwriteH1))
+                {
+                    return (titleOverwriteH1, true);
+                }
+
+                // title from H1
+                if (!string.IsNullOrEmpty(info.Title))
+                {
+                    return (info.Title, false);
+                }
+
+                // title from globalMetadata or fileMetadata
+                if (TryGetStringValue(content, Constants.PropertyName.Title, out var title))
+                {
+                    return (title, true);
+                }
+
+                return default;
+            }
+
+            bool TryGetStringValue(IDictionary<string, object> dictionary, string key, out string strValue)
+            {
+                if (dictionary.TryGetValue(key, out var value) && value is string str && !string.IsNullOrEmpty(str))
+                {
+                    strValue = str;
+                    return true;
+                }
+                else
+                {
+                    strValue = null;
+                    return false;
+                }
             }
         }
 

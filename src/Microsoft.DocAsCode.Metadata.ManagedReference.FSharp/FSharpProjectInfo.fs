@@ -100,7 +100,7 @@ module internal FSharpProjectInfo =
                 //     Dotnet.ProjInfo.FakeMsbuildTasks.getResponseFileFromTask props fsc
                 // false, getProjectInfoOldSdk, getFscArgsOldSdk (asFscArgs >> Choice1Of2)
             | ProjectRecognizer.Unsupported ->
-                failwithf "F# project %s has unsupported type." projPath       
+                failwithf "F# project %s has unsupported type." projPath
 
         // function to execute MSBuild
         let logMsg msg = Log.debug "ProjInfo: %s" msg
@@ -125,27 +125,27 @@ module internal FSharpProjectInfo =
             match err with
             | UnexpectedMSBuildResult msg -> failwithf "MSBuild failed: %s" msg
             | MSBuildSkippedTarget -> failwithf "MSBuild skipped target" 
-            | MSBuildFailed (_, scr) -> failwithf "Compilation failed:\n%s%s" scr.StdOut scr.StdErr           
+            | MSBuildFailed (_, scr) -> failwithf "Compilation failed:\n%s%s" scr.StdOut scr.StdErr
 
         // all F# compiler arguments
         let allFscArgs = 
             match exec getFscArgsBySdk globalArgs with
             | Choice1Of2 (FscArgs args) -> args
             | Choice2Of2 err -> handleErr err 
-            | _ -> failwith "unexpected result"        
+            | _ -> failwith "unexpected result"
 
         // project references
         let projectRefs =
             match exec getP2PRefs globalArgs with
             | Choice1Of2 (P2PRefs refs) -> refs
             | Choice2Of2 err -> handleErr err
-            | _ -> failwith "unexpected result"        
+            | _ -> failwith "unexpected result"
 
         // split compiler arguments into sources and options
         let fscArgs, srcs =
             allFscArgs
-            |> List.filter (fun o -> not (o.StartsWith("--preferreduilang")))
-            |> List.partition (fun arg -> arg.StartsWith("-"))
+            |> List.filter (fun o -> not (o.StartsWith("--preferreduilang", StringComparison.Ordinal)))
+            |> List.partition (fun arg -> arg.StartsWith("-", StringComparison.Ordinal))
 
         // resolve source paths
         let srcs = srcs |> List.map (fun src -> Path.Combine(projDir, src))

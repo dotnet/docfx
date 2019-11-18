@@ -2,7 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-	using Markdig.Renderers;
+    using Markdig.Parsers;
+    using Markdig.Renderers;
 	using Markdig.Renderers.Html;
 	using Markdig.Syntax;
 	using System;
@@ -17,12 +18,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public string Name => "zone";
 		public bool SelfClosing => false;
 
-		public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+        public bool Render(HtmlRenderer renderer, TripleColonBlock block)
 		{
 			return false;
 		}
 
-		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError)
+		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, BlockProcessor processor)
         {
             htmlAttributes = null;
 			renderProperties = null;

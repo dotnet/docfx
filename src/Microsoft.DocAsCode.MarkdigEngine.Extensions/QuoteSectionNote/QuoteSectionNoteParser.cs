@@ -41,6 +41,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var rawNewBlock = new QuoteSectionNoteBlock(this)
             {
+                Line = processor.LineIndex,
                 QuoteChar = quoteChar,
                 Column = column,
                 Span = new SourceSpan(sourcePosition, processor.Line.End),
@@ -146,7 +147,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                                      IsNoteType(infoString);
                 if (processor.CurrentChar != '\0' && isNoteVideoDiv)
                 {
-                    _context.LogWarning("invalid-note-section", "Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>");
+                    _context.LogWarning("invalid-note-section", "Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>", block);
                     processor.GoToColumn(originalColumn);
                     return false;
                 }

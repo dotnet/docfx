@@ -83,7 +83,7 @@ gulp.task('help', function () {
     console.log("gulp pack [-t <templateName>] [-dir <outputFolder>]");
 });
 
-gulp.task('pack', function () {
+gulp.task('pack', async function () {
     var dirname = options.dir;
     if (options.t) {
         var name = options.t;
@@ -126,8 +126,8 @@ gulp.task('pack', function () {
     function getStream(file, key) {
         var cwd = file.cwd || key;
         var base = file.base || cwd;
-        return gulp.src(file.files, { base: base, cwd: cwd });
+        return gulp.src(file.files, { base: base, cwd: cwd, allowEmpty: true });
     }
 });
 
-gulp.task('default', ['pack']);
+gulp.task('default', gulp.series('pack'));

@@ -5,8 +5,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
+    using System.Threading;
 
     /// <summary>
     /// Represents a thread static context of the current document.
@@ -18,68 +18,89 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     /// </remarks>
     public static class InclusionContext
     {
-        [ThreadStatic]
-        private static object t_rootFile;
-
-        [ThreadStatic]
-        private static ImmutableStack<object> t_files;
-
-        [ThreadStatic]
-        private static ImmutableHashSet<object> t_dependencies;
+        private static readonly ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>> t_markupStacks
+                          = new ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>>(
+                                  () => new Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>());
 
         /// <summary>
         /// Gets the current file. This is the included file if the engine is currently parsing or rendering an include file.
         /// </summary>
-        public static object File => t_files != null && !t_files.IsEmpty ? t_files.Peek() : null;
+        public static object File
+        {
+            get
+            {
+                var markupStack = t_markupStacks.Value;
+                return markupStack.Count > 0 ? markupStack.Peek().inclusionStack.Peek() : null;
+            }
+        }
 
         /// <summary>
         /// Gets the root file, this is always the first file pushed to the context regardless of file inclusion.
         /// </summary>
-        public static object RootFile => t_rootFile;
+        public static object RootFile
+        {
+            get
+            {
+                var markupStack = t_markupStacks.Value;
+                return markupStack.Count > 0 ? markupStack.Peek().file : null;
+            }
+        }
 
         /// <summary>
         /// Whether the content is included by other markdown files.
         /// </summary>
-        public static bool IsInclude => t_files != null && t_files.Count() > 1;
+        public static bool IsInclude
+        {
+            get
+            {
+                var markupStack = t_markupStacks.Value;
+                return markupStack.Count > 0 && markupStack.Peek().inclusionStack.Count > 1;
+            }
+        }
 
         /// <summary>
         /// Gets all the dependencies referenced by the root markdown context.
         /// </summary>
-        public static IEnumerable<object> Dependencies => (IEnumerable<object>)t_dependencies ?? ImmutableArray<object>.Empty;
+        public static IEnumerable<object> Dependencies
+        {
+            get
+            {
+                var markupStack = t_markupStacks.Value;
+                return markupStack.Count > 0 ? (IEnumerable<object>)markupStack.Peek().dependencies : Array.Empty<object>();
+            }
+        }
+
+        /// <summary>
+        /// Creates a scope for calling <see cref="Markdig.Markdown.ToHtml(string, Markdig.MarkdownPipeline)"/>.
+        /// </summary>
+        public static IDisposable PushFile(object file)
+        {
+            var markupStack = t_markupStacks.Value;
+            var inclusionStack = new Stack<object>();
+            inclusionStack.Push(file);
+            markupStack.Push((file, new HashSet<object>(), inclusionStack));
+
+            return new DelegatingDisposable(() => markupStack.Pop());
+        }
+
+        /// <summary>
+        /// Creates a scope for calling <see cref="Markdig.Markdown.ToHtml(string, Markdig.MarkdownPipeline)"/>
+        /// when processing a markdown inclusion inside <see cref="HtmlInclusionBlockRenderer"/> and <see cref="HtmlInclusionInlineRenderer"/>.
+        /// </summary>
+        public static IDisposable PushInclusion(object file)
+        {
+            var inclusionStack = t_markupStacks.Value.Peek().inclusionStack;
+            inclusionStack.Push(file);
+
+            return new DelegatingDisposable(() => inclusionStack.Pop());
+        }
 
         /// <summary>
         /// Push dependency
         /// </summary>
-        /// <param name="file"></param>
         public static void PushDependency(object file)
         {
-            t_dependencies = (t_dependencies ?? ImmutableHashSet<object>.Empty).Add(file);
-        }
-
-        /// <summary>
-        /// Creates a scope to use the specified file.
-        /// </summary>
-        public static IDisposable PushFile(object file)
-        {
-            var current = t_files ?? ImmutableStack<object>.Empty;
-
-            if (current.IsEmpty)
-            {
-                // Clear dependencies for the root scope.
-                t_dependencies = ImmutableHashSet<object>.Empty;
-                t_rootFile = file;
-            }
-
-            t_files = current.Push(file);
-
-            return new DelegatingDisposable(() =>
-            {
-                t_files = current;
-                if (current.IsEmpty)
-                {
-                    t_rootFile = null;
-                }
-            });
+            t_markupStacks.Value.Peek().dependencies.Add(file);
         }
 
         /// <summary>
@@ -89,9 +110,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             dependencyChain = null;
 
-            if (t_files.Contains(file))
+            var markupStack = t_markupStacks.Value;
+            var inclusionStack = markupStack.Count > 0 ? markupStack.Peek().inclusionStack : null;
+            if (inclusionStack != null && inclusionStack.Contains(file))
             {
-                dependencyChain = t_files.Reverse();
+                dependencyChain = inclusionStack.Reverse();
                 return true;
             }
 

@@ -5,7 +5,7 @@
     using System.Collections.Generic;
 
     [Serializable]
-    public sealed class XRefSpec : IDictionary<string, string>
+    public sealed class XRefSpec : IDictionary<string, object>
     {
         public const string UidKey = "uid";
         public const string NameKey = "name";
@@ -13,21 +13,20 @@
         public const string CommentIdKey = "commentId";
         public const string IsSpecKey = "isSpec";
 
-        private Dictionary<string, string> _dict;
-        private bool _isReadOnly;
+        private Dictionary<string, object> _dict;
 
         public XRefSpec()
         {
-            _dict = new Dictionary<string, string>();
+            _dict = new Dictionary<string, object>();
         }
 
-        public XRefSpec(IDictionary<string, string> dictionary)
+        public XRefSpec(IDictionary<string, object> dictionary)
         {
             if (dictionary == null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
-            _dict = new Dictionary<string, string>(dictionary);
+            _dict = new Dictionary<string, object>(dictionary);
         }
 
         public XRefSpec(XRefSpec spec)
@@ -36,15 +35,15 @@
             {
                 throw new ArgumentNullException(nameof(spec));
             }
-            _dict = new Dictionary<string, string>(spec._dict);
+            _dict = new Dictionary<string, object>(spec._dict);
         }
 
         public string Uid
         {
             get
             {
-                _dict.TryGetValue(UidKey, out string value);
-                return value;
+                _dict.TryGetValue(UidKey, out var value);
+                return (string)value;
             }
             set { _dict[UidKey] = value; }
         }
@@ -53,8 +52,8 @@
         {
             get
             {
-                _dict.TryGetValue(NameKey, out string value);
-                return value;
+                _dict.TryGetValue(NameKey, out var value);
+                return (string)value;
             }
             set { _dict[NameKey] = value; }
         }
@@ -63,8 +62,8 @@
         {
             get
             {
-                _dict.TryGetValue(HrefKey, out string value);
-                return value;
+                _dict.TryGetValue(HrefKey, out var value);
+                return (string)value;
             }
             set { _dict[HrefKey] = value; }
         }
@@ -73,8 +72,8 @@
         {
             get
             {
-                _dict.TryGetValue(CommentIdKey, out string value);
-                return value;
+                _dict.TryGetValue(CommentIdKey, out var value);
+                return (string)value;
             }
             set
             {
@@ -110,7 +109,7 @@
 
         private void ThrowIfReadOnly()
         {
-            if (_isReadOnly)
+            if (IsReadOnly)
             {
                 throw new InvalidOperationException("Read only.");
             }
@@ -118,7 +117,7 @@
 
         public XRefSpec ToReadOnly()
         {
-            if (_isReadOnly)
+            if (IsReadOnly)
             {
                 return this;
             }
@@ -126,8 +125,8 @@
             {
                 return new XRefSpec
                 {
-                    _dict = new Dictionary<string, string>(_dict),
-                    _isReadOnly = true,
+                    _dict = new Dictionary<string, object>(_dict),
+                    IsReadOnly = true,
                 };
             }
         }
@@ -157,7 +156,7 @@
 
         #region IDictionary<string, string> Members
 
-        public string this[string key]
+        public object this[string key]
         {
             get { return _dict[key]; }
             set
@@ -169,19 +168,19 @@
 
         public int Count => _dict.Count;
 
-        public bool IsReadOnly => _isReadOnly;
+        public bool IsReadOnly { get; private set; }
 
         public ICollection<string> Keys => _dict.Keys;
 
-        public ICollection<string> Values => _dict.Values;
+        public ICollection<object> Values => _dict.Values;
 
-        void ICollection<KeyValuePair<string, string>>.Add(KeyValuePair<string, string> item)
+        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
         {
             ThrowIfReadOnly();
             _dict.Add(item.Key, item.Value);
         }
 
-        public void Add(string key, string value)
+        public void Add(string key, object value)
         {
             ThrowIfReadOnly();
             _dict.Add(key, value);
@@ -193,18 +192,18 @@
             _dict.Clear();
         }
 
-        bool ICollection<KeyValuePair<string, string>>.Contains(KeyValuePair<string, string> item) => ((IDictionary<string, string>)_dict).Contains(item);
+        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item) => ((IDictionary<string, object>)_dict).Contains(item);
 
         public bool ContainsKey(string key) => _dict.ContainsKey(key);
 
-        void ICollection<KeyValuePair<string, string>>.CopyTo(KeyValuePair<string, string>[] array, int arrayIndex) => ((IDictionary<string, string>)_dict).CopyTo(array, arrayIndex);
+        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) => ((IDictionary<string, object>)_dict).CopyTo(array, arrayIndex);
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => _dict.GetEnumerator();
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _dict.GetEnumerator();
 
-        bool ICollection<KeyValuePair<string, string>>.Remove(KeyValuePair<string, string> item)
+        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
             ThrowIfReadOnly();
-            return ((IDictionary<string, string>)_dict).Remove(item);
+            return ((IDictionary<string, object>)_dict).Remove(item);
         }
 
         public bool Remove(string key)
@@ -213,7 +212,7 @@
             return _dict.Remove(key);
         }
 
-        public bool TryGetValue(string key, out string value) => _dict.TryGetValue(key, out value);
+        public bool TryGetValue(string key, out object value) => _dict.TryGetValue(key, out value);
 
         IEnumerator IEnumerable.GetEnumerator() => _dict.GetEnumerator();
 

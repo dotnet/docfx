@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             catch (Exception ex)
             {
                 // not a valid ymlheader, do nothing
-                _context.LogWarning("invalid-yaml-header", ex.Message);
+                _context.LogWarning("invalid-yaml-header", ex.Message, obj);
             }
         }
     }

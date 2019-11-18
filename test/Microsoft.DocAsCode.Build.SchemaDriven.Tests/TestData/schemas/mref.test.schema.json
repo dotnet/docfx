@@ -15,6 +15,12 @@
             },
             "type": "array"
           },
+		  "monikers": {
+		    "items": {
+		  	  "type": "string"
+		    },
+			"type": "array"
+		  },
           "children": {
             "items": {
               "type": "string",
@@ -32,6 +38,12 @@
             },
             "type": "array"
           },
+		  "intProperty": {
+		  	"type": "number"
+		  },
+		  "boolProperty": {
+		  	"type": "boolean"
+		  },
           "fullName": {
             "type": "string"
           },
@@ -108,7 +120,7 @@
           }
         },
         "type": "object",
-        "xrefProperties": [ "name", "commentId", "nameWithType", "fullName", "summary", "extensionMethods/0" ]
+        "xrefProperties": [ "name", "commentId", "nameWithType", "fullName", "summary", "extensionMethods/0", "boolProperty", "intProperty", "monikers" ]
       },
       "type": "array"
     },

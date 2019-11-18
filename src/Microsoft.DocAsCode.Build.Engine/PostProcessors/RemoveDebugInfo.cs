@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             "sourceFile",
             "sourceStartLineNumber",
             "sourceEndLineNumber",
+            "jsonPath",
             "data-raw-source",
             "nocheck",
         };
@@ -34,6 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
+            manifestItem.Metadata.Remove("rawTitle");
         }
     }
 }

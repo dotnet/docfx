@@ -31,32 +31,45 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             string intermediateFolder = _options.IntermediateFolder;
             string versionName = _options.VersionName ?? string.Empty;
-            var dependencyFile = string.IsNullOrEmpty(_options.DependencyFile) ? Path.Combine(Directory.GetCurrentDirectory(), "dep.json") : _options.DependencyFile;
-            var buildInfo = BuildInfo.Load(intermediateFolder);
-            if (buildInfo == null)
-            {
-                LogErrorAndThrow($"Cache files in the folder {intermediateFolder} are corrupted!", null);
-            }
-            var dg = buildInfo.Versions.FirstOrDefault(v => v.VersionName == versionName)?.Dependency;
-            if (dg == null)
-            {
-                Logger.LogInfo($"Cache files for version {versionName} is not found!", null);
-            }
+            var outputFile = string.IsNullOrEmpty(_options.DependencyFile) ? Path.Combine(Directory.GetCurrentDirectory(), "dep.json") : _options.DependencyFile;
+
+            var dependency = Load(intermediateFolder, versionName);
             Logger.LogInfo($"Exporting dependency file...");
             try
             {
-                var edg = dg == null ? ExpandedDependencyMap.Empty : ExpandedDependencyMap.ConstructFromDependencyGraph(dg);
-                using (var fs = File.Create(dependencyFile))
+                var expandedDependency = dependency == null ?
+                    ExpandedDependencyMap.Empty :
+                    ExpandedDependencyMap.ConstructFromDependencyGraph(dependency);
+                using (var fs = File.Create(outputFile))
                 using (var writer = new StreamWriter(fs))
                 {
-                    edg.Save(writer);
+                    expandedDependency.Save(writer);
                 }
-                Logger.LogInfo($"Dependency file exported at path: {dependencyFile}.");
+                Logger.LogInfo($"Dependency file exported at path: {outputFile}.");
             }
             catch (Exception ex)
             {
                 LogErrorAndThrow($"Unable to export dependency file: {ex.Message}", ex);
             }
+        }
+
+        private DependencyGraph Load(string intermediateFolder, string versionName)
+        {
+            var expandedBaseFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(intermediateFolder));
+            var buildInfoFile = Path.Combine(expandedBaseFolder, BuildInfo.FileName);
+            var buildInfo = JsonUtility.Deserialize<BuildInfo>(buildInfoFile);
+            if (buildInfo == null)
+            {
+                LogErrorAndThrow($"Cache files in the folder '{intermediateFolder}' are corrupted!", null);
+            }
+            var versionInfo = buildInfo.Versions.FirstOrDefault(v => v.VersionName == versionName);
+            if (versionInfo == null)
+            {
+                Logger.LogInfo($"Cache files for version '{versionName}' is not found!", null);
+                return null;
+            }
+            var dependencyFile = Path.Combine(expandedBaseFolder, buildInfo.DirectoryName, versionInfo.DependencyFile);
+            return IncrementalUtility.LoadDependency(dependencyFile);
         }
 
         private void LogErrorAndThrow(string message, Exception e)

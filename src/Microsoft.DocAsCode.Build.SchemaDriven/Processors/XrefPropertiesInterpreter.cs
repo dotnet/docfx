@@ -16,8 +16,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         /// 1. ContentType = uid is defined => xref spec to be exported to xrefspec.yml
         /// Or 2. XrefResolver is defined => external xref spec
         /// </summary>
-        /// <param name="schema"></param>
-        /// <returns></returns>
         public bool CanInterpret(BaseSchema schema)
         {
             if (schema == null)
@@ -50,13 +48,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            var uid = JsonPointer.GetChild(value, "uid") as string;
-            if (uid == null)
+            if (!(JsonPointer.GetChild(value, "uid") is string uid))
             {
                 // schema validation threw error when uid is required, so here when uid is null, it must be optional, which is allowed
                 return value;
             }
-            
+
             if (string.IsNullOrEmpty(uid))
             {
                 Logger.LogWarning($"Invalid xrefProperties for /{path}: empty uid is not allowed.");
@@ -76,14 +73,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 var property = jsonPointer.GetValue(root);
                 if (property != null)
                 {
-                    if (property is string str)
-                    {
-                        xrefSpec[part] = str;
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"Type {property.GetType()} from {jsonPointer} is not supported as the value of xref spec.");
-                    }
+                    xrefSpec[part] = property;
                 }
             }
 

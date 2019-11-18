@@ -141,6 +141,40 @@
   </tbody>
 </table>
 {{/eventType}}
+{{#variableValue}}
+<h5 class="variableValue">{{__global.variableValue}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.type}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{value.type.0.specName.0.value}}}</td>
+      <td>{{{value.description}}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/variableValue}}
+{{#typeAliasType}}
+<h5 class="typeAliasType">{{__global.typeAliasType}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.type}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{value.type.0.specName.0.value}}}</td>
+      <td>{{{value.description}}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/typeAliasType}}
 {{/syntax}}
 {{#overridden}}
 <h5 class="overrides">{{__global.overrides}}</h5>

@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
@@ -68,14 +67,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     hostService.IncrementalInfos = IncrementalContext.GetModelIncrementalInfo(hostService, Phase);
                 }
             }
-            var fileSet = new HashSet<string>(from h in hostServices
-                                              where !h.CanIncrementalBuild
-                                              from f in h.Models
-                                              select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
+            var nonIncreSet = new HashSet<string>(from h in hostServices
+                                                  where !h.CanIncrementalBuild
+                                                  from f in h.Models
+                                                  select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
                                                   FilePathComparer.OSPlatformSensitiveStringComparer);
-            ReloadDependency(fileSet);
+            ReportDependency(nonIncreSet);
             LoadContextInfo(hostServices);
-            RegisterUnloadedTocRestructions(fileSet);
+            RegisterUnloadedTocRestructions(nonIncreSet);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -124,7 +123,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ReloadDependency(HashSet<string> nonIncreSet)
+        private void ReportDependency(HashSet<string> nonIncreSet)
         {
             // restore dependency graph from last dependency graph for unchanged files
             using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Verbose))
@@ -133,15 +132,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (ldg != null)
                 {
                     CurrentBuildVersionInfo.Dependency.ReportReference(from r in ldg.ReferenceReportedBys
-                                                                       where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                       where !IncrementalContext.ChangeDict.TryGetValue(r, out var rChange) || rChange == ChangeKindWithDependency.None
                                                                        where !nonIncreSet.Contains(r)
                                                                        from reference in ldg.GetReferenceReportedBy(r)
                                                                        select reference);
+
                     CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
-                                                                        where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                        where !IncrementalContext.ChangeDict.TryGetValue(r, out var rChange) || rChange == ChangeKindWithDependency.None
                                                                         where !nonIncreSet.Contains(r)
-                                                                        from i in ldg.GetDependencyReportedBy(r)
-                                                                        select i);
+                                                                        from dependency in ldg.GetDependencyReportedBy(r)
+                                                                        select dependency);
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         continue;
                     }
-                    if (!IncrementalContext.ChangeDict.ContainsKey(pathFromWorkingFolder) || IncrementalContext.ChangeDict[pathFromWorkingFolder] == ChangeKindWithDependency.None)
+                    if (!IncrementalContext.ChangeDict.TryGetValue(pathFromWorkingFolder, out var change) || change == ChangeKindWithDependency.None)
                     {
                         _inner.Restructions.AddRange(pair.Value);
                     }
@@ -231,14 +231,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     foreach (var fileLinkSourceFile in list)
                     {
                         var sourceFile = fileLinkSourceFile.SourceFile != null ? ((RelativePath)fileLinkSourceFile.SourceFile).GetPathFromWorkingFolder().ToString() : fromNode;
-                        if (!string.IsNullOrEmpty(fileLinkSourceFile.Anchor))
-                        {
-                            yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.Bookmark);
-                        }
-                        else
-                        {
-                            yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.File);
-                        }
+                        var type = IsBookmark(fileLinkSourceFile) ? DependencyTypeName.Bookmark : DependencyTypeName.File;
+                        yield return new DependencyItem(sourceFile, f, sourceFile, type);
                     }
                 }
                 else
@@ -286,14 +280,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     foreach (var uidLinkSourceFile in list)
                     {
                         var sourceFile = uidLinkSourceFile.SourceFile != null ? ((RelativePath)uidLinkSourceFile.SourceFile).GetPathFromWorkingFolder().ToString() : fromNode;
-                        if (!string.IsNullOrEmpty(uidLinkSourceFile.Anchor))
-                        {
-                            yield return new DependencyItem(sourceFile, item, sourceFile, DependencyTypeName.Bookmark);
-                        }
-                        else
-                        {
-                            yield return new DependencyItem(sourceFile, item, sourceFile, DependencyTypeName.Uid);
-                        }
+                        var type = IsBookmark(uidLinkSourceFile) ? DependencyTypeName.Bookmark : DependencyTypeName.Uid;
+                        yield return new DependencyItem(sourceFile, item, sourceFile, type);
                     }
                 }
                 else
@@ -301,6 +289,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     yield return new DependencyItem(fromNode, item, fromNode, DependencyTypeName.Uid);
                 }
             }
+        }
+
+        private bool IsBookmark(LinkSourceInfo info)
+        {
+            if (string.IsNullOrEmpty(info.Anchor))
+            {
+                return false;
+            }
+            var index = info.Anchor.IndexOf('#');
+            return index != -1 && index < info.Anchor.Length - 1;
         }
 
         #endregion

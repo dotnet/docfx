@@ -300,6 +300,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.LogInfo(message, file: file, line: line);
         }
 
+        public void LogSuggestion(string message, string file, string line)
+        {
+            Logger.LogSuggestion(message, file: file, line: line);
+        }
+
         public void LogWarning(string message, string file, string line)
         {
             Logger.LogWarning(message, file: file, line: line);

@@ -15,13 +15,11 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// current version's name, String.Empty for default version
         /// </summary>
-        [Obsolete("use GroupInfo")]
         string VersionName { get; }
 
         /// <summary>
         /// current version's output base folder
         /// </summary>
-        [Obsolete("use GroupInfo")]
         string VersionOutputFolder { get; }
 
         GroupInfo GroupInfo { get; }
@@ -92,6 +90,7 @@ namespace Microsoft.DocAsCode.Plugins
         void LogDiagnostic(string message, string file = null, string line = null);
         void LogVerbose(string message, string file = null, string line = null);
         void LogInfo(string message, string file = null, string line = null);
+        void LogSuggestion(string message, string file = null, string line = null);
         void LogWarning(string message, string file = null, string line = null);
         void LogError(string message, string file = null, string line = null);
         #endregion

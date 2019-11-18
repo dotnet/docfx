@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Common
         Diagnostic = -1,
         Verbose,
         Info,
+        Suggestion,
         Warning,
         Error,
     }

@@ -158,7 +158,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _manifestWithContext.RunAll(m =>
             {
-                if (m.FileModel.Type == DocumentType.Resource)
+                if (m.FileModel.Type != DocumentType.Article)
                 {
                     return;
                 }

@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 getResult = _mapping.TryGetValue(key, out pm);
             }
-            if (getResult && pm.PhysicalPath.StartsWith(OutputFolder))
+            if (getResult && pm.PhysicalPath.StartsWith(OutputFolder, StringComparison.Ordinal))
             {
                 try
                 {

@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             }
 
             // "/" is also considered as absolute to us
-            if (uri.IsAbsoluteUri || val.StartsWith("/"))
+            if (uri.IsAbsoluteUri || val.StartsWith("/", StringComparison.Ordinal))
             {
                 return value;
             }

@@ -47,6 +47,15 @@ namespace Microsoft.DocAsCode.DataContracts.UniversalReference
         [JsonIgnore]
         public SortedList<string, string> ParentInDevLangs { get; set; } = new SortedList<string, string>();
 
+        [YamlMember(Alias = "package")]
+        [JsonProperty("package")]
+        [UniqueIdentityReference]
+        public string Package { get; set; }
+
+        [ExtensibleMember("package" + Constants.PrefixSeparator)]
+        [JsonIgnore]
+        public SortedList<string, string> PackageInDevLangs { get; set; } = new SortedList<string, string>();
+
         [YamlMember(Alias = Constants.PropertyName.Children)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
         [JsonProperty(Constants.PropertyName.Children)]
@@ -308,6 +317,7 @@ namespace Microsoft.DocAsCode.DataContracts.UniversalReference
             CompositeDictionary
                 .CreateBuilder()
                 .Add(Constants.ExtensionMemberPrefix.Parent, ParentInDevLangs, JTokenConverter.Convert<string>)
+                .Add("package" + Constants.PrefixSeparator, PackageInDevLangs, JTokenConverter.Convert<string>)
                 .Add(Constants.ExtensionMemberPrefix.Children, ChildrenInDevLangs, JTokenConverter.Convert<List<string>>)
                 .Add(Constants.ExtensionMemberPrefix.Source, SourceInDevLangs, JTokenConverter.Convert<SourceDetail>)
                 .Add(Constants.ExtensionMemberPrefix.Namespace, NamespaceNameInDevLangs, JTokenConverter.Convert<string>)

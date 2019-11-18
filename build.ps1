@@ -16,9 +16,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $releaseBranch = "master"
-$dotnetCommand = "dotnet"
 $gitCommand = "git"
-$framework = "net462"
+$framework = "net472"
 $packageVersion = "1.0.0"
 $assemblyVersion = "1.0.0.0"
 
@@ -160,7 +159,7 @@ namespace AssemblyInfo
 [<assembly: System.Reflection.AssemblyInformationalVersionAttribute(""$assemblyFileVersion"")>]
 do ()
     " | Out-File -FilePath $versionFsFilePath
-    Write-Host "Version file saved to $versionFsFilePath" -ForegroundColor Green    
+    Write-Host "Version file saved to $versionFsFilePath" -ForegroundColor Green
 }
 
 Write-Host "Using package version $packageVersion, and assembly version $assemblyVersion, assembly file version $assemblyFileVersion"
@@ -177,7 +176,7 @@ foreach ($sln in (Get-ChildItem *.sln)) {
     }
  else {
         & msbuild $sln.FullName /p:Configuration=$configuration /verbosity:n /m:1
-        ProcessLastExitCode $lastexitcode "msbuild $($sln.FullName) /p:Configuration=$configuration /verbosity:n /m:1"        
+        ProcessLastExitCode $lastexitcode "msbuild $($sln.FullName) /p:Configuration=$configuration /verbosity:n /m:1"
     }
 }
 
@@ -206,8 +205,8 @@ if (-not $skipTests) {
 # dotnet pack first
 foreach ($proj in (Get-ChildItem -Path ("src", "plugins") -Include *.[cf]sproj -Exclude 'docfx.msbuild.csproj' -Recurse)) {
     if ($os -eq "Windows") {
-        & dotnet pack $proj.FullName -c $configuration -o $scriptHome/artifacts/$configuration --no-build /p:Version=$packageVersion
-        ProcessLastExitCode $lastexitcode "dotnet pack $($proj.FullName) -c $configuration -o $scriptHome/artifacts/$configuration --no-build /p:Version=$packageVersion"
+        & dotnet pack $proj.FullName -c $configuration -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion
+        ProcessLastExitCode $lastexitcode "dotnet pack $($proj.FullName) -c $configuration -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion"
     }
  else {
         & nuget pack $($proj.FullName) -Properties Configuration=$configuration -OutputDirectory $scriptHome/artifacts/$configuration -Version $packageVersion
@@ -229,14 +228,6 @@ $packages = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/docfx.console/docfx.console.nuspec");
     };
-    "AzureMarkdownRewriterTool" = @{
-        "proj"    = $null;
-        "nuspecs" = @("src/nuspec/AzureMarkdownRewriterTool/AzureMarkdownRewriterTool.nuspec");
-    };
-    "DfmHttpService"            = @{
-        "proj"    = $null;
-        "nuspecs" = @("src/nuspec/DfmHttpService/DfmHttpService.nuspec");
-    };
     "MergeDeveloperComments"    = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/MergeDeveloperComments/MergeDeveloperComments.nuspec");
@@ -257,6 +248,10 @@ $packages = @{
         "proj"    = $null;
         "nuspecs" = @("src/nuspec/YamlSplitter/YamlSplitter.nuspec");
     };
+	"SandcastleRefMapper"       = @{
+		"proj"    = $null;
+		"nuspecs" = @("src/nuspec/SandcastleRefMapper/SandcastleRefMapper.nuspec")
+	};
 }
 
 # Pack plugins and tools

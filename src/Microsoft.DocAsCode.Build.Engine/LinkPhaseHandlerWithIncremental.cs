@@ -73,6 +73,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     ReloadModelsPerChanges(hostServices);
                 }
+
+                foreach (var hostService in hostServices)
+                {
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name} (link phase), total file count: {hostService.SourceFiles.Count}, skipped file count: {hostService.SourceFiles.Count - hostService.Models.Count}.");
+                }
             }
             Parallel.Invoke(
                 new Action(() =>
@@ -335,7 +340,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (ofi.LinkToPath != null &&
                         ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
-                        ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
+                        ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir, StringComparison.Ordinal) &&
                         (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
                     {
                         IncrementalUtility.RetryIO(() =>

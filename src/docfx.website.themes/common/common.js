@@ -89,17 +89,38 @@ var gitUrlPatternItems = {
         }
     },
     'vso': {
+        // HTTPS form: https://{account}@dev.azure.com/{account}/{project}/_git/{repo}
         // HTTPS form: https://{user}.visualstudio.com/{org}/_git/{repo}
+        // SSH form: git@ssh.dev.azure.com:v3/{account}/{project}/{repo}
         // SSH form: ssh://{user}@{user}.visualstudio.com:22/{org}/_git/{repo}
+        // generated URL under branch: https://{account}@dev.azure.com/{account}/{project}/_git/{repo}?version=GB{branch}
         // generated URL under branch: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GB{branch}
         // generated URL under detached HEAD: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GC{commit}
-        'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+\.)?visualstudio\.com(\/|:).*/i,
+        'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+@)?(\S+\.)?(dev\.azure|visualstudio)\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
             var branchPrefix = /[0-9a-fA-F]{40}/.test(gitInfo.branch) ? 'GC' : 'GB';
             url += '?path=' + gitInfo.path + '&version=' + branchPrefix + gitInfo.branch;
             if (gitInfo.startLine && gitInfo.startLine > 0) {
                 url += '&line=' + gitInfo.startLine;
+            }
+            return url;
+        },
+        'generateNewFileUrl': function (gitInfo, uid) {
+            return '';
+        }
+    },
+    'bitbucket': {
+        // HTTPS form: https://{user}@bitbucket.org/{org}/{repo}.git
+        // SSH form: git@bitbucket.org:{org}/{repo}.git
+        // generate URL: https://bitbucket.org/{org}/{repo}/src/{branch}/{path}
+        'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?bitbucket\.org(\/|:).*/i,
+        'generateUrl': function (gitInfo) {
+            var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
+            url += '/src' + '/' + gitInfo.branch + '/' + gitInfo.path;
+            if (gitInfo.startLine && gitInfo.startLine > 0) {
+                url += '#lines-' + gitInfo.startLine;
             }
             return url;
         },
@@ -191,7 +212,7 @@ function getPatternName(repo, gitUrlPattern) {
 
 function getOverrideFolder(path) {
     if (!path) return "";
-    path = path.replace('\\', '/');
+    path = path.replace(/\\/g, '/');
     if (path.charAt(path.length - 1) == '/') path = path.substring(0, path.length - 1);
     return path;
 }

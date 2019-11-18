@@ -49,6 +49,8 @@ All will render to:
 
 If `link_text` is not specified, DocFX will extract the title from the target topic and use it as the link text.
 
+Do not use the `@uid` link in brackets (like this: `(@uid)`). DocFX cannot parse this link. The `@uid` link should be separated with white spaces. If you need to add a link in brackets, use `[](xref:uid)`.
+
 > [!Note]
 > Hashtag in `xref` is always treated as separator between file name and anchor name. That means if you have `#` in UID, it has
 > to be [encoded](https://en.wikipedia.org/wiki/Percent-encoding) to `%23`.
@@ -328,6 +330,58 @@ DFM currently supports the following __`<language>`__ values to be able to retri
 > [!Note]
 > If dev-lang is not specified, file extension will be used to determine the language.
 
+## Code Snippet for Jupyter Notebooks
+
+Allows you to insert code from a code cell of a Jupyter Notebook. The `source` content in the specified code cell will expand. 
+
+Steps to use this:
+
+1.  In your Jupyter Notebook, add metadata to the code cell you will reference:
+    ```json
+      "metadata": {
+        "name": "{tagname}"
+       }
+    ```
+    
+1. In your .md file, use  `name` to identify the cell.  
+    ```md
+    [!notebook-<language>[](<codepath>?name={tagname})]]
+    ```
+    
+### Code Snippet for Jupyter Notebooks Sample
+
+For this Jupyter Notebook cell:
+
+```json
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "name": "import"
+   },
+   "outputs": [],
+   "source": [
+    "import azureml.core\n",
+    "print(azureml.core.VERSION)"
+   ]
+  },
+ ```
+ 
+Use the markup:
+
+ ```md
+[!notebook-python[](<codepath>?name={import})]]
+```
+
+to display the lines of code in the `source` part of the cell:
+
+```python
+import azureml.core
+print(azureml.core.VERSION)
+```
+
 ## Note (Warning/Tip/Important)
 Using specific syntax inside block quote to indicate the following content is Note.
 
@@ -565,6 +619,27 @@ Tab content-b for 2.
 
 When select `tabid-1` in tab group 1, you can get content-a or content-b for 1 in group 2.\
 When select `tabid-2` in tab group 1, you can get content-a or content-b for 2 in group 2.
+
+## Video
+
+Allows you to add videos to your topics.
+
+Syntax:
+```md
+> [!Video embed_link]
+```
+
+> [!NOTE]
+> You must provide the **embed** uri of the video you wish to add to your topic.
+
+Example:
+```md
+> [!Video https://www.youtube.com/embed/TAaG0nUUy6A]
+```
+
+Result:
+
+> [!Video https://www.youtube.com/embed/TAaG0nUUy6A]
 
 ## Differences introduced by DFM syntax
 

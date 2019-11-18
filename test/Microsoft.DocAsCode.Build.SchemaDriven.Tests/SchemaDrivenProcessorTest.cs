@@ -28,15 +28,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     public class SchemaDrivenProcessorTest : TestBase
     {
         private const string SpecPath = @"TestData\specs\docfx_document_schema.md";
-        private static Regex InputMatcher = new Regex(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex SchemaMatcher = new Regex(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex InputMatcher = new Regex(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex SchemaMatcher = new Regex(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private string _outputFolder;
-        private string _inputFolder;
-        private string _templateFolder;
-        private FileCollection _defaultFiles;
-        private ApplyTemplateSettings _applyTemplateSettings;
-        private TemplateManager _templateManager;
+        private readonly string _outputFolder;
+        private readonly string _inputFolder;
+        private readonly string _templateFolder;
+        private readonly FileCollection _defaultFiles;
+        private readonly ApplyTemplateSettings _applyTemplateSettings;
+        private readonly TemplateManager _templateManager;
 
         private const string RawModelFileExtension = ".raw.json";
 
@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
                 Assert.Equal("world", rawModel["metadata"]["hello"].ToString());
                 Assert.Equal("Hello world!", rawModel["meta"].ToString());
                 Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
-                Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
+                Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/sections/1/children/0/content\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
                                 , rawModel["sections"][1]["children"][0]["content"].ToString());
             }
         }
@@ -126,7 +126,7 @@ searchScope:
                 Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
                 Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].Value<string>());
                 Assert.Equal("../a b/toc.md", rawModel["toc_rel"].Value<string>());
-                Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><a href=\"~/{inputFile}\" data-raw-source=\"[root](../co/active.yml)\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">root</a></p>\n",
+                Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/file_include\"><a href=\"~/{inputFile}\" data-raw-source=\"[root](../co/active.yml)\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">root</a></p>\n",
                     rawModel["file_include"].Value<string>());
                 Assert.Equal("../../a b/toc.md", rawModel["file_include2"].Value<string>());
                 Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].Value<string>());
@@ -224,7 +224,7 @@ items:
 <p><strong>outside</strong></p>
 "
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries),
-File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Select(s=>s.Trim()).ToArray());
+File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToArray());
             }
         }
 
@@ -233,8 +233,11 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
         {
             using (var listener = new TestListenerScope("TestXrefResolver"))
             {
+                // arrange
                 var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
-                var templateXref = CreateFile("template/partials/overview.tmpl", @"{{name}}:{{{summary}}}", _templateFolder);
+                var templateXref = CreateFile(
+                    "template/partials/overview.tmpl", @"{{name}}:{{{summary}}}|{{#boolProperty}}{{intProperty}}{{/boolProperty}}|{{#monikers}}<span>{{.}}</span>{{/monikers}}", 
+                    _templateFolder);
                 var templateFile = CreateFile("template/ManagedReference.html.tmpl", @"
 {{#items}}
 {{#children}}
@@ -246,8 +249,11 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 var inputFile = CreateFile(inputFileName, File.ReadAllText("TestData/inputs/CatLibrary.ICat.yml"), _inputFolder);
                 FileCollection files = new FileCollection(_defaultFiles);
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+
+                // act
                 BuildDocument(files);
 
+                // assert
                 Assert.Single(listener.Items);
                 listener.Items.Clear();
 
@@ -255,7 +261,7 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
                 var xrefmap = YamlUtility.Deserialize<XRefMap>(xrefspec);
                 Assert.Equal(2, xrefmap.References.Count);
                 Assert.Equal(8, xrefmap.References[0].Keys.Count);
-                Assert.Equal(7, xrefmap.References[1].Keys.Count);
+                Assert.Equal(10, xrefmap.References[1].Keys.Count);
 
                 Assert.Equal("ICat", xrefmap.References[0].Name);
                 Assert.Equal("CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)", xrefmap.References[0]["extensionMethods/0"]);
@@ -265,12 +271,33 @@ File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Sele
 
                 var outputFilePath = Path.Combine(_outputFolder, outputFileName);
                 Assert.True(File.Exists(outputFilePath));
-
+                var outputFileContent = File.ReadAllLines(outputFilePath);
                 Assert.Equal($@"
-eat:<p>eat event of cat. Every cat must implement this event.</p>
-"
-                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
-File.ReadAllLines(outputFilePath));
+eat:<p>eat event of cat. Every cat must implement this event.
+This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
+|666|<span>net472</span><span>netstandard2_0</span>".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
+                    outputFileContent);
+            }
+        }
+
+        [Fact]
+        public void TestXrefResolverShouldWarnWithEmptyUidReference()
+        {
+            using (var listener = new TestListenerScope(nameof(TestXrefResolverShouldWarnWithEmptyUidReference)))
+            {
+                // arrange
+                var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
+                var inputFileName = "inputs/CatLibrary.ICat.yml";
+                var inputFile = CreateFile(inputFileName, File.ReadAllText("TestData/inputs/EmptyUidReference.yml"), _inputFolder);
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+
+                // act
+                BuildDocument(files);
+
+                // assert
+                Assert.NotEmpty(listener.Items);
+                Assert.Contains(listener.Items, i => i.Code == WarningCodes.Build.UidNotFound);
             }
         }
 
@@ -316,7 +343,7 @@ searchScope:
   - .NET
 ", _inputFolder);
                 var dependentMarkdown = CreateFile("toc.md", "# Hello", _inputFolder);
-                
+
                 var inputFileName2 = "page2.yml";
                 var inputFile2 = CreateFile(inputFileName2, @"### YamlMime:MetadataReferenceTest
 title: Web Apps Documentation
@@ -395,7 +422,7 @@ title: Web Apps Documentation
 ", _templateFolder);
 
                 var inputFiles = Enumerable.Range(0, 1)
-                    .Select(s => 
+                    .Select(s =>
                     CreateFile($"normal{s}.yml", @"### YamlMime:MetadataReferenceTest
 metadata: Web Apps Documentation
 ", _inputFolder)).ToArray();
@@ -688,7 +715,7 @@ searchScope:
 
             public void Postbuild(ImmutableList<FileModel> models, IHostService host)
             {
-                foreach(var model in models)
+                foreach (var model in models)
                 {
                     if (Path.GetFileNameWithoutExtension(model.File) == "page1")
                     {

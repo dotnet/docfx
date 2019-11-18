@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return manifest;
             }
 
-            if (!manifest.SitemapOptions.BaseUrl.EndsWith("/"))
+            if (!manifest.SitemapOptions.BaseUrl.EndsWith("/", StringComparison.Ordinal))
             {
                 manifest.SitemapOptions.BaseUrl += '/';
             }
@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             else
             {
-                if (!options.BaseUrl.EndsWith("/"))
+                if (!options.BaseUrl.EndsWith("/", StringComparison.Ordinal))
                 {
                     options.BaseUrl += '/';
                 }

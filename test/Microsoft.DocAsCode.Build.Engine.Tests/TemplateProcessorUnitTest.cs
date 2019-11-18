@@ -3,10 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -33,8 +31,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [Fact]
         public void TestXrefWithTemplate()
         {
-            var xrefTmpl = CreateFile("partials/xref.html.tmpl", @"<h2>{{uid}}</h2><p>{{summary}}</p>", _templateFolder);
-            var tmpl = CreateFile("index.html.tmpl", @"
+            CreateFile("partials/xref.html.tmpl", @"<h2>{{uid}}</h2><p>{{summary}}</p>{{#isGood}}Good!{{/isGood}}", _templateFolder);
+            CreateFile("index.html.tmpl", @"
 <xref uid=""{{reference}}"" template=""partials/xref.html.tmpl"" />
 ", _templateFolder);
 
@@ -42,13 +40,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 Uid = "reference",
                 Href = "ref.html",
-                ["summary"] = "hello world"
+                ["summary"] = "hello world",
+                ["isGood"] = true,
             };
             var output = Process("index", "input", new { reference = "reference" }, xref);
 
             Assert.Equal($"{_outputFolder}/input.html".ToNormalizedFullPath(), output.OutputFiles[".html"].RelativePath.ToNormalizedPath());
             Assert.Equal(@"
-<h2>reference</h2><p>hello world</p>
+<h2>reference</h2><p>hello world</p>Good!
 ", File.ReadAllText(Path.Combine(_outputFolder, "input.html")));
 
         }

@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         public override StringBuffer Render(IMarkdownRenderer render, MarkdownStrongInlineToken token, MarkdownInlineContext context)
         {
             var source = token.SourceInfo.Markdown;
-            var symbol = source.StartsWith("_") ? "__" : "**";
+            var symbol = source.StartsWith("_", StringComparison.Ordinal) ? "__" : "**";
             var content = StringBuffer.Empty;
             content += symbol;
             content += RenderInlineTokens(token.Content, render);

@@ -27,10 +27,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public DocumentBuildContext(string buildOutputFolder)
             : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
-
-        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder)
-            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, string.Empty, null, null) { }
-
+        
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty) { }
 
@@ -67,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrEmpty(versionDir))
             {
                 versionDir = versionDir.Replace('\\', '/');
-                if (!versionDir.EndsWith("/"))
+                if (!versionDir.EndsWith("/", StringComparison.Ordinal))
                 {
                     versionDir += "/";
                 }
@@ -116,7 +113,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrEmpty(versionFolder))
             {
                 versionFolder = versionFolder.Replace('\\', '/');
-                if (!versionFolder.EndsWith("/"))
+                if (!versionFolder.EndsWith("/", StringComparison.Ordinal))
                 {
                     versionFolder += "/";
                 }
@@ -126,10 +123,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string BuildOutputFolder { get; }
 
-        [Obsolete("use GroupInfo")]
         public string VersionName { get; }
 
-        [Obsolete("use GroupInfo")]
         public string VersionFolder { get; }
 
         public GroupInfo GroupInfo { get; }
@@ -486,7 +481,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentException("Only relative href path is supported");
             }
-            XRefSpecMap[xrefSpec.Uid] = xrefSpec;
+            XRefSpecMap.AddOrUpdate(
+                xrefSpec.Uid,
+                xrefSpec,
+                (_, old) =>
+                {
+                    Logger.LogWarning($"Uid({xrefSpec.Uid}) has already been defined in {((RelativePath)xrefSpec.Href).RemoveWorkingFolder()}.", 
+                        code: WarningCodes.Build.DuplicateUids);
+                    return FilePathComparer.OSPlatformSensitiveStringComparer.Compare(old.Href, xrefSpec.Href) > 0 ? xrefSpec : old;
+                });
         }
 
         public void RegisterInternalXrefSpecBookmark(string uid, string bookmark)
@@ -520,7 +523,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public XRefSpec GetXrefSpec(string uid)
         {
-            if (string.IsNullOrEmpty(uid))
+            if (uid == null)
             {
                 throw new ArgumentNullException(nameof(uid));
             }

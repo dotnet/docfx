@@ -4,6 +4,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig;
     using Markdig.Extensions.CustomContainers;
+    using Markdig.Parsers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
@@ -22,7 +23,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _extensions = (new ITripleColonExtensionInfo[]
             {
                 new ZoneExtension(),
-                new ChromelessFormExtension()
+                new ChromelessFormExtension(),
+                new ImageExtension()
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
         }
@@ -54,7 +56,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         string Name { get; }
         bool SelfClosing { get; }
-        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError);
+        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, BlockProcessor processor);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
         bool Render(HtmlRenderer renderer, TripleColonBlock block);
     }

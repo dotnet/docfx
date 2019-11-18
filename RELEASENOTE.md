@@ -1,8 +1,121 @@
-Version Notes (Current Version: v2.41)
+Version Notes (Current Version: v2.48)
 =======================================
 
-v2.41(Pre-release)
+v2.48(Pre-release)
 -----------
+
+v2.47
+-----------
+
+1. Add persistence to the TOC filter (#5164). Thanks @jo3w4rd!
+2. Bug fix:
+    1. Fix StackOverflowExcpetion when resolving cross reference. (#4857)
+    2. Fix parsing `~/` in link path. (#5223)
+
+v2.46
+-----------
+
+1. Support Jupyter Notebook in code snippet (#4989, #5000). Thanks @pravakarg, @sdgilley!
+2. Upgrade to Microsoft.CodeAnalysis 3.3.1 for C# 8.0 support (#5163). Thanks @dlech!
+3. Improve the default template for TypeScript documentation (#5128). Thanks @rbuckton!
+4. Improve logging of template preprocessor errors (#5099). Thanks @mcm-ham!
+5. Bug fix:
+    1. fix duplicate warnings when include the same file multiple times. (#5093)
+
+v2.45.1
+-----------
+1. Improve performance by upgrading Jint to 2.11.58. (#5032)
+2. Resolve UID from xrefmap respecting the order defined in `docfx.json`. (#5094)
+3. Bug fix:
+    1. Fix incremental build error when previous build has no content. (#5010)
+    2. Fix PDF cover page not work. (#5077)
+    3. Enforce trailing `]` when matching file inclusion Markdown syntax. (#5091)
+    
+
+v2.45
+-----------
+1. Support linking to repository from dev.azure.com automatically. (#4493)
+2. Unify log code `InvalidInternalBookmark` and `InvalidExternalBookmark` into `InvalidBookMark`.
+3. Expand environment variables in metadata/build `src` section when looking for input files. (#4983)
+
+v2.43.2
+-----------
+1. Bug fix:
+    1. Fix running under Linux/Mono (#4728). Thanks @tibel!
+    2. Fix PDF build failure under Azure DevOps with a new config `noStdin` (#4488). Thanks @oleksabor!
+    3. Fix truncation issue in side bar (#3166). Thanks @icnocop!
+    4. Fix a scrolling issue when clicking the same achor twice (#3133). Thanks @icnocop!
+
+
+v2.43
+-----------
+1. Support Visual Studio 2019. (#4437)
+
+    **[Note]** This will break running under Linux/Mono. Before it is fixed, you can keep using v2.42.4.
+
+v2.42.4
+-----------
+1. Drop project.json support. (#4573)
+
+v2.42.3
+-----------
+1. Bug fix: use remove instead of add to remove duplicate items.
+
+v2.42.2
+-----------
+1. fix JavaScript error when clicking on "In This Article" links in the side navigation of the default website template. (#4419)
+2. Revert PDFSharp back to iTextSharp (#4407)
+
+v2.42.1
+-----------
+1. fix NullReferenceException in dependency command.
+
+v2.42
+-----------
+1. PDF features:
+    1. Added support for a cover page when generating a PDF. (#2004)
+    1. Added the ability to change the default "Cover Page" bookmark for the TOC in the PDF. (#4278)
+    3. Added the ability to specify the type of outline to use when generating a PDF.
+2. Replaced iTextSharp with PdfSharp (#4250).
+    1. **[Breaking change]** Removed support for OutlineOption.CustomOutline when generating a PDF.
+3. Bug fix:
+    1. Prevent adding duplicate HTML files when generating a PDF.
+
+v2.41
+-----------
+1. Performance improvement:
+    1. **[Breaking Change]** Abandon metadata on resource files, including global/file metadata, and paired `.meta` files.
+    2. Fix several performance issues.
+2. Improve warnings when configuration contains invalid glob pattern in `exclude` section.
+3. Stablize result if multiple TOC links to the same file.
+4. Bug fix:
+    1. Search bar not showing in `statictoc` template. (#3109)
+    2. false invalid bookmark warnings when linking to H1 heading. (#4155)
+
+v2.40.12
+-----------
+1. Improve performance in Markdig Markdown engine. (#4048)
+1. Bug fix:
+    1. DocFX fails when runs under Mono on Linux/MacOS. (#3389 #3746)
+
+v2.40.11
+-----------
+1. Add new severity level - `Suggestion`.
+
+v2.40.10
+-----------
+1. Bug fix:
+    1. Non-source files should not be included in file metadata changes when incremental build.
+
+v2.40.9
+-----------
+1. Fix error extracting metadata from DLL files. (#3979)
+
+v2.40.8
+-----------
+1. Performance improvement:
+    1. Increase incremental build chance when `fileMetadata` changes. (#3816)
+    2. Improvement query performance when extracting metadata. (#3207)
 
 v2.40.7
 -----------

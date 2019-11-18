@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers
                         }
                     }
 
-                    if (Regexes.DoubleLike.IsMatch(scalar.Value))
+                    if (Regexes.FloatLike.IsMatch(scalar.Value))
                     {
                         currentType = typeof(double);
                         return true;

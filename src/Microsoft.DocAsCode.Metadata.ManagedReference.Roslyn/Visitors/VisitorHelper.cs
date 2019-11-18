@@ -73,11 +73,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
-            bool inGlobalNamespace = 
-                symbol.ContainingNamespace == null || 
-                symbol.ContainingNamespace.IsGlobalNamespace;
-
-            if (inGlobalNamespace && !string.IsNullOrEmpty(GlobalNamespaceId))
+            if (InGlobalNamespace(symbol) && !string.IsNullOrEmpty(GlobalNamespaceId))
             {
                 bool isNamespace = (symbol is INamespaceSymbol);
                 bool isTypeParameter = (symbol is ITypeParameterSymbol);
@@ -203,6 +199,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 default:
                     return MemberType.Default;
             }
+        }
+
+        public static bool InGlobalNamespace(ISymbol symbol)
+        {
+            Debug.Assert(symbol != null);
+
+            return symbol.ContainingNamespace == null || symbol.ContainingNamespace.IsGlobalNamespace;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Common
                 }
                 foreach (var entry in _entries)
                 {
-                    if (key.StartsWith(entry.Prefix))
+                    if (key.StartsWith(entry.Prefix, StringComparison.Ordinal))
                     {
                         var pair = entry.TryGetValue(key.Substring(entry.Prefix.Length));
                         if (pair.Key)
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Common
                 }
                 foreach (var entry in _entries)
                 {
-                    if (key.StartsWith(entry.Prefix))
+                    if (key.StartsWith(entry.Prefix, StringComparison.Ordinal))
                     {
                         entry.SetValue(key.Substring(entry.Prefix.Length), value);
                         return;

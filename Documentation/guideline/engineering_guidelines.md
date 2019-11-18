@@ -44,6 +44,7 @@ Current approved dependencies are:
 * Jint
 * HtmlAgilityPack
 * Nustache
+* iTextSharp
 * YamlDotNet
 
 ### Code reviews and checkins
@@ -65,7 +66,7 @@ In general:
 * `dev` has the code that is being worked on but that we have not yet released. This is the branch into which developers normally submit pull requests and merge changes into. We run daily CI towards `dev` branch and generate pre-release nuget package, e.g. `1.0.1-alpha-9-abcdefsd`.
 
 ### Solution and project folder structure and naming
-Solution files go in the repo root. The default entry point is `All.sln`.
+Solution files go in the repo root. The default entry point is `docfx.sln`.
 
 Every project also needs a `project.json` and a matching `.xproj` file. This `project.json` is the source of truth for a project's dependencies and configuration options.
 

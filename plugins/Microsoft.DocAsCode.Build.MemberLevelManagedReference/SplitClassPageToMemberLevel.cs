@@ -341,7 +341,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return parts[parts.Length - 1];
             }
 
-            if (overload.StartsWith(parent))
+            if (overload.StartsWith(parent, StringComparison.Ordinal))
             {
                 return overload.Substring(parent.Length).Trim(Separator, OverloadLastChar);
             }

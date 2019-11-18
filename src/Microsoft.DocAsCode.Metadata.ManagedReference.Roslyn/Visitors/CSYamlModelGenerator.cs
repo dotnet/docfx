@@ -602,7 +602,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static AttributeSyntax GetAttributeSyntax(AttributeData attr)
         {
             var attrTypeName = NameVisitorCreator.GetCSharp(NameOptions.None).GetName(attr.AttributeClass);
-            if (attrTypeName.EndsWith(nameof(Attribute)))
+            if (attrTypeName.EndsWith(nameof(Attribute), StringComparison.Ordinal))
             {
                 attrTypeName = attrTypeName.Remove(attrTypeName.Length - nameof(Attribute).Length);
             }

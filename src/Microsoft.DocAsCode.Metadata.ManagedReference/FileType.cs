@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         NotSupported,
         Solution,
         Project,
-        ProjectJsonProject,
         VBSourceCode,
         CSSourceCode,
         Assembly,

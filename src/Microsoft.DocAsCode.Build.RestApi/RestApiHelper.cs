@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             // Decode for URI Fragment Identifier Representation
-            if (reference.StartsWith("#/"))
+            if (reference.StartsWith("#/", StringComparison.Ordinal))
             {
                 var result = ParseReferencePath(reference.Substring(2));
                 return new SwaggerFormattedReference
@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             // Not decode for JSON String Representation
-            if (reference.StartsWith("/"))
+            if (reference.StartsWith("/", StringComparison.Ordinal))
             {
                 return new SwaggerFormattedReference
                 {

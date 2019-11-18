@@ -15,9 +15,6 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Toc = "Toc";
         }
 
-        /// <summary>
-        /// TODO: add other property name const
-        /// </summary>
         public static class PropertyName
         {
             public const string Uid = "uid";
@@ -29,6 +26,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Path = "path";
             public const string DocumentType = "documentType";
             public const string Title = "title";
+            public const string TitleOverwriteH1 = "titleOverwriteH1";
             public const string Conceptual = "conceptual";
             public const string Documentation = "documentation";
             public const string Summary = "summary";

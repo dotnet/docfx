@@ -59,7 +59,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             #region Prepare test data
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
-            var resourceMetaFile = resourceFile + ".meta";
 
             CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
 
@@ -98,7 +97,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test encoded autolink style xref with anchor: <xref:%58%52%65%66%32#anchor>",
                     "Test invalid autolink style xref with anchor: <xref:invalid#anchor>",
                     "Test short xref: @XRef2",
-                    "Test xref with query string: <xref href=\"XRef2?text=Foo%3CT%3E\"/>",
+                    "Test xref with query string: <xref href=\"XRef2?text=Foo%3CT%3E&it=remain\"/>",
+                    "Test xref with query and bookmark carried to output: <xref href=\"XRef2?view=query#bookmark\"/>",
                     "Test invalid xref with query string: <xref href=\"invalid?alt=Foo%3CT%3E\"/>",
                     "Test xref with attribute: <xref href=\"XRef2\" text=\"Foo&lt;T&gt;\"/>",
                     "Test xref with attribute: <xref href=\"XRef2\" name=\"Foo&lt;T&gt;\"/>",
@@ -127,8 +127,32 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "test",
                 },
                 _inputFolder);
-
-            File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
+            var conceptualFile3 = CreateFile("check-xrefmap.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test xrefmap with duplicate uid in different files: XRef1 should be recorded with file check-xrefmap.md"
+                },
+                _inputFolder);
+            var conceptualFile4 = CreateFile("test/verify-xrefmap.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test xrefmap with duplicate uid in different fiels: XRef2 should be recorded with file test/test.md"
+                },
+                _inputFolder);
             File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
 rules : [
     ""foo"",
@@ -145,7 +169,7 @@ tagRules : [
 }");
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2, conceptualFile3, conceptualFile4 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
@@ -216,7 +240,7 @@ tagRules : [
                             "<!-- I'm not title-->",
                             "<!-- Raw title is in the line below -->",
                             "",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"33\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"34\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
                             $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"12\" sourceendlinenumber=\"12\">link text</a>",
                             $"Test link: <a href=\"~/{resourceFile}\" data-raw-source=\"[link text 2](../Microsoft.DocAsCode.Build.Engine.Tests.dll)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">link text 2</a>",
                             $"Test link style xref: <a href=\"xref:XRef2\" title=\"title\" data-raw-source=\"[link text 3](xref:XRef2 &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"14\" sourceendlinenumber=\"14\">link text 3</a>",
@@ -228,15 +252,16 @@ tagRules : [
                             $"Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:%58%52%65%66%32#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"20\" sourceendlinenumber=\"20\"></xref>",
                             $"Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:invalid#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"21\" sourceendlinenumber=\"21\"></xref>",
                             $"Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef2\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"22\" sourceendlinenumber=\"22\"></xref>",
-                            "Test xref with query string: <xref href=\"XRef2?text=Foo%3CT%3E\"></xref>",
+                            "Test xref with query string: <xref href=\"XRef2?text=Foo%3CT%3E&it=remain\"></xref>",
+                            "Test xref with query and bookmark carried to output: <xref href=\"XRef2?view=query#bookmark\"></xref>",
                             "Test invalid xref with query string: <xref href=\"invalid?alt=Foo%3CT%3E\"></xref>",
                             "Test xref with attribute: <xref href=\"XRef2\" text=\"Foo&lt;T&gt;\"></xref>",
                             "Test xref with attribute: <xref href=\"XRef2\" name=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
-                            $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"29\" sourceendlinenumber=\"29\"></xref>",
-                            $"Test invalid autolink xref: <xref href=\"?displayProperty=fullName\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:?displayProperty=fullName&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"30\" sourceendlinenumber=\"30\"></xref>",
-                            $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" data-raw-source=\"[GitHub](GitHub.md?shouldBeAbbreviated=true#test)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"31\" sourceendlinenumber=\"31\">GitHub</a>",
+                            $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"30\" sourceendlinenumber=\"30\"></xref>",
+                            $"Test invalid autolink xref: <xref href=\"?displayProperty=fullName\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:?displayProperty=fullName&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"31\" sourceendlinenumber=\"31\"></xref>",
+                            $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" data-raw-source=\"[GitHub](GitHub.md?shouldBeAbbreviated=true#test)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"32\" sourceendlinenumber=\"32\">GitHub</a>",
                             "<p>",
                             @"test</p>",
                             ""),
@@ -248,7 +273,7 @@ tagRules : [
                             "<!-- I'm not title-->",
                             "<!-- Raw title is in the line below -->",
                             "",
-                            "<p>Test XRef: <a class=\"xref\" href=\"test.html\">Hello World</a>",
+                            "<p>Test XRef: <a class=\"xref\" href=\"check-xrefmap.html\">Hello World</a>",
                             "Test link: <a href=\"test/test.html\">link text</a>",
                             "Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\">link text 2</a>",
                             "Test link style xref: <a class=\"xref\" href=\"test/test.html\" title=\"title\">link text 3</a>",
@@ -260,7 +285,8 @@ tagRules : [
                             "Test encoded autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>",
                             "Test invalid autolink style xref with anchor: &lt;xref:invalid#anchor&gt;",
                             "Test short xref: <a class=\"xref\" href=\"test/test.html\">Hello World</a>",
-                            "Test xref with query string: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
+                            "Test xref with query string: <a class=\"xref\" href=\"test/test.html?it=remain\">Foo&lt;T&gt;</a>",
+                            "Test xref with query and bookmark carried to output: <a class=\"xref\" href=\"test/test.html?view=query#bookmark\">Hello World</a>",
                             "Test invalid xref with query string: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
@@ -289,19 +315,28 @@ tagRules : [
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
                     var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
-                    Assert.Equal(4, meta.Count);
-                    Assert.True(meta.ContainsKey("meta"));
-                    Assert.Equal("Hello world!", meta["meta"]);
-                    Assert.True(meta.ContainsKey("abc"));
-                    Assert.Equal("xyz", meta["abc"]);
-                    Assert.True(meta.ContainsKey(Constants.PropertyName.Uid));
-                    Assert.Equal("r1", meta[Constants.PropertyName.Uid]);
+                    Assert.Single(meta);
+                    Assert.True(!meta.ContainsKey("meta"));
+                }
+
+                {
+                    // check xrefmap
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, "xrefmap.yml")));
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(Path.Combine(_outputFolder, "xrefmap.yml"));
+                    Assert.Equal(71, xrefMap.References.Count);
+
+                    var xref1 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef1")).ToList();
+                    Assert.Single(xref1);
+                    Assert.Equal(Path.ChangeExtension(conceptualFile3, "html").ToNormalizedPath(), xref1[0]?.Href);
+
+                    var xref2 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef2")).ToList();
+                    Assert.Single(xref2);
+                    Assert.Equal(Path.ChangeExtension(conceptualFile2, "html").ToNormalizedPath(), xref2[0]?.Href);
                 }
             }
             finally
             {
                 CleanUp();
-                File.Delete(resourceMetaFile);
             }
         }
 

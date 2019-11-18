@@ -72,6 +72,9 @@ namespace Microsoft.DocAsCode.Common
                 case LogLevel.Info:
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
+                case LogLevel.Suggestion:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
                 case LogLevel.Warning:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;

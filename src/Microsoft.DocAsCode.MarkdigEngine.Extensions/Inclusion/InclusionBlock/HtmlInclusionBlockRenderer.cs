@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
+    using System.Linq;
 
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
@@ -20,22 +21,22 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File, inclusion);
 
             if (content == null)
             {
-                _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.");
+                _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
 
             if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
             {
-                _context.LogWarning("circular-reference", $"Found circular reference: {string.Join(" --> ", dependencyChain)} --> {includeFilePath}");
+                _context.LogWarning("circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{includeFilePath}'", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
-            using (InclusionContext.PushFile(includeFilePath))
+            using (InclusionContext.PushInclusion(includeFilePath))
             {
                 renderer.Write(Markdown.ToHtml(content, _pipeline));
             }

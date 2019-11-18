@@ -13,8 +13,7 @@ namespace Microsoft.DocAsCode.Common
         public static class Build
         {
             public const string TooManyWarnings = "TooManyWarnings";
-            public const string InvalidInternalBookmark = "InvalidInternalBookmark";
-            public const string InvalidExternalBookmark = "InvalidExternalBookmark";
+            public const string InvalidBookmark = "InvalidBookmark";
             public const string InvalidFileLink = "InvalidFileLink";
             public const string DuplicateUids = "DuplicateUids";
             public const string DuplicateOutputFiles = "DuplicateOutputFiles";
@@ -28,8 +27,10 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidTaggedPropertyType = "InvalidTaggedPropertyType";
             // todo : add uid not found in SDP.
             public const string UidNotFound = "UidNotFound";
+            public const string ReferencedXrefPropertyNotString = "ReferencedXrefPropertyNotString";
             public const string UnknownContentType = "UnknownContentType";
             public const string UnknownContentTypeForTemplate = "UnknownContentTypeForTemplate";
+            public const string InvalidTocInclude = "InvalidTocInclude";
         }
 
         public static class Markdown

@@ -87,6 +87,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(new NestedColumnBlock(this)
             {
+                Line = processor.LineIndex,
                 ColumnWidth = columnWidth.ToString(),
                 ColonCount = colonCount,
                 Column = column,
@@ -124,7 +125,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-nested-column", $"NestedColumn have some invalid chars in the ending.");
+                _context.LogWarning("invalid-nested-column", $"NestedColumn have some invalid chars in the ending.", block);
             }
 
             block.UpdateSpanEnd(slice.End);

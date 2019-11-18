@@ -35,7 +35,6 @@ namespace Microsoft.DocAsCode.Tests
         [Trait("Language", "CSharp")]
         public void TestMetadataCommandFromCSProject()
         {
-            // Create default project
             var projectFile = Path.Combine(_projectFolder, "test.csproj");
             var sourceFile = Path.Combine(_projectFolder, "test.cs");
             File.Copy("Assets/test.csproj.sample.1", projectFile);
@@ -47,50 +46,43 @@ namespace Microsoft.DocAsCode.Tests
                 Projects = new List<string> { projectFile },
             }).Exec(null);
 
-            Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
+            CheckResult();
+        }
 
-            var file = Path.Combine(_outputFolder, "toc.yml");
-            Assert.True(File.Exists(file));
-            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
-            Assert.Equal("Foo", tocViewModel[0].Uid);
-            Assert.Equal("Foo", tocViewModel[0].Name);
-            Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
-            Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
+        [Fact]
+        [Trait("Related", "docfx")]
+        [Trait("Language", "CSharp")]
+        public void TestMetadataCommandFromCSProjectWithVsinstalldirEnvSet()
+        {
+            var envName = "VSINSTALLDIR";
+            var originalValue = Environment.GetEnvironmentVariable(envName);
+            Environment.SetEnvironmentVariable(envName, "c:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise");
 
-            file = Path.Combine(_outputFolder, "Foo.yml");
-            Assert.True(File.Exists(file));
-            var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-            Assert.Equal("Foo", memberViewModel.Items[0].Uid);
-            Assert.Equal("Foo", memberViewModel.Items[0].Id);
-            Assert.Equal("Foo", memberViewModel.Items[0].Name);
-            Assert.Equal("Foo", memberViewModel.Items[0].FullName);
+            try
+            {
+                TestMetadataCommandFromCSProject();
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(envName, originalValue);
+            }
+        }
 
-            file = Path.Combine(_outputFolder, "Foo.Bar.yml");
-            Assert.True(File.Exists(file));
-            memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-            Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
-            Assert.Equal("Bar", memberViewModel.Items[0].Id);
-            Assert.Equal("Bar", memberViewModel.Items[0].Name);
-            Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-            Assert.Equal("Foo.Bar.FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
-            Assert.Equal("FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
-            Assert.Equal("FooBar<TArg>(Int32[], Byte*, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
-            Assert.Equal("Foo.Bar.FooBar<TArg>(System.Int32[], System.Byte*, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Collections.Generic.List{System.String}")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Int32[]")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Byte*")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("{TArg}")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Collections.Generic.List{{TArg}[]}")
-                ));
+        [Fact]
+        [Trait("Related", "docfx")]
+        [Trait("Language", "CSharp")]
+        public void TestMetadataCommandFromDll()
+        {
+            var dllFile = Path.Combine(_projectFolder, "test.dll");
+            File.Copy("Assets/test.dll.sample.1", dllFile);
+
+            new MetadataCommand(new MetadataCommandOptions
+            {
+                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
+                Projects = new List<string> { dllFile },
+            }).Exec(null);
+
+            CheckResult();
         }
 
         [Fact]
@@ -111,50 +103,8 @@ namespace Microsoft.DocAsCode.Tests
                 Projects = new List<string> { projectFile },
             }).Exec(null);
 
-            Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
-            var file = Path.Combine(_outputFolder, "toc.yml");
-            Assert.True(File.Exists(file));
-            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
-            Assert.Equal("Foo", tocViewModel[0].Uid);
-            Assert.Equal("Foo", tocViewModel[0].Name);
-            Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
-            Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
-
-            file = Path.Combine(_outputFolder, "Foo.yml");
-            Assert.True(File.Exists(file));
-            var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-            Assert.Equal("Foo", memberViewModel.Items[0].Uid);
-            Assert.Equal("Foo", memberViewModel.Items[0].Id);
-            Assert.Equal("Foo", memberViewModel.Items[0].Name);
-            Assert.Equal("Foo", memberViewModel.Items[0].FullName);
-
-            file = Path.Combine(_outputFolder, "Foo.Bar.yml");
-            Assert.True(File.Exists(file));
-            memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-            Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
-            Assert.Equal("Bar", memberViewModel.Items[0].Id);
-            Assert.Equal("Bar", memberViewModel.Items[0].Name);
-            Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-            Assert.Equal("Foo.Bar.FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
-            Assert.Equal("FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
-            Assert.Equal("FooBar<TArg>(Int32[], Byte*, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
-            Assert.Equal("Foo.Bar.FooBar<TArg>(System.Int32[], System.Byte*, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Collections.Generic.List{System.String}")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Int32[]")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Byte*")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("{TArg}")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Collections.Generic.List{{TArg}[]}")
-                ));
+            CheckResult();
         }
 
         [Fact]
@@ -176,50 +126,7 @@ namespace Microsoft.DocAsCode.Tests
                 MSBuildProperties = "TargetFramework=net46"
             }).Exec(null);
 
-            Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
-
-            var file = Path.Combine(_outputFolder, "toc.yml");
-            Assert.True(File.Exists(file));
-            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
-            Assert.Equal("Foo", tocViewModel[0].Uid);
-            Assert.Equal("Foo", tocViewModel[0].Name);
-            Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
-            Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
-
-            file = Path.Combine(_outputFolder, "Foo.yml");
-            Assert.True(File.Exists(file));
-            var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-            Assert.Equal("Foo", memberViewModel.Items[0].Uid);
-            Assert.Equal("Foo", memberViewModel.Items[0].Id);
-            Assert.Equal("Foo", memberViewModel.Items[0].Name);
-            Assert.Equal("Foo", memberViewModel.Items[0].FullName);
-
-            file = Path.Combine(_outputFolder, "Foo.Bar.yml");
-            Assert.True(File.Exists(file));
-            memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-            Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
-            Assert.Equal("Bar", memberViewModel.Items[0].Id);
-            Assert.Equal("Bar", memberViewModel.Items[0].Name);
-            Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-            Assert.Equal("Foo.Bar.FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
-            Assert.Equal("FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
-            Assert.Equal("FooBar<TArg>(Int32[], Byte*, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
-            Assert.Equal("Foo.Bar.FooBar<TArg>(System.Int32[], System.Byte*, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Collections.Generic.List{System.String}")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Int32[]")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Byte*")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("{TArg}")
-                ));
-            Assert.NotNull(memberViewModel.References.Find(
-                s => s.Uid.Equals("System.Collections.Generic.List{{TArg}[]}")
-                ));
+            CheckResult();
         }
 
         [Fact]
@@ -333,7 +240,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("Bar", memberViewModel.Items[0].Id);
             Assert.Equal("Bar", memberViewModel.Items[0].Name);
             Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-            Assert.Equal(1, memberViewModel.Items.Count);
+            Assert.Single(memberViewModel.Items);
             Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
         }
 
@@ -382,7 +289,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("Bar", memberViewModel.Items[0].Id);
             Assert.Equal("Bar", memberViewModel.Items[0].Name);
             Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-            Assert.Equal(1, memberViewModel.Items.Count);
+            Assert.Single(memberViewModel.Items);
             Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
         }
 
@@ -405,6 +312,11 @@ namespace Microsoft.DocAsCode.Tests
                 Projects = new List<string> { projectFile },
             }).Exec(null);
 
+            CheckResult();
+        }
+
+        private void CheckResult()
+        {
             Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
             var file = Path.Combine(_outputFolder, "toc.yml");

@@ -3,10 +3,10 @@ Getting Started with *DocFX*
 
 ## 1. What is *DocFX*
 
-*DocFX* is an API documentation generator for .NET, which currently supports C# and VB.
+*DocFX* is an API documentation generator for .NET, which currently supports C#, VB and F#.
 It generates API reference documentation from triple-slash comments in your source code.
 It also allows you to use Markdown files to create additional topics such as tutorials and how-tos, and to customize the generated reference documentation.
-*DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web servers (for example, *github.io*).
+*DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web server (for example, *github.io*).
 Also, *DocFX* provides you the flexibility to customize the layout and style of your website through templates.
 If you are interested in creating your own website with your own styles, you can follow [how to create custom template](howto_create_custom_template.md) to create custom templates.
 
@@ -16,19 +16,17 @@ If you are interested in creating your own website with your own styles, you can
 * Cross-platform support. We have an exe version that runs natively on Windows and with Mono it can also run on Linux and macOS.
 * Integration with Visual Studio. You can seamlessly use *DocFX* within Visual Studio.
 * Markdown extensions. We introduced *DocFX Flavored Markdown(DFM)* to help you write API documentation. DFM is *100%* compatible with *GitHub Flavored Markdown(GFM)* with some useful extensions, like *file inclusion*, *code snippet*, *cross reference*, and *yaml header*.
-For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
+For a detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
 > [!Warning]
-> **Prerequisites** [Visual Studio 2017](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
+> **Prerequisites** [Visual Studio 2019](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
 
 ## 2. Use *DocFX* as a command-line tool
 
-*Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
-Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `choco install docfx -y`.
-
-DocFX also ships as a [Homebrew package](https://formulae.brew.sh/formula/docfx) owned by community users, install with `brew install docfx`.
-
-Alternatively, you can download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
+*Step1.* Install DocFX. Choose from one of the following sources:
+* **[Chocolatey](https://chocolatey.org/packages/docfx)**: `choco install docfx -y`.
+* **[Homebrew](https://formulae.brew.sh/formula/docfx)** (owned by community): `brew install docfx`.
+* **GitHub**: download and unzip `docfx.zip` from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
 
 *Step2.* Create a sample project
 ```
@@ -43,6 +41,12 @@ docfx docfx_project\docfx.json --serve
 ```
 
 Now you can view the generated website on http://localhost:8080.
+
+> [!Important]
+>
+> For macOS/Linux users: Use [Mono](https://www.mono-project.com/) version >= 5.10.
+>
+> For macOS users: **DO NOT** Install Mono from Homebrew, but rather from the [Mono download page](https://www.mono-project.com/download/stable/#download-mac).
 
 ## 3. Use *DocFX* integrated with Visual Studio
 
@@ -71,40 +75,41 @@ Now you can view the generated website on http://localhost:8080.
 
 ## 4. Use *DocFX* with a Build Server
 
-*DocFX* can be used in a Continuous Integration environment.
+## 4.1 Steps
+
+*DocFX* can be used in a Continuous Integration (CI) environment. 
+
+Consider a typical scenario: We want to set up a job on a CI service (e.g. [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)) to build documents automatically and publish to a website (e.g. [GitHub Pages](https://pages.github.com/)). We can achieve this with a script in a CI job with the following steps:
+
+1. clone repo
+2. `choco install docfx`
+3. `docfx {docsetPath}`, while you can change `build.dest` in `docfx.json` to set the output path
+4. push all the content in `docsetPath/_site` to `gh-pages` branch
+
+> [!NOTE]
+> These steps give an overall impression of what to do. You can adjust them depending on actual scenario.
+
+[docfx-seed](https://github.com/docascode/docfx-seed/blob/master/appveyor.yml) project provides a sample integrating with AppVeyor.
+
+## 4.2 Set branch name
 
 Most build systems do not checkout the branch that is being built, but use a `detached head` for the specific commit.  DocFX needs the branch name to implement the `View Source` link in the API documentation.
 
-Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use.
-
-Many build systems set an environment variable with the branch name.  DocFX uses the following:
+Many build systems set an environment variable with the branch name.  DocFX uses the following automatically:
 
 - `APPVEYOR_REPO_BRANCH` - [AppVeyor](https://www.appveyor.com/)
-- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Team Services](https://www.visualstudio.com/team-services/)
+- `BUILD_SOURCEBRANCHNAME` - [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)
 - `CI_BUILD_REF_NAME` - [GitLab CI](https://about.gitlab.com/gitlab-ci/)
 - `Git_Branch` - [TeamCity](https://www.jetbrains.com/teamcity/)
 - `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
 - `GIT_LOCAL_BRANCH` - [Jenkins](https://jenkins.io/)
 
+Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use, if the CI service you use is not in the list above.
+
 > [!NOTE]
 > *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
-## 5. Build from source code
-
-As a prerequisite, you need:
-- [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
-- [Node.js](https://nodejs.org)
-
-*Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.
-
-*Step2.* Run `build.cmd` under root folder.
-
-*Step3.* Add `artifacts` folder to nuget source by in IDE:
-  > Tools > NuGet Package Manager > Package Manager Settings > Package Sources
-
-*Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or .NET Core.
-
-## 6. A seed project to play with *DocFX*
+## 5. A seed project to play with *DocFX*
 
 Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 
@@ -117,7 +122,7 @@ Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 > [!Tip]
 > It's good practice to separate files with different types into different folders.
 
-## 7. Q&A
+## 6. Q&A
 
 1. Q: How do I quickly reference APIs from other APIs or conceptual files?
    A: Use `@uid` syntax.

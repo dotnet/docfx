@@ -32,6 +32,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
 
+        // why mark as `IncrementalIgnore`: although ConfigHash ignores this, FileMetadataCache includes it.
+        [IncrementalIgnore]
         public FileMetadata FileMetadata { get; set; }
 
         [IncrementalIgnore]

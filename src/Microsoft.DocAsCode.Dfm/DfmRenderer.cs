@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmSectionBlockSplitToken splitToken, MarkdownBlockContext context)
         {
             StringBuffer content = string.Empty;
-            if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
+            if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n", StringComparison.Ordinal))
             {
                 Logger.LogWarning(
                     "The content part of [!div] syntax is suggested to start in a new line.",

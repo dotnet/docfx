@@ -10,13 +10,17 @@ namespace Microsoft.DocAsCode.Common
         private readonly string _originPhaseName;
         private readonly PerformanceScope _performanceScope;
         private readonly AmbientContext? _ac;
+
         public LoggerPhaseScope(string phaseName)
-            : this(phaseName, null) { }
+            : this(phaseName, null, null) { }
 
         public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel)
-            : this(phaseName, (LogLevel?)perfLogLevel) { }
+            : this(phaseName, (LogLevel?)perfLogLevel, null) { }
 
-        private LoggerPhaseScope(string phaseName, LogLevel? perfLogLevel)
+        public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel, AggregatedPerformanceScope aggregatedPerformanceLogger)
+            : this(phaseName, (LogLevel?)perfLogLevel, aggregatedPerformanceLogger) { }
+
+        private LoggerPhaseScope(string phaseName, LogLevel? perfLogLevel, AggregatedPerformanceScope aggregatedPerformanceLogger)
         {
             if (string.IsNullOrWhiteSpace(phaseName))
             {
@@ -30,7 +34,7 @@ namespace Microsoft.DocAsCode.Common
             SetPhaseName(phaseName);
             if (perfLogLevel != null)
             {
-                _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel.Value);
+                _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel.Value, aggregatedPerformanceLogger);
             }
         }
 

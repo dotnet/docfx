@@ -28,6 +28,10 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 throw new ArgumentNullException(nameof(other));
             }
+            if (other.Transitivity == DependencyTransitivity.Never)
+            {
+                return false;
+            }
             if (Transitivity == DependencyTransitivity.All)
             {
                 return true;

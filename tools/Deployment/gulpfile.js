@@ -30,7 +30,6 @@ nconf.add("configuration", { type: "file", file: configFile });
 
 let config = {
     "docfx": nconf.get("docfx"),
-    "firefox": nconf.get("firefox"),
     "myget": nconf.get("myget"),
     "git": nconf.get("git"),
     "choco": nconf.get("choco"),
@@ -39,7 +38,6 @@ let config = {
 
 config.myget.exe = process.env.NUGETEXE || config.myget.exe;
 Guard.argumentNotNull(config.docfx, "config.docfx", "Can't find docfx configuration.");
-Guard.argumentNotNull(config.firefox, "config.docfx", "Can't find firefox configuration.");
 Guard.argumentNotNull(config.myget, "config.docfx", "Can't find myget configuration.");
 Guard.argumentNotNull(config.git, "config.docfx", "Can't find git configuration.");
 Guard.argumentNotNull(config.choco, "config.docfx", "Can't find choco configuration.");
@@ -70,13 +68,6 @@ gulp.task("clean", () => {
     });
 });
 
-gulp.task("e2eTest:installFirefox", () => {
-    Guard.argumentNotNullOrEmpty(config.firefox.version, "config.firefox.version", "Can't find firefox version in configuration.");
-
-    process.env.Path += ";C:/Program Files/Mozilla Firefox";
-    return Common.execAsync("choco", ["install", "firefox", "--version=" + config.firefox.version, "-y", "--force"]);
-});
-
 gulp.task("e2eTest:restoreSeed", async () => {
     Guard.argumentNotNullOrEmpty(config.docfx.docfxSeedRepoUrl, "config.docfx.docfxSeedRepoUrl", "Can't find docfx-seed repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.docfxSeedHome, "config.docfx.docfxSeedHome", "Can't find docfx-seed in configuration.");
@@ -91,23 +82,7 @@ gulp.task("e2eTest:buildSeed", () => {
     return Common.execAsync(path.resolve(config.docfx["exe"]), ["docfx.json"], config.docfx.docfxSeedHome);
 });
 
-gulp.task("e2eTest:restore", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.e2eTestsHome, "config.docfx.e2eTestsHome", "Can't find E2ETest directory in configuration.");
-
-    return Common.execAsync("dotnet", ["restore"], config.docfx.e2eTestsHome);
-});
-
-gulp.task("e2eTest:test", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.e2eTestsHome, "config.docfx.e2eTestsHome", "Can't find E2ETest directory in configuration.");
-
-    return Common.execAsync("dotnet", ["test"], config.docfx.e2eTestsHome);
-});
-
-// TODO: fix e2eTest
-// gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:restoreSeed", "e2eTest:buildSeed", "e2eTest:restore", "e2eTest:test"));
-gulp.task("e2eTest", () => {
-    return Promise.resolve();
-})
+gulp.task("e2eTest", gulp.series("e2eTest:restoreSeed", "e2eTest:buildSeed"));
 
 gulp.task("publish:myget-dev", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
@@ -176,15 +151,20 @@ gulp.task("packAssetZip", () => {
 
 gulp.task("publish:gh-release", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
+    Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
+
+    let githubToken = process.env.TOKEN;
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    return Github.updateGithubReleaseAsync(config.docfx.sshRepoUrl, releaseNotePath, githubToken);
+});
+
+gulp.task("publish:gh-asset", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find asset zip destination folder in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
     let githubToken = process.env.TOKEN;
-
-    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
-
-    return Github.updateGithubReleaseAsync(config.docfx.sshRepoUrl, releaseNotePath, assetZipPath, githubToken);
+    return Github.updateGithubAssetAsync(config.docfx.sshRepoUrl, assetZipPath, githubToken);
 });
 
 gulp.task("publish:chocolatey", () => {
@@ -231,10 +211,9 @@ gulp.task("syncBranchCore", () => {
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
-gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
+gulp.task("dev:release", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
-gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:chocolatey"));
+gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
 
-gulp.task("syncBranch", gulp.series("syncBranchCore"));
 gulp.task("default", gulp.series("dev"));
