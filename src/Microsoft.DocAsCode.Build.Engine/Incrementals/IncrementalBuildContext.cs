@@ -128,7 +128,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             LastBuildVersionInfo = lbv;
             IncrementalInfo = new IncrementalInfo();
             CanVersionIncremental = GetCanVersionIncremental(buildInfoIncrementalStatus);
-
         }
 
         #endregion
