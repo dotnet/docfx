@@ -7,12 +7,8 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class RedirectionItem
+    internal struct GroupConfig
     {
-        public PathString SourcePath { get; set; }
-
-        public SourceInfo<string> RedirectUrl { get; set; }
-
-        public bool RedirectDocumentId { get; set; }
+        public readonly SourceInfo<string> MonikerRange;
     }
 }

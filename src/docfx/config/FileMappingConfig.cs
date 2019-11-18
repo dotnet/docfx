@@ -6,18 +6,33 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class FileGroupConfig
+    internal class FileMappingConfig
     {
         /// <summary>
         /// Gets the file glob patterns included by the group.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Files = Array.Empty<string>();
+        public readonly string[] Files = Config.DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from the group.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
         public readonly string[] Exclude = Array.Empty<string>();
+
+        /// <summary>
+        /// Gets the root folder.
+        /// </summary>
+        public readonly PathString Src;
+
+        /// <summary>
+        /// Gets the destination folder if copy/transform is used.
+        /// </summary>
+        public readonly PathString Dest;
+
+        /// <summary>
+        /// Gets the group name for v2 backward compact
+        /// </summary>
+        public readonly string Group = "";
     }
 }

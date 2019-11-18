@@ -10,34 +10,36 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildScope
     {
+        private readonly Config _config;
+
+        private readonly (Func<string, bool>, FileMappingConfig)[] _globs;
+
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<PathString> _fileNames = new HashSet<PathString>();
 
-        private readonly Config _config;
+        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> _fileMappings
+                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig)>();
 
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
         /// </summary>
         public HashSet<FilePath> Files { get; }
 
-        public Func<string, bool> Glob { get; }
-
         public BuildScope(Config config, Input input, Docset fallbackDocset)
         {
             _config = config;
+            _globs = CreateGlobs(config);
 
             using (Progress.Start("Globbing files"))
             {
-                Glob = CreateGlob(config);
-
                 var (fileNames, allFiles) = ListFiles(config, input, fallbackDocset);
 
                 var files = new ListBuilder<FilePath>();
                 ParallelUtility.ForEach(allFiles, file =>
                 {
-                    if (Glob(file.Path.Value))
+                    if (Glob(file.Path))
                     {
                         files.Add(file);
                     }
@@ -46,6 +48,26 @@ namespace Microsoft.Docs.Build
                 Files = files.ToList().ToHashSet();
                 _fileNames = fileNames;
             }
+        }
+
+        public bool Glob(PathString path)
+        {
+            return MapPath(path).mapping != null;
+        }
+
+        public (PathString path, FileMappingConfig mapping) MapPath(PathString path)
+        {
+            return _fileMappings.GetOrAdd(path, _ =>
+            {
+                foreach (var (glob, mapping) in _globs)
+                {
+                    if (path.StartsWithPath(mapping.Src, out var remainingPath) && glob(remainingPath))
+                    {
+                        return (mapping.Dest + remainingPath, mapping);
+                    }
+                }
+                return (path, null);
+            });
         }
 
         public bool OutOfScope(Document filePath)
@@ -103,20 +125,22 @@ namespace Microsoft.Docs.Build
             return (fileNames, files);
         }
 
-        private static Func<string, bool> CreateGlob(Config config)
+        private static (Func<string, bool>, FileMappingConfig)[] CreateGlobs(Config config)
         {
-            if (config.FileGroups.Length > 0)
+            if (config.Content.Length == 0 && config.Resource.Length == 0)
             {
-                var globs = config.FileGroups.Select(fileGroup => GlobUtility.CreateGlobMatcher(
-                    fileGroup.Files,
-                    fileGroup.Exclude.Concat(Config.DefaultExclude).ToArray()))
-                   .ToArray();
-                return new Func<string, bool>((file) => globs.Any(glob => glob(file)));
+                var glob = GlobUtility.CreateGlobMatcher(
+                    config.Files, config.Exclude.Concat(Config.DefaultExclude).ToArray());
+
+                return new[] { (glob, new FileMappingConfig()) };
             }
 
-            return GlobUtility.CreateGlobMatcher(
-                config.Files,
-                config.Exclude.Concat(Config.DefaultExclude).ToArray());
+            // Support v2 src/dest config per file group
+            return (
+                from mapping in config.Content.Concat(config.Resource)
+                let glob = GlobUtility.CreateGlobMatcher(
+                    mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray())
+                select (glob, mapping)).ToArray();
         }
     }
 }

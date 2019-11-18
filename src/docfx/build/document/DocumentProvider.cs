@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly Input _input;
+        private readonly BuildScope _buildScope;
         private readonly TemplateEngine _templateEngine;
 
         private readonly string _depotName;
@@ -24,10 +25,11 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
+            Docset docset, Docset fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
         {
             _docset = docset;
             _fallbackDocset = fallbackDocset;
+            _buildScope = buildScope;
             _dependencyDocsets = LoadDependencies(docset, repositoryProvider);
             _input = input;
             _templateEngine = templateEngine;
@@ -276,6 +278,8 @@ namespace Microsoft.Docs.Build
 
         private PathString ApplyRoutes(PathString path)
         {
+            (path, _) = _buildScope.MapPath(path);
+
             // the latter rule takes precedence of the former rule
             foreach (var (source, dest) in _routes)
             {

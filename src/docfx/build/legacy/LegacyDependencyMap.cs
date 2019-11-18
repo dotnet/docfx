@@ -16,8 +16,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             List<Document> documemts,
-            DependencyMap dependencyMap,
-            LegacyVersionProvider legacyVersionProvider)
+            DependencyMap dependencyMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
@@ -43,7 +42,7 @@ namespace Microsoft.Docs.Build
                                 From = $"~/{document.FilePath.Path}",
                                 To = $"~/{toc.FilePath.Path}",
                                 Type = LegacyDependencyMapType.Metadata,
-                                Version = legacyVersionProvider.GetLegacyVersion(document),
+                                Version = context.MonikerProvider.GetFileLevelMonikerRange(document.FilePath),
                             });
                         }
                     });
@@ -62,7 +61,7 @@ namespace Microsoft.Docs.Build
                             From = $"~/{source.FilePath.Path}",
                             To = $"~/{dependencyItem.To.FilePath.Path}",
                             Type = dependencyItem.Type.ToLegacyDependencyMapType(),
-                            Version = legacyVersionProvider.GetLegacyVersion(source),
+                            Version = context.MonikerProvider.GetFileLevelMonikerRange(source.FilePath),
                         });
                     }
                 }

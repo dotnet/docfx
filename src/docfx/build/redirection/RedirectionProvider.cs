@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
                         where !sourcePath.StartsWith(".")
                         select new RedirectionItem
                         {
-                            SourcePath = PathUtility.NormalizeFile(sourcePath),
+                            SourcePath = new PathString(sourcePath),
                             RedirectUrl = item.RedirectUrl,
                             RedirectDocumentId = item.RedirectDocumentId,
                         }).OrderBy(item => item.RedirectUrl.Source).ToArray();

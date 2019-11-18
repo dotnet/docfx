@@ -1563,3 +1563,34 @@ outputs:
         "f649fb38":["versioning-1.0","versioning-2.0"]
       }
     }
+---
+# Read moniker range from content src/dest and group settings
+inputs:
+  docfx.yml: |
+    content:
+    - src: v1
+      dest: .
+      group: g1
+    - src: v2
+      dest: .
+      group: g2
+    groups:
+      g1:
+        moniker_range: netcore-1.0
+      g2:
+        moniker_range: netcore-2.0
+    monikerDefinition: monikerDefinition.json
+  v1/a.md:
+  v2/a.md:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  136a42ac/a.json: |
+    { "monikers": ["netcore-1.0"] }
+  4667fedf/a.json: |
+    { "monikers": ["netcore-2.0"] }
