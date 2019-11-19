@@ -7,7 +7,7 @@ With full-fledged HTML support, some behaviors might not be desirable. For examp
 In this document, you'll learn how to define Markdown validation rules, which will help you ensure that your document follows strict conventions.
 
 >[!NOTE]
->Markdown validation is part of the Markdown processor in DocFX. If you switch the Markdown engine, validation rules might not apply the same way.
+>Markdown validation is part of the `dfm` Markdown processor in DocFX. If you switch the Markdown engine, validation rules might not apply the same way.
 
 There are three kinds of validation rules provided by DocFX:
 
