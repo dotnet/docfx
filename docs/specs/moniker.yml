@@ -491,7 +491,7 @@ inputs:
 outputs:
   docs/v1/a.json: |
     {
-      "conceptual": "<div data-moniker=\"\"><p>Moniker: netcore-1.0</p></div>"
+      "monikers": undefined
     }
   .errors.log: |
     ["suggestion","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.","docs/v1/a.md",2,1]
