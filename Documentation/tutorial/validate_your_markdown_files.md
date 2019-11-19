@@ -13,7 +13,7 @@ There are three kinds of validation rules provided by DocFX:
 
 1. [**HTML tag rules**](#html-tag-validation-rules). Used to validate HTML tags in Markdown content. There is often a need to restrict usage of HTML tags in Markdown to only allow safe markup.
 2. [**Markdown token rules**](#markdown-token-validation-rules). This rule type can be used to validate different kinds of Markdown syntax elements, such as headings, links or images.
-3. [**Metadata rules**](#validate-metadata-in-markdown-files). This rule type can be used to validate document metadata. Metadata can be defined in YAML front-matter in individual Markdown files, the `docfx.json` configuration file, or a standalone JSON file. Metadata rules give you a central place to validate metadata against specific document tagging conventions.
+3. [**Metadata rules**](#validate-metadata-in-markdown-files). This rule type can be used to validate document metadata. Metadata can be defined in the YAML header in individual Markdown files, the `docfx.json` configuration file, or a standalone JSON file. Metadata rules give you a central place to validate metadata against specific document tagging conventions.
 
 ## HTML tag validation rules
 
@@ -237,14 +237,14 @@ This gives you an opportunity to disable the rules enabled by default.
 
 ## Validate metadata in Markdown files
 
-In Markdown files, we can write metadata in [the front-matter](../spec/docfx_flavored_markdown.md#yaml-header) or [an overwrite document](intro_overwrite_files.md).
+In Markdown files, we can write metadata in [the YAML header](../spec/docfx_flavored_markdown.md#yaml-header) or [an overwrite document](intro_overwrite_files.md).
 DocFX allows you to create a plug-in to validate metadata.
 
 ### Scope of metadata validation
 
 Metadata will be validated by the DocFX build in the following order:
 
-1. YAML front-matter in the Markdown file.
+1. YAML header in the Markdown file.
 2. Global metadata and file metadata in `docfx.json`.
 3. Global metadata and file metadata defined in separate `.json` files.
 
