@@ -289,7 +289,7 @@ outputs:
   docs/a.json: |
     {"a": "b"}
   .errors.log: |
-    ["warning","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key.","docs/a.md",3,1]
+    ["suggestion","yaml-duplicate-key","Key 'a' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.","docs/a.md",3,1]
 ---
 # Invalid yaml syntax in yaml header
 inputs:

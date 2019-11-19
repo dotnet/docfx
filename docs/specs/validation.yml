@@ -10,9 +10,12 @@ inputs:
     bar
     >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
 outputs:
-  docs/a.json:
+  docs/a.json: |
+    {
+      "conceptual": "<p>bar</p><blockquote><blockquote><blockquote><blockquote><blockquote><blockquote><blockquote><p>cb1abc6bd98cfc84317f8aa95a7662815417802d</p></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote>"
+    }
   .errors.log: |
-    ["warning","merge-conflict","File contains merge conflict","docs/a.md",2,1]
+    ["suggestion","merge-conflict","File contains merge conflict. NOTE: This Suggestion will become a Warning on 06/30/2020.","docs/a.md",2,1]
 ---
 # Metadata value must be scalar or scalar array
 inputs:

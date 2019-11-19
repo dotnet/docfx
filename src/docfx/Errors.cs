@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error YamlDuplicateKey(SourceInfo source, string key)
-            => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
+            => new Error(ErrorLevel.Suggestion, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
 
         /// <summary>
         /// Syntax error in json file.
@@ -277,7 +277,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MergeConflict(SourceInfo source)
-            => new Error(ErrorLevel.Warning, "merge-conflict", "File contains merge conflict", source);
+            => new Error(ErrorLevel.Suggestion, "merge-conflict", "File contains merge conflict. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
 
         /// <summary>
         /// Failed to resolve uid defined by @ syntax.
@@ -582,7 +582,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MonikerRangeUndefined(SourceInfo<string> source)
-            => new Error(ErrorLevel.Error, "moniker-range-undefined", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.", source);
+            => new Error(ErrorLevel.Suggestion, "moniker-range-undefined", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.", source);
 
         /// <summary>
         /// Config's monikerRange and monikerRange defined in yaml header has no intersection,

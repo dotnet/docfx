@@ -900,7 +900,7 @@ outputs:
   docs/toc.json: |
     {"items":[{"name":"Duplicated keys","href":"f1/b"}]}
   .errors.log: |
-    ["warning","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key.","docs/TOC.yml",3,3]
+    ["suggestion","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.","docs/TOC.yml",3,3]
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
