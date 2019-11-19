@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Table of contents file which is also called TOC file is used to organize file structure and to provide navigation in the published page. TOC Files must have file name toc.md, toc.yml or toc.json, notice that file name could be case-sensitive or -insensitive depending on the platform.
+Table of contents file which is also called TOC file is used to organize file structure and to provide navigation in the published page. TOC Files must have file name toc.md, toc.yml or toc.json, notice that file name is upper case TOC on case sensitive systems.
 
 > [Note]
 > Only one or zero file(toc.md, toc.yml or toc.json) is allowed to exist in one folder, otherwise output-path-conflict will be raised during DocFX build.
