@@ -66,14 +66,14 @@ Property Name                    | Type                       | Description
 *items*                          | array of *TOC Item Object* | Specifies the children *TOC Items* of current *TOC Item*.
 
 
-> [!Note]
-> *advanced*: These properties are useful when a TOC links another TOC. 
-> Possible usage samples:
-> #   | tocHref         | topicHref          | href           | comment
-> --- | --------------- | ------------------ | -------------- | -------
-> 1   | folder/         | -                  | article.md     |
-> 2   | -               | article.md         | folder/toc.md  |
-> 3   | folder/         | /absolute/path     | -              | typically used in breadcrumb
+#### Properties(Advanced)
+These properties are useful when a TOC links another TOC.  
+Possible usage samples:
+#   | tocHref         | topicHref          | href           | comment
+--- | --------------- | ------------------ | -------------- | -------
+1   | folder/         | -                  | article.md     |
+2   | -               | article.md         | folder/toc.md  |
+3   | folder/         | /absolute/path     | -              | typically used in breadcrumb
 (see below [Toc Item Link `href`](#toc-item-link-href) for more detailed explanation)
 
 ## Toc Item Link `href`
