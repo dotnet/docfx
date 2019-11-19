@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
-            string docsetPath, ErrorLog errorLog, BuildScope buildScope, DocumentProvider documentProvider, MonikerProvider monikerProvider)
+            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, DocumentProvider documentProvider, MonikerProvider monikerProvider)
         {
             _errorLog = errorLog;
             _buildScope = buildScope;
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
 
             var redirections = LoadRedirectionModel(docsetPath);
-            _redirectUrls = GetRedirectUrls(redirections);
+            _redirectUrls = GetRedirectUrls(redirections, hostName);
             _renameHistory = GetRenameHistory(redirections, _redirectUrls);
         }
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             return file;
         }
 
-        private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections)
+        private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
         {
             var redirectUrls = new Dictionary<FilePath, string>();
 
@@ -91,6 +91,13 @@ namespace Microsoft.Docs.Build
                             absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), absoluteRedirectUrl));
                             break;
                         case LinkType.AbsolutePath:
+                            break;
+                        case LinkType.External:
+                            var (redirectHostName, redirectPath) = UrlUtility.SplitBaseUrl(absoluteRedirectUrl);
+                            if (string.Equals(redirectHostName, hostName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                absoluteRedirectUrl = $"/{redirectPath}";
+                            }
                             break;
                         default:
                             _errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
