@@ -62,6 +62,17 @@ outputs:
   docs/index.json:
   b.png:
 ---
+# Support triple star - For backward compatibility with v2
+inputs:
+  docfx.yml: |
+    content:
+    - files: docs/**/*.md
+      exclude:
+      - '***/readme.md'
+  docs/a/readme.md:
+outputs:
+  !docs/a/readme.json: null
+---
 # Use content and resource and ignore root build scope if content or resource is defined
 inputs:
   docfx.yml: |
