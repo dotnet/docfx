@@ -61,7 +61,7 @@ To perform tag content validation, it is possible to create a custom rule. To do
 
 1. Create a new .NET project in your code editor (e.g. Visual Studio).
 2. Add a reference to the [`Microsoft.DocAsCode.Plugins`](https://www.nuget.org/packages/Microsoft.DocAsCode.Plugins/) and [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/) NuGet packages.
-3. Create a new class and implement the `@Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator` interface.
+3. Create a new class and implement the @Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator interface.
 4. Add the `ExportAttribute` decorator with your contract name.
 
 For example, to require for HTML links (`<a>`) to not include the `onclick` attribute, the code can be written as such:
@@ -134,8 +134,8 @@ To create a rule, follow the steps below:
 
 1. Create a new project in your IDE (e.g. Visual Studio).
 2. Add a reference to the [`Microsoft.DocAsCode.MarkdownLite`](https://www.nuget.org/packages/Microsoft.DocAsCode.MarkdownLite/) and [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/) NuGet packages.
-3. Create a class that implements the `@Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider` interface.
-    > `@Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory` contains some helper methods to create a validator.
+3. Create a class that implements the @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider interface.
+    > @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory contains some helper methods to create a validator.
 4. Decorate your class with the `ExportAttribute`, that contains the rule name.
 
 For example, the following rule will require all code blocks to use the `csharp` language identifier:
@@ -170,9 +170,9 @@ Follow the steps in [How to enable custom HTML tag rules](#how-to-enable-custom-
 
 ### Logging in your rules
 
-You can throw `@Microsoft.DocAsCode.Plugins.DocumentException` to raise an error with the rules. This will stop the build immediately.
+You can throw @Microsoft.DocAsCode.Plugins.DocumentException to raise an error with the rules. This will stop the build immediately.
 
-You can also use `@Microsoft.DocAsCode.Common.Logger.LogWarning` and `@Microsoft.DocAsCode.Common.Logger.LogError` to report a warning or an error, respectively.
+You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning and @Microsoft.DocAsCode.Common.Logger.LogError to report a warning or an error, respectively.
 
 >[!NOTE]
 >To use the aforementioned methods, you will need to install the [`Microsoft.DocAsCode.Common`](https://www.nuget.org/packages/Microsoft.DocAsCode.Common/) NuGet package.
@@ -183,7 +183,7 @@ The difference between `LogError` and throwing `DocumentException` is in the fac
 
 In certain cases, we might need to validate tokens with the file context. For example, it might be necessary to enforce a rule that ensures that each topic has one title (i.e. H1 written in standard Markdown syntax, e.g. `# <title>`).
 
-You can't directly count the tokens with `@Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator` since the context is shared by all files - the rule will never be hit when there is no heading in a file.
+You can't directly count the tokens with @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator since the context is shared by all files - the rule will never be hit when there is no heading in a file.
 
 We can create a custom validator as such:
 
@@ -214,7 +214,7 @@ MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
 
 The [FromLambda](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.FromLambda``1(System.Action{``0},System.Action{Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine})) method takes two callbacks:
 
-* The first callback will be invoked in `@Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken`, matched against all files. The static `@Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine` property will provide current context object.
+* The first callback will be invoked in @Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken, matched against all files. The static @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine property will provide current context object.
 * The second callback will be invoked when starting the processing of a new file. You can initialize some variables for each file, and register some callbacks when the file processing is complete.
 
 ## Advanced usage of `md.style`
@@ -255,7 +255,7 @@ Metadata will be validated by the DocFX build in the following order:
 
 1. Create a new project in your IDE (e.g. Visual Studio).
 2. Add a reference to [`Microsoft.DocAsCode.Plugins`](https://www.nuget.org/packages/Microsoft.DocAsCode.Plugins/) and [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/) NuGet packages.
-3. Create a new class and implement the `@Microsoft.DocAsCode.Plugins.IInputMetadataValidator`.
+3. Create a new class and implement the @Microsoft.DocAsCode.Plugins.IInputMetadataValidator.
 
 For example, the following validator prohibits any metadata with the name set to `hello`:
 
