@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public static Func<string, bool> CreateGlobMatcher(string pattern)
         {
-            var glob = CreateGlob(PreProcessPattern(pattern));
+            var glob = CreateGlob(pattern);
 
             return path => !IsFileStartingWithDot(path) && glob.IsMatch(path);
         }
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             {
                 var options = PathUtility.IsCaseSensitive ? GlobOptions.None : GlobOptions.CaseInsensitive;
 
-                return new Glob(pattern, options | GlobOptions.MatchFullPath | GlobOptions.Compiled);
+                return new Glob(PreProcessPattern(pattern), options | GlobOptions.MatchFullPath | GlobOptions.Compiled);
             }
             catch (Exception ex)
             {
