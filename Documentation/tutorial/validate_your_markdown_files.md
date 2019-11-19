@@ -172,7 +172,7 @@ Follow the steps in [How to enable custom HTML tag rules](#how-to-enable-custom-
 
 You can throw @Microsoft.DocAsCode.Plugins.DocumentException to raise an error with the rules. This will stop the build immediately.
 
-You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning and @Microsoft.DocAsCode.Common.Logger.LogError to report a warning or an error, respectively.
+You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String) and @Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String) to report a warning or an error, respectively.
 
 >[!NOTE]
 >To use the aforementioned methods, you will need to install the [`Microsoft.DocAsCode.Common`](https://www.nuget.org/packages/Microsoft.DocAsCode.Common/) NuGet package.
