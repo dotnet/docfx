@@ -67,6 +67,18 @@ inputs:
       b.md: a
 outputs:
 ---
+# redirect to can start with https and hostname
+inputs:
+  docfx.yml: |
+    baseUrl: https://docs.microsoft.com/
+  b.md:
+  redirections.yml: |
+    renames:
+      a.md: https://docs.microsoft.com/b
+outputs:
+  b.json: |
+   {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}
+---
 # Redirection files have conflicted ids
 # all redirection files will be built
 # redirection document id is retrieved from the first redirection file (a.md for below case)
