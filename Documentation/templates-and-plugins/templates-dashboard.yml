@@ -75,6 +75,19 @@ items:
       init: "git clone https://github.com/steffen-wilke/darkfx.git darkfx"
       command: "-t default,templates/darkfx"
       config: '"template":["default","templates/darkfx"]'
+  - name: UnityFX
+    description: A theme for Unity-esque documentation
+    author: Marvin Neurath
+    version: 1.0
+    type: External
+    thumbnail: ~/templates-and-plugins/images/unityfx.png
+    homepage: https://github.com/code-beans/UnityFX
+    repository:
+      type: git
+      url: "https://github.com/code-beans/UnityFX"
+    usage:
+      command: "-t statictoc"
+      config: '"template":["default","templates/unity"]'
 description: |
   # Dashboard for Templates
   The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!
