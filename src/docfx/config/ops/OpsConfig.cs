@@ -17,6 +17,12 @@ namespace Microsoft.Docs.Build
 
         public readonly OpsDependencyConfig[] DependentRepositories = Array.Empty<OpsDependencyConfig>();
 
+        public readonly string GitRepositoryBranchOpenToPublicContributors;
+
+        public readonly string GitRepositoryUrlOpenToPublicContributors;
+
+        public readonly bool NeedGeneratePdfUrlTemplate;
+
         public static bool TryLoad(string docsetPath, string branch, out JObject result)
         {
             var directory = docsetPath;
@@ -57,6 +63,14 @@ namespace Microsoft.Docs.Build
 
             result["template"] = dependencies.FirstOrDefault(
                 dep => dep.name.Equals("_themes", StringComparison.OrdinalIgnoreCase)).obj;
+
+            result["output"] = new JObject { ["pdf"] = opsConfig.NeedGeneratePdfUrlTemplate };
+
+            result["contribution"] = new JObject
+            {
+                ["repositoryUrl"] = opsConfig.GitRepositoryUrlOpenToPublicContributors,
+                ["repositoryBranch"] = opsConfig.GitRepositoryBranchOpenToPublicContributors,
+            };
 
             var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(config =>
                 PathUtility.PathComparer.Equals(

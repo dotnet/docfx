@@ -12,8 +12,8 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class GlobalMetadata
     {
-        [Obsolete("v2 backward compatibility")]
-        public string[] ContributorsToExclude { get; set; } = Array.Empty<string>();
+        // For v2 backward compatibility
+        public HashSet<string> ContributorsToExclude { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         // For v2 backward compatibility
         [JsonProperty("_op_documentIdPathDepotMapping")]

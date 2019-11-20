@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
     internal class ContributionProvider
     {
         private readonly Input _input;
+        private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly GitHubUserCache _gitHubUserCache;
 
@@ -27,6 +28,7 @@ namespace Microsoft.Docs.Build
             _input = input;
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
+            _docset = docset;
             _fallbackDocset = fallbackDocset;
             _commitBuildTimeProvider = docset.Repository != null && docset.Config.UpdateTimeAsCommitBuildTime
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
@@ -44,7 +46,9 @@ namespace Microsoft.Docs.Build
 
             var contributionCommits = GetContributionCommits();
 
-            var excludes = document.Docset.Config.Contribution.ExcludedContributors;
+            var excludes = _docset.Config.GlobalMetadata.ContributorsToExclude.Count > 0
+                ? _docset.Config.GlobalMetadata.ContributorsToExclude
+                : _docset.Config.Contribution.ExcludeContributors;
 
             Contributor authorFromCommits = null;
             var contributors = new List<Contributor>();
@@ -63,7 +67,7 @@ namespace Microsoft.Docs.Build
                 : null;
 
             var isGitHubRepo = UrlUtility.TryParseGitHubUrl(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName);
+                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.RepositoryUrl, out gitHubOwner, out gitHubRepoName);
 
             if (!document.Docset.Config.GitHub.ResolveUsers)
             {
@@ -180,44 +184,14 @@ namespace Microsoft.Docs.Build
             }
 
             var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
-            var originalContentGitUrlTemplate = contentBranchUrlTemplate;
-            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
+            var originalContentGitUrl = contentBranchUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
+            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo) : originalContentGitUrl;
 
-            return (GetContentGitUrl(contentBranchUrlTemplate),
+            return (
+                contentGitUrl,
                 originalContentGitUrl,
-                !isWhitelisted ? originalContentGitUrl : originalContentGitUrlTemplate,
+                !isWhitelisted ? originalContentGitUrl : contentBranchUrlTemplate,
                 contentGitCommitUrl);
-
-            string GetContentGitUrl(string branchUrlTemplate)
-            {
-                var (editRemote, editBranch) = (repo.Remote, repo.Branch);
-
-                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var repoContributionBranch))
-                {
-                    editBranch = repoContributionBranch;
-                }
-
-                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) && isWhitelisted)
-                {
-                    var contributionPackageUrl = new PackagePath(document.Docset.Config.Contribution.Repository);
-                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Url, pathToRepo);
-
-                    var hasBranch = (UrlUtility.SplitUrl(document.Docset.Config.Contribution.Repository).fragment ?? "").Length > 1;
-                    (editRemote, editBranch) = (contributionPackageUrl.Url, hasBranch ? contributionPackageUrl.Branch : editBranch);
-                    if (_fallbackDocset != null)
-                    {
-                        (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
-                                                    document.Docset.Config.Localization.Mapping,
-                                                    false,
-                                                    editRemote,
-                                                    editBranch,
-                                                    document.Docset.Locale,
-                                                    document.Docset.Config.Localization.DefaultLocale);
-                    }
-                }
-
-                return branchUrlTemplate?.Replace("{repo}", editRemote).Replace("{branch}", editBranch);
-            }
         }
 
         public void Save()
@@ -226,6 +200,36 @@ namespace Microsoft.Docs.Build
             {
                 _commitBuildTimeProvider.Save();
             }
+        }
+
+        private string GetContentGitUrl(string repo, string branch, string pathToRepo)
+        {
+            var config = _docset.Config;
+
+            if (!string.IsNullOrEmpty(config.Contribution.RepositoryUrl))
+            {
+                repo = config.Contribution.RepositoryUrl;
+            }
+
+            if (!string.IsNullOrEmpty(config.Contribution.RepositoryBranch))
+            {
+                branch = config.Contribution.RepositoryBranch;
+            }
+
+            if (LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
+            {
+                branch = contributionBranch;
+            }
+
+            if (_fallbackDocset != null)
+            {
+                (repo, branch) = LocalizationUtility.GetLocalizedRepo(
+                    config.Localization.Mapping, false, repo, branch, _docset.Locale, config.Localization.DefaultLocale);
+            }
+
+            var (gitUrlTemplate, _) = GetContentGitUrlTemplate(repo, pathToRepo);
+
+            return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", branch);
         }
 
         private static (string branchUrlTemplate, string commitUrlTemplate) GetContentGitUrlTemplate(string remote, string pathToRepo)

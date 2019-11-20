@@ -156,12 +156,12 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
   https://docfx.com/edit-url1.zh-cn#live:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -177,14 +177,14 @@ repos:
           localization:
             mapping: Branch
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
   https://docfx.com/edit-url2.loc#live.zh-cn:
     - files:
         docfx.yml: |
           localization:
             mapping: Branch
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -198,12 +198,12 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx.en-us
+            repositoryUrl: https://github.com/dotnet/docfx.en-us
   https://docfx.com/edit-url3.zh-cn#live:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx.en-us
+            repositoryUrl: https://github.com/dotnet/docfx.en-us
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -218,14 +218,14 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
           localization:
             mapping: Branch
   https://docfx.com/edit-url4.loc#live.zh-cn:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
           localization:
             mapping: Branch
         docs/a.md:
@@ -242,7 +242,7 @@ repos:
   - files:
       docfx.yml: |
         contribution:
-          repository: https://github.com/dotnet/docfx.en-us
+          repositoryUrl: https://github.com/dotnet/docfx.en-us
         localization:
           mapping: Folder
       _localization/zh-cn/docs/a.md:
@@ -260,14 +260,14 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx#master
+            repositoryUrl: https://github.com/dotnet/docfx
           localization:
             mapping: Branch
   https://docfx.com/edit-url5.loc#live-sxs.zh-cn:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx#master
+            repositoryUrl: https://github.com/dotnet/docfx
           localization:
             mapping: Branch
         docs/a.md:
@@ -276,7 +276,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/master.zh-cn/docs/*"}
+    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/docs/*"}
 ---
 # loc file contributor info 1
 # [repository mapping]
@@ -326,14 +326,16 @@ repos:
             mapping: Branch
   https://github.com/c/contribution3.loc#master.zh-cn:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          localization:
+            mapping: Branch
         docs/a.md:
 outputs:
   docs/a.json: |
     {
       "content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md",
       "original_content_git_url":"https://github.com/c/contribution3.loc/blob/master.zh-cn/docs/a.md",
-      "gitcommit":"https://github.com/c/contribution3.loc/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
+      "gitcommit":"https://github.com/c/contribution3.loc/blob/920e86f61c36833c2bde899880f15329a5ecdfaf/docs/a.md"
     }
 ---
 # loc file contributor info 4
@@ -372,7 +374,10 @@ repos:
             mapping: Branch
   https://github.com/c/contribution5.loc#master-sxs.zh-cn:
     - files:
-        docfx.yml:
+        docfx.yml: |
+          localization:
+            bilingual: true
+            mapping: Branch
         docs/a.md:
   https://github.com/c/contribution5.loc#master.zh-cn:
     - files:
@@ -382,7 +387,7 @@ outputs:
     {
       "content_git_url":"https://github.com/c/contribution5.loc/blob/master.zh-cn/docs/a.md",
       "original_content_git_url":"https://github.com/c/contribution5.loc/blob/master-sxs.zh-cn/docs/a.md",
-      "gitcommit":"https://github.com/c/contribution5.loc/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
+      "gitcommit":"https://github.com/c/contribution5.loc/blob/16537a7ca422b81ba2e1a97b6f58bf3a6c5890cf/docs/a.md"
     }
 ---
 # loc page link and content fallback 1
@@ -1104,14 +1109,14 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
         docs/a.md:
   https://github.com/locconfig/a.zh-cn:
     - files:
         docs/a.md:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx.zh-cn
+            repositoryUrl: https://github.com/dotnet/docfx.zh-cn
 outputs:
   docs/a.json: |
     { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
@@ -1125,7 +1130,8 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx#live
+            repositoryUrl: https://github.com/dotnet/docfx
+            repositoryBranch: live
           localization:
             mapping: Branch
         docs/a.md:
@@ -1134,7 +1140,8 @@ repos:
         docs/a.md:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx.loc#live
+            repositoryUrl: https://github.com/dotnet/docfx.loc
+            repositoryBranch: live
           localization:
             mapping: Branch
 outputs:
@@ -1150,7 +1157,7 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx
+            repositoryUrl: https://github.com/dotnet/docfx
           localization:
             bilingual: true
         docs/a.md:
@@ -1159,7 +1166,7 @@ repos:
         docs/a.md:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx.zh-cn
+            repositoryUrl: https://github.com/dotnet/docfx.zh-cn
           localization:
             bilingual: true
   https://github.com/locconfig/c.zh-cn:
@@ -1178,7 +1185,8 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx#live
+            repositoryUrl: https://github.com/dotnet/docfx
+            repositoryBranch: live
           localization:
             mapping: Branch
             bilingual: true
@@ -1188,7 +1196,8 @@ repos:
         docs/a.md:
         docfx.yml: |
           contribution:
-            repository: https://github.com/dotnet/docfx.loc#live
+            repositoryUrl: https://github.com/dotnet/docfx.loc
+            repositoryBranch: live
           localization:
             mapping: Branch
             bilingual: true
