@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
 
             var firstSegment = redirectPath.Substring(0, slashIndex);
             return LocalizationUtility.IsValidLocale(firstSegment)
-                ? $"/{redirectPath.Substring(firstSegment.Length)}"
+                ? $"{redirectPath.Substring(firstSegment.Length)}"
                 : $"/{redirectPath}";
         }
     }
