@@ -230,14 +230,15 @@ namespace Microsoft.Docs.Build
                 return redirectionUrl;
             }
 
-            if (redirectPath.IndexOf('/') is int slashIndex && slashIndex < 0)
+            int slashIndex = redirectPath.IndexOf('/');
+            if (redirectPath.IndexOf('/') < 0)
             {
                 return $"/{redirectPath}";
             }
 
             var firstSegment = redirectPath.Substring(0, slashIndex);
             return LocalizationUtility.IsValidLocale(firstSegment)
-                ? $"{redirectPath.Substring(firstSegment.Length)}"
+                ? $"/{redirectPath.Substring(firstSegment.Length)}"
                 : $"/{redirectPath}";
         }
     }
