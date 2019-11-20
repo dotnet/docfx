@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
             if (error != null)
             {
-                _errorLog.Write(file, error);
+                _errorLog.Write(file.FilePath, error);
             }
 
             _links.TryAdd(new FileLinkItem()
@@ -49,9 +49,8 @@ namespace Microsoft.Docs.Build
         public object Build() =>
             new
             {
-                // if source file is TOC and not included in the build scope, should be excluded from .links.json
                 Links = _links
-                .Where(x => !(x.SourceFile.ContentType == ContentType.TableOfContents && !_context.TocMap.Contains(x.SourceFile)))
+                .Where(x => _context.PublishModelBuilder.IsIncludedInOutput(x.SourceFile))
                 .OrderBy(_ => _),
             };
     }

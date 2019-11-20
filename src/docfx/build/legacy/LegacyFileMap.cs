@@ -15,8 +15,7 @@ namespace Microsoft.Docs.Build
             Docset docset,
             Context context,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap,
-            Dictionary<Document, PublishItem> fileManifests,
-            LegacyVersionProvider legacyVersionProvider)
+            Dictionary<Document, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy File Map"))
             {
@@ -35,7 +34,7 @@ namespace Microsoft.Docs.Build
                             context, docset, fileManifest.Value);
                         var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
 
-                        var version = legacyVersionProvider.GetLegacyVersion(document);
+                        var version = context.MonikerProvider.GetFileLevelMonikerRange(document.FilePath);
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToSiteBasePath,
                             legacySiteUrlRelativeToSiteBasePath,

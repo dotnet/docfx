@@ -7,10 +7,8 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class DocumentIdDepotMapping
+    internal struct GroupConfig
     {
-        public string FolderRelativePathInDocset { get; set; }
-
-        public string DepotName { get; set; }
+        public readonly SourceInfo<string> MonikerRange;
     }
 }

@@ -18,11 +18,10 @@ namespace Microsoft.Docs.Build
             {
                 fileManifests = fileManifests.Where(f => !f.Value.HasError).ToDictionary(k => k.Key, v => v.Value);
                 var files = fileManifests.Keys.ToList();
-                var legacyVersionProvider = new LegacyVersionProvider(docset);
 
                 LegacyManifest.Convert(docset, context, fileManifests);
-                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap, legacyVersionProvider);
-                LegacyFileMap.Convert(docset, context, legacyDependencyMap, fileManifests, legacyVersionProvider);
+                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap);
+                LegacyFileMap.Convert(docset, context, legacyDependencyMap, fileManifests);
             }
         }
     }

@@ -154,10 +154,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task BuildFile(Context context, Document file)
+        private static async Task BuildFile(Context context, FilePath path)
         {
+            var file = context.DocumentProvider.GetDocument(path);
             if (!ShouldBuildFile(context, file))
             {
+                context.PublishModelBuilder.ExcludeFromOutput(file);
                 return;
             }
 
@@ -181,18 +183,17 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                var hasErrors = context.ErrorLog.Write(file, errors);
-                if (hasErrors)
+                if (context.ErrorLog.Write(path, errors))
                 {
-                    context.PublishModelBuilder.MarkError(file);
+                    context.PublishModelBuilder.ExcludeFromOutput(file);
                 }
 
                 Telemetry.TrackBuildItemCount(file.ContentType);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(file, dex.Error, isException: true);
-                context.PublishModelBuilder.MarkError(file);
+                context.ErrorLog.Write(path, dex.Error, isException: true);
+                context.PublishModelBuilder.ExcludeFromOutput(file);
             }
             catch
             {

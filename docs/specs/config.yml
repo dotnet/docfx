@@ -46,54 +46,52 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Support specify build scope in fileGroups object
+# Support specifing build scope in content or resource
 inputs:
   docfx.yml: |
-    fileGroups:
-      files: docs/**/*.md
-      exclude: docs/**/ignore.md
-  docs/index.md:
-  docs/ignore.md:
-outputs:
-  docs/index.json:
----
-# Support specify build scope in fileGroups array
-inputs:
-  docfx.yml: |
-    fileGroups:
+    content:
     - files: docs/**/*.md
       exclude: docs/**/ignore.md
+    resource:
+      files: '*.png'
   docs/index.md:
   docs/ignore.md:
+  docs/a.png:
+  b.png:
 outputs:
   docs/index.json:
+  b.png:
 ---
-# Support fileGroups as object
+# Support triple star - For backward compatibility with v2
 inputs:
   docfx.yml: |
-    fileGroups:
-      files: docs/b.md
-      exclude: docs/**/ignore.md
-  docs/a.md:
-  docs/b.md:
+    content:
+    - files: docs/**/*.md
+      exclude:
+      - '***/readme.md'
+  docs/a/readme.md:
 outputs:
-  docs/b.json:
+  !docs/a/readme.json: null
 ---
-# Use FileGroups and ignore root build scope if FileGroups is defined
+# Use content and resource and ignore root build scope if content or resource is defined
 inputs:
   docfx.yml: |
-    files: docs/a.md
-    fileGroups:
-    - files: docs/b.md
-  docs/a.md:
-  docs/b.md:
+    files: a.md
+    content:
+    - files: b.md
+    resource:
+    - files: c.png
+  a.md:
+  b.md:
+  c.png:
 outputs:
-  docs/b.json:
+  b.json:
+  c.png:
 ---
-# FileGroup a's exclude won't influence b's include
+# content a's exclude won't influence b's include
 inputs:
   docfx.yml: |
-    fileGroups:
+    content:
     - files: docs/**/*.md
       exclude: docs/**/*.png
     - files: docs/**/*.png
@@ -103,6 +101,20 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.png:
+---
+# content with src, dest config
+inputs:
+  docfx.yml: |
+    content:
+    - src: a
+      dest: url-a
+    - src: b
+      dest: .
+  a/a.md:
+  b/b.md:
+outputs:
+  url-a/a.json:
+  b.json:
 ---
 # Global metadata
 inputs:

@@ -11,14 +11,13 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class Config
     {
+        public static readonly string[] DefaultInclude = new[] { "**/*.{md,yml,json}" };
         public static readonly string[] DefaultExclude = new[]
         {
             "_site/**",             // Default output location
             "_localization/**",     // Localization file when using folder convention
             "_themes/**",           // Default template location
         };
-
-        private static readonly string[] s_defaultInclude = new[] { "**/*.{md,yml,json}" };
 
         /// <summary>
         /// Gets the default site name
@@ -39,7 +38,7 @@ namespace Microsoft.Docs.Build
         /// Gets the file glob patterns included by the docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Files = s_defaultInclude;
+        public readonly string[] Files = DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
@@ -48,10 +47,21 @@ namespace Microsoft.Docs.Build
         public readonly string[] Exclude = Array.Empty<string>();
 
         /// <summary>
-        /// Gets the file groups config.
+        /// Gets content build scope config for v2 backward compatibility.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly FileGroupConfig[] FileGroups = Array.Empty<FileGroupConfig>();
+        public readonly FileMappingConfig[] Content = Array.Empty<FileMappingConfig>();
+
+        /// <summary>
+        /// Gets resource build scope config for v2 backward compatibility.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public readonly FileMappingConfig[] Resource = Array.Empty<FileMappingConfig>();
+
+        /// <summary>
+        /// Gets moniker range group configuration for v2 backward compatibility.
+        /// </summary>
+        public readonly Dictionary<string, GroupConfig> Groups = new Dictionary<string, GroupConfig>();
 
         /// <summary>
         /// Gets the output config.
@@ -112,7 +122,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the document id configuration section
         /// </summary>
-        public readonly DocumentIdConfig DocumentId = new DocumentIdConfig();
+        public readonly Dictionary<PathString, DocumentIdConfig> DocumentId = new Dictionary<PathString, DocumentIdConfig>();
 
         /// <summary>
         /// Gets allow custom error code, severity and message.

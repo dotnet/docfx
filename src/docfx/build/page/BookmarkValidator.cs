@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
                 if (_errorLog.Write(error))
                 {
-                    _publishModelBuilder.MarkError(file);
+                    _publishModelBuilder.ExcludeFromOutput(file);
                 }
             }
         }

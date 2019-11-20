@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
-        private readonly WorkQueue<Document> _buildQueue;
+        private readonly WorkQueue<FilePath> _buildQueue;
         private readonly DocumentProvider _documentProvider;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             Docset fallbackDocset,
             Input input,
             BuildScope buildScope,
-            WorkQueue<Document> buildQueue,
+            WorkQueue<FilePath> buildQueue,
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
             GitCommitProvider gitCommitProvider,
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
 
             if (file != null)
             {
-                _buildQueue.Enqueue(file);
+                _buildQueue.Enqueue(file.FilePath);
             }
 
             // NOTE: bookmark validation result depend on current inclusion stack

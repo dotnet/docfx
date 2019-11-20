@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -86,33 +85,33 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Loading TOC"))
             {
                 var builder = new TableOfContentsMapBuilder();
-                var tocFiles = context.BuildScope.Files.Where(f => f.ContentType == ContentType.TableOfContents);
-                if (!tocFiles.Any())
-                {
-                    return builder.Build();
-                }
-
-                ParallelUtility.ForEach(tocFiles, file => BuildTocMap(file, builder), Progress.Update);
+                ParallelUtility.ForEach(
+                    context.BuildScope.Files,
+                    file => BuildTocMap(context, file, builder),
+                    Progress.Update);
 
                 return builder.Build();
             }
+        }
 
-            void BuildTocMap(Document fileToBuild, TableOfContentsMapBuilder tocMapBuilder)
+        private static void BuildTocMap(Context context, FilePath path, TableOfContentsMapBuilder tocMapBuilder)
+        {
+            try
             {
-                try
+                var file = context.DocumentProvider.GetDocument(path);
+                if (file.ContentType != ContentType.TableOfContents)
                 {
-                    Debug.Assert(tocMapBuilder != null);
-                    Debug.Assert(fileToBuild != null);
-
-                    var (errors, _, referencedDocuments, referencedTocs) = context.TableOfContentsLoader.Load(fileToBuild);
-                    context.ErrorLog.Write(fileToBuild, errors);
-
-                    tocMapBuilder.Add(fileToBuild, referencedDocuments, referencedTocs);
+                    return;
                 }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    context.ErrorLog.Write(fileToBuild, dex.Error, isException: true);
-                }
+
+                var (errors, _, referencedDocuments, referencedTocs) = context.TableOfContentsLoader.Load(file);
+                context.ErrorLog.Write(path, errors);
+
+                tocMapBuilder.Add(file, referencedDocuments, referencedTocs);
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                context.ErrorLog.Write(path, dex.Error, isException: true);
             }
         }
 

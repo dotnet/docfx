@@ -1,3 +1,4 @@
+---
 # Watch launches an HTTP server
 watch: true
 inputs:
