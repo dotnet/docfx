@@ -465,9 +465,9 @@ inputs:
     }
 outputs:
   docs/a.json: |
-    { "moniker": undefined }
+    { "monikers": undefined }
   docs/b.json: |
-    { "moniker": undefined }
+    { "monikers": undefined }
   docs/toc.json:
   .errors.log: |
     ["suggestion","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.","docs/a.md",2,15]
