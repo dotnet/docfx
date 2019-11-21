@@ -93,11 +93,7 @@ namespace Microsoft.Docs.Build
                         case LinkType.AbsolutePath:
                             break;
                         case LinkType.External:
-                            var (redirectHostName, redirectPath) = UrlUtility.SplitBaseUrl(absoluteRedirectUrl);
-                            if (string.Equals(redirectHostName, hostName, StringComparison.OrdinalIgnoreCase))
-                            {
-                                absoluteRedirectUrl = $"/{redirectPath}";
-                            }
+                            absoluteRedirectUrl = RemoveLeadingLocale(absoluteRedirectUrl, hostName);
                             break;
                         default:
                             _errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
@@ -224,6 +220,26 @@ namespace Microsoft.Docs.Build
         {
             var (url, _, _) = UrlUtility.SplitUrl(redirectionUrl);
             return url.EndsWith("/index", PathUtility.PathComparison) ? url.Substring(0, url.Length - "index".Length) : url;
+        }
+
+        private static string RemoveLeadingLocale(string redirectionUrl, string hostName)
+        {
+            var (redirectHostName, redirectPath) = UrlUtility.SplitBaseUrl(redirectionUrl);
+            if (!string.Equals(redirectHostName, hostName, StringComparison.OrdinalIgnoreCase))
+            {
+                return redirectionUrl;
+            }
+
+            int slashIndex = redirectPath.IndexOf('/');
+            if (redirectPath.IndexOf('/') < 0)
+            {
+                return $"/{redirectPath}";
+            }
+
+            var firstSegment = redirectPath.Substring(0, slashIndex);
+            return LocalizationUtility.IsValidLocale(firstSegment)
+                ? $"{redirectPath.Substring(firstSegment.Length)}"
+                : $"/{redirectPath}";
         }
     }
 }
