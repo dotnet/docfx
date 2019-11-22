@@ -23,8 +23,55 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         }
 
         [Theory]
-        [InlineData(@":::code source=""source.cs"" range=""11-33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", "pass")]
-        //[InlineData(@":::code source=""source.cs"" range=""4-8,12-15"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", "pass")]
+//        [InlineData(@":::code source=""source.cs"" range=""11-33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
+//<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" name=""main"" title=""__________"" highlight-lines=""6-7"">
+///// Interaction logic for Window1.xaml
+///// </summary>
+
+//public partial class Window1 : Window
+//{
+
+//    public Window1()
+//    {
+//        InitializeComponent();
+
+//        TableRowGroupsProperty();
+//    }
+
+//    void WindowLoaded(Object sender, RoutedEventArgs args)
+//    {
+//        TableColumnsProperty();
+//        TableRowGroupsProperty();
+//        TableRowGroupRows();
+//        TableCellConst();
+//    }
+
+//    void TableColumnsProperty()
+//    {
+//    ...
+//// </Snippet_Table_Columns_Add>
+
+//// Insert a new first column.
+//// <Snippet_Table_Columns_Insert>
+//tbl.Columns.Insert(0, new TableColumn());
+
+//</code></pre>
+//")]
+        [InlineData(@":::code source=""source.cs"" range=""4-8,12-15"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
+<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" name=""main"" title=""__________"" highlight-lines=""6-7"">
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Shapes;
+
+namespace TableSnippets
+    ...
+/// </summary>
+
+public partial class Window1 : Window
+{
+
+</code></pre>
+")]
         //[InlineData(@":::code source=""source.cs"" range=""4-8,12-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", "pass")]
         //[InlineData(@":::code source=""source.cs"" range=""4-8,12"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", "pass")]
         //[InlineData(@":::code source=""source.cs"" id=""Snippet_Table_RowGroups_Add"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", "pass")]
