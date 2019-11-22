@@ -3,7 +3,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 #pragma warning disable SA1300 // Element should begin with upper-case letter
 #pragma warning disable SA1307 // AccessibleFieldsMustBeginWithUpperCaseLetter
@@ -13,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LibGit2
     {
-        private const string LibName = "git2-572e4d8";
+        private const string LibName = "git2-ef5a385";
 
         static LibGit2()
         {

@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        if (reader.TextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
+                        if (reader.ValueTextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
                         {
                             stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
                         }
