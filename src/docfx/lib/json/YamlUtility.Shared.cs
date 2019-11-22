@@ -28,14 +28,13 @@ namespace Microsoft.Docs.Build
             onConvert = onConvert ?? ((token, _) => token);
 
             var parser = new Parser(input);
-            parser.Expect<StreamStart>();
-            if (!parser.Accept<StreamEnd>())
+            parser.Consume<StreamStart>();
+            if (!parser.TryConsume<StreamEnd>(out var _))
             {
-                parser.Expect<DocumentStart>();
+                parser.Consume<DocumentStart>();
                 result = ToJToken(parser, onKeyDuplicate, onConvert);
-                parser.Expect<DocumentEnd>();
+                parser.Consume<DocumentEnd>();
             }
-            parser.Expect<StreamEnd>();
 
             return result;
         }
@@ -43,7 +42,7 @@ namespace Microsoft.Docs.Build
         private static JToken ToJToken(
             IParser parser, Action<Scalar> onKeyDuplicate, Func<JToken, ParsingEvent, JToken> onConvert)
         {
-            switch (parser.Expect<NodeEvent>())
+            switch (parser.Consume<NodeEvent>())
             {
                 case Scalar scalar:
                     if (scalar.Style == ScalarStyle.Plain)
@@ -54,18 +53,17 @@ namespace Microsoft.Docs.Build
 
                 case SequenceStart seq:
                     var array = new JArray();
-                    while (!parser.Accept<SequenceEnd>())
+                    while (!parser.TryConsume<SequenceEnd>(out var _))
                     {
                         array.Add(ToJToken(parser, onKeyDuplicate, onConvert));
                     }
-                    parser.Expect<SequenceEnd>();
                     return onConvert(array, seq);
 
                 case MappingStart map:
                     var obj = new JObject();
-                    while (!parser.Accept<MappingEnd>())
+                    while (!parser.TryConsume<MappingEnd>(out var _))
                     {
-                        var key = parser.Expect<Scalar>();
+                        var key = parser.Consume<Scalar>();
                         var value = ToJToken(parser, onKeyDuplicate, onConvert);
 
                         if (obj.ContainsKey(key.Value))
@@ -76,7 +74,6 @@ namespace Microsoft.Docs.Build
                         obj[key.Value] = value;
                         onConvert(obj.Property(key.Value), key);
                     }
-                    parser.Expect<MappingEnd>();
                     return onConvert(obj, map);
 
                 default:

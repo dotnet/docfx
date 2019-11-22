@@ -8,13 +8,14 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 
 namespace Microsoft.Docs.Build
 {
     internal static class Telemetry
     {
-        private static readonly TelemetryClient s_telemetryClient = new TelemetryClient();
+        private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
 
         private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"time", "name", "os", "version", "repo", "branch"));
         private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"error", "code", "level", "os", "version", "repo", "branch"));
