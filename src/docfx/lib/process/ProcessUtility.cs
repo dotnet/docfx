@@ -21,33 +21,35 @@ namespace Microsoft.Docs.Build
         public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
         {
             var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
-            Log.Write($"Running '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'");
 
-            var psi = new ProcessStartInfo
+            using (PerfScope.Start($"Executing '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'"))
             {
-                FileName = fileName,
-                WorkingDirectory = cwd,
-                Arguments = commandLineArgs,
-                UseShellExecute = false,
-                RedirectStandardOutput = stdout,
-                RedirectStandardError = true,
-            };
+                var psi = new ProcessStartInfo
+                {
+                    FileName = fileName,
+                    WorkingDirectory = cwd,
+                    Arguments = commandLineArgs,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = stdout,
+                    RedirectStandardError = true,
+                };
 
-            var process = Process.Start(psi);
+                var process = Process.Start(psi);
 
-            // Redirect stderr to stdout
-            Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
+                // Redirect stderr to stdout
+                Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
 
-            var result = stdout ? process.StandardOutput.ReadToEnd() : null;
+                var result = stdout ? process.StandardOutput.ReadToEnd() : null;
 
-            process.WaitForExit();
+                process.WaitForExit();
 
-            if (process.ExitCode != 0)
-            {
-                throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
+                if (process.ExitCode != 0)
+                {
+                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
+                }
+
+                return result;
             }
-
-            return result;
 
             string HideSecrets(string arg, string secret)
             {

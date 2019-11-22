@@ -88,24 +88,26 @@ namespace Microsoft.Docs.Build
 
         private async Task<(Error error, MicrosoftAlias msAlias)> GetMicrosoftAliasCore(string alias)
         {
-            Log.Write($"Calling Microsoft Graph API to validate {alias}");
-            Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphCache);
-
-            var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
-            if (error != null || !isValid)
+            using (PerfScope.Start($"Calling Microsoft Graph API to validate {alias}"))
             {
-                return (error, null);
+                Telemetry.TrackCacheMissCount(TelemetryName.MicrosoftGraphCache);
+
+                var (error, isValid) = await _microsoftGraphAccessor.ValidateAlias(alias);
+                if (error != null || !isValid)
+                {
+                    return (error, null);
+                }
+
+                _needUpdate = true;
+
+                var result = new MicrosoftAlias
+                {
+                    Alias = alias,
+                    Expiry = DateTime.UtcNow.AddHours(RandomUtility.NextEvenDistribution(_expirationInHours)),
+                };
+
+                return (null, result);
             }
-
-            _needUpdate = true;
-
-            var result = new MicrosoftAlias
-            {
-                Alias = alias,
-                Expiry = DateTime.UtcNow.AddHours(RandomUtility.NextEvenDistribution(_expirationInHours)),
-            };
-
-            return (null, result);
         }
     }
 }
