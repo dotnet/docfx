@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmail("alice@contoso.com", "https://github.com/owner/name", "1")),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 0,
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 {
                     await ParallelUtility.ForEach(
                         Enumerable.Range(0, 20),
-                        async (i) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1"));
+                        async (i) => await cache.GetByEmail("alice@contoso.com", "https://github.com/owner/name", "1"));
                 }),
                 "[]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
@@ -133,8 +133,8 @@ namespace Microsoft.Docs.Build
                 "Get user by commit does not return user not found error",
                 (Func<GitHubUserCache, Task>) ( async (cache) =>
                 {
-                    Assert.Null((await cache.GetByCommit("me@contoso.com", "owner", "name", "3")).error);
-                    Assert.Null((await cache.GetByCommit("me@contoso.com", "owner", "name", "3")).error);
+                    Assert.Null((await cache.GetByEmail("me@contoso.com", "https://github.com/owner/name", "3")).error);
+                    Assert.Null((await cache.GetByEmail("me@contoso.com", "https://github.com/owner/name", "3")).error);
                 }),
                 "[]",
                 "[{'emails':['me@contoso.com']}]",
@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit does not cache email when commit is not resolved",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("me2@contoso.com", "not-exist", "not-eixts", "") ),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmail("me2@contoso.com", "https://github.com/not-exist/not-exist", "") ),
                 "[]",
                 "[]",
                 0,
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit from cache",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmail("alice@contoso.com", "https://github.com/owner/name", "1")),
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 0,
@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
             yield return new object[]
             {
                 "Get user by commit from cache but cache expired",
-                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByCommit("alice@contoso.com", "owner", "name", "1")),
+                (Func<GitHubUserCache, Task>) ( async (cache) => await cache.GetByEmail("alice@contoso.com", "https://github.com/owner/name", "1")),
                 "[{'id':1,'login':'alice','name':'Obsolete name of Alice','emails':['alice@contoso.com'],'expiry':'2000-01-01'}]",
                 "[{'id':1,'login':'alice','name':'Alice','emails':['alice@contoso.com']}]",
                 0,
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
                 (Func<GitHubUserCache, Task>)(async (cache) =>
                     {
                         await cache.GetByLogin(new SourceInfo<string>("github-fail"));
-                        await cache.GetByCommit("github-fail@contoso.com", "owner", "name", "2");
+                        await cache.GetByEmail("github-fail@contoso.com", "https://github.com/owner/name", "2");
                     }),
                 "[]",
                 "[]",

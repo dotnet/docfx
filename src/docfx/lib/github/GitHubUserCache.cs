@@ -97,24 +97,28 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool GetByEmail(string authorEmail, out GitHubUser githubUser)
-            => _usersByEmail.TryGetValue(authorEmail, out githubUser) && githubUser.IsValid();
-
-        public Task<(Error error, GitHubUser user)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
+        public Task<(Error error, GitHubUser user)> GetByEmail(string email, string repoUrl = null, string commitSha = null)
         {
-            if (string.IsNullOrEmpty(authorEmail))
+            if (string.IsNullOrEmpty(email))
                 return default;
 
-            return Synchronized(GetByCommitCore);
+            return Synchronized(GetByEmailCore);
 
-            async Task<(Error, GitHubUser)> GetByCommitCore()
+            async Task<(Error, GitHubUser)> GetByEmailCore()
             {
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
 
-                if (_usersByEmail.TryGetValue(authorEmail, out var existingUser) || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
+                if (_usersByEmail.TryGetValue(email, out var existingUser))
                 {
                     if (existingUser?.IsValid() ?? false)
                         return (null, existingUser);
+                    return default;
+                }
+
+                if (string.IsNullOrEmpty(repoUrl) || string.IsNullOrEmpty(commitSha) ||
+                    !UrlUtility.TryParseGitHubUrl(repoUrl, out var repoOwner, out var repoName) ||
+                    string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
+                {
                     return default;
                 }
 
@@ -125,7 +129,7 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, authorEmail);
+                var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, email);
 
                 // When GetUserByCommit failed, it could either the commit is not found or the user is not found,
                 // only mark the email as invalid when the user is not found
@@ -134,7 +138,7 @@ namespace Microsoft.Docs.Build
                     UpdateUsers(users);
                 }
 
-                return (error, _usersByEmail.TryGetValue(authorEmail, out var user) && user.IsValid() ? user : null);
+                return (error, _usersByEmail.TryGetValue(email, out var user) && user.IsValid() ? user : null);
             }
         }
 

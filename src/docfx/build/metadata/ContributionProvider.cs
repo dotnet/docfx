@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
     internal class ContributionProvider
     {
         private readonly Input _input;
+        private readonly Config _config;
         private readonly Docset _fallbackDocset;
         private readonly GitHubUserCache _gitHubUserCache;
 
@@ -25,6 +26,7 @@ namespace Microsoft.Docs.Build
             Input input, Docset docset, Docset fallbackDocset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
             _input = input;
+            _config = docset.Config;
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
@@ -44,7 +46,7 @@ namespace Microsoft.Docs.Build
 
             var contributionCommits = GetContributionCommits();
 
-            var excludes = document.Docset.Config.Contribution.ExcludedContributors;
+            var excludes = _config.Contribution.ExcludedContributors;
 
             Contributor authorFromCommits = null;
             var contributors = new List<Contributor>();
@@ -62,10 +64,7 @@ namespace Microsoft.Docs.Build
                 }
                 : null;
 
-            var isGitHubRepo = UrlUtility.TryParseGitHubUrl(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.Repository, out gitHubOwner, out gitHubRepoName);
-
-            if (!document.Docset.Config.GitHub.ResolveUsers)
+            if (!_config.GitHub.ResolveUsers)
             {
                 return (errors, contributionInfo);
             }
@@ -107,16 +106,9 @@ namespace Microsoft.Docs.Build
 
             async Task<Contributor> GetContributor(GitCommit commit)
             {
-                if (isGitHubRepo)
-                {
-                    var (error, githubUser) = await _gitHubUserCache.GetByCommit(
-                        commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
-                    errors.AddIfNotNull(error);
-                    return githubUser?.ToContributor();
-                }
-
-                // directly resolve github user by commit email
-                return _gitHubUserCache.GetByEmail(commit.AuthorEmail, out var user) ? user?.ToContributor() : default;
+                var (error, githubUser) = await _gitHubUserCache.GetByEmail(commit.AuthorEmail, repo?.Remote, commit.Sha);
+                errors.AddIfNotNull(error);
+                return githubUser?.ToContributor();
             }
 
             async Task<Contributor> GetAuthor()
@@ -136,7 +128,7 @@ namespace Microsoft.Docs.Build
             List<GitCommit> GetContributionCommits()
             {
                 var result = commits;
-                var bilingual = _fallbackDocset != null && document.Docset.Config.Localization.Bilingual;
+                var bilingual = _fallbackDocset != null && _config.Localization.Bilingual;
                 var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
                 if (!string.IsNullOrEmpty(contributionBranch))
                 {
@@ -197,22 +189,22 @@ namespace Microsoft.Docs.Build
                     editBranch = repoContributionBranch;
                 }
 
-                if (!string.IsNullOrEmpty(document.Docset.Config.Contribution.Repository) && isWhitelisted)
+                if (!string.IsNullOrEmpty(_config.Contribution.Repository) && isWhitelisted)
                 {
-                    var contributionPackageUrl = new PackagePath(document.Docset.Config.Contribution.Repository);
+                    var contributionPackageUrl = new PackagePath(_config.Contribution.Repository);
                     (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Url, pathToRepo);
 
-                    var hasBranch = (UrlUtility.SplitUrl(document.Docset.Config.Contribution.Repository).fragment ?? "").Length > 1;
+                    var hasBranch = (UrlUtility.SplitUrl(_config.Contribution.Repository).fragment ?? "").Length > 1;
                     (editRemote, editBranch) = (contributionPackageUrl.Url, hasBranch ? contributionPackageUrl.Branch : editBranch);
                     if (_fallbackDocset != null)
                     {
                         (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
-                                                    document.Docset.Config.Localization.Mapping,
+                                                    _config.Localization.Mapping,
                                                     false,
                                                     editRemote,
                                                     editBranch,
                                                     document.Docset.Locale,
-                                                    document.Docset.Config.Localization.DefaultLocale);
+                                                    _config.Localization.DefaultLocale);
                     }
                 }
 
