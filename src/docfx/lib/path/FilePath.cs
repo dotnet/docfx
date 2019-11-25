@@ -12,6 +12,11 @@ namespace Microsoft.Docs.Build
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         /// <summary>
+        /// Indicate if the file is from git commit history.
+        /// </summary>
+        public bool IsFromHistory => Commit != null;
+
+        /// <summary>
         /// Gets the file path relative to the main docset(fallback docset).
         /// </summary>
         public PathString Path { get; }

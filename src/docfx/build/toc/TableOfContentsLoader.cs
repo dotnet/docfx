@@ -394,15 +394,23 @@ namespace Microsoft.Docs.Build
             switch (tocHrefType)
             {
                 case TocHrefType.RelativeFolder:
+                    (string, Document) result = default;
                     foreach (var tocFileName in s_tocFileNames)
                     {
                         var subToc = Resolve(tocFileName);
                         if (subToc != null)
                         {
-                            return subToc.Value;
+                            if (!subToc.Value.filePath.FilePath.IsFromHistory)
+                            {
+                                return subToc.Value;
+                            }
+                            else if (result == default)
+                            {
+                                result = subToc.Value;
+                            }
                         }
                     }
-                    return default;
+                    return result;
 
                 case TocHrefType.TocFile:
                     var (error, referencedTocContent, referencedToc) = _linkResolver.ResolveContent(

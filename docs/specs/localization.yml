@@ -1529,4 +1529,53 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p>test</p>"}
-
+---
+# should fallback to deleted TOC.md not TOC.json
+locale: zh-cn
+repos:
+  https://github.com/deletedtoc-1/a:
+    - files:
+        docfx.yml:
+    - files:
+        docfx.yml:
+        docs/dir/TOC.json: |
+          {"items":[{"name":"reference c", "href":"../c.md"}]}
+        docs/dir/TOC.md: |
+          # [reference b.md](../b.md)
+        docs/b.md:
+        docs/c.md:
+  https://github.com/deletedtoc-1/a.zh-cn:
+    - files:
+        docfx.yml:
+        docs/TOC.yml: |
+          - name: name
+            href: dir/
+outputs:
+  docs/toc.json: |
+    {"items":[{"href":"b"}]}
+---
+# should not fallback to deleted TOC.md if TOC.yml exists
+locale: zh-cn
+repos:
+  https://github.com/deletedtoc-2/a:
+    - files:
+        docfx.yml:
+        docs/dir/TOC.yml: |
+          - name: toc existed
+            href: ../a.md
+        docs/a.md:
+        docs/b.md:
+    - files:
+        docfx.yml:
+        docs/dir/TOC.md: |
+          # [reference b.md](../b.md)
+        docs/b.md:
+  https://github.com/deletedtoc-2/a.zh-cn:
+    - files:
+        docfx.yml:
+        docs/TOC.yml: |
+          - name: name
+            href: dir/
+outputs:
+  docs/toc.json: |
+    {"items":[{"href":"a"}]}
