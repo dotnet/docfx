@@ -10,8 +10,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using LibGit2Sharp;
-using Microsoft.DocAsTest;
 using Newtonsoft.Json.Linq;
+using yunit;
 
 namespace Microsoft.Docs.Build
 {

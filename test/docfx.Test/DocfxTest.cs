@@ -9,10 +9,10 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.DocAsTest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using yunit;
 
 namespace Microsoft.Docs.Build
 {
