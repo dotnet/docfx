@@ -41,16 +41,6 @@ function testNuGet() {
 
     exec "dotnet tool install docfx --version $version --add-source drop --tool-path drop"
     exec "drop\docfx --version"
-
-    Remove-Item $env:USERPROFILE/.nuget/packages/microsoft.docastest -Force -Recurse -ErrorAction Ignore
-
-    Remove-Item $PSScriptRoot\test\Microsoft.DocAsTest.NuGetTest\bin\Debug\netcoreapp2.2\foo -Force -Recurse -ErrorAction Ignore
-    exec "dotnet restore test/Microsoft.DocAsTest.NuGetTest --no-cache --force --source $PSScriptRoot\drop"
-    exec "dotnet test test/Microsoft.DocAsTest.NuGetTest --no-restore"
-
-    if (-not (Test-Path -Path "$PSScriptRoot\test\Microsoft.DocAsTest.NuGetTest\bin\Debug\netcoreapp2.2\foo")) {
-        throw 'Microsoft.DocAsTest.NuGetTest failed'
-    }
 }
 
 try {
