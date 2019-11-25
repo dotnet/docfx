@@ -44,7 +44,13 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var contributionCommits = GetContributionCommits();
+            var contributionCommits = commits;
+            var bilingual = _fallbackDocset != null && _config.Localization.Bilingual;
+            var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+            if (!string.IsNullOrEmpty(contributionBranch))
+            {
+                (_, _, contributionCommits) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
+            }
 
             var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
                 ? _config.GlobalMetadata.ContributorsToExclude
@@ -74,11 +80,18 @@ namespace Microsoft.Docs.Build
             // Resolve contributors from commits
             if (contributionCommits != null)
             {
+                if (!UrlUtility.TryParseGitHubUrl(repo?.Remote, out var repoOwner, out var repoName))
+                {
+                    UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.RepositoryUrl, out repoOwner, out repoName);
+                }
+
                 foreach (var commit in contributionCommits)
                 {
                     if (!contributorsGroupByEmail.TryGetValue(commit.AuthorEmail, out var contributor))
                     {
-                        contributorsGroupByEmail[commit.AuthorEmail] = contributor = await GetContributor(commit);
+                        var (error, githubUser) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
+                        errors.AddIfNotNull(error);
+                        contributorsGroupByEmail[commit.AuthorEmail] = contributor = githubUser?.ToContributor();
                     }
 
                     if (contributor != null && !excludes.Contains(contributor.Name))
@@ -92,7 +105,15 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var author = await GetAuthor();
+            var author = authorFromCommits;
+            if (!string.IsNullOrEmpty(authorName))
+            {
+                // Remove author from contributors if author name is specified
+                var (error, githubUser) = await _gitHubUserCache.GetByLogin(authorName);
+                errors.AddIfNotNull(error);
+                author = githubUser?.ToContributor();
+            }
+
             if (author != null)
             {
                 contributors.RemoveAll(c => c.Id == author.Id);
@@ -105,40 +126,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, contributionInfo);
-
-            async Task<Contributor> GetContributor(GitCommit commit)
-            {
-                var (error, githubUser) = await _gitHubUserCache.GetByEmail(commit.AuthorEmail, repo?.Remote, commit.Sha);
-                errors.AddIfNotNull(error);
-                return githubUser?.ToContributor();
-            }
-
-            async Task<Contributor> GetAuthor()
-            {
-                if (!string.IsNullOrEmpty(authorName))
-                {
-                    // Remove author from contributors if author name is specified
-                    var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                    errors.AddIfNotNull(error);
-                    return result?.ToContributor();
-                }
-
-                // When author name is not specified, last contributor is author
-                return authorFromCommits;
-            }
-
-            List<GitCommit> GetContributionCommits()
-            {
-                var result = commits;
-                var bilingual = _fallbackDocset != null && _config.Localization.Bilingual;
-                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
-                if (!string.IsNullOrEmpty(contributionBranch))
-                {
-                    (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
-                }
-
-                return result;
-            }
         }
 
         public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)

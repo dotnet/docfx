@@ -97,9 +97,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Task<(Error error, GitHubUser user)> GetByEmail(string email, string repoUrl = null, string commitSha = null)
+        public Task<(Error error, GitHubUser user)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
             return Synchronized(GetByEmailCore);
@@ -108,16 +108,14 @@ namespace Microsoft.Docs.Build
             {
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
 
-                if (_usersByEmail.TryGetValue(email, out var existingUser))
+                if (_usersByEmail.TryGetValue(authorEmail, out var existingUser))
                 {
                     if (existingUser?.IsValid() ?? false)
                         return (null, existingUser);
                     return default;
                 }
 
-                if (string.IsNullOrEmpty(repoUrl) || string.IsNullOrEmpty(commitSha) ||
-                    !UrlUtility.TryParseGitHubUrl(repoUrl, out var repoOwner, out var repoName) ||
-                    string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
+                if (string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName) || string.IsNullOrEmpty(commitSha))
                 {
                     return default;
                 }
@@ -129,7 +127,7 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, email);
+                var (error, users) = await _getUsersByCommitFromGitHub(repoOwner, repoName, commitSha, authorEmail);
 
                 // When GetUserByCommit failed, it could either the commit is not found or the user is not found,
                 // only mark the email as invalid when the user is not found
@@ -138,7 +136,7 @@ namespace Microsoft.Docs.Build
                     UpdateUsers(users);
                 }
 
-                return (error, _usersByEmail.TryGetValue(email, out var user) && user.IsValid() ? user : null);
+                return (error, _usersByEmail.TryGetValue(authorEmail, out var user) && user.IsValid() ? user : null);
             }
         }
 
