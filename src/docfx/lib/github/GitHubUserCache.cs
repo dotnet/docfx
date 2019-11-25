@@ -102,9 +102,9 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(authorEmail))
                 return default;
 
-            return Synchronized(GetByEmailCore);
+            return Synchronized(GetByCommitCore);
 
-            async Task<(Error, GitHubUser)> GetByEmailCore()
+            async Task<(Error, GitHubUser)> GetByCommitCore()
             {
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
 
