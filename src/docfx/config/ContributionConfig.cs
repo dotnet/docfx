@@ -10,14 +10,17 @@ namespace Microsoft.Docs.Build
     {
         /// <summary>
         /// Specify the repository url for contribution
-        /// <protocol>://<hostname>[:<port>][:][/]<path>[#<branch>]
-        /// Fallback to git origin if not set.
         /// </summary>
-        public readonly string Repository;
+        public readonly string RepositoryUrl;
+
+        /// <summary>
+        /// Specify the repository branch for contribution
+        /// </summary>
+        public readonly string RepositoryBranch;
 
         /// <summary>
         /// The excluded contributors which you don't want to show
         /// </summary>
-        public readonly HashSet<string> ExcludedContributors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public readonly HashSet<string> ExcludeContributors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 }

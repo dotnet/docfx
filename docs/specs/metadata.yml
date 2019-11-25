@@ -332,3 +332,23 @@ inputs:
 outputs:
   docs/a.json: |
     {"title": "Title to overwrite"}
+---
+# Generate _op_pdfUrlPrefixTemplate when pdf is true
+inputs:
+  docfx.yml: |
+    output:
+      pdf: true
+  a.md:
+outputs:
+  a.json: |
+    { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
+---
+# Generate _op_pdfUrlPrefixTemplate when need_generate_pdf_url_template in .openpublishing.publish.config.json is true
+inputs:
+  .openpublishing.publish.config.json: |
+    { "need_generate_pdf_url_template": true }
+  docfx.yml:
+  a.md:
+outputs:
+  a.json: |
+    { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }

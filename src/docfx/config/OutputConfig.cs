@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets whether resources are copied to output.
         /// </summary>
-        public readonly bool CopyResources = true;
+        public readonly bool CopyResources = false;
 
         /// <summary>
         /// Gets the maximum errors to output.

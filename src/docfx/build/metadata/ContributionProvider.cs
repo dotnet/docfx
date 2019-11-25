@@ -46,7 +46,9 @@ namespace Microsoft.Docs.Build
 
             var contributionCommits = GetContributionCommits();
 
-            var excludes = _config.Contribution.ExcludedContributors;
+            var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
+                ? _config.GlobalMetadata.ContributorsToExclude
+                : _config.Contribution.ExcludeContributors;
 
             Contributor authorFromCommits = null;
             var contributors = new List<Contributor>();
@@ -172,44 +174,14 @@ namespace Microsoft.Docs.Build
             }
 
             var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
-            var originalContentGitUrlTemplate = contentBranchUrlTemplate;
-            var originalContentGitUrl = originalContentGitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
+            var originalContentGitUrl = contentBranchUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
+            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo, document.Docset.Locale) : originalContentGitUrl;
 
-            return (GetContentGitUrl(contentBranchUrlTemplate),
+            return (
+                contentGitUrl,
                 originalContentGitUrl,
-                !isWhitelisted ? originalContentGitUrl : originalContentGitUrlTemplate,
+                !isWhitelisted ? originalContentGitUrl : contentBranchUrlTemplate,
                 contentGitCommitUrl);
-
-            string GetContentGitUrl(string branchUrlTemplate)
-            {
-                var (editRemote, editBranch) = (repo.Remote, repo.Branch);
-
-                if (LocalizationUtility.TryGetContributionBranch(editBranch, out var repoContributionBranch))
-                {
-                    editBranch = repoContributionBranch;
-                }
-
-                if (!string.IsNullOrEmpty(_config.Contribution.Repository) && isWhitelisted)
-                {
-                    var contributionPackageUrl = new PackagePath(_config.Contribution.Repository);
-                    (branchUrlTemplate, _) = GetContentGitUrlTemplate(contributionPackageUrl.Url, pathToRepo);
-
-                    var hasBranch = (UrlUtility.SplitUrl(_config.Contribution.Repository).fragment ?? "").Length > 1;
-                    (editRemote, editBranch) = (contributionPackageUrl.Url, hasBranch ? contributionPackageUrl.Branch : editBranch);
-                    if (_fallbackDocset != null)
-                    {
-                        (editRemote, editBranch) = LocalizationUtility.GetLocalizedRepo(
-                                                    _config.Localization.Mapping,
-                                                    false,
-                                                    editRemote,
-                                                    editBranch,
-                                                    document.Docset.Locale,
-                                                    _config.Localization.DefaultLocale);
-                    }
-                }
-
-                return branchUrlTemplate?.Replace("{repo}", editRemote).Replace("{branch}", editBranch);
-            }
         }
 
         public void Save()
@@ -218,6 +190,34 @@ namespace Microsoft.Docs.Build
             {
                 _commitBuildTimeProvider.Save();
             }
+        }
+
+        private string GetContentGitUrl(string repo, string branch, string pathToRepo, string locale)
+        {
+            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryUrl))
+            {
+                repo = _config.Contribution.RepositoryUrl;
+            }
+
+            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryBranch))
+            {
+                branch = _config.Contribution.RepositoryBranch;
+            }
+
+            if (LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
+            {
+                branch = contributionBranch;
+            }
+
+            if (_fallbackDocset != null)
+            {
+                (repo, branch) = LocalizationUtility.GetLocalizedRepo(
+                    _config.Localization.Mapping, false, repo, branch, locale, _config.Localization.DefaultLocale);
+            }
+
+            var (gitUrlTemplate, _) = GetContentGitUrlTemplate(repo, pathToRepo);
+
+            return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", branch);
         }
 
         private static (string branchUrlTemplate, string commitUrlTemplate) GetContentGitUrlTemplate(string remote, string pathToRepo)
