@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
-            _commitBuildTimeProvider = docset.Repository != null && docset.Config.UpdateTimeAsCommitBuildTime
+            _commitBuildTimeProvider = docset.Repository != null && _config.UpdateTimeAsCommitBuildTime
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!UrlUtility.TryParseGitHubUrl(repo?.Remote, out var repoOwner, out var repoName))
                 {
-                    UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.RepositoryUrl, out repoOwner, out repoName);
+                    UrlUtility.TryParseGitHubUrl(_config.Contribution.RepositoryUrl, out repoOwner, out repoName);
                 }
 
                 foreach (var commit in contributionCommits)
