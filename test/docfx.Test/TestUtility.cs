@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Text;
 using LibGit2Sharp;
 using Newtonsoft.Json.Linq;
-using yunit;
+using Yunit;
 
 namespace Microsoft.Docs.Build
 {

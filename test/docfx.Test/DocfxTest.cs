@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using yunit;
+using Yunit;
 
 namespace Microsoft.Docs.Build
 {

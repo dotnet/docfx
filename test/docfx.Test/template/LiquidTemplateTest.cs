@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json.Linq;
 using Xunit;
-using yunit;
+using Yunit;
 
 namespace Microsoft.Docs.Build
 {
