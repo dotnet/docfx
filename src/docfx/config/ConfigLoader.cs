@@ -223,31 +223,5 @@ namespace Microsoft.Docs.Build
                 config.Remove(overwriteConfigIdentifier);
             }
         }
-
-        private static OpsDocsetConfig LoadOpsDocsetConfig(string docsetPath)
-        {
-            var directory = docsetPath;
-
-            do
-            {
-                var fullPath = Path.Combine(directory, ".openpublishing.publish.config.json");
-                if (!File.Exists(fullPath))
-                {
-                    directory = Path.GetDirectoryName(directory);
-                    continue;
-                }
-
-                var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
-                var opsConfig = JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
-                var buildSourceFolder = PathUtility.NormalizeFolder(Path.GetRelativePath(directory, docsetPath));
-
-                return opsConfig.DocsetsToPublish.FirstOrDefault(config =>
-                    PathUtility.PathComparer.Equals(
-                        PathUtility.NormalizeFolder(config.BuildSourceFolder), buildSourceFolder));
-            }
-            while (!string.IsNullOrEmpty(directory));
-
-            return null;
-        }
     }
 }
