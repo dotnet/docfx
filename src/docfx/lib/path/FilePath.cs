@@ -31,6 +31,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string Commit { get; }
 
+        /// <summary>
+        /// Indicate if the file is from git commit history.
+        /// </summary>
+        public bool IsFromHistory => Commit != null;
+
         public FilePath(string path, FileOrigin origin = FileOrigin.Default)
         {
             Debug.Assert(origin != FileOrigin.Dependency);
