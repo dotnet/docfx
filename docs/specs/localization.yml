@@ -1536,6 +1536,8 @@ repos:
   https://github.com/deletedtoc-1/a:
     - files:
         docfx.yml:
+        docs/b.md:
+        docs/c.md:
     - files:
         docfx.yml:
         docs/dir/TOC.json: |
