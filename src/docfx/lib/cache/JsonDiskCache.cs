@@ -90,9 +90,9 @@ namespace Microsoft.Docs.Build
                 {
                     value.Expiry = DateTime.UtcNow.AddSeconds(NextEvenDistribution(_expirationInSeconds));
 
-                    foreach (var key in value.GetKeys())
+                    foreach (var cacheKey in value.GetKeys())
                     {
-                        _cache[key] = value;
+                        _cache[cacheKey] = value;
                     }
 
                     _needUpdate = true;

@@ -42,35 +42,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            return _aliasCache.GetOrAdd(alias, GetMicrosoftGraphUser);
-
-            async Task<(Error, MicrosoftGraphUser)> GetMicrosoftGraphUser(string alias)
-            {
-                if (string.IsNullOrWhiteSpace(alias))
-                {
-                    return default;
-                }
-
-                var options = new List<Option>
-                {
-                    new QueryOption("$select", "mailNickname"),
-                    new QueryOption("$filter", $"mailNickname eq '{alias}'"),
-                };
-
-                try
-                {
-                    var users = await Policy
-                        .Handle<ServiceException>()
-                        .RetryAsync(3)
-                        .ExecuteAsync(() => _msGraphClient.Users.Request(options).GetAsync());
-
-                    return (null, users != null && users.Count > 0 ? new MicrosoftGraphUser { Alias = alias } : null);
-                }
-                catch (Exception e)
-                {
-                    return (Errors.MicrosoftGraphApiFailed(e.Message), null);
-                }
-            }
+            return _aliasCache.GetOrAdd(alias, GetMicrosoftGraphUserCore);
         }
 
         public Task<Error[]> Save()
@@ -81,6 +53,34 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _microsoftGraphAuthenticationProvider?.Dispose();
+        }
+
+        private async Task<(Error, MicrosoftGraphUser)> GetMicrosoftGraphUserCore(string alias)
+        {
+            if (string.IsNullOrWhiteSpace(alias))
+            {
+                return default;
+            }
+
+            var options = new List<Option>
+            {
+                new QueryOption("$select", "mailNickname"),
+                new QueryOption("$filter", $"mailNickname eq '{alias}'"),
+            };
+
+            try
+            {
+                var users = await Policy
+                    .Handle<ServiceException>()
+                    .RetryAsync(3)
+                    .ExecuteAsync(() => _msGraphClient.Users.Request(options).GetAsync());
+
+                return (null, users != null && users.Count > 0 ? new MicrosoftGraphUser { Alias = alias } : null);
+            }
+            catch (Exception e)
+            {
+                return (Errors.MicrosoftGraphApiFailed(e.Message), null);
+            }
         }
     }
 }
