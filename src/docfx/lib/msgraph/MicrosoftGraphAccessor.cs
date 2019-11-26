@@ -13,39 +13,69 @@ namespace Microsoft.Docs.Build
     {
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
+        private readonly JsonDiskCache<Error, MicrosoftGraphUser> _aliasCache;
 
-        public MicrosoftGraphAccessor(string tenantId, string clientId, string clientSecret)
+        public bool IsConnectedToGraphApi => _msGraphClient != null;
+
+        public MicrosoftGraphAccessor(Config config)
         {
-            _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(tenantId, clientId, clientSecret);
-            _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+            _aliasCache = new JsonDiskCache<Error, MicrosoftGraphUser>(
+                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraph.MicrosoftGraphCacheExpirationInHours));
+
+            if (!string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphTenantId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientSecret))
+            {
+                _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(
+                    config.MicrosoftGraph.MicrosoftGraphTenantId,
+                    config.MicrosoftGraph.MicrosoftGraphClientId,
+                    config.MicrosoftGraph.MicrosoftGraphClientSecret);
+
+                _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+            }
         }
 
-        public async Task<(Error error, bool isValid)> ValidateAlias(string alias)
+        public (Error error, MicrosoftGraphUser alias) GetMicrosoftGraphUser(string alias)
         {
-            if (string.IsNullOrWhiteSpace(alias))
+            if (_msGraphClient is null)
             {
-                return (null, false);
+                return default;
             }
 
-            var options = new List<Option>
-            {
-                new QueryOption("$select", "mailNickname"),
-                new QueryOption("$filter", $"mailNickname eq '{alias}'"),
-            };
+            return _aliasCache.GetOrAdd(alias, GetMicrosoftGraphUser);
 
-            try
+            async Task<(Error, MicrosoftGraphUser)> GetMicrosoftGraphUser(string alias)
             {
-                var users = await Policy
-                    .Handle<ServiceException>()
-                    .RetryAsync(3)
-                    .ExecuteAsync(() => _msGraphClient.Users.Request(options).GetAsync());
+                if (string.IsNullOrWhiteSpace(alias))
+                {
+                    return default;
+                }
 
-                return (null, users != null ? users.Count > 0 : false);
+                var options = new List<Option>
+                {
+                    new QueryOption("$select", "mailNickname"),
+                    new QueryOption("$filter", $"mailNickname eq '{alias}'"),
+                };
+
+                try
+                {
+                    var users = await Policy
+                        .Handle<ServiceException>()
+                        .RetryAsync(3)
+                        .ExecuteAsync(() => _msGraphClient.Users.Request(options).GetAsync());
+
+                    return (null, users != null && users.Count > 0 ? new MicrosoftGraphUser { Alias = alias } : null);
+                }
+                catch (Exception e)
+                {
+                    return (Errors.MicrosoftGraphApiFailed(e.Message), null);
+                }
             }
-            catch (Exception e)
-            {
-                return (Errors.MicrosoftGraphApiFailed(e.Message), false);
-            }
+        }
+
+        public Task<Error[]> Save()
+        {
+            return _aliasCache.Save();
         }
 
         public void Dispose()
