@@ -97,9 +97,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool GetByEmail(string authorEmail, out GitHubUser githubUser)
-            => _usersByEmail.TryGetValue(authorEmail, out githubUser) && githubUser.IsValid();
-
         public Task<(Error error, GitHubUser user)> GetByCommit(string authorEmail, string repoOwner, string repoName, string commitSha)
         {
             if (string.IsNullOrEmpty(authorEmail))
@@ -111,10 +108,15 @@ namespace Microsoft.Docs.Build
             {
                 Telemetry.TrackCacheTotalCount(TelemetryName.GitHubUserCache);
 
-                if (_usersByEmail.TryGetValue(authorEmail, out var existingUser) || string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName))
+                if (_usersByEmail.TryGetValue(authorEmail, out var existingUser))
                 {
                     if (existingUser?.IsValid() ?? false)
                         return (null, existingUser);
+                    return default;
+                }
+
+                if (string.IsNullOrEmpty(repoOwner) || string.IsNullOrEmpty(repoName) || string.IsNullOrEmpty(commitSha))
+                {
                     return default;
                 }
 

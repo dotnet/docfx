@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     internal class ContributionProvider
     {
         private readonly Input _input;
-        private readonly Docset _docset;
+        private readonly Config _config;
         private readonly Docset _fallbackDocset;
         private readonly GitHubUserCache _gitHubUserCache;
 
@@ -26,11 +26,11 @@ namespace Microsoft.Docs.Build
             Input input, Docset docset, Docset fallbackDocset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
         {
             _input = input;
+            _config = docset.Config;
             _gitHubUserCache = gitHubUserCache;
             _gitCommitProvider = gitCommitProvider;
-            _docset = docset;
             _fallbackDocset = fallbackDocset;
-            _commitBuildTimeProvider = docset.Repository != null && docset.Config.UpdateTimeAsCommitBuildTime
+            _commitBuildTimeProvider = docset.Repository != null && _config.UpdateTimeAsCommitBuildTime
                 ? new CommitBuildTimeProvider(docset.Repository) : null;
         }
 
@@ -44,11 +44,17 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var contributionCommits = GetContributionCommits();
+            var contributionCommits = commits;
+            var bilingual = _fallbackDocset != null && _config.Localization.Bilingual;
+            var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+            if (!string.IsNullOrEmpty(contributionBranch))
+            {
+                (_, _, contributionCommits) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
+            }
 
-            var excludes = _docset.Config.GlobalMetadata.ContributorsToExclude.Count > 0
-                ? _docset.Config.GlobalMetadata.ContributorsToExclude
-                : _docset.Config.Contribution.ExcludeContributors;
+            var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
+                ? _config.GlobalMetadata.ContributorsToExclude
+                : _config.Contribution.ExcludeContributors;
 
             Contributor authorFromCommits = null;
             var contributors = new List<Contributor>();
@@ -66,10 +72,7 @@ namespace Microsoft.Docs.Build
                 }
                 : null;
 
-            var isGitHubRepo = UrlUtility.TryParseGitHubUrl(repo?.Remote, out var gitHubOwner, out var gitHubRepoName) ||
-                UrlUtility.TryParseGitHubUrl(document.Docset.Config.Contribution.RepositoryUrl, out gitHubOwner, out gitHubRepoName);
-
-            if (!document.Docset.Config.GitHub.ResolveUsers)
+            if (!_config.GitHub.ResolveUsers)
             {
                 return (errors, contributionInfo);
             }
@@ -77,11 +80,18 @@ namespace Microsoft.Docs.Build
             // Resolve contributors from commits
             if (contributionCommits != null)
             {
+                if (!UrlUtility.TryParseGitHubUrl(repo?.Remote, out var repoOwner, out var repoName))
+                {
+                    UrlUtility.TryParseGitHubUrl(_config.Contribution.RepositoryUrl, out repoOwner, out repoName);
+                }
+
                 foreach (var commit in contributionCommits)
                 {
                     if (!contributorsGroupByEmail.TryGetValue(commit.AuthorEmail, out var contributor))
                     {
-                        contributorsGroupByEmail[commit.AuthorEmail] = contributor = await GetContributor(commit);
+                        var (error, githubUser) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
+                        errors.AddIfNotNull(error);
+                        contributorsGroupByEmail[commit.AuthorEmail] = contributor = githubUser?.ToContributor();
                     }
 
                     if (contributor != null && !excludes.Contains(contributor.Name))
@@ -95,7 +105,15 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var author = await GetAuthor();
+            var author = authorFromCommits;
+            if (!string.IsNullOrEmpty(authorName))
+            {
+                // Remove author from contributors if author name is specified
+                var (error, githubUser) = await _gitHubUserCache.GetByLogin(authorName);
+                errors.AddIfNotNull(error);
+                author = githubUser?.ToContributor();
+            }
+
             if (author != null)
             {
                 contributors.RemoveAll(c => c.Id == author.Id);
@@ -108,47 +126,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (errors, contributionInfo);
-
-            async Task<Contributor> GetContributor(GitCommit commit)
-            {
-                if (isGitHubRepo)
-                {
-                    var (error, githubUser) = await _gitHubUserCache.GetByCommit(
-                        commit.AuthorEmail, gitHubOwner, gitHubRepoName, commit.Sha);
-                    errors.AddIfNotNull(error);
-                    return githubUser?.ToContributor();
-                }
-
-                // directly resolve github user by commit email
-                return _gitHubUserCache.GetByEmail(commit.AuthorEmail, out var user) ? user?.ToContributor() : default;
-            }
-
-            async Task<Contributor> GetAuthor()
-            {
-                if (!string.IsNullOrEmpty(authorName))
-                {
-                    // Remove author from contributors if author name is specified
-                    var (error, result) = await _gitHubUserCache.GetByLogin(authorName);
-                    errors.AddIfNotNull(error);
-                    return result?.ToContributor();
-                }
-
-                // When author name is not specified, last contributor is author
-                return authorFromCommits;
-            }
-
-            List<GitCommit> GetContributionCommits()
-            {
-                var result = commits;
-                var bilingual = _fallbackDocset != null && document.Docset.Config.Localization.Bilingual;
-                var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
-                if (!string.IsNullOrEmpty(contributionBranch))
-                {
-                    (_, _, result) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
-                }
-
-                return result;
-            }
         }
 
         public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
@@ -185,7 +162,7 @@ namespace Microsoft.Docs.Build
 
             var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
             var originalContentGitUrl = contentBranchUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo) : originalContentGitUrl;
+            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo, document.Docset.Locale) : originalContentGitUrl;
 
             return (
                 contentGitUrl,
@@ -202,18 +179,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string GetContentGitUrl(string repo, string branch, string pathToRepo)
+        private string GetContentGitUrl(string repo, string branch, string pathToRepo, string locale)
         {
-            var config = _docset.Config;
-
-            if (!string.IsNullOrEmpty(config.Contribution.RepositoryUrl))
+            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryUrl))
             {
-                repo = config.Contribution.RepositoryUrl;
+                repo = _config.Contribution.RepositoryUrl;
             }
 
-            if (!string.IsNullOrEmpty(config.Contribution.RepositoryBranch))
+            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryBranch))
             {
-                branch = config.Contribution.RepositoryBranch;
+                branch = _config.Contribution.RepositoryBranch;
             }
 
             if (LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
@@ -224,7 +199,7 @@ namespace Microsoft.Docs.Build
             if (_fallbackDocset != null)
             {
                 (repo, branch) = LocalizationUtility.GetLocalizedRepo(
-                    config.Localization.Mapping, false, repo, branch, _docset.Locale, config.Localization.DefaultLocale);
+                    _config.Localization.Mapping, false, repo, branch, locale, _config.Localization.DefaultLocale);
             }
 
             var (gitUrlTemplate, _) = GetContentGitUrlTemplate(repo, pathToRepo);
