@@ -187,16 +187,9 @@ inputs:
 cache:
   microsoft-graph.json: |
     { 
-      "aliases":
-      [
-        {
-          "alias": "over123",
-          "expiry": "4019-06-09T19:39:07.9918016Z"
-        },
-        {
-          "alias": "zikun",
-          "expiry": "2019-06-08T01:40:33.1981669Z"
-        }
+      "items": [
+        { "alias": "over123" },
+        { "alias": "zikun", "expiry": "2019-06-08T01:40:33.1981669Z" }
       ]
     }
 environments:
@@ -232,16 +225,9 @@ inputs:
 cache:
   microsoft-graph.json: |
     { 
-      "aliases":
-      [
-        {
-          "alias": "yazhao",
-          "expiry": "4019-06-09T19:39:07.9918016Z"
-        },
-        {
-          "alias": "123over123",
-          "expiry": "2019-06-08T01:40:33.1981669Z"
-        }
+      "items": [
+        { "alias": "yazhao" },
+        { "alias": "123over123", "expiry": "2019-06-08T01:40:33.1981669Z" }
       ]
     }
 environments:
