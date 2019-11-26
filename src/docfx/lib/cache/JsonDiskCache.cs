@@ -36,7 +36,10 @@ namespace Microsoft.Docs.Build
 
                 foreach (var item in cacheFile.Items)
                 {
-                    _cache.TryAdd(item.GetKeys(), item);
+                    foreach (var cacheKey in item.GetKeys())
+                    {
+                        _cache.TryAdd(cacheKey, item);
+                    }
                 }
             }
         }
@@ -108,7 +111,7 @@ namespace Microsoft.Docs.Build
 
         private class CacheFile
         {
-            public T[] Items { get; set; }
+            public T[] Items { get; set; } = Array.Empty<T>();
         }
     }
 }
