@@ -88,7 +88,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             
-            var (updatedCode, updatedHighlight) = GetCodeSnippet(range, id, code, highlight, logError);
+            var updatedCode = GetCodeSnippet(range, id, code, logError);
+
+            if(updatedCode == string.Empty)
+            {
+                return false;
+            }
 
             if(string.IsNullOrEmpty(language))
             {
@@ -102,8 +107,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 htmlAttributes.AddProperty("data-interactive", language);
                 htmlAttributes.AddProperty("data-interactive-mode", interactive);
             }
-            htmlAttributes.AddProperty("name", "main");
-            htmlAttributes.AddProperty("title", "__________");
             if (!string.IsNullOrEmpty(highlight)) htmlAttributes.AddProperty("highlight-lines", highlight);
 
             RenderDelegate = (renderer, obj) =>
@@ -130,10 +133,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return language.Key;
         }
 
-        private static Tuple<string, string> GetCodeSnippet(string range, string id, string code, string highlight, Action<string> logError)
+        private static string GetCodeSnippet(string range, string id, string code, Action<string> logError)
         {
-            var highlightOffset = 0;
-
             if(!string.IsNullOrEmpty(range) && !string.IsNullOrEmpty(id))
             {
                 logError($"You must set only either Range or Id, but not both.");
@@ -143,26 +144,31 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!string.IsNullOrEmpty(range))
             {
-                codeSections = GetCodeSectionsFromRange(range, code, codeSections);
+                codeSections = GetCodeSectionsFromRange(range, code, codeSections, logError);
             }
             else if (!string.IsNullOrEmpty(id))
             {
-                var strRegexStart = @"((<|</|#region)\s*" + id + @"(>|\s*|\n*))";
+                var strRegexStart = @"((<|</|#region)\s*" + id + @"(>|(\s*>)))";
                 var idRegexStart = new Regex(strRegexStart);
                 var idRegexEnd = new Regex(strRegexStart + @"|#endregion");
                 var codeLines = code.Split('\n').ToList();
-                var beg = codeLines.FindIndex(oo => idRegexStart.IsMatch(oo)) + 1;
-                var end = codeLines.FindLastIndex(oo => idRegexEnd.IsMatch(oo)) - 1;
-                codeSections = GetCodeSectionsFromRange($"{beg}-{end}", code, codeSections);
+                var beg = codeLines.FindIndex(oo => idRegexStart.IsMatch(oo)) + 2;
+                var end = codeLines.FindLastIndex(oo => idRegexEnd.IsMatch(oo));
+                codeSections = GetCodeSectionsFromRange($"{beg}-{end}", code, codeSections, logError);
             }
             else
             {
                 codeSections.Add(code);
             }
 
+            if (codeSections == null)
+            {
+                return string.Empty;
+            }
+
             codeSections = Dedent(codeSections);
             var source = string.Join("    ...\n", codeSections.ToArray());
-            return new Tuple<string, string>(source, "3-4"); ;
+            return source;
         }
 
         public static List<string> Dedent(List<string> sections)
@@ -189,13 +195,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var normalizedLines = (length == 0 ? codeLines : codeLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, length), string.Empty))).ToArray();
                 dedentedSections.Add(string.Join("\n", normalizedLines));
             }
-            //return normalizedLines;
             return dedentedSections;
         }
 
-        private static List<string> GetCodeSectionsFromRange(string range, string code, List<string> codeSections)
+        private static List<string> GetCodeSectionsFromRange(string range, string code, List<string> codeSections, Action<string> logError)
         {
-            var highlightOffset = 0;
             var codeLines = code.Split('\n');
 
             range = range.Replace(" ", "");
@@ -207,8 +211,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var rangeParts = codeRange.Split('-');
                     if (!string.IsNullOrEmpty(rangeParts[1]))
                     {
-                        var beg = Convert.ToInt16(rangeParts[0]);
-                        var end = Convert.ToInt16(rangeParts[1]);
+                        var beg = Convert.ToInt16(rangeParts[0]) - 1;
+                        var end = Convert.ToInt16(rangeParts[1]) - 1;
+                        if(beg > codeLines.Length || end > codeLines.Length)
+                        {
+                            logError($"Your range is greater than the number of lines in the document.");
+                            return null;
+                        }
                         var section = string.Empty;
                         for (var i = beg; i <= end; i++)
                         {
@@ -219,7 +228,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     else
                     {
                         var section = string.Empty;
-                        var beg = Convert.ToInt16(rangeParts[0]);
+                        var beg = Convert.ToInt16(rangeParts[0]) - 1;
                         var end = codeLines.Length;
                         for (var i = beg; i < end; i++)
                         {
