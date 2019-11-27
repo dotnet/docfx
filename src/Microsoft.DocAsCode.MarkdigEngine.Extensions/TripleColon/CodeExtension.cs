@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Security.Cryptography;
@@ -89,8 +90,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 logError($"The code snippet \"{source}\" could not be found.");
                 return false;
             }
-            
-            var updatedCode = GetCodeSnippet(range, id, code, logError).TrimEnd('\r').TrimEnd('\n');
+            var updatedCode = GetCodeSnippet(range, id, code, logError).TrimEnd();
             updatedCodes.Add(updatedCode);
 
             if (updatedCode == string.Empty)
@@ -128,12 +128,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private string InferLanguageFromFile(string source, Action<string> logError)
         {
-            var fileExtension = source.Split('.').ToList().LastOrDefault();
+            var fileExtension = Path.GetExtension(source);
             if(fileExtension == null)
             {
                 logError($"Language is not set, and your source has no file type. Cannot infer language.");
             }
             var language = HtmlCodeSnippetRenderer.LanguageAlias.Where(oo => oo.Value.Contains(fileExtension) || oo.Value.Contains($".{fileExtension}")).FirstOrDefault();
+            if(string.IsNullOrEmpty(language.Key))
+            {
+                logError($"Language is not set, and we could not infer language from the file type.");
+            }
             return language.Key;
         }
 
@@ -148,7 +152,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!string.IsNullOrEmpty(range))
             {
-                codeSections = GetCodeSectionsFromRange(range, code, codeSections, logError);
+                var codeLines = code.Split('\n').ToList();
+                codeSections = GetCodeSectionsFromRange(range, codeLines, codeSections, logError);
             }
             else if (!string.IsNullOrEmpty(id))
             {
@@ -158,7 +163,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var codeLines = code.Split('\n').ToList();
                 var beg = codeLines.FindIndex(oo => idRegexStart.IsMatch(oo)) + 2;
                 var end = codeLines.FindLastIndex(oo => idRegexEnd.IsMatch(oo));
-                codeSections = GetCodeSectionsFromRange($"{beg}-{end}", code, codeSections, logError);
+                codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError);
             }
             else
             {
@@ -202,11 +207,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return dedentedSections;
         }
 
-        private static List<string> GetCodeSectionsFromRange(string range, string code, List<string> codeSections, Action<string> logError)
+        private static List<string> GetCodeSectionsFromRange(string range, List<string> codeLines, List<string> codeSections, Action<string> logError)
         {
-            var codeLines = code.Split('\n');
-
-            range = range.Replace(" ", "");
             var ranges = range.Split(',');
             foreach (var codeRange in ranges)
             {
@@ -215,9 +217,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var rangeParts = codeRange.Split('-');
                     if (!string.IsNullOrEmpty(rangeParts[1]))
                     {
-                        var beg = Convert.ToInt16(rangeParts[0]) - 1;
-                        var end = Convert.ToInt16(rangeParts[1]) - 1;
-                        if(beg > codeLines.Length || end > codeLines.Length)
+                        var beg = 0;
+                        var end = 0;
+                        if(int.TryParse(rangeParts[0], out beg)
+                            && int.TryParse(rangeParts[1], out end))
+                        {
+                            beg--;
+                            end--;
+                        } else
+                        {
+                            logError($"Your ranges must be numbers.");
+                            return null;
+                        }
+                        if(beg > codeLines.Count || end > codeLines.Count)
                         {
                             logError($"Your range is greater than the number of lines in the document.");
                             return null;
@@ -232,8 +244,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     else
                     {
                         var section = string.Empty;
-                        var beg = Convert.ToInt16(rangeParts[0]) - 1;
-                        var end = codeLines.Length;
+                        var beg = 0;
+                        if (int.TryParse(rangeParts[0], out beg))
+                        {
+                            beg--;
+                        }
+                        else
+                        {
+                            logError($"Your ranges must be numbers.");
+                            return null;
+                        }
+                        var end = codeLines.Count;
                         for (var i = beg; i < end; i++)
                         {
                             section += codeLines[i] + "\n";
@@ -243,7 +264,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 else
                 {
-                    codeSections.Add(codeLines[Convert.ToInt16(codeRange) - 1]);
+                    var beg = 0;
+                    if (int.TryParse(codeRange, out beg))
+                    {
+                        codeSections.Add(codeLines[beg--]);
+                    }
+                    else
+                    {
+                        logError($"Your ranges must be numbers.");
+                        return null;
+                    }
                 }
             }
 

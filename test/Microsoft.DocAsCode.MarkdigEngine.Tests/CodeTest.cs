@@ -327,6 +327,67 @@ int main()
     AppDomain4::Main();
 }
 // </snippet2>";
+        static public string contentCrazy = @"//<Snippet1>
+using namespace System;
+
+int main()
+{
+    AppDomain^ root = AppDomain::CurrentDomain;
+
+    AppDomainSetup^ setup = gcnew AppDomainSetup();
+    setup->ApplicationBase = 
+        root->SetupInformation->ApplicationBase + ""MyAppSubfolder\\"";
+
+    AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, setup);
+
+    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
+        root->FriendlyName, root->SetupInformation->ApplicationBase);
+    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
+        domain->FriendlyName, domain->SetupInformation->ApplicationBase);
+
+    AppDomain::Unload(domain);
+}
+
+/* This example produces output similar to the following:
+Application base of MyApp.exe:
+        C:\Program Files\MyApp\
+Application base of MyDomain:
+        C:\Program Files\MyApp\MyAppSubfolder\
+ */
+//</Snippet1>
+
+
+// <snippet2>
+using namespace System;
+using namespace System::Reflection;
+
+ref class AppDomain4
+{
+public:
+    static void Main()
+    {
+        // Create application domain setup information.
+        AppDomainSetup^ domaininfo = gcnew AppDomainSetup();
+        domaininfo->ApplicationBase = ""f:\\work\\development\\latest"";
+
+        // Create the application domain.
+        AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, domaininfo);
+
+        // Write application domain information to the console.
+        Console::WriteLine(""Host domain: "" + AppDomain::CurrentDomain->FriendlyName);
+        Console::WriteLine(""child domain: "" + domain->FriendlyName);
+        Console::WriteLine(""Application base is: "" + domain->SetupInformation->ApplicationBase);
+
+        // Unload the application domain.
+        AppDomain::Unload(domain);
+    }
+};
+
+int main()
+{
+    AppDomain4::Main();
+}
+// </snippet2>";
 
 
         private static MarkupResult SimpleMarkup(string source)
@@ -335,7 +396,7 @@ int main()
         }
 
         [Theory]
-        [InlineData(@":::code source=""source.cs"" range=""11-33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
+        [InlineData(@":::code source=""source.cs"" range=""11 - 33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// <summary>
 /// Interaction logic for Window1.xaml
 /// </summary>
@@ -571,6 +632,8 @@ Application base of MyDomain:
         [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. Unexpected attribute ""badattribute"".")]
         [InlineData(@":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. You must set only either Range or Id, but not both.")]
         [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. source is a required attribute. Please ensure you have specified a source attribute")]
+        [InlineData(@":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. Your ranges must be numbers.")]
+        [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::"" is invalid. Language is not set, and we could not infer language from the file type.")]
         public void CodeTestBlockGeneralCSharp_Error(string source, string expected)
         {
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
@@ -583,6 +646,10 @@ Application base of MyDomain:
             else if (source.Contains("source.vb"))
             {
                 File.WriteAllText("source.vb", contentVB.Replace("\r\n", "\n"));
+            }
+            else if (source.Contains("source.crazy"))
+            {
+                File.WriteAllText("source.crazy", contentCrazy.Replace("\r\n", "\n"));
             }
 
             MarkupResult marked;
