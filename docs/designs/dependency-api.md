@@ -1,4 +1,7 @@
-# Server side API
+# Dependency API
+
+This document define the interface of all the dependency APIs. Here is structure of how docfx interact with the dependency APIs.
+![Dpepdency API](images/dependency-api.png)
 
 ## Build config
 
@@ -8,7 +11,7 @@ This API is used to get all the MicrosoftDocs specific configs, the response of 
 Get https://API-Hostname/docfx/buildconfig
 ```
 
-### Parameters
+### Parameters(Headers)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
@@ -30,10 +33,9 @@ Status: 200 OK
 }
 ```
 
-### Remaining work in docfx
+### Remaining work in docfx(docs-pipeline)
 
-1. Pass the API-Hostname by environment variable to docfx.
-2. Before we export docfx.yml to our end user, if the `.openpublishing.config.json` exists, we will add `https://API-Hostname/docfx/buildconfig?repositoryName={repositoryUrl}&repositoryBranch={branch}&docsetName={name}` to the config when we loading the config. After we export docfx.yml to our end user, user have to specific the item `extend: https://API-Hostname/docfx/buildconfig` in docfx.yml.
+1. Before we export docfx.yml to our end user, if the `.openpublishing.config.json` exists, we will add `https://API-Hostname/docfx/buildconfig` to the docfx.global.json in docs-pipeline. After we export docfx.yml to our end user, user have to specific the item `extend: https://API-Hostname/docfx/buildconfig` in docfx.yml.
 
 ## Moniker definition
 
@@ -76,7 +78,7 @@ This API is used to get all the xrefmap under the specific base path(tag).
 Get https://API-Hostname/docfx/xref
 ```
 
-### Parameters
+### Parameters(Query string)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
@@ -87,9 +89,18 @@ Get https://API-Hostname/docfx/xref
 Status: 200 OK
 ```json
 {
-    "refs": [
+    "links": [
         "https://opdhsblobprod03.blob.core.windows.net/contents/db6c72d5abea43e0954a6029d4c7bee8/bf5a205fdcd9782e8f559b8bfee27a8f?sv=2015-04-05&sr=b&sig=Ndkg79gOGkx2Ni%2BxHz3ak7x62AaWSuAjQf%2Bli3tK27g%3D&st=2019-11-25T09%3A57%3A02Z&se=2019-11-26T10%3A07%3A02Z&sp=r"
         "https://opdhsblobprod03.blob.core.windows.net/contents/42800d13d0f54fb4aec7c8fd251fc835/f965b8349e2acab55d7ff48778096313?sv=2015-04-05&sr=b&sig=hbuPbXNzhbSLeGvYdaNd%2BvJThZ6qKGHD7eYF1Jl%2Ba0M%3D&st=2019-11-25T09%3A57%3A02Z&se=2019-11-26T10%3A07%3A02Z&sp=r"
+    ],
+    "references": [
+        {
+            "uid": "System.String",
+            "name": "String",
+            "fullName": "System.String",
+            "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string",
+            "nameWithType": "System.String"
+        }
     ]
 }
 ```
@@ -98,9 +109,7 @@ Status: 200 OK
 
 1. Convert the xrefTag to xref APIs URL when loading the configuration.
 2. To support the testing feature: use PROD xrefmap when building PPE repository, for server side build, we need to pass the Read access OPBuildUserToken of PROD when building the PPE repository. for local build, we don't need to support this feature.
-3. Refine the xref configuration schema.
-
-open question: blob SAS token expiry
+3. Refine the xrefmap model in docfx to support cyclically restore.
 
 ## Metadata validation Rules
 
@@ -110,7 +119,7 @@ This API is used to get the metadata validation json schema.
 Get https://API-Hostname/docfx/metadataValidation
 ```
 
-### Parameters
+### Parameters(Headers)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
@@ -172,7 +181,7 @@ This API is used to get the markdown validation rules.
 Get https://API-Hostname/docfx/markdownValidation
 ```
 
-### Parameters
+### Parameters(Headers)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
