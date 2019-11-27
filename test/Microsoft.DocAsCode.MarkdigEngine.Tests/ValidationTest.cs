@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Composition.Hosting;
     using System.Linq;
+    using System.IO;
 
     using MarkdigEngine.Extensions;
 
@@ -346,12 +348,40 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             Assert.Equal(expectedMessage, message);
         }
 
+        [Fact]
+        [Trait("Related", "Validation")]
+        public void TestGetSchemaName()
+        {
+            const string expectedSchemaName = "YamlMime:ModuleUnit";
+            const string yamlFilename = "moduleunit.yml";
+            const string yamlContent = @"### YamlMime:ModuleUnit
+uid: learn.azure.introduction";
+            File.WriteAllText(yamlFilename, yamlContent);
+            InclusionContext.PushFile(yamlFilename);
+            InclusionContext.PushInclusion("introduction-included.md");
+
+            string schemaName = string.Empty;
+
+            var rewriter = MarkdownObjectRewriterFactory.FromValidator(
+               MarkdownObjectValidatorFactory.FromLambda<MarkdownDocument>(
+                   root =>
+                   {
+                       schemaName = root.GetData("SchemaName")?.ToString();
+                   })
+               );
+            var html = Markup("# Hello World", rewriter, null);
+            Assert.Equal(expectedSchemaName, schemaName);
+        }
+
         private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)
         {
             var pipelineBuilder = new MarkdownPipelineBuilder();
             var documentRewriter = new MarkdownDocumentVisitor(rewriter);
-            pipelineBuilder.DocumentProcessed += document => documentRewriter.Visit(document);
-
+            pipelineBuilder.DocumentProcessed += document =>
+            {
+                ValidationExtension.SetSchemaName(document);
+                documentRewriter.Visit(document);
+            };
             var pipeline = pipelineBuilder.Build();
 
             if (listener != null)

@@ -10,15 +10,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void EmojiTestGeneral()
         {
-            //arange
             var content = @"**content :** :smile:";
+            var expected = @"<p><strong>content :</strong> 😄</p>";
 
-            var marked = TestUtility.Markup(content, "fake.md");
-
-            // assert
-            var expected = @"<p sourceFile=""fake.md"" sourceStartLineNumber=""1""><strong sourceFile=""fake.md"" sourceStartLineNumber=""1"">content :</strong> 😄</p>
-";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.VerifyMarkup(content, expected);
         }
     }
 }

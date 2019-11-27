@@ -1,8 +1,36 @@
-Version Notes (Current Version: v2.46)
+Version Notes (Current Version: v2.48)
 =======================================
 
-v2.46(Pre-Release)
+v2.48(Pre-release)
 -----------
+
+v2.47
+-----------
+
+1. Add persistence to the TOC filter (#5164). Thanks @jo3w4rd!
+2. Bug fix:
+    1. Fix StackOverflowExcpetion when resolving cross reference. (#4857)
+    2. Fix parsing `~/` in link path. (#5223)
+
+v2.46
+-----------
+
+1. Support Jupyter Notebook in code snippet (#4989, #5000). Thanks @pravakarg, @sdgilley!
+2. Upgrade to Microsoft.CodeAnalysis 3.3.1 for C# 8.0 support (#5163). Thanks @dlech!
+3. Improve the default template for TypeScript documentation (#5128). Thanks @rbuckton!
+4. Improve logging of template preprocessor errors (#5099). Thanks @mcm-ham!
+5. Bug fix:
+    1. fix duplicate warnings when include the same file multiple times. (#5093)
+
+v2.45.1
+-----------
+1. Improve performance by upgrading Jint to 2.11.58. (#5032)
+2. Resolve UID from xrefmap respecting the order defined in `docfx.json`. (#5094)
+3. Bug fix:
+    1. Fix incremental build error when previous build has no content. (#5010)
+    2. Fix PDF cover page not work. (#5077)
+    3. Enforce trailing `]` when matching file inclusion Markdown syntax. (#5091)
+    
 
 v2.45
 -----------

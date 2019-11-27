@@ -17,7 +17,7 @@
             {
                 throw new ArgumentNullException(nameof(packageFiles));
             }
-            Readers = (from file in packageFiles.AsParallel().WithDegreeOfParallelism(maxParallelism)
+            Readers = (from file in packageFiles.AsParallel().WithDegreeOfParallelism(maxParallelism).AsOrdered()
                        let reader = ExternalReferencePackageReader.CreateNoThrow(file)
                        where reader != null
                        select reader).ToImmutableList();

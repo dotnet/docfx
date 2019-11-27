@@ -27,6 +27,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty(Constants.PropertyName.Parent)]
         public List<ApiLanguageValuePair<ApiNames>> Parent { get; set; }
 
+        [YamlMember(Alias = "package")]
+        [JsonProperty("package")]
+        public List<ApiLanguageValuePair<ApiNames>> Package { get; set; }
+
         [YamlMember(Alias = Constants.PropertyName.Children)]
         [JsonProperty(Constants.PropertyName.Children)]
         public List<ApiLanguageValuePair<List<ApiBuildOutput>>> Children { get; set; }
@@ -113,7 +117,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         [YamlMember(Alias = Constants.PropertyName.Inheritance)]
         [JsonProperty(Constants.PropertyName.Inheritance)]
-        public List<ApiLanguageValuePair<List<ApiInheritanceTreeBuildOutput>>> Inheritance { get; set; }
+        public List<ApiLanguageValuePairWithLevel<List<ApiInheritanceTreeBuildOutput>>> Inheritance { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.DerivedClasses)]
         [JsonProperty(Constants.PropertyName.DerivedClasses)]

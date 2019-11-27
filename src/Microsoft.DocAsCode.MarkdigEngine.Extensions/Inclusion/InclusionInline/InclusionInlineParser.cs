@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             string title = null, path = null;
 
-            if (!ExtensionsHelper.MatchLink(ref slice, ref title, ref path))
+            if (!ExtensionsHelper.MatchLink(ref slice, ref title, ref path) || !ExtensionsHelper.MatchInlcusionEnd(ref slice))
             {
                 return false;
             }

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Jint;
     using Jint.Native;
     using Jint.Native.Object;
-
+    using Jint.Parser;
     using Microsoft.DocAsCode.Common;
 
     public class TemplateJintPreprocessor : ITemplatePreprocessor
@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         cachedEngine = CreateEngine(engine, RequireFuncVariableName);
                         engineCache[s] = cachedEngine;
-                        cachedEngine.Execute(script);
+                        cachedEngine.Execute(script, new ParserOptions { Source = s });
                     }
 
                     return cachedEngine.GetValue(ExportsVariableName);

@@ -64,7 +64,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Line = processor.LineIndex,
                 Span = new SourceSpan(sourcePosition, slice.End),
                 Extension = extension,
-                RenderProperties = renderProperties
+                RenderProperties = renderProperties,
+                Attributes = attributes
             };
 
             if (htmlAttributes != null)
@@ -74,8 +75,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(block);
 
-            if (extension.EndingTripleColons)
+            if (extension.GetType() == typeof(ImageExtension)
+                && htmlAttributes != null
+                && ImageExtension.RequiresClosingTripleColon(attributes))
             {
+                ((TripleColonBlock)block).EndingTripleColons = true;
                 return BlockState.ContinueDiscard;
             }
 
@@ -115,7 +119,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var c = ExtensionsHelper.SkipSpaces(ref slice);
 
-            var endingTripleColons = ((TripleColonBlock)block).Extension.EndingTripleColons;
+            var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
             if (endingTripleColons && !ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
                 _context.LogWarning(
@@ -125,7 +129,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.Continue;
             }
 
-            if (!c.IsZero())
+            if (!c.IsZero() && !endingTripleColons)
             {
                 _context.LogWarning(
                     $"invalid-{extensionName}",

@@ -28,6 +28,8 @@ Test Include File
 
 [!include[refa](a.md)]
 
+[!include[refa](a.md) ]
+
 ";
 
             var refa = @"---
@@ -37,7 +39,7 @@ description: include file
 
 # Hello Include File A
 
-This is a file A included by another file. [!include[refb](b.md)]
+This is a file A included by another file. [!include[refb](b.md)] [!include[refb](b.md) ]
 
 ";
 
@@ -56,7 +58,9 @@ description: include file
             var expected = @"<h1 id=""hello-world"">Hello World</h1>
 <p>Test Include File</p>
 <h1 id=""hello-include-file-a"">Hello Include File A</h1>
-<p>This is a file A included by another file. # Hello Include File B</p>
+<p>This is a file A included by another file. # Hello Include File B [!include<a href=""%7E/r/b.md"">refb</a> ]</p>
+
+<p>[!include<a href=""a.md"">refa</a> ]</p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
 
@@ -763,6 +767,59 @@ body";
             }
             Assert.Equal(null, InclusionContext.RootFile);
             Assert.Equal(null, InclusionContext.File);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestComplexImageBlockSrcResolveInToken()
+        {
+            // -r
+            //  |- r.md
+            //  |- b
+            //  |  |- token.md
+            //  |  |- img.jpg
+            var r = @"
+[!include[](b/token.md)]
+";
+            var token = @"
+:::image source=""example.jpg"" type=""complex"" alt-text=""example""::: 
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+:::image-end:::
+";
+            TestUtility.WriteToFile("r/r.md", r);
+            TestUtility.WriteToFile("r/b/token.md", token);
+            var marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
+
+            var expected = @"<img alt=""example"" aria-describedby=""e68bf"" src=""~/r/b/example.jpg"">
+<div id=""e68bf"" class=""visually-hidden"">
+<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+</div>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestImageWithIconTypeBlockSrcResolveInToken()
+        {
+            // -r
+            //  |- r.md
+            //  |- b
+            //  |  |- token.md
+            //  |  |- img.jpg
+            var r = @"
+[!include[](b/token.md)]
+";
+            var token = @"
+:::image source=""example.svg"" type=""icon"" alt-text=""example"":::
+";
+            TestUtility.WriteToFile("r/r.md", r);
+            TestUtility.WriteToFile("r/b/token.md", token);
+            var marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
+
+            var expected = @"<img role=""presentation"" src=""~/r/b/example.svg"">
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
     }
 }

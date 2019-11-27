@@ -126,11 +126,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Spec = spec;
         }
 
-        /// <summary>
-        /// TODO: multi-lang support
-        /// </summary>
-        /// <returns></returns>
-        public HtmlNode ConvertToHtmlNode(string language, ITemplateRenderer renderer)
+        public (HtmlNode, bool resolved) ConvertToHtmlNode(string language, ITemplateRenderer renderer)
         {
             if (!string.IsNullOrEmpty(TemplatePath) && renderer != null && Spec != null)
             {
@@ -139,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var converted = renderer.Render(Spec);
                     var node = new HtmlDocument();
                     node.LoadHtml(converted);
-                    return node.DocumentNode;
+                    return (node.DocumentNode, true);
                 }
                 else
                 {
@@ -147,50 +143,49 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            // If href exists, return anchor else return text
             if (!string.IsNullOrEmpty(Href))
             {
                 if (!string.IsNullOrEmpty(InnerHtml))
                 {
-                    return GetAnchorNode(Href, Query + Anchor, Title, InnerHtml, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                    return (GetAnchorNode(Href, Query + Anchor, Title, InnerHtml, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber), true);
                 }
                 if (!string.IsNullOrEmpty(Text))
                 {
-                    return GetAnchorNode(Href, Query + Anchor, Title, Text, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                    return (GetAnchorNode(Href, Query + Anchor, Title, Text, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber), true);
                 }
                 if (Spec != null)
                 {
                     var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, DisplayProperty, "name"));
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return GetAnchorNode(Href, Query + Anchor, Title, value, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                        return (GetAnchorNode(Href, Query + Anchor, Title, value, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber), true);
                     }
                 }
-                return GetAnchorNode(Href, Query + Anchor, Title, Uid, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
+                return (GetAnchorNode(Href, Query + Anchor, Title, Uid, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber), true);
             }
             else
             {
                 if (!string.IsNullOrEmpty(Raw))
                 {
-                    return HtmlNode.CreateNode(Raw);
+                    return (HtmlNode.CreateNode(Raw), false);
                 }
                 if (!string.IsNullOrEmpty(InnerHtml))
                 {
-                    return GetDefaultPlainTextNode(InnerHtml);
+                    return (GetDefaultPlainTextNode(InnerHtml), false);
                 }
                 if (!string.IsNullOrEmpty(Alt))
                 {
-                    return GetDefaultPlainTextNode(Alt);
+                    return (GetDefaultPlainTextNode(Alt), false);
                 }
                 if (Spec != null)
                 {
                     var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, AltProperty, "name"));
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return GetDefaultPlainTextNode(value);
+                        return (GetDefaultPlainTextNode(value), false);
                     }
                 }
-                return GetDefaultPlainTextNode(Uid);
+                return (GetDefaultPlainTextNode(Uid), false);
             }
         }
 

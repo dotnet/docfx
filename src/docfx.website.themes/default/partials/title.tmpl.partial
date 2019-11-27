@@ -1,7 +1,10 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
-{{#isNamespace}}
+{{#inPackage}}
+Package {{name.0.value}}
+{{/inPackage}}
+{{#inNamespace}}
 Namespace {{name.0.value}}
-{{/isNamespace}}
+{{/inNamespace}}
 {{#inClass}}
 Class {{name.0.value}}
 {{/inClass}}
@@ -38,6 +41,9 @@ Operator {{name.0.value}}
 {{#inEii}}
 Explict Interface Implementation {{name.0.value}}
 {{/inEii}}
-{{#inPackage}}
-Package {{name.0.value}}
-{{/inPackage}}
+{{#inVariable}}
+Variable {{name.0.value}}
+{{/inVariable}}
+{{#inTypeAlias}}
+Type Alias {{name.0.value}}
+{{/inTypeAlias}}

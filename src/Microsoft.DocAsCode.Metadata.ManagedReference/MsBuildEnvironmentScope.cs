@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public class MSBuildEnvironmentScope : IDisposable
     {
-        private const string VSInstallDirKey = "VSINSTALLDIR";
         private const string MSBuildExePathKey = "MSBUILD_EXE_PATH";
         private readonly EnvironmentScope _innerScope;
 
@@ -25,13 +24,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private EnvironmentScope GetScope()
         {
-            var vsInstallDirEnv = Environment.GetEnvironmentVariable(VSInstallDirKey);
-            if (!string.IsNullOrEmpty(vsInstallDirEnv))
-            {
-                Logger.LogInfo($"Environment variable {VSInstallDirKey} is set to {vsInstallDirEnv}, it is used as the inner compiler.");
-                return null;
-            }
-
             var msbuildExePathEnv = Environment.GetEnvironmentVariable(MSBuildExePathKey);
 
             if (!string.IsNullOrEmpty(msbuildExePathEnv))
@@ -80,7 +72,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     MSBuildLocator.RegisterInstance(latest);
                     return new EnvironmentScope(new Dictionary<string, string>
                     {
-                        [VSInstallDirKey] = latest.VisualStudioRootPath,
+                        ["VSINSTALLDIR"] = latest.VisualStudioRootPath,
                         ["VisualStudioVersion"] = latest.Version.ToString(2),
                     });
                 }

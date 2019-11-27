@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class CodeSnippetParser : BlockParser
     {
         private const string StartString = "[!code";
+        private const string NotebookStartString = "[!notebook";
 
         public CodeSnippetParser()
         {
@@ -27,13 +28,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             // Sample: [!code-javascript[Main](../jquery.js?name=testsnippet#tag "title")]
             var slice = processor.Line;
+            bool isNotebookCode = false;
             if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
-                return BlockState.None;
+                slice = processor.Line;
+                if (!ExtensionsHelper.MatchStart(ref slice, NotebookStartString, false))
+                {
+                    return BlockState.None;
+                }
+
+                isNotebookCode = true;
             }
 
             var codeSnippet = new CodeSnippet(this);
-
+            codeSnippet.IsNotebookCode = isNotebookCode;
             MatchLanguage(processor, ref slice, ref codeSnippet);
 
             if (!MatchName(processor, ref slice, ref codeSnippet))
@@ -91,7 +99,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 c = slice.NextChar();
                 index++;
             }
-            
+
             return index == StartString.Length;
         }
 
@@ -101,7 +109,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var language = StringBuilderCache.Local();
             var c = slice.NextChar();
-            
+
             while (c != '\0' && c != '[')
             {
                 language.Append(c);
@@ -173,7 +181,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             codeSnippet.Name = name.ToString().Trim();
-            
+
             if (c == ']')
             {
                 slice.NextChar();
@@ -264,7 +272,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             codeSnippet.Title = title.ToString().Trim();
 
-            if(c == '"')
+            if (c == '"')
             {
                 slice.NextChar();
                 return true;
@@ -316,7 +324,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         codeSnippet.CodeRanges = temp;
                         break;
                     case "highlight":
-                        if(!TryGetLineRanges(value, out temp))
+                        if (!TryGetLineRanges(value, out temp))
                         {
                             return false;
                         }
@@ -339,7 +347,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             }
 
-            if(start != -1 && end != -1)
+            if (start != -1 && end != -1)
             {
                 codeSnippet.StartEndRange = new CodeRange { Start = start, End = end };
             }
@@ -362,7 +370,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     return false;
                 }
 
-                if(codeRanges == null)
+                if (codeRanges == null)
                 {
                     codeRanges = new List<CodeRange>();
                 }
@@ -372,7 +380,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             return true;
         }
-        
+
         private bool TryGetLineRange(string query, out CodeRange codeRange, bool withL = true)
         {
             codeRange = null;
@@ -395,7 +403,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             return result;
         }
-        
+
         private bool TryGetLineNumber(string lineNumberString, out int lineNumber, bool withL = true)
         {
             lineNumber = int.MaxValue;

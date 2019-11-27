@@ -3,39 +3,22 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
-    using System.IO;
-
+    using System.Collections.Generic;
     using Xunit;
 
-    [Collection("docfx STA")]
     public class GeneralTest
     {
         [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void MarkdigWithDefaultFAL()
         {
-            var saved = EnvironmentContext.FileAbstractLayerImpl;
-            var tokenFileName = "token1573.md";
+            var source = $"[!INCLUDE [title](~/token1573.md)]";
+            var expected = @"<p><strong>token content</strong></p>";
 
-            try
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>()
             {
-                EnvironmentContext.FileAbstractLayerImpl = null;
-                File.WriteAllText(tokenFileName, "**token content**");
-                var source = $"[!INCLUDE [title](~/{tokenFileName})]";
-                var expected = @"<p><strong>token content</strong></p>
-";
-                TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
-            }
-            finally
-            {
-                if (File.Exists(tokenFileName))
-                {
-                    File.Delete(tokenFileName);
-                }
-                EnvironmentContext.FileAbstractLayerImpl = saved;
-            }
+                { "token1573.md", "**token content**"}
+            });
         }
 
         [Fact]
@@ -48,7 +31,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <li>Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , [ ] &quot; @ _</li>
 </ul>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -58,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var source = @" ### 1. Deploying the network";
             var expected = @"<h3 id=""1-deploying-the-network"">1. Deploying the network</h3>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -71,7 +54,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <h2 id=""scenario"">Scenario</h2>
 ";
 
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -84,7 +67,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
             var expected = @"<p>tag started with non-alphabet should be encoded &lt;1-100&gt;, &lt;_hello&gt;, &lt;?world&gt;, &lt;1_2 href=&quot;good&quot;&gt;, &lt;1 att='bcd'&gt;.
 tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; &lt;a_b href=&quot;good&quot;&gt; <AC att='bcd'></p>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -95,7 +78,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
             var expected = @"<p><img src=""girl.png"" alt=""This is image alt text with quotation ' and double quotation &quot;hello&quot; world"" /></p>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Theory]
@@ -108,11 +91,6 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         [InlineData("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
         [InlineData("Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>", "<p>Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd></p>\n")]
         [InlineData("<div>Some text here</div>", "<div>Some text here</div>\n")]
-        [InlineData(@"---
-a: b
-b:
-  c: e
----", "<yamlheader start=\"1\" end=\"5\">a: b\nb:\n  c: e</yamlheader>")]
         [InlineData(@"# Hello @CrossLink1 @'CrossLink2'dummy 
 @World",
     "<h1 id=\"hello--dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'CrossLink2'\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@World\"></xref></p>\n")]
@@ -140,7 +118,7 @@ b:
         #endregion
         public void TestDfmInGeneral(string source, string expected)
         {
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -151,7 +129,7 @@ b:
             var source = @"[text's string](https://www.google.com.sg/?gfe_rd=cr&ei=Xk ""Google's homepage"")";
             var expected = @"<p><a href=""https://www.google.com.sg/?gfe_rd=cr&amp;ei=Xk"" title=""Google's homepage"">text's string</a></p>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -162,20 +140,22 @@ b:
 
             var expected = @"<p><a href=""girl.png"" title=""title is &quot;hello&quot; world."">This is link text with quotation ' and double quotation &quot;hello&quot; world</a></p>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
-            var result = TestUtility.MarkupWithoutSourceInfo(@"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
 
-<script>alert(1);</script>");
-
-            Assert.Equal(@"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
+            var source = @"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
 <script>alert(1);</script>
-".Replace("\r\n", "\n"), result.Html);
+";
+            var expected = @"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
+
+<script>alert(1);</script>";
+
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -185,7 +165,7 @@ b:
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
             var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33(VS.90).aspx"">User-Defined Date/Time Formats (Format Function)</a></p>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
         [Fact]
@@ -202,7 +182,7 @@ hello world";
 <h2 id=""not-yaml-syntax"">Not yaml syntax</h2>
 <p>hello world</p>
 ";
-            TestUtility.AssertEqual(expected, source, TestUtility.MarkupWithoutSourceInfo);
+            TestUtility.VerifyMarkup(source, expected);
         }
 
 
@@ -233,7 +213,7 @@ content-b
 </section>
 </div>
 ";
-            TestUtility.AssertEqual(expected, actual, content => TestUtility.Markup(content, "test.md"));
+            TestUtility.VerifyMarkup(actual, expected, lineNumber: true);
         }
 
         [Fact]
@@ -286,7 +266,7 @@ content-b
 </section>
 </div>
 ";
-            TestUtility.AssertEqual(expected, actual, content => TestUtility.Markup(content, "test.md"));
+            TestUtility.VerifyMarkup(actual, expected, new[] { "invalid-tab-group" }, lineNumber: true);
         }
 
         [Fact]
@@ -426,37 +406,7 @@ public struct Temperature
 csr
 #endregion";
 
-            if (!Directory.Exists("includes")) Directory.CreateDirectory("includes");
-            if (!Directory.Exists("code")) Directory.CreateDirectory("code");
-            File.WriteAllText("includes/blockIncludeFile.md", blockIncludeFile);
-            File.WriteAllText("includes/testtoken.md", testtoken);
-            File.WriteAllText("code/code.cs", code);
-
-            string expected = @"<yamlheader start=""1"" end=""27"">title: &quot;如何使用 Visual C++ 工具集报告问题 | Microsoft Docs&quot;
-ms.custom: 
-ms.date: 11/04/2016
-ms.reviewer: 
-ms.suite: 
-ms.technology:
-- cpp
-ms.tgt_pltfrm: 
-ms.topic: article
-dev_langs:
-- C++
-ms.assetid: ec24a49c-411d-47ce-aa4b-8398b6d3e8f6
-caps.latest.revision: 8
-author: corob-msft
-ms.author: corob
-manager: ghogen
-translation.priority.mt:
-- cs-cz
-- pl-pl
-- pt-br
-- tr-tr
-translationtype: Human Translation
-ms.sourcegitcommit: 5c6fbfc8699d7d66c40b0458972d8b6ef0dcc705
-ms.openlocfilehash: 2ea129ac94cb1ddc7486ba69280dc0390896e088
-</yamlheader><h2 id=""inclusion"">Inclusion</h2>
+            string expected = @"<h2 id=""inclusion"">Inclusion</h2>
 <h3 id=""block-inclusion"">Block inclusion</h3>
 <p>Hello World.</p>
 <pre><code name=""Main"" title=""Test in include file"">using System;
@@ -586,33 +536,13 @@ csr
 baz</li>
 </ul>
 ";
-            TestUtility.AssertEqual(expected, source, str => TestUtility.MarkupWithoutSourceInfo(str));
-        }
 
-
-        [Fact]
-        public void TestFileLinkInfo_EncodedWorkspaceCharacter()
-        {
-            string fromFileInSource = "articles/vpn-gateway/vpn-gateway-verify-connection-resource-manager.md";
-            string fromFileInDest = "vpn-gateway/vpn-gateway-verify-connection-resource-manager.html";
-            string href = "%7E/includes/media/vpn-gateway-verify-connection-portal-rm-include/connectionsucceeded.png";
-            var context = new Build.Engine.DocumentBuildContext("_output");
-
-            var expected = new FileLinkInfo
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
-                FileLinkInDest = null,
-                FileLinkInSource = "~/includes/media/vpn-gateway-verify-connection-portal-rm-include/connectionsucceeded.png",
-                FromFileInDest = "vpn-gateway/vpn-gateway-verify-connection-resource-manager.html",
-                FromFileInSource = "articles/vpn-gateway/vpn-gateway-verify-connection-resource-manager.md",
-                GroupInfo = null,
-                Href = "../../includes/media/vpn-gateway-verify-connection-portal-rm-include/connectionsucceeded.png",
-                ToFileInDest = null,
-                ToFileInSource = "includes/media/vpn-gateway-verify-connection-portal-rm-include/connectionsucceeded.png"
-            };
-
-            var result = FileLinkInfo.Create(fromFileInSource, fromFileInDest, href, context);
-
-            Assert.Equal(result, expected);
+                {"includes/blockIncludeFile.md", blockIncludeFile },
+                {"includes/testtoken.md", testtoken },
+                {"code/code.cs", code }
+            });
         }
     }
 }
