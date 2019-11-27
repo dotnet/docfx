@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        using (Progress.Start($"Fetch '{remote}'"))
+                        using (PerfScope.Start($"Fetch '{remote}'"))
                         {
                             GitUtility.InitFetchBare(repoPath, remote, branchesToFetch, config);
                         }
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                         throw Errors.GitCloneFailed(remote, branches.Select(b => b.branch)).ToException(ex);
                     }
 
-                    using (Progress.Start($"Manage worktree for '{remote}'"))
+                    using (PerfScope.Start($"Manage worktree for '{remote}'"))
                     {
                         return AddWorkTrees(repoPath, remote, branches, dependencyLockProvider);
                     }
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
                 var workTreePath = Path.Combine(repoPath.Substring(0, repoPath.Length - ".git".Length), "1");
                 if (!Directory.Exists(workTreePath))
                 {
-                    using (Progress.Start($"Create new worktree: {workTreePath}"))
+                    using (PerfScope.Start($"Create new worktree: {workTreePath}"))
                     {
                         GitUtility.PruneWorkTree(repoPath);
                         GitUtility.AddWorkTree(repoPath, headCommit, workTreePath);
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                     Debug.Assert(!GitUtility.IsDirty(workTreePath));
                     if (GitUtility.RevParse(workTreePath) != headCommit)
                     {
-                        using (Progress.Start($"Checkout worktree {workTreePath} to {headCommit}"))
+                        using (PerfScope.Start($"Checkout worktree {workTreePath} to {headCommit}"))
                         {
                             GitUtility.Checkout(workTreePath, headCommit);
                         }

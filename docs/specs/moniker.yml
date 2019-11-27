@@ -464,9 +464,14 @@ inputs:
       ]
     }
 outputs:
+  docs/a.json: |
+    { "monikers": undefined }
+  docs/b.json: |
+    { "monikers": undefined }
+  docs/toc.json:
   .errors.log: |
-    ["error","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/a.md",2,15]
-    ["error","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docfx.yml",4,16]
+    ["suggestion","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.","docs/a.md",2,15]
+    ["suggestion","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.","docfx.yml",4,16]
 ---
 # With moniker range not defined in config, user should not define it in moniker zone
 inputs:
@@ -484,8 +489,12 @@ inputs:
       ]
     }
 outputs:
+  docs/v1/a.json: |
+    {
+      "monikers": undefined
+    }
   .errors.log: |
-    ["error","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone.","docs/v1/a.md",2,1]
+    ["suggestion","moniker-range-undefined","Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.","docs/v1/a.md",2,1]
 ---
 # No intersection of config monikers and file monikers
 inputs:

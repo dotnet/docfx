@@ -78,11 +78,11 @@ namespace Microsoft.Docs.Build
 
     public enum LandingDataType
     {
+        Text,
         Paragraph,
         List,
         Table,
         Markdown,
-        Text,
         Grid,
     }
 

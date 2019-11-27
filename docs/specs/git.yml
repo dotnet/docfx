@@ -138,7 +138,7 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      excludedContributors:
+      excludeContributors:
         - AlIcE
         - BoB
 cache:
@@ -171,7 +171,7 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      excludedContributors:
+      excludeContributors:
         - Alice
 cache:
   github-users.json: |
@@ -236,7 +236,7 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      excludedContributors:
+      excludeContributors:
         - ChArLiE
 cache:
   github-users.json: |
@@ -260,7 +260,7 @@ outputs:
       },
     }
 ---
-# Author CAN be excluded if implicitly extracted from commit history
+# Author CAN be excluded if implicitly extracted from commit history using contributors_to_exclude global metadata
 repos:
   https://github.com/testowner/testrepo#master-exclude-author-from-commit-history:
     - author: Alice
@@ -270,8 +270,8 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      excludedContributors:
+    globalMetadata:
+      contributors_to_exclude:
         - alice
 cache:
   github-users.json: |
@@ -304,13 +304,33 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      repository: https://github.com/contrib-owner/contrib-repo#contrib-branch
+      repositoryUrl: https://github.com/contrib-owner/contrib-repo
+      repositoryBranch: contrib-branch
 outputs:
   docs/index.json: |
     {
       "content_git_url": "https://github.com/contrib-owner/contrib-repo/blob/contrib-branch/docs/index.md",
       "original_content_git_url": "https://github.com/testowner/testrepo/blob/master-edit-link/docs/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
+    }
+---
+# Specify editLink repo and branch in .openpublishing.publish.config.json
+repos:
+  https://github.com/testowner/test-op-edit-link-repo#master-edit-link:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "git_repository_url_open_to_public_contributors": "https://github.com/a/b",
+          "git_repository_branch_open_to_public_contributors": "c"
+        }
+      docfx.yml:
+      a.md:
+outputs:
+  a.json: |
+    {
+      "content_git_url": "https://github.com/a/b/blob/c/a.md",
+      "original_content_git_url": "https://github.com/testowner/test-op-edit-link-repo/blob/master-edit-link/a.md",
+      "gitcommit": "https://github.com/testowner/test-op-edit-link-repo/blob/65344f739e0bca9b2d0b93615f905d148af0607f/a.md",
     }
 ---
 # Use commit's time as updated_at when `updateTimeAsCommitBuildTime` is false
@@ -400,7 +420,7 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      repository: https://github.com/testowner/testrepo
+      repositoryUrl: https://github.com/testowner/testrepo
 outputs:
   docs/index.json: |
     {
@@ -418,7 +438,7 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      repository: https://github.com/contrib-owner/contrib-repo
+      repositoryUrl: https://github.com/contrib-owner/contrib-repo
 outputs:
   docs/index.json: |
     {
@@ -435,7 +455,7 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      repository: https://github.com/docascode/a
+      repositoryUrl: https://github.com/docascode/a
 outputs:
   docs/index.json: |
     {
@@ -471,7 +491,7 @@ inputs:
     gitHub:
       authToken: {DOCS_GITHUB_TOKEN}
     contribution:
-      repository: https://github.com/docascode/contribution-test
+      repositoryUrl: https://github.com/docascode/contribution-test
 cache:
   github-users.json: |
       { "users": [
@@ -522,7 +542,7 @@ repos:
 inputs:
   docfx.yml: |
     contribution:
-      repository: https://docascode.visualstudio.com/contribution1/_git/a
+      repositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
 cache:
   github-users.json: |
       { "users": [
@@ -594,7 +614,8 @@ repos:
     - files:
         docfx.yml: |
           contribution:
-            repository: https://github.com/contrib-owner/contrib-repo#contrib-branch
+            repositoryUrl: https://github.com/contrib-owner/contrib-repo
+            repositoryBranch: contrib-branch
           files:
             - "docs/**/*"
             - "crrb/**/*"

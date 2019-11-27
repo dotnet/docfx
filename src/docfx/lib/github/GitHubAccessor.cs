@@ -20,6 +20,39 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor : IDisposable
     {
+        private const string UserQuery = @"
+query ($login: String!) {
+  user(login: $login) {
+    name
+    email
+    databaseId
+    login
+  }
+}";
+
+        private const string CommitQuery = @"
+query ($owner: String!, $name: String!, $commit: String!) {
+  repository(owner: $owner, name: $name) {
+    object(expression: $commit) {
+      ... on Commit {
+        history(first: 100) {
+          nodes {
+            author {
+              email
+              user {
+                databaseId
+                name
+                email
+                login
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}";
+
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
         private readonly HttpClient _httpClient = new HttpClient();
@@ -46,40 +79,31 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            Log.Write($"Calling GitHub user API to resolve {login}");
-
-            var query = @"
-query ($login: String!) {
-  user(login: $login) {
-    name
-    email
-    databaseId
-    login
-  }
-}";
-
-            var (error, errorCode, data) = await Query(
-                query,
-                new { login },
-                new { user = new { name = "", email = "", login = "", databaseId = 0 } });
-
-            if (errorCode == "NOT_FOUND")
+            using (PerfScope.Start($"Calling GitHub user API to resolve {login}"))
             {
-                return default;
+                var (error, errorCode, data) = await Query(
+                    UserQuery,
+                    new { login },
+                    new { user = new { name = "", email = "", login = "", databaseId = 0 } });
+
+                if (errorCode == "NOT_FOUND")
+                {
+                    return default;
+                }
+
+                if (error != null || data?.user is null)
+                {
+                    return (error, null);
+                }
+
+                return (null, new GitHubUser
+                {
+                    Id = data.user.databaseId,
+                    Login = data.user.login,
+                    Name = string.IsNullOrEmpty(data.user.name) ? data.user.login : data.user.name,
+                    Emails = new[] { data.user.email }.Where(email => !string.IsNullOrEmpty(email)).ToArray(),
+                });
             }
-
-            if (error != null || data?.user is null)
-            {
-                return (error, null);
-            }
-
-            return (null, new GitHubUser
-            {
-                Id = data.user.databaseId,
-                Login = data.user.login,
-                Name = string.IsNullOrEmpty(data.user.name) ? data.user.login : data.user.name,
-                Emails = new[] { data.user.email }.Where(email => !string.IsNullOrEmpty(email)).ToArray(),
-            });
         }
 
         public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
@@ -94,71 +118,49 @@ query ($login: String!) {
                 return default;
             }
 
-            Log.Write($"Calling GitHub commit API to resolve {authorEmail}");
-
-            var query = @"
-query ($owner: String!, $name: String!, $commit: String!) {
-  repository(owner: $owner, name: $name) {
-    object(expression: $commit) {
-      ... on Commit {
-        history(first: 100) {
-          nodes {
-            author {
-              email
-              user {
-                databaseId
-                name
-                email
-                login
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}";
-
-            var user = new { name = "", email = "", login = "", databaseId = 0 };
-            var history = new { nodes = new[] { new { author = new { email = "", user } } } };
-
-            var (error, errorCode, data) = await Query(
-                query,
-                new { owner, name, commit },
-                new { repository = new { @object = new { history } } });
-
-            if (error != null)
+            using (PerfScope.Start($"Calling GitHub commit API to resolve {authorEmail}"))
             {
-                return (error, null);
-            }
+                var user = new { name = "", email = "", login = "", databaseId = 0 };
+                var history = new { nodes = new[] { new { author = new { email = "", user } } } };
 
-            if (errorCode == "NOT_FOUND")
-            {
-                _unknownRepos.TryAdd((owner, name));
-                return (error, null);
-            }
+                var (error, errorCode, data) = await Query(
+                    CommitQuery,
+                    new { owner, name, commit },
+                    new { repository = new { @object = new { history } } });
 
-            var githubUsers = new List<GitHubUser>();
-
-            if (data?.repository?.@object?.history?.nodes != null)
-            {
-                foreach (var node in data.repository.@object.history.nodes)
+                if (error != null)
                 {
-                    if (node.author != null)
+                    return (error, null);
+                }
+
+                if (errorCode == "NOT_FOUND")
+                {
+                    _unknownRepos.TryAdd((owner, name));
+                    return (error, null);
+                }
+
+                var githubUsers = new List<GitHubUser>();
+
+                if (data?.repository?.@object?.history?.nodes != null)
+                {
+                    foreach (var node in data.repository.@object.history.nodes)
                     {
-                        githubUsers.Add(new GitHubUser
+                        if (node.author != null)
                         {
-                            Id = node.author.user?.databaseId,
-                            Login = node.author.user?.login,
-                            Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
-                            Emails = new[] { node.author.user?.email, node.author.email }
-                                .Where(email => !string.IsNullOrEmpty(email)).ToArray(),
-                        });
+                            githubUsers.Add(new GitHubUser
+                            {
+                                Id = node.author.user?.databaseId,
+                                Login = node.author.user?.login,
+                                Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
+                                Emails = new[] { node.author.user?.email, node.author.email }
+                                    .Where(email => !string.IsNullOrEmpty(email)).ToArray(),
+                            });
+                        }
                     }
                 }
-            }
 
-            return (null, githubUsers);
+                return (null, githubUsers);
+            }
         }
 
         private async Task<(Error error, string errorCode, T data)> Query<T>(string query, object variables, T dataType)
