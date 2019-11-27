@@ -152,17 +152,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!string.IsNullOrEmpty(range))
             {
-                var codeLines = code.Split('\n').ToList();
+                var codeLines = code.Split('\n');
                 codeSections = GetCodeSectionsFromRange(range, codeLines, codeSections, logError);
             }
             else if (!string.IsNullOrEmpty(id))
             {
-                var strRegexStart = @"((<|</|#region)\s*" + id + @"(>|(\s*>)))";
-                var idRegexStart = new Regex(strRegexStart, RegexOptions.IgnoreCase);
-                var idRegexEnd = new Regex(strRegexStart + @"|#endregion", RegexOptions.IgnoreCase);
-                var codeLines = code.Split('\n').ToList();
-                var beg = codeLines.FindIndex(oo => idRegexStart.IsMatch(oo)) + 2;
-                var end = codeLines.FindLastIndex(oo => idRegexEnd.IsMatch(oo));
+                var codeLines = code.Split('\n');
+                var beg = Array.FindIndex(codeLines, line => line.Replace(" ", "").IndexOf($"<{id}>", StringComparison.OrdinalIgnoreCase) > -1) + 2;
+                var end = Array.FindIndex(codeLines, line => line.Replace(" ", "").IndexOf($"</{id}>", StringComparison.OrdinalIgnoreCase) > -1);
                 codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError);
             }
             else
@@ -207,7 +204,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return dedentedSections;
         }
 
-        private static List<string> GetCodeSectionsFromRange(string range, List<string> codeLines, List<string> codeSections, Action<string> logError)
+        private static List<string> GetCodeSectionsFromRange(string range, string[] codeLines, List<string> codeSections, Action<string> logError)
         {
             var ranges = range.Split(',');
             foreach (var codeRange in ranges)
@@ -229,7 +226,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                             logError($"Your ranges must be numbers.");
                             return null;
                         }
-                        if(beg > codeLines.Count || end > codeLines.Count)
+                        if(beg > codeLines.Length || end > codeLines.Length)
                         {
                             logError($"Your range is greater than the number of lines in the document.");
                             return null;
@@ -254,7 +251,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                             logError($"Your ranges must be numbers.");
                             return null;
                         }
-                        var end = codeLines.Count;
+                        var end = codeLines.Length;
                         for (var i = beg; i < end; i++)
                         {
                             section += codeLines[i] + "\n";
