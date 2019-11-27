@@ -18,10 +18,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public string Name => "code";
         public bool SelfClosing => true;
-        public bool EndingTripleColons => true;
+        public bool EndingTripleColons => false;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
         private readonly MarkdownContext _context;
+
+        private List<string> updatedCodes = new List<string>();
 
         public CodeExtension(MarkdownContext context)
         {
@@ -88,9 +90,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             
-            var updatedCode = GetCodeSnippet(range, id, code, logError);
+            var updatedCode = GetCodeSnippet(range, id, code, logError).TrimEnd('\r').TrimEnd('\n');
+            updatedCodes.Add(updatedCode);
 
-            if(updatedCode == string.Empty)
+            if (updatedCode == string.Empty)
             {
                 return false;
             }
@@ -113,7 +116,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 renderer.WriteLine("<pre>");
                 renderer.Write("<code").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine(updatedCode);
+                renderer.WriteLine(updatedCodes.FirstOrDefault());
+                updatedCodes.RemoveAt(0);
                 renderer.WriteLine("</code></pre>");
 
                 return true;
@@ -129,7 +133,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 logError($"Language is not set, and your source has no file type. Cannot infer language.");
             }
-            var language = HtmlCodeSnippetRenderer.LanguageAlias.Where(oo => oo.Value.Contains(fileExtension)).FirstOrDefault();
+            var language = HtmlCodeSnippetRenderer.LanguageAlias.Where(oo => oo.Value.Contains(fileExtension) || oo.Value.Contains($".{fileExtension}")).FirstOrDefault();
             return language.Key;
         }
 
@@ -149,8 +153,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             else if (!string.IsNullOrEmpty(id))
             {
                 var strRegexStart = @"((<|</|#region)\s*" + id + @"(>|(\s*>)))";
-                var idRegexStart = new Regex(strRegexStart);
-                var idRegexEnd = new Regex(strRegexStart + @"|#endregion");
+                var idRegexStart = new Regex(strRegexStart, RegexOptions.IgnoreCase);
+                var idRegexEnd = new Regex(strRegexStart + @"|#endregion", RegexOptions.IgnoreCase);
                 var codeLines = code.Split('\n').ToList();
                 var beg = codeLines.FindIndex(oo => idRegexStart.IsMatch(oo)) + 2;
                 var end = codeLines.FindLastIndex(oo => idRegexEnd.IsMatch(oo));
@@ -239,7 +243,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 else
                 {
-                    codeSections.Add(codeLines[Convert.ToInt16(codeRange)]);
+                    codeSections.Add(codeLines[Convert.ToInt16(codeRange) - 1]);
                 }
             }
 
