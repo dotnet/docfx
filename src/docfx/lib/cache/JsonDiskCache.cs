@@ -19,7 +19,6 @@ namespace Microsoft.Docs.Build
         private readonly double _expirationInSeconds;
 
         private readonly ConcurrentDictionary<object, T> _cache = new ConcurrentDictionary<object, T>();
-        private readonly ConcurrentDictionary<object, Lazy<Task<(TError error, T value)>>> _initialRequests = new ConcurrentDictionary<object, Lazy<Task<(TError error, T value)>>>();
         private readonly ConcurrentDictionary<object, Lazy<Task<(TError error, T value)>>> _backgroundUpdates = new ConcurrentDictionary<object, Lazy<Task<(TError error, T value)>>>();
 
         private volatile bool _needUpdate;
@@ -45,7 +44,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Gets or update the cache asynchroniously.
+        /// Gets an item from the cache asynchroniously, or creates the value if it does not exist.
         /// The <paramref name="valueFactory"/> can be a long running asynchronious call,
         /// this method only blocks the first time an item is retrieved.
         /// When a cache item expires, this method returns the expired item immediately,
@@ -60,12 +59,12 @@ namespace Microsoft.Docs.Build
                 if (value.Expiry != null && value.Expiry < DateTime.UtcNow)
                 {
                     // When the item expired, trigger background update but don't wait for the result
-                    _backgroundUpdates.GetOrAdd(key, UpdateDelegate(key, valueFactory)).Value.GetAwaiter();
+                    Update(key, valueFactory).GetAwaiter();
                 }
                 return (default, value);
             }
 
-            return _initialRequests.GetOrAdd(key, UpdateDelegate(key, valueFactory)).Value.GetAwaiter().GetResult();
+            return Update(key, valueFactory).GetAwaiter().GetResult();
         }
 
         public async Task<TError[]> Save()
@@ -81,7 +80,12 @@ namespace Microsoft.Docs.Build
                 _needUpdate = false;
             }
 
-            return result.Select(item => item.error).ToArray();
+            return result.Select(item => item.error).Where(item => item != null).ToArray();
+        }
+
+        private Task<(TError, T)> Update<TKey>(TKey key, Func<TKey, Task<(TError, T)>> valueFactory)
+        {
+            return _backgroundUpdates.GetOrAdd(key, UpdateDelegate(key, valueFactory)).Value;
         }
 
         private Lazy<Task<(TError, T)>> UpdateDelegate<TKey>(TKey key, Func<TKey, Task<(TError, T)>> valueFactory)
