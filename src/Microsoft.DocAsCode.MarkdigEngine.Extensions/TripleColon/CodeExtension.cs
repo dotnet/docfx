@@ -115,7 +115,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             RenderDelegate = (renderer, obj) =>
             {
                 renderer.WriteLine("<pre>");
-                renderer.Write("<code").WriteAttributes(obj).WriteLine(">");
+                renderer.Write("<code").WriteAttributes(obj).Write(">");
                 renderer.WriteLine(updatedCodes.FirstOrDefault());
                 updatedCodes.RemoveAt(0);
                 renderer.WriteLine("</code></pre>");

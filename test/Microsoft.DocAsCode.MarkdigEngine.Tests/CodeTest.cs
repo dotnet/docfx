@@ -336,8 +336,7 @@ int main()
 
         [Theory]
         [InlineData(@":::code source=""source.cs"" range=""11-33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">
-/// <summary>
+<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// <summary>
 /// Interaction logic for Window1.xaml
 /// </summary>
 
@@ -369,20 +368,17 @@ public partial class Window1 : Window
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" range=""1-2"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">
-using System;
+<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">using System;
 using System.Windows;
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" range=""1-2"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-csharp"" data-interactive=""csharp"" data-interactive-mode=""try-dotnet"">
-using System;
+<code class=""lang-csharp"" data-interactive=""csharp"" data-interactive-mode=""try-dotnet"">using System;
 using System.Windows;
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" range=""1-2,205-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">
-using System;
+<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">using System;
 using System.Windows;
     ...
        }
@@ -391,16 +387,14 @@ using System.Windows;
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" id=""Snippet_Table_RowGroups_Add"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">
-Table tbl = new Table();
+<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">Table tbl = new Table();
 int rowGroupsToAdd = 4;
 for (int x = 0; x < rowGroupsToAdd; x++)
     tbl.RowGroups.Add(new TableRowGroup());
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.vb"" id=""snippet2"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-vb"" data-interactive=""vb"" data-interactive-mode=""try-dotnet"">
-Imports System.Reflection
+<code class=""lang-vb"" data-interactive=""vb"" data-interactive-mode=""try-dotnet"">Imports System.Reflection
 
 Class AppDomain1
     Public Shared Sub Main()
@@ -414,8 +408,7 @@ End Class
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.vb"" id=""snippet1"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-vb"" data-interactive=""vb"" data-interactive-mode=""try-dotnet"">
-Class ADSetupInformation
+<code class=""lang-vb"" data-interactive=""vb"" data-interactive-mode=""try-dotnet"">Class ADSetupInformation
 
     Shared Sub Main()
 
@@ -445,8 +438,7 @@ End Class
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cpp"" id=""snippet2"":::", @"<pre>
-<code class=""lang-cpp"">
-using namespace System;
+<code class=""lang-cpp"">using namespace System;
 using namespace System::Reflection;
 
 ref class AppDomain4
@@ -482,8 +474,7 @@ int main()
 hi
 :::code source=""source.cpp"" id=""snippet1"":::
 ", @"<pre>
-<code class=""lang-cpp"">
-using namespace System;
+<code class=""lang-cpp"">using namespace System;
 using namespace System::Reflection;
 
 ref class AppDomain4
@@ -515,8 +506,7 @@ int main()
 </code></pre>
 <p>hi</p>
 <pre>
-<code class=""lang-cpp"">
-using namespace System;
+<code class=""lang-cpp"">using namespace System;
 
 int main()
 {
