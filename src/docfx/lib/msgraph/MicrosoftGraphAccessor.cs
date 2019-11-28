@@ -33,21 +33,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (Error, bool) IsValidMicrosoftAlias(string alias)
+        public Error ValidateMicrosoftAlias(SourceInfo<string> alias, string name = null)
         {
             if (_msGraphClient is null)
             {
                 // Mute error, when unable to connect to Microsoft Graph API
-                return (null, true);
+                return null;
             }
 
-            var (error, user) = _aliasCache.GetOrAdd(alias, GetMicrosoftGraphUserCore);
-            if (error != null)
-            {
-                return (error, true);
-            }
+            var (error, user) = _aliasCache.GetOrAdd(alias.Value, GetMicrosoftGraphUserCore);
 
-            return (null, user != null);
+            return error ?? (user is null ? Errors.MsAliasInvalid(alias, name) : null);
         }
 
         public Task<Error[]> Save()

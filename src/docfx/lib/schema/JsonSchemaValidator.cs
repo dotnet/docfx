@@ -394,7 +394,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(schema.DateFormat) && !string.IsNullOrWhiteSpace(dateString))
             {
-                if (DateTime.TryParseExact(dateString, schema.DateFormat, null, System.Globalization.DateTimeStyles.None, out var date))
+                if (DateTime.TryParseExact(dateString, schema.DateFormat, null, DateTimeStyles.None, out var date))
                 {
                     ValidateDateRange(schema, name, scalar, date, dateString, errors);
                 }
@@ -413,14 +413,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (_microsoftGraphAccessor != null)
                     {
-                        var (error, valid) = _microsoftGraphAccessor.IsValidMicrosoftAlias(alias);
+                        var error = _microsoftGraphAccessor.ValidateMicrosoftAlias(
+                            new SourceInfo<string>(alias, JsonUtility.GetSourceInfo(scalar)), name);
                         if (error != null)
                         {
                             errors.Add((name, error));
-                        }
-                        else if (!valid)
-                        {
-                            errors.Add((name, Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias)));
                         }
                     }
                 }
