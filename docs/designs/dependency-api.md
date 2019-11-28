@@ -3,15 +3,22 @@
 This document define the interface of all the dependency APIs. Here is structure of how docfx interact with the dependency APIs.
 ![Dpepdency API](images/dependency-api.png)
 
-## Build config
+## API Hostname
+
+PROD: docs.microsoft.com
+PPE: ppe.docs.microsoft.com
+
+## API interface
+
+### Build config
 
 This API is used to get all the MicrosoftDocs specific configs, the response of this API will be treated as an extend part of docfx config, so it will match the docfx configuration schema.
 
 ```
-Get https://API-Hostname/docfx/buildconfig
+Get https://API-Hostname/buildconfig
 ```
 
-### Parameters(Headers)
+#### Parameters(Query String)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
@@ -19,7 +26,7 @@ Get https://API-Hostname/docfx/buildconfig
 |`RepositoryBranch`|`string`| **Required** The repository branch of current build |
 |`DocsetName`|`string`| **Required** The docset name of current build|
 
-### Response
+#### Response
 
 Status: 200 OK
 ```json
@@ -33,11 +40,11 @@ Status: 200 OK
 }
 ```
 
-### Remaining work in docfx(docs-pipeline)
+#### Remaining work in docfx(docs-pipeline)
 
 1. Before we export docfx.yml to our end user, if the `.openpublishing.config.json` exists, we will add `https://API-Hostname/docfx/buildconfig` to the docfx.global.json in docs-pipeline. After we export docfx.yml to our end user, user have to specific the item `extend: https://API-Hostname/docfx/buildconfig` in docfx.yml.
 
-## Moniker definition
+### Moniker definition
 
 This API to get all the moniker definition.
 
@@ -45,7 +52,7 @@ This API to get all the moniker definition.
 Get https://API-Hostname/v2/monikertrees/allfamiliesproductsmonikers
 ```
 
-### Response
+#### Response
 
 Status: 200 OK
 ```json
@@ -70,21 +77,21 @@ Status: 200 OK
 }
 ```
 
-## Xref
+### XrefMap
 
 This API is used to get all the xrefmap under the specific base path(tag).
 
 ```
-Get https://API-Hostname/docfx/xref
+Get https://API-Hostname/xrefmap/:tag
 ```
 
-### Parameters(Query string)
+#### Parameters(URL)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
 |`tag`|`string`| **Required** The repository URL of current build|
 
-### Response
+#### Response
 
 Status: 200 OK
 ```json
@@ -105,28 +112,33 @@ Status: 200 OK
 }
 ```
 
-### Remaining work in docfx
+#### Remaining work in docfx
 
-1. Convert the xrefTag to xref APIs URL when loading the configuration.
+1. Convert the xrefTags to xref APIs URL when loading the configuration.
 2. To support the testing feature: use PROD xrefmap when building PPE repository, for server side build, we need to pass the Read access OPBuildUserToken of PROD when building the PPE repository. for local build, we don't need to support this feature.
-3. Refine the xrefmap model in docfx to support cyclically restore.
 
-## Metadata validation Rules
+#### Open question
+
+There are two solution to restore the xrefmaps:
+1. Call the API `/xrefmap/:tag` to get the blob list during loading config, so no change is needed for restore and xrefmapModel.
+2. Keep the API `/xrefmap/:tag` in the config, and refine the `XrefMapModel` to support cyclically restore.
+
+### Metadata validation Rules
 
 This API is used to get the metadata validation json schema.
 
 ```
-Get https://API-Hostname/docfx/metadataValidation
+Get https://API-Hostname/metadataValidation
 ```
 
-### Parameters(Headers)
+#### Parameters(Query String)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
 |`RepositoryUrl`|`string`| **Required** The repository URL of current build|
 |`RepositoryBranch`|`string`| **Required** The repository branch of current build |
 
-### Response
+#### Response
 
 Status: 200 OK
 ```json
@@ -169,26 +181,26 @@ Status: 200 OK
 }
 ```
 
-### Remaining work in docfx
+#### Remaining work in docfx
 
 1. Report a warning when get the metadata validation rules failed and should block the build.
 
-## Markdown validation rules
+### Markdown validation rules
 
 This API is used to get the markdown validation rules.
 
 ```
-Get https://API-Hostname/docfx/markdownValidation
+Get https://API-Hostname/markdownValidation
 ```
 
-### Parameters(Headers)
+#### Parameters(Query String)
 
 |Name  |Type  |Description  |
 |---------|---------|---------|
 |`RepositoryUrl`|`string`| **Required** The repository URL of current build|
 |`RepositoryBranch`|`string`| **Required** The repository branch of current build |
 
-### Response
+#### Response
 
 Status: 200 OK
 ```json
@@ -210,6 +222,6 @@ Status: 200 OK
 }
 ```
 
-### Remaining work in docfx
+#### Remaining work in docfx
 
 1. Report a warning when get the metadata validation rules failed and should block the build.
