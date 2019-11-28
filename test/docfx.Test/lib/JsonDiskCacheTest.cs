@@ -46,11 +46,11 @@ namespace Microsoft.Docs.Build
             Assert.Equal(1234, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
             Assert.Equal(0, counter);
 
-            // When cache expires, don't block caller, trigger asynchronious update
+            // When cache expires, don't block caller, trigger asynchronous update
             cache.GetOrAdd(9999, CreateValue).value.Expiry = DateTime.UtcNow.AddHours(-1);
             Assert.Equal(1234, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
 
-            // Save waits for asynchronious update to complete
+            // Save waits for asynchronous update to complete
             await cache.Save();
             Assert.Equal(1, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
 

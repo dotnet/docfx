@@ -44,11 +44,11 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Gets an item from the cache asynchroniously, or creates the value if it does not exist.
-        /// The <paramref name="valueFactory"/> can be a long running asynchronious call,
+        /// Gets an item from the cache asynchronously, or creates the value if it does not exist.
+        /// The <paramref name="valueFactory"/> can be a long running asynchronous call,
         /// this method only blocks the first time an item is retrieved.
         /// When a cache item expires, this method returns the expired item immediately,
-        /// then update the value asynchroniously in the background.
+        /// then update the value asynchronously in the background.
         /// Don't throw exception in <paramref name="valueFactory"/> because of the async update,
         /// the exception may be re-thrown in <see cref="Save"/> method.
         /// </summary>
