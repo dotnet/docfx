@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
         [InlineData("docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef")]
         public static async Task GetUserByCommit_RepoNotFound(string repoOwner, string repoName, string commit)
         {
-            var (error, users) = await s_github.GetUsersByCommit(repoOwner, repoName, commit);
+            var (error, _) = await s_github.GetUsersByCommit(repoOwner, repoName, commit);
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (!string.IsNullOrEmpty(s_token))

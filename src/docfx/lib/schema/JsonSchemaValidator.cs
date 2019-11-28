@@ -413,14 +413,12 @@ namespace Microsoft.Docs.Build
                 {
                     if (_microsoftGraphAccessor != null)
                     {
-                        var (error, user) = _microsoftGraphAccessor.GetMicrosoftGraphUser(alias);
+                        var (error, valid) = _microsoftGraphAccessor.IsValidMicrosoftAlias(alias);
                         if (error != null)
                         {
                             errors.Add((name, error));
                         }
-
-                        // Mute error, when unable to connect to Microsoft Graph API
-                        if (user is null && _microsoftGraphAccessor.IsConnectedToGraphApi)
+                        else if (!valid)
                         {
                             errors.Add((name, Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias)));
                         }

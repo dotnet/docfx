@@ -15,8 +15,6 @@ namespace Microsoft.Docs.Build
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
         private readonly JsonDiskCache<Error, MicrosoftGraphUser> _aliasCache;
 
-        public bool IsConnectedToGraphApi => _msGraphClient != null;
-
         public MicrosoftGraphAccessor(Config config)
         {
             _aliasCache = new JsonDiskCache<Error, MicrosoftGraphUser>(
@@ -35,14 +33,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (Error error, MicrosoftGraphUser alias) GetMicrosoftGraphUser(string alias)
+        public (Error, bool) IsValidMicrosoftAlias(string alias)
         {
             if (_msGraphClient is null)
             {
-                return default;
+                // Mute error, when unable to connect to Microsoft Graph API
+                return (null, true);
             }
 
-            return _aliasCache.GetOrAdd(alias, GetMicrosoftGraphUserCore);
+            var (error, user) = _aliasCache.GetOrAdd(alias, GetMicrosoftGraphUserCore);
+            if (error != null)
+            {
+                return (error, true);
+            }
+
+            return (null, user != null);
         }
 
         public Task<Error[]> Save()
