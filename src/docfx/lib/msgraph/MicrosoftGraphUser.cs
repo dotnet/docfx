@@ -5,8 +5,12 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MicrosoftGraphCacheFile
+    internal class MicrosoftGraphUser : ICacheObject
     {
-        public MicrosoftAlias[] Aliases { get; set; } = Array.Empty<MicrosoftAlias>();
+        public string Alias { get; set; }
+
+        public DateTime? Expiry { get; set; }
+
+        public object[] GetKeys() => new[] { Alias };
     }
 }

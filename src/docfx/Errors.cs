@@ -507,8 +507,8 @@ namespace Microsoft.Docs.Build
         /// The value is not a valid Microsoft alias
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error MsAliasInvalid(SourceInfo source, string name, string alias)
-            => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", source);
+        public static Error MsAliasInvalid(SourceInfo<string> alias, string name)
+            => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", alias);
 
         /// <summary>
         /// Call Microsoft Graph API failed

@@ -5,10 +5,10 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MicrosoftAlias
+    internal interface ICacheObject
     {
-        public string Alias { get; set; }
+        DateTime? Expiry { get; set; }
 
-        public DateTime Expiry { get; set; }
+        object[] GetKeys();
     }
 }

@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         public readonly LinkResolver LinkResolver;
         public readonly XrefResolver XrefResolver;
         public readonly GitHubUserCache GitHubUserCache;
-        public readonly MicrosoftGraphCache MicrosoftGraphCache;
+        public readonly MicrosoftGraphAccessor MicrosoftGraphAccessor;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
         public readonly MarkdownEngine MarkdownEngine;
@@ -52,10 +52,10 @@ namespace Microsoft.Docs.Build
             Input = input;
             Output = new Output(outputPath, input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
-            MicrosoftGraphCache = new MicrosoftGraphCache(docset.Config);
+            MicrosoftGraphAccessor = new MicrosoftGraphAccessor(docset.Config);
             BuildScope = new BuildScope(Config, Input, fallbackDocset);
             DocumentProvider = new DocumentProvider(docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
-            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphCache, restoreFileMap, DocumentProvider);
+            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphAccessor, restoreFileMap, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, restoreFileMap);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, docset.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
             GitHubUserCache = new GitHubUserCache(docset.Config);
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
         {
             GitCommitProvider.Dispose();
             GitHubUserCache.Dispose();
-            MicrosoftGraphCache.Dispose();
+            MicrosoftGraphAccessor.Dispose();
         }
     }
 }
