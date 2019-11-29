@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Polly;
@@ -22,6 +23,7 @@ namespace Microsoft.Docs.Build
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
         private readonly HttpClient _httpClient;
+        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
         private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
 
@@ -65,6 +67,7 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _httpClient?.Dispose();
+            _syncRoot.Dispose();
         }
 
         private async Task<(Error, GitHubUser)> GetUserByLoginCore(string login)
@@ -162,6 +165,19 @@ namespace Microsoft.Docs.Build
         }
 
         private async Task<(Error error, string errorCode, T data)> Query<T>(string query, object variables, T dataType)
+        {
+            await _syncRoot.WaitAsync();
+            try
+            {
+                return await QueryCore(query, variables, dataType);
+            }
+            finally
+            {
+                _syncRoot.Release();
+            }
+        }
+
+        private async Task<(Error error, string errorCode, T data)> QueryCore<T>(string query, object variables, T dataType)
         {
             dataType.GetHashCode();
 
