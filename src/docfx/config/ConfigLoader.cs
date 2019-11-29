@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -178,6 +180,80 @@ namespace Microsoft.Docs.Build
 
             JsonUtility.Merge(result, config);
             return (errors, result);
+        }
+
+        private static JObject LoadFromCommandLineArgs()
+        {
+            var items = from arg in Environment.GetCommandLineArgs()
+                        where arg.StartsWith("--")
+                        let key = entry.Key.ToString()
+                        where key.StartsWith("DOCFX_")
+                        select (key, entry.Value.ToString());
+
+            return LoadFromItems("__", '_', items);
+        }
+
+        private static JObject LoadFromEnvironmentVariables()
+        {
+            var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                        let key = entry.Key.ToString()
+                        where key.StartsWith("DOCFX_")
+                        select (key, entry.Value.ToString());
+
+            return LoadFromItems("__", '_', items);
+        }
+
+        private static JObject LoadFromItems(string objectSeparator, char wordSeparator, IEnumerable<(string key, string value)> variables)
+        {
+            var result = new JObject();
+
+            foreach (var (key, value) in variables)
+            {
+                var current = result;
+                var objects = key.Split(objectSeparator);
+
+                for (var i = 0; i < objects.Length; i++)
+                {
+                    var propertyName = ToCamelCase(wordSeparator, objects[i]);
+                    if (i == objects.Length - 1)
+                    {
+                        current[propertyName] = value;
+                    }
+                    else
+                    {
+                        if (!current.ContainsKey(propertyName))
+                        {
+                            current[propertyName] = new JObject();
+                        }
+                        if (!(current[propertyName] is JObject obj))
+                        {
+                            break;
+                        }
+                        current = obj;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static string ToCamelCase(char wordSeparator, string value)
+        {
+            var sb = new StringBuilder();
+            var words = value.ToLowerInvariant().Split(wordSeparator);
+            sb.Length = 0;
+            sb.Append(words[0]);
+            for (var i = 1; i < words.Length; i++)
+            {
+                if (words[i].Length > 0)
+                {
+                    sb.Append(char.ToUpperInvariant(words[i][0]));
+                    sb.Append(words[i], 1, words[i].Length - 1);
+                }
+            }
+
+            var camelCaseKey = sb.ToString();
+            return camelCaseKey;
         }
 
         private static void OverwriteConfig(JObject config, string locale, string branch)
