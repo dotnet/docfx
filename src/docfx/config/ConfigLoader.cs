@@ -69,6 +69,50 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, bool extend = true)
             => LoadCore(options, extend);
 
+        internal static JObject ExpandVariables(string objectSeparator, string wordSeparator, IEnumerable<(string key, string value)> variables)
+        {
+            var result = new JObject();
+
+            foreach (var (key, value) in variables)
+            {
+                var current = result;
+                var objects = key.Split(objectSeparator);
+
+                for (var i = 0; i < objects.Length; i++)
+                {
+                    var name = ToCamelCase(wordSeparator, objects[i]);
+                    if (i == objects.Length - 1)
+                    {
+                        if (current.ContainsKey(name))
+                        {
+                            if (current[name] is JArray arr)
+                            {
+                                arr.Add(value);
+                            }
+                            else
+                            {
+                                current[name] = new JArray(current[name], value);
+                            }
+                        }
+                        else
+                        {
+                            current[name] = value;
+                        }
+                    }
+                    else
+                    {
+                        if (!(current[name] is JObject obj))
+                        {
+                            current[name] = obj = new JObject();
+                        }
+                        current = obj;
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private bool TryGetConfigPath(out FilePath configPath)
         {
             configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
@@ -182,17 +226,6 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private static JObject LoadFromCommandLineArgs()
-        {
-            var items = from arg in Environment.GetCommandLineArgs()
-                        where arg.StartsWith("--")
-                        let key = entry.Key.ToString()
-                        where key.StartsWith("DOCFX_")
-                        select (key, entry.Value.ToString());
-
-            return LoadFromItems("__", '_', items);
-        }
-
         private static JObject LoadFromEnvironmentVariables()
         {
             var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
@@ -200,44 +233,10 @@ namespace Microsoft.Docs.Build
                         where key.StartsWith("DOCFX_")
                         select (key, entry.Value.ToString());
 
-            return LoadFromItems("__", '_', items);
+            return ExpandVariables("__", "_", items);
         }
 
-        private static JObject LoadFromItems(string objectSeparator, char wordSeparator, IEnumerable<(string key, string value)> variables)
-        {
-            var result = new JObject();
-
-            foreach (var (key, value) in variables)
-            {
-                var current = result;
-                var objects = key.Split(objectSeparator);
-
-                for (var i = 0; i < objects.Length; i++)
-                {
-                    var propertyName = ToCamelCase(wordSeparator, objects[i]);
-                    if (i == objects.Length - 1)
-                    {
-                        current[propertyName] = value;
-                    }
-                    else
-                    {
-                        if (!current.ContainsKey(propertyName))
-                        {
-                            current[propertyName] = new JObject();
-                        }
-                        if (!(current[propertyName] is JObject obj))
-                        {
-                            break;
-                        }
-                        current = obj;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private static string ToCamelCase(char wordSeparator, string value)
+        private static string ToCamelCase(string wordSeparator, string value)
         {
             var sb = new StringBuilder();
             var words = value.ToLowerInvariant().Split(wordSeparator);
@@ -251,9 +250,7 @@ namespace Microsoft.Docs.Build
                     sb.Append(words[i], 1, words[i].Length - 1);
                 }
             }
-
-            var camelCaseKey = sb.ToString();
-            return camelCaseKey;
+            return sb.ToString().Trim();
         }
 
         private static void OverwriteConfig(JObject config, string locale, string branch)
