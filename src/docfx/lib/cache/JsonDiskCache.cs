@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
         /// Don't throw exception in <paramref name="valueFactory"/> because of the async update,
         /// the exception may be re-thrown in <see cref="Save"/> method.
         /// </summary>
-        public (TError error, TValue value) GetOrAdd(TKey key, Func<TKey, Task<(TError, TValue)>> valueFactory)
+        public Task<(TError error, TValue value)> GetOrAdd(TKey key, Func<TKey, Task<(TError, TValue)>> valueFactory)
         {
             return GetOrAdd(key, async aKey =>
             {
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public (TError error, TValue value) GetOrAdd(TKey key, Func<TKey, Task<(TError, IEnumerable<TValue>)>> valueFactory)
+        public async Task<(TError error, TValue value)> GetOrAdd(TKey key, Func<TKey, Task<(TError, IEnumerable<TValue>)>> valueFactory)
         {
             if (_cache.TryGetValue(key, out var value))
             {
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                 return (default, value);
             }
 
-            var error = Update(key, valueFactory).GetAwaiter().GetResult();
+            var error = await Update(key, valueFactory);
             _cache.TryGetValue(key, out value);
             return (error, value);
         }

@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     public static class JsonDiskCacheTest
     {
         [Fact]
-        public static void JsonDiskCache_BlockUpdate_MissingItems()
+        public static async Task JsonDiskCache_BlockUpdate_MissingItems()
         {
             var counter = 0;
             var cache = new JsonDiskCache<string, int, TestCacheObject>($"jsondiskcache/{Guid.NewGuid()}", TimeSpan.FromHours(1));
@@ -21,10 +21,10 @@ namespace Microsoft.Docs.Build
             Assert.Equal(0, counter);
 
             // First call is a blocking call
-            Assert.Equal(1, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
+            Assert.Equal(1, (await cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
 
             // Subsequent calls does not trigger valueFactory
-            Assert.Equal(1, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
+            Assert.Equal(1, (await cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
 
             async Task<(string, TestCacheObject)> CreateValue(int id)
             {
@@ -44,16 +44,16 @@ namespace Microsoft.Docs.Build
             var cache = new JsonDiskCache<string, int, TestCacheObject>(filename, TimeSpan.FromHours(1));
 
             // Read existing items from cache does not trigger valueFactory
-            Assert.Equal(1234, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
+            Assert.Equal(1234, (await cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
             Assert.Equal(0, counter);
 
             // When cache expires, don't block caller, trigger asynchronous update
-            cache.GetOrAdd(9999, CreateValue).value.Expiry = DateTime.UtcNow.AddHours(-1);
-            Assert.Equal(1234, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
+            (await cache.GetOrAdd(9999, CreateValue)).value.Expiry = DateTime.UtcNow.AddHours(-1);
+            Assert.Equal(1234, (await cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
 
             // Save waits for asynchronous update to complete
             await cache.Save();
-            Assert.Equal(1, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
+            Assert.Equal(1, (await cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
 
             async Task<(string, TestCacheObject)> CreateValue(int id)
             {

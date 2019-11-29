@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
             var (outputErrors, output, metadata) = file.IsPage
-                ? CreatePageOutput(context, file, sourceModel)
+                ? await CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
 
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(
+        private static async Task<(List<Error> errors, object output, JObject metadata)> CreatePageOutput(
             Context context, Document file, JObject sourceModel)
         {
             var errors = new List<Error>();
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
 
             var (inputMetadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(inputMetadataErrors);
-            var (systemMetadataErrors, systemMetadata) = CreateSystemMetadata(context, file, userMetadata);
+            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
+        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
                 systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
-            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 

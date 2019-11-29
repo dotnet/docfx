@@ -42,9 +42,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (Error, GitHubUser) GetUserByLogin(SourceInfo<string> login)
+        public async Task<(Error, GitHubUser)> GetUserByLogin(SourceInfo<string> login)
         {
-            var (error, user) = _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
+            var (error, user) = await _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
             if (user != null && !user.IsValid())
             {
                 return (Errors.AuthorNotFound(login), null);
@@ -53,9 +53,9 @@ namespace Microsoft.Docs.Build
             return (error, user);
         }
 
-        public (Error, GitHubUser) GetUserByEmail(string email, string owner, string name, string commit)
+        public async Task<(Error, GitHubUser)> GetUserByEmail(string email, string owner, string name, string commit)
         {
-            var (error, user) = _userCache.GetOrAdd(email, _ => GetUserByEmailCore(email, owner, name, commit));
+            var (error, user) = await _userCache.GetOrAdd(email, _ => GetUserByEmailCore(email, owner, name, commit));
             return (error, user != null && user.IsValid() ? user : null);
         }
 
@@ -164,10 +164,9 @@ namespace Microsoft.Docs.Build
         {
             dataType.GetHashCode();
 
-            var request = new StringContent(JsonUtility.Serialize(new { query, variables }), Encoding.UTF8, "application/json");
-
             try
             {
+                using (var request = new StringContent(JsonUtility.Serialize(new { query, variables }), Encoding.UTF8, "application/json"))
                 using (var response = await HttpPolicyExtensions
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
