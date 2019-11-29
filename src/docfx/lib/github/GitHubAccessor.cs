@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
         private readonly HttpClient _httpClient;
-        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(2, 2);
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
         private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
 
