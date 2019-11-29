@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, ContributionInfo contributionInfo) GetContributionInfo(Document document, SourceInfo<string> authorName)
         {
             var errors = new List<Error>();
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
+            var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(document);
             if (repo is null)
             {
                 return (errors, null);
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                 : _config.Contribution.ExcludeContributors;
 
             // Resolve contributors from commits
-            if (!UrlUtility.TryParseGitHubUrl(repo?.Remote, out var repoOwner, out var repoName))
+            if (!UrlUtility.TryParseGitHubUrl(repo.Remote, out var repoOwner, out var repoName))
             {
                 UrlUtility.TryParseGitHubUrl(_config.Contribution.RepositoryUrl, out repoOwner, out repoName);
             }
@@ -94,13 +94,8 @@ namespace Microsoft.Docs.Build
                 author = githubUser?.ToContributor();
             }
 
-            if (author != null)
-            {
-                contributors.RemoveAll(c => c.Id == author.Id);
-            }
-
             contributionInfo.Author = author;
-            contributionInfo.Contributors = contributors.Distinct().ToArray();
+            contributionInfo.Contributors = contributors.Except(new[] { author }).Distinct().ToArray();
 
             return (errors, contributionInfo);
         }
