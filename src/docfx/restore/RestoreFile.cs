@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
                     .Or<IOException>()
-                    .RetryAsync(3)
+                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
                     .ExecuteAsync(() => GetAsync(url, config, existingEtag)))
                 {
                     if (response.StatusCode == HttpStatusCode.NotModified)
