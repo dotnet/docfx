@@ -13,10 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader
     {
-        private const string Extend = "extend";
-        private const string DefaultLocale = "defaultLocale";
-        private const string Localization = "localization";
-
         private readonly string _docsetPath;
         private readonly Input _input;
         private readonly RepositoryProvider _repositoryProvider;
@@ -158,9 +154,6 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(extendErrors);
             }
 
-            // apply overwrite
-            OverwriteConfig(configObject, LocalizationUtility.GetLocale(repository, options), repository?.Branch);
-
             var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(deserializeErrors);
 
@@ -171,7 +164,7 @@ namespace Microsoft.Docs.Build
         {
             var result = new JObject();
             var errors = new List<Error>();
-            var extends = config[Extend] is JArray arr ? arr : new JArray(config[Extend]);
+            var extends = config["extend"] is JArray arr ? arr : new JArray(config["extend"]);
 
             foreach (var extend in extends)
             {
@@ -251,50 +244,6 @@ namespace Microsoft.Docs.Build
                 }
             }
             return sb.ToString().Trim();
-        }
-
-        private static void OverwriteConfig(JObject config, string locale, string branch)
-        {
-            if (string.IsNullOrEmpty(locale))
-            {
-                if (config.TryGetValue<JObject>(Localization, out var localizationConfig) &&
-                    localizationConfig.TryGetValue<JValue>(DefaultLocale, out var defaultLocale))
-                {
-                    locale = defaultLocale.Value<string>();
-                }
-                else
-                {
-                    locale = LocalizationConfig.DefaultLocaleStr;
-                }
-            }
-
-            var overwriteConfigIdentifiers = new List<string>();
-            var overwriteConfigs = new List<JObject>();
-            foreach (var (key, value) in config)
-            {
-                if (OverwriteConfigIdentifier.TryMatch(key, out var identifier))
-                {
-                    if ((identifier.Branches.Count == 0 || (!string.IsNullOrEmpty(branch) && identifier.Branches.Contains(branch))) &&
-                        (identifier.Locales.Count == 0 || (!string.IsNullOrEmpty(locale) && identifier.Locales.Contains(locale))) &&
-                        value is JObject overwriteConfig)
-                    {
-                        overwriteConfigs.Add(overwriteConfig);
-                    }
-
-                    overwriteConfigIdentifiers.Add(key);
-                }
-            }
-
-            foreach (var overwriteConfig in overwriteConfigs)
-            {
-                JsonUtility.Merge(config, overwriteConfig);
-            }
-
-            // clean up overwrite configuration
-            foreach (var overwriteConfigIdentifier in overwriteConfigIdentifiers)
-            {
-                config.Remove(overwriteConfigIdentifier);
-            }
         }
     }
 }
