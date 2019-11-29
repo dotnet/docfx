@@ -13,11 +13,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
-        private readonly JsonDiskCache<Error, MicrosoftGraphUser> _aliasCache;
+        private readonly JsonDiskCache<Error, string, MicrosoftGraphUser> _aliasCache;
 
         public MicrosoftGraphAccessor(Config config)
         {
-            _aliasCache = new JsonDiskCache<Error, MicrosoftGraphUser>(
+            _aliasCache = new JsonDiskCache<Error, string, MicrosoftGraphUser>(
                 AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraph.MicrosoftGraphCacheExpirationInHours));
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphTenantId) &&

@@ -44,7 +44,7 @@ repos:
         }
 cache:
   github-users.json: |
-    { "users": [
+    { "items": [
         {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
       ]
     }
@@ -127,7 +127,7 @@ repos:
       readme.md:
 cache:
   github-users.json: |
-    { "users": [
+    { "items": [
         {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
         {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
       ]

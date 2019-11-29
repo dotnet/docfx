@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,61 +19,57 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor : IDisposable
     {
-        private const string UserQuery = @"
-query ($login: String!) {
-  user(login: $login) {
-    name
-    email
-    databaseId
-    login
-  }
-}";
-
-        private const string CommitQuery = @"
-query ($owner: String!, $name: String!, $commit: String!) {
-  repository(owner: $owner, name: $name) {
-    object(expression: $commit) {
-      ... on Commit {
-        history(first: 100) {
-          nodes {
-            author {
-              email
-              user {
-                databaseId
-                name
-                email
-                login
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}";
-
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient;
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
+        private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
 
         private volatile Error _fatalError;
 
-        public GitHubAccessor(string token)
+        public GitHubAccessor(Config config)
         {
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-            if (!string.IsNullOrEmpty(token))
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            _userCache = new JsonDiskCache<Error, string, GitHubUser>(
+                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GitHub.UserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase);
+
+            if (!string.IsNullOrEmpty(config.GitHub.AuthToken))
+            {
+                _httpClient = new HttpClient();
+                _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GitHub.AuthToken);
+            }
+        }
+
+        public (Error, GitHubUser) GetUserByLogin(SourceInfo<string> login)
+        {
+            var (error, user) = _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
+            if (user != null && !user.IsValid())
+            {
+                return (Errors.AuthorNotFound(login), null);
+            }
+
+            return (error, user);
+        }
+
+        public (Error, GitHubUser) GetUserByEmail(string email, string owner, string name, string commit)
+        {
+            var (error, user) = _userCache.GetOrAdd(email, _ => GetUserByEmailCore(email, owner, name, commit));
+            return (error, user != null && user.IsValid() ? user : null);
+        }
+
+        public Task<Error[]> Save()
+        {
+            return _userCache.Save();
         }
 
         public void Dispose()
         {
-            _httpClient.Dispose();
+            _httpClient?.Dispose();
         }
 
-        public async Task<(Error, GitHubUser)> GetUserByLogin(string login)
+        private async Task<(Error, GitHubUser)> GetUserByLoginCore(string login)
         {
-            if (_fatalError != null)
+            if (_fatalError != null || _httpClient is null)
             {
                 return default;
             }
@@ -82,18 +77,21 @@ query ($owner: String!, $name: String!, $commit: String!) {
             using (PerfScope.Start($"Calling GitHub user API to resolve {login}"))
             {
                 var (error, errorCode, data) = await Query(
-                    UserQuery,
+                    GitHubQueries.UserQuery,
                     new { login },
                     new { user = new { name = "", email = "", login = "", databaseId = 0 } });
 
-                if (errorCode == "NOT_FOUND")
+                if (error != null && errorCode != "NOT_FOUND")
                 {
-                    return default;
+                    // Return `null` here to avoid caching an invalid user on disk when GitHub is down
+                    return (error, null);
                 }
 
-                if (error != null || data?.user is null)
+                if (data?.user is null)
                 {
-                    return (error, null);
+                    // Cache invalid github user by creating a fake object.
+                    // JsonDiskCache does not save `null` values on disk.
+                    return (null, new GitHubUser { Login = login });
                 }
 
                 return (null, new GitHubUser
@@ -106,36 +104,36 @@ query ($owner: String!, $name: String!, $commit: String!) {
             }
         }
 
-        public async Task<(Error, IEnumerable<GitHubUser>)> GetUsersByCommit(string owner, string name, string commit, string authorEmail = null)
+        private async Task<(Error, IEnumerable<GitHubUser>)> GetUserByEmailCore(string email, string owner, string name, string commit)
         {
             if (_unknownRepos.Contains((owner, name)))
             {
                 return default;
             }
 
-            if (_fatalError != null)
+            if (_fatalError != null || _httpClient is null)
             {
                 return default;
             }
 
-            using (PerfScope.Start($"Calling GitHub commit API to resolve {authorEmail}"))
+            using (PerfScope.Start($"Calling GitHub commit API to resolve {email}"))
             {
                 var user = new { name = "", email = "", login = "", databaseId = 0 };
                 var history = new { nodes = new[] { new { author = new { email = "", user } } } };
 
                 var (error, errorCode, data) = await Query(
-                    CommitQuery,
+                    GitHubQueries.CommitQuery,
                     new { owner, name, commit },
                     new { repository = new { @object = new { history } } });
-
-                if (error != null)
-                {
-                    return (error, null);
-                }
 
                 if (errorCode == "NOT_FOUND")
                 {
                     _unknownRepos.TryAdd((owner, name));
+                    return default;
+                }
+
+                if (error != null)
+                {
                     return (error, null);
                 }
 
@@ -153,7 +151,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
                                 Login = node.author.user?.login,
                                 Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
                                 Emails = new[] { node.author.user?.email, node.author.email }
-                                    .Where(email => !string.IsNullOrEmpty(email)).ToArray(),
+                                    .Where(str => !string.IsNullOrEmpty(str)).Distinct().ToArray(),
                             });
                         }
                     }
@@ -165,7 +163,7 @@ query ($owner: String!, $name: String!, $commit: String!) {
 
         private async Task<(Error error, string errorCode, T data)> Query<T>(string query, object variables, T dataType)
         {
-            Debug.Assert(dataType != null);
+            dataType.GetHashCode();
 
             var request = JsonUtility.Serialize(new { query, variables });
 

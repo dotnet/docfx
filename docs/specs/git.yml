@@ -32,7 +32,7 @@ inputs:
   docfx.yml:
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -64,7 +64,7 @@ inputs:
 cache:
   github-users.json: |
     {
-      "users": [
+      "items": [
         {"login": "invalid_user"},
       ]
     }
@@ -93,7 +93,7 @@ inputs:
   docfx.yml:
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -143,7 +143,7 @@ inputs:
         - BoB
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -175,7 +175,7 @@ inputs:
         - Alice
 cache:
   github-users.json: |
-      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
+      { "items": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
 outputs:
   docs/index.json: |
     { "_op_gitContributorInformation": { "author": undefined } }
@@ -197,7 +197,7 @@ inputs:
   docfx.yml:
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
         ]
@@ -240,7 +240,7 @@ inputs:
         - ChArLiE
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -275,7 +275,7 @@ inputs:
         - alice
 cache:
   github-users.json: |
-      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
+      { "items": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
 outputs:
   docs/index.json: |
     { "author": undefined, "contributors": undefined }
@@ -494,7 +494,7 @@ inputs:
       repositoryUrl: https://github.com/docascode/contribution-test
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -545,7 +545,7 @@ inputs:
       repositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -592,7 +592,7 @@ inputs:
       resolveUsers: false
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -646,7 +646,7 @@ repos:
           Alice creates this.
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}

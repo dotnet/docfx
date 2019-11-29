@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
             var (outputErrors, output, metadata) = file.IsPage
-                ? await CreatePageOutput(context, file, sourceModel)
+                ? CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
 
@@ -70,10 +70,8 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private static async Task<(List<Error> errors, object output, JObject metadata)> CreatePageOutput(
-            Context context,
-            Document file,
-            JObject sourceModel)
+        private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(
+            Context context, Document file, JObject sourceModel)
         {
             var errors = new List<Error>();
             var outputMetadata = new JObject();
@@ -81,7 +79,7 @@ namespace Microsoft.Docs.Build
 
             var (inputMetadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(inputMetadataErrors);
-            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
+            var (systemMetadataErrors, systemMetadata) = CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
@@ -114,8 +112,7 @@ namespace Microsoft.Docs.Build
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
             return (errors, html, SortProperties(templateMetadata));
 
-            JObject SortProperties(JObject obj)
-                => new JObject(obj.Properties().OrderBy(p => p.Name));
+            JObject SortProperties(JObject obj) => new JObject(obj.Properties().OrderBy(p => p.Name));
         }
 
         private static (List<Error> errors, object output, JObject metadata)
@@ -124,8 +121,7 @@ namespace Microsoft.Docs.Build
             return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
         }
 
-        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(
-            Context context, Document file, UserMetadata inputMetadata)
+        private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
@@ -157,9 +153,10 @@ namespace Microsoft.Docs.Build
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
                 systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
 
-            List<Error> contributorErrors;
-            (contributorErrors, systemMetadata.ContributionInfo) = await context.ContributionProvider.GetContributionInfo(
-                file, inputMetadata.Author);
+            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            errors.AddRange(contributorErrors);
+            systemMetadata.ContributionInfo = contributionInfo;
+
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
@@ -174,9 +171,6 @@ namespace Microsoft.Docs.Build
                 systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
                     file.Docset.HostName, "pdfstore", systemMetadata.Locale, $"{file.Docset.Config.Product}.{file.Docset.Config.Name}", "{branchName}");
             }
-
-            if (contributorErrors != null)
-                errors.AddRange(contributorErrors);
 
             return (errors, systemMetadata);
         }

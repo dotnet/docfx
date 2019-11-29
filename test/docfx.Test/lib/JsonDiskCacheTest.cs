@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Microsoft.Docs.Build
         public static void JsonDiskCache_BlockUpdate_MissingItems()
         {
             var counter = 0;
-            var cache = new JsonDiskCache<string, TestCacheObject>($"jsondiskcache/{Guid.NewGuid()}", TimeSpan.FromHours(1));
+            var cache = new JsonDiskCache<string, int, TestCacheObject>($"jsondiskcache/{Guid.NewGuid()}", TimeSpan.FromHours(1));
 
             Assert.Equal(0, counter);
 
@@ -33,14 +34,14 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task JsonDiskCache_AsynchroniousUpdate_ExpiredItems()
+        public static async Task JsonDiskCache_AsynchronousUpdate_ExpiredItems()
         {
             var counter = 0;
             var filename = $"jsondiskcache/{Guid.NewGuid()}";
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllText(filename, "{'items':[{'id': 9999, 'snapshot': 1234}]}".Replace('\'', '"'));
 
-            var cache = new JsonDiskCache<string, TestCacheObject>(filename, TimeSpan.FromHours(1));
+            var cache = new JsonDiskCache<string, int, TestCacheObject>(filename, TimeSpan.FromHours(1));
 
             // Read existing items from cache does not trigger valueFactory
             Assert.Equal(1234, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
@@ -61,7 +62,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        class TestCacheObject : ICacheObject
+        class TestCacheObject : ICacheObject<int>
         {
             public int Id { get; set; }
 
@@ -69,7 +70,7 @@ namespace Microsoft.Docs.Build
 
             public DateTime? Expiry { get; set; }
 
-            public object[] GetKeys() => new object[] { Id };
+            public IEnumerable<int> GetKeys() => new[] { Id };
         }
     }
 }

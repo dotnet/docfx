@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         public readonly DependencyMapBuilder DependencyMapBuilder;
         public readonly LinkResolver LinkResolver;
         public readonly XrefResolver XrefResolver;
-        public readonly GitHubUserCache GitHubUserCache;
+        public readonly GitHubAccessor GitHubAccessor;
         public readonly MicrosoftGraphAccessor MicrosoftGraphAccessor;
         public readonly ContributionProvider ContributionProvider;
         public readonly PublishModelBuilder PublishModelBuilder;
@@ -58,11 +58,11 @@ namespace Microsoft.Docs.Build
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphAccessor, restoreFileMap, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, restoreFileMap);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, docset.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
-            GitHubUserCache = new GitHubUserCache(docset.Config);
+            GitHubAccessor = new GitHubAccessor(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubUserCache, GitCommitProvider);
+            ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog, this);
             XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
 
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             GitCommitProvider.Dispose();
-            GitHubUserCache.Dispose();
+            GitHubAccessor.Dispose();
             MicrosoftGraphAccessor.Dispose();
         }
     }

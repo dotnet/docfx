@@ -147,10 +147,10 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                context.GitHubUserCache.Save();
                 context.ContributionProvider.Save();
                 context.GitCommitProvider.Save();
 
+                errorLog.Write(await context.GitHubAccessor.Save());
                 errorLog.Write(await context.MicrosoftGraphAccessor.Save());
             }
         }
