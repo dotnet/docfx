@@ -3,14 +3,9 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Markdig.Syntax;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-    using Microsoft.DocAsCode.Plugins;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using Xunit;
 
     public class CodeTest
@@ -390,10 +385,10 @@ int main()
 // </snippet2>";
 
 
-        private static MarkupResult SimpleMarkup(string source)
-        {
-            return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-        }
+        //private static MarkupResult SimpleMarkup(string source)
+        //{
+        //    return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
+        //}
 
         [Theory]
         [InlineData(@":::code source=""source.cs"" range=""11 - 33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
@@ -597,72 +592,75 @@ Application base of MyDomain:
 ")]
         public void CodeTestBlockGeneral(string source, string expected)
         {
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
-
+            var filename = string.Empty;
+            var content = string.Empty;
             // arrange
             if (source.Contains("source.cs"))
             {
-                File.WriteAllText("source.cs", contentCSharp.Replace("\r\n", "\n"));
+                filename = "source.cs";
+                content = contentCSharp;
             }
             else if (source.Contains("source.vb"))
             {
-                File.WriteAllText("source.vb", contentVB.Replace("\r\n", "\n"));
+                filename = "source.vb";
+                content = contentVB;
             }
             else if (source.Contains("source.cpp"))
             {
-                File.WriteAllText("source.cpp", contentCPP.Replace("\r\n", "\n"));
+                filename = "source.cpp";
+                content = contentCPP;
             }
 
-            MarkupResult marked;
             // act
-            Logger.RegisterListener(listener);
-            using (new LoggerPhaseScope(LoggerPhase))
-            {
-                marked = SimpleMarkup(source);
-            }
-            Logger.UnregisterListener(listener);
 
             // assert
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+            {
+                { filename, content }
+            });
             
         }
 
         [Theory]
-        [InlineData(@":::code source=""source.cs"" range=""205-250"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.cs"" range=""205-250"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. Your range is greater than the number of lines in the document.")]
-        [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. Unexpected attribute ""badattribute"".")]
-        [InlineData(@":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. You must set only either Range or Id, but not both.")]
-        [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. source is a required attribute. Please ensure you have specified a source attribute")]
-        [InlineData(@":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::"" is invalid. Your ranges must be numbers.")]
-        [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::", @"Invalid code on line 0. "":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::"" is invalid. Language is not set, and we could not infer language from the file type.")]
-        public void CodeTestBlockGeneralCSharp_Error(string source, string expected)
+        [InlineData(@":::code source=""source.cs"" range=""205-250"" language=""azurecli"" interactive=""try-dotnet"":::")]
+        [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
+        [InlineData(@":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
+        [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
+        [InlineData(@":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::")]
+        [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::")]
+        public void CodeTestBlockGeneralCSharp_Error(string source)
         {
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(LoggerPhase);
-
             // arrange
+            var filename = string.Empty;
+            var content = string.Empty;
             if (source.Contains("source.cs"))
             {
-                File.WriteAllText("source.cs", contentCSharp.Replace("\r\n", "\n"));
+                filename = "source.cs";
+                content = contentCSharp;
             }
             else if (source.Contains("source.vb"))
             {
-                File.WriteAllText("source.vb", contentVB.Replace("\r\n", "\n"));
+                filename = "source.vb";
+                content = contentVB;
+            }
+            else if (source.Contains("source.cpp"))
+            {
+                filename = "source.cpp";
+                content = contentCPP;
             }
             else if (source.Contains("source.crazy"))
             {
-                File.WriteAllText("source.crazy", contentCrazy.Replace("\r\n", "\n"));
+                filename = "source.crazy";
+                content = contentCrazy;
             }
 
-            MarkupResult marked;
             // act
-            Logger.RegisterListener(listener);
-            using (new LoggerPhaseScope(LoggerPhase))
-            {
-                marked = SimpleMarkup(source);
-            }
-            Logger.UnregisterListener(listener);
 
             // assert
-            Assert.Equal(expected, listener.Items.FirstOrDefault().Message);
+            TestUtility.VerifyMarkup(source, null, errors:new string[] { "invalid-code" }, files: new Dictionary<string, string>
+            {
+                { filename, content }
+            });
 
         }
 
