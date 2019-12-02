@@ -174,15 +174,18 @@ namespace Microsoft.Docs.Build
 
         private void AddAuthorizationHeader(string url, HttpRequestMessage message)
         {
-            foreach (var (baseUrl, rule) in _config.Http)
+            if (_config != null)
             {
-                if (url.StartsWith(baseUrl))
+                foreach (var (baseUrl, rule) in _config.Http)
                 {
-                    foreach (var header in rule.Headers)
+                    if (url.StartsWith(baseUrl))
                     {
-                        message.Headers.Add(header.Key, header.Value);
+                        foreach (var header in rule.Headers)
+                        {
+                            message.Headers.Add(header.Key, header.Value);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }

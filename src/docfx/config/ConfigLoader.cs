@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
 
             // Load configs available locally
             var cliConfig = options?.ToJObject();
-            var mainConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
+            var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
             var opsConfig = OpsConfigLoader.TryLoad(docsetPath, repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
 
             // Preload
             var preloadConfigObject = new JObject();
-            JsonUtility.Merge(preloadConfigObject, globalConfig, opsConfig, mainConfig, cliConfig);
+            JsonUtility.Merge(preloadConfigObject, globalConfig, opsConfig, docfxConfig, cliConfig);
             var (preloadErrors, preloadConfig) = JsonUtility.ToObject<PreloadConfig>(preloadConfigObject);
             errors.AddRange(preloadErrors);
 
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(preloadConfigObject, globalConfig, opsConfig, extendConfig, mainConfig, cliConfig);
+            JsonUtility.Merge(configObject, globalConfig, opsConfig, extendConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
