@@ -859,7 +859,7 @@ repos:
       email: terry@contoso.com
 cache:
   github-users.json: |
-    { "users": [
+    { "items": [
         {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
         {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
         {"name": "Terry", "login": "terry", "id": 3, "emails": ["terry@contoso.com"]},
