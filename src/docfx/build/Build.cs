@@ -38,17 +38,19 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options, () => restoreGitMap, () => config);
-                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    var repository = Repository.Create(docsetPath);
+                    var restoreFileMap = new RestoreFileMap(docsetPath);
+                    var configLoader = new ConfigLoader(docsetPath, restoreFileMap, repository);
+                    (errors, config) = configLoader.Load(options, extend: true);
+
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        var restoreFileMap = new RestoreFileMap(docsetPath);
+                        var localizationProvider = new LocalizationProvider(restoreGitMap, options, config, locale, docsetPath, repository);
+                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, restoreGitMap, localizationProvider);
                         var input = new Input(docsetPath, repositoryProvider);
-                        var configLoader = new ConfigLoader(docsetPath, restoreFileMap, repositoryProvider);
-                        (errors, config) = configLoader.Load(options, extend: true);
 
                         // just return if config loading has errors
                         if (errorLog.Write(errors))
@@ -56,12 +58,6 @@ namespace Microsoft.Docs.Build
 
                         // get docsets(build docset, fallback docset and dependency docsets)
                         var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
-
-                        if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
-                        {
-                            // entry docset is not the docset to build
-                            input = new Input(docset.DocsetPath, repositoryProvider);
-                        }
 
                         // run build based on docsets
                         outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);

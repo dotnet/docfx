@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.Docs.Build
 {
@@ -39,15 +40,15 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
-                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    var repository = Repository.Create(docsetPath);
+                    var repositoryProvider = new RepositoryProvider(docsetPath, repository, options);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
                     var input = new Input(docsetPath, repositoryProvider);
                     var restoreFileMap = new RestoreFileMap(docsetPath);
-                    var configLoader = new ConfigLoader(docsetPath, restoreFileMap, repositoryProvider);
+                    var configLoader = new ConfigLoader(docsetPath, restoreFileMap, repository);
 
                     var configPath = docsetPath;
                     (errors, config) = configLoader.TryLoad(options, extend: false);
