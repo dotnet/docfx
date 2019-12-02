@@ -7,11 +7,11 @@ namespace Microsoft.Docs.Build
 {
     internal class RestoreFileMap
     {
-        private readonly Input _input;
+        private readonly string _docsetPath;
 
-        public RestoreFileMap(Input input)
+        public RestoreFileMap(string docsetPath)
         {
-            _input = input;
+            _docsetPath = docsetPath;
         }
 
         public string ReadString(SourceInfo<string> url)
@@ -24,31 +24,12 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(SourceInfo<string> url)
         {
-            return ReadStream(_input, url);
-        }
-
-        public static string ReadString(Input input, SourceInfo<string> url)
-        {
-            using (var reader = new StreamReader(ReadStream(input, url)))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        public static Stream ReadStream(Input input, SourceInfo<string> url)
-        {
             if (!UrlUtility.IsHttp(url))
             {
-                var localFilePath = new FilePath(url, FileOrigin.Default);
-                if (input.Exists(localFilePath))
+                var localFilePath = Path.Combine(_docsetPath, url);
+                if (File.Exists(localFilePath))
                 {
-                    return input.ReadStream(localFilePath);
-                }
-
-                localFilePath = new FilePath(url, FileOrigin.Fallback);
-                if (input.Exists(localFilePath))
-                {
-                    return input.ReadStream(localFilePath);
+                    return File.OpenRead(localFilePath);
                 }
 
                 throw Errors.FileNotFound(url).ToException();
