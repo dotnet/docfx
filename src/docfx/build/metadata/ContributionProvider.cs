@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
             _commitBuildTimeProvider = docset.Repository != null && _config.UpdateTimeAsCommitBuildTime
-                ? new CommitBuildTimeProvider(docset.Repository) : null;
+                ? new CommitBuildTimeProvider(docset.Config, docset.Repository) : null;
         }
 
         public async Task<(List<Error> errors, ContributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)

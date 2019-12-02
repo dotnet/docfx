@@ -200,6 +200,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool UpdateTimeAsCommitBuildTime = false;
 
+        /// <summary>
+        /// When enabled, update the state of commit build time for this build.
+        /// </summary>
+        public readonly bool UpdateCommitBuildTime = true;
+
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
