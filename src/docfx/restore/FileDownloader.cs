@@ -65,11 +65,16 @@ namespace Microsoft.Docs.Build
             return File.OpenRead(filePath);
         }
 
-        public async Task<string> Download(string url)
+        public async Task Download(SourceInfo<string> url)
         {
             if (!UrlUtility.IsHttp(url))
             {
-                return null;
+                return;
+            }
+
+            if (_noFetch)
+            {
+                throw Errors.NeedRestore(url).ToException();
             }
 
             var filePath = GetRestorePathFromUrl(url);
@@ -89,7 +94,7 @@ namespace Microsoft.Docs.Build
             if (tempFile is null)
             {
                 // no change at all
-                return filePath;
+                return;
             }
 
             using (InterProcessMutex.Create(filePath))
@@ -107,7 +112,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return filePath;
+            return;
         }
 
         private static string GetRestorePathFromUrl(string url)

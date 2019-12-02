@@ -41,11 +41,11 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task DownloadFile_Success()
+        public static void DownloadFile_Success()
         {
-            var downloadPath = await new FileDownloader(".").Download(
-                "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md");
-            Assert.True(File.Exists(downloadPath));
+            Assert.NotNull(
+                new FileDownloader(".").DownloadString(
+                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         {
             await Assert.ThrowsAsync<DocfxException>(() =>
                 new FileDownloader(".", noFetch: true).Download(
-                    "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md"));
+                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 
         [Fact]
