@@ -12,12 +12,14 @@ namespace Microsoft.Docs.Build
     {
         private readonly DateTime _buildTime = DateTime.UtcNow;
         private readonly Repository _repo;
+        private readonly Config _config;
         private readonly string _commitBuildTimePath;
         private readonly IReadOnlyDictionary<string, DateTime> _buildTimeByCommit;
 
-        public CommitBuildTimeProvider(Repository repo)
+        public CommitBuildTimeProvider(Config config, Repository repo)
         {
             _repo = repo;
+            _config = config;
             _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Remote, repo.Branch);
 
             var exists = File.Exists(_commitBuildTimePath);
@@ -41,7 +43,7 @@ namespace Microsoft.Docs.Build
 
         public void Save()
         {
-            if (_buildTimeByCommit.ContainsKey(_repo.Commit))
+            if (!_config.UpdateCommitBuildTime || _buildTimeByCommit.ContainsKey(_repo.Commit))
             {
                 return;
             }
