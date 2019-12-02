@@ -24,8 +24,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private readonly MarkdownContext _context;
 
-        private List<string> updatedCodes = new List<string>();
-
         public CodeExtension(MarkdownContext context)
         {
             _context = context;
@@ -84,19 +82,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 logError($"source is a required attribute. Please ensure you have specified a source attribute");
                 return false;
             }
-            var (code, codePath) = _context.ReadFile(source, InclusionContext.File, null);
-            if(string.IsNullOrEmpty(code))
-            {
-                logError($"The code snippet \"{source}\" could not be found.");
-                return false;
-            }
-            var updatedCode = GetCodeSnippet(range, id, code, logError).TrimEnd();
-            updatedCodes.Add(updatedCode);
-
-            if (updatedCode == string.Empty)
-            {
-                return false;
-            }
 
             if(string.IsNullOrEmpty(language))
             {
@@ -114,10 +99,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             RenderDelegate = (renderer, obj) =>
             {
+                var currentId = string.Empty;
+                var currentRange = string.Empty;
+                var currentSource = string.Empty;
+                obj.Attributes.TryGetValue("id", out currentId); //it's okay if this is null
+                obj.Attributes.TryGetValue("range", out currentRange); //it's okay if this is null
+                obj.Attributes.TryGetValue("source", out currentSource); //source has already been checked above
+                var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, null);
+                if (string.IsNullOrEmpty(code))
+                {
+                    logError($"The code snippet \"{source}\" could not be found.");
+                    return false;
+                }
+                var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
+
+                if (updatedCode == string.Empty)
+                {
+                    return false;
+                }
                 renderer.WriteLine("<pre>");
                 renderer.Write("<code").WriteAttributes(obj).Write(">");
-                renderer.WriteLine(updatedCodes.FirstOrDefault());
-                updatedCodes.RemoveAt(0);
+                renderer.WriteLine(updatedCode);
                 renderer.WriteLine("</code></pre>");
 
                 return true;
