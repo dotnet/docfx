@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
         public static void ExpandVariablesTest(string keys, string expectedJObject)
         {
             var items = keys.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(key => (key, "value"));
-            Assert.Equal(expectedJObject, ConfigLoader.ExpandVariables("__", "_", items).ToString(Formatting.None).Replace('"', '\''));
+            Assert.Equal(expectedJObject, StringUtility.ExpandVariables("__", "_", items).ToString(Formatting.None).Replace('"', '\''));
         }
     }
 }

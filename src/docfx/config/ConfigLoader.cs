@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -65,50 +64,6 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, bool extend = true)
             => LoadCore(options, extend);
 
-        internal static JObject ExpandVariables(string objectSeparator, string wordSeparator, IEnumerable<(string key, string value)> variables)
-        {
-            var result = new JObject();
-
-            foreach (var (key, value) in variables)
-            {
-                var current = result;
-                var objects = key.Split(objectSeparator);
-
-                for (var i = 0; i < objects.Length; i++)
-                {
-                    var name = ToCamelCase(wordSeparator, objects[i]);
-                    if (i == objects.Length - 1)
-                    {
-                        if (current.ContainsKey(name))
-                        {
-                            if (current[name] is JArray arr)
-                            {
-                                arr.Add(value);
-                            }
-                            else
-                            {
-                                current[name] = new JArray(current[name], value);
-                            }
-                        }
-                        else
-                        {
-                            current[name] = value;
-                        }
-                    }
-                    else
-                    {
-                        if (!(current[name] is JObject obj))
-                        {
-                            current[name] = obj = new JObject();
-                        }
-                        current = obj;
-                    }
-                }
-            }
-
-            return result;
-        }
-
         private bool TryGetConfigPath(out FilePath configPath)
         {
             configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
@@ -121,6 +76,9 @@ namespace Microsoft.Docs.Build
             var configObject = new JObject();
 
             var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
+
+            // apply environment variables
+            JsonUtility.Merge(configObject, LoadFromEnvironmentVariables());
 
             // apply .openpublishing.publish.config.json
             if (OpsConfig.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
@@ -224,26 +182,9 @@ namespace Microsoft.Docs.Build
             var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
                         let key = entry.Key.ToString()
                         where key.StartsWith("DOCFX_")
-                        select (key, entry.Value.ToString());
+                        select (key.Substring("DOCFX_".Length), entry.Value.ToString());
 
-            return ExpandVariables("__", "_", items);
-        }
-
-        private static string ToCamelCase(string wordSeparator, string value)
-        {
-            var sb = new StringBuilder();
-            var words = value.ToLowerInvariant().Split(wordSeparator);
-            sb.Length = 0;
-            sb.Append(words[0]);
-            for (var i = 1; i < words.Length; i++)
-            {
-                if (words[i].Length > 0)
-                {
-                    sb.Append(char.ToUpperInvariant(words[i][0]));
-                    sb.Append(words[i], 1, words[i].Length - 1);
-                }
-            }
-            return sb.ToString().Trim();
+            return StringUtility.ExpandVariables("__", "_", items);
         }
     }
 }

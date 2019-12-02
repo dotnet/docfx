@@ -1,7 +1,0 @@
-# default config for specs in docfx
-baseUrl: https://docs.com
-output:
-  json: true
-  copyResources: true
-gitHub:
-  userCacheExpirationInHours: 876000
