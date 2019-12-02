@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal sealed class Context : IDisposable
     {
         public readonly Config Config;
-        public readonly RestoreFileMap RestoreFileMap;
+        public readonly FileDownloader FileDownloader;
         public readonly ErrorLog ErrorLog;
         public readonly Output Output;
         public readonly Input Input;
@@ -41,13 +41,12 @@ namespace Microsoft.Docs.Build
 
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider)
         {
-            var restoreFileMap = new RestoreFileMap(docset.DocsetPath);
             DependencyMapBuilder = new DependencyMapBuilder();
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<FilePath>();
 
             Config = docset.Config;
-            RestoreFileMap = restoreFileMap;
+            FileDownloader = new FileDownloader(docset.DocsetPath, noFetch: true);
             ErrorLog = errorLog;
             Input = input;
             Output = new Output(outputPath, input);
@@ -55,8 +54,8 @@ namespace Microsoft.Docs.Build
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(docset.Config);
             BuildScope = new BuildScope(Config, Input, fallbackDocset);
             DocumentProvider = new DocumentProvider(docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
-            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphAccessor, restoreFileMap, DocumentProvider);
-            MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, restoreFileMap);
+            MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphAccessor, FileDownloader, DocumentProvider);
+            MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileDownloader);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, docset.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(docset.Config);
             GitCommitProvider = new GitCommitProvider();
@@ -64,7 +63,7 @@ namespace Microsoft.Docs.Build
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog, this);
-            XrefResolver = new XrefResolver(this, docset, restoreFileMap, DependencyMapBuilder, FileLinkMapBuilder);
+            XrefResolver = new XrefResolver(this, docset, FileDownloader, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
                 docset,
@@ -81,7 +80,7 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, RestoreFileMap, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
+            MarkdownEngine = new MarkdownEngine(Config, FileDownloader, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
 
             TableOfContentsLoader = new TableOfContentsLoader(
                 Input, LinkResolver, XrefResolver, MarkdownEngine, MonikerProvider, DependencyMapBuilder);

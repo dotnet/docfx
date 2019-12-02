@@ -11,14 +11,10 @@ namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader
     {
-        private readonly string _docsetPath;
-        private readonly RestoreFileMap _restoreFileMap;
         private readonly RepositoryProvider _repositoryProvider;
 
-        public ConfigLoader(string docsetPath, RestoreFileMap restoreFileMap, RepositoryProvider repositoryProvider)
+        public ConfigLoader(RepositoryProvider repositoryProvider)
         {
-            _docsetPath = docsetPath;
-            _restoreFileMap = restoreFileMap;
             _repositoryProvider = repositoryProvider;
         }
 
@@ -47,101 +43,52 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(CommandLineOptions options, bool extend = true)
+        public (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
         {
-            if (!TryGetConfigPath(out _))
+            var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
+            if (configPath is null)
             {
-                throw Errors.ConfigNotFound(_docsetPath).ToException();
+                throw Errors.ConfigNotFound(docsetPath).ToException();
             }
 
-            return TryLoad(options, extend);
-        }
-
-        /// <summary>
-        /// Load the config if it exists under <paramref name="docsetPath"/> or return default config
-        /// </summary>
-        public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, bool extend = true)
-            => LoadCore(options, extend);
-
-        private bool TryGetConfigPath(out string configPath)
-        {
-            configPath = PathUtility.FindYamlOrJson(Path.Combine(_docsetPath, "docfx"));
-            return configPath != null;
-        }
-
-        private (List<Error>, Config) LoadCore(CommandLineOptions options, bool extend)
-        {
             var errors = new List<Error>();
-            var configObject = new JObject();
-
             var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
 
-            // apply .openpublishing.publish.config.json
-            if (OpsConfigLoader.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
-            {
-                JsonUtility.Merge(configObject, opsConfig);
-            }
+            // Load configs available locally
+            var cliConfig = options?.ToJObject();
+            var mainConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
+            var opsConfig = OpsConfigLoader.TryLoad(docsetPath, repository?.Branch ?? "master");
+            var globalConfig = File.Exists(AppData.GlobalConfigPath)
+                ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
+                : null;
 
-            // apply docfx.json or docfx.yml
-            if (TryGetConfigPath(out var configPath))
-            {
-                var (mainErrors, mainConfigObject) = LoadConfigObject(Path.GetFileName(configPath), File.ReadAllText(configPath));
-                errors.AddRange(mainErrors);
-                JsonUtility.Merge(configObject, mainConfigObject);
-            }
+            // Preload
+            var preloadConfigObject = new JObject();
+            JsonUtility.Merge(preloadConfigObject, globalConfig, opsConfig, mainConfig, cliConfig);
+            var (preloadErrors, preloadConfig) = JsonUtility.ToObject<PreloadConfig>(preloadConfigObject);
+            errors.AddRange(preloadErrors);
 
-            // apply command line options
-            var optionConfigObject = options?.ToJObject();
+            // Download dependencies
+            var fileDownloader = new FileDownloader(docsetPath, preloadConfig, noFetch);
+            var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileDownloader);
 
-            JsonUtility.Merge(configObject, optionConfigObject);
-
-            // apply global config
-            var globalErrors = new List<Error>();
-            (globalErrors, configObject) = ApplyGlobalConfig(configObject);
-            errors.AddRange(globalErrors);
-
-            // apply extends
-            if (extend)
-            {
-                var extendErrors = new List<Error>();
-                (extendErrors, configObject) = ExtendConfigs(configObject);
-                errors.AddRange(extendErrors);
-            }
-
-            var (deserializeErrors, config) = JsonUtility.ToObject<Config>(configObject);
-            errors.AddRange(deserializeErrors);
+            // Create full config
+            var configObject = new JObject();
+            JsonUtility.Merge(preloadConfigObject, globalConfig, opsConfig, extendConfig, mainConfig, cliConfig);
+            var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
+            errors.AddRange(configErrors);
 
             return (errors, config);
         }
 
-        private (List<Error>, JObject) ExtendConfigs(JObject config)
-        {
-            var result = new JObject();
-            var errors = new List<Error>();
-            var extends = config["extend"] is JArray arr ? arr : new JArray(config["extend"]);
-
-            foreach (var extend in extends)
-            {
-                if (extend is JValue value && value.Value is string str)
-                {
-                    var content = _restoreFileMap.ReadString(
-                        new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
-                    var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
-                    errors.AddRange(extendErrors);
-                    JsonUtility.Merge(result, extendConfigObject);
-                }
-            }
-
-            JsonUtility.Merge(result, config);
-            return (errors, result);
-        }
-
-        private static (List<Error>, JObject) LoadConfigObject(string fileName, string content)
+        private static JObject LoadConfig(List<Error> errorBuilder, string fileName, string content)
         {
             var source = new FilePath(fileName);
             var (errors, config) = fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
                 ? YamlUtility.Parse(content, source)
                 : JsonUtility.Parse(content, source);
+
+            errorBuilder.AddRange(errors);
 
             if (config is JObject obj)
             {
@@ -150,27 +97,26 @@ namespace Microsoft.Docs.Build
                 {
                     // `template` property has different semantic, so remove it
                     buildObj.Remove("template");
-                    return (errors, buildObj);
+                    return buildObj;
                 }
-                return (errors, obj);
+                return obj;
             }
 
             throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
-        private static (List<Error>, JObject) ApplyGlobalConfig(JObject config)
+        private JObject DownloadExtendConfig(List<Error> errors, PreloadConfig preloadConfig, FileDownloader fileDownloader)
         {
             var result = new JObject();
-            var errors = new List<Error>();
 
-            var globalConfigPath = AppData.GlobalConfigPath;
-            if (File.Exists(globalConfigPath))
+            foreach (var extend in preloadConfig.Extend)
             {
-                (errors, result) = LoadConfigObject(globalConfigPath, File.ReadAllText(globalConfigPath));
+                var content = fileDownloader.DownloadString(extend);
+                var extendConfigObject = LoadConfig(errors, extend, content);
+                JsonUtility.Merge(result, extendConfigObject);
             }
 
-            JsonUtility.Merge(result, config);
-            return (errors, result);
+            return result;
         }
     }
 }

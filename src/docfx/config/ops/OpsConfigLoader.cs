@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static bool TryLoad(string docsetPath, string branch, out JObject result)
+        public static JObject TryLoad(string docsetPath, string branch)
         {
             var directory = docsetPath;
 
@@ -27,13 +27,11 @@ namespace Microsoft.Docs.Build
                 var opsConfig = JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
                 var buildSourceFolder = PathUtility.NormalizeFolder(Path.GetRelativePath(directory, docsetPath));
 
-                result = ToDocfxConfig(branch, opsConfig, buildSourceFolder);
-                return true;
+                return ToDocfxConfig(branch, opsConfig, buildSourceFolder);
             }
             while (!string.IsNullOrEmpty(directory));
 
-            result = null;
-            return false;
+            return null;
         }
 
         private static JObject ToDocfxConfig(string branch, OpsConfig opsConfig, string buildSourceFolder)

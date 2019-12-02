@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
         public MetadataProvider(
-            Docset docset, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, RestoreFileMap restoreFileMap, DocumentProvider documentProvider)
+            Docset docset, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileDownloader fileDownloader, DocumentProvider documentProvider)
         {
             _input = input;
             _documentProvider = documentProvider;
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             MetadataSchemas = Array.ConvertAll(
                 docset.Config.MetadataSchema,
                 schema => JsonUtility.Deserialize<JsonSchema>(
-                    restoreFileMap.ReadString(schema), schema.Source.File));
+                    fileDownloader.DownloadString(schema), schema.Source.File));
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,

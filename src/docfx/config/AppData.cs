@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetFileDownloadDir(string url)
         {
-            return PathUtility.NormalizeFolder(Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url)));
+            return Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url));
         }
 
         public static string GetDependencyLockFile(string docsetPath, string locale)

@@ -45,10 +45,9 @@ namespace Microsoft.Docs.Build
 
                     using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        var restoreFileMap = new RestoreFileMap(docsetPath);
                         var input = new Input(docsetPath, repositoryProvider);
-                        var configLoader = new ConfigLoader(docsetPath, restoreFileMap, repositoryProvider);
-                        (errors, config) = configLoader.Load(options, extend: true);
+                        var configLoader = new ConfigLoader(repositoryProvider);
+                        (errors, config) = configLoader.Load(docsetPath, options, noFetch: true);
 
                         // just return if config loading has errors
                         if (errorLog.Write(errors))
