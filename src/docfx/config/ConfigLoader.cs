@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
 
             // apply environment variables
-            JsonUtility.Merge(configObject, LoadFromEnvironmentVariables());
+            JsonUtility.Merge(configObject, LoadEnvironmentVariables());
 
             // apply .openpublishing.publish.config.json
             if (OpsConfig.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
@@ -177,12 +177,15 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private static JObject LoadFromEnvironmentVariables()
+        private static JObject LoadEnvironmentVariables()
         {
             var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
                         let key = entry.Key.ToString()
                         where key.StartsWith("DOCFX_")
-                        select (key.Substring("DOCFX_".Length), entry.Value.ToString());
+                        let configKey = key.Substring("DOCFX_".Length)
+                        let values = entry.Value.ToString().Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        from value in values
+                        select (configKey, value);
 
             return StringUtility.ExpandVariables("__", "_", items);
         }
