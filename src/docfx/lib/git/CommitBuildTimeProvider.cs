@@ -48,22 +48,25 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
-
-            // TODO: retrive git log from `FileCommitProvider` since it should already be there.
-            foreach (var diffCommit in GitUtility.GetCommits(_repo.Path, _repo.Commit))
+            using (PerfScope.Start($"Saving commit build time for {_repo.Commit}"))
             {
-                if (!_buildTimeByCommit.ContainsKey(diffCommit))
+                var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
+
+                // TODO: retrive git log from `FileCommitProvider` since it should already be there.
+                foreach (var diffCommit in GitUtility.GetCommits(_repo.Path, _repo.Commit))
                 {
-                    commits.Add(new CommitBuildTimeItem { Sha = diffCommit, BuiltAt = _buildTime });
+                    if (!_buildTimeByCommit.ContainsKey(diffCommit))
+                    {
+                        commits.Add(new CommitBuildTimeItem { Sha = diffCommit, BuiltAt = _buildTime });
+                    }
                 }
+
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)));
+
+                ProcessUtility.WriteFile(
+                    _commitBuildTimePath,
+                    JsonUtility.Serialize(new CommitBuildTime { Commits = commits }));
             }
-
-            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)));
-
-            ProcessUtility.WriteFile(
-                _commitBuildTimePath,
-                JsonUtility.Serialize(new CommitBuildTime { Commits = commits }));
         }
     }
 }
