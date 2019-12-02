@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -162,7 +163,7 @@ namespace Microsoft.Docs.Build
 
         private async Task<(Error error, string errorCode, T data)> Query<T>(string api, string query, object variables, T dataType)
         {
-            dataType.GetHashCode();
+            Debug.Assert(dataType != null);
 
             try
             {
