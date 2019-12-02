@@ -46,7 +46,8 @@ namespace Microsoft.Docs.Build
 
                     // load configuration from current entry or fallback repository
                     var input = new Input(docsetPath, repositoryProvider);
-                    var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
+                    var restoreFileMap = new RestoreFileMap(docsetPath);
+                    var configLoader = new ConfigLoader(docsetPath, restoreFileMap, repositoryProvider);
 
                     var configPath = docsetPath;
                     (errors, config) = configLoader.TryLoad(options, extend: false);

@@ -12,13 +12,13 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly string _docsetPath;
-        private readonly Input _input;
+        private readonly RestoreFileMap _restoreFileMap;
         private readonly RepositoryProvider _repositoryProvider;
 
-        public ConfigLoader(string docsetPath, Input input, RepositoryProvider repositoryProvider)
+        public ConfigLoader(string docsetPath, RestoreFileMap restoreFileMap, RepositoryProvider repositoryProvider)
         {
             _docsetPath = docsetPath;
-            _input = input;
+            _restoreFileMap = restoreFileMap;
             _repositoryProvider = repositoryProvider;
         }
 
@@ -63,9 +63,9 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, bool extend = true)
             => LoadCore(options, extend);
 
-        private bool TryGetConfigPath(out FilePath configPath)
+        private bool TryGetConfigPath(out string configPath)
         {
-            configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
+            configPath = PathUtility.FindYamlOrJson(Path.Combine(_docsetPath, "docfx"));
             return configPath != null;
         }
 
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
             // apply docfx.json or docfx.yml
             if (TryGetConfigPath(out var configPath))
             {
-                var (mainErrors, mainConfigObject) = LoadConfigObject(configPath.Path, _input.ReadString(configPath));
+                var (mainErrors, mainConfigObject) = LoadConfigObject(Path.GetFileName(configPath), File.ReadAllText(configPath));
                 errors.AddRange(mainErrors);
                 JsonUtility.Merge(configObject, mainConfigObject);
             }
@@ -124,8 +124,8 @@ namespace Microsoft.Docs.Build
             {
                 if (extend is JValue value && value.Value is string str)
                 {
-                    var content = RestoreFileMap.ReadString(
-                        _input, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
+                    var content = _restoreFileMap.ReadString(
+                        new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
                     var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
                     errors.AddRange(extendErrors);
                     JsonUtility.Merge(result, extendConfigObject);
