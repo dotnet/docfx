@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
 
             // apply .openpublishing.publish.config.json
-            if (OpsConfig.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
+            if (OpsConfigLoader.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
             {
                 JsonUtility.Merge(configObject, opsConfig);
             }
