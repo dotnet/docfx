@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
+    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -392,9 +393,9 @@ int main()
 
         [Theory]
         [InlineData(@":::code source=""source.cs"" range=""11 - 33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// <summary>
+<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// &lt;summary&gt;
 /// Interaction logic for Window1.xaml
-/// </summary>
+/// &lt;/summary&gt;
 
 public partial class Window1 : Window
 {
@@ -417,10 +418,10 @@ public partial class Window1 : Window
     void TableColumnsProperty()
     ...
    tbl.Columns.Add(new TableColumn());
-// </Snippet_Table_Columns_Add>
+// &lt;/Snippet_Table_Columns_Add&gt;
 
 // Insert a new first column.
-// <Snippet_Table_Columns_Insert>
+// &lt;Snippet_Table_Columns_Insert&gt;
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" range=""1-2"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
@@ -445,7 +446,7 @@ using System.Windows;
         [InlineData(@":::code source=""source.cs"" id=""Snippet_Table_RowGroups_Add"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">Table tbl = new Table();
 int rowGroupsToAdd = 4;
-for (int x = 0; x < rowGroupsToAdd; x++)
+for (int x = 0; x &lt; rowGroupsToAdd; x++)
     tbl.RowGroups.Add(new TableRowGroup());
 </code></pre>
 ")]
@@ -454,11 +455,11 @@ for (int x = 0; x < rowGroupsToAdd; x++)
 
 Class AppDomain1
     Public Shared Sub Main()
-        Console.WriteLine(""Creating new AppDomain."")
-        Dim domain As AppDomain = AppDomain.CreateDomain(""MyDomain"")
+        Console.WriteLine(&quot;Creating new AppDomain.&quot;)
+        Dim domain As AppDomain = AppDomain.CreateDomain(&quot;MyDomain&quot;)
 
-        Console.WriteLine(""Host domain: "" + AppDomain.CurrentDomain.FriendlyName)
-        Console.WriteLine(""child domain: "" + domain.FriendlyName)
+        Console.WriteLine(&quot;Host domain: &quot; + AppDomain.CurrentDomain.FriendlyName)
+        Console.WriteLine(&quot;child domain: &quot; + domain.FriendlyName)
     End Sub
 End Class
 </code></pre>
@@ -472,57 +473,25 @@ End Class
 
         Dim setup As New AppDomainSetup()
         setup.ApplicationBase = _
-            root.SetupInformation.ApplicationBase & ""MyAppSubfolder\""
+            root.SetupInformation.ApplicationBase &amp; &quot;MyAppSubfolder\&quot;
 
-        Dim domain As AppDomain = AppDomain.CreateDomain(""MyDomain"", Nothing, setup)
+        Dim domain As AppDomain = AppDomain.CreateDomain(&quot;MyDomain&quot;, Nothing, setup)
 
-        Console.WriteLine(""Application base of {0}:"" & vbCrLf & vbTab & ""{1}"", _
+        Console.WriteLine(&quot;Application base of {0}:&quot; &amp; vbCrLf &amp; vbTab &amp; &quot;{1}&quot;, _
             root.FriendlyName, root.SetupInformation.ApplicationBase)
-        Console.WriteLine(""Application base of {0}:"" & vbCrLf & vbTab & ""{1}"", _
+        Console.WriteLine(&quot;Application base of {0}:&quot; &amp; vbCrLf &amp; vbTab &amp; &quot;{1}&quot;, _
             domain.FriendlyName, domain.SetupInformation.ApplicationBase)
 
         AppDomain.Unload(domain)
     End Sub
 End Class
 
-' This example produces output similar to the following:
-'
-'Application base of MyApp.exe:
-'        C:\Program Files\MyApp\
-'Application base of MyDomain:
-'        C:\Program Files\MyApp\MyAppSubfolder\
-</code></pre>
-")]
-        [InlineData(@":::code source=""source.cpp"" id=""snippet2"":::", @"<pre>
-<code class=""lang-cpp"">using namespace System;
-using namespace System::Reflection;
-
-ref class AppDomain4
-{
-public:
-    static void Main()
-    {
-        // Create application domain setup information.
-        AppDomainSetup^ domaininfo = gcnew AppDomainSetup();
-        domaininfo->ApplicationBase = ""f:\\work\\development\\latest"";
-
-        // Create the application domain.
-        AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, domaininfo);
-
-        // Write application domain information to the console.
-        Console::WriteLine(""Host domain: "" + AppDomain::CurrentDomain->FriendlyName);
-        Console::WriteLine(""child domain: "" + domain->FriendlyName);
-        Console::WriteLine(""Application base is: "" + domain->SetupInformation->ApplicationBase);
-
-        // Unload the application domain.
-        AppDomain::Unload(domain);
-    }
-};
-
-int main()
-{
-    AppDomain4::Main();
-}
+&#39; This example produces output similar to the following:
+&#39;
+&#39;Application base of MyApp.exe:
+&#39;        C:\Program Files\MyApp\
+&#39;Application base of MyDomain:
+&#39;        C:\Program Files\MyApp\MyAppSubfolder\
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cpp"" id=""snippet2"":::
@@ -540,15 +509,15 @@ public:
     {
         // Create application domain setup information.
         AppDomainSetup^ domaininfo = gcnew AppDomainSetup();
-        domaininfo->ApplicationBase = ""f:\\work\\development\\latest"";
+        domaininfo-&gt;ApplicationBase = &quot;f:\\work\\development\\latest&quot;;
 
         // Create the application domain.
-        AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, domaininfo);
+        AppDomain^ domain = AppDomain::CreateDomain(&quot;MyDomain&quot;, nullptr, domaininfo);
 
         // Write application domain information to the console.
-        Console::WriteLine(""Host domain: "" + AppDomain::CurrentDomain->FriendlyName);
-        Console::WriteLine(""child domain: "" + domain->FriendlyName);
-        Console::WriteLine(""Application base is: "" + domain->SetupInformation->ApplicationBase);
+        Console::WriteLine(&quot;Host domain: &quot; + AppDomain::CurrentDomain-&gt;FriendlyName);
+        Console::WriteLine(&quot;child domain: &quot; + domain-&gt;FriendlyName);
+        Console::WriteLine(&quot;Application base is: &quot; + domain-&gt;SetupInformation-&gt;ApplicationBase);
 
         // Unload the application domain.
         AppDomain::Unload(domain);
@@ -569,15 +538,15 @@ int main()
     AppDomain^ root = AppDomain::CurrentDomain;
 
     AppDomainSetup^ setup = gcnew AppDomainSetup();
-    setup->ApplicationBase = 
-        root->SetupInformation->ApplicationBase + ""MyAppSubfolder\\"";
+    setup-&gt;ApplicationBase = 
+        root-&gt;SetupInformation-&gt;ApplicationBase + &quot;MyAppSubfolder\\&quot;;
 
-    AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, setup);
+    AppDomain^ domain = AppDomain::CreateDomain(&quot;MyDomain&quot;, nullptr, setup);
 
-    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
-        root->FriendlyName, root->SetupInformation->ApplicationBase);
-    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
-        domain->FriendlyName, domain->SetupInformation->ApplicationBase);
+    Console::WriteLine(&quot;Application base of {0}:\r\n\t{1}&quot;, 
+        root-&gt;FriendlyName, root-&gt;SetupInformation-&gt;ApplicationBase);
+    Console::WriteLine(&quot;Application base of {0}:\r\n\t{1}&quot;, 
+        domain-&gt;FriendlyName, domain-&gt;SetupInformation-&gt;ApplicationBase);
 
     AppDomain::Unload(domain);
 }
