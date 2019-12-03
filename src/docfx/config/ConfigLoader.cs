@@ -75,6 +75,9 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var configObject = new JObject();
 
+            // apply environment variables
+            JsonUtility.Merge(configObject, LoadEnvironmentVariables());
+
             // apply .openpublishing.publish.config.json
             if (OpsConfigLoader.TryLoad(_docsetPath, _repository?.Branch ?? "master", out var opsConfig))
             {
