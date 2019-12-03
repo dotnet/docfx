@@ -30,11 +30,6 @@ namespace Microsoft.Docs.Build
         public readonly string Product = string.Empty;
 
         /// <summary>
-        /// Gets the default docset name
-        /// </summary>
-        public readonly string Name = string.Empty;
-
-        /// <summary>
         /// Gets the file glob patterns included by the docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]

@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
         public JObject TryAdapt(string name, string repository, string branch)
         {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository) || string.IsNullOrEmpty(s_token))
             {
                 return null;
             }

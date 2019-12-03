@@ -14,6 +14,11 @@ namespace Microsoft.Docs.Build
     internal class PreloadConfig : IHttpCredentialProvider
     {
         /// <summary>
+        /// Gets the default docset name
+        /// </summary>
+        public readonly string Name = string.Empty;
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>

@@ -53,11 +53,13 @@ namespace Microsoft.Docs.Build
 
             var errors = new List<Error>();
             var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
+            var repositoryUrl = repository?.Remote;
+            var branch = repository?.Branch ?? "master";
 
             // Load configs available locally
             var cliConfig = options?.ToJObject();
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var opsConfig = OpsConfigLoader.TryLoad(docsetPath, repository?.Branch ?? "master");
+            var opsConfig = OpsConfigLoader.TryLoad(docsetPath, branch);
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -71,10 +73,11 @@ namespace Microsoft.Docs.Build
             // Download dependencies
             var fileDownloader = new FileDownloader(docsetPath, preloadConfig, noFetch);
             var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileDownloader);
+            var opsServiceConfig = new OpsConfigAdapter(noFetch).TryAdapt(preloadConfig.Name, repositoryUrl, branch);
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(configObject, globalConfig, opsConfig, extendConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(configObject, globalConfig, opsConfig, opsServiceConfig, extendConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
