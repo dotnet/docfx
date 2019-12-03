@@ -34,12 +34,13 @@ namespace Microsoft.Docs.Build
         public readonly TemplateEngine TemplateEngine;
         public readonly FileLinkMapBuilder FileLinkMapBuilder;
         public readonly TableOfContentsLoader TableOfContentsLoader;
+        public readonly LocalizationProvider LocalizationProvider;
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider)
+        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider)
         {
             var restoreFileMap = new RestoreFileMap(docset.DocsetPath);
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -50,6 +51,7 @@ namespace Microsoft.Docs.Build
             RestoreFileMap = restoreFileMap;
             ErrorLog = errorLog;
             Input = input;
+            LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(docset.Config);

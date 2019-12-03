@@ -84,13 +84,12 @@ namespace Microsoft.Docs.Build
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
             contributionBranch = null;
-            string locale = null;
             if (string.IsNullOrEmpty(branch))
             {
                 return false;
             }
 
-            if (TryRemoveLocale(branch, out var branchWithoutLocale, out locale))
+            if (TryRemoveLocale(branch, out var branchWithoutLocale, out var locale))
             {
                 branch = branchWithoutLocale;
             }
@@ -100,7 +99,7 @@ namespace Microsoft.Docs.Build
                 contributionBranch = branch.Substring(0, branch.Length - 4);
                 if (!string.IsNullOrEmpty(locale))
                 {
-                    contributionBranch = contributionBranch + $".{locale}";
+                    contributionBranch += $".{locale}";
                 }
                 return true;
             }

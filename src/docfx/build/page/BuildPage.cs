@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
-            systemMetadata.EnableLocSxs = file.Docset.Config.Localization.Bilingual;
+            systemMetadata.EnableLocSxs = context.LocalizationProvider.EnableSideBySide;
             systemMetadata.SiteName = file.Docset.Config.SiteName;
 
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
