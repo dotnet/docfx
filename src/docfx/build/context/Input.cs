@@ -17,13 +17,15 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _docsetPath;
         private readonly RepositoryProvider _repositoryProvider;
+        private readonly LocalizationProvider _localizationProvider;
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
 
-        public Input(string docsetPath, RepositoryProvider repositoryProvider)
+        public Input(string docsetPath, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider = null)
         {
             _repositoryProvider = repositoryProvider;
+            _localizationProvider = localizationProvider;
             _docsetPath = Path.GetFullPath(docsetPath);
         }
 
@@ -147,7 +149,15 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Default:
-                    return ListFilesRecursive(_docsetPath, null);
+                    if (_localizationProvider?.IsLocalizationBuild == true)
+                    {
+                        var (entry, repository) = _localizationProvider.GetBuildRepositoryWithDocsetEntry();
+                        return ListFilesRecursive(Path.GetFullPath(entry), null);
+                    }
+                    else
+                    {
+                        return ListFilesRecursive(_docsetPath, null);
+                    }
 
                 case FileOrigin.Fallback:
                     var (fallbackEntry, fallbackRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin);
@@ -195,7 +205,15 @@ namespace Microsoft.Docs.Build
             switch (file.Origin)
             {
                 case FileOrigin.Default:
-                    return (_docsetPath, file.Path, file.Commit);
+                    if (_localizationProvider?.IsLocalizationBuild == true)
+                    {
+                        var (entry, repository) = _localizationProvider.GetBuildRepositoryWithDocsetEntry();
+                        return (entry, file.Path, file.Commit);
+                    }
+                    else
+                    {
+                        return (_docsetPath, file.Path, file.Commit);
+                    }
 
                 case FileOrigin.Dependency:
                     var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin, file.DependencyName);

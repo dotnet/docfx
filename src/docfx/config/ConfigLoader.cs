@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var configObject = new JObject();
 
             // apply .openpublishing.publish.config.json
-            if (OpsConfig.TryLoad(_docsetPath, _repository?.Branch ?? "master", out var opsConfig))
+            if (OpsConfigLoader.TryLoad(_docsetPath, _repository?.Branch ?? "master", out var opsConfig))
             {
                 JsonUtility.Merge(configObject, opsConfig);
             }

@@ -1029,12 +1029,9 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
-            child1: https://github.com/locconfig2/d#master
+            child1: https://github.com/locconfig2/d#live
           localization:
             bilingual: true
-          "locales: [zh-cn]":
-            dependencies:
-              child1: https://github.com/locconfig2/d#live
         docs/a.md:
   https://github.com/locconfig2/c.zh-cn#master-sxs:
     - files:
@@ -1068,13 +1065,10 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
-            child1: https://github.com/locconfig3/f#master
+            child1: https://github.com/locconfig3/f#live
           localization:
             bilingual: true
             mapping: Branch
-          "locales: [zh-cn]":
-            dependencies:
-              child1: https://github.com/locconfig3/f#live
         docs/a.md:
   https://github.com/locconfig3/c.loc#master-sxs.zh-cn:
     - files:
@@ -1293,7 +1287,6 @@ outputs:
 ---
 # fallback to master if corresponding source branch doesn't exists
 # [branch mapping]
-locale: zh-cn
 repos:
   https://docs.com/branch-fallback3.loc#test.zh-cn:
     - files:

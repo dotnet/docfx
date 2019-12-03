@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private string _localizationDocsetPath;
         private Repository _localizationRepository;
 
-        public bool IsLocalizationBuild { get; private set; } = false;
+        public bool IsLocalizationBuild { get; } = false;
 
         public LocalizationProvider(RestoreGitMap restoreGitMap, CommandLineOptions options, Config config, string locale, string docsetPath, Repository repository)
         {

@@ -132,6 +132,10 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("Skip watch tests");
             }
 
+            // build from en-us repo
+            // disable for now because of radom failure
+            //await RunBuild(docsetPath, outputPath, spec, spec.Locale);
+
             if (spec.Locale != null)
             {
                 // Verify build from localization docset also work
