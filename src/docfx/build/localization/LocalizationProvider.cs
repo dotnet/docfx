@@ -51,7 +51,9 @@ namespace Microsoft.Docs.Build
                 _localizationDocsetPath = docsetPath;
                 _localizationRepository = repository;
 
-                EnableSideBySide = repository != null && repository.Branch.EndsWith("-sxs");
+                EnableSideBySide = repository != null &&
+                    LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
+                    contributionBranch != repository.Branch;
             }
 
             SetFallbackRepository();
