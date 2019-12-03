@@ -108,6 +108,11 @@ namespace Microsoft.Docs.Build
 
         private async Task<(Error, IEnumerable<GitHubUser>)> GetUserByEmailCore(string email, string owner, string name, string commit)
         {
+            if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(commit))
+            {
+                return default;
+            }
+
             if (_unknownRepos.Contains((owner, name)))
             {
                 return default;

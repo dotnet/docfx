@@ -48,6 +48,7 @@ namespace Microsoft.Docs.Build
         [InlineData("test1@example.com", "docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
         [InlineData("test2@example.com", "docascode", "contribution-test", "0000000000000000000000000000000000000000", null, null, null, null)]
         [InlineData("error@example.com", "docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
+        [InlineData("error@example.com", null, null, "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
         [InlineData("51308672+disabled-account-osmond@users.noreply.github.com", "docascode", "contribution-test", "b2b280fbc64790011c7a4d01bca5b84b6d98e386", null, null, null, null)]
         [InlineData("yufeih@live.com", "docascode", "contribution-test", "6d0e5bc3595e3841ac62dc545dfbb2c01fe64e7c", "yufeih", 511355, "Yufei Huang", new[] { "yufeih@live.com", "yufeih@microsoft.com" })]
         public static async Task GetUserByEmail(
