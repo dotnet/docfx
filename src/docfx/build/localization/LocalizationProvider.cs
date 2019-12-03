@@ -21,7 +21,9 @@ namespace Microsoft.Docs.Build
         private string _localizationDocsetPath;
         private Repository _localizationRepository;
 
-        public bool IsLocalizationBuild { get; } = false;
+        public bool IsLocalizationBuild { get; }
+
+        public bool EnableSideBySide { get; }
 
         public LocalizationProvider(RestoreGitMap restoreGitMap, CommandLineOptions options, Config config, string locale, string docsetPath, Repository repository)
         {
@@ -41,11 +43,17 @@ namespace Microsoft.Docs.Build
             {
                 _englishDocsetPath = docsetPath;
                 _englishRepository = repository;
+
+                EnableSideBySide = config.Localization.Bilingual;
             }
             else
             {
                 _localizationDocsetPath = docsetPath;
                 _localizationRepository = repository;
+
+                EnableSideBySide = repository != null &&
+                    LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
+                    contributionBranch != repository.Branch;
             }
 
             SetFallbackRepository();
@@ -132,7 +140,7 @@ namespace Microsoft.Docs.Build
                         }
                         var (locRemote, locBranch) = LocalizationUtility.GetLocalizedRepo(
                             config.Localization.Mapping,
-                            config.Localization.Bilingual,
+                            EnableSideBySide,
                             repo.Remote,
                             repo.Branch,
                             locale,

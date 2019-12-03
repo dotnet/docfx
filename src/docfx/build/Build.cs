@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
 
                         // run build based on docsets
                         outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);
-                        await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider);
+                        await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
                     }
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -106,9 +106,10 @@ namespace Microsoft.Docs.Build
             ErrorLog errorLog,
             string outputPath,
             Input input,
-            RepositoryProvider repositoryProvider)
+            RepositoryProvider repositoryProvider,
+            LocalizationProvider localizationProvider)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 

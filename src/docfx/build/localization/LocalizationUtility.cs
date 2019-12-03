@@ -3,9 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -69,28 +67,15 @@ namespace Microsoft.Docs.Build
                 ? remoteLocale : default);
         }
 
-        public static bool TryGetContributionBranch(Repository repository, out string contributionBranch)
-        {
-            contributionBranch = null;
-
-            if (repository is null)
-            {
-                return false;
-            }
-
-            return TryGetContributionBranch(repository.Branch, out contributionBranch);
-        }
-
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
             contributionBranch = null;
-            string locale = null;
             if (string.IsNullOrEmpty(branch))
             {
                 return false;
             }
 
-            if (TryRemoveLocale(branch, out var branchWithoutLocale, out locale))
+            if (TryRemoveLocale(branch, out var branchWithoutLocale, out var locale))
             {
                 branch = branchWithoutLocale;
             }
@@ -100,7 +85,7 @@ namespace Microsoft.Docs.Build
                 contributionBranch = branch.Substring(0, branch.Length - 4);
                 if (!string.IsNullOrEmpty(locale))
                 {
-                    contributionBranch = contributionBranch + $".{locale}";
+                    contributionBranch += $".{locale}";
                 }
                 return true;
             }
@@ -126,7 +111,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
+        private static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
         {
             nameWithoutLocale = null;
             locale = null;
