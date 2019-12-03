@@ -24,7 +24,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 new ZoneExtension(),
                 new ChromelessFormExtension(),
-                new ImageExtension()
+                new ImageExtension(),
+                new CodeExtension(context)
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
         }

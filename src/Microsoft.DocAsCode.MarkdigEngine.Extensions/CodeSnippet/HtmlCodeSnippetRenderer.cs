@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private const string warningTitleId = "warning";
         private const string defaultWarningTitle = "<h5>WARNING</h5>";
 
-        private static readonly IReadOnlyDictionary<string, List<string>> LanguageAlias = new Dictionary<string, List<string>>
+        public static readonly IReadOnlyDictionary<string, List<string>> LanguageAlias = new Dictionary<string, List<string>>
         {
             { "actionscript", new List<string>{".as" } },
             { "arduino", new List<string>{".ino" } },
