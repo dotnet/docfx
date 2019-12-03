@@ -505,15 +505,15 @@ public:
     {
         // Create application domain setup information.
         AppDomainSetup^ domaininfo = gcnew AppDomainSetup();
-        domaininfo->ApplicationBase = ""f:\\work\\development\\latest"";
+        domaininfo-&gt;ApplicationBase = &quot;f:\\work\\development\\latest&quot;;
 
         // Create the application domain.
-        AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, domaininfo);
+        AppDomain^ domain = AppDomain::CreateDomain(&quot;MyDomain&quot;, nullptr, domaininfo);
 
         // Write application domain information to the console.
-        Console::WriteLine(""Host domain: "" + AppDomain::CurrentDomain->FriendlyName);
-        Console::WriteLine(""child domain: "" + domain->FriendlyName);
-        Console::WriteLine(""Application base is: "" + domain->SetupInformation->ApplicationBase);
+        Console::WriteLine(&quot;Host domain: &quot; + AppDomain::CurrentDomain-&gt;FriendlyName);
+        Console::WriteLine(&quot;child domain: &quot; + domain-&gt;FriendlyName);
+        Console::WriteLine(&quot;Application base is: &quot; + domain-&gt;SetupInformation-&gt;ApplicationBase);
 
         // Unload the application domain.
         AppDomain::Unload(domain);
