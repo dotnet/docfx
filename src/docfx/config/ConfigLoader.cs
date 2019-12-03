@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -73,6 +74,9 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var configObject = new JObject();
+
+            // apply environment variables
+            JsonUtility.Merge(configObject, LoadEnvironmentVariables());
 
             // apply .openpublishing.publish.config.json
             if (OpsConfigLoader.TryLoad(_docsetPath, _repository?.Branch ?? "master", out var opsConfig))
@@ -169,6 +173,19 @@ namespace Microsoft.Docs.Build
 
             JsonUtility.Merge(result, config);
             return (errors, result);
+        }
+
+        private static JObject LoadEnvironmentVariables()
+        {
+            var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                        let key = entry.Key.ToString()
+                        where key.StartsWith("DOCFX_")
+                        let configKey = key.Substring("DOCFX_".Length)
+                        let values = entry.Value.ToString().Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        from value in values
+                        select (configKey, value);
+
+            return StringUtility.ExpandVariables("__", "_", items);
         }
     }
 }

@@ -1,7 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -153,5 +156,21 @@ namespace Microsoft.Docs.Build
         [InlineData("zh-hk", true)]
         public static void IsValidLocale(string locale, bool valid)
             => Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
+
+        [Theory]
+        [InlineData("", "{}")]
+        [InlineData("a", "{'a':'value'}")]
+        [InlineData("a, a", "{'a':['value','value']}")]
+        [InlineData("A_B", "{'aB':'value'}")]
+        [InlineData("a, b", "{'a':'value','b':'value'}")]
+        [InlineData("OUTPUT_PATH", "{'outputPath':'value'}")]
+        [InlineData("OUTPUT__PATH", "{'output':{'path':'value'}}")]
+        [InlineData("OUTPUT__PATH,output__path", "{'output':{'path':['value','value']}}")]
+        [InlineData("OUTPUT,output__path", "{'output':{'path':'value'}}")]
+        public static void ExpandVariablesTest(string keys, string expectedJObject)
+        {
+            var items = keys.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(key => (key, "value"));
+            Assert.Equal(expectedJObject, StringUtility.ExpandVariables("__", "_", items).ToString(Formatting.None).Replace('"', '\''));
+        }
     }
 }
