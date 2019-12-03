@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                             return false;
 
                         // get docsets(build docset, fallback docset and dependency docsets)
-                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider, localizationProvider);
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
 
                         // run build based on docsets
                         outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);
@@ -83,7 +83,6 @@ namespace Microsoft.Docs.Build
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
             string locale,
             Config config,
-            RepositoryProvider repositoryProvider,
             LocalizationProvider localizationProvider)
         {
             var (currentDocsetPath, currentRepo) = localizationProvider.GetBuildRepositoryWithDocsetEntry();
