@@ -39,14 +39,14 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
-                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    var repository = Repository.Create(docsetPath);
+                    var repositoryProvider = new RepositoryProvider(docsetPath, repository, options);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
                     var input = new Input(docsetPath, repositoryProvider);
-                    var configLoader = new ConfigLoader(repositoryProvider);
+                    var configLoader = new ConfigLoader(repository);
                     (errors, config) = configLoader.Load(docsetPath, options);
                     var restoreFallbackResult = RestoreFallbackRepo(config, repository);
 

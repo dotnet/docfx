@@ -57,8 +57,7 @@ namespace Microsoft.Docs.Build
             }
 
             var contributionCommits = commits;
-            var bilingual = _fallbackDocset != null && _config.Localization.Bilingual;
-            var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+            var contributionBranch = LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
             if (!string.IsNullOrEmpty(contributionBranch))
             {
                 (_, _, contributionCommits) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);

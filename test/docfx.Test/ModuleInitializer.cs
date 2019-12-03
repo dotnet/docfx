@@ -18,7 +18,9 @@ namespace Microsoft.Docs.Build
         {
             Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PROD");
             Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
-            Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
+            Environment.SetEnvironmentVariable("DOCFX_BASE_URL", "https://docs.com");
+            Environment.SetEnvironmentVariable("DOCFX_OUTPUT__JSON", "true");
+            Environment.SetEnvironmentVariable("DOCFX_OUTPUT__COPY_RESOURCES", "true");
 
             Log.ForceVerbose = true;
             TestUtility.MakeDebugAssertThrowException();

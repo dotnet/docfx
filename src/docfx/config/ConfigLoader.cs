@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader
     {
-        private readonly RepositoryProvider _repositoryProvider;
+        private readonly Repository _repository;
 
-        public ConfigLoader(RepositoryProvider repositoryProvider)
+        public ConfigLoader(Repository repository)
         {
-            _repositoryProvider = repositoryProvider;
+            _repository = repository;
         }
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -52,32 +53,30 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
-            var repositoryUrl = repository?.Remote;
-            var branch = repository?.Branch ?? "master";
 
             // Load configs available locally
+            var envConfig = LoadEnvironmentVariables();
             var cliConfig = options?.ToJObject();
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var opsConfig = OpsConfigLoader.TryLoad(docsetPath, branch);
+            var opsConfig = OpsConfigLoader.TryLoad(docsetPath, _repository?.Branch);
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
 
             // Preload
             var preloadConfigObject = new JObject();
-            JsonUtility.Merge(preloadConfigObject, globalConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(preloadConfigObject, envConfig, globalConfig, opsConfig, docfxConfig, cliConfig);
             var (preloadErrors, preloadConfig) = JsonUtility.ToObject<PreloadConfig>(preloadConfigObject);
             errors.AddRange(preloadErrors);
 
             // Download dependencies
             var fileDownloader = new FileDownloader(docsetPath, preloadConfig, noFetch);
             var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileDownloader);
-            var opsServiceConfig = new OpsConfigAdapter(noFetch).TryAdapt(preloadConfig.Name, repositoryUrl, branch);
+            var opsServiceConfig = new OpsConfigAdapter(noFetch).TryAdapt(preloadConfig.Name, _repository?.Remote, _repository?.Branch);
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(configObject, globalConfig, opsConfig, opsServiceConfig, extendConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(configObject, envConfig, globalConfig, opsConfig, opsServiceConfig, extendConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
@@ -120,6 +119,19 @@ namespace Microsoft.Docs.Build
             }
 
             return result;
+        }
+
+        private static JObject LoadEnvironmentVariables()
+        {
+            var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                        let key = entry.Key.ToString()
+                        where key.StartsWith("DOCFX_")
+                        let configKey = key.Substring("DOCFX_".Length)
+                        let values = entry.Value.ToString().Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        from value in values
+                        select (configKey, value);
+
+            return StringUtility.ExpandVariables("__", "_", items);
         }
     }
 }

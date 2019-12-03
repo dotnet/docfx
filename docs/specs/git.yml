@@ -390,20 +390,14 @@ outputs:
       "updated_at": "2018-07-18 05:03 AM"
     }
 ---
-# [from loc] Throw committish-not-found when try to resolve commit id by none-existing branch name
-locale: zh-cn
+# Throw committish-not-found when try to resolve commit id by none-existing branch name
 repos: 
-  https://github.com/git/repo#live:
-    - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
   https://github.com/git/repo.zh-cn#live-sxs:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
         a.md:
+  https://github.com/git/repo#live:
+    - files:
   https://github.com/git/repo.zh-cn#live-none-existing:
     - files:
         a.md:

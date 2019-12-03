@@ -38,33 +38,29 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options, () => restoreGitMap, () => config);
-                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    var repository = Repository.Create(docsetPath);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        var input = new Input(docsetPath, repositoryProvider);
-                        var configLoader = new ConfigLoader(repositoryProvider);
+                        var configLoader = new ConfigLoader(repository);
                         (errors, config) = configLoader.Load(docsetPath, options, noFetch: true);
 
                         // just return if config loading has errors
                         if (errorLog.Write(errors))
                             return false;
 
-                        // get docsets(build docset, fallback docset and dependency docsets)
-                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, repositoryProvider);
+                        var localizationProvider = new LocalizationProvider(restoreGitMap, options, config, locale, docsetPath, repository);
+                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, restoreGitMap, localizationProvider);
+                        var input = new Input(docsetPath, repositoryProvider, localizationProvider);
 
-                        if (!string.Equals(docset.DocsetPath, PathUtility.NormalizeFolder(docsetPath), PathUtility.PathComparison))
-                        {
-                            // entry docset is not the docset to build
-                            input = new Input(docset.DocsetPath, repositoryProvider);
-                        }
+                        // get docsets(build docset, fallback docset and dependency docsets)
+                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
 
                         // run build based on docsets
                         outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);
-                        await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider);
+                        await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
                     }
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -86,15 +82,13 @@ namespace Microsoft.Docs.Build
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
             string locale,
             Config config,
-            RepositoryProvider repositoryProvider)
+            LocalizationProvider localizationProvider)
         {
-            var (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
+            var (currentDocsetPath, currentRepo) = localizationProvider.GetBuildRepositoryWithDocsetEntry();
             var currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
-            if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.Localization.DefaultLocale))
+            if (localizationProvider.IsLocalizationBuild)
             {
-                var (fallbackDocsetPath, fallbackRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Fallback);
-                (currentDocsetPath, currentRepo) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Default);
-                currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
+                var (fallbackDocsetPath, fallbackRepo) = localizationProvider.GetFallbackRepositoryWithDocsetEntry();
                 if (fallbackRepo != null)
                 {
                     return (currentDocset, new Docset(fallbackDocsetPath, locale, config, fallbackRepo));
@@ -111,9 +105,10 @@ namespace Microsoft.Docs.Build
             ErrorLog errorLog,
             string outputPath,
             Input input,
-            RepositoryProvider repositoryProvider)
+            RepositoryProvider repositoryProvider,
+            LocalizationProvider localizationProvider)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider))
+            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider))
             {
                 context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 

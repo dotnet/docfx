@@ -71,39 +71,6 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     live                    -->           live.de-de
     ```
 
-### Loc Overwrite Configuration
-
-  - Overwrite the configurations you want or use source configuration by default  
-  - Focus the Loc publishing configuration controlling, like bilingual or contribution.  
-  - Source configuration changing will be immediately applied to Loc, no more manually sync.
-  ```yaml
-  "locales: [de-de,zh-cn,ja-jp,ko-kr]":
-    localization:
-      bilingual: true
-      mapping: Repository
-    contribution:
-      excludedContributors:
-        - superyyrrZZ
-  "locales: [hu-hu,it-it]":
-    content: "**/*.md"
-    localization:
-      bilingual: false
-  ```
-  - Follow some localization configuration conventions:
-    - Localization edit repo(source -> source.<locale>)
-    ```txt
-    source repo's eidt repo                      -> locale ->                      localization repo's edit repo
-    https://github.com/microsoft/azure-docs         de-de                          https://github.com/microsoft/azure-docs.de-de
-    ```
-    - Localization bingual branch(branch -> branch-sxs)
-    ```txt
-    source repo's branch to build                       ->                         loc repo's bilingual branch to build
-    live                                                                           live-sxs
-    master                                                                         master-sxs
-    ```
-  - Localization overwrite configuration can be different in different branch(TODO)
-  - Which configurations are allowed to be ovewrote, assuming is ALL.
-
 ## [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
 
 ### Dynamic rendering
