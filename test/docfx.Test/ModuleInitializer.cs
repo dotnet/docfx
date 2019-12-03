@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
     {
         public static void Initialize()
         {
+            Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PROD");
             Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
             Environment.SetEnvironmentVariable("DOCFX_GLOBAL_CONFIG_PATH", Path.GetFullPath("docfx.test.yml"));
 

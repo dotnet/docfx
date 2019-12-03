@@ -21,13 +21,13 @@ namespace Microsoft.Docs.Build
 
         private readonly string _docsetPath;
         private readonly bool _noFetch;
-        private readonly PreloadConfig _config;
+        private readonly IHttpCredentialProvider _credentialProvider;
 
-        public FileDownloader(string docsetPath, PreloadConfig config = null, bool noFetch = false)
+        public FileDownloader(string docsetPath, IHttpCredentialProvider credentialProvider = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
             _noFetch = noFetch;
-            _config = config;
+            _credentialProvider = credentialProvider;
         }
 
         public string DownloadString(SourceInfo<string> url)
@@ -171,27 +171,8 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                AddAuthorizationHeader(url, message);
-
+                _credentialProvider?.ProvideCredential(message);
                 return s_httpClient.SendAsync(message);
-            }
-        }
-
-        private void AddAuthorizationHeader(string url, HttpRequestMessage message)
-        {
-            if (_config != null)
-            {
-                foreach (var (baseUrl, rule) in _config.Http)
-                {
-                    if (url.StartsWith(baseUrl))
-                    {
-                        foreach (var header in rule.Headers)
-                        {
-                            message.Headers.Add(header.Key, header.Value);
-                        }
-                        break;
-                    }
-                }
             }
         }
     }

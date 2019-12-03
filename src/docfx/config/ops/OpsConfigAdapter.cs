@@ -3,13 +3,15 @@
 
 using System;
 using System.Linq;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class OpsConfigAdapter
+    internal class OpsConfigAdapter : IHttpCredentialProvider
     {
+        private static readonly string s_token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
         private static readonly bool s_prod = string.Equals(
             "PROD", Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), StringComparison.OrdinalIgnoreCase);
 
@@ -19,13 +21,18 @@ namespace Microsoft.Docs.Build
 
         private readonly FileDownloader _fileDownloader;
 
-        public OpsConfigAdapter(FileDownloader fileDownloader)
+        public OpsConfigAdapter(bool noFetch = false)
         {
-            _fileDownloader = fileDownloader;
+            _fileDownloader = new FileDownloader(".", this, noFetch);
         }
 
         public JObject TryAdapt(string name, string repository, string branch)
         {
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
+            {
+                return null;
+            }
+
             var url = $"{s_opsEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsets = JsonConvert.DeserializeAnonymousType(
                 _fileDownloader.DownloadString(new SourceInfo<string>(url)),
@@ -50,6 +57,11 @@ namespace Microsoft.Docs.Build
             };
         }
 
+        public void ProvideCredential(HttpRequestMessage request)
+        {
+            request.Headers.Add("X-OP-BuildUserToken", s_token);
+        }
+
         private static string GetDefaultLocale(string siteName)
         {
             return siteName == "DocsAzureCN" ? "zh-cn" : "en-us";
@@ -72,7 +84,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return IsLive(branch) ? GetHostName(siteName) : $"review.{GetHostName(siteName)}";
+            return !IsLive(branch) && s_prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)
