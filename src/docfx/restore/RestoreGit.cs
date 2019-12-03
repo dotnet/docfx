@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                 maxDegreeOfParallelism: 8);
 
             // fetch contribution branch
-            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository, out var contributionBranch))
+            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
                 GitUtility.Fetch(repository.Path, repository.Remote, contributionBranch, config);
             }

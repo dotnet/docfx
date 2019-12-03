@@ -69,18 +69,6 @@ namespace Microsoft.Docs.Build
                 ? remoteLocale : default);
         }
 
-        public static bool TryGetContributionBranch(Repository repository, out string contributionBranch)
-        {
-            contributionBranch = null;
-
-            if (repository is null)
-            {
-                return false;
-            }
-
-            return TryGetContributionBranch(repository.Branch, out contributionBranch);
-        }
-
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)
         {
             contributionBranch = null;
@@ -125,7 +113,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
+        private static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
         {
             nameWithoutLocale = null;
             locale = null;
