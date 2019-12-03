@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            var elapsed = TimeSpan.FromSeconds((Stopwatch.GetTimestamp() - _start) / Stopwatch.Frequency);
+            var elapsed = TimeSpan.FromSeconds(1.0 * (Stopwatch.GetTimestamp() - _start) / Stopwatch.Frequency);
 
             Log.Write($"{_message} done in {Progress.FormatTimeSpan(elapsed)}");
         }

@@ -13,14 +13,14 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly string _docsetPath;
-        private readonly Input _input;
-        private readonly RepositoryProvider _repositoryProvider;
+        private readonly RestoreFileMap _restoreFileMap;
+        private readonly Repository _repository;
 
-        public ConfigLoader(string docsetPath, Input input, RepositoryProvider repositoryProvider)
+        public ConfigLoader(string docsetPath, RestoreFileMap restoreFileMap, Repository repository)
         {
             _docsetPath = docsetPath;
-            _input = input;
-            _repositoryProvider = repositoryProvider;
+            _restoreFileMap = restoreFileMap;
+            _repository = repository;
         }
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -64,9 +64,9 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, Config config) TryLoad(CommandLineOptions options, bool extend = true)
             => LoadCore(options, extend);
 
-        private bool TryGetConfigPath(out FilePath configPath)
+        private bool TryGetConfigPath(out string configPath)
         {
-            configPath = _input.FindYamlOrJson(FileOrigin.Default, "docfx");
+            configPath = PathUtility.FindYamlOrJson(Path.Combine(_docsetPath, "docfx"));
             return configPath != null;
         }
 
@@ -75,13 +75,8 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var configObject = new JObject();
 
-            var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
-
-            // apply environment variables
-            JsonUtility.Merge(configObject, LoadEnvironmentVariables());
-
             // apply .openpublishing.publish.config.json
-            if (OpsConfig.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
+            if (OpsConfigLoader.TryLoad(_docsetPath, _repository?.Branch ?? "master", out var opsConfig))
             {
                 JsonUtility.Merge(configObject, opsConfig);
             }
@@ -89,7 +84,7 @@ namespace Microsoft.Docs.Build
             // apply docfx.json or docfx.yml
             if (TryGetConfigPath(out var configPath))
             {
-                var (mainErrors, mainConfigObject) = LoadConfigObject(configPath.Path, _input.ReadString(configPath));
+                var (mainErrors, mainConfigObject) = LoadConfigObject(Path.GetFileName(configPath), File.ReadAllText(configPath));
                 errors.AddRange(mainErrors);
                 JsonUtility.Merge(configObject, mainConfigObject);
             }
@@ -128,8 +123,8 @@ namespace Microsoft.Docs.Build
             {
                 if (extend is JValue value && value.Value is string str)
                 {
-                    var content = RestoreFileMap.ReadString(
-                        _input, new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
+                    var content = _restoreFileMap.ReadString(
+                        new SourceInfo<string>(str, JsonUtility.GetSourceInfo(value)));
                     var (extendErrors, extendConfigObject) = LoadConfigObject(str, content);
                     errors.AddRange(extendErrors);
                     JsonUtility.Merge(result, extendConfigObject);
