@@ -506,6 +506,46 @@ legacy: true
 inputs:
   docfx.yml:
   offboarding-mailbox-fails-homemdb-homemta.md:
+  a.b.md:
 outputs:
   offboarding-mailbox-fails-homemdb-homemta.mta.json:
   offboarding-mailbox-fails-homemdb-homemta.raw.page.json:
+  a.b.mta.json:
+  a.b.raw.page.json:
+  .manifest.json: |
+    {
+      "files": [
+        {
+          "asset_id": "a.b",
+          "output": 
+          {
+            ".mta.json": 
+            {
+                "is_raw_page": false,
+                "relative_path": "a.b.mta.json"
+            },
+            ".raw.page.json": 
+            {
+                "is_raw_page": false,
+                "relative_path": "a.b.raw.page.json"
+            }
+          }
+        },
+        {
+          "asset_id": "offboarding-mailbox-fails-homemdb-homemta",
+          "output": 
+          {
+            ".mta.json": 
+            {
+                "is_raw_page": false,
+                "relative_path": "offboarding-mailbox-fails-homemdb-homemta.mta.json"
+            },
+            ".raw.page.json": 
+            {
+                "is_raw_page": false,
+                "relative_path": "offboarding-mailbox-fails-homemdb-homemta.raw.page.json"
+            }
+          }
+        }
+      ]
+    }
