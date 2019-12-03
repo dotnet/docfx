@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _docsetPath;
         private readonly RestoreFileMap _restoreFileMap;
-        private readonly RepositoryProvider _repositoryProvider;
+        private readonly Repository _repository;
 
-        public ConfigLoader(string docsetPath, RestoreFileMap restoreFileMap, RepositoryProvider repositoryProvider)
+        public ConfigLoader(string docsetPath, RestoreFileMap restoreFileMap, Repository repository)
         {
             _docsetPath = docsetPath;
             _restoreFileMap = restoreFileMap;
-            _repositoryProvider = repositoryProvider;
+            _repository = repository;
         }
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -74,10 +74,8 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var configObject = new JObject();
 
-            var repository = _repositoryProvider.GetRepository(FileOrigin.Default);
-
             // apply .openpublishing.publish.config.json
-            if (OpsConfigLoader.TryLoad(_docsetPath, repository?.Branch ?? "master", out var opsConfig))
+            if (OpsConfigLoader.TryLoad(_docsetPath, _repository?.Branch ?? "master", out var opsConfig))
             {
                 JsonUtility.Merge(configObject, opsConfig);
             }

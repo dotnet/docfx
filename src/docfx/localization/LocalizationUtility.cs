@@ -48,52 +48,6 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, string docsetPath, Repository docsetRepository, Config config, string docsetSourceFolder, string locale, out string localizationDocsetPath, out Repository localizationRepository)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(locale));
-            Debug.Assert(config != null);
-
-            localizationDocsetPath = null;
-            localizationRepository = null;
-            switch (config.Localization.Mapping)
-            {
-                case LocalizationMapping.Repository:
-                case LocalizationMapping.Branch:
-                    {
-                        var repo = docsetRepository;
-                        if (repo is null)
-                        {
-                            return false;
-                        }
-                        var (locRemote, locBranch) = GetLocalizedRepo(
-                            config.Localization.Mapping,
-                            config.Localization.Bilingual,
-                            repo.Remote,
-                            repo.Branch,
-                            locale,
-                            config.Localization.DefaultLocale);
-                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(locRemote, locBranch), false);
-                        localizationDocsetPath = PathUtility.NormalizeFolder(Path.Combine(locRepoPath, docsetSourceFolder));
-                        localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
-                        break;
-                    }
-                case LocalizationMapping.Folder:
-                    {
-                        if (config.Localization.Bilingual)
-                        {
-                            throw new NotSupportedException($"{config.Localization.Mapping} is not supporting bilingual build");
-                        }
-                        localizationDocsetPath = Path.Combine(docsetPath, "_localization", locale);
-                        localizationRepository = docsetRepository;
-                        break;
-                    }
-                default:
-                    throw new NotSupportedException($"{config.Localization.Mapping} is not supported yet");
-            }
-
-            return true;
-        }
-
         public static bool TryGetFallbackRepository(Repository repository, out string fallbackRemote, out string fallbackBranch, out string locale)
         {
             fallbackRemote = null;
