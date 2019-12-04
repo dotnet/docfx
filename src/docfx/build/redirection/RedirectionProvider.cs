@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                         case LinkType.AbsolutePath:
                             break;
                         case LinkType.External:
-                            absoluteRedirectUrl = RemoveLeadingLocale(absoluteRedirectUrl, hostName);
+                            absoluteRedirectUrl = RemoveLeadingHostNameLocale(absoluteRedirectUrl, hostName);
                             break;
                         default:
                             _errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
@@ -222,7 +222,7 @@ namespace Microsoft.Docs.Build
             return url.EndsWith("/index", PathUtility.PathComparison) ? url.Substring(0, url.Length - "index".Length) : url;
         }
 
-        private static string RemoveLeadingLocale(string redirectionUrl, string hostName)
+        private static string RemoveLeadingHostNameLocale(string redirectionUrl, string hostName)
         {
             var (redirectHostName, redirectPath) = UrlUtility.SplitBaseUrl(redirectionUrl);
             if (!string.Equals(redirectHostName, hostName, StringComparison.OrdinalIgnoreCase))
