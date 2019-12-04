@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 obj.Attributes.TryGetValue("id", out currentId); //it's okay if this is null
                 obj.Attributes.TryGetValue("range", out currentRange); //it's okay if this is null
                 obj.Attributes.TryGetValue("source", out currentSource); //source has already been checked above
-                var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, null);
+                var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, obj);
                 if (string.IsNullOrEmpty(code))
                 {
                     logError($"The code snippet \"{source}\" could not be found.");
@@ -176,6 +176,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             codeSections = Dedent(codeSections);
             var source = string.Join("    ...\n", codeSections.ToArray());
+            source = ExtensionsHelper.Escape(source);
             return source;
         }
 
