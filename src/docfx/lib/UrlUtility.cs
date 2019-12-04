@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             var i = url.IndexOf("://");
             if (i < 0)
             {
-                return ("", url.Trim('/'));
+                return ("", url.TrimStart('/'));
             }
 
             i = url.IndexOf('/', i + 3);
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                 return (url, "");
             }
 
-            return (url.Substring(0, i), url.Substring(i).Trim('/'));
+            return (url.Substring(0, i), url.Substring(i).TrimStart('/'));
         }
 
         /// <summary>
