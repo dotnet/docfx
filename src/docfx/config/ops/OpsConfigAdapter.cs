@@ -19,23 +19,22 @@ namespace Microsoft.Docs.Build
             ? "https://op-build-prod.azurewebsites.net"
             : "https://op-build-sandbox2.azurewebsites.net";
 
-        public static JObject Load(string name, string repository, string branch, bool noFetch = false)
+        public static JObject Load(SourceInfo<string> name, string repository, string branch, bool noFetch = false)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository) || string.IsNullOrEmpty(s_token))
             {
                 return null;
             }
 
-            var fileResolver = new FileResolver(".", ProvideCredential, noFetch);
             var url = $"{s_opsEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsets = JsonConvert.DeserializeAnonymousType(
-                fileResolver.ReadString(new SourceInfo<string>(url)),
+                ResolveFile(name, url, noFetch),
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
 
             var docset = docsets.FirstOrDefault(d => d.name == name);
             if (docset is null)
             {
-                return null;
+                throw Errors.DocsetNotProvisioned(name).ToException();
             }
 
             return new JObject
@@ -49,6 +48,18 @@ namespace Microsoft.Docs.Build
                     ["defaultLocale"] = GetDefaultLocale(docset.site_name),
                 },
             };
+        }
+
+        private static string ResolveFile(SourceInfo<string> name, string url, bool noFetch)
+        {
+            try
+            {
+                return new FileResolver(".", ProvideCredential, noFetch).ReadString(new SourceInfo<string>(url));
+            }
+            catch (DocfxException ex) when (ex.InnerException is HttpRequestException hre && hre.Message.Contains("404"))
+            {
+                throw Errors.DocsetNotProvisioned(name).ToException();
+            }
         }
 
         private static void ProvideCredential(HttpRequestMessage request)

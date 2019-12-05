@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default docset name
         /// </summary>
-        public readonly string Name = string.Empty;
+        public readonly SourceInfo<string> Name = new SourceInfo<string>("");
 
         /// <summary>
         /// The extend file addresses

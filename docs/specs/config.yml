@@ -434,13 +434,13 @@ outputs:
   .errors.log: |
     ["error","directory-not-found","Invalid directory: 'https://docs.com/crr-url-using-path/2'."]
 ---
-# Peek .openpublishing.publish.config.json for docset name and open_to_public_contributors
+# Peek .openpublishing.publish.config.json for open_to_public_contributors
 inputs:
   .openpublishing.publish.config.json: |
     {
       "docsets_to_publish": [
-        { "docset_name": "a", "build_source_folder": ".", "open_to_public_contributors": true },
-        { "docset_name": "b", "build_source_folder": "b", "open_to_public_contributors": true }
+        { "build_source_folder": ".", "open_to_public_contributors": true },
+        { "build_source_folder": "b", "open_to_public_contributors": true }
       ]
     }
   docfx.yml: |
@@ -452,9 +452,7 @@ inputs:
   b/b.md:
 outputs:
   a.json: '{ "open_to_public_contributors": true }'
-  .publish.json: '{ "name": "a" }'
   b/b.json: '{ "open_to_public_contributors": false }'
-  b/.publish.json: '{ "name": "b" }'
 ---
 # Peak .openpublishing.publish.config.json for dependencies and themes
 repos:
@@ -491,3 +489,19 @@ outputs:
     { "conceptual": "<p>live1</p>" }
   articles/crr/token.json: |
     { "conceptual": "<p>live1</p>" }
+---
+# Throw error for OPS repos that are not provisioned
+build: false
+repos:
+  https://github.com/ops/provision:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+           "docsets_to_publish": [{ "docset_name": "bad_name" }]
+        }
+      docfx.yml:
+environments:
+  - DOCS_OPS_TOKEN
+outputs:
+  .errors.log: |
+    ["error","docset-not-provisioned","*"]

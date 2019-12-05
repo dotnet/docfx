@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             }
 
             var actualJson = OpsConfigAdapter
-                .Load(name, repository, branch)
+                .Load(new SourceInfo<string>(name), repository, branch)
                 ?.ToString(Newtonsoft.Json.Formatting.None)
                 ?.Replace('"', '\'');
 
