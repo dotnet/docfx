@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(configObject, envConfig, globalConfig, opsConfig, opsServiceConfig, extendConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(configObject, envConfig, globalConfig, opsServiceConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
