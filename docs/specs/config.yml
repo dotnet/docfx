@@ -499,7 +499,11 @@ repos:
         {
            "docsets_to_publish": [{ "docset_name": "bad_name" }]
         }
-      docfx.yml:
+      docfx.yml: |
+        http:
+          https://op-build-prod.azurewebsites.net
+            headers:
+              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
 environments:
   - DOCS_OPS_TOKEN
 outputs:
