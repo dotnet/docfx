@@ -44,14 +44,14 @@ namespace Microsoft.Docs.Build
 
                     using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
-                        var localizationProvider = new LocalizationProvider(restoreGitMap, options, config, locale, docsetPath, repository);
-                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, restoreGitMap, localizationProvider);
-                        var input = new Input(docsetPath, repositoryProvider, localizationProvider);
-
                         var configLoader = new ConfigLoader(repository);
                         (errors, config) = configLoader.Load(docsetPath, options, noFetch: true);
                         if (errorLog.Write(errors))
                             return false;
+
+                        var localizationProvider = new LocalizationProvider(restoreGitMap, options, config, locale, docsetPath, repository);
+                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, restoreGitMap, localizationProvider);
+                        var input = new Input(docsetPath, repositoryProvider, localizationProvider);
 
                         // get docsets(build docset, fallback docset and dependency docsets)
                         var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);

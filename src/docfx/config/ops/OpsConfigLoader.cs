@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static JObject TryLoad(string docsetPath, string branch)
+        public static JObject Load(string docsetPath, string branch)
         {
             var directory = docsetPath;
 
