@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerComparer Comparer { get; }
 
-        public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, RestoreFileMap restoreFileMap)
+        public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, FileResolver fileResolver)
         {
             _config = config;
             _buildScope = buildScope;
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             var monikerDefinition = new MonikerDefinitionModel();
             if (!string.IsNullOrEmpty(_config.MonikerDefinition))
             {
-                var content = restoreFileMap.ReadString(_config.MonikerDefinition);
+                var content = fileResolver.ReadString(_config.MonikerDefinition);
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, new FilePath(_config.MonikerDefinition));
             }
             var monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);

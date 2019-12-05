@@ -39,22 +39,19 @@ namespace Microsoft.Docs.Build
                 {
                     // load and trace entry repository
                     var repository = Repository.Create(docsetPath);
-                    var restoreFileMap = new RestoreFileMap(docsetPath);
-                    var configLoader = new ConfigLoader(docsetPath, restoreFileMap, repository);
-                    (errors, config) = configLoader.Load(options, extend: true);
-
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
                     {
+                        var configLoader = new ConfigLoader(repository);
+                        (errors, config) = configLoader.Load(docsetPath, options, noFetch: true);
+                        if (errorLog.Write(errors))
+                            return false;
+
                         var localizationProvider = new LocalizationProvider(restoreGitMap, options, config, locale, docsetPath, repository);
                         var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, restoreGitMap, localizationProvider);
                         var input = new Input(docsetPath, repositoryProvider, localizationProvider);
-
-                        // just return if config loading has errors
-                        if (errorLog.Write(errors))
-                            return false;
 
                         // get docsets(build docset, fallback docset and dependency docsets)
                         var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);

@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
 
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
-            _configReferences = config.Extend.Concat(docset.Config.GetFileReferences()).ToHashSet(PathUtility.PathComparer);
+            _configReferences = config.Extend.Concat(docset.Config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
             _documentIdRules = documentIdConfig.Reverse().Select(item => (item.Key, item.Value)).ToArray();
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }

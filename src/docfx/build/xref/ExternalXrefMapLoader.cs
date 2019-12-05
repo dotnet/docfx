@@ -14,13 +14,13 @@ namespace Microsoft.Docs.Build
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset, RestoreFileMap restoreFileMap)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset, FileResolver fileResolver)
         {
             var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
             foreach (var url in docset.Config.Xref)
             {
-                using (var stream = restoreFileMap.ReadStream(url))
+                using (var stream = fileResolver.ReadStream(url))
                 {
                     var path = new FilePath(url);
                     if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))

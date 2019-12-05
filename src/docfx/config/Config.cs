@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class Config
+    internal class Config : PreloadConfig
     {
         public static readonly string[] DefaultInclude = new[] { "**/*.{md,yml,json}" };
         public static readonly string[] DefaultExclude = new[]
@@ -84,13 +84,6 @@ namespace Microsoft.Docs.Build
         public string XrefBaseUrl { get; private set; } = string.Empty;
 
         /// <summary>
-        /// The extend file addresses
-        /// The addresses can be absolute url or relative path
-        /// </summary>
-        [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Extend = Array.Empty<string>();
-
-        /// <summary>
         /// Gets whether we are running in legacy mode
         /// </summary>
         public readonly bool Legacy;
@@ -128,11 +121,6 @@ namespace Microsoft.Docs.Build
         /// Gets allow custom error code, severity and message.
         /// </summary>
         public readonly Dictionary<string, CustomError> CustomErrors = new Dictionary<string, CustomError>();
-
-        /// <summary>
-        /// Gets the authorization keys for required resources access
-        /// </summary>
-        public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
 
         /// <summary>
         /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
@@ -204,6 +192,22 @@ namespace Microsoft.Docs.Build
         /// When enabled, update the state of commit build time for this build.
         /// </summary>
         public readonly bool UpdateCommitBuildTime = true;
+
+        public IEnumerable<SourceInfo<string>> GetFileReferences()
+        {
+            foreach (var url in Xref)
+            {
+                yield return url;
+            }
+
+            yield return MonikerDefinition;
+            yield return MarkdownValidationRules;
+
+            foreach (var metadataSchema in MetadataSchema)
+            {
+                yield return metadataSchema;
+            }
+        }
 
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
