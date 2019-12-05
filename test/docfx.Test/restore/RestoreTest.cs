@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using YamlDotNet.Helpers;
 
 namespace Microsoft.Docs.Build
 {
@@ -43,36 +41,19 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static async Task RestoreUrls()
+        public static void DownloadFile_Success()
         {
-            // prepare versions
-            var docsetPath = "restore-urls";
-            if (Directory.Exists(docsetPath))
-            {
-                Directory.Delete(docsetPath, true);
-            }
-            Directory.CreateDirectory(docsetPath);
-            var url = "https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md";
-            var restoreDir = AppData.GetFileDownloadDir(url);
+            Assert.NotNull(
+                new FileResolver(".").ReadString(
+                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
+        }
 
-            File.WriteAllText(Path.Combine(docsetPath, "docfx.yml"), $@"
-monikerDefinition: {url}");
-
-            // run restore
-            await Docfx.Run(new[] { "restore", docsetPath });
-
-            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
-
-            // run restore again
-            var filePath = RestoreFile.GetRestorePathFromUrl(url);
-            var etagPath = RestoreFile.GetRestoreEtagPath(url);
-
-            File.Delete(etagPath);
-            File.WriteAllText(filePath, "1");
-            await Docfx.Run(new[] { "restore", docsetPath });
-
-            Assert.Equal(2, Directory.EnumerateFiles(restoreDir, "*").Count());
-            Assert.NotEqual("1", File.ReadAllText(filePath));
+        [Fact]
+        public static async Task DownloadFile_NoFetch_Should_Fail()
+        {
+            await Assert.ThrowsAsync<DocfxException>(() =>
+                new FileResolver(".", noFetch: true).Download(
+                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 
         [Fact]

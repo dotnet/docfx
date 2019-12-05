@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -14,24 +12,73 @@ using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class RestoreFile
+    internal class FileResolver
     {
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         });
 
-        public static Task Restore(List<string> urls, Config config)
+        private readonly string _docsetPath;
+        private readonly bool _noFetch;
+        private readonly PreloadConfig _config;
+
+        public FileResolver(string docsetPath, PreloadConfig config = null, bool noFetch = false)
         {
-            return ParallelUtility.ForEach(
-                urls,
-                restoreUrl => Restore(restoreUrl, config));
+            _docsetPath = docsetPath;
+            _noFetch = noFetch;
+            _config = config;
         }
 
-        public static async Task Restore(string url, Config config)
+        public string ReadString(SourceInfo<string> file)
         {
-            var filePath = GetRestorePathFromUrl(url);
-            var etagPath = GetRestoreEtagPath(url);
+            using (var reader = new StreamReader(ReadStream(file)))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        public Stream ReadStream(SourceInfo<string> file)
+        {
+            if (!_noFetch)
+            {
+                Download(file).GetAwaiter().GetResult();
+            }
+
+            if (!UrlUtility.IsHttp(file))
+            {
+                var localFilePath = Path.Combine(_docsetPath, file);
+                if (File.Exists(localFilePath))
+                {
+                    return File.OpenRead(localFilePath);
+                }
+
+                throw Errors.FileNotFound(file).ToException();
+            }
+
+            var filePath = GetRestorePathFromUrl(file);
+            if (!File.Exists(filePath))
+            {
+                throw Errors.NeedRestore(file).ToException();
+            }
+
+            return File.OpenRead(filePath);
+        }
+
+        public async Task Download(SourceInfo<string> file)
+        {
+            if (!UrlUtility.IsHttp(file))
+            {
+                return;
+            }
+
+            if (_noFetch)
+            {
+                throw Errors.NeedRestore(file).ToException();
+            }
+
+            var filePath = GetRestorePathFromUrl(file);
+            var etagPath = GetRestoreEtagPath(file);
             var existingEtag = default(EntityTagHeaderValue);
 
             using (InterProcessMutex.Create(filePath))
@@ -43,7 +90,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (tempFile, etag) = await DownloadToTempFile(url, config, existingEtag);
+            var (tempFile, etag) = await DownloadToTempFile(file, existingEtag);
             if (tempFile is null)
             {
                 // no change at all
@@ -64,44 +111,22 @@ namespace Microsoft.Docs.Build
                     File.WriteAllText(etagPath, etag.ToString());
                 }
             }
+
+            return;
         }
 
-        public static IEnumerable<string> GetFileReferences(this Config config)
+        private static string GetRestorePathFromUrl(string url)
         {
-            foreach (var url in config.Xref)
-            {
-                yield return url;
-            }
-
-            yield return config.MonikerDefinition;
-            yield return config.MarkdownValidationRules;
-
-            foreach (var metadataSchema in config.MetadataSchema)
-            {
-                yield return metadataSchema;
-            }
-        }
-
-        public static string GetRestorePathFromUrl(string url)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(UrlUtility.IsHttp(url));
-
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "content"));
         }
 
-        public static string GetRestoreEtagPath(string url)
+        private static string GetRestoreEtagPath(string url)
         {
-            Debug.Assert(!string.IsNullOrEmpty(url));
-            Debug.Assert(UrlUtility.IsHttp(url));
-
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
         }
 
-        private static async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(
-            string url,
-            Config config,
-            EntityTagHeaderValue existingEtag)
+        private async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(
+            string url, EntityTagHeaderValue existingEtag)
         {
             try
             {
@@ -110,8 +135,8 @@ namespace Microsoft.Docs.Build
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
                     .Or<IOException>()
-                    .RetryAsync(3)
-                    .ExecuteAsync(() => GetAsync(url, config, existingEtag)))
+                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                    .ExecuteAsync(() => GetAsync(url, existingEtag)))
                 {
                     if (response.StatusCode == HttpStatusCode.NotModified)
                     {
@@ -135,33 +160,37 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Task<HttpResponseMessage> GetAsync(string url, Config config, EntityTagHeaderValue etag = null)
+        private Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."
             using (var message = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                AddAuthorizationHeader(url, message, config);
-
                 if (etag != null)
                 {
                     message.Headers.IfNoneMatch.Add(etag);
                 }
+
+                AddAuthorizationHeader(url, message);
+
                 return s_httpClient.SendAsync(message);
             }
         }
 
-        private static void AddAuthorizationHeader(string url, HttpRequestMessage message, Config config)
+        private void AddAuthorizationHeader(string url, HttpRequestMessage message)
         {
-            foreach (var (baseUrl, rule) in config.Http)
+            if (_config != null)
             {
-                if (url.StartsWith(baseUrl))
+                foreach (var (baseUrl, rule) in _config.Http)
                 {
-                    foreach (var header in rule.Headers)
+                    if (url.StartsWith(baseUrl))
                     {
-                        message.Headers.Add(header.Key, header.Value);
+                        foreach (var header in rule.Headers)
+                        {
+                            message.Headers.Add(header.Key, header.Value);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }

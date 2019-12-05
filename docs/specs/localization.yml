@@ -88,66 +88,6 @@ outputs:
   docs/dep.json: |
     {"conceptual": "<p>loc-DEP-sxs</p>"}
 ---
-# loc docset share the source docset's restore map 1
-# [repository mapping]
-locale: zh-cn
-repos:
-  https://github.com/d/restore5#master:
-    - files:
-        docfx.yml: |
-          xref: xrefmap.json
-          dependencies:
-            child1: https://docs.com/d/restore5
-        xrefmap.json: |
-          { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
-  https://github.com/d/restore5.zh-cn#master:
-    - files:
-        docfx.yml: |
-          xref: xrefmap.json
-          dependencies:
-            child1: https://docs.com/d/restore5
-        a.md: |
-          @System.String [!include[](~/child1/d.md)]
-  https://docs.com/d/restore5:
-    - files:
-        d.md: d
-outputs:
-  a.json: |
-    { "conceptual":"<p><a href=\"//docs.com\">String</a> d </p>" }
----
-# loc docset share the source docset's restore map 2
-# [branch mapping] & bilingual
-locale: zh-cn
-repos:
-  https://github.com/d/restore6#master:
-    - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
-            mapping: Branch
-          xref: xrefmap.json
-          dependencies:
-            child1: https://docs.com/d/restore6
-        xrefmap.json: |
-          { "references": [{ "uid": "System.String", "name": "String", "href": "//docs.com" }] }
-  https://github.com/d/restore6.loc#master-sxs.zh-cn:
-    - files:
-        docfx.yml: |
-          xref: xrefmap.json
-          dependencies:
-            child1: https://docs.com/d/restore6
-        a.md: |
-          @System.String [!include[](~/child1/d.md)]
-  https://github.com/d/restore6.loc#master.zh-cn:
-    - files:
-        a.md: '@System.String'
-  https://docs.com/d/restore6#master:
-    - files:
-        d.md: d
-outputs:
-  a.json: |
-    { "conceptual":"<p><a href=\"//docs.com\">String</a> d </p>" }
----
 # edit url convention without source locale 1
 # [repository mapping] 
 locale: zh-cn
@@ -376,7 +316,6 @@ repos:
     - files:
         docfx.yml: |
           localization:
-            bilingual: true
             mapping: Branch
         docs/a.md:
   https://github.com/c/contribution5.loc#master.zh-cn:
@@ -387,7 +326,7 @@ outputs:
     {
       "content_git_url":"https://github.com/c/contribution5.loc/blob/master.zh-cn/docs/a.md",
       "original_content_git_url":"https://github.com/c/contribution5.loc/blob/master-sxs.zh-cn/docs/a.md",
-      "gitcommit":"https://github.com/c/contribution5.loc/blob/16537a7ca422b81ba2e1a97b6f58bf3a6c5890cf/docs/a.md"
+      "gitcommit":"https://github.com/c/contribution5.loc/blob/920e86f61c36833c2bde899880f15329a5ecdfaf/docs/a.md"
     }
 ---
 # loc page link and content fallback 1
@@ -775,10 +714,7 @@ repos:
             bilingual: true
   https://github.com/ss/c.zh-cn#master-sxs:
     - files:
-        docfx.yml: |
-          # TODO: should be able to figure out bilingual automatically using convention
-          localization:
-            bilingual: true
+        docfx.yml:
         docs/a.md: |
           sxs content
           [link to b](b.md)
@@ -812,7 +748,6 @@ repos:
         docfx.yml: |
            localization:
              mapping: Branch
-             bilingual: true
         docs/a.md: |
           sxs content
           [link to b](b.md)
@@ -844,7 +779,6 @@ repos:
         docfx.yml: |
           localization:
             mapping: Branch
-            bilingual: true
         docs/a.md: a
       author: Alice
       email: alice@contoso.com
@@ -859,7 +793,7 @@ repos:
       email: terry@contoso.com
 cache:
   github-users.json: |
-    { "users": [
+    { "items": [
         {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
         {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
         {"name": "Terry", "login": "terry", "id": 3, "emails": ["terry@contoso.com"]},
@@ -886,9 +820,7 @@ repos:
             bilingual: true
   https://github.com/bilingual/a.zh-cn#master-sxs:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
         docs/a.md: |
           loc sxs content
   https://github.com/bilingual/a.zh-cn#master:
@@ -897,7 +829,7 @@ repos:
           loc content
 outputs:
   docs/a.json: |
-    {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/427086f2a28561ea018e74d0d95e99ab63399cc7/docs/a.md"}
+    {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/6f4caab6b2c06f7a47cdb2d77de54e917f6e80b1/docs/a.md"}
 ---
 # conflicted toc files(source and loc)
 # 1. should not report warning
@@ -1068,25 +1000,6 @@ outputs:
   docs/b/toc.json: |
     {"items":[{"name":"reference toc a","items":[{"name":"reference markdown a","href":"../a/a"}]}]}
 ---
-# loc build gets restored files
-# from current docset firstly, then from fallback docset if has
-locale: zh-cn
-repos:
-  https://github.com/buildhistory/a:
-    - files:
-        docfx.yml: |
-          monikerDefinition: monikers.json
-        docs/a.md:
-        monikers.json: |
-          {}
-  https://github.com/buildhistory/a.zh-cn:
-    - files:
-        docfx.yml: |
-          monikerDefinition: monikers.json
-        docs/a.md:
-outputs:
-  docs/a.json:
----
 # [skip] build from loc folder for folder mapping is not supported
 cwd: localization/zh-cn/
 repos:
@@ -1100,114 +1013,6 @@ outputs:
   .errors.log: |
     ["error","config-not-found","Can't find config file 'docfx.yml/docfx.json' at *"]
 ---
-# loc build gets docfx config 1
-# from current docset firstly, then from fallback docset
-# [repo mapping]
-locale: zh-cn
-repos:
-  https://github.com/locconfig/a:
-    - files:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
-        docs/a.md:
-  https://github.com/locconfig/a.zh-cn:
-    - files:
-        docs/a.md:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.zh-cn
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
----
-# loc build gets docfx config 2
-# from current docset firstly, then from fallback docset
-# [branch mapping]
-locale: zh-cn
-repos:
-  https://github.com/locconfig/b:
-    - files:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
-            repositoryBranch: live
-          localization:
-            mapping: Branch
-        docs/a.md:
-  https://github.com/locconfig/b.loc#master.zh-cn:
-    - files:
-        docs/a.md:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.loc
-            repositoryBranch: live
-          localization:
-            mapping: Branch
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}
----
-# loc build gets docfx config 3
-# from current docset firstly, then from fallback docset
-# [repo mapping] & bilingual
-locale: zh-cn
-repos:
-  https://github.com/locconfig/c:
-    - files:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
-          localization:
-            bilingual: true
-        docs/a.md:
-  https://github.com/locconfig/c.zh-cn#master-sxs:
-    - files:
-        docs/a.md:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.zh-cn
-          localization:
-            bilingual: true
-  https://github.com/locconfig/c.zh-cn:
-    - files:
-        docs/a.md:
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.zh-cn/blob/master/*"}
----
-# loc build gets docfx config 4
-# from current docset firstly, then from fallback docset
-# [branch mapping] & bilingual
-locale: zh-cn
-repos:
-  https://github.com/locconfig/d:
-    - files:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
-            repositoryBranch: live
-          localization:
-            mapping: Branch
-            bilingual: true
-        docs/a.md:
-  https://github.com/locconfig/d.loc#master-sxs.zh-cn:
-    - files:
-        docs/a.md:
-        docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.loc
-            repositoryBranch: live
-          localization:
-            mapping: Branch
-            bilingual: true
-  https://github.com/locconfig/d.loc#master.zh-cn:
-    - files:
-        docs/a.md:
-outputs:
-  docs/a.json: |
-    { "content_git_url": "*dotnet/docfx.loc/blob/live.zh-cn/*"}
----
 # loc build with different dependency git repository 1
 # [repo mapping] & bilingual
 locale: zh-cn
@@ -1216,12 +1021,9 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
-            child1: https://github.com/locconfig2/d#master
+            child1: https://github.com/locconfig2/d#live
           localization:
             bilingual: true
-          "locales: [zh-cn]":
-            dependencies:
-              child1: https://github.com/locconfig2/d#live
         docs/a.md:
   https://github.com/locconfig2/c.zh-cn#master-sxs:
     - files:
@@ -1230,8 +1032,6 @@ repos:
         docfx.yml: |
           dependencies:
             child1: https://github.com/locconfig2/d#live
-          localization:
-            bilingual: true
   https://github.com/locconfig2/c.zh-cn:
     - files:
         docs/a.md:
@@ -1255,13 +1055,10 @@ repos:
     - files:
         docfx.yml: |
           dependencies:
-            child1: https://github.com/locconfig3/f#master
+            child1: https://github.com/locconfig3/f#live
           localization:
             bilingual: true
             mapping: Branch
-          "locales: [zh-cn]":
-            dependencies:
-              child1: https://github.com/locconfig3/f#live
         docs/a.md:
   https://github.com/locconfig3/c.loc#master-sxs.zh-cn:
     - files:
@@ -1271,7 +1068,6 @@ repos:
           dependencies:
             child1: https://github.com/locconfig3/f#live
           localization:
-            bilingual: true
             mapping: Branch
   https://github.com/locconfig3/c.loc#master.zh-cn:
     - files:
@@ -1480,7 +1276,6 @@ outputs:
 ---
 # fallback to master if corresponding source branch doesn't exists
 # [branch mapping]
-locale: zh-cn
 repos:
   https://docs.com/branch-fallback3.loc#test.zh-cn:
     - files:

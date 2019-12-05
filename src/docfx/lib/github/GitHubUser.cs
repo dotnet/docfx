@@ -2,10 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class GitHubUser
+    internal class GitHubUser : ICacheObject<string>
     {
         public int? Id { get; set; }
 
@@ -17,7 +18,15 @@ namespace Microsoft.Docs.Build
 
         public DateTime? Expiry { get; set; }
 
-        public bool IsValid() => Id.HasValue;
+        public bool IsValid() => Id != null;
+
+        public IEnumerable<string> GetKeys()
+        {
+            yield return Login;
+
+            foreach (var email in Emails)
+                yield return email;
+        }
 
         public Contributor ToContributor()
         {

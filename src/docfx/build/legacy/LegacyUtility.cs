@@ -41,12 +41,12 @@ namespace Microsoft.Docs.Build
 
         public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
         {
-            acceptableExtension = acceptableExtension ?? new string[] { "raw.page.json", "mta.json" };
+            acceptableExtension = acceptableExtension ?? new string[] { ".raw.page.json", ".mta.json" };
             if (!acceptableExtension.Any(ext =>
             {
                 if (filePath.EndsWith(ext))
                 {
-                    filePath = Path.ChangeExtension(filePath.Substring(0, filePath.Length - ext.Length), extension);
+                    filePath = $"{filePath.Substring(0, filePath.Length - ext.Length)}{extension}";
                     return true;
                 }
                 return false;

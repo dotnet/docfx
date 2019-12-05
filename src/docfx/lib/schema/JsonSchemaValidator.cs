@@ -15,14 +15,14 @@ namespace Microsoft.Docs.Build
         private readonly bool _forceError;
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
-        private readonly MicrosoftGraphCache _microsoftGraphCache;
+        private readonly MicrosoftGraphAccessor _microsoftGraphAccessor;
 
-        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphCache microsoftGraphCache = null, bool forceError = false)
+        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor microsoftGraphAccessor = null, bool forceError = false)
         {
             _schema = schema;
             _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
-            _microsoftGraphCache = microsoftGraphCache;
+            _microsoftGraphAccessor = microsoftGraphAccessor;
         }
 
         public List<Error> Validate(JToken token)
@@ -394,7 +394,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(schema.DateFormat) && !string.IsNullOrWhiteSpace(dateString))
             {
-                if (DateTime.TryParseExact(dateString, schema.DateFormat, null, System.Globalization.DateTimeStyles.None, out var date))
+                if (DateTime.TryParseExact(dateString, schema.DateFormat, null, DateTimeStyles.None, out var date))
                 {
                     ValidateDateRange(schema, name, scalar, date, dateString, errors);
                 }
@@ -411,22 +411,13 @@ namespace Microsoft.Docs.Build
             {
                 if (Array.IndexOf(schema.MicrosoftAlias.AllowedDLs, alias) == -1)
                 {
-                    if (_microsoftGraphCache != null)
+                    if (_microsoftGraphAccessor != null)
                     {
-                        // NOTE: this line block waits an asynchronious method to simplify code structure.
-                        // It does not have much performance impact because most of the time
-                        // the returned task is a completed task due to cache hit.
-                        var (error, msAlias) = _microsoftGraphCache.GetMicrosoftAlias(alias).GetAwaiter().GetResult();
-
+                        var error = _microsoftGraphAccessor.ValidateMicrosoftAlias(
+                            new SourceInfo<string>(alias, JsonUtility.GetSourceInfo(scalar)), name).GetAwaiter().GetResult();
                         if (error != null)
                         {
                             errors.Add((name, error));
-                        }
-
-                        // Mute error, when unable to connect to Microsoft Graph API
-                        if (msAlias == null && _microsoftGraphCache.IsConnectedToGraphApi)
-                        {
-                            errors.Add((name, Errors.MsAliasInvalid(JsonUtility.GetSourceInfo(scalar), name, alias)));
                         }
                     }
                 }

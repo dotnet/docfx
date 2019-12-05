@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly Config _config;
         private readonly Docset _fallbackDocset;
-        private readonly GitHubUserCache _gitHubUserCache;
+        private readonly GitHubAccessor _githubAccessor;
 
         // TODO: support CRR and multiple repositories
         private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
@@ -23,30 +23,41 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
 
         public ContributionProvider(
-            Input input, Docset docset, Docset fallbackDocset, GitHubUserCache gitHubUserCache, GitCommitProvider gitCommitProvider)
+            Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
         {
             _input = input;
             _config = docset.Config;
-            _gitHubUserCache = gitHubUserCache;
+            _githubAccessor = githubAccessor;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
             _commitBuildTimeProvider = docset.Repository != null && _config.UpdateTimeAsCommitBuildTime
-                ? new CommitBuildTimeProvider(docset.Repository) : null;
+                ? new CommitBuildTimeProvider(docset.Config, docset.Repository) : null;
         }
 
-        public async Task<(List<Error> errors, ContributionInfo contributionInfo)> GetContributionInfo(
-            Document document, SourceInfo<string> authorName)
+        public async Task<(List<Error> errors, ContributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
         {
-            Debug.Assert(document != null);
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
+            var errors = new List<Error>();
+            var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(document);
             if (repo is null)
             {
-                return default;
+                return (errors, null);
+            }
+
+            var updatedDateTime = GetUpdatedAt(document, commits);
+            var contributionInfo = new ContributionInfo
+            {
+                UpdateAt = updatedDateTime.ToString(
+                    document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                UpdatedAtDateTime = updatedDateTime,
+            };
+
+            if (!_config.GitHub.ResolveUsers)
+            {
+                return (errors, contributionInfo);
             }
 
             var contributionCommits = commits;
-            var bilingual = _fallbackDocset != null && _config.Localization.Bilingual;
-            var contributionBranch = bilingual && LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
+            var contributionBranch = LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
             if (!string.IsNullOrEmpty(contributionBranch))
             {
                 (_, _, contributionCommits) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
@@ -56,81 +67,42 @@ namespace Microsoft.Docs.Build
                 ? _config.GlobalMetadata.ContributorsToExclude
                 : _config.Contribution.ExcludeContributors;
 
-            Contributor authorFromCommits = null;
-            var contributors = new List<Contributor>();
-            var errors = new List<Error>();
-            var contributorsGroupByEmail = new Dictionary<string, Contributor>(StringComparer.OrdinalIgnoreCase);
-            var contributorIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var updatedDateTime = GetUpdatedAt(document, commits);
-            var contributionInfo = updatedDateTime != default
-                ? new ContributionInfo
-                {
-                    Contributors = contributors,
-                    UpdateAt = updatedDateTime.ToString(
-                        document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
-                    UpdatedAtDateTime = updatedDateTime,
-                }
-                : null;
-
-            if (!_config.GitHub.ResolveUsers)
-            {
-                return (errors, contributionInfo);
-            }
-
             // Resolve contributors from commits
-            if (contributionCommits != null)
+            if (!UrlUtility.TryParseGitHubUrl(repo.Remote, out var repoOwner, out var repoName))
             {
-                if (!UrlUtility.TryParseGitHubUrl(repo?.Remote, out var repoOwner, out var repoName))
-                {
-                    UrlUtility.TryParseGitHubUrl(_config.Contribution.RepositoryUrl, out repoOwner, out repoName);
-                }
+                UrlUtility.TryParseGitHubUrl(_config.Contribution.RepositoryUrl, out repoOwner, out repoName);
+            }
 
-                foreach (var commit in contributionCommits)
+            var contributors = new List<Contributor>();
+            foreach (var commit in contributionCommits)
+            {
+                var (error, githubUser) = await _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
+                errors.AddIfNotNull(error);
+                var contributor = githubUser?.ToContributor();
+                if (contributor != null && !excludes.Contains(contributor.Name))
                 {
-                    if (!contributorsGroupByEmail.TryGetValue(commit.AuthorEmail, out var contributor))
-                    {
-                        var (error, githubUser) = await _gitHubUserCache.GetByCommit(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
-                        errors.AddIfNotNull(error);
-                        contributorsGroupByEmail[commit.AuthorEmail] = contributor = githubUser?.ToContributor();
-                    }
-
-                    if (contributor != null && !excludes.Contains(contributor.Name))
-                    {
-                        authorFromCommits = contributor;
-                        if (contributorIds.Add(contributor.Id))
-                        {
-                            contributors.Add(contributor);
-                        }
-                    }
+                    contributors.Add(contributor);
                 }
             }
 
-            var author = authorFromCommits;
+            var author = contributors.LastOrDefault();
             if (!string.IsNullOrEmpty(authorName))
             {
                 // Remove author from contributors if author name is specified
-                var (error, githubUser) = await _gitHubUserCache.GetByLogin(authorName);
+                var (error, githubUser) = await _githubAccessor.GetUserByLogin(authorName);
                 errors.AddIfNotNull(error);
                 author = githubUser?.ToContributor();
             }
 
-            if (author != null)
-            {
-                contributors.RemoveAll(c => c.Id == author.Id);
-            }
-
-            if (contributionInfo != null)
-            {
-                contributionInfo.Author = author;
-                contributionInfo.Contributors = contributors;
-            }
+            contributionInfo.Author = author;
+            contributionInfo.Contributors = contributors.Except(new[] { author }).Distinct().ToArray();
 
             return (errors, contributionInfo);
         }
 
-        public DateTime GetUpdatedAt(Document document, List<GitCommit> fileCommits)
+        public DateTime GetUpdatedAt(Document document, GitCommit[] fileCommits)
         {
-            if (fileCommits?.Count > 0)
+            if (fileCommits.Length > 0)
             {
                 return _commitBuildTimeProvider != null
                     && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)

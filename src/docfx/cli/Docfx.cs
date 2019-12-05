@@ -203,9 +203,9 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
             try
             {
                 return string.Concat(
-                from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
-                where entry.Key.ToString().StartsWith("DOCFX_")
-                select $"{entry.Key}: `{entry.Value}`\n");
+                    from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                    where entry.Key.ToString().StartsWith("DOCFX_")
+                    select $"{entry.Key}: `{entry.Value}`\n");
             }
             catch (Exception ex)
             {

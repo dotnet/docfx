@@ -13,18 +13,54 @@ namespace Microsoft.Docs.Build
     {
         private readonly IGraphServiceClient _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
+        private readonly JsonDiskCache<Error, string, MicrosoftGraphUser> _aliasCache;
 
-        public MicrosoftGraphAccessor(string tenantId, string clientId, string clientSecret)
+        public MicrosoftGraphAccessor(Config config)
         {
-            _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(tenantId, clientId, clientSecret);
-            _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+            _aliasCache = new JsonDiskCache<Error, string, MicrosoftGraphUser>(
+                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraph.MicrosoftGraphCacheExpirationInHours));
+
+            if (!string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphTenantId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientSecret))
+            {
+                _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(
+                    config.MicrosoftGraph.MicrosoftGraphTenantId,
+                    config.MicrosoftGraph.MicrosoftGraphClientId,
+                    config.MicrosoftGraph.MicrosoftGraphClientSecret);
+
+                _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+            }
         }
 
-        public async Task<(Error error, bool isValid)> ValidateAlias(string alias)
+        public async Task<Error> ValidateMicrosoftAlias(SourceInfo<string> alias, string name = null)
+        {
+            if (_msGraphClient is null)
+            {
+                // Mute error, when unable to connect to Microsoft Graph API
+                return null;
+            }
+
+            var (error, user) = await _aliasCache.GetOrAdd(alias.Value, GetMicrosoftGraphUserCore);
+
+            return error ?? (user is null ? Errors.MsAliasInvalid(alias, name) : null);
+        }
+
+        public Task<Error[]> Save()
+        {
+            return _aliasCache.Save();
+        }
+
+        public void Dispose()
+        {
+            _microsoftGraphAuthenticationProvider?.Dispose();
+        }
+
+        private async Task<(Error, MicrosoftGraphUser)> GetMicrosoftGraphUserCore(string alias)
         {
             if (string.IsNullOrWhiteSpace(alias))
             {
-                return (null, false);
+                return default;
             }
 
             var options = new List<Option>
@@ -40,17 +76,12 @@ namespace Microsoft.Docs.Build
                     .RetryAsync(3)
                     .ExecuteAsync(() => _msGraphClient.Users.Request(options).GetAsync());
 
-                return (null, users != null ? users.Count > 0 : false);
+                return (null, users != null && users.Count > 0 ? new MicrosoftGraphUser { Alias = alias } : null);
             }
             catch (Exception e)
             {
-                return (Errors.MicrosoftGraphApiFailed(e.Message), false);
+                return (Errors.MicrosoftGraphApiFailed(e.Message), null);
             }
-        }
-
-        public void Dispose()
-        {
-            _microsoftGraphAuthenticationProvider?.Dispose();
         }
     }
 }

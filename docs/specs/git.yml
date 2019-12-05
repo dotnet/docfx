@@ -32,7 +32,7 @@ inputs:
   docfx.yml:
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -64,7 +64,7 @@ inputs:
 cache:
   github-users.json: |
     {
-      "users": [
+      "items": [
         {"login": "invalid_user"},
       ]
     }
@@ -93,7 +93,7 @@ inputs:
   docfx.yml:
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -143,7 +143,7 @@ inputs:
         - BoB
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -175,7 +175,7 @@ inputs:
         - Alice
 cache:
   github-users.json: |
-      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
+      { "items": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
 outputs:
   docs/index.json: |
     { "_op_gitContributorInformation": { "author": undefined } }
@@ -197,7 +197,7 @@ inputs:
   docfx.yml:
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
         ]
@@ -240,7 +240,7 @@ inputs:
         - ChArLiE
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -275,7 +275,7 @@ inputs:
         - alice
 cache:
   github-users.json: |
-      { "users": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
+      { "items": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}] }
 outputs:
   docs/index.json: |
     { "author": undefined, "contributors": undefined }
@@ -390,20 +390,14 @@ outputs:
       "updated_at": "2018-07-18 05:03 AM"
     }
 ---
-# [from loc] Throw committish-not-found when try to resolve commit id by none-existing branch name
-locale: zh-cn
+# Throw committish-not-found when try to resolve commit id by none-existing branch name
 repos: 
-  https://github.com/git/repo#live:
-    - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
   https://github.com/git/repo.zh-cn#live-sxs:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
         a.md:
+  https://github.com/git/repo#live:
+    - files:
   https://github.com/git/repo.zh-cn#live-none-existing:
     - files:
         a.md:
@@ -494,7 +488,7 @@ inputs:
       repositoryUrl: https://github.com/docascode/contribution-test
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -545,7 +539,7 @@ inputs:
       repositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -592,7 +586,7 @@ inputs:
       resolveUsers: false
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
@@ -646,7 +640,7 @@ repos:
           Alice creates this.
 cache:
   github-users.json: |
-      { "users": [
+      { "items": [
           {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}

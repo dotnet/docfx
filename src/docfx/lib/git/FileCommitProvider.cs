@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
         }
 
-        public List<GitCommit> GetCommitHistory(string file, string committish = null)
+        public GitCommit[] GetCommitHistory(string file, string committish = null)
         {
             Debug.Assert(!file.Contains('\\'));
 
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private List<GitCommit> GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string committish = null)
+        private GitCommit[] GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string committish = null)
         {
             const int MaxParentBlob = 32;
 
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
             if (commits.Count <= 0)
             {
-                return new List<GitCommit>();
+                return Array.Empty<GitCommit>();
             }
 
             var updateCache = true;
@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return result.Select(c => c.GitCommit).ToList();
+            return result.Select(c => c.GitCommit).ToArray();
         }
 
         private static bool TryRemoveCommit(Commit commit, List<(Commit commit, long blob)> commitsToFollow, out long blob)

@@ -39,42 +39,22 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // load and trace entry repository
-                    var repositoryProvider = new RepositoryProvider(docsetPath, options);
-                    var repository = repositoryProvider.GetRepository(FileOrigin.Default);
+                    var repository = Repository.Create(docsetPath);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var input = new Input(docsetPath, repositoryProvider);
-                    var configLoader = new ConfigLoader(docsetPath, input, repositoryProvider);
-
-                    var configPath = docsetPath;
-                    (errors, config) = configLoader.TryLoad(options, extend: false);
-                    var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-
-                    List<Error> fallbackConfigErrors;
-                    (fallbackConfigErrors, config) = configLoader.Load(options, extend: false);
-                    errors.AddRange(fallbackConfigErrors);
-
-                    // config error log, and return if config has errors
+                    var configLoader = new ConfigLoader(repository);
+                    (errors, config) = configLoader.Load(docsetPath, options);
                     if (errorLog.Write(errors))
                         return false;
 
-                    // restore extend url firstly
-                    await ParallelUtility.ForEach(
-                        config.Extend.Where(UrlUtility.IsHttp),
-                        restoreUrl => RestoreFile.Restore(restoreUrl, config));
-
-                    // extend the config after the extend url being restored
-                    var (extendConfigErrors, extendedConfig) = configLoader.Load(options, extend: true);
-                    errorLog.Write(extendConfigErrors);
-
-                    // restore urls except extend url
-                    var restoreUrls = extendedConfig.GetFileReferences().Where(UrlUtility.IsHttp).ToList();
-                    await RestoreFile.Restore(restoreUrls, extendedConfig);
+                    var fileResolver = new FileResolver(docsetPath, config);
+                    await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos
-                    var restoreDependencyResults = RestoreGit.Restore(extendedConfig, locale, repository, DependencyLockProvider.CreateFromConfig(docsetPath, extendedConfig));
+                    var restoreFallbackResult = RestoreFallbackRepo(config, repository);
+                    var restoreDependencyResults = RestoreGit.Restore(config, locale, repository, DependencyLockProvider.CreateFromConfig(docsetPath, config));
 
                     // save dependency lock
                     var restoredGitLock = new List<DependencyGitLock>();
@@ -84,7 +64,7 @@ namespace Microsoft.Docs.Build
                             restoredGitLock.Add(new DependencyGitLock { Url = restoreResult.Remote, Branch = restoreResult.Branch, Commit = restoreResult.Commit });
                     }
 
-                    DependencyLockProvider.SaveGitLock(docsetPath, locale, extendedConfig.DependencyLock, restoredGitLock);
+                    DependencyLockProvider.SaveGitLock(docsetPath, locale, config.DependencyLock, restoredGitLock);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
