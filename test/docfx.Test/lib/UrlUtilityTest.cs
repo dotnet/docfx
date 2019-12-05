@@ -34,6 +34,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/", "https://github.com", "")]
         [InlineData("https://github.com/a", "https://github.com", "a")]
         [InlineData("https://github.com/a/b", "https://github.com", "a/b")]
+        [InlineData("https://github.com/a/b/", "https://github.com", "a/b/")]
         public static void SplitBaseUrl(string url, string host, string basePath)
         {
             var (ahost, abasePath) = UrlUtility.SplitBaseUrl(url);

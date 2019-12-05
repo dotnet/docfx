@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = options?.ToJObject();
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var opsConfig = OpsConfigLoader.TryLoad(docsetPath, _repository?.Branch);
+            var opsConfig = OpsConfigLoader.Load(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -70,9 +70,9 @@ namespace Microsoft.Docs.Build
             errors.AddRange(preloadErrors);
 
             // Download dependencies
-            var fileDownloader = new FileDownloader(docsetPath, preloadConfig, noFetch);
-            var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileDownloader);
-            var opsServiceConfig = new OpsConfigAdapter(noFetch).TryAdapt(preloadConfig.Name, _repository?.Remote, _repository?.Branch);
+            var fileResolver = new FileResolver(docsetPath, preloadConfig, noFetch);
+            var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
+            var opsServiceConfig = OpsConfigAdapter.Load(preloadConfig.Name, _repository?.Remote, _repository?.Branch, noFetch);
 
             // Create full config
             var configObject = new JObject();
@@ -107,13 +107,13 @@ namespace Microsoft.Docs.Build
             throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
-        private JObject DownloadExtendConfig(List<Error> errors, PreloadConfig preloadConfig, FileDownloader fileDownloader)
+        private JObject DownloadExtendConfig(List<Error> errors, PreloadConfig preloadConfig, FileResolver fileResolver)
         {
             var result = new JObject();
 
             foreach (var extend in preloadConfig.Extend)
             {
-                var content = fileDownloader.DownloadString(extend);
+                var content = fileResolver.ReadString(extend);
                 var extendConfigObject = LoadConfig(errors, extend, content);
                 JsonUtility.Merge(result, extendConfigObject);
             }

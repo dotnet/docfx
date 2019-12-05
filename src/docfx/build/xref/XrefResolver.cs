@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         public XrefResolver(
             Context context,
             Docset docset,
-            FileDownloader fileDownloader,
+            FileResolver fileResolver,
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder)
         {
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                 () => InternalXrefMapBuilder.Build(context));
 
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefMapLoader.Load(docset, fileDownloader));
+                () => ExternalXrefMapLoader.Load(docset, fileResolver));
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;

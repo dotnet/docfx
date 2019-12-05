@@ -46,8 +46,6 @@ namespace Microsoft.Docs.Build
                     {
                         var configLoader = new ConfigLoader(repository);
                         (errors, config) = configLoader.Load(docsetPath, options, noFetch: true);
-
-                        // just return if config loading has errors
                         if (errorLog.Write(errors))
                             return false;
 

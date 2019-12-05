@@ -12,7 +12,7 @@ using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal class FileDownloader
+    internal class FileResolver
     {
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
@@ -21,64 +21,69 @@ namespace Microsoft.Docs.Build
 
         private readonly string _docsetPath;
         private readonly bool _noFetch;
-        private readonly IHttpCredentialProvider _credentialProvider;
+        private readonly Action<HttpRequestMessage> _provideCredential;
 
-        public FileDownloader(string docsetPath, IHttpCredentialProvider credentialProvider = null, bool noFetch = false)
+        public FileResolver(string docsetPath, PreloadConfig config, bool noFetch = false)
+            : this(docsetPath, ProvideCredential(config), noFetch)
+        {
+        }
+
+        public FileResolver(string docsetPath, Action<HttpRequestMessage> provideCredential = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
             _noFetch = noFetch;
-            _credentialProvider = credentialProvider;
+            _provideCredential = provideCredential;
         }
 
-        public string DownloadString(SourceInfo<string> url)
+        public string ReadString(SourceInfo<string> file)
         {
-            using (var reader = new StreamReader(DownloadStream(url)))
+            using (var reader = new StreamReader(ReadStream(file)))
             {
                 return reader.ReadToEnd();
             }
         }
 
-        public Stream DownloadStream(SourceInfo<string> url)
+        public Stream ReadStream(SourceInfo<string> file)
         {
             if (!_noFetch)
             {
-                Download(url).GetAwaiter().GetResult();
+                Download(file).GetAwaiter().GetResult();
             }
 
-            if (!UrlUtility.IsHttp(url))
+            if (!UrlUtility.IsHttp(file))
             {
-                var localFilePath = Path.Combine(_docsetPath, url);
+                var localFilePath = Path.Combine(_docsetPath, file);
                 if (File.Exists(localFilePath))
                 {
                     return File.OpenRead(localFilePath);
                 }
 
-                throw Errors.FileNotFound(url).ToException();
+                throw Errors.FileNotFound(file).ToException();
             }
 
-            var filePath = GetRestorePathFromUrl(url);
+            var filePath = GetRestorePathFromUrl(file);
             if (!File.Exists(filePath))
             {
-                throw Errors.NeedRestore(url).ToException();
+                throw Errors.NeedRestore(file).ToException();
             }
 
             return File.OpenRead(filePath);
         }
 
-        public async Task Download(SourceInfo<string> url)
+        public async Task Download(SourceInfo<string> file)
         {
-            if (!UrlUtility.IsHttp(url))
+            if (!UrlUtility.IsHttp(file))
             {
                 return;
             }
 
             if (_noFetch)
             {
-                throw Errors.NeedRestore(url).ToException();
+                throw Errors.NeedRestore(file).ToException();
             }
 
-            var filePath = GetRestorePathFromUrl(url);
-            var etagPath = GetRestoreEtagPath(url);
+            var filePath = GetRestorePathFromUrl(file);
+            var etagPath = GetRestoreEtagPath(file);
             var existingEtag = default(EntityTagHeaderValue);
 
             using (InterProcessMutex.Create(filePath))
@@ -90,7 +95,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (tempFile, etag) = await DownloadToTempFile(url, existingEtag);
+            var (tempFile, etag) = await DownloadToTempFile(file, existingEtag);
             if (tempFile is null)
             {
                 // no change at all
@@ -171,9 +176,29 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                _credentialProvider?.ProvideCredential(message);
+                _provideCredential?.Invoke(message);
+
                 return s_httpClient.SendAsync(message);
             }
+        }
+
+        private static Action<HttpRequestMessage> ProvideCredential(PreloadConfig config)
+        {
+            return message =>
+            {
+                var url = message.RequestUri.ToString();
+                foreach (var (baseUrl, rule) in config.Http)
+                {
+                    if (url.StartsWith(baseUrl))
+                    {
+                        foreach (var header in rule.Headers)
+                        {
+                            message.Headers.Add(header.Key, header.Value);
+                        }
+                        break;
+                    }
+                }
+            };
         }
     }
 }

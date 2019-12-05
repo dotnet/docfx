@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-using System.IO;
+
 using System.Threading.Tasks;
 using Xunit;
 
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
         public static void DownloadFile_Success()
         {
             Assert.NotNull(
-                new FileDownloader(".").DownloadString(
+                new FileResolver(".").ReadString(
                     new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
         public static async Task DownloadFile_NoFetch_Should_Fail()
         {
             await Assert.ThrowsAsync<DocfxException>(() =>
-                new FileDownloader(".", noFetch: true).Download(
+                new FileResolver(".", noFetch: true).Download(
                     new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 

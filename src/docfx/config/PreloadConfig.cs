@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -11,7 +10,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// Contains config values that MUST exist before loading the full configuration.
     /// </summary>
-    internal class PreloadConfig : IHttpCredentialProvider
+    internal class PreloadConfig
     {
         /// <summary>
         /// Gets the default docset name
@@ -29,22 +28,5 @@ namespace Microsoft.Docs.Build
         /// Gets the authorization keys for required resources access
         /// </summary>
         public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
-
-        public void ProvideCredential(HttpRequestMessage request)
-        {
-            var url = request.RequestUri.ToString();
-
-            foreach (var (baseUrl, rule) in Http)
-            {
-                if (url.StartsWith(baseUrl))
-                {
-                    foreach (var header in rule.Headers)
-                    {
-                        request.Headers.Add(header.Key, header.Value);
-                    }
-                    break;
-                }
-            }
-        }
     }
 }

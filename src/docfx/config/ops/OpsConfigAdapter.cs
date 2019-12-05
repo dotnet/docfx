@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class OpsConfigAdapter : IHttpCredentialProvider
+    internal static class OpsConfigAdapter
     {
         private static readonly string s_token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
         private static readonly bool s_prod = string.Equals(
@@ -19,23 +19,17 @@ namespace Microsoft.Docs.Build
             ? "https://op-build-prod.azurewebsites.net"
             : "https://op-build-sandbox2.azurewebsites.net";
 
-        private readonly FileDownloader _fileDownloader;
-
-        public OpsConfigAdapter(bool noFetch = false)
-        {
-            _fileDownloader = new FileDownloader(".", this, noFetch);
-        }
-
-        public JObject TryAdapt(string name, string repository, string branch)
+        public static JObject Load(string name, string repository, string branch, bool noFetch = false)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository) || string.IsNullOrEmpty(s_token))
             {
                 return null;
             }
 
+            var fileResolver = new FileResolver(".", ProvideCredential, noFetch);
             var url = $"{s_opsEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsets = JsonConvert.DeserializeAnonymousType(
-                _fileDownloader.DownloadString(new SourceInfo<string>(url)),
+                fileResolver.ReadString(new SourceInfo<string>(url)),
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
 
             var docset = docsets.FirstOrDefault(d => d.name == name);
@@ -57,7 +51,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public void ProvideCredential(HttpRequestMessage request)
+        private static void ProvideCredential(HttpRequestMessage request)
         {
             request.Headers.Add("X-OP-BuildUserToken", s_token);
         }
