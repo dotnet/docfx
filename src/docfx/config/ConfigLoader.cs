@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             // Download dependencies
             var fileResolver = new FileResolver(docsetPath, preloadConfig, noFetch);
             var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
-            var opsServiceConfig = OpsConfigAdapter.Load(preloadConfig.Name, _repository?.Remote, _repository?.Branch, noFetch);
+            var opsServiceConfig = opsConfig is null ? null : OpsConfigAdapter.Load(preloadConfig.Name, _repository?.Remote, _repository?.Branch, noFetch);
 
             // Create full config
             var configObject = new JObject();
