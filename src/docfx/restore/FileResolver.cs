@@ -12,7 +12,7 @@ using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal class FileDownloader
+    internal class FileResolver
     {
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
@@ -23,62 +23,62 @@ namespace Microsoft.Docs.Build
         private readonly bool _noFetch;
         private readonly PreloadConfig _config;
 
-        public FileDownloader(string docsetPath, PreloadConfig config = null, bool noFetch = false)
+        public FileResolver(string docsetPath, PreloadConfig config = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
             _noFetch = noFetch;
             _config = config;
         }
 
-        public string DownloadString(SourceInfo<string> url)
+        public string ReadString(SourceInfo<string> file)
         {
-            using (var reader = new StreamReader(DownloadStream(url)))
+            using (var reader = new StreamReader(ReadStream(file)))
             {
                 return reader.ReadToEnd();
             }
         }
 
-        public Stream DownloadStream(SourceInfo<string> url)
+        public Stream ReadStream(SourceInfo<string> file)
         {
             if (!_noFetch)
             {
-                Download(url).GetAwaiter().GetResult();
+                Download(file).GetAwaiter().GetResult();
             }
 
-            if (!UrlUtility.IsHttp(url))
+            if (!UrlUtility.IsHttp(file))
             {
-                var localFilePath = Path.Combine(_docsetPath, url);
+                var localFilePath = Path.Combine(_docsetPath, file);
                 if (File.Exists(localFilePath))
                 {
                     return File.OpenRead(localFilePath);
                 }
 
-                throw Errors.FileNotFound(url).ToException();
+                throw Errors.FileNotFound(file).ToException();
             }
 
-            var filePath = GetRestorePathFromUrl(url);
+            var filePath = GetRestorePathFromUrl(file);
             if (!File.Exists(filePath))
             {
-                throw Errors.NeedRestore(url).ToException();
+                throw Errors.NeedRestore(file).ToException();
             }
 
             return File.OpenRead(filePath);
         }
 
-        public async Task Download(SourceInfo<string> url)
+        public async Task Download(SourceInfo<string> file)
         {
-            if (!UrlUtility.IsHttp(url))
+            if (!UrlUtility.IsHttp(file))
             {
                 return;
             }
 
             if (_noFetch)
             {
-                throw Errors.NeedRestore(url).ToException();
+                throw Errors.NeedRestore(file).ToException();
             }
 
-            var filePath = GetRestorePathFromUrl(url);
-            var etagPath = GetRestoreEtagPath(url);
+            var filePath = GetRestorePathFromUrl(file);
+            var etagPath = GetRestoreEtagPath(file);
             var existingEtag = default(EntityTagHeaderValue);
 
             using (InterProcessMutex.Create(filePath))
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (tempFile, etag) = await DownloadToTempFile(url, existingEtag);
+            var (tempFile, etag) = await DownloadToTempFile(file, existingEtag);
             if (tempFile is null)
             {
                 // no change at all

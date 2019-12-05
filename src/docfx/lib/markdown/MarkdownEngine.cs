@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public MarkdownEngine(
             Config config,
-            FileDownloader fileDownloader,
+            FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MonikerProvider monikerProvider,
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             _markdownValidationRules = config.MarkdownValidationRules;
             if (!string.IsNullOrEmpty(_markdownValidationRules))
             {
-                using (var stream = fileDownloader.DownloadStream(config.MarkdownValidationRules))
+                using (var stream = fileResolver.ReadStream(config.MarkdownValidationRules))
                 {
                     // TODO: validation rules currently only supports physical file.
                     _markdownValidationRules = ((FileStream)stream).Name;

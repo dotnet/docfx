@@ -54,8 +54,8 @@ namespace Microsoft.Docs.Build
                     if (errorLog.Write(errors))
                         return false;
 
-                    var fileDownloader = new FileDownloader(docsetPath, config);
-                    await ParallelUtility.ForEach(config.GetFileReferences(), url => fileDownloader.Download(url));
+                    var fileResolver = new FileResolver(docsetPath, config);
+                    await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos
                     var restoreDependencyResults = RestoreGit.Restore(config, locale, repository, DependencyLockProvider.CreateFromConfig(docsetPath, config));

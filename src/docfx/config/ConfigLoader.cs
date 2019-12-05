@@ -70,8 +70,8 @@ namespace Microsoft.Docs.Build
             errors.AddRange(preloadErrors);
 
             // Download dependencies
-            var fileDownloader = new FileDownloader(docsetPath, preloadConfig, noFetch);
-            var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileDownloader);
+            var fileResolver = new FileResolver(docsetPath, preloadConfig, noFetch);
+            var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
 
             // Create full config
             var configObject = new JObject();
@@ -106,13 +106,13 @@ namespace Microsoft.Docs.Build
             throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
-        private JObject DownloadExtendConfig(List<Error> errors, PreloadConfig preloadConfig, FileDownloader fileDownloader)
+        private JObject DownloadExtendConfig(List<Error> errors, PreloadConfig preloadConfig, FileResolver fileResolver)
         {
             var result = new JObject();
 
             foreach (var extend in preloadConfig.Extend)
             {
-                var content = fileDownloader.DownloadString(extend);
+                var content = fileResolver.ReadString(extend);
                 var extendConfigObject = LoadConfig(errors, extend, content);
                 JsonUtility.Merge(result, extendConfigObject);
             }
