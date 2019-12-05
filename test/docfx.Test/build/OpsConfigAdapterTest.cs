@@ -32,13 +32,15 @@ namespace Microsoft.Docs.Build
             "{'product':'Azure','siteName':'DocsAzureCN','baseUrl':'https://docs.azure.cn/','xrefBaseUrl':'https://review.docs.azure.cn','localization':{'defaultLocale':'zh-cn'}}")]
         public static void AdaptOpsServiceConfig(string name, string repository, string branch, string expectedJson)
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN")))
+            var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
+            if (string.IsNullOrEmpty(token))
             {
                 return;
             }
 
+            var fileResolver = new FileResolver(".", request => request.Headers.Add("X-OP-BuildUserToken", token));
             var actualJson = OpsConfigAdapter
-                .Load(new SourceInfo<string>(name), repository, branch)
+                .Load(fileResolver, new SourceInfo<string>(name), repository, branch)
                 ?.ToString(Newtonsoft.Json.Formatting.None)
                 ?.Replace('"', '\'');
 

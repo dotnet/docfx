@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigAdapter
     {
-        private static readonly string s_token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
         private static readonly bool s_prod = string.Equals(
             "PROD", Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), StringComparison.OrdinalIgnoreCase);
 
@@ -19,16 +18,16 @@ namespace Microsoft.Docs.Build
             ? "https://op-build-prod.azurewebsites.net"
             : "https://op-build-sandbox2.azurewebsites.net";
 
-        public static JObject Load(SourceInfo<string> name, string repository, string branch, bool noFetch = false)
+        public static JObject Load(FileResolver fileResolver, SourceInfo<string> name, string repository, string branch)
         {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository) || string.IsNullOrEmpty(s_token))
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
             {
                 return null;
             }
 
             var url = $"{s_opsEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsets = JsonConvert.DeserializeAnonymousType(
-                ResolveFile(name, url, noFetch),
+                ResolveFile(fileResolver, name, url),
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
 
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
@@ -50,21 +49,16 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static string ResolveFile(SourceInfo<string> name, string url, bool noFetch)
+        private static string ResolveFile(FileResolver fileResolver, SourceInfo<string> name, string url)
         {
             try
             {
-                return new FileResolver(".", ProvideCredential, noFetch).ReadString(new SourceInfo<string>(url));
+                return fileResolver.ReadString(new SourceInfo<string>(url));
             }
             catch (DocfxException ex) when (ex.InnerException is HttpRequestException hre && hre.Message.Contains("404"))
             {
                 throw Errors.DocsetNotProvisioned(name).ToException();
             }
-        }
-
-        private static void ProvideCredential(HttpRequestMessage request)
-        {
-            request.Headers.Add("X-OP-BuildUserToken", s_token);
         }
 
         private static string GetDefaultLocale(string siteName)
