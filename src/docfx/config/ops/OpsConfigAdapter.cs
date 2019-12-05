@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                 ResolveFile(name, url, noFetch),
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
 
-            var docset = docsets.FirstOrDefault(d => d.name == name);
+            var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
             {
                 throw Errors.DocsetNotProvisioned(name).ToException();
