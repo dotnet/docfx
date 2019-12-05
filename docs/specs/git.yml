@@ -394,9 +394,7 @@ outputs:
 repos: 
   https://github.com/git/repo.zh-cn#live-sxs:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
         a.md:
   https://github.com/git/repo#live:
     - files:

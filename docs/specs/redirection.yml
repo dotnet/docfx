@@ -443,3 +443,23 @@ inputs:
 outputs:
   ce/basics/teams-integration.json: |
     { "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48" }
+---
+# Support redirect_url ends with '/' for index files
+inputs:
+  .openpublishing.redirection.json: |
+    {
+      "redirections": [
+        {
+          "source_path": "original.md",
+          "redirect_url": "https://docs.com/folder/",
+          "redirect_document_id": "true"
+        }
+      ]
+    }
+  docfx.yml: |
+    name: docset
+    product: product
+  folder/index.md:
+outputs:
+  folder/index.json: |
+    { "document_id": "c663555f-8096-38df-325b-181ddc79afd8" }
