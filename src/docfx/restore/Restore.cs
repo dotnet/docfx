@@ -40,17 +40,12 @@ namespace Microsoft.Docs.Build
                 {
                     // load and trace entry repository
                     var repository = Repository.Create(docsetPath);
-                    var repositoryProvider = new RepositoryProvider(docsetPath, repository, options);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var input = new Input(docsetPath, repositoryProvider);
                     var configLoader = new ConfigLoader(repository);
                     (errors, config) = configLoader.Load(docsetPath, options);
-                    var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-
-                    // config error log, and return if config has errors
                     if (errorLog.Write(errors))
                         return false;
 
@@ -58,6 +53,7 @@ namespace Microsoft.Docs.Build
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos
+                    var restoreFallbackResult = RestoreFallbackRepo(config, repository);
                     var restoreDependencyResults = RestoreGit.Restore(config, locale, repository, DependencyLockProvider.CreateFromConfig(docsetPath, config));
 
                     // save dependency lock

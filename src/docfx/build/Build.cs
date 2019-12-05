@@ -39,9 +39,6 @@ namespace Microsoft.Docs.Build
                 {
                     // load and trace entry repository
                     var repository = Repository.Create(docsetPath);
-                    var configLoader = new ConfigLoader(repository);
-                    (errors, config) = configLoader.Load(docsetPath, options, noFetch: true);
-
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
@@ -51,7 +48,8 @@ namespace Microsoft.Docs.Build
                         var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, restoreGitMap, localizationProvider);
                         var input = new Input(docsetPath, repositoryProvider, localizationProvider);
 
-                        // just return if config loading has errors
+                        var configLoader = new ConfigLoader(repository);
+                        (errors, config) = configLoader.Load(docsetPath, options, noFetch: true);
                         if (errorLog.Write(errors))
                             return false;
 
