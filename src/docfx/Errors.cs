@@ -69,10 +69,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}");
 
         /// <summary>
-        /// Used invalid glob pattern in configuration.
-        /// Examples:
-        ///   - in build scope include/exclude files
-        ///   - in file metadata glob
+        /// Build failure caused by English content when building localized docset.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error FallbackError(string defaultLocale)
