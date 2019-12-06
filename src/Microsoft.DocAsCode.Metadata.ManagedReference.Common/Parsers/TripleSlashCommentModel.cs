@@ -22,11 +22,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class TripleSlashCommentModel
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
-        private static Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
-        private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
-        private static Regex RegionRegex = new Regex(@"^\s*#region\s*(.*)$");
-        private static Regex EndRegionRegex = new Regex(@"^\s*#endregion\s*.*$");
+        private static readonly Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private static readonly Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
+        private static readonly Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
+        private static readonly Regex RegionRegex = new Regex(@"^\s*#region\s*(.*)$");
+        private static readonly Regex XmlRegionRegex = new Regex(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
+        private static readonly Regex EndRegionRegex = new Regex(@"^\s*#endregion\s*.*$");
+        private static readonly Regex XmlEndRegionRegex = new Regex(@"^\s*<!--\s*</(.*)>\s*-->$");
 
         private readonly ITripleSlashCommentParserContext _context;
 
@@ -344,13 +346,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return;
             }
 
+            var (regionRegex, endRegionRegex) = GetRegionRegex(source);
+
             var builder = new StringBuilder();
             var regionCount = 0;
             foreach (var line in File.ReadLines(source))
             {
                 if (!string.IsNullOrEmpty(region))
                 {
-                    var match = RegionRegex.Match(line);
+                    var match = regionRegex.Match(line);
                     if (match.Success)
                     {
                         var name = match.Groups[1].Value.Trim();
@@ -364,7 +368,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             ++regionCount;
                         }
                     }
-                    else if (regionCount > 0 && EndRegionRegex.IsMatch(line))
+                    else if (regionCount > 0 && endRegionRegex.IsMatch(line))
                     {
                         --regionCount;
                         if (regionCount == 0)
@@ -419,6 +423,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private Dictionary<string, string> GetParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
             return GetListContent(navigator, "/member/param", "parameter", context);
+        }
+
+        private static (Regex, Regex) GetRegionRegex(String source)
+        {
+            var ext = Path.GetExtension(source);
+            switch (ext.ToUpper())
+            {
+                case ".XML":
+                case ".XAML":
+                case ".HTML":
+                case ".CSHTML":
+                case ".VBHTML":
+                    return (XmlRegionRegex, XmlEndRegionRegex);
+            }
+
+            return (RegionRegex, EndRegionRegex);
         }
 
         private Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)

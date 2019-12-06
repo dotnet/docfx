@@ -3,9 +3,13 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
-
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Xml.Linq;
+    
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
@@ -239,6 +243,71 @@ This is an example using source reference.
 
             var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
             Assert.True(commentModel.IsInheritDoc);
+        }
+
+        [Trait("Related", "TripleSlashComments")]
+        [Fact]
+        public void TestTripleSlashParserForXamlSource()
+        {
+            string inputFolder = Path.GetRandomFileName();
+            Directory.CreateDirectory(inputFolder);
+            var expectedExampleContent = @"                <Grid>
+                  <TextBlock Text=""Hello World"" />
+                </Grid>";
+
+            File.WriteAllText(Path.Combine(inputFolder, "Example.xaml"), $@"
+<UserControl x:Class=""Examples""
+            xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+            xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+            xmlns:mc=""http://schemas.openxmlformats.org/markup-compatibility/2006""
+            xmlns:d=""http://schemas.microsoft.com/expression/blend/2008""
+            mc: Ignorable = ""d""
+            d:DesignHeight=""300"" d:DesignWidth=""300"" >
+                <UserControl.Resources>
+
+                <!-- <Example> -->
+{expectedExampleContent}
+                <!-- </Example> -->
+");
+            string input = @"
+<member name='T:TestClass1.Partial1'>
+    <summary>
+    </summary>
+    <returns>Something</returns>
+
+    <example>
+    This is an example using source reference in a xaml file.
+    <code source='Example.xaml' region='Example'/>
+    </example>
+</member>";
+            var context = new TripleSlashCommentParserContext
+            {
+                AddReferenceDelegate = null,
+                PreserveRawInlineComments = false,
+                Source = new SourceDetail()
+                {
+                    Path = Path.Combine(inputFolder, "Source.cs"),
+                }
+            };
+
+            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            
+            // using xml to get rid of escaped tags
+            var example = commentModel.Examples.Single();
+            var doc = XDocument.Parse($"<root>{example}</root>");
+            var codeNode = doc.Descendants("code").Single();
+            var actual = NormalizeWhitespace(codeNode.Value);
+            var expected = NormalizeWhitespace(expectedExampleContent.Replace("\r\n", "\n"));
+            Assert.Equal(expected, actual);
+        }
+
+        /// <summary>
+        /// Normalizes multiple whitespaces into 1 single whitespace to allow ignoring of insignificant whitespaces.
+        /// </summary>
+        private string NormalizeWhitespace(String s)
+        {
+            var regex = new Regex(@"(?<= ) +");
+            return regex.Replace(s, String.Empty);
         }
     }
 }
