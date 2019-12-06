@@ -1,8 +1,12 @@
 Version Notes (Current Version: v2.48)
 =======================================
 
-v2.48(Pre-release)
+v2.48
 -----------
+
+1. Support fetching region from referenced XML code snippet in XML documentation comments. (#5319) Thanks @Laniusexcubitor!
+2. Bug fix:
+    1. Fix NullReferenceExcpetion when input YAML content is empty file. (#5254)
 
 v2.47
 -----------
