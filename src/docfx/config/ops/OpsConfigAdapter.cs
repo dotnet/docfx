@@ -11,8 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigAdapter
     {
-        private static readonly bool s_prod = string.Equals(
-            "PROD", Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), StringComparison.OrdinalIgnoreCase);
+        private static readonly bool s_prod = !string.Equals(
+            "PPE", Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), StringComparison.OrdinalIgnoreCase);
 
         private static readonly string s_opsEndpoint = s_prod
             ? "https://op-build-prod.azurewebsites.net"
