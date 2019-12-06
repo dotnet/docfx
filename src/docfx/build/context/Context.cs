@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             BuildQueue = new WorkQueue<FilePath>();
 
             Config = docset.Config;
-            FileResolver = new FileResolver(docset.DocsetPath, noFetch: true);
+            FileResolver = new FileResolver(docset.DocsetPath, Config, noFetch: true);
             ErrorLog = errorLog;
             Input = input;
             LocalizationProvider = localizationProvider;

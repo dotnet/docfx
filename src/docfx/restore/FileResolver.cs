@@ -21,13 +21,18 @@ namespace Microsoft.Docs.Build
 
         private readonly string _docsetPath;
         private readonly bool _noFetch;
-        private readonly PreloadConfig _config;
+        private readonly Action<HttpRequestMessage> _provideCredential;
 
-        public FileResolver(string docsetPath, PreloadConfig config = null, bool noFetch = false)
+        public FileResolver(string docsetPath, PreloadConfig config, bool noFetch = false)
+            : this(docsetPath, ProvideCredential(config), noFetch)
+        {
+        }
+
+        public FileResolver(string docsetPath, Action<HttpRequestMessage> provideCredential = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
             _noFetch = noFetch;
-            _config = config;
+            _provideCredential = provideCredential;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -171,17 +176,18 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                AddAuthorizationHeader(url, message);
+                _provideCredential?.Invoke(message);
 
                 return s_httpClient.SendAsync(message);
             }
         }
 
-        private void AddAuthorizationHeader(string url, HttpRequestMessage message)
+        private static Action<HttpRequestMessage> ProvideCredential(PreloadConfig config)
         {
-            if (_config != null)
+            return message =>
             {
-                foreach (var (baseUrl, rule) in _config.Http)
+                var url = message.RequestUri.ToString();
+                foreach (var (baseUrl, rule) in config.Http)
                 {
                     if (url.StartsWith(baseUrl))
                     {
@@ -192,7 +198,7 @@ namespace Microsoft.Docs.Build
                         break;
                     }
                 }
-            }
+            };
         }
     }
 }

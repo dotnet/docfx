@@ -12,6 +12,13 @@ namespace Microsoft.Docs.Build
     internal static class Errors
     {
         /// <summary>
+        /// Build an OPS repo with a docset name that isn't provisioned.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DocsetNotProvisioned(SourceInfo<string> name)
+            => new Error(ErrorLevel.Error, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.", name);
+
+        /// <summary>
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
         /// Behavior: ✔️ Message: ❌

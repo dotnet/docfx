@@ -13,6 +13,11 @@ namespace Microsoft.Docs.Build
     internal class PreloadConfig
     {
         /// <summary>
+        /// Gets the default docset name
+        /// </summary>
+        public readonly SourceInfo<string> Name = new SourceInfo<string>("");
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>

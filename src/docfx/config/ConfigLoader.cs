@@ -72,10 +72,11 @@ namespace Microsoft.Docs.Build
             // Download dependencies
             var fileResolver = new FileResolver(docsetPath, preloadConfig, noFetch);
             var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
+            var opsServiceConfig = opsConfig is null ? null : OpsConfigAdapter.Load(fileResolver, preloadConfig.Name, _repository?.Remote, _repository?.Branch);
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(configObject, envConfig, globalConfig, opsConfig, extendConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(configObject, envConfig, globalConfig, opsServiceConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
