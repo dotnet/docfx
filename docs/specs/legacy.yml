@@ -444,7 +444,7 @@ outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"end_line":2,"column":8,"end_column":8,"origin":"fallback"}
+    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report"}
 ---
 # Replace empty content with <div></div>
 legacy: true

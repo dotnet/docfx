@@ -315,7 +315,7 @@ outputs:
   a.json: |
     {"conceptual":"<p><a href=\"logo.svg\"></a></p>"}
   .errors.log: |
-    ["warning","link-out-of-scope","File 'dep/logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is not included in build scope","dep/b.md",1,1,"dependency"]
+    ["warning","link-out-of-scope","File 'dep/logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is not included in build scope","dep/b.md",1,1]
 ---
 # Cannot include entry docset file from dependency
 repos:
@@ -332,7 +332,7 @@ outputs:
   a.json: |
     {"conceptual":"<p><a href=\"%7E/a.md\"></a></p>"}
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: '~/a.md'.","dep/b.md",1,1,"dependency"]
+    ["warning","file-not-found","Invalid file link: '~/a.md'.","dep/b.md",1,1]
 ---
 # Don't show warning if include a file from dependency repo
 repos:
