@@ -69,6 +69,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}");
 
         /// <summary>
+        /// Build failure caused by English content when building localized docset.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error FallbackError(string defaultLocale)
+            => new Error(ErrorLevel.Error, "fallback-error", $"Error(s) from '{defaultLocale}' repository caused this build failure, please check '{defaultLocale}' build report");
+
+        /// <summary>
         /// Docfx.yml/docfx.json doesn't exist at the repo root.
         /// Examples:
         ///   - non-loc build, docfx.yml/docfx.json doesn't exist at the repo root

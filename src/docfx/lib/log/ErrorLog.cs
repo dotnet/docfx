@@ -112,6 +112,15 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
+            if (config != null && error.FilePath != null && error.FilePath.Origin == FileOrigin.Fallback)
+            {
+                if (level == ErrorLevel.Error)
+                {
+                    return Write(Errors.FallbackError(config.Localization.DefaultLocale));
+                }
+                return false;
+            }
+
             if (ExceedMaxErrors(config, level))
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
@@ -273,10 +282,9 @@ namespace Microsoft.Docs.Build
             var column = error.Column;
             var end_column = error.EndColumn;
             var date_time = DateTime.UtcNow;
-            var origin = error.FilePath?.Origin != null && error.FilePath.Origin != default ? error.FilePath.Origin : (FileOrigin?)null;
             var log_item_type = "user";
 
-            return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, end_line, column, end_column, date_time, origin });
+            return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, end_line, column, end_column, date_time });
         }
     }
 }
