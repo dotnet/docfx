@@ -91,15 +91,19 @@ else if (Model.Style == "cards")
             {
                 className = "panelContent " + Model.ClassName;
             }
+            else
+            {
+                className = Model.ClassName;
+            }
             if (Model.Columns is JValue value)
             {
                 if (int.TryParse(value.ToString(), out var i))
                 {
-                    className = Model.ClassName + " cols cols" + i.ToString();
+                    className += " cols cols" + i.ToString();
                 }
                 else
                 {
-                    className += Model.ClassName + " cols cols4";
+                    className += " cols cols4";
                 }
             }
         }
