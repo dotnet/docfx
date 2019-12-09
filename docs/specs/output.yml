@@ -21,6 +21,17 @@ outputs:
       ]
     }
 ---
+# Publish manifest contains following properties: name, product, baseUrl
+inputs:
+  docfx.yml:
+outputs:
+  .publish.json: |
+    {
+      "name": "",
+      "product": "",
+      "base_url": "https://docs.com"
+    }
+---
 # Publish manifest path is source relative path when copyResources is set to false
 inputs:
   docfx.yml: |
