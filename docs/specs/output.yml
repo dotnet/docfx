@@ -21,12 +21,14 @@ outputs:
       ]
     }
 ---
-# Publish manifest contains config baseUrl
+# Publish manifest contains following properties: name, product, baseUrl
 inputs:
   docfx.yml:
 outputs:
   .publish.json: |
     {
+      "name": "",
+      "product": "",
       "base_url": "https://docs.com"
     }
 ---
