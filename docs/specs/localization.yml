@@ -859,6 +859,7 @@ locale: zh-cn
 repos:
   https://github.com/deletedtoken/a:
     - files:
+        docsets.yml:
         a/docfx.yml:
       author: a
     - files:
@@ -871,6 +872,7 @@ repos:
       author: b
   https://github.com/deletedtoken/a.zh-cn:
     - files:
+        docsets.yml:
         a/docfx.yml:
         a/docs/a.md: |
           [!include[include deleted tokena](tokena.md)]
@@ -1303,21 +1305,24 @@ repos:
 outputs:
   b.json:
 ---
-# Loc with not repo root config
+# Loc with multiple docsets
 locale: zh-cn
 repos:
   https://docs.com/config-not-root#test:
     - files:
+        docsets.yml:
         docs/docfx.yml:
         docs/c/b.md: |
           test
   https://docs.com/config-not-root#master:
     - files:
+        docsets.yml:
         docs/docfx.yml:
         docs/c/b.md: |
           master
   https://docs.com/config-not-root.zh-cn#test:
     - files:
+        docsets.yml:
         docs/docfx.yml:
         docs/a.md: |
           [!include[](./c/b.md)]

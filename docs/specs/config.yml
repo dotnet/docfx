@@ -433,7 +433,28 @@ outputs:
   .errors.log: |
     ["error","directory-not-found","Invalid directory: 'https://docs.com/crr-url-using-path/2'."]
 ---
-# Peek .openpublishing.publish.config.json for open_to_public_contributors
+# Respect docsets.json config to search for multiple docsets
+inputs:
+  docsets.json: |
+    {
+      "docsets": ["a/**", "b/*"],
+      "exclude": ["a/2/**"]
+    }
+  docfx.yml:
+  a.md:
+  a/1/docfx.yml:
+  a/1/a.md:
+  a/2/docfx.yml:
+  a/2/a.md:
+  b/docfx.yml:
+  b/a.md:
+  c/docfx.yml:
+  c/a.md:
+outputs:
+  a/1/a.json:
+  b/a.json:
+---
+# Peek .openpublishing.publish.config.json for docsets_to_publish and open_to_public_contributors
 inputs:
   .openpublishing.publish.config.json: |
     {
@@ -449,16 +470,19 @@ inputs:
     globalMetadata:
       open_to_public_contributors: false
   b/b.md:
+  c/docfx.yml:
+  c/c.md:
 outputs:
   a.json: '{ "open_to_public_contributors": true }'
   b/b.json: '{ "open_to_public_contributors": false }'
 ---
-# Peak .openpublishing.publish.config.json for dependencies and themes
+# Peak .openpublishing.publish.config.json for multiple docsets, dependencies and themes
 repos:
   https://github.com/ops1/dep#live:
   - files:
       .openpublishing.publish.config.json: |
         {
+          "docsets_to_publish": [{ "build_source_folder": "articles" }],
           "dependent_repositories": [{
               "path_to_root": "_themes",
               "url": "https://github.com/ops1/template",

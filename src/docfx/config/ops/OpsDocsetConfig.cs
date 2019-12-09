@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         public readonly string DocsetName = "";
 
-        public readonly string BuildSourceFolder = "";
+        public readonly PathString BuildSourceFolder;
 
         public readonly bool OpenToPublicContributors;
     }

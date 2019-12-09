@@ -118,6 +118,7 @@ outputs:
 # generate same document id and version id with 'redirection with document id'
 # A => B, B's ids should be same with A's
 inputs:
+  docsets.yml:
   docs/docfx.yml: |
     baseUrl: https://docs.com/docs
     routes:
@@ -149,6 +150,7 @@ outputs:
 ---
 # generate different document id and version id with 'redirection without document id'
 inputs:
+  docsets.yml:
   sccm/docfx.yml: |
     name: sccm
     product: Win
@@ -165,6 +167,7 @@ outputs:
 # redirect with document id resolve relative redirect_url
 # publish item's redirect_url keeps user's input
 inputs:
+  docsets.yml:
   develop/docfx.yml: |
     name: partner-center-sdk
     product: MSDN
@@ -196,6 +199,7 @@ outputs:
 ---
 # Show warning if two or more files redirect to the same file with document id
 inputs:
+  docsets.yml:
   sccm/docfx.yml: |
     name: sccm
     product: Win
@@ -282,6 +286,7 @@ outputs:
 ---
 # generate document id with _op_documentIdPathDepotMapping config
 inputs:
+  docsets.yml:
   articles/docfx.yml: |
     globalMetadata:
       _op_documentIdPathDepotMapping:
@@ -396,6 +401,7 @@ repos:
             {"source_path": "a/index.md", "redirect_url": "/a"},
           ]
         }
+      docsets.yml:
       a/docfx.yml:
 outputs:
   a/.publish.json: |
@@ -433,6 +439,7 @@ inputs:
         },
       ]
     }
+  docsets.yml:
   ce/docfx.yml: |
     name: customer-engagement-ppe
     product: MSDN

@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
         {
             return EnvironmentVariable.GlobalConfigPath != null
                 ? Path.GetFullPath(EnvironmentVariable.GlobalConfigPath)
-                : PathUtility.FindYamlOrJson(Path.Combine(s_root, "docfx"));
+                : PathUtility.FindYamlOrJson(s_root, "docfx");
         }
 
         /// <summary>

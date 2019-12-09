@@ -19,13 +19,13 @@ namespace Microsoft.Docs.Build
         private string _value;
 
         /// <summary>
-        /// A non-nullable string that can never contains
+        /// A non-nullable, non-empty string that can never contain
         ///     - backslashes
         ///     - consegtive dots
         ///     - consegtive forward slashes
         ///     - leading ./
         /// </summary>
-        public string Value => _value ?? "";
+        public string Value => string.IsNullOrEmpty(_value) ? "." : _value;
 
         public bool IsEmpty => string.IsNullOrEmpty(_value);
 
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
             var str = a._value[a._value.Length - 1] == '/'
                 ? a._value + b._value
-                : a.Value + '/' + b._value;
+                : a._value + '/' + b._value;
 
             if (b._value[0] == '.')
                 return new PathString { _value = PathUtility.Normalize(str) };
@@ -119,6 +119,29 @@ namespace Microsoft.Docs.Build
             }
 
             remainingPath = default;
+            return false;
+        }
+
+        public bool FolderEquals(PathString value)
+        {
+            var a = _value ?? "";
+            var b = value._value ?? "";
+
+            if (a.Length == b.Length)
+            {
+                return string.Equals(a, b, PathUtility.PathComparison);
+            }
+
+            if (a.Length == b.Length + 1)
+            {
+                return string.Compare(a, 0, b, 0, b.Length, PathUtility.PathComparison) == 0 && a[a.Length - 1] == '/';
+            }
+
+            if (b.Length == a.Length + 1)
+            {
+                return string.Compare(a, 0, b, 0, a.Length, PathUtility.PathComparison) == 0 && b[b.Length - 1] == '/';
+            }
+
             return false;
         }
 
