@@ -19,13 +19,13 @@ namespace Microsoft.Docs.Build
         private string _value;
 
         /// <summary>
-        /// A non-nullable string that can never contains
+        /// A non-nullable, non-empty string that can never contain
         ///     - backslashes
         ///     - consegtive dots
         ///     - consegtive forward slashes
         ///     - leading ./
         /// </summary>
-        public string Value => _value ?? "";
+        public string Value => string.IsNullOrEmpty(_value) ? "." : _value;
 
         public bool IsEmpty => string.IsNullOrEmpty(_value);
 
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
             var str = a._value[a._value.Length - 1] == '/'
                 ? a._value + b._value
-                : a.Value + '/' + b._value;
+                : a._value + '/' + b._value;
 
             if (b._value[0] == '.')
                 return new PathString { _value = PathUtility.Normalize(str) };

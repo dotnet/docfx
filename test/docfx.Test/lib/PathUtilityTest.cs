@@ -78,13 +78,9 @@ namespace Microsoft.Docs.Build
         [InlineData("a", "/", false, "")]
         public static void PathMatch(string file, string matcher, bool expectedMatch, string expectedRemainingPath)
         {
-            var (match, _, remainingPath) = PathUtility.Match(file, matcher);
-            Assert.Equal(expectedMatch, match);
-            Assert.Equal(expectedRemainingPath, remainingPath);
-
             var matches = new PathString(file).StartsWithPath(new PathString(matcher), out var remaining);
             Assert.Equal(expectedMatch, matches);
-            Assert.Equal(expectedRemainingPath, remaining);
+            Assert.Equal(new PathString(expectedRemainingPath), remaining);
         }
 
         [Theory]
@@ -100,7 +96,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("", "", "")]
+        [InlineData("", "", ".")]
         [InlineData("a", "", "a")]
         [InlineData("", "a", "a")]
         [InlineData("a", "b", "a/b")]
