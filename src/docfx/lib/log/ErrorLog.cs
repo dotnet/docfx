@@ -112,6 +112,11 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
+            if (error.Code == "circular-reference" || error.Code == "include-not-found")
+            {
+                level = ErrorLevel.Error;
+            }
+
             if (config != null && error.FilePath != null && error.FilePath.Origin == FileOrigin.Fallback)
             {
                 if (level == ErrorLevel.Error)

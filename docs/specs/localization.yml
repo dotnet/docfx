@@ -969,10 +969,9 @@ repos:
         docs/program.cs:
         docs/resource.png:
 outputs:
-  docs/a.json:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'resource.png'.","docs/a.md",2,1]
-    ["warning","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md",1,1]
+    ["error","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md",1,1]
 ---
 # fallback to inclusion parent toc
 locale: zh-cn
@@ -1218,10 +1217,10 @@ repos:
         docs/3.md: |
           [!include[include deleted tokena](tokenx.md)]
 outputs:
-  docs/1.json:
-  docs/2.json:
-  docs/3.json:
-  .errors.log:
+  .errors.log: |
+    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/1.md'.","docs/1.md",1,1]
+    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/2.md'.","docs/2.md",1,1]
+    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/3.md'.","docs/3.md",1,1]
 ---
 # fallback to corresponding source branch 1
 # [repo mapping]
