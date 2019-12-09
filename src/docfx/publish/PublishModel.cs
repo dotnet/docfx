@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public string Product { get; set; }
 
-        public string BaseUrl { get; set; }
+        public string SiteBasePath { get; set; }
 
         public PublishItem[] Files { get; set; }
 

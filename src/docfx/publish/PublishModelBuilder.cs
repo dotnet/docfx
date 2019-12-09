@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
             {
                 Name = _config.Name,
                 Product = _config.Product,
-                BaseUrl = _config.BaseUrl,
+                SiteBasePath = UrlUtility.SplitBaseUrl(_config.BaseUrl).basePath,
                 Files = _publishItems.Values
                     .OrderBy(item => item.Locale)
                     .ThenBy(item => item.Path)
