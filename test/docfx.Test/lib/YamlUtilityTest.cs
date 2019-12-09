@@ -65,23 +65,16 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expected.Replace("\r\n", "\n"), value.C.Replace("\r\n", "\n"));
         }
 
-        [Fact]
-        public void TestBigInteger()
+        [Theory]
+        [InlineData("1234567890000", 1234567890000L)]
+        [InlineData("9876543210000", 9876543210000L)]
+        [InlineData("9223372036854775807", long.MaxValue)]
+        [InlineData("18446744073709551615", 1.8446744073709552E+19)]
+        public void TestBigInteger(string yaml, object expected)
         {
-            var yaml = @"
-- 1234567890000
-- 9876543210000
-- 9223372036854775807
-- 18446744073709551615
-";
-            var (errors, value) = DeserializeWithValidation<object[]>(yaml);
+            var (errors, actual) = DeserializeWithValidation<object>(yaml);
             Assert.Empty(errors);
-            Assert.NotNull(value);
-            Assert.Equal(4, value.Length);
-            Assert.Equal(1234567890000L, value[0]);
-            Assert.Equal(9876543210000L, value[1]);
-            Assert.Equal(long.MaxValue, value[2]);
-            Assert.Equal(1.8446744073709552E+19, value[3]);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -131,30 +124,18 @@ d: true
             Assert.True(value.D);
         }
 
-        [Fact]
-        public void TestBoolean()
+        [Theory]
+        [InlineData("true", true)]
+        [InlineData("True", true)]
+        [InlineData("TRUE", true)]
+        [InlineData("false", false)]
+        [InlineData("False", false)]
+        [InlineData("FALSE", false)]
+        public void TestBoolean(string yaml, bool expected)
         {
-            var yaml = @"
-- true
-- false
-";
-            var (errors1, value) = DeserializeWithValidation<object[]>(yaml);
-            Assert.Empty(errors1);
-            Assert.NotNull(value);
-            Assert.Equal(2, value.Count());
-            Assert.True((bool)value[0]);
-            Assert.False((bool)value[1]);
-            var (errors2, value2) = YamlUtility.Parse(@"
-- true
-- True
-- TRUE
-- false
-- False
-- FALSE
-", null);
-            Assert.Empty(errors2);
-            Assert.NotNull(value2);
-            Assert.Equal(new[] { true, true, true, false, false, false }, value2.Select(j => (bool)j).ToArray());
+            var (errors, actual) = DeserializeWithValidation<object>(yaml);
+            Assert.Empty(errors);
+            Assert.Equal(expected, actual);
         }
 
         [Theory]
@@ -336,7 +317,7 @@ items:
         /// <summary>
         /// De-serialize a user input string to an object, return error list at the same time
         /// </summary>
-        private static (List<Error> errors, T model) DeserializeWithValidation<T>(string json)
+        private static (List<Error> errors, T model) DeserializeWithValidation<T>(string json) where T : class, new()
         {
             var (errors, token) = YamlUtility.Parse(json, null);
             var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);

@@ -379,6 +379,7 @@ outputs:
 ---
 # Links starting with ~ are treated as path relative to docset path
 inputs:
+  docsets.yml:
   docs/docfx.yml:
   docs/a.md: |
     Link to [B1.1](~/b.md)
@@ -401,6 +402,7 @@ outputs:
 ---
 # Links in <a> or <img> tags startings with ~
 inputs:
+  docsets.yml:
   docs/docfx.yml:
   docs/a.md: |
     Link to <a href="~/b.md">b</a>
@@ -415,6 +417,7 @@ outputs:
 ---
 # Markdown inclusion using links starting with ~
 inputs:
+  docsets.yml:
   docs/docfx.yml:
   docs/a.md: |
     [!include[B1](~/b.md)]

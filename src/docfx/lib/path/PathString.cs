@@ -122,6 +122,29 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
+        public bool FolderEquals(PathString value)
+        {
+            var a = _value ?? "";
+            var b = value._value ?? "";
+
+            if (a.Length == b.Length)
+            {
+                return string.Equals(a, b, PathUtility.PathComparison);
+            }
+
+            if (a.Length == b.Length + 1)
+            {
+                return string.Compare(a, 0, b, 0, b.Length, PathUtility.PathComparison) == 0 && a[a.Length - 1] == '/';
+            }
+
+            if (b.Length == a.Length + 1)
+            {
+                return string.Compare(a, 0, b, 0, a.Length, PathUtility.PathComparison) == 0 && b[b.Length - 1] == '/';
+            }
+
+            return false;
+        }
+
         private class PathStringJsonConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType) => objectType == typeof(PathString);

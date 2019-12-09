@@ -10,22 +10,32 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static JObject Load(string docsetPath, string branch)
+        public static OpsConfig LoadOpsConfig(string workingDirectory)
+        {
+            var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
+            if (!File.Exists(fullPath))
+            {
+                return null;
+            }
+
+            var filePath = new FilePath(Path.GetRelativePath(workingDirectory, fullPath));
+            return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
+        }
+
+        public static JObject LoadAsDocfxConfig(string docsetPath, string branch)
         {
             var directory = docsetPath;
 
             do
             {
-                var fullPath = Path.Combine(directory, ".openpublishing.publish.config.json");
-                if (!File.Exists(fullPath))
+                var opsConfig = LoadOpsConfig(directory);
+                if (opsConfig is null)
                 {
                     directory = Path.GetDirectoryName(directory);
                     continue;
                 }
 
-                var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
-                var opsConfig = JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
-                var buildSourceFolder = PathUtility.NormalizeFolder(Path.GetRelativePath(directory, docsetPath));
+                var buildSourceFolder = new PathString(Path.GetRelativePath(directory, docsetPath));
 
                 return ToDocfxConfig(branch, opsConfig, buildSourceFolder);
             }
@@ -34,7 +44,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static JObject ToDocfxConfig(string branch, OpsConfig opsConfig, string buildSourceFolder)
+        private static JObject ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -57,9 +67,8 @@ namespace Microsoft.Docs.Build
                 ["repositoryBranch"] = opsConfig.GitRepositoryBranchOpenToPublicContributors,
             };
 
-            var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(config =>
-                PathUtility.PathComparer.Equals(
-                    PathUtility.NormalizeFolder(config.BuildSourceFolder), buildSourceFolder));
+            var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(
+                config => config.BuildSourceFolder.FolderEquals(buildSourceFolder));
 
             if (docsetConfig != null)
             {

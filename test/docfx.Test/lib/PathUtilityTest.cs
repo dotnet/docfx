@@ -88,6 +88,18 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
+        [InlineData("", "", true)]
+        [InlineData("", ".", true)]
+        [InlineData("a", "a", true)]
+        [InlineData("a", "a\\", true)]
+        [InlineData("a/", "a\\", true)]
+        [InlineData("a/", "a", true)]
+        public static void FolderEquals(string a, string b, bool equals)
+        {
+            Assert.Equal(equals, new PathString(a).FolderEquals(new PathString(b)));
+        }
+
+        [Theory]
         [InlineData("", "", "")]
         [InlineData("a", "", "a")]
         [InlineData("", "a", "a")]
