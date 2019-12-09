@@ -863,7 +863,6 @@ repos:
         a/docfx.yml:
       author: a
     - files:
-      docsets.yml:
         a/docfx.yml:
         a/docs/tokena.md: |
           [!include[include deleted tokenb](tokenb.md)]
