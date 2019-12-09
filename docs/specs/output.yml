@@ -21,6 +21,15 @@ outputs:
       ]
     }
 ---
+# Publish manifest contains config baseUrl
+inputs:
+  docfx.yml:
+outputs:
+  .publish.json: |
+    {
+      "base_url": "https://docs.com"
+    }
+---
 # Publish manifest path is source relative path when copyResources is set to false
 inputs:
   docfx.yml: |
