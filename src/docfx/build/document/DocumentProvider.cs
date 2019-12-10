@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
 
                 if (config.FolderRelativePathInDocset != null)
                 {
-                    sourcePath = remainingPath.IsEmpty
+                    sourcePath = remainingPath.IsDefault
                         ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
                         : config.FolderRelativePathInDocset + remainingPath;
                 }
@@ -285,7 +285,7 @@ namespace Microsoft.Docs.Build
             {
                 if (path.StartsWithPath(source, out var remainingPath))
                 {
-                    if (remainingPath.IsEmpty)
+                    if (remainingPath.IsDefault)
                     {
                         return dest + path.GetFileName();
                     }
