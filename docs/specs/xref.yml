@@ -45,7 +45,7 @@ outputs:
 # Should not remove host name if not sharing with xref href
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.co
+    hostName: docs.microsoft.co
     xref: 
       - 1.xrefmap.json
   docs/a.md: Link to @System.String?displayProperty=fullName

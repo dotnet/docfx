@@ -668,7 +668,7 @@ outputs:
 locale: zh-cn
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.com
+    hostName: docs.microsoft.com
     localization:
       mapping: Folder
   _localization/zh-cn/docs/a.md:
