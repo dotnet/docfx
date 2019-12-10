@@ -21,7 +21,7 @@ outputs:
 # hostname should be removed if docset sharing the same one
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.com
+    hostName: docs.microsoft.com
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
@@ -45,7 +45,7 @@ outputs:
 # Should not remove host name if not sharing with xref href
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.co
+    hostName: docs.microsoft.co
     xref: 
       - 1.xrefmap.json
   docs/a.md: Link to @System.String?displayProperty=fullName
@@ -105,8 +105,9 @@ repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.com/base_path
-          xrefBaseUrl: https://test.docs.com
+          hostName: docs.com
+          basePath: /base_path
+          xrefhostName: test.docs.com
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -160,7 +161,8 @@ repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.microsoft.com/base_path
+          hostName: docs.microsoft.com
+          basePath: /base_path
           xref: 
             - 1.xrefmap.json
         docs/a.md: Link to @System.String
@@ -259,7 +261,8 @@ repos:
     - files:
         docfx.yml: |
           template: {APP_BASE_PATH}data/template
-          baseUrl: https://docs.com/base_path
+          hostName: docs.com
+          basePath: /base_path
         docs/a.yml: |
           #YamlMime:TestData
           uid: a
@@ -918,7 +921,7 @@ outputs:
 # uid resolving should respect the order of xref settings
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.com
+    hostName: docs.microsoft.com
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
@@ -1022,7 +1025,8 @@ repos:
   https://docs.com/test#live:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.com/base_path
+          hostName: docs.com
+          basePath: /base_path
         docs/a.md: |
           ---
           title: Title from yaml header a

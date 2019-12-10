@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
-            _xrefHostName = string.IsNullOrEmpty(context.Config.XrefBaseUrl) ? docset.HostName : context.Config.XrefBaseUrl;
+            _xrefHostName = string.IsNullOrEmpty(context.Config.XrefHostName) ? docset.Config.HostName : context.Config.XrefHostName;
         }
 
         public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                 queries["view"] = moniker;
             }
             var resolvedHref = UrlUtility.MergeUrl(
-                RemoveSharingHost(xrefSpec.Href, referencingFile.Docset.HostName),
+                RemoveSharingHost(xrefSpec.Href, referencingFile.Docset.Config.HostName),
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment);
 
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
         public XrefMapModel ToXrefMapModel()
         {
             string repositoryBranch = null;
-            string siteBasePath = null;
+            string basePath = null;
             var references = _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
@@ -113,15 +113,15 @@ namespace Microsoft.Docs.Build
                     {
                         repositoryBranch = xref.DeclaringFile.Docset.Repository?.Branch;
                     }
-                    if (siteBasePath is null)
+                    if (basePath is null)
                     {
-                        siteBasePath = xref.DeclaringFile.Docset.SiteBasePath;
+                        basePath = xref.DeclaringFile.Docset.Config.BasePath;
                     }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
-                    var path = $"{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
+                    var path = $"https://{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
                     return xrefSpec;
@@ -129,10 +129,10 @@ namespace Microsoft.Docs.Build
                 .OrderBy(xref => xref.Uid).ToArray();
 
             var model = new XrefMapModel { References = references };
-            if (siteBasePath != null)
+            if (basePath != null)
             {
                 var properties = new XrefProperties();
-                properties.Tags.Add($"/{siteBasePath}");
+                properties.Tags.Add($"/{basePath}");
                 if (repositoryBranch == "master")
                 {
                     properties.Tags.Add("internal");
@@ -149,13 +149,13 @@ namespace Microsoft.Docs.Build
 
         private string RemoveSharingHost(string url, string hostName)
         {
-            if (url.StartsWith($"{hostName}/", StringComparison.OrdinalIgnoreCase))
+            if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring(hostName.Length);
+                return url.Substring($"https://{hostName}".Length);
             }
 
             // TODO: this workaround can be removed when all xref related repos migrated to v3
-            if (hostName.Equals("https://docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
+            if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
                         && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
             {
                 return url.Substring("https://review.docs.microsoft.com".Length);

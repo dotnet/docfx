@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         public FilePath FilePath { get; }
 
         /// <summary>
-        /// Gets file path relative to <see cref="Config.BaseUrl"/> that is:
+        /// Gets file path relative to <see cref="Config.BasePath"/> that is:
         /// For dynamic rendering:
         ///       locale  moniker-list-hash    site-path
         ///                       base_path

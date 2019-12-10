@@ -77,7 +77,8 @@ inputs:
   sccm/docfx.yml: |
     name: sccm
     product: Win
-    baseUrl: https://docs.com/sccm
+    hostName: docs.com
+    basePath: /sccm
   sccm/mdt/release-notes.md:
 outputs:
   sccm/sccm/mdt/release-notes.json: |
@@ -93,7 +94,8 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
-    baseUrl: https://docs.com/sccm
+    hostName: docs.com
+    basePath: /sccm
   sccm/mdm/index.md:
   sccm/index.md:
 outputs:
@@ -195,7 +197,7 @@ outputs:
 inputs:
   docfx.yml: |
     files: "**/*"
-    baseUrl: "https://docs.microsoft.com"
+    hostName: docs.microsoft.com
     routes:
       articles/: azure/
   articles/app-service/index.md:
