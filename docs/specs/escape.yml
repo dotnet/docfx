@@ -108,13 +108,12 @@ inputs:
   a&b.md: 'a&b'
   a&amp;b.md: 'a&amp;b'
 outputs:
-  includes.json:
   'a b.json':
   a&b.json:
   a&amp;b.json:
   .errors.log: |
-    ["warning","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md",1,1]
-    ["warning","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md",4,1]
+    ["error","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md",1,1]
+    ["error","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md",4,1]
   .publish.json:
 ---
 # Handle encoding in xref resolving

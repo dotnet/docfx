@@ -90,6 +90,10 @@ namespace Microsoft.Docs.Build
         [InlineData("a", "a\\", true)]
         [InlineData("a/", "a\\", true)]
         [InlineData("a/", "a", true)]
+        [InlineData("a", "b", false)]
+        [InlineData("/a", "a", false)]
+        [InlineData("a", "", false)]
+        [InlineData("a/b", "a/", false)]
         public static void FolderEquals(string a, string b, bool equals)
         {
             Assert.Equal(equals, new PathString(a).FolderEquals(new PathString(b)));

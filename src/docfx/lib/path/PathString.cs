@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string Value => string.IsNullOrEmpty(_value) ? "." : _value;
 
-        public bool IsEmpty => string.IsNullOrEmpty(_value);
+        public bool IsDefault => string.IsNullOrEmpty(_value);
 
         public PathString(string value) => _value = PathUtility.Normalize(value);
 
