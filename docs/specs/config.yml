@@ -116,11 +116,10 @@ outputs:
   url-a/a.json:
   b.json:
 ---
-# Global metadata
+# Global metadata in docfx.json
 inputs:
-  docfx.yml: |
-    globalMetadata:
-      key: value
+  docfx.json: |
+    { "globalMetadata": { "key": "value" } }
   docs/a.md:
   docs/b.md:
 outputs:
