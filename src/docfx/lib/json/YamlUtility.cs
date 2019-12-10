@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input, FilePath file)
+        public static T Deserialize<T>(string input, FilePath file) where T : class, new()
         {
             using (var reader = new StringReader(input))
             {
@@ -68,10 +68,10 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader input, FilePath file)
+        public static T Deserialize<T>(TextReader input, FilePath file) where T : class, new()
         {
             var (_, token) = ParseAsJToken(input, file);
-            return token.ToObject<T>(JsonUtility.Serializer);
+            return token?.ToObject<T>(JsonUtility.Serializer) ?? new T();
         }
 
         /// <summary>

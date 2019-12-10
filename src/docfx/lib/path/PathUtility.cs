@@ -27,40 +27,11 @@ namespace Microsoft.Docs.Build
         private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
 
         /// <summary>
-        /// Check if the file is the same as matcher or is inside the directory specified by matcher.
-        /// Both path should be normalized
-        /// </summary>
-        public static (bool match, bool isFileMatch, string remainingPath) Match(this string file, string matcher)
-        {
-            // TODO: Retire this method in favor of PathString
-            if (string.Equals(file, matcher, PathComparison))
-            {
-                return (true, true, "");
-            }
-
-            if (matcher == "./")
-            {
-                return (true, false, file);
-            }
-
-            if (!matcher.EndsWith('/'))
-            {
-                matcher += '/';
-            }
-
-            if (file.StartsWith(matcher, PathComparison))
-            {
-                return (true, false, file.Substring(matcher.Length).Replace('\\', '/'));
-            }
-
-            return (false, false, "");
-        }
-
-        /// <summary>
         /// Finds a yaml or json file under the specified location
         /// </summary>
-        public static string FindYamlOrJson(string pathWithoutExtension)
+        public static string FindYamlOrJson(string directory, string fileNameWithoutExtension)
         {
+            var pathWithoutExtension = Path.Combine(directory, fileNameWithoutExtension);
             var fullPath = NormalizeFile(pathWithoutExtension + ".yml");
             if (File.Exists(fullPath))
             {

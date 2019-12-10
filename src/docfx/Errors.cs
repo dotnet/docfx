@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' in '{docsetPath}' or subdirectories");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find docfx config file in '{docsetPath}'");
 
         /// <summary>
         /// Two files include each other.

@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
                 return new Dictionary<string, string>();
             }
 
-            var data = YamlUtility.Deserialize<JObject[]>(File.ReadAllText(file), new FilePath(file));
+            var data = YamlUtility.Deserialize<JArray>(File.ReadAllText(file), new FilePath(file));
 
             return data.ToDictionary(item => item.Value<string>("uid"), item => item.Value<string>("name"));
         }

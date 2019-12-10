@@ -73,6 +73,7 @@ outputs:
 # document id = md5("Win.sccm|mdt/release-notes.md")
 # version independent id = md5("Win.sccm|mdt/release-notes")
 inputs:
+  docsets.yml:
   sccm/docfx.yml: |
     name: sccm
     product: Win
@@ -87,6 +88,7 @@ outputs:
 # document id = md5("Win.sccm|index.md") || md5("Win.sccm|mdm/index.md")
 # version independent id = md5("Win.sccm|index") || md5("Win.sccm|mdm/index")
 inputs:
+  docsets.yml:
   sccm/docfx.yml: |
     name: sccm
     product: Win
