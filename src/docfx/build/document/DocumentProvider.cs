@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, config.Output.Json, isPage);
             }
 
-            return $"{docset.Config.HostName}/{docset.Locale}{siteUrl}";
+            return $"https://{docset.Config.HostName}/{docset.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {

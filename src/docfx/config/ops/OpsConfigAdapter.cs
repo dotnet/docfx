@@ -40,10 +40,9 @@ namespace Microsoft.Docs.Build
             {
                 ["product"] = docset.product_name,
                 ["siteName"] = docset.site_name,
-                ["hostName"] = $"https://{GetHostName(docset.site_name)}",
-                ["basePath"] = docset.base_path.TrimStart('/'),
-                ["baseUrl"] = $"https://{GetHostName(docset.site_name)}{docset.base_path}",
-                ["xrefBaseUrl"] = $"https://{GetXrefHostName(docset.site_name, branch)}",
+                ["hostName"] = GetHostName(docset.site_name),
+                ["basePath"] = docset.base_path,
+                ["xrefHostName"] = GetXrefHostName(docset.site_name, branch),
                 ["localization"] = new JObject
                 {
                     ["defaultLocale"] = GetDefaultLocale(docset.site_name),

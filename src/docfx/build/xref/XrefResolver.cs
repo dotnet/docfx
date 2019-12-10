@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
-                    var path = $"{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
+                    var path = $"https://{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
                     return xrefSpec;
@@ -149,13 +149,13 @@ namespace Microsoft.Docs.Build
 
         private string RemoveSharingHost(string url, string hostName)
         {
-            if (url.StartsWith($"{hostName}/", StringComparison.OrdinalIgnoreCase))
+            if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring(hostName.Length);
+                return url.Substring($"https://{hostName}".Length);
             }
 
             // TODO: this workaround can be removed when all xref related repos migrated to v3
-            if (hostName.Equals("https://docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
+            if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
                         && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
             {
                 return url.Substring("https://review.docs.microsoft.com".Length);

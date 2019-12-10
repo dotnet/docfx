@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(
                 new
                 {
-                    host = docset.Config.HostName,
+                    host = $"https://{docset.Config.HostName}",
                     locale = docset.Locale,
                     base_path = $"/{docset.Config.BasePath}",
                     source_base_path = ".",

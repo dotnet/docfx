@@ -5,8 +5,8 @@ inputs:
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .
@@ -157,8 +157,8 @@ inputs:
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .
@@ -1448,8 +1448,8 @@ inputs:
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .
@@ -1501,8 +1501,8 @@ inputs:
   docfx.yml: |
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .
@@ -1549,8 +1549,8 @@ inputs:
     exclude: "**/includes/**"
     monikerRange:
       'docs/v1/**': 'versioning-2.0 || versioning-1.0'
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/v1/: .
     monikerDefinition: monikerDefinition.json

@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
             if (Output.LowerCaseUrl)
             {
                 HostName = HostName.ToLowerInvariant();
-                BasePath = BasePath.ToLowerInvariant();
+                BasePath = BasePath.ToLowerInvariant().TrimStart('/');
             }
         }
     }

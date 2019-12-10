@@ -224,14 +224,15 @@ namespace Microsoft.Docs.Build
 
         private static string RemoveLeadingHostNameLocale(string redirectionUrl, string hostName)
         {
-            var (redirectHostName, redirectPath) = UrlUtility.SplitBaseUrl(redirectionUrl);
-            if (!string.Equals(redirectHostName, hostName, StringComparison.OrdinalIgnoreCase))
+            var uri = new Uri(redirectionUrl);
+            var redirectPath = UrlUtility.MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
+            if (!string.Equals(uri.Host, hostName, StringComparison.OrdinalIgnoreCase))
             {
                 return redirectionUrl;
             }
 
             int slashIndex = redirectPath.IndexOf('/');
-            if (redirectPath.IndexOf('/') < 0)
+            if (slashIndex < 0)
             {
                 return $"/{redirectPath}";
             }

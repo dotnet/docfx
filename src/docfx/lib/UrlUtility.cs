@@ -68,28 +68,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Split an absolute URL into a host name (including https://) and a base path (never starts with /)
-        /// </summary>
-        public static (string host, string basePath) SplitBaseUrl(string url)
-        {
-            url = url.Replace('\\', '/');
-
-            var i = url.IndexOf("://");
-            if (i < 0)
-            {
-                return ("", url.TrimStart('/'));
-            }
-
-            i = url.IndexOf('/', i + 3);
-            if (i < 0)
-            {
-                return (url, "");
-            }
-
-            return (url.Substring(0, i), url.Substring(i).TrimStart('/'));
-        }
-
-        /// <summary>
         /// Combines URL segments into a single URL.
         /// </summary>
         public static string Combine(params string[] urlSegments)

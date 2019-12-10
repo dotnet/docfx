@@ -634,11 +634,11 @@ repos:
   https://docs.com/metadata1#master:
     - files:
         docfx.yml: |
-          hostName: https://docs.microsoft.com
+          hostName: docs.microsoft.com
   https://docs.com/metadata1.zh-cn#master:
     - files:
         docfx.yml: |
-          hostName: https://docs.microsoft.com
+          hostName: docs.microsoft.com
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -651,13 +651,13 @@ repos:
   https://docs.com/metadata2#live:
     - files:
         docfx.yml: |
-          hostName: https://docs.microsoft.com
+          hostName: docs.microsoft.com
           localization:
             mapping: Branch
   https://docs.com/metadata2.loc#live.zh-cn:
     - files:
         docfx.yml: |
-          hostName: https://docs.microsoft.com
+          hostName: docs.microsoft.com
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -684,14 +684,14 @@ repos:
   https://docs.com/metadata4#master:
     - files:
         docfx.yml: |
-          hostName: https://docs.microsoft.com
+          hostName: docs.microsoft.com
           localization:
             mapping: Branch
             bilingual: true
   https://docs.com/metadata4.loc#master.zh-cn:
     - files:
         docfx.yml: |
-          hostName: https://docs.microsoft.com
+          hostName: docs.microsoft.com
         docs/a.md:
   https://docs.com/metadata4.loc#master-sxs.zh-cn:
     - files:

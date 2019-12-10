@@ -101,8 +101,8 @@ repos:
     files:
       docfx.yml: |
         template: https://docs.com/template1
-        hostName: https://docs.com
-        basePath: rawmetadata
+        hostName: docs.com
+        basePath: /rawmetadata
 
       redirections.yml: |
         redirections:
@@ -180,7 +180,7 @@ outputs:
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/9549588dee7108d93d0bee2c9bb1c5659dd3c842/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/dfa40713b23b18bc475f253526f3df9a59a99d3e/c.md",
         "site_name": "Docs",
         "depot_name": ".",
         "search.ms_docsetname": "",
@@ -328,8 +328,8 @@ inputs:
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': 'netcore-2.0'
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .
@@ -393,8 +393,8 @@ inputs:
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
       'docs/v2/**': 'netcore-2.0'
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .

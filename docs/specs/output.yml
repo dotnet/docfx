@@ -24,8 +24,8 @@ outputs:
 # Publish manifest contains following properties: name, product, site_base_path
 inputs:
   docfx.yml: |
-    hostName: https://docs.com
-    basePath: base_path
+    hostName: docs.com
+    basePath: /base_path
 outputs:
   .publish.json: |
     {

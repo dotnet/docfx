@@ -70,7 +70,7 @@ outputs:
 # redirect to can start with https and hostname
 inputs:
   docfx.yml: |
-    hostName: https://docs.microsoft.com
+    hostName: docs.microsoft.com
   b.md:
   redirections.yml: |
     renames:
@@ -82,11 +82,11 @@ outputs:
 # redirect to can start with https and hostname with locale
 inputs:
   docfx.yml: |
-    hostName: https://docs.microsoft.com
+    hostName: docs.microsoft.com
   b.md:
   redirections.yml: |
     renames:
-      a.md: https://docs.microsoft.com/en-us/b
+      a.md: https://docs.microsoft.com/en-us/b?query#fragment
 outputs:
   b.json: |
    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}
@@ -119,8 +119,8 @@ outputs:
 # A => B, B's ids should be same with A's
 inputs:
   docs/docfx.yml: |
-    hostName: https://docs.com
-    basePath: docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
   docs/redirections.yml: |
@@ -154,8 +154,8 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
-    hostName: https://docs.com
-    basePath: sccm
+    hostName: docs.com
+    basePath: /sccm
   redirections.yml: |
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -170,8 +170,8 @@ inputs:
   develop/docfx.yml: |
     name: partner-center-sdk
     product: MSDN
-    hostName: https://docs.com
-    basePath: partner-center-sdk
+    hostName: docs.com
+    basePath: /partner-center-sdk
   develop/redirections.yml: |
     renames:
       agreement-metadata.md: agreement-metadata-resources
@@ -203,8 +203,8 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
-    hostName: https://docs.com
-    basePath: sccm
+    hostName: docs.com
+    basePath: /sccm
   sccm/redirections.yml: |
     renames:
       mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -273,8 +273,8 @@ inputs:
         folder_relative_path_in_docset: articles
     name: azure-documents
     product: Azure
-    hostName: https://docs.com
-    basePath: azure
+    hostName: docs.com
+    basePath: /azure
     routes:
       articles/: .
   articles/iot-central/concepts-architecture.md:
@@ -318,8 +318,8 @@ inputs:
     name: azure-documents
     product: Azure
     files: "**/*"
-    hostName: https://docs.com
-    basePath: azure
+    hostName: docs.com
+    basePath: /azure
     routes:
       articles/: .
   redirections.yml: |
@@ -341,8 +341,8 @@ inputs:
     product: Azure
     name: azure-documents
     files: "**/*"
-    hostName: https://docs.com
-    basePath: azure
+    hostName: docs.com
+    basePath: /azure
     routes:
       articles/: .
   articles/active-directory-b2c/index.yml : |
@@ -364,8 +364,8 @@ inputs:
     product: Azure
     name: azure-documents
     files: "**/*"
-    hostName: https://docs.com
-    basePath: azure
+    hostName: docs.com
+    basePath: /azure
     routes:
       articles/: .
   redirections.yml: |
