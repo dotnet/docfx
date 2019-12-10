@@ -31,8 +31,8 @@ namespace Microsoft.Docs.Build
         public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
 
         public LegacyFileMapItem(
-            string legacyOutputFilePathRelativeToSiteBasePath,
-            string legacySiteUrlRelativeToSiteBasePath,
+            string legacyOutputFilePathRelativeToBasePath,
+            string legacySiteUrlRelativeToBasePath,
             ContentType contentType,
             string version,
             IReadOnlyList<string> monikers)
@@ -43,15 +43,15 @@ namespace Microsoft.Docs.Build
                 case ContentType.Redirection:
                     Type = "Content";
                     OutputRelativePath = PathUtility.NormalizeFile(
-                        LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToSiteBasePath, ".html"));
-                    AssetId = legacySiteUrlRelativeToSiteBasePath;
+                        LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToBasePath, ".html"));
+                    AssetId = legacySiteUrlRelativeToBasePath;
                     Version = version;
                     Monikers = monikers;
                     break;
                 case ContentType.Resource:
                     Type = "Resource";
-                    OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
-                    AssetId = legacySiteUrlRelativeToSiteBasePath;
+                    OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
+                    AssetId = legacySiteUrlRelativeToBasePath;
                     Version = version;
                     Monikers = monikers;
                     break;
@@ -62,8 +62,8 @@ namespace Microsoft.Docs.Build
         }
 
         public static LegacyFileMapItem Instance(
-            string legacyOutputFilePathRelativeToSiteBasePath,
-            string legacySiteUrlRelativeToSiteBasePath,
+            string legacyOutputFilePathRelativeToBasePath,
+            string legacySiteUrlRelativeToBasePath,
             ContentType contentType,
             string version,
             IReadOnlyList<string> monikers)
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             }
 
             return new LegacyFileMapItem(
-                legacyOutputFilePathRelativeToSiteBasePath, legacySiteUrlRelativeToSiteBasePath, contentType, version, monikers);
+                legacyOutputFilePathRelativeToBasePath, legacySiteUrlRelativeToBasePath, contentType, version, monikers);
         }
 
         private static string RemoveExtension(string path)

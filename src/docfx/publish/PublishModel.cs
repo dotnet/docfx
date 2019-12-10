@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -15,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public string Product { get; set; }
 
-        public string SiteBasePath { get; set; }
+        public string BasePath { get; set; }
 
         public PublishItem[] Files { get; set; }
 

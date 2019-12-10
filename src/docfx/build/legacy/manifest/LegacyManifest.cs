@@ -25,9 +25,9 @@ namespace Microsoft.Docs.Build
                 Parallel.ForEach(fileManifests, fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
+                        var legacyOutputPathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(
                             context, docset, fileManifest.Value);
-                        var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
+                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
 
                         var output = new LegacyManifestOutput
                         {
@@ -37,8 +37,8 @@ namespace Microsoft.Docs.Build
                             {
                                 IsRawPage = false,
                                 RelativePath = document.ContentType == ContentType.Resource
-                                ? legacyOutputPathRelativeToSiteBasePath + ".mta.json"
-                                : LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".mta.json"),
+                                ? legacyOutputPathRelativeToBasePath + ".mta.json"
+                                : LegacyUtility.ChangeExtension(legacyOutputPathRelativeToBasePath, ".mta.json"),
                             },
                         };
 
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                         {
                             var resourceOutput = new LegacyManifestOutputItem
                             {
-                                RelativePath = legacyOutputPathRelativeToSiteBasePath,
+                                RelativePath = legacyOutputPathRelativeToBasePath,
                                 IsRawPage = false,
                             };
                             if (!docset.Config.Output.CopyResources)
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                             output.TocOutput = new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
-                                RelativePath = legacyOutputPathRelativeToSiteBasePath,
+                                RelativePath = legacyOutputPathRelativeToBasePath,
                             };
                         }
 
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                                 output.PageOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
-                                    RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToSiteBasePath, ".raw.page.json"),
+                                    RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToBasePath, ".raw.page.json"),
                                 };
                             }
                             else
@@ -80,14 +80,14 @@ namespace Microsoft.Docs.Build
                                 output.TocOutput = new LegacyManifestOutputItem
                                 {
                                     IsRawPage = false,
-                                    RelativePath = legacyOutputPathRelativeToSiteBasePath,
+                                    RelativePath = legacyOutputPathRelativeToBasePath,
                                 };
                             }
                         }
 
                         var file = new LegacyManifestItem
                         {
-                            AssetId = legacySiteUrlRelativeToSiteBasePath,
+                            AssetId = legacySiteUrlRelativeToBasePath,
                             Original = fileManifest.Value.SourcePath,
                             SourceRelativePath = document.FilePath.Path,
                             OriginalType = GetOriginalType(document.ContentType),
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                     version_info = new { },
                     items_to_publish = itemsToPublish,
                 },
-                Path.Combine(docset.SiteBasePath, ".manifest.json"));
+                Path.Combine(docset.Config.BasePath, ".manifest.json"));
             }
         }
 

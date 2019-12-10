@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         public static void Initialize()
         {
             Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
-            Environment.SetEnvironmentVariable("DOCFX_BASE_URL", "https://docs.com");
+            Environment.SetEnvironmentVariable("DOCFX_HOST_NAME", "https://docs.com");
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT__JSON", "true");
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT__COPY_RESOURCES", "true");
 

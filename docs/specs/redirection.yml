@@ -70,7 +70,7 @@ outputs:
 # redirect to can start with https and hostname
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.com/
+    hostName: https://docs.microsoft.com
   b.md:
   redirections.yml: |
     renames:
@@ -82,7 +82,7 @@ outputs:
 # redirect to can start with https and hostname with locale
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.com/
+    hostName: https://docs.microsoft.com
   b.md:
   redirections.yml: |
     renames:
@@ -119,7 +119,8 @@ outputs:
 # A => B, B's ids should be same with A's
 inputs:
   docs/docfx.yml: |
-    baseUrl: https://docs.com/docs
+    hostName: https://docs.com
+    basePath: docs
     routes:
       docs/: .
   docs/redirections.yml: |
@@ -153,7 +154,8 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
-    baseUrl: https://docs.com/sccm
+    hostName: https://docs.com
+    basePath: sccm
   redirections.yml: |
     redirections:
       sccm/mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -168,7 +170,8 @@ inputs:
   develop/docfx.yml: |
     name: partner-center-sdk
     product: MSDN
-    baseUrl: https://docs.com/partner-center-sdk
+    hostName: https://docs.com
+    basePath: partner-center-sdk
   develop/redirections.yml: |
     renames:
       agreement-metadata.md: agreement-metadata-resources
@@ -200,7 +203,8 @@ inputs:
     name: sccm
     product: Win
     files: "**/*"
-    baseUrl: https://docs.com/sccm
+    hostName: https://docs.com
+    basePath: sccm
   sccm/redirections.yml: |
     renames:
       mdm/index.md: /sccm/mdm/understand/hybrid-mobile-device-management
@@ -269,7 +273,8 @@ inputs:
         folder_relative_path_in_docset: articles
     name: azure-documents
     product: Azure
-    baseUrl: https://docs.com/Azure
+    hostName: https://docs.com
+    basePath: azure
     routes:
       articles/: .
   articles/iot-central/concepts-architecture.md:
@@ -313,7 +318,8 @@ inputs:
     name: azure-documents
     product: Azure
     files: "**/*"
-    baseUrl: https://docs.com/azure
+    hostName: https://docs.com
+    basePath: azure
     routes:
       articles/: .
   redirections.yml: |
@@ -335,7 +341,8 @@ inputs:
     product: Azure
     name: azure-documents
     files: "**/*"
-    baseUrl: https://docs.com/articles
+    hostName: https://docs.com
+    basePath: azure
     routes:
       articles/: .
   articles/active-directory-b2c/index.yml : |
@@ -345,9 +352,9 @@ inputs:
     ### YamlMime:YamlDocument
     documentType: LandingData
 outputs:
-  articles/active-directory-b2c/index.json: |
+  azure/active-directory-b2c/index.json: |
     {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
-  articles/active-directory-b2c/test.json: |
+  azure/active-directory-b2c/test.json: |
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
 ---
 # index.yml's document id also follows the redirection rules
@@ -357,7 +364,8 @@ inputs:
     product: Azure
     name: azure-documents
     files: "**/*"
-    baseUrl: https://docs.com/azure
+    hostName: https://docs.com
+    basePath: azure
     routes:
       articles/: .
   redirections.yml: |

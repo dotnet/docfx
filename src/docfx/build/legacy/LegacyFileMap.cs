@@ -30,14 +30,14 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var legacyOutputFilePathRelativeToSiteBasePath = document.ToLegacyOutputPathRelativeToSiteBasePath(
+                        var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(
                             context, docset, fileManifest.Value);
-                        var legacySiteUrlRelativeToSiteBasePath = document.ToLegacySiteUrlRelativeToSiteBasePath(docset);
+                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
 
                         var version = context.MonikerProvider.GetFileLevelMonikerRange(document.FilePath);
                         var fileItem = LegacyFileMapItem.Instance(
-                            legacyOutputFilePathRelativeToSiteBasePath,
-                            legacySiteUrlRelativeToSiteBasePath,
+                            legacyOutputFilePathRelativeToBasePath,
+                            legacySiteUrlRelativeToBasePath,
                             document.ContentType,
                             version,
                             fileManifest.Value.Monikers);
@@ -58,9 +58,9 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(
                 new
                 {
-                    host = docset.HostName,
+                    host = docset.Config.HostName,
                     locale = docset.Locale,
-                    base_path = $"/{docset.SiteBasePath}",
+                    base_path = $"/{docset.Config.BasePath}",
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.SiteBasePath, "filemap.json"));
+                Path.Combine(docset.Config.BasePath, "filemap.json"));
         }
     }
 }

@@ -8,35 +8,35 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static string ToLegacyOutputPathRelativeToSiteBasePath(this Document doc, Context context, Docset docset, PublishItem manifestItem)
+        public static string ToLegacyOutputPathRelativeToBasePath(this Document doc, Context context, Docset docset, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
             if (doc.ContentType == ContentType.Resource && !doc.Docset.Config.Output.CopyResources)
             {
                 outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath, manifestItem.Monikers);
             }
-            var legacyOutputFilePathRelativeToSiteBasePath = Path.GetRelativePath(
-                string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath, outputPath);
+            var legacyOutputFilePathRelativeToBasePath = Path.GetRelativePath(
+                string.IsNullOrEmpty(docset.Config.BasePath) ? "." : docset.Config.BasePath, outputPath);
 
-            return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToSiteBasePath);
+            return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
         }
 
-        public static string ToLegacySiteUrlRelativeToSiteBasePath(this Document doc, Docset docset)
+        public static string ToLegacySiteUrlRelativeToBasePath(this Document doc, Docset docset)
         {
-            var legacySiteUrlRelativeToSiteBasePath = doc.SiteUrl;
-            if (legacySiteUrlRelativeToSiteBasePath.StartsWith($"/{docset.SiteBasePath}", PathUtility.PathComparison))
+            var legacySiteUrlRelativeToBasePath = doc.SiteUrl;
+            if (legacySiteUrlRelativeToBasePath.StartsWith($"/{docset.Config.BasePath}", PathUtility.PathComparison))
             {
-                legacySiteUrlRelativeToSiteBasePath = legacySiteUrlRelativeToSiteBasePath.Substring(1);
-                legacySiteUrlRelativeToSiteBasePath = Path.GetRelativePath(
-                    string.IsNullOrEmpty(docset.SiteBasePath) ? "." : docset.SiteBasePath,
-                    string.IsNullOrEmpty(legacySiteUrlRelativeToSiteBasePath) ? "." : legacySiteUrlRelativeToSiteBasePath);
+                legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath.Substring(1);
+                legacySiteUrlRelativeToBasePath = Path.GetRelativePath(
+                    string.IsNullOrEmpty(docset.Config.BasePath) ? "." : docset.Config.BasePath,
+                    string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 
             return PathUtility.NormalizeFile(
                 Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison)
                 && doc.ContentType != ContentType.Resource
-                ? $"{legacySiteUrlRelativeToSiteBasePath}/index"
-                : legacySiteUrlRelativeToSiteBasePath);
+                ? $"{legacySiteUrlRelativeToBasePath}/index"
+                : legacySiteUrlRelativeToBasePath);
         }
 
         public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
