@@ -21,3 +21,38 @@ outputs:
   docs/index.mta.json:
   docs/index.raw.page.json: |
     { "content": "<ul class=\"cardsM cols cols1\"><li><a class=\"card\" href=\"/en-us/a\" data-linktype=\"absolute-path\"><img class=\"cardImage\" role=\"presentation\" src=\"./a.png\" data-linktype=\"relative-path\"><div class=\"cardText\"><h3></h3><p>Test html</p></div></a></li></ul>" }
+---
+# Support grid type
+legacy: true
+inputs:
+  docfx.yml:
+  docs/index.yml: |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+    sections:
+    - title: Service
+      items:
+      - type: grid
+        style: columns
+        className: column50
+        items:
+        - type: list
+          style: cards
+          className: cardsD
+          items:
+          - title: Item1
+            html: <p>item1</p>
+          - title: Item2
+            html: <p>item2</p>
+        - type: list
+          style: cards
+          className: cardsD
+          items:
+          - title: Item3
+            html: <p>item3</p>
+          - title: Item4
+            html: <p>item4</p>
+outputs:
+  docs/index.mta.json:
+  docs/index.raw.page.json: |
+    { "content": "<ul class=\"cardsM cols cols1\"><li><a class=\"card\" href=\"/en-us/a\" data-linktype=\"absolute-path\"><img class=\"cardImage\" role=\"presentation\" src=\"./a.png\" data-linktype=\"relative-path\"><div class=\"cardText\"><h3></h3><p>Test html</p></div></a></li></ul>" }
