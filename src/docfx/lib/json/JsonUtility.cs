@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json, FilePath file)
+        public static T Deserialize<T>(string json, FilePath file) where T : class, new()
         {
             using (var reader = new StringReader(json))
             {
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader json, FilePath file)
+        public static T Deserialize<T>(TextReader json, FilePath file) where T : class, new()
         {
             using (var reader = new JsonTextReader(json))
             {
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value.Push(status);
 
-                    return s_serializer.Deserialize<T>(reader);
+                    return s_serializer.Deserialize<T>(reader) ?? new T();
                 }
                 catch (JsonReaderException ex)
                 {
@@ -157,10 +157,10 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error> errors, T value) ToObject<T>(JToken token)
+        public static (List<Error> errors, T value) ToObject<T>(JToken token) where T : class, new()
         {
             var (errors, obj) = ToObject(token, typeof(T));
-            return (errors, (T)obj);
+            return (errors, obj as T ?? new T());
         }
 
         public static (List<Error> errors, object value) ToObject(JToken token, Type type)

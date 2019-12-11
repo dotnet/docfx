@@ -45,17 +45,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public Repository Repository { get; }
 
-        /// <summary>
-        /// Gets the site base path calculated from <see cref="Config.BaseUrl"/>.
-        /// It is either an empty string, or a path without leading /
-        /// </summary>
-        public string SiteBasePath { get; }
-
-        /// <summary>
-        /// Gets the {Schema}://{HostName}
-        /// </summary>
-        public string HostName { get; }
-
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
 
         public Docset(string docsetPath, string locale, Config config, Repository repository)
@@ -64,7 +53,6 @@ namespace Microsoft.Docs.Build
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
             Culture = CreateCultureInfo(Locale);
-            (HostName, SiteBasePath) = UrlUtility.SplitBaseUrl(config.BaseUrl);
 
             Repository = repository;
 

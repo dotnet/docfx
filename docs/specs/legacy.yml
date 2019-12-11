@@ -101,7 +101,9 @@ repos:
     files:
       docfx.yml: |
         template: https://docs.com/template1
-        baseUrl: https://docs.com/rawmetadata
+        hostName: docs.com
+        basePath: /rawmetadata
+
       redirections.yml: |
         redirections:
           a.md: /b
@@ -178,7 +180,7 @@ outputs:
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/e8f058141f57d856be5a0c86b55cba07e0a8bace/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/059da4c838d11026288349e031208d1e1c9aeeb5/c.md",
         "site_name": "Docs",
         "depot_name": ".",
         "search.ms_docsetname": "",
@@ -326,7 +328,8 @@ inputs:
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': 'netcore-2.0'
-    baseUrl: https://docs.com/docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .
@@ -390,7 +393,8 @@ inputs:
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
       'docs/v2/**': 'netcore-2.0'
-    baseUrl: https://docs.com/docs
+    hostName: docs.com
+    basePath: /docs
     routes:
       docs/: .
       docs/v1/: .
@@ -444,7 +448,7 @@ outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/b.md","line":2,"end_line":2,"column":8,"end_column":8,"origin":"fallback"}
+    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report"}
 ---
 # Replace empty content with <div></div>
 legacy: true

@@ -21,24 +21,23 @@ namespace Microsoft.Docs.Build
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
         {
-            if (!Directory.Exists(workingDirectory))
+            var glob = FindDocsetsGlob(workingDirectory);
+            if (glob is null)
             {
-                return Array.Empty<(string, string)>();
+                return new[] { (workingDirectory, options.Output) };
             }
 
-            return Directory.GetFiles(workingDirectory, "docfx.yml", SearchOption.AllDirectories)
+            var files = Directory.GetFiles(workingDirectory, "docfx.yml", SearchOption.AllDirectories)
+                .Concat(Directory.GetFiles(workingDirectory, "docfx.json", SearchOption.AllDirectories));
 
-                // TODO: look for docfx.json after config migration tool has been merged info docfx
-                // .Concat(Directory.GetFiles(workingDirectory, "docfx.json", SearchOption.AllDirectories))
-                .Select(file => Path.GetDirectoryName(file))
-                .Distinct()
-                .Select(docsetPath =>
-                {
-                    var docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath);
-                    var outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder);
-                    return (docsetPath, outputPath);
-                })
-                .ToArray();
+            return (
+                from file in files
+                let configPath = Path.GetRelativePath(workingDirectory, file)
+                where glob(configPath)
+                let docsetPath = Path.GetDirectoryName(file)
+                let docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath)
+                let outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder)
+                select (docsetPath, outputPath)).Distinct().ToArray();
         }
 
         /// <summary>
@@ -46,7 +45,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
         {
-            var configPath = PathUtility.FindYamlOrJson(Path.Combine(docsetPath, "docfx"));
+            var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
             {
                 throw Errors.ConfigNotFound(docsetPath).ToException();
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = options?.ToJObject();
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var opsConfig = OpsConfigLoader.Load(docsetPath, _repository?.Branch ?? "master");
+            var opsConfig = OpsConfigLoader.LoadAsDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -72,10 +71,11 @@ namespace Microsoft.Docs.Build
             // Download dependencies
             var fileResolver = new FileResolver(docsetPath, preloadConfig, noFetch);
             var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
+            var opsServiceConfig = opsConfig is null ? null : OpsConfigAdapter.Load(fileResolver, preloadConfig.Name, _repository?.Remote, _repository?.Branch);
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(configObject, envConfig, globalConfig, opsConfig, extendConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(configObject, envConfig, globalConfig, opsServiceConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
@@ -118,6 +118,33 @@ namespace Microsoft.Docs.Build
             }
 
             return result;
+        }
+
+        private static Func<string, bool> FindDocsetsGlob(string workingDirectory)
+        {
+            var opsConfig = OpsConfigLoader.LoadOpsConfig(workingDirectory);
+            if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
+            {
+                return docsetFolder =>
+                {
+                    var sourceFolder = new PathString(Path.GetDirectoryName(docsetFolder));
+                    return opsConfig.DocsetsToPublish.Any(docset => docset.BuildSourceFolder.FolderEquals(sourceFolder));
+                };
+            }
+
+            var configPath = PathUtility.FindYamlOrJson(workingDirectory, "docsets");
+            if (configPath != null)
+            {
+                var content = File.ReadAllText(configPath);
+                var source = new FilePath(Path.GetFileName(configPath));
+                var config = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+                    ? YamlUtility.Deserialize<DocsetsConfig>(content, source)
+                    : JsonUtility.Deserialize<DocsetsConfig>(content, source);
+
+                return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
+            }
+
+            return null;
         }
 
         private static JObject LoadEnvironmentVariables()

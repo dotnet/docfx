@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
 
-            var outputPath = UrlUtility.Combine(_docset.SiteBasePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
+            var outputPath = UrlUtility.Combine(_docset.Config.BasePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
 
             return _docset.Config.Legacy && file.IsPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
 
                 if (config.FolderRelativePathInDocset != null)
                 {
-                    sourcePath = remainingPath.IsEmpty
+                    sourcePath = remainingPath.IsDefault
                         ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
                         : config.FolderRelativePathInDocset + remainingPath;
                 }
@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
                 sitePath = sitePath.ToLowerInvariant();
             }
 
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(docset.SiteBasePath, sitePath), contentType, mime, docset.Config.Output.Json, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(docset.Config.BasePath, sitePath), contentType, mime, docset.Config.Output.Json, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
 
             return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, config.Output.Json, isPage);
             }
 
-            return $"{docset.HostName}/{docset.Locale}{siteUrl}";
+            return $"https://{docset.Config.HostName}/{docset.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {
@@ -285,7 +285,7 @@ namespace Microsoft.Docs.Build
             {
                 if (path.StartsWithPath(source, out var remainingPath))
                 {
-                    if (remainingPath.IsEmpty)
+                    if (remainingPath.IsDefault)
                     {
                         return dest + path.GetFileName();
                     }

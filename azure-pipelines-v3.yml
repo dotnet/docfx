@@ -26,6 +26,7 @@ jobs:
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
+      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
 
 - job: MacBuild
   pool:
@@ -44,6 +45,7 @@ jobs:
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
+      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
 
 # Test and deploy on windows
 - job: WindowsBuild
@@ -64,6 +66,7 @@ jobs:
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
+      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
 
   # Push to sandbox MyGet feed
@@ -159,6 +162,7 @@ jobs:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
+      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)

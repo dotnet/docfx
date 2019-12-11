@@ -30,11 +30,6 @@ namespace Microsoft.Docs.Build
         public readonly string Product = string.Empty;
 
         /// <summary>
-        /// Gets the default docset name
-        /// </summary>
-        public readonly string Name = string.Empty;
-
-        /// <summary>
         /// Gets the file glob patterns included by the docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -74,14 +69,20 @@ namespace Microsoft.Docs.Build
         public readonly GlobalMetadata GlobalMetadata = new GlobalMetadata();
 
         /// <summary>
-        /// {Schema}://{Hostname}/{SiteBasePath}: https://docs.microsoft.com/dotnet
+        /// Gets the {Schema}://{HostName}
         /// </summary>
-        public string BaseUrl { get; private set; } = string.Empty;
+        public string HostName { get; private set; } = string.Empty;
 
         /// <summary>
-        /// host name used for generating .xrefmap.json
+        /// Gets the site base path.
+        /// It is either an empty string, or a path without leading /
         /// </summary>
-        public string XrefBaseUrl { get; private set; } = string.Empty;
+        public string BasePath { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// Gets host name used for generating .xrefmap.json
+        /// </summary>
+        public string XrefHostName { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets whether we are running in legacy mode
@@ -214,7 +215,8 @@ namespace Microsoft.Docs.Build
         {
             if (Output.LowerCaseUrl)
             {
-                BaseUrl = BaseUrl.ToLowerInvariant();
+                HostName = HostName.ToLowerInvariant();
+                BasePath = BasePath.ToLowerInvariant().TrimStart('/');
             }
         }
     }

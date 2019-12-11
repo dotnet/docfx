@@ -634,11 +634,11 @@ repos:
   https://docs.com/metadata1#master:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.microsoft.com
+          hostName: docs.microsoft.com
   https://docs.com/metadata1.zh-cn#master:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.microsoft.com
+          hostName: docs.microsoft.com
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -651,13 +651,13 @@ repos:
   https://docs.com/metadata2#live:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.microsoft.com
+          hostName: docs.microsoft.com
           localization:
             mapping: Branch
   https://docs.com/metadata2.loc#live.zh-cn:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.microsoft.com
+          hostName: docs.microsoft.com
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -668,7 +668,7 @@ outputs:
 locale: zh-cn
 inputs:
   docfx.yml: |
-    baseUrl: https://docs.microsoft.com
+    hostName: docs.microsoft.com
     localization:
       mapping: Folder
   _localization/zh-cn/docs/a.md:
@@ -684,14 +684,14 @@ repos:
   https://docs.com/metadata4#master:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.microsoft.com
+          hostName: docs.microsoft.com
           localization:
             mapping: Branch
             bilingual: true
   https://docs.com/metadata4.loc#master.zh-cn:
     - files:
         docfx.yml: |
-          baseUrl: https://docs.microsoft.com
+          hostName: docs.microsoft.com
         docs/a.md:
   https://docs.com/metadata4.loc#master-sxs.zh-cn:
     - files:
@@ -859,6 +859,7 @@ locale: zh-cn
 repos:
   https://github.com/deletedtoken/a:
     - files:
+        docsets.yml:
         a/docfx.yml:
       author: a
     - files:
@@ -871,6 +872,7 @@ repos:
       author: b
   https://github.com/deletedtoken/a.zh-cn:
     - files:
+        docsets.yml:
         a/docfx.yml:
         a/docs/a.md: |
           [!include[include deleted tokena](tokena.md)]
@@ -969,10 +971,9 @@ repos:
         docs/program.cs:
         docs/resource.png:
 outputs:
-  docs/a.json:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'resource.png'.","docs/a.md",2,1]
-    ["warning","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md",1,1]
+    ["error","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md",1,1]
 ---
 # fallback to inclusion parent toc
 locale: zh-cn
@@ -1218,10 +1219,10 @@ repos:
         docs/3.md: |
           [!include[include deleted tokena](tokenx.md)]
 outputs:
-  docs/1.json:
-  docs/2.json:
-  docs/3.json:
-  .errors.log:
+  .errors.log: |
+    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/1.md'.","docs/1.md",1,1]
+    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/2.md'.","docs/2.md",1,1]
+    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/3.md'.","docs/3.md",1,1]
 ---
 # fallback to corresponding source branch 1
 # [repo mapping]
@@ -1303,21 +1304,24 @@ repos:
 outputs:
   b.json:
 ---
-# Loc with not repo root config
+# Loc with multiple docsets
 locale: zh-cn
 repos:
   https://docs.com/config-not-root#test:
     - files:
+        docsets.yml:
         docs/docfx.yml:
         docs/c/b.md: |
           test
   https://docs.com/config-not-root#master:
     - files:
+        docsets.yml:
         docs/docfx.yml:
         docs/c/b.md: |
           master
   https://docs.com/config-not-root.zh-cn#test:
     - files:
+        docsets.yml:
         docs/docfx.yml:
         docs/a.md: |
           [!include[](./c/b.md)]

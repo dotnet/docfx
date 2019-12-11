@@ -86,6 +86,7 @@ namespace Microsoft.Docs.Build
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
+                { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
             };
 

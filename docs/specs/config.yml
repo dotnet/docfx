@@ -116,11 +116,10 @@ outputs:
   url-a/a.json:
   b.json:
 ---
-# Global metadata
+# Global metadata in docfx.json
 inputs:
-  docfx.yml: |
-    globalMetadata:
-      key: value
+  docfx.json: |
+    { "globalMetadata": { "key": "value" } }
   docs/a.md:
   docs/b.md:
 outputs:
@@ -434,13 +433,34 @@ outputs:
   .errors.log: |
     ["error","directory-not-found","Invalid directory: 'https://docs.com/crr-url-using-path/2'."]
 ---
-# Peek .openpublishing.publish.config.json for docset name and open_to_public_contributors
+# Respect docsets.json config to search for multiple docsets
+inputs:
+  docsets.json: |
+    {
+      "docsets": ["a/**", "b/*"],
+      "exclude": ["a/2/**"]
+    }
+  docfx.yml:
+  a.md:
+  a/1/docfx.yml:
+  a/1/a.md:
+  a/2/docfx.yml:
+  a/2/a.md:
+  b/docfx.yml:
+  b/a.md:
+  c/docfx.yml:
+  c/a.md:
+outputs:
+  a/1/a.json:
+  b/a.json:
+---
+# Peek .openpublishing.publish.config.json for docsets_to_publish and open_to_public_contributors
 inputs:
   .openpublishing.publish.config.json: |
     {
       "docsets_to_publish": [
-        { "docset_name": "a", "build_source_folder": ".", "open_to_public_contributors": true },
-        { "docset_name": "b", "build_source_folder": "b", "open_to_public_contributors": true }
+        { "build_source_folder": ".", "open_to_public_contributors": true },
+        { "build_source_folder": "b", "open_to_public_contributors": true }
       ]
     }
   docfx.yml: |
@@ -450,18 +470,19 @@ inputs:
     globalMetadata:
       open_to_public_contributors: false
   b/b.md:
+  c/docfx.yml:
+  c/c.md:
 outputs:
   a.json: '{ "open_to_public_contributors": true }'
-  .publish.json: '{ "name": "a" }'
   b/b.json: '{ "open_to_public_contributors": false }'
-  b/.publish.json: '{ "name": "b" }'
 ---
-# Peak .openpublishing.publish.config.json for dependencies and themes
+# Peak .openpublishing.publish.config.json for multiple docsets, dependencies and themes
 repos:
   https://github.com/ops1/dep#live:
   - files:
       .openpublishing.publish.config.json: |
         {
+          "docsets_to_publish": [{ "build_source_folder": "articles" }],
           "dependent_repositories": [{
               "path_to_root": "_themes",
               "url": "https://github.com/ops1/template",
@@ -491,3 +512,23 @@ outputs:
     { "conceptual": "<p>live1</p>" }
   articles/crr/token.json: |
     { "conceptual": "<p>live1</p>" }
+---
+# Throw error for OPS repos that are not provisioned
+build: false
+repos:
+  https://github.com/ops/provision:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+           "docsets_to_publish": [{ "docset_name": "bad_name" }]
+        }
+      docfx.yml: |
+        http:
+          https://op-build-prod.azurewebsites.net:
+            headers:
+              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
+environments:
+  - DOCS_OPS_TOKEN
+outputs:
+  .errors.log: |
+    ["error","docset-not-provisioned","*"]

@@ -12,6 +12,13 @@ namespace Microsoft.Docs.Build
     internal static class Errors
     {
         /// <summary>
+        /// Build an OPS repo with a docset name that isn't provisioned.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error DocsetNotProvisioned(SourceInfo<string> name)
+            => new Error(ErrorLevel.Error, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.", name);
+
+        /// <summary>
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
@@ -62,6 +69,13 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}");
 
         /// <summary>
+        /// Build failure caused by English content when building localized docset.
+        /// </summary>
+        /// Behavior: ✔️ Message: ❌
+        public static Error FallbackError(string defaultLocale)
+            => new Error(ErrorLevel.Error, "fallback-error", $"Error(s) from '{defaultLocale}' repository caused this build failure, please check '{defaultLocale}' build report");
+
+        /// <summary>
         /// Docfx.yml/docfx.json doesn't exist at the repo root.
         /// Examples:
         ///   - non-loc build, docfx.yml/docfx.json doesn't exist at the repo root
@@ -70,7 +84,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error ConfigNotFound(string docsetPath)
-            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find config file 'docfx.yml/docfx.json' in '{docsetPath}' or subdirectories");
+            => new Error(ErrorLevel.Error, "config-not-found", $"Can't find docfx config file in '{docsetPath}'");
 
         /// <summary>
         /// Two files include each other.

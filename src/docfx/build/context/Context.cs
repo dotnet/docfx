@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             BuildQueue = new WorkQueue<FilePath>();
 
             Config = docset.Config;
-            FileResolver = new FileResolver(docset.DocsetPath, noFetch: true);
+            FileResolver = new FileResolver(docset.DocsetPath, Config, noFetch: true);
             ErrorLog = errorLog;
             Input = input;
             LocalizationProvider = localizationProvider;
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider = new DocumentProvider(docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
             MetadataProvider = new MetadataProvider(docset, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, docset.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(docset.Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);

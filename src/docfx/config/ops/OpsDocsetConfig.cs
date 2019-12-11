@@ -9,9 +9,9 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsDocsetConfig
     {
-        public readonly string DocsetName;
+        public readonly string DocsetName = "";
 
-        public readonly string BuildSourceFolder;
+        public readonly PathString BuildSourceFolder;
 
         public readonly bool OpenToPublicContributors;
     }

@@ -91,19 +91,14 @@ namespace Microsoft.Docs.Build
             Assert.False(value.D);
         }
 
-        [Fact]
-        public void TestBoolean()
+        [Theory]
+        [InlineData("true", true)]
+        [InlineData("false", false)]
+        public void TestBoolean(string json, bool expected)
         {
-            var sw = new StringWriter();
-            JsonUtility.Serialize(sw, new object[] { true, false });
-            var json = sw.ToString();
-            Assert.Equal("[true,false]", json);
-            var (errors, value) = DeserializeWithValidation<object[]>(json);
+            var (errors, actual) = DeserializeWithValidation<object>(json);
             Assert.Empty(errors);
-            Assert.NotNull(value);
-            Assert.Equal(2, value.Length);
-            Assert.True((bool)value[0]);
-            Assert.False((bool)value[1]);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -205,7 +200,7 @@ namespace Microsoft.Docs.Build
         [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
         internal void TestNulllValue(string json, string message, string errorCode, ErrorLevel errorLevel)
         {
-            var (errors, result) = DeserializeWithValidation<JToken>(json.Replace('\'', '"'));
+            var (errors, result) = JsonUtility.Parse(json.Replace('\'', '"'), null);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(errorLevel, error.Level);
@@ -469,7 +464,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
-        private static (List<Error>, T) DeserializeWithValidation<T>(string input)
+        private static (List<Error>, T) DeserializeWithValidation<T>(string input) where T : class, new()
         {
             var (errors, token) = JsonUtility.Parse(input, null);
             var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
