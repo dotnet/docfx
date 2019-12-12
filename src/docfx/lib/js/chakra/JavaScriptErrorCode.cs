@@ -1,4 +1,4 @@
-﻿namespace ChakraHost.Hosting
+namespace ChakraHost.Hosting
 {
     /// <summary>
     ///     An error code returned from a Chakra hosting API.
