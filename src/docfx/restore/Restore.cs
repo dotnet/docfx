@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             }
 
             var result = await Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.All(x => x) ? 0 : 1;
+            return result.Any(hasError => hasError) ? 1 : 0;
         }
 
         private static async Task<bool> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     var configLoader = new ConfigLoader(repository);
                     (errors, config) = configLoader.Load(docsetPath, options);
                     if (errorLog.Write(errors))
-                        return false;
+                        return true;
 
                     var fileResolver = new FileResolver(docsetPath, config);
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
@@ -69,8 +69,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
                     Log.Write(dex);
-                    errorLog.Write(dex.Error, isException: true);
-                    return false;
+                    return errorLog.Write(dex.Error);
                 }
                 finally
                 {
@@ -78,7 +77,7 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
-                return true;
+                return false;
             }
         }
 

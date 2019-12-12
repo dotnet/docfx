@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
             {
-                throw Errors.DocsetNotProvisioned(name).ToException();
+                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
             }
 
             return new JObject

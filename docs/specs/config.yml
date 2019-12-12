@@ -531,4 +531,4 @@ environments:
   - DOCS_OPS_TOKEN
 outputs:
   .errors.log: |
-    ["error","docset-not-provisioned","*"]
+    ["warning","docset-not-provisioned","*"]
