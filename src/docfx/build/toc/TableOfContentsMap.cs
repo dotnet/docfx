@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(path, dex.Error, isException: true);
+                context.ErrorLog.Write(path, dex.Error, dex.OverwriteLevel);
             }
         }
 

@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
+using YamlDotNet.Serialization.ObjectGraphVisitors;
 
 namespace Microsoft.Docs.Build
 {
