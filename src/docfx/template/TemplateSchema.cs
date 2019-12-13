@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             var schemaFilePath = Path.Combine(schemaDir, $"{schemaName}.schema.json");
             if (string.Equals(schemaName, "LandingData", StringComparison.OrdinalIgnoreCase))
             {
-                schemaFilePath = Path.Combine(AppContext.BaseDirectory, "data", "schemas", "LandingData.json");
+                schemaFilePath = Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json");
             }
             if (!File.Exists(schemaFilePath))
             {

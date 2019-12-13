@@ -44,12 +44,14 @@ namespace Microsoft.Docs.Build
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var configLoader = new ConfigLoader(repository);
-                    (errors, config) = configLoader.Load(docsetPath, options);
+                    var opsConfigAdapter = new OpsConfigAdapter(errorLog);
+                    var configLoader = new ConfigLoader(repository, opsConfigAdapter);
+
+                    (errors, config) = await configLoader.Load(docsetPath, options);
                     if (errorLog.Write(errors))
                         return true;
 
-                    var fileResolver = new FileResolver(docsetPath, config);
+                    var fileResolver = new FileResolver(docsetPath, config, opsConfigAdapter);
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos

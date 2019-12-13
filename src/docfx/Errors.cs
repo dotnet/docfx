@@ -15,8 +15,15 @@ namespace Microsoft.Docs.Build
         /// Build an OPS repo with a docset name that isn't provisioned.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error DocsetNotProvisioned(SourceInfo<string> name)
-            => new Error(ErrorLevel.Warning, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.", name);
+        public static Error DocsetNotProvisioned(string name)
+            => new Error(ErrorLevel.Warning, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.");
+
+        /// <summary>
+        /// Build an OPS repo when the validation service goes down.
+        /// </summary>
+        /// Behavior: ✔️ Message: ✔️
+        public static Error ValidationIncomplete()
+            => new Error(ErrorLevel.Warning, "validation-incomplete", $"Failed to get the validation ruleset and validation was not completed. This happens when there's an issue with the service and continuing to retry the call could cause build delays. You might have content issues that were not reported. To retry validation, close and re-open your PR, or rebuild your branch via Docs Portal (requires admin permissions). If you need admin help or if you continue to see this message, file an issue via https://SiteHelp.");
 
         /// <summary>
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
@@ -616,6 +623,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Error Custom404Page(Document file)
             => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
+
+        public static Error MetadataValidationRuleset(string ruleset)
+            => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}");
 
         private static string Join<T>(IEnumerable<T> source)
         {

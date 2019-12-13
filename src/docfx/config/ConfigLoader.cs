@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -13,10 +14,12 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly Repository _repository;
+        private readonly OpsConfigAdapter _opsConfigAdapter;
 
-        public ConfigLoader(Repository repository)
+        public ConfigLoader(Repository repository, OpsConfigAdapter opsConfigAdapter)
         {
             _repository = repository;
+            _opsConfigAdapter = opsConfigAdapter;
         }
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -43,7 +46,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
+        public async Task<(List<Error> errors, Config config)> Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
@@ -69,9 +72,13 @@ namespace Microsoft.Docs.Build
             errors.AddRange(preloadErrors);
 
             // Download dependencies
-            var fileResolver = new FileResolver(docsetPath, preloadConfig, noFetch);
+            var fileResolver = new FileResolver(docsetPath, preloadConfig, _opsConfigAdapter, noFetch);
             var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
-            var opsServiceConfig = opsConfig is null ? null : OpsConfigAdapter.Load(fileResolver, preloadConfig.Name, _repository?.Remote, _repository?.Branch);
+
+            // Ops service config
+            var opsServiceConfig = opsConfig != null
+                ? await _opsConfigAdapter.GetBuildConfig(preloadConfig.Name, _repository?.Remote, _repository?.Branch)
+                : default;
 
             // Create full config
             var configObject = new JObject();
