@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public async Task<(List<Error> errors, Config config)> Load(string docsetPath, ErrorLog errorLog, CommandLineOptions options, bool noFetch = false)
+        public async Task<(List<Error> errors, Config config)> Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
