@@ -624,6 +624,9 @@ namespace Microsoft.Docs.Build
         public static Error Custom404Page(Document file)
             => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
 
+        public static Error MetadataValidationRuleset(string ruleset)
+            => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}");
+
         private static string Join<T>(IEnumerable<T> source)
         {
             var formatSource = source.Select(item => item.ToString()).OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'");

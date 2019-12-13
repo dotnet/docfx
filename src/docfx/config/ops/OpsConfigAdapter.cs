@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
                 var response = await _http.SendAsync(request);
                 if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                 {
-                    Log.Write($"X-Metadata-Version: {string.Join(',', metadataVersion)}");
+                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
