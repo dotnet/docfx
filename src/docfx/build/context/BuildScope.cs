@@ -33,8 +33,8 @@ namespace Microsoft.Docs.Build
         public BuildScope(Config config, Input input, Docset fallbackDocset)
         {
             _config = config;
-            _contentGlobs = CreateGlobs(config, config.Content);
-            _resourceGlobs = CreateGlobs(config, config.Resource);
+            _contentGlobs = CreateGlobs(config.Files, config, config.Content);
+            _resourceGlobs = CreateGlobs(Array.Empty<string>(), config, config.Resource);
 
             using (Progress.Start("Globbing files"))
             {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
 
         public bool GlobResource(PathString path)
         {
-            return MapResource(path, _resourceGlobs).mapping != null;
+            return MapPath(_resourceMappings, path, _resourceGlobs).mapping != null;
         }
 
         public bool Glob(PathString path)
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
         public (PathString path, FileMappingConfig mapping) MapPath(PathString path)
         {
-            return MapPath(path, _contentGlobs.Concat(_resourceGlobs).ToArray());
+            return MapPath(_fileMappings, path, _contentGlobs.Concat(_resourceGlobs).ToArray());
         }
 
         public bool OutOfScope(Document filePath)
@@ -92,24 +92,12 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        private (PathString path, FileMappingConfig mapping) MapResource(PathString path, (Func<string, bool>, FileMappingConfig)[] globs)
+        private (PathString path, FileMappingConfig mapping) MapPath(
+            ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> mappings,
+            PathString path,
+            (Func<string, bool>, FileMappingConfig)[] globs)
         {
-            return _resourceMappings.GetOrAdd(path, _ =>
-            {
-                foreach (var (glob, mapping) in globs)
-                {
-                    if (path.StartsWithPath(mapping.Src, out var remainingPath) && glob(remainingPath))
-                    {
-                        return (mapping.Dest + remainingPath, mapping);
-                    }
-                }
-                return (path, null);
-            });
-        }
-
-        private (PathString path, FileMappingConfig mapping) MapPath(PathString path, (Func<string, bool>, FileMappingConfig)[] globs)
-        {
-            return _fileMappings.GetOrAdd(path, _ =>
+            return mappings.GetOrAdd(path, _ =>
             {
                 foreach (var (glob, mapping) in globs)
                 {
@@ -154,12 +142,12 @@ namespace Microsoft.Docs.Build
             return (fileNames, files);
         }
 
-        private static (Func<string, bool>, FileMappingConfig)[] CreateGlobs(Config config, FileMappingConfig[] mappings)
+        private static (Func<string, bool>, FileMappingConfig)[] CreateGlobs(string[] files, Config config, FileMappingConfig[] mappings)
         {
             if (mappings.Length == 0)
             {
                 var glob = GlobUtility.CreateGlobMatcher(
-                    mappings.SelectMany(x => x.Files).ToArray(), config.Exclude.Concat(Config.DefaultExclude).ToArray());
+                    files, config.Exclude.Concat(Config.DefaultExclude).ToArray());
 
                 return new[] { (glob, new FileMappingConfig()) };
             }
