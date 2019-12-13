@@ -22,6 +22,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> _fileMappings
                    = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig)>();
 
+        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> _resourceMappings
+                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig)>();
+
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
         /// </summary>
@@ -53,7 +56,7 @@ namespace Microsoft.Docs.Build
 
         public bool GlobResource(PathString path)
         {
-            return MapPath(path, _resourceGlobs).mapping != null;
+            return MapResource(path, _resourceGlobs).mapping != null;
         }
 
         public bool Glob(PathString path)
@@ -87,6 +90,21 @@ namespace Microsoft.Docs.Build
         public bool GetActualFileName(PathString fileName, out PathString actualFileName)
         {
             return _fileNames.TryGetValue(fileName, out actualFileName);
+        }
+
+        private (PathString path, FileMappingConfig mapping) MapResource(PathString path, (Func<string, bool>, FileMappingConfig)[] globs)
+        {
+            return _resourceMappings.GetOrAdd(path, _ =>
+            {
+                foreach (var (glob, mapping) in globs)
+                {
+                    if (path.StartsWithPath(mapping.Src, out var remainingPath) && glob(remainingPath))
+                    {
+                        return (mapping.Dest + remainingPath, mapping);
+                    }
+                }
+                return (path, null);
+            });
         }
 
         private (PathString path, FileMappingConfig mapping) MapPath(PathString path, (Func<string, bool>, FileMappingConfig)[] globs)
@@ -141,7 +159,7 @@ namespace Microsoft.Docs.Build
             if (mappings.Length == 0)
             {
                 var glob = GlobUtility.CreateGlobMatcher(
-                    config.Files, config.Exclude.Concat(Config.DefaultExclude).ToArray());
+                    mappings.SelectMany(x => x.Files).ToArray(), config.Exclude.Concat(Config.DefaultExclude).ToArray());
 
                 return new[] { (glob, new FileMappingConfig()) };
             }

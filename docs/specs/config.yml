@@ -534,10 +534,11 @@ outputs:
   .errors.log: |
     ["warning","docset-not-provisioned","*"]
 ---
-# Support resource as part of config
+# JSON file as resource
 inputs:
-  docfx.yml:
-  docs/a.md: Link to @a
+  docfx.yml: |
+    resource:
+      files: b.json
+  b.json:
 outputs:
-  docs/a.json: |
-    { "conceptual": "<p>Link to @a</p>" }
+  b.json:
