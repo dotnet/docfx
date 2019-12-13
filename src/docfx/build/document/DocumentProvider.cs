@@ -55,9 +55,7 @@ namespace Microsoft.Docs.Build
                 return ContentType.Unknown;
             }
 
-            if (!path.EndsWith(".md", PathUtility.PathComparison) &&
-                !path.EndsWith(".json", PathUtility.PathComparison) &&
-                !path.EndsWith(".yml", PathUtility.PathComparison))
+            if (_buildScope.GlobResource(new PathString(path)))
             {
                 return ContentType.Resource;
             }

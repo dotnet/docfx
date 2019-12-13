@@ -53,8 +53,9 @@ inputs:
     - files: docs/**/*.md
       exclude: docs/**/ignore.md
     resource:
-      files: '*.png'
-  docs/index.md:
+      files: 
+        - '*.png'
+  docs/index.md: |
   docs/ignore.md:
   docs/a.png:
   b.png:
@@ -532,3 +533,11 @@ environments:
 outputs:
   .errors.log: |
     ["warning","docset-not-provisioned","*"]
+---
+# Support resource as part of config
+inputs:
+  docfx.yml:
+  docs/a.md: Link to @a
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to @a</p>" }
