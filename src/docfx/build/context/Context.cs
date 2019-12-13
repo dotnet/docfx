@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
             Config = docset.Config;
             ErrorLog = errorLog;
-            FileResolver = new FileResolver(docset.DocsetPath, ErrorLog, Config, noFetch: true);
+            FileResolver = new FileResolver(docset.DocsetPath, Config, new OpsConfigAdapter(errorLog), noFetch: true);
             Input = input;
             LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input);

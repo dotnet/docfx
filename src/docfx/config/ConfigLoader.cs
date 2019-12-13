@@ -14,10 +14,12 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly Repository _repository;
+        private readonly OpsConfigAdapter _opsConfigAdapter;
 
-        public ConfigLoader(Repository repository)
+        public ConfigLoader(Repository repository, OpsConfigAdapter opsConfigAdapter)
         {
             _repository = repository;
+            _opsConfigAdapter = opsConfigAdapter;
         }
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -70,12 +72,12 @@ namespace Microsoft.Docs.Build
             errors.AddRange(preloadErrors);
 
             // Download dependencies
-            var fileResolver = new FileResolver(docsetPath, errorLog, preloadConfig, noFetch);
+            var fileResolver = new FileResolver(docsetPath, preloadConfig, _opsConfigAdapter, noFetch);
             var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
 
             // Ops service config
             var opsServiceConfig = opsConfig != null
-                ? await OpsConfigAdapter.GetBuildConfig(preloadConfig.Name, _repository?.Remote, _repository?.Branch)
+                ? await _opsConfigAdapter.GetBuildConfig(preloadConfig.Name, _repository?.Remote, _repository?.Branch)
                 : default;
 
             // Create full config

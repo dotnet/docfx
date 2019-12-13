@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class OpsConfigAdapter
+    internal class OpsConfigAdapter : IDisposable
     {
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
@@ -37,16 +37,22 @@ namespace Microsoft.Docs.Build
             ? "https://docs.microsoft.com/api/metadata"
             : "https://ppe.docs.microsoft.com/api/metadata";
 
-        private static readonly (string, Func<ErrorLog, Uri, Task<string>>)[] s_apis = new (string, Func<ErrorLog, Uri, Task<string>>)[]
+        private readonly ErrorLog _errorLog;
+        private readonly HttpClient _http = new HttpClient();
+        private readonly (string, Func<Uri, Task<string>>)[] _apis;
+
+        public OpsConfigAdapter(ErrorLog errorLog)
         {
-            (MonikerDefinitionApi, GetMonikerDefinition),
-            (MetadataSchemaApi, GetMetadataSchema),
-            (MarkdownValidationRulesApi, GetMarkdownValidationRules),
-        };
+            _errorLog = errorLog;
+            _apis = new (string, Func<Uri, Task<string>>)[]
+            {
+                (MonikerDefinitionApi, GetMonikerDefinition),
+                (MetadataSchemaApi, GetMetadataSchema),
+                (MarkdownValidationRulesApi, GetMarkdownValidationRules),
+            };
+        }
 
-        private static readonly HttpClient s_http = new HttpClient();
-
-        public static async Task<JObject> GetBuildConfig(SourceInfo<string> name, string repository, string branch)
+        public async Task<JObject> GetBuildConfig(SourceInfo<string> name, string repository, string branch)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
             {
@@ -86,24 +92,29 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public static async Task<HttpResponseMessage> InterceptHttpRequest(ErrorLog errorLog, HttpRequestMessage request)
+        public async Task<HttpResponseMessage> InterceptHttpRequest(HttpRequestMessage request)
         {
-            foreach (var (baseUrl, rule) in s_apis)
+            foreach (var (baseUrl, rule) in _apis)
             {
                 if (request.RequestUri.OriginalString.StartsWith(baseUrl))
                 {
-                    return new HttpResponseMessage { Content = new StringContent(await rule(errorLog, request.RequestUri)) };
+                    return new HttpResponseMessage { Content = new StringContent(await rule(request.RequestUri)) };
                 }
             }
             return null;
         }
 
-        private static Task<string> GetMonikerDefinition(ErrorLog errorLog, Uri url)
+        public void Dispose()
+        {
+            _http.Dispose();
+        }
+
+        private Task<string> GetMonikerDefinition(Uri url)
         {
             return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers", s_opsHeaders);
         }
 
-        private static async Task<string> GetMarkdownValidationRules(ErrorLog errorLog, Uri url)
+        private async Task<string> GetMarkdownValidationRules(Uri url)
         {
             try
             {
@@ -114,12 +125,12 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 Log.Write(ex);
-                errorLog.Write(Errors.ValidationIncomplete());
+                _errorLog.Write(Errors.ValidationIncomplete());
                 return "{}";
             }
         }
 
-        private static async Task<string> GetMetadataSchema(ErrorLog errorLog, Uri url)
+        private async Task<string> GetMetadataSchema(Uri url)
         {
             try
             {
@@ -132,7 +143,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 Log.Write(ex);
-                errorLog.Write(Errors.ValidationIncomplete());
+                _errorLog.Write(Errors.ValidationIncomplete());
                 return "{}";
             }
         }
@@ -148,7 +159,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, Action on404 = null)
+        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, Action on404 = null)
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
@@ -161,7 +172,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                var response = await s_http.SendAsync(request);
+                var response = await _http.SendAsync(request);
                 if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                 {
                     Log.Write($"X-Metadata-Version: {string.Join(',', metadataVersion)}");

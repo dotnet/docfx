@@ -20,16 +20,16 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
-        private readonly ErrorLog _errorLog;
+        private readonly PreloadConfig _config;
+        private readonly OpsConfigAdapter _opsConfigAdapter;
         private readonly bool _noFetch;
-        private readonly Action<HttpRequestMessage> _provideCredential;
 
-        public FileResolver(string docsetPath, ErrorLog errorLog = null, PreloadConfig config = null, bool noFetch = false)
+        public FileResolver(string docsetPath, PreloadConfig config = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
-            _errorLog = errorLog;
+            _opsConfigAdapter = opsConfigAdapter;
             _noFetch = noFetch;
-            _provideCredential = ProvideCredential(config);
+            _config = config;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -173,38 +173,38 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                _provideCredential?.Invoke(message);
+                ProvideCredential(message);
 
-                var response = await OpsConfigAdapter.InterceptHttpRequest(_errorLog, message);
-                if (response != null)
+                if (_opsConfigAdapter != null)
                 {
-                    return response;
+                    var response = await _opsConfigAdapter.InterceptHttpRequest(message);
+                    if (response != null)
+                    {
+                        return response;
+                    }
                 }
 
                 return await s_httpClient.SendAsync(message);
             }
         }
 
-        private static Action<HttpRequestMessage> ProvideCredential(PreloadConfig config)
+        private void ProvideCredential(HttpRequestMessage message)
         {
-            return message =>
+            if (_config != null)
             {
-                if (config != null)
+                var url = message.RequestUri.ToString();
+                foreach (var (baseUrl, rule) in _config.Http)
                 {
-                    var url = message.RequestUri.ToString();
-                    foreach (var (baseUrl, rule) in config.Http)
+                    if (url.StartsWith(baseUrl))
                     {
-                        if (url.StartsWith(baseUrl))
+                        foreach (var header in rule.Headers)
                         {
-                            foreach (var header in rule.Headers)
-                            {
-                                message.Headers.Add(header.Key, header.Value);
-                            }
-                            break;
+                            message.Headers.Add(header.Key, header.Value);
                         }
+                        break;
                     }
                 }
-            };
+            }
         }
     }
 }
