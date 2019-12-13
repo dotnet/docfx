@@ -45,11 +45,13 @@ namespace Microsoft.Docs.Build
 
                     // load configuration from current entry or fallback repository
                     var configLoader = new ConfigLoader(repository);
-                    (errors, config) = configLoader.Load(docsetPath, options);
+
+                    // TODO: refactor how we propagate errors
+                    (errors, config) = await configLoader.Load(docsetPath, errorLog, options);
                     if (errorLog.Write(errors))
                         return true;
 
-                    var fileResolver = new FileResolver(docsetPath, config);
+                    var fileResolver = new FileResolver(docsetPath, errorLog, config);
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos

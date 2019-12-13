@@ -2,14 +2,17 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Xunit;
+using Yunit;
 
 namespace Microsoft.Docs.Build
 {
     public static class OpsConfigAdapterTest
     {
         [Theory]
-        [InlineData("", "", "", null)]
+        [InlineData("", "", "", "null")]
         [InlineData(
             "azure-documents",
             "https://github.com/MicrosoftDocs/azure-docs-pr",
@@ -30,7 +33,7 @@ namespace Microsoft.Docs.Build
             "https://github.com/MicrosoftDocs/mc-docs-pr",
             "master",
             "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn','localization':{'defaultLocale':'zh-cn'}}")]
-        public static void AdaptOpsServiceConfig(string name, string repository, string branch, string expectedJson)
+        public static async Task AdaptOpsServiceConfig(string name, string repository, string branch, string expectedJson)
         {
             var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
             if (string.IsNullOrEmpty(token))
@@ -38,13 +41,9 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var fileResolver = new FileResolver(".", request => request.Headers.Add("X-OP-BuildUserToken", token));
-            var actualJson = OpsConfigAdapter
-                .Load(fileResolver, new SourceInfo<string>(name), repository, branch)
-                ?.ToString(Newtonsoft.Json.Formatting.None)
-                ?.Replace('"', '\'');
+            var actualConfig = await OpsConfigAdapter.GetBuildConfig(new SourceInfo<string>(name), repository, branch);
 
-            Assert.Equal(expectedJson, actualJson);
+            new JsonDiffBuilder().UseAdditionalProperties().Build().Verify(JToken.Parse(expectedJson.Replace('\'', '"')), actualConfig);
         }
     }
 }

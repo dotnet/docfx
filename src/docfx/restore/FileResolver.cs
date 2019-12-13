@@ -20,19 +20,16 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
+        private readonly ErrorLog _errorLog;
         private readonly bool _noFetch;
         private readonly Action<HttpRequestMessage> _provideCredential;
 
-        public FileResolver(string docsetPath, PreloadConfig config, bool noFetch = false)
-            : this(docsetPath, ProvideCredential(config), noFetch)
-        {
-        }
-
-        public FileResolver(string docsetPath, Action<HttpRequestMessage> provideCredential = null, bool noFetch = false)
+        public FileResolver(string docsetPath, ErrorLog errorLog = null, PreloadConfig config = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
+            _errorLog = errorLog;
             _noFetch = noFetch;
-            _provideCredential = provideCredential;
+            _provideCredential = ProvideCredential(config);
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -165,7 +162,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
+        private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."
@@ -178,7 +175,13 @@ namespace Microsoft.Docs.Build
 
                 _provideCredential?.Invoke(message);
 
-                return s_httpClient.SendAsync(message);
+                var response = await OpsConfigAdapter.InterceptHttpRequest(_errorLog, message);
+                if (response != null)
+                {
+                    return response;
+                }
+
+                return await s_httpClient.SendAsync(message);
             }
         }
 
@@ -186,16 +189,19 @@ namespace Microsoft.Docs.Build
         {
             return message =>
             {
-                var url = message.RequestUri.ToString();
-                foreach (var (baseUrl, rule) in config.Http)
+                if (config != null)
                 {
-                    if (url.StartsWith(baseUrl))
+                    var url = message.RequestUri.ToString();
+                    foreach (var (baseUrl, rule) in config.Http)
                     {
-                        foreach (var header in rule.Headers)
+                        if (url.StartsWith(baseUrl))
                         {
-                            message.Headers.Add(header.Key, header.Value);
+                            foreach (var header in rule.Headers)
+                            {
+                                message.Headers.Add(header.Key, header.Value);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             };
