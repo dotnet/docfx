@@ -194,6 +194,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         using (new LoggerPhaseScope("BuildCore"))
                         {
+                            AddNestedNamespaceFiles(parameter);
                             manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
                         }
                     }
@@ -497,6 +498,38 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             Logger.LogVerbose($"Plugin hash is '{result}'");
             return result;
+        }
+
+        private static void AddNestedNamespaceFiles(DocumentBuildParameters parameter)
+        {
+            List<string> nestedNamespaceFiles = null;
+            string nestedNamespaceSourceDir = null;
+
+            if (parameter.Metadata.ContainsKey("nestedNamespaceFiles"))
+                nestedNamespaceFiles = parameter.Metadata["nestedNamespaceFiles"] as List<string>;
+
+            if (parameter.Metadata.ContainsKey("nestedNamespaceSourceDir"))
+                nestedNamespaceSourceDir = parameter.Metadata["nestedNamespaceSourceDir"] as string;
+
+            if (nestedNamespaceFiles == null || nestedNamespaceSourceDir == null)
+            {
+                Logger.LogInfo("nestedNamespaceFiles or nestedNamespaceSourceDir not set.");
+                Logger.LogInfo("No nested namespace files to will be generated.");
+                return;
+            }
+
+            if (nestedNamespaceFiles.Count == 0)
+            {
+                Logger.LogInfo("No nested namespace files found.");
+                return;
+            }
+
+            foreach (var nestedNamespaceFile in nestedNamespaceFiles)
+            {
+                Logger.LogInfo($"Nested namespace file found: {nestedNamespaceFile}");
+            }
+
+            parameter.Files.Add(DocumentType.Article, nestedNamespaceFiles, nestedNamespaceSourceDir);
         }
 
         public void Dispose()
