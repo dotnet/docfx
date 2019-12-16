@@ -609,10 +609,7 @@ outputs:
 ---
 # Triple colon markdown extension
 inputs:
-  docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docfx.yml:
   docs/a.png:
   docs/b.png:
   docs/a.md: |

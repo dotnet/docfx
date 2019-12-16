@@ -37,9 +37,6 @@ outputs:
 # Publish manifest path is source relative path when copyResources is set to false
 inputs:
   docfx.yml: |
-    resource:
-    - files: 
-      - '*.png'
     files: '**'
     output:
       copyResources: false
@@ -430,9 +427,6 @@ outputs:
 # output .links.json
 inputs:
   docfx.yml: |
-    resource:
-    - files: 
-      - '**/*/*.png'
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': '>= netcore-2.0'

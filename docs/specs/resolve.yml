@@ -119,10 +119,7 @@ outputs:
 ---
 # Resolve <a> and <img> tags embeded inside markdown
 inputs:
-  docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docfx.yml:
   docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
   docs/b.md: <div>Link to <img src="c.png" /></div>
   docs/c.png:
@@ -182,10 +179,7 @@ outputs:
 ---
 # Show warning if two files share the same site url
 inputs:
-  docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docfx.yml:
   docs/a.png.md: '![](a.png)'
   docs/a.png:
 outputs:
@@ -268,10 +262,7 @@ outputs:
 ---
 # Don't show warning if link to a resource outside build scope
 inputs:
-  docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docfx.yml:
   docs/a.md: '[a](../b.png)'
   b.png:
 outputs:
@@ -387,10 +378,7 @@ outputs:
 # Links starting with ~ are treated as path relative to docset path
 inputs:
   docsets.yml:
-  docs/docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docs/docfx.yml:
   docs/a.md: |
     Link to [B1.1](~/b.md)
     Link to [B1.2](~////b.md)
@@ -413,10 +401,7 @@ outputs:
 # Links in <a> or <img> tags startings with ~
 inputs:
   docsets.yml:
-  docs/docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docs/docfx.yml:
   docs/a.md: |
     Link to <a href="~/b.md">b</a>
     <div>Link to <img src="~/c.png" /></div>

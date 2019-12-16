@@ -11,10 +11,7 @@ outputs:
 ---
 # URL is case insensitive on windows and mac
 inputs:
-  docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docfx.yml:
   docs/A.png.md: '![](a.png)'
   docs/a.png:
 outputs:
@@ -67,10 +64,7 @@ outputs:
 # Resolve to the same lower case image on windows and mac
 os: windows, osx
 inputs:
-  docfx.yml: |
-    resource:
-    - files: 
-      - '**/*.png'
+  docfx.yml:
   docs/a.md: '![](IMAGE.png)'
   docs/b.md: '![](image.PNG)'
   docs/IMAGE.PNG:
@@ -98,9 +92,6 @@ os: windows, osx
 inputs:
   docfx.yml: |
     files: '*'
-    resource:
-    - files: 
-      - '**/*.png'
   a.md: '[](media/ImAGe.PNG) [](MEdia/ImAGe.PNG)'
   b.md: '[](MEdia/iMaGe.png) [](meDIa/ImAGe.PNG)'
   c.md: '[](meDia/imAgE.pNg) [](MEDIA/ImAGe.PNG)'

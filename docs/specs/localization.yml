@@ -401,16 +401,10 @@ repos:
   https://docs.com/resource-fallback1#master:
     - files:
         docs/b.png:
-        docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
+        docfx.yml:
   https://docs.com/resource-fallback1.zh-cn#master:
     - files:
-        docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
+        docfx.yml:
         docs/a.md: |
           [link to b](b.png)
 outputs:
@@ -425,17 +419,11 @@ repos:
     - files:
         docs/b.png:
         docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
           localization:
             mapping: Branch
   https://docs.com/resource-fallback2.loc#live.zh-cn:
     - files:
-        docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
+        docfx.yml:
         docs/a.md: |
           [link to b](b.png)
 outputs:
@@ -450,17 +438,11 @@ repos:
     - files:
         docs/b.png:
         docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
           localization:
             bilingual: true
   https://docs.com/resource-fallback3.zh-cn#master-sxs:
     - files:
-        docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
+        docfx.yml:
         docs/a.md: |
           [link to b](b.png)
   https://docs.com/resource-fallback3.zh-cn#master:
@@ -905,25 +887,16 @@ locale: zh-cn
 repos:
   https://github.com/deletedres/a:
     - files:
-        docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
+        docfx.yml:
       author: a
     - files:
-        docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
+        docfx.yml:
         docs/resource.png:
         docs/b.md:
       author: b
   https://github.com/deletedres/a.zh-cn:
     - files:
-        docfx.yml: |
-          resource:
-          - files: 
-            - '**/*.png'
+        docfx.yml:
         docs/a.md: |
           [link to deleted resource](resource.png)
           [link to deleted markdown doesnt work](b.md)
