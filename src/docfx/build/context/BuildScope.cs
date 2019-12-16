@@ -11,8 +11,8 @@ namespace Microsoft.Docs.Build
     internal class BuildScope
     {
         private readonly Config _config;
-
         private readonly (Func<string, bool>, FileMappingConfig)[] _globs;
+        private readonly Func<string, bool>[] _resourceGlobs;
 
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
             _globs = CreateGlobs(config);
+            _resourceGlobs = CreateResourceGlob(config);
 
             using (Progress.Start("Globbing files"))
             {
@@ -48,6 +49,24 @@ namespace Microsoft.Docs.Build
                 Files = files.ToList().ToHashSet();
                 _fileNames = fileNames;
             }
+        }
+
+        public bool IsResource(string path)
+        {
+            foreach (var glob in _resourceGlobs)
+            {
+                if (glob(path))
+                {
+                    return true;
+                }
+            }
+            if (!path.EndsWith(".md", PathUtility.PathComparison) &&
+                !path.EndsWith(".json", PathUtility.PathComparison) &&
+                !path.EndsWith(".yml", PathUtility.PathComparison))
+            {
+                return true;
+            }
+            return false;
         }
 
         public bool Glob(PathString path)
@@ -136,11 +155,18 @@ namespace Microsoft.Docs.Build
             }
 
             // Support v2 src/dest config per file group
-            return (
-                from mapping in config.Content.Concat(config.Resource)
-                let glob = GlobUtility.CreateGlobMatcher(
-                    mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray())
-                select (glob, mapping)).ToArray();
+            return (from mapping in config.Content.Concat(config.Resource)
+                    let glob = GlobUtility.CreateGlobMatcher(
+                        mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray())
+                    select (glob, mapping)).ToArray();
+        }
+
+        private static Func<string, bool>[] CreateResourceGlob(Config config)
+        {
+            return (from mapping in config.Resource
+                    select GlobUtility.CreateGlobMatcher(
+                        mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray()))
+                        .ToArray();
         }
     }
 }
