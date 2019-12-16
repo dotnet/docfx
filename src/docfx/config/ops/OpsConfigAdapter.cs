@@ -161,28 +161,35 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, Action on404 = null)
         {
-            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            try
             {
-                if (headers != null)
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
                 {
-                    foreach (var (key, value) in headers)
+                    if (headers != null)
                     {
-                        request.Headers.TryAddWithoutValidation(key, value);
+                        foreach (var (key, value) in headers)
+                        {
+                            request.Headers.TryAddWithoutValidation(key, value);
+                        }
                     }
-                }
 
-                var response = await _http.SendAsync(request);
-                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-                {
-                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                }
+                    var response = await _http.SendAsync(request);
+                    if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                    {
+                        _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                    }
 
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    on404?.Invoke();
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        on404?.Invoke();
+                    }
+                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 }
-                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                throw Errors.DownloadFailed(url).ToException(ex);
             }
         }
 
