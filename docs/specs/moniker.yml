@@ -1353,7 +1353,7 @@ inputs:
   docfx.yml: |
     resource:
     - files: 
-      - '**/*/*.png'
+      - '**/*/c.png'
     monikerRange:
       'docs/v1/**': '<= netcore-1.1'
       'docs/v2/**': '>= netcore-1.1'

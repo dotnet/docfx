@@ -43,7 +43,7 @@ outputs:
   'a b.json': |
     {
       "canonical_url": "https://docs.com/en-us/a b",
-      "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/b277cdfb906556105039c698643f74e2a63ccde3/a b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/master/a b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/master/a b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a b.md"
@@ -51,7 +51,7 @@ outputs:
   a&b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&b",
-      "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a&b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/b277cdfb906556105039c698643f74e2a63ccde3/a&b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/master/a&b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/master/a&b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&b.md"
@@ -59,7 +59,7 @@ outputs:
   a&amp;b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&amp;b",
-      "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a&amp;b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/b277cdfb906556105039c698643f74e2a63ccde3/a&amp;b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/master/a&amp;b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/master/a&amp;b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
