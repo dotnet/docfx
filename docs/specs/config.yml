@@ -54,7 +54,7 @@ inputs:
       exclude: docs/**/ignore.md
     resource:
       files: '*.png'
-  docs/index.md: |
+  docs/index.md:
   docs/ignore.md:
   docs/a.png:
   b.png:

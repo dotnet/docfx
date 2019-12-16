@@ -151,10 +151,10 @@ namespace Microsoft.Docs.Build
         {
             if (config.Content.Length == 0 && config.Resource.Length == 0)
             {
-                return new[]
-                {
-                    (GlobUtility.CreateGlobMatcher(config.Files, config.Exclude.Concat(Config.DefaultExclude).ToArray()), new FileMappingConfig()),
-                };
+                var glob = GlobUtility.CreateGlobMatcher(
+                    config.Files, config.Exclude.Concat(Config.DefaultExclude).ToArray());
+
+                return new[] { (glob, new FileMappingConfig()) };
             }
 
             // Support v2 src/dest config per file group

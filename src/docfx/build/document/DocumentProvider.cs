@@ -55,11 +55,6 @@ namespace Microsoft.Docs.Build
                 return ContentType.Unknown;
             }
 
-            if (_buildScope.IsResource(new PathString(path)) == true)
-            {
-                return ContentType.Resource;
-            }
-
             if (_buildScope.IsResource(path))
             {
                 return ContentType.Resource;
