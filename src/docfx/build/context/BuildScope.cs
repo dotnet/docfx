@@ -163,13 +163,10 @@ namespace Microsoft.Docs.Build
 
         private static Func<string, bool>[] CreateResourceGlob(Config config)
         {
-            if (config.Resource.Length > 0)
-            {
-                return (from mapping in config.Resource
-                        let glob = GlobUtility.CreateGlobMatcher(mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray())
-                        select glob).ToArray();
-            }
-            return Array.Empty<Func<string, bool>>();
+            return (from mapping in config.Resource
+                    select GlobUtility.CreateGlobMatcher(
+                        mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray()))
+                        .ToArray();
         }
     }
 }
