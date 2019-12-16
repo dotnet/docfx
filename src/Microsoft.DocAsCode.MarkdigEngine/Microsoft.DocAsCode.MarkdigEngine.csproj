@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine.Validators\Microsoft.DocAsCode.MarkdigEngine.Validators.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
