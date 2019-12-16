@@ -22,9 +22,6 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> _fileMappings
                    = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig)>();
 
-        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> _resourceMappings
-                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig)>();
-
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
         /// </summary>
