@@ -60,7 +60,12 @@ namespace Microsoft.Docs.Build
             }
 
             var url = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(url, s_opsHeaders, on404: () => throw Errors.DocsetNotProvisioned(name).ToException(isError: false));
+            var docsetInfo = await Fetch(url, s_opsHeaders, nullOn404: true);
+            if (docsetInfo is null)
+            {
+                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
+            }
+
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
@@ -159,7 +164,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, Action on404 = null)
+        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
             try
             {
@@ -180,9 +185,9 @@ namespace Microsoft.Docs.Build
                         _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                     }
 
-                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
                     {
-                        on404?.Invoke();
+                        return null;
                     }
                     return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 }
