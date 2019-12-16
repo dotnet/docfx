@@ -300,6 +300,9 @@ repos:
   https://docs.com/crrcontent/a:
     - files:
         docfx.yml: |
+          resource:
+          - files: 
+            - '**/*/*.png'
           files:
             - "docs/**/*"
             - "crrb/folder/**/*"

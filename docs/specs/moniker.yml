@@ -1304,6 +1304,9 @@ outputs:
 # Build resource file with moniker
 inputs:
   docfx.yml: |
+    resource:
+    - files:
+      - '**/*/*.png'
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
       'docs/v2/**': 'netcore-2.0'
@@ -1348,6 +1351,9 @@ outputs:
 # Build resource file with moniker conflict
 inputs:
   docfx.yml: |
+    resource:
+    - files: 
+      - '**/*/*.png'
     monikerRange:
       'docs/v1/**': '<= netcore-1.1'
       'docs/v2/**': '>= netcore-1.1'
@@ -1499,6 +1505,9 @@ outputs:
 # Report a error when there are multiple files publish to same url, some with version, some without
 inputs:
   docfx.yml: |
+    resource:
+    - files: 
+      - '**/*.png'
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
     hostName: docs.com

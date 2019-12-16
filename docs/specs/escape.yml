@@ -2,7 +2,10 @@
 repos:
   https://github.com/escape/markdown:
   - files:
-      docfx.yml:
+      docfx.yml: |
+        resource:
+        - files: 
+          - '**/*.png'
       links.md: |
         [a%20b.md](a%20b.md?c=/d/e)
         [a&b.md](a&b.md)
@@ -65,7 +68,10 @@ outputs:
 ---
 # Handle encoding for html links
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    resource:
+    - files: 
+      - '**/*.png'
   html-links.md: |
     <a href='a%20b.md'>a%20b.md</a>
     <a href='a&b.md'>a&b.md</a>

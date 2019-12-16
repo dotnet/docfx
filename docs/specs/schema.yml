@@ -139,7 +139,10 @@ outputs:
 ---
 # Schema documents with Href content referencing resource file, the resouce file should be outputed
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    resource:
+    - files: 
+      - '**/*.png'
   docs/a.yml: |
     #YamlMime:TestPage
     href: image.png

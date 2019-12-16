@@ -93,15 +93,15 @@ outputs:
 inputs:
   docfx.yml: |
     content:
-    - files: docs/**/*.md
-      exclude: docs/**/*.png
-    - files: docs/**/*.png
-      exclude: docs/**/*.md
+    - files: docs/**/a.md
+      exclude: docs/**/b.md
+    - files: docs/**/b.md
+      exclude: docs/**/a.md
   docs/a.md:
-  docs/b.png:
+  docs/b.md:
 outputs:
   docs/a.json:
-  docs/b.png:
+  docs/b.json:
 ---
 # content with src, dest config
 inputs:
@@ -213,6 +213,11 @@ outputs:
 # routes
 inputs:
   docfx.yml: |
+    resource:
+    - files: 
+      - '**/*.png'
+      - '**/*.svg'
+      - '**/*.jpg'
     routes:
       ./: outputB
       docs/a.md: output
@@ -237,6 +242,8 @@ outputs:
 # latter routes rule takes precedence - 1
 inputs:
   docfx.yml: |
+    resource:
+      files: '**/*.gif'
     routes:
       docs/a/: output
       docs/a/b.md: outputB
@@ -251,6 +258,8 @@ outputs:
 # latter routes rule takes precedence - 2
 inputs:
   docfx.yml: |
+    resource:
+      files: '**/*.gif'
     routes:
       docs/a/b.md: outputB
       docs/a/c.gif: outputC
@@ -407,6 +416,8 @@ outputs:
 inputs:
   docfx.yml: |
     files: '**'
+    resource:
+      files: '**/*.png'
     output:
       copyResources: false
     routes:

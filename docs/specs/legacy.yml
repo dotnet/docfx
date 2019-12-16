@@ -6,6 +6,9 @@ repos:
     email: charlie@contoso.com
     files:
       docfx.yml: |
+        resource:
+        - files: 
+          - '**/*.png'
         template: https://docs.com/theme
         metadataSchema: schema.json
       redirections.yml: |
@@ -100,6 +103,9 @@ repos:
     email: charlie@contoso.com
     files:
       docfx.yml: |
+        resource:
+        - files: 
+          - '**/*.png'
         template: https://docs.com/template1
         hostName: docs.com
         basePath: /rawmetadata
@@ -310,6 +316,9 @@ outputs:
 legacy: true
 inputs:
   docfx.yml: |
+    resource:
+    - files: 
+      - '**/*.png'
     files: a.png
     output:
       copyResources: false
