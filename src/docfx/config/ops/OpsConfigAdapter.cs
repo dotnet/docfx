@@ -60,7 +60,12 @@ namespace Microsoft.Docs.Build
             }
 
             var url = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(url, s_opsHeaders, on404: () => throw Errors.DocsetNotProvisioned(name).ToException(isError: false));
+            var docsetInfo = await Fetch(url, s_opsHeaders, nullOn404: true);
+            if (docsetInfo is null)
+            {
+                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
+            }
+
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
@@ -159,30 +164,37 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, Action on404 = null)
+        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
-            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            try
             {
-                if (headers != null)
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
                 {
-                    foreach (var (key, value) in headers)
+                    if (headers != null)
                     {
-                        request.Headers.TryAddWithoutValidation(key, value);
+                        foreach (var (key, value) in headers)
+                        {
+                            request.Headers.TryAddWithoutValidation(key, value);
+                        }
                     }
-                }
 
-                var response = await _http.SendAsync(request);
-                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-                {
-                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                }
+                    var response = await _http.SendAsync(request);
+                    if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                    {
+                        _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                    }
 
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    on404?.Invoke();
+                    if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        return null;
+                    }
+                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 }
-                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                throw Errors.DownloadFailed(url).ToException(ex);
             }
         }
 
