@@ -194,7 +194,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         using (new LoggerPhaseScope("BuildCore"))
                         {
-                            AddNestedNamespaceFiles(parameter);
+                            AddManuallyAddedYamlFiles(parameter);
 
                             manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
                         }
@@ -501,36 +501,59 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        private static void AddNestedNamespaceFiles(DocumentBuildParameters parameter)
+        /// <summary>
+        /// A post processor can add a parameter 'additionalYamlFiles' with a list of
+        /// pathes to yaml files the post processor also wants to be converted to the output
+        /// format (such as html).
+        /// File pathes need to be relative to the path stored in 'additionalYamlFilesSourceDir',
+        /// a parameter that must be set also. Path in 'additionalYamlFilesSourceDir' needs to
+        /// be relative to docfx base directory.
+        ///
+        /// <example>
+        /// ImmutableDictionary<string, object> IPostProcessor.PrepareMetadata(ImmutableDictionary<string, object> metadata)
+        /// {
+        ///     IList<string> createdFiles = new List<string>();
+        ///     createdFiles.Add("myYamlFile.yml");
+        ///     metadata = metadata.Add("yamlFileSourceDir", "./intermediate_files/metadata/");
+        ///     metadata = metadata.Add("yamlFileSourceDir", "./intermediate_files/metadata/");
+        ///     return metadata;
+        /// }
+        /// </example>
+        /// </summary>
+
+        private static void AddManuallyAddedYamlFiles(DocumentBuildParameters parameter)
         {
-            List<string> nestedNamespaceFiles = null;
-            string nestedNamespaceSourceDir = null;
+            IList<string> yamlFiles = null;
+            string sourceDirectory = null;
 
-            if (parameter.Metadata.ContainsKey("nestedNamespaceFiles"))
-                nestedNamespaceFiles = parameter.Metadata["nestedNamespaceFiles"] as List<string>;
+            if (parameter.Metadata.ContainsKey("additionalYamlFiles"))
+                yamlFiles = parameter.Metadata["additionalYamlFiles"] as IList<string>;
 
-            if (parameter.Metadata.ContainsKey("nestedNamespaceSourceDir"))
-                nestedNamespaceSourceDir = parameter.Metadata["nestedNamespaceSourceDir"] as string;
-    
-            if (nestedNamespaceFiles == null || nestedNamespaceSourceDir == null)
+            if (yamlFiles == null && yamlFiles.Count == 0)
             {
-                Logger.LogInfo("nestedNamespaceFiles or nestedNamespaceSourceDir not set.");
-                Logger.LogInfo("No nested namespace files to will be generated.");
+                Logger.LogInfo("Parameter 'additionalYamlFiles' not set or set to empty list. " +
+                               "No additional yaml files to convert. ");
+
                 return;
             }
 
-            if (nestedNamespaceFiles.Count == 0)
+            if (parameter.Metadata.ContainsKey("additionalYamlFilesSourceDir"))
+                sourceDirectory = parameter.Metadata["additionalYamlFilesSourceDir"] as string;
+
+            if (sourceDirectory == null)
             {
-                Logger.LogInfo("No nested namespace files found.");
+                Logger.LogInfo("Parameter 'additionalYamlFilesSourceDir' was not set to a " +
+                               "known file path. Please set it to a path relative to your docfx base dir " +
+                               "to indicate location of files from 'additionalYamlFiles'.");
                 return;
             }
 
-            foreach (var nestedNamespaceFile in nestedNamespaceFiles)
+            foreach (var yamlFile in yamlFiles)
             {
-                Logger.LogInfo($"Nested namespace file found: {nestedNamespaceFile}");
+                Logger.LogInfo($"found additional yaml file to be converted: {yamlFile}");
             }
         
-            parameter.Files.Add(DocumentType.Article, nestedNamespaceFiles, nestedNamespaceSourceDir);
+            parameter.Files.Add(DocumentType.Article, yamlFiles, sourceDirectory);
         }
 
         public void Dispose()
