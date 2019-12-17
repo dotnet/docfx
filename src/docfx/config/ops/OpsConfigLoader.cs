@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
         }
 
-        public static JObject LoadAsDocfxConfig(string docsetPath, string branch)
+        public static JObject LoadDocfxConfig(string docsetPath, string branch)
         {
             var directory = docsetPath;
 
@@ -72,7 +72,12 @@ namespace Microsoft.Docs.Build
 
             if (docsetConfig != null)
             {
-                result["name"] = docsetConfig.DocsetName;
+                if (!string.IsNullOrEmpty(docsetConfig.DocsetName))
+                {
+                    result["name"] = docsetConfig.DocsetName;
+                    result["extend"] = OpsConfigAdapter.BuildConfigApi;
+                }
+
                 result["globalMetadata"] = new JObject
                 {
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
