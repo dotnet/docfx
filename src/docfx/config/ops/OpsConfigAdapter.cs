@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
             }
-
+            
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
@@ -166,35 +166,28 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
-            try
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
-                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                if (headers != null)
                 {
-                    if (headers != null)
+                    foreach (var (key, value) in headers)
                     {
-                        foreach (var (key, value) in headers)
-                        {
-                            request.Headers.TryAddWithoutValidation(key, value);
-                        }
+                        request.Headers.TryAddWithoutValidation(key, value);
                     }
-
-                    var response = await _http.SendAsync(request);
-                    if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-                    {
-                        _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                    }
-
-                    if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        return null;
-                    }
-                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw Errors.DownloadFailed(url).ToException(ex);
+
+                var response = await _http.SendAsync(request);
+                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                {
+                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                }
+
+                if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
             }
         }
 
