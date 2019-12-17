@@ -78,7 +78,8 @@ namespace Microsoft.Docs.Build
             // Ops service config
             var opsServiceConfig = opsConfig != null
                 ? await _opsConfigAdapter.GetBuildConfig(
-                    (opsConfig["xrefQueryTags"] as JArray).Select(x => x.ToString()).ToArray(),
+                    opsConfig["xrefEndpoint"]?.ToString(),
+                    (opsConfig["xrefQueryTags"] as JArray)?.Select(x => x.ToString()).ToArray(),
                     preloadConfig.Name,
                     _repository?.Remote,
                     _repository?.Branch)

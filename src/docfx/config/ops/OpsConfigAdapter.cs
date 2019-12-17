@@ -37,10 +37,6 @@ namespace Microsoft.Docs.Build
             ? "https://docs.microsoft.com/api/metadata"
             : "https://ppe.docs.microsoft.com/api/metadata";
 
-        private static readonly string s_xrefMapApiEndpoint = s_isProduction
-            ? "https://op-build-prod.azurewebsites.net"
-            : "https://op-build-sandbox2.azurewebsites.net";
-
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
@@ -56,7 +52,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public async Task<JObject> GetBuildConfig(string[] xrefQueryTags, string name, string repository, string branch)
+        public async Task<JObject> GetBuildConfig(string xrefEndpoint, IEnumerable<string> xrefQueryTags, string name, string repository, string branch)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
             {
@@ -81,8 +77,19 @@ namespace Microsoft.Docs.Build
             }
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
+
             var defaultLocale = GetDefaultLocale(docset.site_name);
-            var xrefmapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&locale={defaultLocale}";
+            var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&locale={defaultLocale}";
+            var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
+            var xrefMaps = new List<string>();
+            if (xrefQueryTags != null)
+            {
+                foreach (var tag in xrefQueryTags)
+                {
+                    var links = await GetXrefMaps(xrefMapApiEndpoint, tag, xrefMapQueryParams);
+                    xrefMaps.AddRange(links);
+                }
+            }
 
             return new JObject
             {
@@ -100,7 +107,7 @@ namespace Microsoft.Docs.Build
                 ["metadataSchema"] = new JArray(
                     Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}"),
-                ["xref"] = new JArray(xrefQueryTags.Select(async tag => await GetXrefMaps(tag, xrefmapQueryParams))),
+                ["xref"] = new JArray(xrefMaps),
             };
         }
 
@@ -121,9 +128,18 @@ namespace Microsoft.Docs.Build
             _http.Dispose();
         }
 
-        private async Task<string[]> GetXrefMaps(string tag, string xrefMapQueryParams)
+        private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            var response = await Fetch($"{s_xrefMapApiEndpoint}{tag}{xrefMapQueryParams}", s_opsHeaders);
+            var isProduction = string.Equals(xrefEndpoint?.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+            return isProduction
+                    ? "https://op-build-prod.azurewebsites.net"
+                    : "https://op-build-sandbox2.azurewebsites.net";
+        }
+
+        private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
+        {
+            var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
+            var response = await Fetch(url, s_opsHeaders);
             return JsonUtility.Deserialize<XrefMapApiResponse>(response, null).Links;
         }
 
