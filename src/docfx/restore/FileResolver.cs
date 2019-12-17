@@ -156,11 +156,7 @@ namespace Microsoft.Docs.Build
                     return (tempFile, response.Headers.ETag);
                 }
             }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out _))
-            {
-                throw;
-            }
-            catch (Exception ex)
+            catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
                 throw Errors.DownloadFailed(url).ToException(ex);
             }
