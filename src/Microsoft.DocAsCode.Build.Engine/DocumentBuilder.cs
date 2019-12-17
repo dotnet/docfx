@@ -523,13 +523,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void AddManuallyAddedYamlFiles(DocumentBuildParameters parameter)
         {
-            IList<string> yamlFiles = null;
+            IEnumerable<string> yamlFiles = null;
             string sourceDirectory = null;
 
             if (parameter.Metadata.ContainsKey("additionalYamlFiles"))
-                yamlFiles = parameter.Metadata["additionalYamlFiles"] as IList<string>;
+                yamlFiles = parameter.Metadata["additionalYamlFiles"] as List<string>;
 
-            if (yamlFiles == null && yamlFiles.Count == 0)
+            if (yamlFiles?.Any() ?? false)
             {
                 Logger.LogInfo("Parameter 'additionalYamlFiles' not set or set to empty list. " +
                                "No additional yaml files to convert. ");
