@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
             }
-            
+
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
