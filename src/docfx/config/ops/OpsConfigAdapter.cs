@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
-                new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
+                new[] { new { name = "", base_path = "", site_name = "", product_name = "", locale = "" } });
 
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                 ["xrefHostName"] = GetXrefHostName(docset.site_name, branch),
                 ["localization"] = new JObject
                 {
-                    ["defaultLocale"] = GetDefaultLocale(docset.site_name),
+                    ["defaultLocale"] = docset.locale,
                 },
                 ["monikerDefinition"] = MonikerDefinitionApi,
                 ["markdownValidationRules"] = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
@@ -196,11 +196,6 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.DownloadFailed(url).ToException(ex);
             }
-        }
-
-        private static string GetDefaultLocale(string siteName)
-        {
-            return siteName == "DocsAzureCN" ? "zh-cn" : "en-us";
         }
 
         private static string GetHostName(string siteName)
