@@ -72,6 +72,7 @@ namespace Microsoft.Docs.Build
 
             if (docsetConfig != null)
             {
+                result["xrefQueryTags"] = new JArray(docsetConfig.XrefQueryTags);
                 result["name"] = docsetConfig.DocsetName;
                 result["globalMetadata"] = new JObject
                 {

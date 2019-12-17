@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var actualConfig = await new OpsConfigAdapter(null).GetBuildConfig(new SourceInfo<string>(name), repository, branch);
+            var actualConfig = await new OpsConfigAdapter(null).GetBuildConfig(Array.Empty<string>(), new SourceInfo<string>(name), repository, branch);
 
             new JsonDiffBuilder().UseAdditionalProperties().Build().Verify(JToken.Parse(expectedJson.Replace('\'', '"')), actualConfig);
         }

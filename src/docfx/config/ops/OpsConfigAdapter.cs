@@ -37,6 +37,10 @@ namespace Microsoft.Docs.Build
             ? "https://docs.microsoft.com/api/metadata"
             : "https://ppe.docs.microsoft.com/api/metadata";
 
+        private static readonly string s_xrefMapApiEndpoint = s_isProduction
+            ? "https://op-build-prod.azurewebsites.net"
+            : "https://op-build-sandbox2.azurewebsites.net";
+
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
@@ -52,7 +56,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public async Task<JObject> GetBuildConfig(SourceInfo<string> name, string repository, string branch)
+        public async Task<JObject> GetBuildConfig(string[] xrefQueryTags, string name, string repository, string branch)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
             {
@@ -77,6 +81,8 @@ namespace Microsoft.Docs.Build
             }
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
+            var defaultLocale = GetDefaultLocale(docset.site_name);
+            var xrefmapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&locale={defaultLocale}";
 
             return new JObject
             {
@@ -87,13 +93,14 @@ namespace Microsoft.Docs.Build
                 ["xrefHostName"] = GetXrefHostName(docset.site_name, branch),
                 ["localization"] = new JObject
                 {
-                    ["defaultLocale"] = GetDefaultLocale(docset.site_name),
+                    ["defaultLocale"] = defaultLocale,
                 },
                 ["monikerDefinition"] = MonikerDefinitionApi,
                 ["markdownValidationRules"] = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 ["metadataSchema"] = new JArray(
                     Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}"),
+                ["xref"] = new JArray(xrefQueryTags.Select(async tag => await GetXrefMaps(tag, xrefmapQueryParams))),
             };
         }
 
@@ -112,6 +119,12 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _http.Dispose();
+        }
+
+        private async Task<string[]> GetXrefMaps(string tag, string xrefMapQueryParams)
+        {
+            var response = await Fetch($"{s_xrefMapApiEndpoint}{tag}{xrefMapQueryParams}", s_opsHeaders);
+            return JsonUtility.Deserialize<XrefMapApiResponse>(response, null).Links;
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
@@ -226,6 +239,11 @@ namespace Microsoft.Docs.Build
         private static bool IsLive(string branch)
         {
             return branch == "live" || branch == "live-sxs";
+        }
+
+        private class XrefMapApiResponse
+        {
+            public readonly string[] Links = Array.Empty<string>();
         }
     }
 }
