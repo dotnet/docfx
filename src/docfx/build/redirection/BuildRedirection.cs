@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
                 RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath),
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
+                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
             };
 
             if (file.Docset.Legacy)

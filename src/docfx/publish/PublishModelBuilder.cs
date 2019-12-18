@@ -127,10 +127,16 @@ namespace Microsoft.Docs.Build
                     .ThenBy(item => item.RedirectUrl)
                     .ThenBy(item => item.MonikerGroup)
                     .ToArray(),
-                MonikerGroups = new SortedDictionary<string, IReadOnlyList<string>>(_publishItems.Values
+                MonikerGroups = new SortedDictionary<string, MonikerGroup>(_publishItems.Values
                     .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
                     .GroupBy(item => item.MonikerGroup)
-                    .ToDictionary(g => g.Key, g => g.First().Monikers)),
+                    .ToDictionary(
+                        g => g.Key,
+                        g => new MonikerGroup
+                        {
+                            ConfigMonikerRange = g.First().ConfigMonikerRange,
+                            Monikers = g.First().Monikers.ToArray(),
+                        })),
             };
 
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
