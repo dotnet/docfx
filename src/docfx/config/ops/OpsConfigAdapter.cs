@@ -130,7 +130,15 @@ namespace Microsoft.Docs.Build
 
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            var isProduction = string.Equals(xrefEndpoint?.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+            bool isProduction;
+            if (string.IsNullOrEmpty(xrefEndpoint))
+            {
+                isProduction = s_isProduction;
+            }
+            else
+            {
+                isProduction = string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+            }
             return isProduction
                     ? "https://op-build-prod.azurewebsites.net"
                     : "https://op-build-sandbox2.azurewebsites.net";
