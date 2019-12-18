@@ -12,7 +12,23 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["suggestion","merge-conflict","File contains merge conflict. NOTE: This Suggestion will become a Warning on 06/30/2020.","docs/a.md",2,1]
+    ["suggestion","merge-conflict","File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.","docs/a.md",2,1]
+---
+# Ignore git merge conflict marker inside code blocks
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    a
+
+    ```markdown
+    <<<<<<< HEAD
+    ...
+    =======
+    ...
+    >>>>>>> 1d82c7efe18f86136247fb366df5030843199c19
+    ```
+outputs:
+  docs/a.json:
 ---
 # Metadata value must be scalar or scalar array
 inputs:

@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var content = context.Input.ReadString(file.FilePath);
-            errors.AddIfNotNull(GitUtility.CheckMergeConflictMarker(content, file.FilePath));
+            errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file.FilePath));
 
             var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
