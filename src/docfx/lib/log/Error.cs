@@ -36,7 +36,6 @@ namespace Microsoft.Docs.Build
         public Error(ErrorLevel level, string code, string message, FilePath file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
-            Debug.Assert(Regex.IsMatch(code, "^[a-z0-9-]{5,32}$"), $"Error code '{code}' should only contain dash and letters in lowercase");
             Debug.Assert(!string.IsNullOrEmpty(message));
 
             Level = level;
@@ -81,9 +80,9 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Serialize(payload.Take(i + 1));
         }
 
-        public DocfxException ToException(Exception innerException = null)
+        public DocfxException ToException(Exception innerException = null, bool isError = true)
         {
-            return new DocfxException(this, innerException);
+            return new DocfxException(this, innerException, isError ? (ErrorLevel?)ErrorLevel.Error : null);
         }
 
         private class EqualityComparer : IEqualityComparer<Error>

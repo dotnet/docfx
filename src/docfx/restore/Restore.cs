@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             }
 
             var result = await Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.All(x => x) ? 0 : 1;
+            return result.Any(hasError => hasError) ? 1 : 0;
         }
 
         private static async Task<bool> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
@@ -44,12 +44,14 @@ namespace Microsoft.Docs.Build
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var configLoader = new ConfigLoader(repository);
-                    (errors, config) = configLoader.Load(docsetPath, options);
-                    if (errorLog.Write(errors))
-                        return false;
+                    var opsConfigAdapter = new OpsConfigAdapter(errorLog);
+                    var configLoader = new ConfigLoader(repository, opsConfigAdapter);
 
-                    var fileResolver = new FileResolver(docsetPath, config);
+                    (errors, config) = await configLoader.Load(docsetPath, options);
+                    if (errorLog.Write(errors))
+                        return true;
+
+                    var fileResolver = new FileResolver(docsetPath, config, opsConfigAdapter);
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos
@@ -69,8 +71,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
                     Log.Write(dex);
-                    errorLog.Write(dex.Error, isException: true);
-                    return false;
+                    return errorLog.Write(dex.Error);
                 }
                 finally
                 {
@@ -78,7 +79,7 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
-                return true;
+                return false;
             }
         }
 

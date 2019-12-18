@@ -20,19 +20,16 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
+        private readonly PreloadConfig _config;
+        private readonly OpsConfigAdapter _opsConfigAdapter;
         private readonly bool _noFetch;
-        private readonly Action<HttpRequestMessage> _provideCredential;
 
-        public FileResolver(string docsetPath, PreloadConfig config, bool noFetch = false)
-            : this(docsetPath, ProvideCredential(config), noFetch)
-        {
-        }
-
-        public FileResolver(string docsetPath, Action<HttpRequestMessage> provideCredential = null, bool noFetch = false)
+        public FileResolver(string docsetPath, PreloadConfig config = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
+            _opsConfigAdapter = opsConfigAdapter;
             _noFetch = noFetch;
-            _provideCredential = provideCredential;
+            _config = config;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -165,7 +162,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
+        private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."
@@ -176,18 +173,27 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                _provideCredential?.Invoke(message);
+                ProvideCredential(message);
 
-                return s_httpClient.SendAsync(message);
+                if (_opsConfigAdapter != null)
+                {
+                    var response = await _opsConfigAdapter.InterceptHttpRequest(message);
+                    if (response != null)
+                    {
+                        return response;
+                    }
+                }
+
+                return await s_httpClient.SendAsync(message);
             }
         }
 
-        private static Action<HttpRequestMessage> ProvideCredential(PreloadConfig config)
+        private void ProvideCredential(HttpRequestMessage message)
         {
-            return message =>
+            if (_config != null)
             {
                 var url = message.RequestUri.ToString();
-                foreach (var (baseUrl, rule) in config.Http)
+                foreach (var (baseUrl, rule) in _config.Http)
                 {
                     if (url.StartsWith(baseUrl))
                     {
@@ -198,7 +204,7 @@ namespace Microsoft.Docs.Build
                         break;
                     }
                 }
-            };
+            }
         }
     }
 }
