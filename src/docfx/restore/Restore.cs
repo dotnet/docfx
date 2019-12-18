@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                     var opsConfigAdapter = new OpsConfigAdapter(errorLog);
                     var configLoader = new ConfigLoader(repository, opsConfigAdapter);
 
-                    (errors, config) = await configLoader.Load(docsetPath, options);
+                    (errors, config) = configLoader.Load(docsetPath, locale, options);
                     if (errorLog.Write(errors))
                         return true;
 

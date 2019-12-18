@@ -10,12 +10,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
+        public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
@@ -46,50 +46,10 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _apis = new (string, Func<Uri, Task<string>>)[]
             {
+                (BuildConfigApi, GetBuildConfig),
                 (MonikerDefinitionApi, GetMonikerDefinition),
                 (MetadataSchemaApi, GetMetadataSchema),
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
-            };
-        }
-
-        public async Task<JObject> GetBuildConfig(SourceInfo<string> name, string repository, string branch)
-        {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
-            {
-                return null;
-            }
-
-            var url = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(url, s_opsHeaders, nullOn404: true);
-            if (docsetInfo is null)
-            {
-                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
-            }
-
-            var docsets = JsonConvert.DeserializeAnonymousType(
-                docsetInfo,
-                new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
-
-            var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
-            if (docset is null)
-            {
-                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
-            }
-
-            var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
-
-            return new JObject
-            {
-                ["product"] = docset.product_name,
-                ["siteName"] = docset.site_name,
-                ["hostName"] = GetHostName(docset.site_name),
-                ["basePath"] = docset.base_path,
-                ["xrefHostName"] = GetXrefHostName(docset.site_name, branch),
-                ["monikerDefinition"] = MonikerDefinitionApi,
-                ["markdownValidationRules"] = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
-                ["metadataSchema"] = new JArray(
-                    Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
-                    $"{MetadataSchemaApi}{metadataServiceQueryParams}"),
             };
         }
 
@@ -108,6 +68,49 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _http.Dispose();
+        }
+
+        private async Task<string> GetBuildConfig(Uri url)
+        {
+            var queries = HttpUtility.ParseQueryString(url.Query);
+            var name = queries["name"];
+            var repository = queries["repository_url"];
+            var branch = queries["branch"];
+
+            var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
+            var docsetInfo = await Fetch(fetchUrl, s_opsHeaders, nullOn404: true);
+            if (docsetInfo is null)
+            {
+                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
+            }
+
+            var docsets = JsonConvert.DeserializeAnonymousType(
+                docsetInfo,
+                new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
+
+            var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
+            if (docset is null)
+            {
+                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
+            }
+
+            var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
+
+            return JsonConvert.SerializeObject(new
+            {
+                product = docset.product_name,
+                siteName = docset.site_name,
+                hostName = GetHostName(docset.site_name),
+                basePath = docset.base_path,
+                xrefHostName = GetXrefHostName(docset.site_name, branch),
+                monikerDefinition = MonikerDefinitionApi,
+                markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
+                metadataSchema = new[]
+                {
+                    Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
+                    $"{MetadataSchemaApi}{metadataServiceQueryParams}",
+                },
+            });
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
@@ -162,35 +165,28 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
-            try
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
-                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                if (headers != null)
                 {
-                    if (headers != null)
+                    foreach (var (key, value) in headers)
                     {
-                        foreach (var (key, value) in headers)
-                        {
-                            request.Headers.TryAddWithoutValidation(key, value);
-                        }
+                        request.Headers.TryAddWithoutValidation(key, value);
                     }
-
-                    var response = await _http.SendAsync(request);
-                    if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-                    {
-                        _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                    }
-
-                    if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        return null;
-                    }
-                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw Errors.DownloadFailed(url).ToException(ex);
+
+                var response = await _http.SendAsync(request);
+                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                {
+                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                }
+
+                if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
             }
         }
 
