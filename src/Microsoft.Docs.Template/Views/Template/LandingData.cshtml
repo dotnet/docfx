@@ -100,7 +100,7 @@ private void UpdateAbstract()
                                 </div>
                             }
 
-                            @if (item.Items[0] != null)
+                            @if (item.Items[1] != null)
                             {
                                 <div class="@item.ClassName">
                                     @await Html.PartialAsync("BuildItemListPartial", item.Items[1])
