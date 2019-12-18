@@ -97,14 +97,14 @@ private void UpdateAbstract()
                             {
                                 <div class="@item.ClassName">
                                     @await Html.PartialAsync("BuildItemListPartial", item.Items[0])
-			                    </div>
+                                </div>
                             }
 
                             @if (item.Items[0] != null)
                             {
                                 <div class="@item.ClassName">
                                     @await Html.PartialAsync("BuildItemListPartial", item.Items[1])
-			                    </div>
+                                </div>
                             }
                         </div>
                     }
