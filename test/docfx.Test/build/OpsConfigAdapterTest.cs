@@ -17,22 +17,22 @@ namespace Microsoft.Docs.Build
             "azure-documents",
             "https://github.com/MicrosoftDocs/azure-docs-pr",
             "master",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'review.docs.microsoft.com','localization':{'defaultLocale':'en-us'}}")]
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'review.docs.microsoft.com'}")]
         [InlineData(
             "azure-documents",
             "https://github.com/MicrosoftDocs/azure-docs-pr",
             "live",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com','localization':{'defaultLocale':'en-us'}}")]
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
         [InlineData(
             "azure-documents",
             "https://github.com/MicrosoftDocs/azure-docs-pr.zh-cn",
             "live-sxs",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com','localization':{'defaultLocale':'en-us'}}")]
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
         [InlineData(
             "mooncake-docs",
             "https://github.com/MicrosoftDocs/mc-docs-pr",
             "master",
-            "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn','localization':{'defaultLocale':'zh-cn'}}")]
+            "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn'}")]
         public static async Task AdaptOpsServiceConfig(string name, string repository, string branch, string expectedJson)
         {
             var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");

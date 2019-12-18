@@ -85,10 +85,6 @@ namespace Microsoft.Docs.Build
                 ["hostName"] = GetHostName(docset.site_name),
                 ["basePath"] = docset.base_path,
                 ["xrefHostName"] = GetXrefHostName(docset.site_name, branch),
-                ["localization"] = new JObject
-                {
-                    ["defaultLocale"] = GetDefaultLocale(docset.site_name),
-                },
                 ["monikerDefinition"] = MonikerDefinitionApi,
                 ["markdownValidationRules"] = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 ["metadataSchema"] = new JArray(
@@ -196,11 +192,6 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.DownloadFailed(url).ToException(ex);
             }
-        }
-
-        private static string GetDefaultLocale(string siteName)
-        {
-            return siteName == "DocsAzureCN" ? "zh-cn" : "en-us";
         }
 
         private static string GetHostName(string siteName)
