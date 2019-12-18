@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", LogLevel.Verbose))
                 {
-                    updatedMetadata = postProcessor.Processor.PrepareMetadata(metadata);
+                    updatedMetadata = postProcessor.Processor.PrepareMetadata(updatedMetadata);
                     if (updatedMetadata == null)
                     {
                         throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null metadata");
