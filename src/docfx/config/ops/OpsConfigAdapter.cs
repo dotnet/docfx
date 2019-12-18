@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
         {
             var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
             var response = await Fetch(url, s_opsHeaders);
-            return JsonUtility.Deserialize<XrefMapApiResponse>(response, null).Links;
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
@@ -263,11 +263,6 @@ namespace Microsoft.Docs.Build
         private static bool IsLive(string branch)
         {
             return branch == "live" || branch == "live-sxs";
-        }
-
-        private class XrefMapApiResponse
-        {
-            public readonly string[] Links = Array.Empty<string>();
         }
     }
 }
