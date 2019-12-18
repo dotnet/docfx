@@ -18,18 +18,23 @@ namespace Microsoft.Docs.Build
         public static Error CheckMergeConflictMarker(string content, FilePath file)
         {
             var state = State.Text;
-            var startLine = 0;
-            var line = 0;
+            var nextCharIsNewLine = true;
+            var startLine = 1;
+            var line = 1;
 
             for (var i = 0; i < content.Length - 1; i++)
             {
-                if (i != 0 && content[i] != '\n')
+                if (content[i] == '\n')
+                {
+                    line++;
+                    nextCharIsNewLine = true;
+                    continue;
+                }
+                if (!nextCharIsNewLine)
                 {
                     continue;
                 }
-
-                i++;
-                line++;
+                nextCharIsNewLine = false;
 
                 if (string.Compare(content, i, "```", 0, "```".Length, StringComparison.Ordinal) == 0)
                 {
