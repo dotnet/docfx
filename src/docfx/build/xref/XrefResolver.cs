@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (basePath is null)
                     {
-                        basePath = xref.DeclaringFile.Docset.Config.BasePath;
+                        basePath = xref.DeclaringFile.Docset.Config.BasePath.Original;
                     }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL

@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 {
                     host = $"https://{docset.Config.HostName}",
                     locale = docset.Locale,
-                    base_path = $"/{docset.Config.BasePath}",
+                    base_path = docset.Config.BasePath.Original,
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,

@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
         /// Gets the site base path.
         /// It is either an empty string, or a path without leading /
         /// </summary>
-        public string BasePath { get; private set; } = string.Empty;
+        public BasePath BasePath { get; private set; } = new BasePath("");
 
         /// <summary>
         /// Gets host name used for generating .xrefmap.json
@@ -216,7 +216,10 @@ namespace Microsoft.Docs.Build
             if (Output.LowerCaseUrl)
             {
                 HostName = HostName.ToLowerInvariant();
-                BasePath = BasePath.ToLowerInvariant().TrimStart('/');
+                if (BasePath != null)
+                {
+                    BasePath = new BasePath(((string)BasePath).ToLowerInvariant());
+                }
             }
         }
     }
