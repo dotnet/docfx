@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -171,6 +172,27 @@ namespace Microsoft.Docs.Build
         {
             var items = keys.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(key => (key, "value"));
             Assert.Equal(expectedJObject, StringUtility.ExpandVariables("__", "_", items).ToString(Formatting.None).Replace('"', '\''));
+        }
+
+        [Theory]
+        [InlineData("https://a.com/a", "a")]
+        [InlineData("https://a.com/a/1", "a")]
+        [InlineData("https://a.com/a/b", "a/b")]
+        [InlineData("https://a.com/a/b/1", "a/b")]
+        public static void HttpCredential_Respect_LongestMatch(string url, string value)
+        {
+            var config = JsonUtility.Deserialize<PreloadConfig>(@"{
+    'http': {
+        'https://a.com/a': { 'headers': { 'key': 'a' } },
+        'https://a.com/a/b': { 'headers': { 'key': 'a/b' } }
+    }
+}".Replace('\'', '"'), null);
+
+            var credentialProvider = config.GetCredentialProvider();
+
+            var message = new HttpRequestMessage { RequestUri = new Uri(url) };
+            credentialProvider(message);
+            Assert.Equal(value, message.Headers.GetValues("key").First());
         }
     }
 }

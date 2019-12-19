@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal static partial class MergeConflict
+    internal static class MergeConflict
     {
         private enum State
         {

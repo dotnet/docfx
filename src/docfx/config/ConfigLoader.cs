@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,12 +14,12 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly Repository _repository;
-        private readonly OpsConfigAdapter _opsConfigAdapter;
+        private readonly ErrorLog _errorLog;
 
-        public ConfigLoader(Repository repository, OpsConfigAdapter opsConfigAdapter)
+        public ConfigLoader(Repository repository, ErrorLog errorLog)
         {
             _repository = repository;
-            _opsConfigAdapter = opsConfigAdapter;
+            _errorLog = errorLog;
         }
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -73,7 +72,9 @@ namespace Microsoft.Docs.Build
             errors.AddRange(preloadErrors);
 
             // Download dependencies
-            var fileResolver = new FileResolver(docsetPath, preloadConfig, _opsConfigAdapter, noFetch);
+            var credentialProvider = preloadConfig.GetCredentialProvider();
+            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
+            var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, noFetch);
             var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, _repository, fileResolver);
 
             // Create full config

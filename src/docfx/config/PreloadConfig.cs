@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -28,5 +30,26 @@ namespace Microsoft.Docs.Build
         /// Gets the authorization keys for required resources access
         /// </summary>
         public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
+
+        public Action<HttpRequestMessage> GetCredentialProvider()
+        {
+            var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToArray();
+
+            return message =>
+            {
+                var url = message.RequestUri.ToString();
+                foreach (var (baseUrl, rule) in rules)
+                {
+                    if (url.StartsWith(baseUrl))
+                    {
+                        foreach (var header in rule.Headers)
+                        {
+                            message.Headers.Add(header.Key, header.Value);
+                        }
+                        break;
+                    }
+                }
+            };
+        }
     }
 }
