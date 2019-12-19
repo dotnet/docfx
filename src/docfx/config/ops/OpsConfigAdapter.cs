@@ -20,12 +20,6 @@ namespace Microsoft.Docs.Build
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
 
-        private static readonly string s_opsToken = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
-        private static readonly IReadOnlyDictionary<string, string> s_opsHeaders = new Dictionary<string, string>
-        {
-            { "X-OP-BuildUserToken", s_opsToken },
-        };
-
         private static readonly string s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
         private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
 
@@ -37,13 +31,15 @@ namespace Microsoft.Docs.Build
             ? "https://docs.microsoft.com/api/metadata"
             : "https://ppe.docs.microsoft.com/api/metadata";
 
+        private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
 
-        public OpsConfigAdapter(ErrorLog errorLog)
+        public OpsConfigAdapter(ErrorLog errorLog, Action<HttpRequestMessage> credentialProvider)
         {
             _errorLog = errorLog;
+            _credentialProvider = credentialProvider;
             _apis = new (string, Func<Uri, Task<string>>)[]
             {
                 (BuildConfigApi, GetBuildConfig),
@@ -78,7 +74,7 @@ namespace Microsoft.Docs.Build
             var branch = queries["branch"];
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(fetchUrl, s_opsHeaders, nullOn404: true);
+            var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
             if (docsetInfo is null)
             {
                 throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
@@ -115,7 +111,7 @@ namespace Microsoft.Docs.Build
 
         private Task<string> GetMonikerDefinition(Uri url)
         {
-            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers", s_opsHeaders);
+            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
@@ -168,6 +164,8 @@ namespace Microsoft.Docs.Build
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
+                _credentialProvider?.Invoke(request);
+
                 if (headers != null)
                 {
                     foreach (var (key, value) in headers)

@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                ProvideCredential(message);
+                _config?.ProvideCredential(message);
 
                 if (_opsConfigAdapter != null)
                 {
@@ -185,25 +185,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 return await s_httpClient.SendAsync(message);
-            }
-        }
-
-        private void ProvideCredential(HttpRequestMessage message)
-        {
-            if (_config != null)
-            {
-                var url = message.RequestUri.ToString();
-                foreach (var (baseUrl, rule) in _config.Http)
-                {
-                    if (url.StartsWith(baseUrl))
-                    {
-                        foreach (var header in rule.Headers)
-                        {
-                            message.Headers.Add(header.Key, header.Value);
-                        }
-                        break;
-                    }
-                }
             }
         }
     }
