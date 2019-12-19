@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
 
         public string MonikerGroup { get; set; }
 
-        [JsonIgnore]
         public string ConfigMonikerRange { get; set; }
 
         public string Locale { get; set; }

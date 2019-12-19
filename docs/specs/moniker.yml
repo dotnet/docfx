@@ -39,18 +39,12 @@ outputs:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/a","moniker_group":"23d205a5"},
-        {"url":"/docs/a","moniker_group":"9d4e15fd"}
+        {"url":"/docs/a","moniker_group":"23d205a5", "config_moniker_range": ">= netcore-2.0" },
+        {"url":"/docs/a","moniker_group":"9d4e15fd", "config_moniker_range": "< netcore-2.0" }
       ],
       "moniker_groups": {
-        "23d205a5": {
-          "monikers": ["netcore-2.0","netcore-2.1"],
-          "config_moniker_range": ">= netcore-2.0"
-        },
-        "9d4e15fd": {
-          "monikers": ["netcore-1.0","netcore-1.1"],
-          "config_moniker_range": "< netcore-2.0"
-        }
+        "23d205a5": ["netcore-2.0","netcore-2.1"],
+        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
       }
     }
 ---
@@ -124,14 +118,8 @@ outputs:
           { "url": "/docs/a", "path": "4667fedf/docs/a.json", "moniker_group": "4667fedf" }
       ],
       "moniker_groups":{
-        "218c13d0": {
-          "monikers": ["netcore-1.1"],
-          "config_moniker_range": "< netcore-2.0"
-        },
-        "4667fedf":{
-          "monikers": ["netcore-2.0"],
-          "config_moniker_range": ">= netcore-2.0"
-        }
+        "218c13d0":["netcore-1.1"],
+        "4667fedf":["netcore-2.0"]
       }
     }
 ---
@@ -206,14 +194,8 @@ outputs:
         {"url":"/docs/a","moniker_group":"9d4e15fd"}
       ],
       "moniker_groups":{
-        "4667fedf":{
-          "monikers": ["netcore-2.0"],
-          "config_moniker_range": ">= netcore-2.0"
-        },
-        "9d4e15fd":{
-          "monikers": ["netcore-1.0","netcore-1.1"],
-          "config_moniker_range": "< netcore-2.0"
-        }
+        "4667fedf":["netcore-2.0"],
+        "9d4e15fd":["netcore-1.0","netcore-1.1"]
       }
     }
 ---
@@ -268,14 +250,8 @@ outputs:
         { "url": "/docs/b" }
       ],
       "moniker_groups": {
-        "218c13d0": {
-          "monikers": ["netcore-1.1"],
-          "config_moniker_range": "netcore-1.1"
-        },
-        "136a42ac": {
-          "monikers": ["netcore-1.0"],
-          "config_moniker_range": "netcore-1.0"
-        }
+        "218c13d0": ["netcore-1.1"],
+        "136a42ac": ["netcore-1.0"]
       }
     }
 ---
@@ -322,18 +298,12 @@ outputs:
         { "url": "/docs/a", "moniker_group": "4667fedf" }
       ],
       "moniker_groups": {
-        "4667fedf": {
-          "monikers": ["netcore-2.0"],
-          "config_moniker_range": "netcore-2.0"
-        },
-        "136a42ac": {
-          "monikers": ["netcore-1.0"],
-          "config_moniker_range": "netcore-1.0"
-        },
-        "e2dfe8fd": {
-          "monikers": ["netcore-1.0","netcore-2.0"],
-          "config_moniker_range": "netcore-1.0 || netcore-2.0"
-        }
+        "4667fedf": ["netcore-2.0"],
+        "136a42ac": ["netcore-1.0"],
+        "e2dfe8fd": [
+            "netcore-1.0",
+            "netcore-2.0"
+        ]
       }
     }
 ---
@@ -375,18 +345,9 @@ outputs:
         { "url": "/docs/a", "moniker_group": "9d4e15fd" },
       ],
       "moniker_groups": {
-        "136a42ac": {
-          "monikers": ["netcore-1.0"],
-          "config_moniker_range": "netcore-1.0"
-        },
-        "218c13d0": {
-          "monikers": ["netcore-1.1"],
-          "config_moniker_range": "netcore-1.1"
-        },
-        "9d4e15fd": {
-          "monikers": ["netcore-1.0","netcore-1.1"],
-          "config_moniker_range": "netcore-1.0 || netcore-1.1"
-        }
+        "136a42ac": [ "netcore-1.0" ],
+        "218c13d0": [ "netcore-1.1" ],
+        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
       }
     }
   .errors.log: |
@@ -1379,14 +1340,8 @@ outputs:
         { "url": "/docs/c.png", "path": "4667fedf/docs/c.png", "moniker_group": "4667fedf" },
       ],
       "moniker_groups": {
-        "136a42ac": {
-          "monikers": ["netcore-1.0"],
-          "config_moniker_range": "netcore-1.0"
-        },
-        "4667fedf": {
-          "monikers": ["netcore-2.0"],
-          "config_moniker_range": "netcore-2.0"
-        }
+        "136a42ac": ["netcore-1.0"],
+        "4667fedf": ["netcore-2.0"]
       }
     }
 ---
@@ -1536,14 +1491,8 @@ outputs:
         {"url":"/docs/a","moniker_group":"9d4e15fd"}
       ],
       "moniker_groups":{
-        "23d205a5":{
-          "monikers": ["netcore-2.0","netcore-2.1"],
-          "config_moniker_range": ">= netcore-2.0"
-        },
-        "9d4e15fd":{
-          "monikers": ["netcore-1.0","netcore-1.1"],
-          "config_moniker_range": "< netcore-2.0"
-        }
+        "23d205a5":["netcore-2.0","netcore-2.1"],
+        "9d4e15fd":["netcore-1.0","netcore-1.1"]
       }
     }
 ---
@@ -1586,10 +1535,7 @@ outputs:
         {"url":"/docs/toc.json","moniker_group":undefined}
       ],
       "moniker_groups":{
-        "136a42ac":{
-          "monikers": ["netcore-1.0"],
-          "config_moniker_range": "netcore-1.0"
-        }
+        "136a42ac":["netcore-1.0"]
       }
     }
   .errors.log: |
@@ -1628,10 +1574,7 @@ outputs:
         {"url":"/docs/toc.json","moniker_group":"f649fb38"}
       ],
       "moniker_groups":{
-        "f649fb38":{
-          "monikers": ["versioning-1.0","versioning-2.0"],
-          "config_moniker_range": "versioning-2.0 || versioning-1.0"
-        }
+        "f649fb38":["versioning-1.0","versioning-2.0"]
       }
     }
 ---
