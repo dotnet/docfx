@@ -216,10 +216,7 @@ namespace Microsoft.Docs.Build
             if (Output.LowerCaseUrl)
             {
                 HostName = HostName.ToLowerInvariant();
-                if (BasePath != null)
-                {
-                    BasePath.Original = BasePath.Original.ToLowerInvariant();
-                }
+                BasePath.Original = BasePath.Original.ToLowerInvariant();
             }
         }
     }

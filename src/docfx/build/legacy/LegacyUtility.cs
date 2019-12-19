@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public static string ToLegacySiteUrlRelativeToBasePath(this Document doc, Docset docset)
         {
             var legacySiteUrlRelativeToBasePath = doc.SiteUrl;
-            if (legacySiteUrlRelativeToBasePath.StartsWith($"{docset.Config.BasePath.Original}", PathUtility.PathComparison))
+            if (legacySiteUrlRelativeToBasePath.StartsWith(docset.Config.BasePath.Original, PathUtility.PathComparison))
             {
                 legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath.Substring(1);
                 legacySiteUrlRelativeToBasePath = Path.GetRelativePath(
