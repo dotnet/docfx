@@ -140,13 +140,13 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
             }
             catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
             }
         }
 
