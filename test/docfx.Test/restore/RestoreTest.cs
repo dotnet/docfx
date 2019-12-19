@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
         public static void DownloadFile_Success()
         {
             Assert.NotNull(
-                new FileResolver(".").ReadString(
+                new FileResolver(".", new Config()).ReadString(
                     new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
         public static async Task DownloadFile_NoFetch_Should_Fail()
         {
             await Assert.ThrowsAsync<DocfxException>(() =>
-                new FileResolver(".", noFetch: true).Download(
+                new FileResolver(".", new Config(), noFetch: true).Download(
                     new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 

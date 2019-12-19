@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly OpsConfigAdapter _opsConfigAdapter;
         private readonly bool _noFetch;
 
-        public FileResolver(string docsetPath, PreloadConfig config = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
+        public FileResolver(string docsetPath, PreloadConfig config, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
             _opsConfigAdapter = opsConfigAdapter;
