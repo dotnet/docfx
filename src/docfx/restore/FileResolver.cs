@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                _config?.ProvideCredential(message);
+                _config.ProvideCredential(message);
 
                 if (_opsConfigAdapter != null)
                 {
