@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
 
@@ -30,20 +31,25 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
 
-        public void ProvideCredential(HttpRequestMessage message)
+        public Action<HttpRequestMessage> GetCredentialProvider()
         {
-            var url = message.RequestUri.ToString();
-            foreach (var (baseUrl, rule) in Http)
+            var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToArray();
+
+            return message =>
             {
-                if (url.StartsWith(baseUrl))
+                var url = message.RequestUri.ToString();
+                foreach (var (baseUrl, rule) in rules)
                 {
-                    foreach (var header in rule.Headers)
+                    if (url.StartsWith(baseUrl))
                     {
-                        message.Headers.Add(header.Key, header.Value);
+                        foreach (var header in rule.Headers)
+                        {
+                            message.Headers.Add(header.Key, header.Value);
+                        }
+                        break;
                     }
-                    break;
                 }
-            }
+            };
         }
     }
 }

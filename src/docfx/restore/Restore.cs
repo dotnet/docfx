@@ -50,7 +50,8 @@ namespace Microsoft.Docs.Build
                     if (errorLog.Write(errors))
                         return true;
 
-                    var fileResolver = new FileResolver(docsetPath, config, new OpsConfigAdapter(errorLog, config.ProvideCredential));
+                    var credentialProvider = config.GetCredentialProvider();
+                    var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider));
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos

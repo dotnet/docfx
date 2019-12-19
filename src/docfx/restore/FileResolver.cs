@@ -20,16 +20,16 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
-        private readonly PreloadConfig _config;
+        private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly OpsConfigAdapter _opsConfigAdapter;
         private readonly bool _noFetch;
 
-        public FileResolver(string docsetPath, PreloadConfig config, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
+        public FileResolver(string docsetPath, Action<HttpRequestMessage> credentialProvider = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _noFetch = noFetch;
-            _config = config;
+            _credentialProvider = credentialProvider;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                _config.ProvideCredential(message);
+                _credentialProvider?.Invoke(message);
 
                 if (_opsConfigAdapter != null)
                 {

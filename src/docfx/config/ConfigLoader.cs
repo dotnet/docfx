@@ -72,8 +72,9 @@ namespace Microsoft.Docs.Build
             errors.AddRange(preloadErrors);
 
             // Download dependencies
-            var configAdapter = new OpsConfigAdapter(_errorLog, preloadConfig.ProvideCredential);
-            var fileResolver = new FileResolver(docsetPath, preloadConfig, configAdapter, noFetch);
+            var credentialProvider = preloadConfig.GetCredentialProvider();
+            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
+            var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, noFetch);
             var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, _repository, fileResolver);
 
             // Create full config
