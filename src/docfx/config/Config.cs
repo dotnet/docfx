@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
                 HostName = HostName.ToLowerInvariant();
                 if (BasePath != null)
                 {
-                    BasePath = new BasePath(((string)BasePath).ToLowerInvariant());
+                    BasePath.Original = BasePath.Original.ToLowerInvariant();
                 }
             }
         }

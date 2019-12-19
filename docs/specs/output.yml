@@ -31,7 +31,7 @@ outputs:
     {
       "name": "",
       "product": "",
-      "base_path": "base_path"
+      "base_path": "/base_path"
     }
 ---
 # Publish manifest path is source relative path when copyResources is set to false

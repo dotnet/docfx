@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
             if (basePath != null)
             {
                 var properties = new XrefProperties();
-                properties.Tags.Add($"/{basePath}");
+                properties.Tags.Add(basePath);
                 if (repositoryBranch == "master")
                 {
                     properties.Tags.Add("internal");
