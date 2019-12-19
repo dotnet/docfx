@@ -52,14 +52,14 @@ The files which to be built to page can also be from dependency repository, whic
 
 > Note: The dependency repository may be also referenced by others, which means that when building/publishing some files from dependency repository, these published pages may be duplicated with other sites.
 
-- Turn on the `InScope` flags in the `Dependency` config
+- Turn on the `includeInBuild` flags in the `Dependency` config
 
     ```yml
     dependencies:
         _csharplang: 
             url: https://github.com/dotnet/csharplang
             branch: master
-            inScope: true
+            includeInBuild: true
     ```
 
 - Specify the `dependency alias` which you want to include in the `build scope`
@@ -91,12 +91,11 @@ The files which to be built to page can also be from dependency repository, whic
         _csharplang: 
             url: https://github.com/dotnet/csharplang
             branch: master
-            inScope: true
+            includeInBuild: true
     ```
 
 In above example, it includes **all files** except `includes` folder of `https://github.com/dotnet/csharplang` repository in its build scope, and all these files will be built and published to `docs/csharplang` folder.
 
-> Note: The default value of "inScope" is false
+> Note: The default value of "includeInBuild" is false
 
-> Note: If the `inscope` flag of dependency repository is not turned on explicitly, all files will not be build/published even the `dependency alias` is used, and also links to files/resources in these dependency repositories will be treated as warnings.
-
+> Note: If the `includeInBuild` flag of dependency repository is not turned on explicitly, all files will not be build/published even the `dependency alias` is used, and also links to files/resources in these dependency repositories will be treated as warnings.
