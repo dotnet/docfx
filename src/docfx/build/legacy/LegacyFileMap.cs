@@ -34,12 +34,11 @@ namespace Microsoft.Docs.Build
                             context, docset, fileManifest.Value);
                         var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
 
-                        var version = context.MonikerProvider.GetFileLevelMonikerRange(document.FilePath);
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToBasePath,
                             legacySiteUrlRelativeToBasePath,
                             document.ContentType,
-                            version,
+                            fileManifest.Value.ConfigMonikerRange,
                             fileManifest.Value.Monikers);
                         if (fileItem != null)
                         {

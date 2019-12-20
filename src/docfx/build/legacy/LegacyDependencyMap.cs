@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                                 From = $"~/{document.FilePath.Path}",
                                 To = $"~/{toc.FilePath.Path}",
                                 Type = LegacyDependencyMapType.Metadata,
-                                Version = context.MonikerProvider.GetFileLevelMonikerRange(document.FilePath),
+                                Version = context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
                             });
                         }
                     });
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                             From = $"~/{source.FilePath.Path}",
                             To = $"~/{dependencyItem.To.FilePath.Path}",
                             Type = dependencyItem.Type.ToLegacyDependencyMapType(),
-                            Version = context.MonikerProvider.GetFileLevelMonikerRange(source.FilePath),
+                            Version = context.MonikerProvider.GetConfigMonikerRange(source.FilePath),
                         });
                     }
                 }
