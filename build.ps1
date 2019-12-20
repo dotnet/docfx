@@ -35,7 +35,7 @@ function publish() {
 }
 
 function publishBinaryPackages() {
-    $packagesBasePath = "$PSScriptRoot\drop\binary-packages"
+    $packagesBasePath = "$PSScriptRoot\drop\docfx-bin"
     New-Item -Path $packagesBasePath -ItemType "directory" -ErrorAction SilentlyContinue
     $stagingPath = "$packagesBasePath\staging"
     New-Item -Path $stagingPath -ItemType "directory" -ErrorAction SilentlyContinue

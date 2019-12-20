@@ -95,10 +95,10 @@ jobs:
     displayName: Publish Binary Packages To Sandbox
     inputs:
       azureSubscription: Open Publishing - Build Sandbox
-      sourcePath: drop/binary-packages/staging
+      sourcePath: drop/docfx-bin/staging
       destination: AzureBlob
       storage: opsbuildstoragesandbox
-      containerName: docfx-binary-packages
+      containerName: docfx-bin
 
   # Publish binary packages to production
   - task: AzureFileCopy@3
@@ -106,10 +106,10 @@ jobs:
     displayName: Publish Binary Packages To Production
     inputs:
       azureSubscription: Open Publishing - Build Production
-      sourcePath: drop/binary-packages/staging
+      sourcePath: drop/docfx-bin/staging
       destination: AzureBlob
       storage: opsbuildk8sprod
-      containerName: docfx-binary-packages
+      containerName: docfx-bin
 
 # Integration test
 - job: IntegrationTest
