@@ -31,7 +31,38 @@ function test() {
 function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
+    # check production release
+    if ($env:BUILD_SOURCEBRANCH -eq "refs/heads/v3-release")
+    {
+        publishLocalBuildPackage
+    }
 }
+
+function publishLocalBuildPackage() {
+    $localBuildPackagePath = "$PSScriptRoot\drop\local-build-packages"
+    $blobUrl = "https://opbuildstorageprod.blob.core.windows.net/docfx-local-build-packages/"
+    $windowsRuntime = "win-x64"
+    $osxRuntime = "osx-x64"
+    Remove-Item $localBuildPackagePath -Force -Recurse -ErrorAction Ignore
+
+    # publish and zip
+    exec "dotnet publish src\docfx\docfx.csproj -c release -r $windowsRuntime -o $localBuildPackagePath/$windowsRuntime /p:Version=$version /p:InformationalVersion=$version"
+    exec "dotnet publish src\docfx\docfx.csproj -c release -r $osxRuntime -o $localBuildPackagePath/$osxRuntime /p:Version=$version /p:InformationalVersion=$version"
+    Compress-Archive "$localBuildPackagePath/$windowsRuntime" -DestinationPath "$localBuildPackagePath/$windowsRuntime-$version.zip"
+    Compress-Archive "$localBuildPackagePath/$osxRuntime" -DestinationPath "$localBuildPackagePath/$osxRuntime-$version.zip"
+
+    # generate manifest
+    $windowsPackageHash = (Get-FileHash "$localBuildPackagePath/$windowsRuntime-$version.zip").Hash
+    $osxPackageHash = (Get-FileHash "$localBuildPackagePath/$osxRuntime-$version.zip").Hash
+    (
+    @{id="docfx-$windowsRuntime";url="$blobUrl/$windowsRuntime-$version.zip";integrity=$windowsPackageHash},
+    @{id="docfx-$osxRuntime";url="$blobUrl/$osxRuntime-$version.zip";integrity=$osxPackageHash}
+    ) |
+    ConvertTo-Json |
+    Out-File -FilePath "$localBuildPackagePath/manifest-$version.json"
+}
+
+
 
 function testNuGet() {
     if ($noTest) {
@@ -44,9 +75,10 @@ function testNuGet() {
 
 try {
     pushd $PSScriptRoot
-    test
-    publish
-    testNuGet
+    # test
+    # publish
+    # testNuGet
+    publishLocalBuildPackage
 } finally {
     popd
 }

@@ -88,6 +88,17 @@ jobs:
       packagesToPush: drop/**/*.nupkg
       nuGetFeedType: external
       publishFeedCredentials: myget.docfx-v3
+  
+  # Publish local build package(production)
+  - task: AzureFileCopy@3
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+    displayName: 'Publish Local Build Packages(Production)'
+    inputs:
+      azureSubscription: Open Publishing - Build Sandbox
+      sourcePath: drop/local-build-packages
+      destination: AzureBlob
+      storage: opsbuildk8sprod
+      containerName: docfx-local-build-packages
 
 # Integration test
 - job: IntegrationTest
