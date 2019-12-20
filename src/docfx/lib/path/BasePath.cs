@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         private readonly string _relativePath;
 
-        public string Original => _original ?? "";
+        public string Original => _original ?? "/";
 
         // It is either an empty string, or a path without leading /
         public string RelativePath => _relativePath ?? "";
