@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void InitFetchCheckout(string path, string url, string committish, Config config = null)
         {
-            InitFetch(path, url, new[] { committish }, bare: false, prune: true, config);
+            InitFetch(path, url, new[] { committish }, bare: false, config);
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
         }
 
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void InitFetchBare(string path, string url, IEnumerable<string> committishes, Config config = null)
         {
-            InitFetch(path, url, committishes, bare: true, prune: true, config);
+            InitFetch(path, url, committishes, bare: true, config);
         }
 
         /// <summary>
@@ -119,16 +119,15 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static void Fetch(string path, string url, string committishes, Config config)
         {
-            Fetch(path, url, new[] { committishes }, config, prune: false);
+            Fetch(path, url, new[] { committishes }, config);
         }
 
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static void Fetch(string path, string url, IEnumerable<string> committishes, Config config, bool prune)
+        public static void Fetch(string path, string url, IEnumerable<string> committishes, Config config)
         {
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
-            var pruneSwitch = prune ? "--prune" : "";
 
             // Allow test to proxy remotes to local folder
             if (GitRemoteProxy != null)
@@ -140,13 +139,13 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
             }
             catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
                 refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok {pruneSwitch} \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
             }
         }
 
@@ -284,7 +283,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, bool prune, Config config)
+        private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, Config config)
         {
             // Unifies clone and fetch using a single flow:
             // - git init
@@ -316,7 +315,7 @@ namespace Microsoft.Docs.Build
 
             git_repository_free(repo);
 
-            Fetch(path, url, committishes, config, prune);
+            Fetch(path, url, committishes, config);
         }
 
         private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)
