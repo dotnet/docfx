@@ -117,14 +117,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static void Fetch(string path, string url, string committishes, Config config)
-        {
-            Fetch(path, url, new[] { committishes }, config);
-        }
-
-        /// <summary>
-        /// Fetch a git repository's updates
-        /// </summary>
         public static void Fetch(string path, string url, IEnumerable<string> committishes, Config config)
         {
             var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
