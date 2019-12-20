@@ -31,7 +31,7 @@ function test() {
 function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-    publishLocalBuildPackage
+    publishBinaryPackages
 }
 
 function publishBinaryPackages() {
@@ -65,7 +65,6 @@ try {
     test
     publish
     testNuGet
-    publishBinaryPackages
 } finally {
     popd
 }
