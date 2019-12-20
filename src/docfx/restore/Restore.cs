@@ -53,20 +53,6 @@ namespace Microsoft.Docs.Build
                     var credentialProvider = config.GetCredentialProvider();
                     var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider));
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
-
-                    // restore git repos includes dependency repos, theme repo and loc repos
-                    var restoreFallbackResult = RestoreFallbackRepo(config, repository);
-                    var restoreDependencyResults = RestoreGit.Restore(config, locale, repository, DependencyLockProvider.CreateFromConfig(docsetPath, config));
-
-                    // save dependency lock
-                    var restoredGitLock = new List<DependencyGitLock>();
-                    foreach (var restoreResult in restoreDependencyResults.Concat(new[] { restoreFallbackResult }))
-                    {
-                        if (restoreResult != null)
-                            restoredGitLock.Add(new DependencyGitLock { Url = restoreResult.Remote, Branch = restoreResult.Branch, Commit = restoreResult.Commit });
-                    }
-
-                    DependencyLockProvider.SaveGitLock(docsetPath, locale, config.DependencyLock, restoredGitLock);
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
@@ -81,26 +67,6 @@ namespace Microsoft.Docs.Build
                 }
                 return false;
             }
-        }
-
-        private static RestoreGitResult RestoreFallbackRepo(Config config, Repository repository)
-        {
-            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
-            {
-                // fallback to master
-                if (fallbackBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(fallbackRemote, fallbackBranch, config))
-                {
-                    fallbackBranch = "master";
-                }
-
-                var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, RestoreGitFlags flags)> { (fallbackBranch, RestoreGitFlags.None) }, null);
-                Debug.Assert(restoredResult.Count == 1);
-
-                return restoredResult[0];
-            }
-
-            return default;
         }
     }
 }
