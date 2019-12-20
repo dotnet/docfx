@@ -103,7 +103,7 @@ jobs:
   # Publish binary packages to production
   - task: AzureFileCopy@3
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish Local Build Packages To Production
+    displayName: Publish Binary Packages To Production
     inputs:
       azureSubscription: Open Publishing - Build Production
       sourcePath: drop/binary-packages/staging
