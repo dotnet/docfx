@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             var repository = queries["repository_url"];
             var branch = queries["branch"];
             var xrefEndpoint = queries["xref_endpoint"];
-            var xrefQueryTags = queries["xref_query_tags"].Split('|');
+            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? null : queries["xref_query_tags"].Split('|');
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
