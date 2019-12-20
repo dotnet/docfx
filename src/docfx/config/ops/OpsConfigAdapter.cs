@@ -119,137 +119,135 @@ namespace Microsoft.Docs.Build
                     Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
-                ["monikerDefinition"] = MonikerDefinitionApi,
-                ["markdownValidationRules"] = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
-                ["xref"] = new JArray(xrefMaps),
+                xref = new JArray(xrefMaps),
             });
         }
 
-    private string GetXrefMapApiEndpoint(string xrefEndpoint)
-    {
-        bool isProduction;
-        if (string.IsNullOrEmpty(xrefEndpoint))
+        private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            isProduction = s_isProduction;
+            bool isProduction;
+            if (string.IsNullOrEmpty(xrefEndpoint))
+            {
+                isProduction = s_isProduction;
+            }
+            else
+            {
+                isProduction = string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+            }
+            return isProduction
+                    ? "https://op-build-prod.azurewebsites.net"
+                    : "https://op-build-sandbox2.azurewebsites.net";
         }
-        else
+
+        private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
         {
-            isProduction = string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+            var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
+            var response = await Fetch(url);
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
         }
-        return isProduction
-                ? "https://op-build-prod.azurewebsites.net"
-                : "https://op-build-sandbox2.azurewebsites.net";
-    }
 
-    private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
-    {
-        var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
-        var response = await Fetch(url, s_opsHeaders);
-        return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
-    }
-
-    private Task<string> GetMonikerDefinition(Uri url)
-    {
-        return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
-    }
-
-    private async Task<string> GetMarkdownValidationRules(Uri url)
-    {
-        try
+        private Task<string> GetMonikerDefinition(Uri url)
         {
-            var headers = GetValidationServiceHeaders(url);
-
-            return await Fetch($"{s_validationServiceEndpoint}/rules/content", headers);
+            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
         }
-        catch (Exception ex)
+
+        private async Task<string> GetMarkdownValidationRules(Uri url)
         {
-            Log.Write(ex);
-            _errorLog.Write(Errors.ValidationIncomplete());
-            return "{}";
-        }
-    }
+            try
+            {
+                var headers = GetValidationServiceHeaders(url);
 
-    private async Task<string> GetMetadataSchema(Uri url)
-    {
-        try
+                return await Fetch($"{s_validationServiceEndpoint}/rules/content", headers);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                _errorLog.Write(Errors.ValidationIncomplete());
+                return "{}";
+            }
+        }
+
+        private async Task<string> GetMetadataSchema(Uri url)
         {
-            var headers = GetValidationServiceHeaders(url);
-            var rules = Fetch($"{s_validationServiceEndpoint}/rules", headers);
-            var allowlists = Fetch($"{s_validationServiceEndpoint}/allowlists", headers);
+            try
+            {
+                var headers = GetValidationServiceHeaders(url);
+                var rules = Fetch($"{s_validationServiceEndpoint}/rules", headers);
+                var allowlists = Fetch($"{s_validationServiceEndpoint}/allowlists", headers);
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
+                return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                _errorLog.Write(Errors.ValidationIncomplete());
+                return "{}";
+            }
         }
-        catch (Exception ex)
+
+        private static Dictionary<string, string> GetValidationServiceHeaders(Uri url)
         {
-            Log.Write(ex);
-            _errorLog.Write(Errors.ValidationIncomplete());
-            return "{}";
-        }
-    }
+            var queries = HttpUtility.ParseQueryString(url.Query);
 
-    private static Dictionary<string, string> GetValidationServiceHeaders(Uri url)
-    {
-        var queries = HttpUtility.ParseQueryString(url.Query);
-
-        return new Dictionary<string, string>()
+            return new Dictionary<string, string>()
             {
                 { "X-Metadata-RepositoryUrl", queries["repository_url"] },
                 { "X-Metadata-RepositoryBranch", queries["branch"] },
             };
-    }
+        }
 
-    private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
-    {
-        using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
-        using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
-            _credentialProvider?.Invoke(request);
-
-            if (headers != null)
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                foreach (var (key, value) in headers)
+                _credentialProvider?.Invoke(request);
+
+                if (headers != null)
                 {
-                    request.Headers.TryAddWithoutValidation(key, value);
+                    foreach (var (key, value) in headers)
+                    {
+                        request.Headers.TryAddWithoutValidation(key, value);
+                    }
                 }
-            }
 
-            var response = await _http.SendAsync(request);
-            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-            {
-                _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-            }
+                var response = await _http.SendAsync(request);
+                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                {
+                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                }
 
-            if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
-            {
-                return null;
+                if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
             }
-            return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
-    }
 
-    private static string GetHostName(string siteName)
-    {
-        switch (siteName)
+        private static string GetHostName(string siteName)
         {
-            case "DocsAzureCN":
-                return s_isProduction ? "docs.azure.cn" : "ppe.docs.azure.cn";
-            case "dev.microsoft.com":
-                return s_isProduction ? "developer.microsoft.com" : "devmsft-sandbox.azurewebsites.net";
-            case "rd.microsoft.com":
-                return "rd.microsoft.com";
-            default:
-                return s_isProduction ? "docs.microsoft.com" : "ppe.docs.microsoft.com";
+            switch (siteName)
+            {
+                case "DocsAzureCN":
+                    return s_isProduction ? "docs.azure.cn" : "ppe.docs.azure.cn";
+                case "dev.microsoft.com":
+                    return s_isProduction ? "developer.microsoft.com" : "devmsft-sandbox.azurewebsites.net";
+                case "rd.microsoft.com":
+                    return "rd.microsoft.com";
+                default:
+                    return s_isProduction ? "docs.microsoft.com" : "ppe.docs.microsoft.com";
+            }
+        }
+
+        private static string GetXrefHostName(string siteName, string branch)
+        {
+            return !IsLive(branch) && s_isProduction ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+        }
+
+        private static bool IsLive(string branch)
+        {
+            return branch == "live" || branch == "live-sxs";
         }
     }
-
-    private static string GetXrefHostName(string siteName, string branch)
-    {
-        return !IsLive(branch) && s_isProduction ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
-    }
-
-    private static bool IsLive(string branch)
-    {
-        return branch == "live" || branch == "live-sxs";
-    }
-}
 }
