@@ -63,8 +63,10 @@ function testNuGet() {
 try {
     pushd $PSScriptRoot
     test
-    publish
-    testNuGet
+    if ($env:BUILD_REASON -ne "PullRequest") {
+        publish
+        testNuGet
+    }
 } finally {
     popd
 }
