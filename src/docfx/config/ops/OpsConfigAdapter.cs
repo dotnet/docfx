@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             var repository = queries["repository_url"];
             var branch = queries["branch"];
             var xrefEndpoint = queries["xref_endpoint"];
-            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? null : queries["xref_query_tags"].Split('|');
+            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? null : queries["xref_query_tags"].Split(',');
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
@@ -121,18 +121,14 @@ namespace Microsoft.Docs.Build
                     Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
-                xref = new JArray(xrefMaps),
+                xref = xrefMaps,
             });
         }
 
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            bool isProduction;
-            if (string.IsNullOrEmpty(xrefEndpoint))
-            {
-                isProduction = s_isProduction;
-            }
-            else
+            var isProduction = s_isProduction;
+            if (!string.IsNullOrEmpty(xrefEndpoint))
             {
                 isProduction = string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
             }

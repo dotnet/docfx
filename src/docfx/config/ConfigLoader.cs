@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
+        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options, bool noFetch = false)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = options?.ToJObject();
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var opsConfig = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
             var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, noFetch);
-            var extendConfig = DownloadExtendConfig(errors, preloadConfig, opsConfig, _repository, fileResolver);
+            var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, xrefEndpoint, xrefQueryTags, _repository, fileResolver);
 
             // Create full config
             var configObject = new JObject();
@@ -111,15 +111,16 @@ namespace Microsoft.Docs.Build
         }
 
         private JObject DownloadExtendConfig(
-            List<Error> errors, PreloadConfig config, JObject opsConfig, Repository repository, FileResolver fileResolver)
+            List<Error> errors, string locale, PreloadConfig config, string xrefEndpoint, string[] xrefQueryTags, Repository repository, FileResolver fileResolver)
         {
             var result = new JObject();
             var extendQuery =
                 $"name={WebUtility.UrlEncode(config.Name)}" +
+                $"&locale={WebUtility.UrlEncode(locale)}" +
                 $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
                 $"&branch={WebUtility.UrlEncode(repository?.Branch)}" +
-                $"&xref_endpoint={WebUtility.UrlEncode(opsConfig?["xref_endpoint"]?.ToString())}" +
-                $"&xref_query_tags={WebUtility.UrlEncode(string.Join('|', opsConfig?["xref_query_tags"]?.ToString()))}";
+                $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
+                $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
 
             foreach (var extend in config.Extend)
             {
