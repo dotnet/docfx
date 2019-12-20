@@ -71,7 +71,7 @@ jobs:
 
   # Push to sandbox MyGet feed
   - task: NuGetCommand@2
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
     displayName: Push to Sandbox MyGet Feed
     inputs:
       command: push
@@ -81,24 +81,35 @@ jobs:
 
   # Push to production MyGet feed
   - task: NuGetCommand@2
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
     displayName: Push to Production MyGet Feed
     inputs:
       command: push
       packagesToPush: drop/**/*.nupkg
       nuGetFeedType: external
       publishFeedCredentials: myget.docfx-v3
-  
-  # Publish local build package to production
+
+  # Publish binary packages to sandbox
   - task: AzureFileCopy@3
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish Local Build Packages To Production
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+    displayName: Publish Binary Packages To Sandbox
     inputs:
       azureSubscription: Open Publishing - Build Sandbox
-      sourcePath: drop/local-build-packages
+      sourcePath: drop/binary-packages/staging
+      destination: AzureBlob
+      storage: opsbuildstoragesandbox
+      containerName: docfx-binary-packages
+
+  # Publish binary packages to production
+  - task: AzureFileCopy@3
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+    displayName: Publish Local Build Packages To Production
+    inputs:
+      azureSubscription: Open Publishing - Build Production
+      sourcePath: drop/binary-packages/staging
       destination: AzureBlob
       storage: opsbuildk8sprod
-      containerName: docfx-local-build-packages
+      containerName: docfx-binary-packages
 
 # Integration test
 - job: IntegrationTest

@@ -31,35 +31,25 @@ function test() {
 function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-    if ($env:BUILD_SOURCEBRANCH -eq "refs/heads/v3-release")
-    {
-        publishLocalBuildPackage
+    publishLocalBuildPackage
+}
+
+function publishBinaryPackages() {
+    $packagesBasePath = "$PSScriptRoot\drop\binary-packages"
+    New-Item -Path $packagesBasePath -ItemType "directory" -ErrorAction SilentlyContinue
+    $stagingPath = "$packagesBasePath\staging"
+    New-Item -Path $stagingPath -ItemType "directory" -ErrorAction SilentlyContinue
+
+    $rids = @("win-x64", "osx-x64", "linux-x64")
+    foreach ($rid in $rids) {
+        $packageName = "docfx-$rid-$version"
+        exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:Version=$version /p:InformationalVersion=$version"
+        Compress-Archive "$packagesBasePath/$rid" -DestinationPath "$stagingPath/$packageName.zip" -Update
+        (Get-FileHash "$stagingPath/$packageName.zip").Hash | Out-File -FilePath "$stagingPath/$packageName.zip.sha256"
+        Copy-Item "$stagingPath/$packageName.zip" "$stagingPath/docfx-$rid-latest.zip" 
+        Copy-Item "$stagingPath/$packageName.zip.sha256" "$stagingPath/docfx-$rid-latest.zip.sha256" 
     }
 }
-
-function publishLocalBuildPackage() {
-    $localBuildPackagePath = "$PSScriptRoot\drop\local-build-packages"
-    $blobUrl = "https://opbuildstorageprod.blob.core.windows.net/docfx-local-build-packages/"
-    $windowsRuntime = "win-x64"
-    $osxRuntime = "osx-x64"
-    Remove-Item $localBuildPackagePath -Force -Recurse -ErrorAction Ignore
-
-    exec "dotnet publish src\docfx\docfx.csproj -c release -r $windowsRuntime -o $localBuildPackagePath/$windowsRuntime /p:Version=$version /p:InformationalVersion=$version"
-    exec "dotnet publish src\docfx\docfx.csproj -c release -r $osxRuntime -o $localBuildPackagePath/$osxRuntime /p:Version=$version /p:InformationalVersion=$version"
-    Compress-Archive "$localBuildPackagePath/$windowsRuntime" -DestinationPath "$localBuildPackagePath/$windowsRuntime-$version.zip"
-    Compress-Archive "$localBuildPackagePath/$osxRuntime" -DestinationPath "$localBuildPackagePath/$osxRuntime-$version.zip"
-
-    $windowsPackageHash = (Get-FileHash "$localBuildPackagePath/$windowsRuntime-$version.zip").Hash
-    $osxPackageHash = (Get-FileHash "$localBuildPackagePath/$osxRuntime-$version.zip").Hash
-    (
-    @{id="docfx-$windowsRuntime";url="$blobUrl/$windowsRuntime-$version.zip";integrity=$windowsPackageHash},
-    @{id="docfx-$osxRuntime";url="$blobUrl/$osxRuntime-$version.zip";integrity=$osxPackageHash}
-    ) |
-    ConvertTo-Json |
-    Out-File -FilePath "$localBuildPackagePath/manifest-$version.json"
-}
-
-
 
 function testNuGet() {
     if ($noTest) {
@@ -72,10 +62,10 @@ function testNuGet() {
 
 try {
     pushd $PSScriptRoot
-    test
-    publish
-    testNuGet
-    publishLocalBuildPackage
+    # test
+    # publish
+    # testNuGet
+    publishBinaryPackages
 } finally {
     popd
 }

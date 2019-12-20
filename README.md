@@ -18,6 +18,14 @@ dotnet tool install -g docfx --version "3.0.0-*" --add-source https://www.myget.
 - Run `docfx restore` to restore the dependencies of your docset.
 - Run `docfx build` to build your docset.
 
+## Binary Builds
+|Platform|Release|Pre-Release|
+|---|---|---|
+|win-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-binary-packages/docfx-win-x64-latest.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-binary-packages/docfx-win-x64-latest.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-binary-packages/docfx-win-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-binary-packages/docfx-win-x64-latest.zip.sha256))|
+|osx-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-binary-packages/dotnet-runtime-latest-osx-x64.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-binary-packages/dotnet-runtime-latest-osx-x64.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-binary-packages/docfx-osx-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-binary-packages/docfx-osx-x64-latest.zip.sha256))|
+|linux-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-binary-packages/dotnet-runtime-latest-linux-x64.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-binary-packages/dotnet-runtime-latest-linux-x64.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-binary-packages/docfx-linux-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-binary-packages/docfx-linux-x64-latest.zip.sha256))|
+
+
 ## Contributing
 
 If you are interested in proposing ideas and fixing issues, see [How to Contribute](.github/CONTRIBUTING.md).
