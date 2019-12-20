@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
         }
 
-        public SourceInfo<string> GetFileLevelMonikerRange(FilePath file)
+        public SourceInfo<string> GetConfigMonikerRange(FilePath file)
         {
             return _monikerRangeCache.GetOrAdd(file, GetFileLevelMonikerRangeCore);
         }
@@ -80,8 +80,8 @@ namespace Microsoft.Docs.Build
         {
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
-            var monikerRange = GetFileLevelMonikerRange(file);
-            var configMonikers = _rangeParser.Parse(monikerRange);
+            var configMonikerRange = GetConfigMonikerRange(file);
+            var configMonikers = _rangeParser.Parse(configMonikerRange);
 
             if (!string.IsNullOrEmpty(metadata.MonikerRange))
             {
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Length == 0)
                 {
-                    var error = Errors.MonikeRangeOutOfScope(monikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
+                    var error = Errors.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                     return (error, intersection);
                 }
                 return (null, intersection);

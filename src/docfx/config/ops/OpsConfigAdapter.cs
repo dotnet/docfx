@@ -10,21 +10,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
+        public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
-
-        private static readonly string s_opsToken = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
-        private static readonly IReadOnlyDictionary<string, string> s_opsHeaders = new Dictionary<string, string>
-        {
-            { "X-OP-BuildUserToken", s_opsToken },
-        };
 
         private static readonly string s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
         private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
@@ -37,30 +31,50 @@ namespace Microsoft.Docs.Build
             ? "https://docs.microsoft.com/api/metadata"
             : "https://ppe.docs.microsoft.com/api/metadata";
 
+        private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
 
-        public OpsConfigAdapter(ErrorLog errorLog)
+        public OpsConfigAdapter(ErrorLog errorLog, Action<HttpRequestMessage> credentialProvider)
         {
             _errorLog = errorLog;
+            _credentialProvider = credentialProvider;
             _apis = new (string, Func<Uri, Task<string>>)[]
             {
+                (BuildConfigApi, GetBuildConfig),
                 (MonikerDefinitionApi, GetMonikerDefinition),
                 (MetadataSchemaApi, GetMetadataSchema),
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
             };
         }
 
-        public async Task<JObject> GetBuildConfig(string xrefEndpoint, IEnumerable<string> xrefQueryTags, string name, string repository, string branch)
+        public async Task<HttpResponseMessage> InterceptHttpRequest(HttpRequestMessage request)
         {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(repository))
+            foreach (var (baseUrl, rule) in _apis)
             {
-                return null;
+                if (request.RequestUri.OriginalString.StartsWith(baseUrl))
+                {
+                    return new HttpResponseMessage { Content = new StringContent(await rule(request.RequestUri)) };
+                }
             }
+            return null;
+        }
 
-            var url = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(url, s_opsHeaders, nullOn404: true);
+        public void Dispose()
+        {
+            _http.Dispose();
+        }
+
+        private async Task<string> GetBuildConfig(Uri url)
+        {
+            var queries = HttpUtility.ParseQueryString(url.Query);
+            var name = queries["name"];
+            var repository = queries["repository_url"];
+            var branch = queries["branch"];
+
+            var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
+            var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
             if (docsetInfo is null)
             {
                 throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
@@ -93,20 +107,20 @@ namespace Microsoft.Docs.Build
 
             return new JObject
             {
-                ["product"] = docset.product_name,
-                ["siteName"] = docset.site_name,
-                ["hostName"] = GetHostName(docset.site_name),
-                ["basePath"] = docset.base_path,
-                ["xrefHostName"] = GetXrefHostName(docset.site_name, branch),
-                ["localization"] = new JObject
+                product = docset.product_name,
+                siteName = docset.site_name,
+                hostName = GetHostName(docset.site_name),
+                basePath = docset.base_path,
+                xrefHostName = GetXrefHostName(docset.site_name, branch),
+                monikerDefinition = MonikerDefinitionApi,
+                markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
+                metadataSchema = new[]
                 {
-                    ["defaultLocale"] = defaultLocale,
+                    Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
+                    $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 ["monikerDefinition"] = MonikerDefinitionApi,
                 ["markdownValidationRules"] = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
-                ["metadataSchema"] = new JArray(
-                    Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
-                    $"{MetadataSchemaApi}{metadataServiceQueryParams}"),
                 ["xref"] = new JArray(xrefMaps),
             };
         }
@@ -153,7 +167,7 @@ namespace Microsoft.Docs.Build
 
         private Task<string> GetMonikerDefinition(Uri url)
         {
-            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers", s_opsHeaders);
+            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
@@ -203,41 +217,31 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
-            try
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
-                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                _credentialProvider?.Invoke(request);
+
+                if (headers != null)
                 {
-                    if (headers != null)
+                    foreach (var (key, value) in headers)
                     {
-                        foreach (var (key, value) in headers)
-                        {
-                            request.Headers.TryAddWithoutValidation(key, value);
-                        }
+                        request.Headers.TryAddWithoutValidation(key, value);
                     }
-
-                    var response = await _http.SendAsync(request);
-                    if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-                    {
-                        _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                    }
-
-                    if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        return null;
-                    }
-                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw Errors.DownloadFailed(url).ToException(ex);
-            }
-        }
 
-        private static string GetDefaultLocale(string siteName)
-        {
-            return siteName == "DocsAzureCN" ? "zh-cn" : "en-us";
+                var response = await _http.SendAsync(request);
+                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                {
+                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                }
+
+                if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            }
         }
 
         private static string GetHostName(string siteName)

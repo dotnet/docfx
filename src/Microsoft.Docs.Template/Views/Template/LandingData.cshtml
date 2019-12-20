@@ -88,6 +88,27 @@ private void UpdateAbstract()
                 {
                     @await Html.PartialAsync("BuildItemListPartial", item)
                 }
+                else if (item.Type == LandingDataType.Grid)
+                {
+                    if (item.Style == "columns")
+                    {
+                        <div class="columnHolder">
+                            @if (item.Items[0] != null)
+                            {
+                                <div class="@item.ClassName">
+                                    @await Html.PartialAsync("BuildItemListPartial", item.Items[0])
+                                </div>
+                            }
+
+                            @if (item.Items[1] != null)
+                            {
+                                <div class="@item.ClassName">
+                                    @await Html.PartialAsync("BuildItemListPartial", item.Items[1])
+                                </div>
+                            }
+                        </div>
+                    }
+                }
                 else if (item.Type == LandingDataType.Table)
                 {
                     if (item.Style == "dataMatrix")

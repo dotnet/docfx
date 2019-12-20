@@ -39,12 +39,12 @@ outputs:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/a","moniker_group":"23d205a5"},
-        {"url":"/docs/a","moniker_group":"9d4e15fd"}
+        {"url":"/docs/a","moniker_group":"23d205a5", "config_moniker_range": ">= netcore-2.0" },
+        {"url":"/docs/a","moniker_group":"9d4e15fd", "config_moniker_range": "< netcore-2.0" }
       ],
-      "moniker_groups":{
-        "23d205a5":["netcore-2.0","netcore-2.1"],
-        "9d4e15fd":["netcore-1.0","netcore-1.1"]
+      "moniker_groups": {
+        "23d205a5": ["netcore-2.0","netcore-2.1"],
+        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
       }
     }
 ---

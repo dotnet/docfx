@@ -20,16 +20,16 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
-        private readonly PreloadConfig _config;
+        private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly OpsConfigAdapter _opsConfigAdapter;
         private readonly bool _noFetch;
 
-        public FileResolver(string docsetPath, PreloadConfig config = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
+        public FileResolver(string docsetPath, Action<HttpRequestMessage> credentialProvider = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _noFetch = noFetch;
-            _config = config;
+            _credentialProvider = credentialProvider;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
                     return (tempFile, response.Headers.ETag);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
                 throw Errors.DownloadFailed(url).ToException(ex);
             }
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                ProvideCredential(message);
+                _credentialProvider?.Invoke(message);
 
                 if (_opsConfigAdapter != null)
                 {
@@ -185,25 +185,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 return await s_httpClient.SendAsync(message);
-            }
-        }
-
-        private void ProvideCredential(HttpRequestMessage message)
-        {
-            if (_config != null)
-            {
-                var url = message.RequestUri.ToString();
-                foreach (var (baseUrl, rule) in _config.Http)
-                {
-                    if (url.StartsWith(baseUrl))
-                    {
-                        foreach (var header in rule.Headers)
-                        {
-                            message.Headers.Add(header.Key, header.Value);
-                        }
-                        break;
-                    }
-                }
             }
         }
     }

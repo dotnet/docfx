@@ -38,6 +38,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
+                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
             };
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && copy)
