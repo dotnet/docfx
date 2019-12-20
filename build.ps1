@@ -31,7 +31,6 @@ function test() {
 function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-    # check production release
     if ($env:BUILD_SOURCEBRANCH -eq "refs/heads/v3-release")
     {
         publishLocalBuildPackage
@@ -45,13 +44,11 @@ function publishLocalBuildPackage() {
     $osxRuntime = "osx-x64"
     Remove-Item $localBuildPackagePath -Force -Recurse -ErrorAction Ignore
 
-    # publish and zip
     exec "dotnet publish src\docfx\docfx.csproj -c release -r $windowsRuntime -o $localBuildPackagePath/$windowsRuntime /p:Version=$version /p:InformationalVersion=$version"
     exec "dotnet publish src\docfx\docfx.csproj -c release -r $osxRuntime -o $localBuildPackagePath/$osxRuntime /p:Version=$version /p:InformationalVersion=$version"
     Compress-Archive "$localBuildPackagePath/$windowsRuntime" -DestinationPath "$localBuildPackagePath/$windowsRuntime-$version.zip"
     Compress-Archive "$localBuildPackagePath/$osxRuntime" -DestinationPath "$localBuildPackagePath/$osxRuntime-$version.zip"
 
-    # generate manifest
     $windowsPackageHash = (Get-FileHash "$localBuildPackagePath/$windowsRuntime-$version.zip").Hash
     $osxPackageHash = (Get-FileHash "$localBuildPackagePath/$osxRuntime-$version.zip").Hash
     (
