@@ -118,8 +118,8 @@ namespace Microsoft.Docs.Build
                 $"name={WebUtility.UrlEncode(config.Name)}" +
                 $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
                 $"&branch={WebUtility.UrlEncode(repository?.Branch)}" +
-                $"&xref_endpoint={WebUtility.UrlEncode(opsConfig["xref_endpoint"]?.ToString())}" +
-                $"&xref_query_tags={WebUtility.UrlEncode(string.Join('|', opsConfig["xref_query_tags"]?.ToString()))}";
+                $"&xref_endpoint={WebUtility.UrlEncode(opsConfig?["xref_endpoint"]?.ToString())}" +
+                $"&xref_query_tags={WebUtility.UrlEncode(string.Join('|', opsConfig?["xref_query_tags"]?.ToString()))}";
 
             foreach (var extend in config.Extend)
             {
