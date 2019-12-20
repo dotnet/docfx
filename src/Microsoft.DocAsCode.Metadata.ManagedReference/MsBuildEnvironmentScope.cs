@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return new EnvironmentScope(new Dictionary<string, string>
                     {
                         ["VSINSTALLDIR"] = latest.VisualStudioRootPath,
-                        ["VisualStudioVersion"] = latest.Version.ToString(2),
+                        ["VisualStudioVersion"] = $"{latest.Version.Major}.0",
                     });
                 }
                 else
