@@ -7,19 +7,24 @@ using Newtonsoft.Json;
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(BasePathJsonConverter))]
-    internal class BasePath
+    internal readonly struct BasePath
     {
-        public string Original { get; set; }
+        private readonly string _original;
 
-        private string RelativePath
-            => Original.StartsWith('/') ? Original.TrimStart('/') : Original;
+        private readonly string _relativePath;
+
+        public string Original => _original ?? "";
+
+        // It is either an empty string, or a path without leading /
+        public string RelativePath => _relativePath ?? "";
 
         public BasePath(string value)
         {
-            Original = value;
+            _original = value;
+            _relativePath = value.StartsWith('/') ? value.TrimStart('/') : value;
         }
 
-        public static implicit operator string(in BasePath basePath) => basePath.RelativePath;
+        public override string ToString() => _original;
 
         private class BasePathJsonConverter : JsonConverter
         {

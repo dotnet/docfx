@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.Config.BasePath, "filemap.json"));
+                Path.Combine(docset.Config.BasePath.RelativePath, "filemap.json"));
         }
     }
 }
