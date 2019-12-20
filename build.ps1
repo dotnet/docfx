@@ -62,9 +62,9 @@ function testNuGet() {
 
 try {
     pushd $PSScriptRoot
-    # test
-    # publish
-    # testNuGet
+    test
+    publish
+    testNuGet
     publishBinaryPackages
 } finally {
     popd
