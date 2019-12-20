@@ -74,6 +74,8 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(docsetConfig.DocsetName))
                 {
+                    result["xref_endpoint"] = opsConfig.XrefEndpoint;
+                    result["xref_query_tags"] = string.Join('|', docsetConfig.XrefQueryTags);
                     result["name"] = docsetConfig.DocsetName;
                     result["extend"] = OpsConfigAdapter.BuildConfigApi;
                 }
