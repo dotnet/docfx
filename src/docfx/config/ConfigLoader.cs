@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options, bool noFetch = false)
+        public (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
             var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, noFetch);
-            var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, _repository, fileResolver);
+            var extendConfig = DownloadExtendConfig(errors, preloadConfig, _repository, fileResolver);
 
             // Create full config
             var configObject = new JObject();
@@ -111,14 +111,14 @@ namespace Microsoft.Docs.Build
         }
 
         private JObject DownloadExtendConfig(
-            List<Error> errors, string locale, PreloadConfig config, Repository repository, FileResolver fileResolver)
+            List<Error> errors, PreloadConfig config, Repository repository, FileResolver fileResolver)
         {
             var result = new JObject();
             var extendQuery =
-                $"name=" + WebUtility.UrlEncode(config.Name) +
-                $"&locale=" + WebUtility.UrlEncode(locale) +
-                $"&repository_url=" + WebUtility.UrlEncode(repository?.Remote) +
-                $"&branch=" + WebUtility.UrlEncode(repository?.Branch);
+                $"name={WebUtility.UrlEncode(config.Name)}" +
+                $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
+                $"&branch={WebUtility.UrlEncode(repository?.Branch)}" +
+                $"&xref_endpoint={WebUtility.UrlEncode(config.XrefEndpoint)}";
 
             foreach (var extend in config.Extend)
             {

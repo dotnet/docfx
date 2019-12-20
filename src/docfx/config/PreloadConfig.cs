@@ -31,6 +31,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
 
+        public readonly OpsDocsetConfig[] DocsetsToPublish = Array.Empty<OpsDocsetConfig>();
+
+        public readonly string XrefEndpoint;
+
         public Action<HttpRequestMessage> GetCredentialProvider()
         {
             var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToArray();
