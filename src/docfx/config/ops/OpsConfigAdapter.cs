@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -72,6 +73,9 @@ namespace Microsoft.Docs.Build
             var name = queries["name"];
             var repository = queries["repository_url"];
             var branch = queries["branch"];
+            var locale = queries["locale"];
+            var xrefEndpoint = queries["xref_endpoint"];
+            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? null : queries["xref_query_tags"].Split(',');
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
@@ -92,6 +96,18 @@ namespace Microsoft.Docs.Build
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
 
+            var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}";
+            var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
+            var xrefMaps = new List<string>();
+            if (xrefQueryTags != null)
+            {
+                foreach (var tag in xrefQueryTags)
+                {
+                    var links = await GetXrefMaps(xrefMapApiEndpoint, tag, xrefMapQueryParams);
+                    xrefMaps.AddRange(links);
+                }
+            }
+
             return JsonConvert.SerializeObject(new
             {
                 product = docset.product_name,
@@ -106,7 +122,27 @@ namespace Microsoft.Docs.Build
                     Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
+                xref = xrefMaps,
             });
+        }
+
+        private string GetXrefMapApiEndpoint(string xrefEndpoint)
+        {
+            var isProduction = s_isProduction;
+            if (!string.IsNullOrEmpty(xrefEndpoint))
+            {
+                isProduction = string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+            }
+            return isProduction
+                    ? "https://op-build-prod.azurewebsites.net"
+                    : "https://op-build-sandbox2.azurewebsites.net";
+        }
+
+        private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
+        {
+            var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
+            var response = await Fetch(url);
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
         }
 
         private Task<string> GetMonikerDefinition(Uri url)

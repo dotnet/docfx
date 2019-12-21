@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = options?.ToJObject();
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var opsConfig = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
             var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, noFetch);
-            var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, _repository, fileResolver);
+            var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, xrefEndpoint, xrefQueryTags, _repository, fileResolver);
 
             // Create full config
             var configObject = new JObject();
@@ -111,14 +111,16 @@ namespace Microsoft.Docs.Build
         }
 
         private JObject DownloadExtendConfig(
-            List<Error> errors, string locale, PreloadConfig config, Repository repository, FileResolver fileResolver)
+            List<Error> errors, string locale, PreloadConfig config, string xrefEndpoint, string[] xrefQueryTags, Repository repository, FileResolver fileResolver)
         {
             var result = new JObject();
             var extendQuery =
-                $"name=" + WebUtility.UrlEncode(config.Name) +
-                $"&locale=" + WebUtility.UrlEncode(locale) +
-                $"&repository_url=" + WebUtility.UrlEncode(repository?.Remote) +
-                $"&branch=" + WebUtility.UrlEncode(repository?.Branch);
+                $"name={WebUtility.UrlEncode(config.Name)}" +
+                $"&locale={WebUtility.UrlEncode(locale)}" +
+                $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
+                $"&branch={WebUtility.UrlEncode(repository?.Branch)}" +
+                $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
+                $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
 
             foreach (var extend in config.Extend)
             {

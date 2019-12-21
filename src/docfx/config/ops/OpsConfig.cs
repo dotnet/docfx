@@ -19,5 +19,7 @@ namespace Microsoft.Docs.Build
         public readonly string GitRepositoryUrlOpenToPublicContributors;
 
         public readonly bool NeedGeneratePdfUrlTemplate;
+
+        public readonly string XrefEndpoint;
     }
 }
