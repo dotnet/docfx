@@ -73,6 +73,7 @@ namespace Microsoft.Docs.Build
             var name = queries["name"];
             var repository = queries["repository_url"];
             var branch = queries["branch"];
+            var locale = queries["locale"];
             var xrefEndpoint = queries["xref_endpoint"];
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? null : queries["xref_query_tags"].Split(',');
 
