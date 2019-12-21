@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
                 outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath, manifestItem.Monikers);
             }
             var legacyOutputFilePathRelativeToBasePath = Path.GetRelativePath(
-                string.IsNullOrEmpty(docset.Config.BasePath) ? "." : docset.Config.BasePath, outputPath);
+                string.IsNullOrEmpty(docset.Config.BasePath.RelativePath) ? "." : docset.Config.BasePath.RelativePath, outputPath);
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
         }
@@ -24,11 +24,11 @@ namespace Microsoft.Docs.Build
         public static string ToLegacySiteUrlRelativeToBasePath(this Document doc, Docset docset)
         {
             var legacySiteUrlRelativeToBasePath = doc.SiteUrl;
-            if (legacySiteUrlRelativeToBasePath.StartsWith($"/{docset.Config.BasePath}", PathUtility.PathComparison))
+            if (legacySiteUrlRelativeToBasePath.StartsWith(docset.Config.BasePath.ToString(), PathUtility.PathComparison))
             {
                 legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath.Substring(1);
                 legacySiteUrlRelativeToBasePath = Path.GetRelativePath(
-                    string.IsNullOrEmpty(docset.Config.BasePath) ? "." : docset.Config.BasePath,
+                    string.IsNullOrEmpty(docset.Config.BasePath.RelativePath) ? "." : docset.Config.BasePath.RelativePath,
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 

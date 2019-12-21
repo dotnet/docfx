@@ -10,9 +10,12 @@ namespace Microsoft.Docs.Build
         public string Output;
         public bool Legacy;
         public bool Verbose;
+        public bool Stdin;
         public string Locale;
         public string Template;
         public int Port;
+
+        public JObject StdinConfig;
 
         public JObject ToJObject()
         {
@@ -26,13 +29,17 @@ namespace Microsoft.Docs.Build
                 output["copyResources"] = false;
             }
 
-            var result = new JObject();
-            result["output"] = output;
-            result["legacy"] = Legacy;
+            var config = new JObject
+            {
+                ["output"] = output,
+                ["legacy"] = Legacy,
+            };
 
             if (Template != null)
-                result["template"] = Template;
+                config["template"] = Template;
 
+            var result = new JObject();
+            JsonUtility.Merge(result, StdinConfig, config);
             return result;
         }
     }

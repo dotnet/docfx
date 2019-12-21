@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchDocsetName = file.Docset.Config.Name;
 
             systemMetadata.Path = file.SitePath;
-            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{file.Docset.Config.HostName}", systemMetadata.Locale, file.Docset.Config.BasePath) + "/";
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{file.Docset.Config.HostName}", systemMetadata.Locale, file.Docset.Config.BasePath.RelativePath) + "/";
 
             if (file.Docset.Config.Output.Pdf)
             {

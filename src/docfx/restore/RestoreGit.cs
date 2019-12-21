@@ -33,12 +33,6 @@ namespace Microsoft.Docs.Build
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
 
-            // fetch contribution branch
-            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
-            {
-                GitUtility.Fetch(repository.Path, repository.Remote, contributionBranch, config);
-            }
-
             return results.ToList();
         }
 
@@ -139,7 +133,8 @@ namespace Microsoft.Docs.Build
             return results.ToList();
         }
 
-        private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetGitDependencies(Config config, string locale, Repository rootRepository)
+        private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetGitDependencies(
+            Config config, string locale, Repository repository)
         {
             foreach (var (_, url) in config.Dependencies)
             {
@@ -158,7 +153,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            foreach (var item in GetLocalizationGitDependencies(rootRepository, config, locale))
+            foreach (var item in GetLocalizationGitDependencies(config, locale, repository))
             {
                 yield return item;
             }
@@ -167,7 +162,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get source repository or localized repository
         /// </summary>
-        private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetLocalizationGitDependencies(Repository repo, Config config, string locale)
+        private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetLocalizationGitDependencies(
+            Config config, string locale, Repository repository)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -179,34 +175,44 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (repo is null || string.IsNullOrEmpty(repo.Remote))
+            if (repository is null || string.IsNullOrEmpty(repository.Remote))
             {
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetFallbackRepository(repo, out _, out _, out _))
-            {
-                yield break;
-            }
             if (config.Localization.Mapping == LocalizationMapping.Folder)
             {
                 yield break;
             }
 
+            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
+            {
+                // fallback to master
+                if (fallbackBranch != "master" &&
+                    !GitUtility.RemoteBranchExists(fallbackRemote, fallbackBranch, config))
+                {
+                    fallbackBranch = "master";
+                }
+                yield return (fallbackRemote, fallbackBranch, RestoreGitFlags.None);
+            }
+            else
+            {
+                // build from English
             var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
-                repo.Remote,
-                repo.Branch,
+                repository.Remote,
+                repository.Branch,
                 locale,
                 config.Localization.DefaultLocale);
 
             yield return (remote, branch, RestoreGitFlags.None);
+            }
 
-            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
+            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
-                yield return (remote, contributionBranch, RestoreGitFlags.NoCheckout);
+                yield return (repository.Remote, contributionBranch, RestoreGitFlags.NoCheckout);
             }
         }
     }

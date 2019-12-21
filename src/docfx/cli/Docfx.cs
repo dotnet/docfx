@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -108,33 +109,24 @@ namespace Microsoft.Docs.Build
 
                     // Restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
-                    syntax.DefineOption(
-                        "template", ref options.Template, "The directory or git repository that contains website template.");
-                    syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-                    syntax.DefineOption(
-                        "template", ref options.Template, "The directory or git repository that contains website template.");
-                    syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
-                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Watch command
                     syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
-                    syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build.");
-                    syntax.DefineOption(
-                        "template", ref options.Template, "The directory or git repository that contains website template.");
                     syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
-                    syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-                    syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
+
+                if (options.Stdin)
+                {
+                    options.StdinConfig = JsonUtility.Deserialize<JObject>(Console.ReadLine(), new FilePath("--stdin"));
+                }
 
                 options.Locale = options.Locale?.ToLowerInvariant();
                 return (command, workingDirectory, options);
@@ -144,6 +136,16 @@ namespace Microsoft.Docs.Build
                 Console.Write(ex.Message);
                 return default;
             }
+        }
+
+        private static void DefineCommonOptions(ArgumentSyntax syntax, ref string workingDirectory, CommandLineOptions options)
+        {
+            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
+            syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
+            syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+            syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
+            syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+            syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
         }
 
         private static void PrintFatalErrorMessage(Exception exception)

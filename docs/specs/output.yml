@@ -25,13 +25,13 @@ outputs:
 inputs:
   docfx.yml: |
     hostName: docs.com
-    basePath: /base_path
+    basePath: /
 outputs:
   .publish.json: |
     {
       "name": "",
       "product": "",
-      "base_path": "base_path"
+      "base_path": "/"
     }
 ---
 # Publish manifest path is source relative path when copyResources is set to false
