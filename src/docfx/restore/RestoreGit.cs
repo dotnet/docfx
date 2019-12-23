@@ -89,16 +89,6 @@ namespace Microsoft.Docs.Build
                 // Bilingual repos also depend on non bilingual branch for commit history
                 yield return (repository.Remote, contributionBranch, RestoreGitFlags.NoCheckout);
             }
-
-            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
-            {
-                yield return (fallbackRemote, fallbackBranch, RestoreGitFlags.None);
-
-                if (fallbackBranch != "master")
-                {
-                    yield return (fallbackRemote, "master", RestoreGitFlags.None);
-                }
-            }
         }
     }
 }
