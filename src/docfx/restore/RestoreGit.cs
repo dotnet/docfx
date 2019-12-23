@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            foreach (var item in GetLocalizationGitDependencies(repository, config, locale))
+            foreach (var item in GetLocalizationGitDependencies(config, locale, repository))
             {
                 yield return item;
             }
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         /// Get source repository or localized repository
         /// </summary>
         private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetLocalizationGitDependencies(
-            Repository repository, Config config, string locale)
+            Config config, string locale, Repository repository)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -60,6 +60,19 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
+            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
+            {
+                // fallback to master
+                if (fallbackBranch != "master" &&
+                    !GitUtility.RemoteBranchExists(fallbackRemote, fallbackBranch, config))
+                {
+                    fallbackBranch = "master";
+                }
+                yield return (fallbackRemote, fallbackBranch, RestoreGitFlags.None);
+            }
+            else
+            {
+                // build from English
             var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
@@ -69,11 +82,12 @@ namespace Microsoft.Docs.Build
                 config.Localization.DefaultLocale);
 
             yield return (remote, branch, RestoreGitFlags.None);
+            }
 
-            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
+            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
-                yield return (remote, contributionBranch, RestoreGitFlags.NoCheckout);
+                yield return (repository.Remote, contributionBranch, RestoreGitFlags.NoCheckout);
             }
 
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))

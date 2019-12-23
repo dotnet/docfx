@@ -106,7 +106,8 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            if (git_revparse_single(out var commit, repo, committish) != 0)
+            if (git_revparse_single(out var commit, repo, committish) != 0 &&
+                git_revparse_single(out commit, repo, $"origin/{committish}") != 0)
             {
                 git_repository_free(repo);
                 return null;
