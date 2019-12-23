@@ -97,7 +97,7 @@ jobs:
       azureSubscription: Open Publishing - Build Sandbox
       sourcePath: drop/docfx-bin/staging
       destination: AzureBlob
-      storage: opsbuildstoragesandbox
+      storage: opbuildstoragesandbox
       containerName: docfx-bin
 
   # Publish binary packages to production
