@@ -73,7 +73,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return new EnvironmentScope(new Dictionary<string, string>
                     {
                         ["VSINSTALLDIR"] = latest.VisualStudioRootPath,
-                        ["VisualStudioVersion"] = latest.Version.ToString(2),
+                        // VS2019 defines VisualStudioVersion=16.0. Do not include minor version here to avoid breaking UWP projects.
+                        // See: https://github.com/dotnet/docfx/issues/5011
+                        ["VisualStudioVersion"] = $"{latest.Version.Major}.0",
                     });
                 }
                 else
