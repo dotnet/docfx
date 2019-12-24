@@ -193,6 +193,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool UpdateCommitBuildTime = true;
 
+        /// <summary>
+        /// When fetching git dependencies, docfx trys to use --depth 1 as much as it can to improve performance.
+        /// Occasionally this may degrade performance, this switch gives the ability to always fetch as much as possible.
+        /// </summary>
+        public readonly bool NoGitShallowFetch = false;
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)
