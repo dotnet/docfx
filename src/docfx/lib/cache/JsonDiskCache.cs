@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (value != null)
                         {
-                            value.Expiry = DateTime.UtcNow.AddSeconds(NextEvenDistribution(_expirationInSeconds));
+                            value.UpdatedAt = GetRandomUpdatedAt();
 
                             foreach (var cacheKey in value.GetKeys())
                             {
@@ -135,14 +135,17 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static double NextEvenDistribution(double value)
+        private static DateTime GetRandomUpdatedAt()
         {
-            return (value / 2) + (t_random.Value.NextDouble() * value / 2);
+            return DateTime.UtcNow.AddMilliseconds(1000.0 * t_random.Value.NextDouble());
         }
 
-        private static bool HasExpired(TValue value)
+        private bool HasExpired(TValue value)
         {
-            return value.Expiry != null && value.Expiry < DateTime.UtcNow;
+            var updatedAt = value.UpdatedAt ?? ((DateTime)(value.UpdatedAt = GetRandomUpdatedAt()));
+            var expiry = (0.5 + (updatedAt.Millisecond / 2000.0)) * _expirationInSeconds;
+
+            return updatedAt.AddSeconds(expiry) < DateTime.UtcNow;
         }
 
         private class CacheFile
