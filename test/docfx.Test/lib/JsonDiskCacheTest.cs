@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             Assert.Equal(0, counter);
 
             // When cache expires, don't block caller, trigger asynchronous update
-            (await cache.GetOrAdd(9999, CreateValue)).value.UpdatedAt = DateTime.UtcNow.AddHours(-1);
+            (await cache.GetOrAdd(9999, CreateValue)).value.UpdatedAt = DateTime.MinValue;
             Assert.Equal(1234, (await cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
 
             // Save waits for asynchronous update to complete
