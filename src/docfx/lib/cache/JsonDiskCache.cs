@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
         private bool HasExpired(TValue value)
         {
             var updatedAt = value.UpdatedAt ?? ((DateTime)(value.UpdatedAt = GetRandomUpdatedAt()));
-            var expiry = updatedAt.Millisecond / 1000.0 * _expirationInSeconds;
+            var expiry = (0.5 + (updatedAt.Millisecond / 1000.0)) * _expirationInSeconds;
 
             return updatedAt.AddSeconds(expiry) < DateTime.UtcNow;
         }
