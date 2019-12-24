@@ -131,13 +131,13 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
             }
             catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
-                refspecs = "+refs/heads/*:refs/remotes/origin/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
+                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
+                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
             }
         }
 
@@ -277,11 +277,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, Config config)
         {
-            // Unifies clone and fetch using a single flow:
-            // - git init
-            // - git remote set url
-            // - git fetch
-            // - git checkout (if not a bar repo)
             Directory.CreateDirectory(path);
 
             if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
