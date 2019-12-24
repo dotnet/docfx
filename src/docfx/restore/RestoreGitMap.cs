@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (string path, string commit) GetRestoreGitPath(PackagePath packagePath, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
+        public (string path, string commit) GetRestoreGitPath(PackagePath packagePath, RestoreGitFlags flags)
         {
             switch (packagePath.Type)
             {
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
                     var path = AppData.GetGitDir(packagePath.Url);
 
-                    if (!bare)
+                    if (!flags.HasFlag(RestoreGitFlags.Bare))
                     {
                         path = Path.Combine(path, "1");
                     }
