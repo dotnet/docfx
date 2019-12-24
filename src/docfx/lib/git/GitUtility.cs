@@ -131,13 +131,13 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{httpConfig} fetch --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
             }
             catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
-                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
+                refspecs = "+refs/heads/*:refs/remotes/origin/*";
+                ExecuteNonQuery(path, $"{httpConfig} fetch --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
             }
         }
 
@@ -282,14 +282,6 @@ namespace Microsoft.Docs.Build
             // - git remote set url
             // - git fetch
             // - git checkout (if not a bar repo)
-            if (GitRemoteProxy != null &&
-                GitRemoteProxy(url) != url &&
-                Directory.Exists(path))
-            {
-                // optimize for test fetching
-                return;
-            }
-
             Directory.CreateDirectory(path);
 
             if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
