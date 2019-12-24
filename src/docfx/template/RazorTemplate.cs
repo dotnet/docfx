@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Docs.Build
 {
@@ -51,7 +50,7 @@ namespace Microsoft.Docs.Build
         {
             return new TestServer(
                 new WebHostBuilder()
-                    .UseEnvironment(Environments.Production)
+                    .UseEnvironment(EnvironmentName.Production)
                     .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
 
