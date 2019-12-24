@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Docs.Build
 {
@@ -48,16 +49,19 @@ namespace Microsoft.Docs.Build
 
         private static TestServer StartServer()
         {
+            // TODO: remove use content root
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../src/Microsoft.Docs.Template");
             return new TestServer(
                 new WebHostBuilder()
-                    .UseEnvironment(EnvironmentName.Production)
+                    .UseContentRoot(path)
+                    .UseEnvironment(Environments.Production)
                     .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
 
             void ConfigureServices(IServiceCollection services)
             {
-                services.AddMvc()
-                        .ConfigureApplicationPartManager(parts =>
+                services.AddRazorPages().AddRazorRuntimeCompilation();
+                services.AddMvc().ConfigureApplicationPartManager(parts =>
                         {
                             // Ensure we only have one private TemplateController
                             parts.FeatureProviders.Remove(parts.FeatureProviders.First(fp => fp is IApplicationFeatureProvider<ControllerFeature>));
@@ -67,11 +71,14 @@ namespace Microsoft.Docs.Build
 
             void Configure(IApplicationBuilder app)
             {
-                app.UseMvc(
-                    routes => routes.MapRoute(
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapRazorPages();
+                    endpoints.MapControllerRoute(
                         name: "content",
-                        template: "{*url}",
-                        defaults: new { controller = "Template", action = "Get" }));
+                        pattern: "{controller=Template}/{action=Get}");
+                });
             }
         }
 
