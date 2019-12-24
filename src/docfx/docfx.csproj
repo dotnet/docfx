@@ -31,7 +31,6 @@
     <PackageReference Include="Stubble.Core" Version="1.6.3" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-preview2-180503-2" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.11.0" />
-    <PackageReference Include="System.Text.Json" Version="4.7.0" />
     <PackageReference Include="Validations.DocFx.Adapter" Version="1.2.16" />
     <PackageReference Include="YamlDotNet" Version="8.0.0" />
   </ItemGroup>
