@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
-        internal static IReadOnlyList<RestoreGitResult> Restore(
+        public static IReadOnlyList<RestoreGitResult> Restore(
             Config config, string locale, Repository repository, DependencyLockProvider dependencyLockProvider)
         {
             var results = new ListBuilder<RestoreGitResult>();
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             return results.ToList();
         }
 
-        internal static RestoreGitResult RestoreGitRepo(
+        private static RestoreGitResult RestoreGitRepo(
             Config config, string remote, string branch, RestoreGitFlags flags, DependencyLockProvider dependencyLockProvider)
         {
             var repoDir = AppData.GetGitDir(remote);
