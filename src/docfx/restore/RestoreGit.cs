@@ -33,6 +33,8 @@ namespace Microsoft.Docs.Build
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
 
+            EnsureLocalizationContributionBranch(config, repository);
+
             return results.ToList();
         }
 
@@ -133,6 +135,17 @@ namespace Microsoft.Docs.Build
             return results.ToList();
         }
 
+        private static void EnsureLocalizationContributionBranch(Config config, Repository repository)
+        {
+            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
+            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
+            // here to generate the correct contributor list.
+            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            {
+                GitUtility.Fetch(repository.Path, repository.Remote, new[] { contributionBranch }, config);
+            }
+        }
+
         private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetGitDependencies(
             Config config, string locale, Repository repository)
         {
@@ -194,10 +207,10 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = "master";
                 }
                 yield return (fallbackRemote, fallbackBranch, RestoreGitFlags.None);
+                yield break;
             }
-            else
-            {
-                // build from English
+
+            // build from English
             var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
@@ -207,7 +220,6 @@ namespace Microsoft.Docs.Build
                 config.Localization.DefaultLocale);
 
             yield return (remote, branch, RestoreGitFlags.None);
-            }
 
             if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {

@@ -198,8 +198,7 @@ namespace Microsoft.Docs.Build
             git_revwalk_new(out var walk, _repo);
             git_revwalk_sorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
 
-            if (git_revparse_single(out var headCommit, _repo, committish) != 0 &&
-                git_revparse_single(out headCommit, _repo, $"origin/{committish}") != 0)
+            if (git_revparse_single(out var headCommit, _repo, committish) != 0)
             {
                 git_object_free(walk);
                 throw Errors.CommittishNotFound(_repository.Path, committish).ToException();
