@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                 url = GitRemoteProxy(url);
             }
 
-            if (config.NoGitShallowFetch)
+            if (!config.GitShallowFetch)
             {
                 depthOne = false;
             }
