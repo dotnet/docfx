@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var branch = queries["branch"];
             var locale = queries["locale"];
             var xrefEndpoint = queries["xref_endpoint"];
-            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? null : queries["xref_query_tags"].Split(',');
+            var xrefQueryTags = queries["xref_query_tags"].Split(',');
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
@@ -96,18 +96,6 @@ namespace Microsoft.Docs.Build
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
 
-            var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}";
-            var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
-            var xrefMaps = new List<string>();
-            if (xrefQueryTags != null)
-            {
-                foreach (var tag in xrefQueryTags)
-                {
-                    var links = await GetXrefMaps(xrefMapApiEndpoint, tag, xrefMapQueryParams);
-                    xrefMaps.AddRange(links);
-                }
-            }
-
             return JsonConvert.SerializeObject(new
             {
                 product = docset.product_name,
@@ -115,6 +103,7 @@ namespace Microsoft.Docs.Build
                 hostName = GetHostName(docset.site_name),
                 basePath = docset.base_path,
                 xrefHostName = GetXrefHostName(docset.site_name, branch),
+                xref = await GetXrefMaps(docset.site_name, branch, xrefEndpoint, xrefQueryTags),
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
@@ -122,7 +111,6 @@ namespace Microsoft.Docs.Build
                     Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
-                xref = xrefMaps,
             });
         }
 
@@ -138,11 +126,23 @@ namespace Microsoft.Docs.Build
                     : "https://op-build-sandbox2.azurewebsites.net";
         }
 
-        private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
+        private async Task<List<string>> GetXrefMaps(string siteName, string branch, string xrefEndpoint, string[] xrefQueryTags)
         {
-            var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
-            var response = await Fetch(url);
-            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
+            var xrefMapQueryParams = $"?site_name={siteName}&branch_name={branch}";
+            var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
+            var xrefMaps = new List<string>();
+
+            foreach (var tag in xrefQueryTags)
+            {
+                var response = await Fetch($"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}", nullOn404: true);
+                if (response != null)
+                {
+                    var links = JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
+                    xrefMaps.AddRange(links);
+                }
+            }
+
+            return xrefMaps;
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
