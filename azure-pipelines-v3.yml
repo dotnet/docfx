@@ -8,6 +8,9 @@ pr:
 - v3
 jobs:
 
+variables:
+  dotnetVersion: 2.2.401
+
 # Test pull requests on linux and mac
 - job: LinuxBuild
   pool:
@@ -17,10 +20,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: $(dotnetVersion)
 
   - bash: ./build.sh
     env:
@@ -36,10 +39,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: $(dotnetVersion)
 
   - bash: ./build.sh
     env:
@@ -55,10 +58,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: $(dotnetVersion)
 
   # Build and test
   - powershell: ./build.ps1
@@ -125,10 +128,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: $(dotnetVersion)
 
   # Run integration tests
   - powershell: |
