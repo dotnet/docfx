@@ -121,7 +121,7 @@ jobs:
 
   # Checkout
   - checkout: self
-  - checkout: git:Engineering/Docs.Build@develop
+  - checkout: git://Engineering/Docs.Build@develop
 
   # Install .NET Core sdk
   - task: UseDotNet@2
