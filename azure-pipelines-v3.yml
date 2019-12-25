@@ -119,24 +119,9 @@ jobs:
     name: DocFX
   steps:
 
-  # Compute Docs.Build branch to checkout
-  - powershell: |
-      # Sometimes when docfx needs to make a breaking change, name the branch breaking/<downstream_branch>,
-      # where <downstream_branch> is the branch name of corresponding changes in Docs.Build, this allows
-      # integration test to run against both changes
-      $docsBuildBranch = $env:PULL_REQUEST_SOURCE_BRANCH -replace '^(.*)breaking/(.*)$', '$2'
-      if ($docsBuildBranch -eq $env:PULL_REQUEST_SOURCE_BRANCH) {
-        $docsBuildBranch = 'develop'
-      }
-      echo "##vso[task.setvariable variable=docsBuildBranch;isOutput=true]$docsBuildBranch"
-    displayName: Compute Docs.Build branch
-    name: setvars
-    env:
-      PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
-
   # Checkout
   - checkout: self
-  - checkout: git:Engineering/Docs.Build@$(setvars.docsBuildBranch)
+  - checkout: git:Engineering/Docs.Build@develop
 
   # Install .NET Core sdk
   - task: UseDotNet@2
@@ -146,7 +131,18 @@ jobs:
       version: 2.2.401
 
   # Run integration tests
-  - powershell: dotnet run -p ../Docs.Build/test/integration-test -c Release
+  - powershell: |
+      cd Docs.Build
+
+      # Sometimes when docfx needs to make a breaking change, name the branch breaking/<downstream_branch>,
+      # where <downstream_branch> is the branch name of corresponding changes in Docs.Build, this allows
+      # integration test to run against both changes
+      $docsBuildBranch = $env:PULL_REQUEST_SOURCE_BRANCH -replace '^(.*)breaking/(.*)$', '$2'
+      if ($docsBuildBranch -ne $env:PULL_REQUEST_SOURCE_BRANCH) {
+        git checkout --force $docsBuildBranch
+      }
+
+      dotnet run -p test/integration-test -c Release
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
@@ -156,3 +152,4 @@ jobs:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+      PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
