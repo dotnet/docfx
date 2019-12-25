@@ -14,13 +14,16 @@ jobs:
 - job: Build
   condition: eq(variables['Build.Reason'], 'PullRequest')
   strategy:
-      matrix:
-        Windows:
-          vmImage: 'vs2017-win2016'
-        Mac:
-          vmImage: 'macOS-10.13'
-        Linux:
-          vmImage: 'ubuntu-16.04'
+    matrix:
+      Windows:
+        vmImage: 'vs2017-win2016'
+        script: ./build.ps1
+      Mac:
+        vmImage: 'macOS-10.13'
+        script: ./build.sh
+      Linux:
+        vmImage: 'ubuntu-16.04'
+        script: ./build.sh
   pool:
     vmImage: $(vmImage)
   steps:
@@ -32,7 +35,8 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  - script: ./build.sh
+  - script: $(script)
+    displayName: 'Run $(script)'
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
