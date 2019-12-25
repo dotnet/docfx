@@ -10,6 +10,7 @@ variables:
   dotnetVersion: 2.2.401
 
 jobs:
+
 # Build pull requests on windows, linux and mac
 - job: Build
   condition: eq(variables['Build.Reason'], 'PullRequest')
@@ -17,7 +18,7 @@ jobs:
     matrix:
       Windows:
         vmImage: 'vs2017-win2016'
-        script: ./build.ps1
+        script: powershell ./build.ps1
       Mac:
         vmImage: 'macOS-10.13'
         script: ./build.sh
