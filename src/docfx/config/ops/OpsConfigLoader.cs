@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
         }
 
-        public static JObject LoadAsDocfxConfig(string docsetPath, string branch)
+        public static (string xrefEndpoint, string[] xrefQueryTags, JObject config) LoadDocfxConfig(string docsetPath, string branch)
         {
             var directory = docsetPath;
 
@@ -41,10 +41,10 @@ namespace Microsoft.Docs.Build
             }
             while (!string.IsNullOrEmpty(directory));
 
-            return null;
+            return default;
         }
 
-        private static JObject ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
+        private static (string xrefEndpoint, string[] xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -72,14 +72,19 @@ namespace Microsoft.Docs.Build
 
             if (docsetConfig != null)
             {
-                result["name"] = docsetConfig.DocsetName;
+                if (!string.IsNullOrEmpty(docsetConfig.DocsetName))
+                {
+                    result["name"] = docsetConfig.DocsetName;
+                    result["extend"] = OpsConfigAdapter.BuildConfigApi;
+                }
+
                 result["globalMetadata"] = new JObject
                 {
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
                 };
             }
 
-            return result;
+            return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
         private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string branch, string buildSourceFolder)

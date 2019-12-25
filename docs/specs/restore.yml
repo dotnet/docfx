@@ -31,7 +31,7 @@ inputs:
   docfx.yml: |
     dependencies:
       docfx-test-dependencies1: https://docascode.visualstudio.com/project/_git/a
-      docfx-test-dependencies2: https://docascode.visualstudio.com/project/_git/a#b6720c99618c1d080f48da04922fc9756e93818c
+      docfx-test-dependencies2: https://docascode.visualstudio.com/project/_git/a#b6720c99618c
   docs/a.md: |
     [link to 1](~/docfx-test-dependencies1/docs/a.md)
     [!include[include to 2](~/docfx-test-dependencies2/docs/a.md)]
@@ -108,7 +108,7 @@ inputs:
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
 outputs:
   .errors.log: |
-    ["error","download-failed","Download failed for file 'https://this-url-does-not-exit.com/this-is-a-bad-url'. Try closing and reopening the PR. If you get this Error again, file an issue."]
+    ["error","download-failed","Download failed for file 'https://this-url-does-not-exit.com/this-is-a-bad-url*'. Try closing and reopening the PR. If you get this Error again, file an issue."]
 ---
 # Show error when git clone failed
 inputs:

@@ -103,17 +103,25 @@ namespace Microsoft.Docs.Build
 
         public string Text { get; set; }
 
+        public string Title { get; set; }
+
         public string Style { get; set; }
 
         public string ClassName { get; set; }
 
-        public LandingDataListItem[] Items { get; set; }
+        public LandingDataItem[] Items { get; set; }
+
+        public string Content { get; set; }
 
         public JToken Columns { get; set; }
 
         public LandingDataRow[] Rows { get; set; }
 
+        public LandingDataImage Image { get; set; }
+
         public string Html { get; set; }
+
+        public string Href { get; set; }
     }
 
     public sealed class LandingDataColumn
@@ -135,20 +143,5 @@ namespace Microsoft.Docs.Build
     public sealed class LandingDataRowValue
     {
         public string Href { get; set; }
-    }
-
-    public sealed class LandingDataListItem
-    {
-        public string Text { get; set; }
-
-        public string Title { get; set; }
-
-        public string Content { get; set; }
-
-        public string Html { get; set; }
-
-        public string Href { get; set; }
-
-        public LandingDataImage Image { get; set; }
     }
 }

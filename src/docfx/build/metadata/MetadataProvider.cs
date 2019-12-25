@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             MetadataSchemas = Array.ConvertAll(
                 docset.Config.MetadataSchema,
                 schema => JsonUtility.Deserialize<JsonSchema>(
-                    fileResolver.ReadString(schema), schema.Source.File));
+                    fileResolver.ReadString(schema), schema.Source?.File));
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,

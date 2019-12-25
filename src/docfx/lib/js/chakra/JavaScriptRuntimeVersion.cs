@@ -1,4 +1,4 @@
-﻿namespace ChakraHost.Hosting
+namespace ChakraHost.Hosting
 {
     /// <summary>
     ///     Version of the runtime.

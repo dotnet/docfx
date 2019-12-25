@@ -1,4 +1,4 @@
-﻿namespace ChakraHost.Hosting
+namespace ChakraHost.Hosting
 {
     using System;
     using System.Diagnostics.CodeAnalysis;

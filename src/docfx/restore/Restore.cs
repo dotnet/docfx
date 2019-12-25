@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             }
 
             var result = await Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.All(x => x) ? 0 : 1;
+            return result.Any(hasError => hasError) ? 1 : 0;
         }
 
         private static async Task<bool> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
@@ -44,21 +44,22 @@ namespace Microsoft.Docs.Build
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
                     // load configuration from current entry or fallback repository
-                    var configLoader = new ConfigLoader(repository);
-                    (errors, config) = configLoader.Load(docsetPath, options);
-                    if (errorLog.Write(errors))
-                        return false;
+                    var configLoader = new ConfigLoader(repository, errorLog);
 
-                    var fileResolver = new FileResolver(docsetPath, config);
+                    (errors, config) = configLoader.Load(docsetPath, locale, options);
+                    if (errorLog.Write(errors))
+                        return true;
+
+                    var credentialProvider = config.GetCredentialProvider();
+                    var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider));
                     await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
 
                     // restore git repos includes dependency repos, theme repo and loc repos
-                    var restoreFallbackResult = RestoreFallbackRepo(config, repository);
                     var restoreDependencyResults = RestoreGit.Restore(config, locale, repository, DependencyLockProvider.CreateFromConfig(docsetPath, config));
 
                     // save dependency lock
                     var restoredGitLock = new List<DependencyGitLock>();
-                    foreach (var restoreResult in restoreDependencyResults.Concat(new[] { restoreFallbackResult }))
+                    foreach (var restoreResult in restoreDependencyResults)
                     {
                         if (restoreResult != null)
                             restoredGitLock.Add(new DependencyGitLock { Url = restoreResult.Remote, Branch = restoreResult.Branch, Commit = restoreResult.Commit });
@@ -69,8 +70,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
                     Log.Write(dex);
-                    errorLog.Write(dex.Error, isException: true);
-                    return false;
+                    return errorLog.Write(dex.Error);
                 }
                 finally
                 {
@@ -78,28 +78,8 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
-                return true;
+                return false;
             }
-        }
-
-        private static RestoreGitResult RestoreFallbackRepo(Config config, Repository repository)
-        {
-            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
-            {
-                // fallback to master
-                if (fallbackBranch != "master" &&
-                    !GitUtility.RemoteBranchExists(fallbackRemote, fallbackBranch, config))
-                {
-                    fallbackBranch = "master";
-                }
-
-                var restoredResult = RestoreGit.RestoreGitRepo(config, fallbackRemote, new List<(string branch, RestoreGitFlags flags)> { (fallbackBranch, RestoreGitFlags.None) }, null);
-                Debug.Assert(restoredResult.Count == 1);
-
-                return restoredResult[0];
-            }
-
-            return default;
         }
     }
 }

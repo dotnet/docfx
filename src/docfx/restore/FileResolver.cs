@@ -20,19 +20,16 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
+        private readonly Action<HttpRequestMessage> _credentialProvider;
+        private readonly OpsConfigAdapter _opsConfigAdapter;
         private readonly bool _noFetch;
-        private readonly Action<HttpRequestMessage> _provideCredential;
 
-        public FileResolver(string docsetPath, PreloadConfig config, bool noFetch = false)
-            : this(docsetPath, ProvideCredential(config), noFetch)
-        {
-        }
-
-        public FileResolver(string docsetPath, Action<HttpRequestMessage> provideCredential = null, bool noFetch = false)
+        public FileResolver(string docsetPath, Action<HttpRequestMessage> credentialProvider = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
         {
             _docsetPath = docsetPath;
+            _opsConfigAdapter = opsConfigAdapter;
             _noFetch = noFetch;
-            _provideCredential = provideCredential;
+            _credentialProvider = credentialProvider;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -159,13 +156,13 @@ namespace Microsoft.Docs.Build
                     return (tempFile, response.Headers.ETag);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
                 throw Errors.DownloadFailed(url).ToException(ex);
             }
         }
 
-        private Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
+        private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."
@@ -176,29 +173,19 @@ namespace Microsoft.Docs.Build
                     message.Headers.IfNoneMatch.Add(etag);
                 }
 
-                _provideCredential?.Invoke(message);
+                _credentialProvider?.Invoke(message);
 
-                return s_httpClient.SendAsync(message);
-            }
-        }
-
-        private static Action<HttpRequestMessage> ProvideCredential(PreloadConfig config)
-        {
-            return message =>
-            {
-                var url = message.RequestUri.ToString();
-                foreach (var (baseUrl, rule) in config.Http)
+                if (_opsConfigAdapter != null)
                 {
-                    if (url.StartsWith(baseUrl))
+                    var response = await _opsConfigAdapter.InterceptHttpRequest(message);
+                    if (response != null)
                     {
-                        foreach (var header in rule.Headers)
-                        {
-                            message.Headers.Add(header.Key, header.Value);
-                        }
-                        break;
+                        return response;
                     }
                 }
-            };
+
+                return await s_httpClient.SendAsync(message);
+            }
         }
     }
 }

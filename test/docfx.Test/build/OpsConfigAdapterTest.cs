@@ -2,35 +2,30 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Xunit;
+using Yunit;
 
 namespace Microsoft.Docs.Build
 {
     public static class OpsConfigAdapterTest
     {
         [Theory]
-        [InlineData("", "", "", null)]
         [InlineData(
-            "azure-documents",
-            "https://github.com/MicrosoftDocs/azure-docs-pr",
-            "master",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'review.docs.microsoft.com','localization':{'defaultLocale':'en-us'}}")]
+            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr",
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'review.docs.microsoft.com'}")]
         [InlineData(
-            "azure-documents",
-            "https://github.com/MicrosoftDocs/azure-docs-pr",
-            "live",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com','localization':{'defaultLocale':'en-us'}}")]
+            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr&branch=live",
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
         [InlineData(
-            "azure-documents",
-            "https://github.com/MicrosoftDocs/azure-docs-pr.zh-cn",
-            "live-sxs",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com','localization':{'defaultLocale':'en-us'}}")]
+            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr.zh-cn&branch=live-sxs",
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
         [InlineData(
-            "mooncake-docs",
-            "https://github.com/MicrosoftDocs/mc-docs-pr",
-            "master",
-            "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn','localization':{'defaultLocale':'zh-cn'}}")]
-        public static void AdaptOpsServiceConfig(string name, string repository, string branch, string expectedJson)
+            "https://ops/buildconfig/?name=mooncake-docs&repository_url=https://github.com/MicrosoftDocs/mc-docs-pr",
+            "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn'}")]
+        public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
             var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
             if (string.IsNullOrEmpty(token))
@@ -38,13 +33,13 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var fileResolver = new FileResolver(".", request => request.Headers.Add("X-OP-BuildUserToken", token));
-            var actualJson = OpsConfigAdapter
-                .Load(fileResolver, new SourceInfo<string>(name), repository, branch)
-                ?.ToString(Newtonsoft.Json.Formatting.None)
-                ?.Replace('"', '\'');
+            var adapter = new OpsConfigAdapter(null, request => request.Headers.Add("X-OP-BuildUserToken", token));
+            var response = await adapter.InterceptHttpRequest(new HttpRequestMessage { RequestUri = new Uri(url) });
+            var actualConfig = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
-            Assert.Equal(expectedJson, actualJson);
+            new JsonDiffBuilder().UseAdditionalProperties().Build().Verify(
+                JToken.Parse(expectedJson.Replace('\'', '"')),
+                JToken.Parse(actualConfig));
         }
     }
 }

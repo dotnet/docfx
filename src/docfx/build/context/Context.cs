@@ -42,13 +42,15 @@ namespace Microsoft.Docs.Build
 
         public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider)
         {
+            var credentialProvider = docset.Config.GetCredentialProvider();
+
             DependencyMapBuilder = new DependencyMapBuilder();
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<FilePath>();
 
             Config = docset.Config;
-            FileResolver = new FileResolver(docset.DocsetPath, Config, noFetch: true);
             ErrorLog = errorLog;
+            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), noFetch: true);
             Input = input;
             LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input);

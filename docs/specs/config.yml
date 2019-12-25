@@ -531,4 +531,13 @@ environments:
   - DOCS_OPS_TOKEN
 outputs:
   .errors.log: |
-    ["error","docset-not-provisioned","*"]
+    ["warning","docset-not-provisioned","*"]
+---
+# JSON file as resource
+inputs:
+  docfx.yml: |
+    resource:
+      files: b.json
+  b.json:
+outputs:
+  b.json:

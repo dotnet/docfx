@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -13,10 +14,12 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly Repository _repository;
+        private readonly ErrorLog _errorLog;
 
-        public ConfigLoader(Repository repository)
+        public ConfigLoader(Repository repository, ErrorLog errorLog)
         {
             _repository = repository;
+            _errorLog = errorLog;
         }
 
         public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -43,7 +46,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, CommandLineOptions options, bool noFetch = false)
+        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options, bool noFetch = false)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
@@ -57,7 +60,7 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = options?.ToJObject();
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var opsConfig = OpsConfigLoader.LoadAsDocfxConfig(docsetPath, _repository?.Branch ?? "master");
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -69,13 +72,14 @@ namespace Microsoft.Docs.Build
             errors.AddRange(preloadErrors);
 
             // Download dependencies
-            var fileResolver = new FileResolver(docsetPath, preloadConfig, noFetch);
-            var extendConfig = DownloadExtendConfig(errors, preloadConfig, fileResolver);
-            var opsServiceConfig = opsConfig is null ? null : OpsConfigAdapter.Load(fileResolver, preloadConfig.Name, _repository?.Remote, _repository?.Branch);
+            var credentialProvider = preloadConfig.GetCredentialProvider();
+            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
+            var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, noFetch);
+            var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, xrefEndpoint, xrefQueryTags, _repository, fileResolver);
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(configObject, envConfig, globalConfig, opsServiceConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
@@ -106,13 +110,27 @@ namespace Microsoft.Docs.Build
             throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
-        private JObject DownloadExtendConfig(List<Error> errors, PreloadConfig preloadConfig, FileResolver fileResolver)
+        private JObject DownloadExtendConfig(
+            List<Error> errors, string locale, PreloadConfig config, string xrefEndpoint, string[] xrefQueryTags, Repository repository, FileResolver fileResolver)
         {
             var result = new JObject();
+            var extendQuery =
+                $"name={WebUtility.UrlEncode(config.Name)}" +
+                $"&locale={WebUtility.UrlEncode(locale)}" +
+                $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
+                $"&branch={WebUtility.UrlEncode(repository?.Branch)}" +
+                $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
+                $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
 
-            foreach (var extend in preloadConfig.Extend)
+            foreach (var extend in config.Extend)
             {
-                var content = fileResolver.ReadString(extend);
+                var extendWithQuery = extend;
+                if (UrlUtility.IsHttp(extend))
+                {
+                    extendWithQuery = new SourceInfo<string>(UrlUtility.MergeUrl(extend, extendQuery), extend);
+                }
+
+                var content = fileResolver.ReadString(extendWithQuery);
                 var extendConfigObject = LoadConfig(errors, extend, content);
                 JsonUtility.Merge(result, extendConfigObject);
             }

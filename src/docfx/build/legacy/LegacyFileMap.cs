@@ -34,12 +34,11 @@ namespace Microsoft.Docs.Build
                             context, docset, fileManifest.Value);
                         var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
 
-                        var version = context.MonikerProvider.GetFileLevelMonikerRange(document.FilePath);
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToBasePath,
                             legacySiteUrlRelativeToBasePath,
                             document.ContentType,
-                            version,
+                            fileManifest.Value.ConfigMonikerRange,
                             fileManifest.Value.Monikers);
                         if (fileItem != null)
                         {
@@ -60,7 +59,7 @@ namespace Microsoft.Docs.Build
                 {
                     host = $"https://{docset.Config.HostName}",
                     locale = docset.Locale,
-                    base_path = $"/{docset.Config.BasePath}",
+                    base_path = docset.Config.BasePath.Original,
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,
@@ -78,7 +77,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.Config.BasePath, "filemap.json"));
+                Path.Combine(docset.Config.BasePath.RelativePath, "filemap.json"));
         }
     }
 }

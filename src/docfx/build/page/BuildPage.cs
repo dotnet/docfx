@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
                 Locale = file.Docset.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
+                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
                 ExtensionData = metadata,
             };
 
@@ -164,7 +165,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchDocsetName = file.Docset.Config.Name;
 
             systemMetadata.Path = file.SitePath;
-            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{file.Docset.Config.HostName}", systemMetadata.Locale, file.Docset.Config.BasePath) + "/";
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{file.Docset.Config.HostName}", systemMetadata.Locale, file.Docset.Config.BasePath.RelativePath) + "/";
 
             if (file.Docset.Config.Output.Pdf)
             {
@@ -194,7 +195,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var content = context.Input.ReadString(file.FilePath);
-            errors.AddIfNotNull(GitUtility.CheckMergeConflictMarker(content, file.FilePath));
+            errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file.FilePath));
 
             var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
