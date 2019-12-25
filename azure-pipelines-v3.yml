@@ -6,16 +6,23 @@ trigger:
     - v3-release
 pr:
 - v3
-jobs:
-
 variables:
   dotnetVersion: 2.2.401
 
-# Test pull requests on linux and mac
-- job: LinuxBuild
-  pool:
-    vmImage: 'ubuntu-16.04'
+jobs:
+# Build pull requests on windows, linux and mac
+- job: Build
   condition: eq(variables['Build.Reason'], 'PullRequest')
+  strategy:
+      matrix:
+        Windows:
+          vmImage: 'vs2017-win2016'
+        Mac:
+          vmImage: 'macOS-10.13'
+        Linux:
+          vmImage: 'ubuntu-16.04'
+  pool:
+    vmImage: $(vmImage)
   steps:
 
   # Install .NET Core sdk
@@ -25,33 +32,15 @@ variables:
       packageType: sdk
       version: $(dotnetVersion)
 
-  - bash: ./build.sh
+  - script: ./build.sh
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
 
-- job: MacBuild
-  pool:
-    vmImage: 'macOS-10.13'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  - bash: ./build.sh
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-
-# Test and deploy on windows
-- job: WindowsBuild
+# Deploy
+- job: Deploy
+  condition: ne(variables['Build.Reason'], 'PullRequest')
   pool:
     vmImage: 'vs2017-win2016'
   steps:
@@ -74,7 +63,7 @@ variables:
 
   # Push to sandbox MyGet feed
   - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/v3')
     displayName: Push to Sandbox MyGet Feed
     inputs:
       command: push
@@ -84,7 +73,7 @@ variables:
 
   # Push to production MyGet feed
   - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/v3-release')
     displayName: Push to Production MyGet Feed
     inputs:
       command: push
@@ -94,7 +83,7 @@ variables:
 
   # Publish binary packages to sandbox
   - task: AzureFileCopy@3
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/v3')
     displayName: Publish Binary Packages To Sandbox
     inputs:
       azureSubscription: Open Publishing - Build Sandbox
@@ -105,7 +94,7 @@ variables:
 
   # Publish binary packages to production
   - task: AzureFileCopy@3
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/v3-release')
     displayName: Publish Binary Packages To Production
     inputs:
       azureSubscription: Open Publishing - Build Production
@@ -116,8 +105,8 @@ variables:
 
 # Integration test
 - job: IntegrationTest
-  dependsOn: WindowsBuild
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
+  dependsOn: Build
+  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3'))
   pool:
     name: DocFX
   steps:
