@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+[assembly: ApplicationPart("Microsoft.Docs.Template.Views")]
+
 namespace Microsoft.Docs.Build
 {
     internal class RazorTemplate
@@ -49,18 +51,14 @@ namespace Microsoft.Docs.Build
 
         private static TestServer StartServer()
         {
-            // TODO: remove use content root
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../src/Microsoft.Docs.Template");
             return new TestServer(
                 new WebHostBuilder()
-                    .UseContentRoot(path)
                     .UseEnvironment(Environments.Production)
                     .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
 
             void ConfigureServices(IServiceCollection services)
             {
-                services.AddRazorPages().AddRazorRuntimeCompilation();
                 services.AddMvc().ConfigureApplicationPartManager(parts =>
                         {
                             // Ensure we only have one private TemplateController

@@ -14,8 +14,6 @@
   <ItemGroup>
     <None Include="*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.yml" CopyToOutputDirectory="PreserveNewest" />
-    <!-- Workaround https://github.com/aspnet/Razor/issues/2162 -->
-    <None Include="../../src/docfx/bin/$(Configuration)/$(TargetFramework)/docfx.deps.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
