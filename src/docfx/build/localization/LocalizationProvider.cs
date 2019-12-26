@@ -109,9 +109,9 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
+                    if (restoreGitMap.TryGetRestoreGitPath(
+                        new PackagePath(fallbackRemote, branch), RestoreGitFlags.None, out var fallbackRepoPath, out var fallbackRepoCommit))
                     {
-                        var (fallbackRepoPath, fallbackRepoCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(fallbackRemote, branch), bare: false);
                         return (PathUtility.NormalizeFolder(Path.Combine(fallbackRepoPath, docsetSourceFolder)),
                             Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit));
                     }
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(locRemote, locBranch), false);
+                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(locRemote, locBranch), RestoreGitFlags.None);
                         localizationDocsetPath = PathUtility.NormalizeFolder(Path.Combine(locRepoPath, docsetSourceFolder));
                         localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
                         break;

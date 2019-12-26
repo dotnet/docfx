@@ -3,9 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class GitHubUser : ICacheObject<string>
     {
         public int? Id { get; set; }
@@ -16,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public string[] Emails { get; set; } = Array.Empty<string>();
 
-        public DateTime? Expiry { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public bool IsValid() => Id != null;
 

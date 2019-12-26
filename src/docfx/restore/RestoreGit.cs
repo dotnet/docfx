@@ -8,6 +8,29 @@ namespace Microsoft.Docs.Build
 {
     internal static class RestoreGit
     {
+        public static void Restore(
+            Config config, string locale, Repository repository, DependencyLockProvider dependencyLockProvider)
+        {
+            ParallelUtility.ForEach(
+                GetGitDependencies(config, locale, repository).Distinct(),
+                git => RestoreGitRepo(config, git.remote, git.branch, git.flags, dependencyLockProvider),
+                Progress.Update,
+                maxDegreeOfParallelism: 8);
+
+            EnsureLocalizationContributionBranch(config, repository);
+        }
+
+        private static void EnsureLocalizationContributionBranch(Config config, Repository repository)
+        {
+            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
+            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
+            // here to generate the correct contributor list.
+            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            {
+                GitUtility.Fetch(config, repository.Path, repository.Remote, contributionBranch);
+            }
+        }
+
         private static IEnumerable<(string remote, string branch, RestoreGitFlags flags)> GetGitDependencies(
             Config config, string locale, Repository repository)
         {
@@ -15,7 +38,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.Type == PackageType.Git)
                 {
-                    yield return (url.Url, url.Branch, RestoreGitFlags.NoCheckout);
+                    yield return (url.Url, url.Branch, url.RestoreFlags);
                 }
             }
 
@@ -24,7 +47,7 @@ namespace Microsoft.Docs.Build
                 var localizedTemplate = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
                 if (localizedTemplate.Type == PackageType.Git)
                 {
-                    yield return (localizedTemplate.Url, localizedTemplate.Branch, RestoreGitFlags.None);
+                    yield return (localizedTemplate.Url, localizedTemplate.Branch, RestoreGitFlags.DepthOne);
                 }
             }
 
@@ -69,10 +92,10 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = "master";
                 }
                 yield return (fallbackRemote, fallbackBranch, RestoreGitFlags.None);
+                yield break;
             }
-            else
-            {
-                // build from English
+
+            // build from English
             var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
                 config.Localization.Mapping,
                 config.Localization.Bilingual,
@@ -82,12 +105,11 @@ namespace Microsoft.Docs.Build
                 config.Localization.DefaultLocale);
 
             yield return (remote, branch, RestoreGitFlags.None);
-            }
 
             if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
                 // Bilingual repos also depend on non bilingual branch for commit history
-                yield return (repository.Remote, contributionBranch, RestoreGitFlags.NoCheckout);
+                yield return (repository.Remote, contributionBranch, RestoreGitFlags.Bare);
             }
         }
     }

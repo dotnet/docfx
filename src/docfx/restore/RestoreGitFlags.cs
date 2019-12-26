@@ -9,6 +9,7 @@ namespace Microsoft.Docs.Build
     internal enum RestoreGitFlags
     {
         None = 0,
-        NoCheckout = 0b0010,
+        DepthOne = 0b0001,
+        Bare = 0b0010,
     }
 }
