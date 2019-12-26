@@ -27,5 +27,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
+  </ItemGroup>
 
 </Project>
