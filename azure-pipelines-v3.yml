@@ -17,10 +17,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk 3.1.100'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: 3.1.100
 
   - bash: ./build.sh
     env:
@@ -36,10 +36,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk 3.1.100'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: 3.1.100
 
   - bash: ./build.sh
     env:
@@ -55,10 +55,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk 3.1.100'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: 3.1.100
 
   # Build and test
   - powershell: ./build.ps1
@@ -126,10 +126,10 @@ jobs:
 
   # Install .NET Core sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk 2.2.300'
+    displayName: 'Install .NET Core sdk 3.1.100'
     inputs:
       packageType: sdk
-      version: 2.2.401
+      version: 3.1.100
 
   # Checkout Docs.Build
   - powershell: |
