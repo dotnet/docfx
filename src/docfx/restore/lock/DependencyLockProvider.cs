@@ -29,11 +29,6 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public IEnumerable<(string url, string branch, DependencyGitLock)> ListAll()
-        {
-            return _dependencyGitLock.Select(k => (k.Key.url, k.Key.branch, k.Value));
-        }
-
         public static DependencyLockProvider CreateFromAppData(string docset, string locale)
         {
             var file = AppData.GetDependencyLockFile(docset, locale);

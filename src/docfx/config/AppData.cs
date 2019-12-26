@@ -31,10 +31,10 @@ namespace Microsoft.Docs.Build
 
         public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "microsoft-graph.json");
 
-        public static string GetGitDir(string remote)
+        public static PathString GetGitDir(string remote)
         {
             Debug.Assert(!remote.Contains('#'));
-            return PathUtility.NormalizeFolder(Path.Combine(GitRoot, PathUtility.UrlToShortName(remote)));
+            return new PathString(Path.Combine(GitRoot, PathUtility.UrlToShortName(remote)));
         }
 
         public static string GetFileDownloadDir(string url)

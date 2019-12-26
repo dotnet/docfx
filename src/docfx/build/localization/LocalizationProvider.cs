@@ -109,9 +109,9 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    if (restoreGitMap.IsBranchRestored(fallbackRemote, branch))
+                    if (restoreGitMap.TryGetRestoreGitPath(
+                        new PackagePath(fallbackRemote, branch), RestoreGitFlags.None, out var fallbackRepoPath, out var fallbackRepoCommit))
                     {
-                        var (fallbackRepoPath, fallbackRepoCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(fallbackRemote, branch), RestoreGitFlags.None);
                         return (PathUtility.NormalizeFolder(Path.Combine(fallbackRepoPath, docsetSourceFolder)),
                             Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit));
                     }
