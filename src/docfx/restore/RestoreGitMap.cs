@@ -29,6 +29,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public bool TryGetRestoreGitPath(PackagePath packagePath, RestoreGitFlags flags, out string path, out string commit)
+        {
+            try
+            {
+                (path, commit) = GetRestoreGitPath(packagePath, flags);
+                return true;
+            }
+            catch (DocfxException)
+            {
+                path = commit = default;
+                return false;
+            }
+        }
+
         public (string path, string commit) GetRestoreGitPath(PackagePath packagePath, RestoreGitFlags flags)
         {
             switch (packagePath.Type)
@@ -68,18 +82,6 @@ namespace Microsoft.Docs.Build
                 default:
                     throw new NotSupportedException($"Unknown package url: '{packagePath}'");
             }
-        }
-
-        public bool IsBranchRestored(string remote, string branch)
-        {
-            var gitLock = _dependencyLockProvider.GetGitLock(remote, branch);
-
-            if (gitLock is null || gitLock.Commit is null)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         public void Dispose()
