@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 
@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class RestoreGitMap : IDisposable
     {
         private readonly string _docsetPath;
-        private readonly List<InterProcessReaderWriterLock> _sharedLocks = new List<InterProcessReaderWriterLock>();
+        private readonly ConcurrentDictionary<PathString, InterProcessReaderWriterLock> _locks = new ConcurrentDictionary<PathString, InterProcessReaderWriterLock>();
         private readonly DependencyLockProvider _dependencyLockProvider;
 
         private RestoreGitMap(DependencyLockProvider dependencyLockProvider, string docsetPath)
@@ -21,12 +21,6 @@ namespace Microsoft.Docs.Build
 
             _docsetPath = docsetPath;
             _dependencyLockProvider = dependencyLockProvider;
-
-            foreach (var (url, _, _) in _dependencyLockProvider.ListAll())
-            {
-                var sharedLock = InterProcessReaderWriterLock.CreateReaderLock(url);
-                _sharedLocks.Add(sharedLock);
-            }
         }
 
         public bool TryGetRestoreGitPath(PackagePath packagePath, RestoreGitFlags flags, out string path, out string commit)
@@ -69,13 +63,15 @@ namespace Microsoft.Docs.Build
 
                     if (!flags.HasFlag(RestoreGitFlags.Bare))
                     {
-                        path = Path.Combine(path, "1");
+                        path = new PathString(Path.Combine(path, "1"));
                     }
 
                     if (!Directory.Exists(path))
                     {
                         throw Errors.NeedRestore($"{packagePath}").ToException();
                     }
+
+                    _locks.TryAdd(path, InterProcessReaderWriterLock.CreateReaderLock(path));
 
                     return (path, gitLock.Commit);
 
@@ -86,7 +82,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            foreach (var sharedLock in _sharedLocks)
+            foreach (var sharedLock in _locks.Values)
             {
                 sharedLock.Dispose();
             }
