@@ -55,10 +55,12 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
+            var unionProperties = new string[] { "xref" };
 
             // Load configs available locally
             var envConfig = LoadEnvironmentVariables();
-            var cliConfig = options?.ToJObject();
+            var cliConfig = new JObject();
+            JsonUtility.Merge(unionProperties, cliConfig, options?.StdinConfig, options?.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
             var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
@@ -67,7 +69,7 @@ namespace Microsoft.Docs.Build
 
             // Preload
             var preloadConfigObject = new JObject();
-            JsonUtility.Merge(Array.Empty<string>(), preloadConfigObject, envConfig, globalConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(unionProperties, preloadConfigObject, envConfig, globalConfig, opsConfig, docfxConfig, cliConfig);
             var (preloadErrors, preloadConfig) = JsonUtility.ToObject<PreloadConfig>(preloadConfigObject);
             errors.AddRange(preloadErrors);
 
@@ -79,7 +81,7 @@ namespace Microsoft.Docs.Build
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(new string[] { "xref" }, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 

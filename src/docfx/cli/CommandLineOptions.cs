@@ -39,9 +39,7 @@ namespace Microsoft.Docs.Build
             if (Template != null)
                 config["template"] = Template;
 
-            var result = new JObject();
-            JsonUtility.Merge(Array.Empty<string>(), result, StdinConfig, config);
-            return result;
+            return config;
         }
     }
 }

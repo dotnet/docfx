@@ -88,8 +88,8 @@ namespace Microsoft.Docs.Build
             if (string.IsNullOrEmpty(file.Mime))
             {
                 // conceptual raw metadata and raw model
-                JsonUtility.Merge(Array.Empty<string>(), outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
-                JsonUtility.Merge(Array.Empty<string>(), outputModel, userMetadata.RawJObject, sourceModel, systemMetadataJObject);
+                JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
+                JsonUtility.Merge(outputModel, userMetadata.RawJObject, sourceModel, systemMetadataJObject);
             }
             else
             {
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                     outputMetadata,
                     sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(),
                     systemMetadataJObject);
-                JsonUtility.Merge(Array.Empty<string>(), outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
+                JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
             if (file.Docset.Config.Output.Json && !file.Docset.Legacy)

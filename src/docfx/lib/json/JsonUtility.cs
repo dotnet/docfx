@@ -206,6 +206,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void Merge(JObject container, params JObject[] overwrites)
+        {
+            Merge(Array.Empty<string>(), container, overwrites);
+        }
+
         public static void Merge(string[] unionProperties, JObject container, params JObject[] overwrites)
         {
             if (overwrites == null)
@@ -230,6 +235,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (container[key] is JArray array && value is JArray newArray && unionProperties?.Contains(key) == true)
                 {
+                    // TODO: need to check if miss line info for JArray
                     container[key] = new JArray(array.Union(newArray));
                 }
                 else
