@@ -40,7 +40,7 @@ function publishBinaryPackages() {
     $stagingPath = "$packagesBasePath\staging"
     New-Item -Path $stagingPath -ItemType "directory" -ErrorAction SilentlyContinue
 
-    $rids = @("win-x64", "osx-x64", "linux-x64")
+    $rids = @("win7-x64", "osx-x64", "linux-x64") # Microsoft.ChakraCore doesn't provide win-x64 runtime build, using win7-x64
     foreach ($rid in $rids) {
         $packageName = "docfx-$rid-$version"
         exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:Version=$version /p:InformationalVersion=$version /p:PackAsTool=false"
