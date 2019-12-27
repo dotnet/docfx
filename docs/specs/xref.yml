@@ -20,15 +20,27 @@ outputs:
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one
 # xref should be unioned from different sources
+# original config should have higher priority than extend config
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
     xref:
     - 2.xrefmap.json
+    - high.xrefmap.json
     extend: _shared/extend.json
   _shared/extend.json: |
     {"xref":["1.xrefmap.json"]}
   docs/a.md: Link to @System.String?displayProperty=fullName
+  high.xrefmap.json: |
+    {
+      "references":[{
+          "uid": "System.String",
+          "name": "String",
+          "fullName": "System.String.Higher",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "nameWithType": "System.String"
+      }]
+    }
   1.xrefmap.json: |
     {
       "references":[{
@@ -43,7 +55,7 @@ inputs:
     { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String.Higher</a></p>\n"}
 ---
 # Should not remove host name if not sharing with xref href
 inputs:
