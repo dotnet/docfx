@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
             // Preload
             var preloadConfigObject = new JObject();
-            JsonUtility.Merge(preloadConfigObject, envConfig, globalConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(Array.Empty<string>(), preloadConfigObject, envConfig, globalConfig, opsConfig, docfxConfig, cliConfig);
             var (preloadErrors, preloadConfig) = JsonUtility.ToObject<PreloadConfig>(preloadConfigObject);
             errors.AddRange(preloadErrors);
 
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(new string[] { "xref" }, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -39,7 +40,7 @@ namespace Microsoft.Docs.Build
                 config["template"] = Template;
 
             var result = new JObject();
-            JsonUtility.Merge(result, StdinConfig, config);
+            JsonUtility.Merge(Array.Empty<string>(), result, StdinConfig, config);
             return result;
         }
     }
