@@ -44,8 +44,8 @@ function publishBinaryPackages() {
     foreach ($rid in $rids) {
         $packageName = "docfx-$rid-$version"
         exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:Version=$version /p:InformationalVersion=$version /p:PackAsTool=false"
-        Compress-Archive "$packagesBasePath/$rid" -DestinationPath "$stagingPath/$packageName.zip" -Update
-        (Get-FileHash "$stagingPath/$packageName.zip").Hash | Out-File -FilePath "$stagingPath/$packageName.zip.sha256"
+        Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
+        New-Item -Path "$stagingPath" -Name "$packageName.zip.sha256" -Force -ItemType "file" -Value (Get-FileHash "$stagingPath/$packageName.zip").Hash
         Copy-Item "$stagingPath/$packageName.zip" "$stagingPath/docfx-$rid-latest.zip" 
         Copy-Item "$stagingPath/$packageName.zip.sha256" "$stagingPath/docfx-$rid-latest.zip.sha256" 
     }

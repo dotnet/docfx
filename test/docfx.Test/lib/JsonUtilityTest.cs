@@ -384,7 +384,19 @@ namespace Microsoft.Docs.Build
         public void TestJsonMerge(string a, string b, string result)
         {
             var container = JObject.Parse(a.Replace('\'', '\"'));
-            JsonUtility.Merge(container, JObject.Parse(b.Replace('\'', '\"')));
+            JsonUtility.Merge(Array.Empty<string>(), container, JObject.Parse(b.Replace('\'', '\"')));
+            Assert.Equal(result.Replace('\'', '\"'), container.ToString(Formatting.None));
+        }
+
+        [Theory]
+        [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}", "b")]
+        [InlineData("{'a':[1]}", "{'a':'2'}", "{'a':'2'}")]
+        [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}")]
+        [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[1,2]}", "a")]
+        public void TestJsonMergeWithUnionProperties(string a, string b, string result, params string[] unionProperties)
+        {
+            var container = JObject.Parse(a.Replace('\'', '\"'));
+            JsonUtility.Merge(unionProperties, container, JObject.Parse(b.Replace('\'', '\"')));
             Assert.Equal(result.Replace('\'', '\"'), container.ToString(Formatting.None));
         }
 
