@@ -2,10 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
+
 using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
@@ -15,6 +19,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
+        internal static Func<string, string> GitRemoteProxy;
+
         /// <summary>
         /// Find git repo directory
         /// </summary>
@@ -84,6 +90,38 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Clones or update a git repository to the latest version.
+        /// </summary>
+        public static void Init(string path)
+        {
+            ExecuteNonQuery(path, "init");
+        }
+
+        /// <summary>
+        /// checkout existing git repository to specificed committish
+        /// </summary>
+        public static void Checkout(string path, string committish, string options = null)
+        {
+            ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
+        }
+
+        /// <summary>
+        /// Fetch a git repository's updates
+        /// </summary>
+        public static void Fetch(Config config, string path, string url, string refspecs, string options = null)
+        {
+            // Allow test to proxy remotes to local folder
+            if (GitRemoteProxy != null)
+            {
+                url = GitRemoteProxy(url);
+            }
+
+            var (http, secrets) = GetGitCommandLineConfig(url, config);
+
+            ExecuteNonQuery(path, $"{http} fetch --progress {options} \"{url}\" {refspecs}", secrets);
+        }
+
+        /// <summary>
         /// Get a list of commits using git log
         /// </summary>
         public static string[] GetCommits(string path, string committish, int top = 0)
@@ -144,12 +182,12 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)
+        private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)
         {
             Execute(cwd, commandLineArgs, stdout: false, secrets);
         }
 
-        public static string Execute(string cwd, string commandLineArgs, bool stdout = true, string[] secrets = null)
+        private static string Execute(string cwd, string commandLineArgs, bool stdout = true, string[] secrets = null)
         {
             if (!Directory.Exists(cwd))
             {
@@ -163,6 +201,32 @@ namespace Microsoft.Docs.Build
             catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
                 throw Errors.GitNotFound().ToException(ex);
+            }
+        }
+
+        private static (string cmd, string[] secrets) GetGitCommandLineConfig(string url, Config config)
+        {
+            if (config is null)
+            {
+                return default;
+            }
+
+            var gitConfigs = (
+                from http in config.Http
+                where url.StartsWith(http.Key)
+                from header in http.Value.Headers
+                select (cmd: $"-c http.{http.Key}.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).ToArray();
+
+            return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
+
+            string GetSecretFromHeader(KeyValuePair<string, string> header)
+            {
+                if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
+                    AuthenticationHeaderValue.TryParse(header.Value, out var value))
+                {
+                    return value.Parameter;
+                }
+                return header.Value;
             }
         }
     }

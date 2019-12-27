@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Restore
+    internal static partial class Restore
     {
-        public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
+        public static int Run(string workingDirectory, CommandLineOptions options)
         {
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
@@ -20,11 +20,18 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            var result = await Task.WhenAll(docsets.Select(docset => RestoreDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.Any(hasError => hasError) ? 1 : 0;
+            var hasError = false;
+            Parallel.ForEach(docsets, docset =>
+            {
+                if (RestoreDocset(docset.docsetPath, docset.outputPath, options))
+                {
+                    hasError = true;
+                }
+            });
+            return hasError ? 1 : 0;
         }
 
-        private static async Task<bool> RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static bool RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
@@ -45,14 +52,14 @@ namespace Microsoft.Docs.Build
 
                     // load configuration from current entry or fallback repository
                     var configLoader = new ConfigLoader(repository, errorLog);
-
                     (errors, config) = configLoader.Load(docsetPath, locale, options);
                     if (errorLog.Write(errors))
                         return true;
 
-                    var credentialProvider = config.GetCredentialProvider();
-                    var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider));
-                    await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
+                    // download dependencies to disk
+                    Parallel.Invoke(
+                        () => RestoreFiles(docsetPath, config, errorLog).GetAwaiter().GetResult(),
+                        () => RestorePackages(docsetPath, config, locale, repository));
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
@@ -66,6 +73,116 @@ namespace Microsoft.Docs.Build
                     errorLog.PrintSummary();
                 }
                 return false;
+            }
+        }
+
+        private static async Task RestoreFiles(string docsetPath, Config config, ErrorLog errorLog)
+        {
+            var credentialProvider = config.GetCredentialProvider();
+            var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider));
+            await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
+        }
+
+        private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository)
+        {
+            using (var packageResolver = new PackageResolver(docsetPath, config))
+            {
+                ParallelUtility.ForEach(
+                    GetPackages(config, locale, repository).Distinct(),
+                    item => packageResolver.DownloadPackage(item.package, item.flags),
+                    Progress.Update,
+                    maxDegreeOfParallelism: 8);
+            }
+
+            EnsureLocalizationContributionBranch(config, repository);
+        }
+
+        private static void EnsureLocalizationContributionBranch(Config config, Repository repository)
+        {
+            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
+            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
+            // here to generate the correct contributor list.
+            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            {
+                try
+                {
+                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Errors.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                }
+            }
+        }
+
+        private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(
+            Config config, string locale, Repository repository)
+        {
+            foreach (var (_, package) in config.Dependencies)
+            {
+                yield return (package, package.PackageFetchOptions);
+            }
+
+            if (config.Template.Type == PackageType.Git)
+            {
+                var theme = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+                yield return (theme, PackageFetchOptions.None);
+            }
+
+            foreach (var item in GetLocalizationPackages(config, locale, repository))
+            {
+                yield return item;
+            }
+        }
+
+        /// <summary>
+        /// Get source repository or localized repository
+        /// </summary>
+        private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetLocalizationPackages(
+            Config config, string locale, Repository repository)
+        {
+            if (string.IsNullOrEmpty(locale))
+            {
+                yield break;
+            }
+
+            if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            {
+                yield break;
+            }
+
+            if (repository is null || string.IsNullOrEmpty(repository.Remote))
+            {
+                yield break;
+            }
+
+            if (config.Localization.Mapping == LocalizationMapping.Folder)
+            {
+                yield break;
+            }
+
+            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
+            {
+                // fallback to master
+                yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.Optional);
+                yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.Optional);
+                yield break;
+            }
+
+            // build from English
+            var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
+                config.Localization.Mapping,
+                config.Localization.Bilingual,
+                repository.Remote,
+                repository.Branch,
+                locale,
+                config.Localization.DefaultLocale);
+
+            yield return (new PackagePath(remote, branch), PackageFetchOptions.FullHistory);
+
+            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            {
+                yield return (new PackagePath(repository.Remote, contributionBranch), PackageFetchOptions.FullHistory);
             }
         }
     }

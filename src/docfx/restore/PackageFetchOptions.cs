@@ -6,10 +6,10 @@ using System;
 namespace Microsoft.Docs.Build
 {
     [Flags]
-    internal enum RestoreGitFlags
+    internal enum PackageFetchOptions
     {
         None = 0,
-        DepthOne = 0b0001,
-        Bare = 0b0010,
+        FullHistory = 0b0001,
+        Optional = 0b0010,
     }
 }
