@@ -97,7 +97,10 @@ namespace Microsoft.Docs.Build
 
             var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&exclude_depot_name={docset.product_name}.{name}";
             var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
-            xrefQueryTags.Add(docset.base_path);
+            if (docset.base_path != "/")
+            {
+                xrefQueryTags.Add(docset.base_path);
+            }
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
             {

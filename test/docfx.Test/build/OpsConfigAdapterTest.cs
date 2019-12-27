@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData(
-            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr",
+            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr&branch=master",
             "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'review.docs.microsoft.com'}")]
         [InlineData(
             "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr&branch=live",
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr.zh-cn&branch=live-sxs",
             "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
         [InlineData(
-            "https://ops/buildconfig/?name=mooncake-docs&repository_url=https://github.com/MicrosoftDocs/mc-docs-pr",
+            "https://ops/buildconfig/?name=mooncake-docs&repository_url=https://github.com/MicrosoftDocs/mc-docs-pr&branch=master",
             "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn'}")]
         public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
