@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             var branch = queries["branch"];
             var locale = queries["locale"];
             var xrefEndpoint = queries["xref_endpoint"];
-            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? null : queries["xref_query_tags"].Split(',');
+            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
@@ -95,16 +95,14 @@ namespace Microsoft.Docs.Build
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
 
-            var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}";
+            var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&exclude_depot_name={docset.product_name}.{name}";
             var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
+            xrefQueryTags.Add(docset.base_path);
             var xrefMaps = new List<string>();
-            if (xrefQueryTags != null)
+            foreach (var tag in xrefQueryTags)
             {
-                foreach (var tag in xrefQueryTags)
-                {
-                    var links = await GetXrefMaps(xrefMapApiEndpoint, tag, xrefMapQueryParams);
-                    xrefMaps.AddRange(links);
-                }
+                var links = await GetXrefMaps(xrefMapApiEndpoint, tag, xrefMapQueryParams);
+                xrefMaps.AddRange(links);
             }
 
             return JsonConvert.SerializeObject(new
