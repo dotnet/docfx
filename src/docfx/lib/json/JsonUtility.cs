@@ -236,7 +236,7 @@ namespace Microsoft.Docs.Build
                 else if (container[key] is JArray array && value is JArray newArray && unionProperties?.Contains(key) == true)
                 {
                     // TODO: need to check if miss line info for JArray
-                    container[key] = new JArray(array.Union(newArray));
+                    container[key] = new JArray(newArray.Union(array));
                 }
                 else
                 {
