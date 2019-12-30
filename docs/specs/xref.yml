@@ -1156,23 +1156,3 @@ outputs:
           }
        ]
     }
----
-# should not crash when xref query tag not found from API
-inputs:
-  .openpublishing.publish.config.json: |
-    {
-       "docsets_to_publish": [
-       { 
-        "docset_name": "edge-developer"
-       }]
-    }
-  docfx.yml: |
-    http:
-      https://op-build-prod.azurewebsites.net:
-        headers:
-          X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
-  docs/a.md:
-environments:
-  - DOCS_OPS_TOKEN
-outputs:
-  docs/a.json:
