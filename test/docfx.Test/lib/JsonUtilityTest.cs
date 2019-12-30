@@ -392,7 +392,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}", "b")]
         [InlineData("{'a':[1]}", "{'a':'2'}", "{'a':'2'}")]
         [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2]}")]
-        [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[1,2]}", "a")]
+        [InlineData("{'a':[1]}", "{'a':[2]}", "{'a':[2,1]}", "a")]
         public void TestJsonMergeWithUnionProperties(string a, string b, string result, params string[] unionProperties)
         {
             var container = JObject.Parse(a.Replace('\'', '\"'));
