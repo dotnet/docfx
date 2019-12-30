@@ -269,9 +269,9 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static HtmlNode AddLinkType(this HtmlNode html, string locale, Action<string> action = null)
+        public static HtmlNode AddLinkType(this HtmlNode html, string locale, Action<string> addLinkAction = null)
         {
-            AddLinkType(html, "a", "href", locale, action);
+            AddLinkType(html, "a", "href", locale, addLinkAction);
             AddLinkType(html, "img", "src", locale);
             return html;
         }
@@ -335,7 +335,7 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
-        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale, Action<string> action = null)
+        private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale, Action<string> addLinkAction = null)
         {
             foreach (var node in html.Descendants(tag))
             {
@@ -359,7 +359,7 @@ namespace Microsoft.Docs.Build
                         node.SetAttributeValue("data-linktype", "relative-path");
                         break;
                     case LinkType.External:
-                        action?.Invoke(href);
+                        addLinkAction?.Invoke(href);
                         node.SetAttributeValue("data-linktype", "external");
                         break;
                 }
