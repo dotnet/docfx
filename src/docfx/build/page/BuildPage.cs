@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = CreateHtmlContent(file, htmlDom),
+                Conceptual = CreateHtmlContent(context, file, htmlDom),
                 WordCount = wordCount,
                 RawTitle = rawTitle,
                 Title = userMetadata.Title ?? title,
@@ -276,7 +276,7 @@ namespace Microsoft.Docs.Build
                 ValidateBookmarks(context, file, htmlDom);
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = CreateHtmlContent(file, htmlDom),
+                    Conceptual = CreateHtmlContent(context, file, htmlDom),
                     ExtensionData = pageModel,
                 });
             }
@@ -323,8 +323,8 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static string CreateHtmlContent(Document file, HtmlNode html)
-            => LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
+        private static string CreateHtmlContent(Context context, Document file, HtmlNode html)
+            => LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale, link => context.FileLinkMapBuilder.AddFileLink(file, link)).WriteTo());
 
         private static void ValidateBookmarks(Context context, Document file, HtmlNode html)
         {
@@ -346,7 +346,7 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);
-            return CreateHtmlContent(file, htmlDom);
+            return CreateHtmlContent(context, file, htmlDom);
         }
     }
 }
