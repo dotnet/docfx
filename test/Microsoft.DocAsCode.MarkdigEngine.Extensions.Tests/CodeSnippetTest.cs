@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             TestUtility.VerifyMarkup(
                 source,
                 expected,
-                errors: new[] { "codesnippet-not-found" },
+                errors: new[] { "codesnippet-not-found", "code-snippet-deprecated" },
                 tokens: new Dictionary<string, string>
                 {
                     { "codeIncludeNotFound", "你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。"},
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "Program.cs", content }
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -79,7 +79,7 @@ print(azureml.core.VERSION)</code></pre>";
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "Program.ipynb", content },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -108,7 +108,7 @@ print(azureml.core.VERSION)</code></pre>";
             TestUtility.VerifyMarkup(
                 source,
                 expected,
-                errors: new[] { "tag-not-found" },
+                errors: new[] { "tag-not-found", "code-snippet-deprecated" },
                 files: new Dictionary<string, string>
                 {
                     { "Program.ipynb", content },
@@ -154,7 +154,7 @@ print(azureml.core.VERSION)</code></pre>";
             TestUtility.VerifyMarkup(
                 source,
                 expected,
-                errors: new[] { "mutiple-tags-with-same-name" },
+                errors: new[] { "mutiple-tags-with-same-name", "code-snippet-deprecated" },
                 files: new Dictionary<string, string>
                 {
                     { "Program.ipynb", content },
@@ -183,7 +183,7 @@ print(azureml.core.VERSION)</code></pre>";
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "Program.cs", content },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -208,7 +208,7 @@ line4
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "Program.cs", content },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -233,7 +233,7 @@ line4
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "Program.cs", content },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -262,7 +262,7 @@ public class MyClass
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "Program.cs", content },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -290,7 +290,10 @@ public class MyClass
             TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
             {
                 { "api.json", apiJsonContent },
-            });
+            }, errors: new string[] { "code-snippet-deprecated",
+                                      "code-snippet-deprecated",
+                                      "code-snippet-deprecated",
+                                      "code-snippet-deprecated"});
         }
 
 
@@ -578,7 +581,7 @@ public static void Foo()
             TestUtility.VerifyMarkup(fencesPath, expectedContent, files: new Dictionary<string, string>
             {
                 { "Program.cs", content },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -607,7 +610,10 @@ public static void Foo()
             TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
             {
                 { "api.json", apiJsonContent },
-            });
+            }, errors: new string[] { "code-snippet-deprecated",
+                                      "code-snippet-deprecated",
+                                      "code-snippet-deprecated",
+                                      "code-snippet-deprecated"});
         }
 
         [Fact]
@@ -639,7 +645,7 @@ public static void Foo()
             TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
             {
                 { "api.json", apiJsonContent },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
         [Fact]
@@ -663,7 +669,7 @@ public static void Foo()
             TestUtility.VerifyMarkup(markdown, expected, files: new Dictionary<string, string>
             {
                 { "Program.cs", content },
-            });
+            }, errors: new string[] { "code-snippet-deprecated" });
         }
 
 
