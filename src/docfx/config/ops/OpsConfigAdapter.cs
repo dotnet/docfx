@@ -141,8 +141,15 @@ namespace Microsoft.Docs.Build
         private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
         {
             var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
-            var response = await Fetch(url);
-            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
+            var response = await Fetch(url, nullOn404: true);
+            if (response is null)
+            {
+                return Array.Empty<string>();
+            }
+            else
+            {
+                return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
+            }
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
