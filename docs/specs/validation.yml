@@ -204,7 +204,7 @@ cache:
     { 
       "items": [
         { "alias": "over123" },
-        { "alias": "zikun", "expiry": "2019-06-08T01:40:33.1981669Z" }
+        { "alias": "zikun", "updated_at": "2018-06-08T01:40:33.1981669Z" }
       ]
     }
 environments:
@@ -242,7 +242,7 @@ cache:
     { 
       "items": [
         { "alias": "yazhao" },
-        { "alias": "123over123", "expiry": "2019-06-08T01:40:33.1981669Z" }
+        { "alias": "123over123", "updated_at": "2018-06-08T01:40:33.1981669Z" }
       ]
     }
 environments:

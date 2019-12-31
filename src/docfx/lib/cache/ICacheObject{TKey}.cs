@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal interface ICacheObject<TKey>
     {
-        DateTime? Expiry { get; set; }
+        DateTime? UpdatedAt { get; set; }
 
         IEnumerable<TKey> GetKeys();
     }

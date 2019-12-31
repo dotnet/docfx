@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 
@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class RestoreGitMap : IDisposable
     {
         private readonly string _docsetPath;
-        private readonly List<InterProcessReaderWriterLock> _sharedLocks = new List<InterProcessReaderWriterLock>();
+        private readonly ConcurrentDictionary<PathString, InterProcessReaderWriterLock> _locks = new ConcurrentDictionary<PathString, InterProcessReaderWriterLock>();
         private readonly DependencyLockProvider _dependencyLockProvider;
 
         private RestoreGitMap(DependencyLockProvider dependencyLockProvider, string docsetPath)
@@ -21,15 +21,23 @@ namespace Microsoft.Docs.Build
 
             _docsetPath = docsetPath;
             _dependencyLockProvider = dependencyLockProvider;
+        }
 
-            foreach (var (url, _, _) in _dependencyLockProvider.ListAll())
+        public bool TryGetRestoreGitPath(PackagePath packagePath, RestoreGitFlags flags, out string path, out string commit)
+        {
+            try
             {
-                var sharedLock = InterProcessReaderWriterLock.CreateReaderLock(url);
-                _sharedLocks.Add(sharedLock);
+                (path, commit) = GetRestoreGitPath(packagePath, flags);
+                return true;
+            }
+            catch (DocfxException)
+            {
+                path = commit = default;
+                return false;
             }
         }
 
-        public (string path, string commit) GetRestoreGitPath(PackagePath packagePath, bool bare /* remove this flag once all dependency repositories are bare cloned*/)
+        public (string path, string commit) GetRestoreGitPath(PackagePath packagePath, RestoreGitFlags flags)
         {
             switch (packagePath.Type)
             {
@@ -53,15 +61,17 @@ namespace Microsoft.Docs.Build
 
                     var path = AppData.GetGitDir(packagePath.Url);
 
-                    if (!bare)
+                    if (!flags.HasFlag(RestoreGitFlags.Bare))
                     {
-                        path = Path.Combine(path, "1");
+                        path = new PathString(Path.Combine(path, "1"));
                     }
 
                     if (!Directory.Exists(path))
                     {
                         throw Errors.NeedRestore($"{packagePath}").ToException();
                     }
+
+                    _locks.TryAdd(path, InterProcessReaderWriterLock.CreateReaderLock(path));
 
                     return (path, gitLock.Commit);
 
@@ -70,21 +80,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool IsBranchRestored(string remote, string branch)
-        {
-            var gitLock = _dependencyLockProvider.GetGitLock(remote, branch);
-
-            if (gitLock is null || gitLock.Commit is null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public void Dispose()
         {
-            foreach (var sharedLock in _sharedLocks)
+            foreach (var sharedLock in _locks.Values)
             {
                 sharedLock.Dispose();
             }

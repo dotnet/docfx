@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         internal static Func<string> GetCachePath;
         internal static Func<string> GetStatePath;
 
-        public static string GitRoot => Path.Combine(s_root, "git4");
+        public static string GitRoot => Path.Combine(s_root, "git5");
 
         public static string DownloadsRoot => Path.Combine(s_root, "downloads2");
 
@@ -31,10 +31,10 @@ namespace Microsoft.Docs.Build
 
         public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "microsoft-graph.json");
 
-        public static string GetGitDir(string remote)
+        public static PathString GetGitDir(string remote)
         {
             Debug.Assert(!remote.Contains('#'));
-            return PathUtility.NormalizeFolder(Path.Combine(GitRoot, PathUtility.UrlToShortName(remote)));
+            return new PathString(Path.Combine(GitRoot, PathUtility.UrlToShortName(remote)));
         }
 
         public static string GetFileDownloadDir(string url)

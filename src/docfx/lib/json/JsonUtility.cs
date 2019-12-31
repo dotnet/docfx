@@ -208,16 +208,21 @@ namespace Microsoft.Docs.Build
 
         public static void Merge(JObject container, params JObject[] overwrites)
         {
+            Merge(Array.Empty<string>(), container, overwrites);
+        }
+
+        public static void Merge(string[] unionProperties, JObject container, params JObject[] overwrites)
+        {
             if (overwrites == null)
                 return;
 
             foreach (var overwrite in overwrites)
             {
-                Merge(container, overwrite);
+                Merge(container, overwrite, unionProperties);
             }
         }
 
-        public static void Merge(JObject container, JObject overwrite)
+        public static void Merge(JObject container, JObject overwrite, string[] unionProperties = null)
         {
             if (overwrite is null)
                 return;
@@ -226,7 +231,12 @@ namespace Microsoft.Docs.Build
             {
                 if (container[key] is JObject containerObj && value is JObject overwriteObj)
                 {
-                    Merge(containerObj, overwriteObj);
+                    Merge(containerObj, overwriteObj, unionProperties);
+                }
+                else if (container[key] is JArray array && value is JArray newArray && unionProperties?.Contains(key) == true)
+                {
+                    // TODO: need to check if miss line info for JArray
+                    container[key] = new JArray(newArray.Union(array));
                 }
                 else
                 {

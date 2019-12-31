@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     return _dependencyRepositories.GetOrAdd(dependencyName.Value, _ => new Lazy<(string docset, Repository repository)>(() =>
                     {
                         var dependency = _config.Dependencies[dependencyName.Value];
-                        var (dependencyPath, dependencyCommit) = _restoreGitMap.GetRestoreGitPath(dependency, bare: true);
+                        var (dependencyPath, dependencyCommit) = _restoreGitMap.GetRestoreGitPath(dependency, dependency.RestoreFlags);
 
                         if (dependency.Type != PackageType.Git)
                         {
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         {
             var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.Localization.DefaultLocale);
 
-            var (templatePath, templateCommit) = _restoreGitMap.GetRestoreGitPath(theme, false);
+            var (templatePath, templateCommit) = _restoreGitMap.GetRestoreGitPath(theme, RestoreGitFlags.DepthOne);
 
             if (theme.Type != PackageType.Git)
             {

@@ -197,9 +197,9 @@ namespace Microsoft.Docs.Build
         ///   - restore a repo with bad url
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error GitCloneFailed(string url, IEnumerable<string> branches)
+        public static Error GitCloneFailed(string url, string branch)
         {
-            var message = $"Failure to clone the repository `{url} ({Join(branches)})`."
+            var message = $"Failure to clone the repository `{url}#{branch}`."
                       + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
                       + "This could also be caused by not having the proper permission the repository, "
                       + "please confirm that the GitHub group/team that triggered the build has access to the repository.";

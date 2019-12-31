@@ -98,46 +98,40 @@ namespace Microsoft.Docs.Build
             => Execute(path, $"-c core.longpaths=true status --porcelain").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
 
         /// <summary>
-        /// Clones or update a git repository to the latest version.
-        /// </summary>
-        public static void InitFetchCheckout(string path, string url, string committish, Config config = null)
-        {
-            InitFetch(path, url, new[] { committish }, bare: false, config);
-            ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
-        }
-
-        /// <summary>
         /// Clones or update a git bare repository to the latest version.
         /// </summary>
-        public static void InitFetchBare(string path, string url, IEnumerable<string> committishes, Config config = null)
+        public static void InitFetchBare(Config config, string path, string url, string committish, bool depthOne = false)
         {
-            InitFetch(path, url, committishes, bare: true, config);
+            InitFetch(config, path, url, committish, bare: true, depthOne);
         }
 
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static void Fetch(string path, string url, IEnumerable<string> committishes, Config config)
+        public static void Fetch(Config config, string path, string url, string committish, bool depthOne = false)
         {
-            var refspecs = string.Join(' ', committishes.Select(rev => $"+{rev}:{rev}"));
-
             // Allow test to proxy remotes to local folder
             if (GitRemoteProxy != null)
             {
                 url = GitRemoteProxy(url);
             }
 
-            var (httpConfig, secrets) = GetGitCommandLineConfig(url, config);
+            if (!config.GitShallowFetch)
+            {
+                depthOne = false;
+            }
+
+            var (http, secrets) = GetGitCommandLineConfig(url, config);
+            var options = "--progress --update-head-ok --prune";
 
             try
             {
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{http} fetch {options} --depth {(depthOne ? "1" : "99999999")} \"{url}\" +{committish}:{committish}", secrets);
             }
             catch (InvalidOperationException)
             {
                 // Fallback to fetch all branches and tags if the input committish is not supported by fetch
-                refspecs = "+refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*";
-                ExecuteNonQuery(path, $"{httpConfig} fetch --tags --progress --update-head-ok --prune \"{url}\" {refspecs}", secrets);
+                ExecuteNonQuery(path, $"{http} fetch {options} --depth 99999999 \"{url}\" +refs/heads/*:refs/heads/*", secrets);
             }
         }
 
@@ -234,8 +228,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            if (git_revparse_single(out var commit, repo, committish) != 0 &&
-                git_revparse_single(out commit, repo, $"origin/{committish}") != 0)
+            if (git_revparse_single(out var commit, repo, committish) != 0)
             {
                 git_repository_free(repo);
                 return null;
@@ -276,21 +269,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Clones or update a git repository to the latest version.
         /// </summary>
-        private static void InitFetch(string path, string url, IEnumerable<string> committishes, bool bare, Config config)
+        private static void InitFetch(Config config, string path, string url, string committish, bool bare, bool depthOne)
         {
-            // Unifies clone and fetch using a single flow:
-            // - git init
-            // - git remote set url
-            // - git fetch
-            // - git checkout (if not a bar repo)
-            if (GitRemoteProxy != null &&
-                GitRemoteProxy(url) != url &&
-                Directory.Exists(path))
-            {
-                // optimize for test fetching
-                return;
-            }
-
             Directory.CreateDirectory(path);
 
             if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
@@ -308,7 +288,7 @@ namespace Microsoft.Docs.Build
 
             git_repository_free(repo);
 
-            Fetch(path, url, committishes, config);
+            Fetch(config, path, url, committish, depthOne);
         }
 
         private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)
