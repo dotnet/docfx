@@ -164,8 +164,8 @@ namespace Microsoft.Docs.Build
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
             {
                 // fallback to master
-                yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.Optional);
-                yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.Optional);
+                yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.Optional | PackageFetchOptions.FullHistory);
+                yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.Optional | PackageFetchOptions.FullHistory);
                 yield break;
             }
 
