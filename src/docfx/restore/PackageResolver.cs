@@ -49,8 +49,10 @@ namespace Microsoft.Docs.Build
             {
                 case PackageType.Git:
                     var gitPath = GetGitRepositoryPath(package.Url, package.Branch);
+                    var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
                     EnterGitReaderLock(gitPath);
-                    if (!Directory.Exists(gitPath))
+
+                    if (!File.Exists(gitDocfxHead))
                     {
                         throw Errors.NeedRestore($"{package.Url}#{package.Branch}").ToException();
                     }
@@ -100,22 +102,16 @@ namespace Microsoft.Docs.Build
         private void DownloadGitRepository(string url, string committish, bool depthOne)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
+            var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
 
             using (InterProcessReaderWriterLock.CreateWriterLock(gitPath))
             {
-                if (!Directory.Exists(gitPath))
+                if (File.Exists(gitDocfxHead))
                 {
-                    // If the branch is cloned for the first time,
-                    // use a staging directory to ensure we don't left with a corrupted git folder
-                    var stagingPath = Path.Combine(Path.GetDirectoryName(gitPath), "." + Path.GetFileName(gitPath));
-                    DownloadGitRepositoryCore(stagingPath, url, committish, depthOne);
-                    Directory.Move(stagingPath, gitPath);
+                    File.Delete(gitDocfxHead);
                 }
-                else
-                {
-                    // Other wise let git fetch handle the update
-                    DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
-                }
+                DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
+                File.WriteAllText(gitDocfxHead, committish);
             }
         }
 
