@@ -117,27 +117,22 @@ namespace Microsoft.Docs.Build
 
         private void DownloadGitRepositoryCore(string cwd, string url, string committish, bool depthOne)
         {
-            if (!_config.GitShallowFetch)
-            {
-                depthOne = false;
-            }
+            var fetchOption = "--update-head-ok --prune --force";
+            var depthOneOption = $"--depth {(depthOne && _config.GitShallowFetch ? "1" : "99999999")}";
 
             Directory.CreateDirectory(cwd);
-
             GitUtility.Init(cwd);
-
-            var option = "--update-head-ok --prune --force";
 
             try
             {
-                GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{option} --depth {(depthOne ? "1" : "99999999")}");
+                GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
             }
             catch (InvalidOperationException)
             {
                 try
                 {
                     // Fallback to fetch all branches if the input committish is not supported by fetch
-                    GitUtility.Fetch(_config, cwd, url, "+refs/heads/*:refs/heads/*", $"{option} --depth 99999999");
+                    GitUtility.Fetch(_config, cwd, url, "+refs/heads/*:refs/heads/*", $"{fetchOption} --depth 99999999");
                 }
                 catch (InvalidOperationException ex)
                 {
