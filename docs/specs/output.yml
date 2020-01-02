@@ -593,3 +593,25 @@ outputs:
   docs/toc.json:
   docs/breadcrumbs/toc.json:
   .errors.log: 
+---
+# Raw external link in .md file
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    https://a.com/b
+    <p><a href="https://b.com/a">test</a></p>
+outputs:
+  docs/a.json:
+  .links.json: |
+    {
+      "links": [
+          {
+              "source_url": "/docs/a",
+              "target_url": "https://a.com/b"
+          },
+          {
+              "source_url": "/docs/a",
+              "target_url": "https://b.com/a"
+          }
+      ]
+    }
