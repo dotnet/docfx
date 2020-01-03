@@ -177,12 +177,6 @@ namespace Microsoft.Docs.Build
         public readonly PackagePath Template = new PackagePath();
 
         /// <summary>
-        /// Gets the dependency lock file path.
-        /// It is an absolute file path or relative file path relative to docset folder.
-        /// </summary>
-        public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
-
-        /// <summary>
         /// When enabled, updated_at for each document will be the last build time
         /// for the latest commit that touches that document.
         /// </summary>
