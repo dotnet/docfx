@@ -89,6 +89,11 @@ namespace Microsoft.Docs.Build
         public readonly bool Legacy;
 
         /// <summary>
+        /// Gets whether we are running in dry run mode
+        /// </summary>
+        public readonly bool DryRun;
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>

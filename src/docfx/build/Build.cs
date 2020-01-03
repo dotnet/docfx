@@ -117,26 +117,33 @@ namespace Microsoft.Docs.Build
 
                 context.BookmarkValidator.Validate();
 
-                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
-                var dependencyMap = context.DependencyMapBuilder.Build();
+                var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
+                context.ErrorLog.Write(errors);
+
+                // TODO: explicitly state that ToXrefMapModel produces errors
                 var xrefMapModel = context.XrefResolver.ToXrefMapModel();
-                var fileLinkMap = context.FileLinkMapBuilder.Build();
 
-                context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
-                context.Output.WriteJson(publishModel, ".publish.json");
-                context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
-                context.Output.WriteJson(fileLinkMap, ".links.json");
-
-                if (options.Legacy)
+                if (!context.Config.DryRun)
                 {
-                    if (docset.Config.Output.Json)
+                    var dependencyMap = context.DependencyMapBuilder.Build();
+                    var fileLinkMap = context.FileLinkMapBuilder.Build();
+
+                    context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
+                    context.Output.WriteJson(publishModel, ".publish.json");
+                    context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
+                    context.Output.WriteJson(fileLinkMap, ".links.json");
+
+                    if (options.Legacy)
                     {
-                        // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
-                    }
-                    else
-                    {
-                        context.TemplateEngine.CopyTo(outputPath);
+                        if (docset.Config.Output.Json)
+                        {
+                            // TODO: decouple files and dependencies from legacy.
+                            Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
+                        }
+                        else
+                        {
+                            context.TemplateEngine.CopyTo(outputPath);
+                        }
                     }
                 }
 

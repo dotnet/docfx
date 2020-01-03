@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), noFetch: true);
             Input = input;
             LocalizationProvider = localizationProvider;
-            Output = new Output(outputPath, input);
+            Output = new Output(outputPath, input, Config.DryRun);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(docset.Config);
             BuildScope = new BuildScope(Config, Input, fallbackDocset);
@@ -63,10 +63,10 @@ namespace Microsoft.Docs.Build
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(docset.Config);
             GitCommitProvider = new GitCommitProvider();
-            PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config);
+            PublishModelBuilder = new PublishModelBuilder(outputPath, docset.Config, Output);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubAccessor, GitCommitProvider);
-            FileLinkMapBuilder = new FileLinkMapBuilder(MonikerProvider, errorLog, this);
+            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
             XrefResolver = new XrefResolver(this, docset, FileResolver, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
