@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                 switch (command)
                 {
                     case "restore":
-                        return await Restore.Run(workingDirectory, options);
+                        return Restore.Run(workingDirectory, options);
                     case "build":
                         return await Build.Run(workingDirectory, options);
                     case "watch":

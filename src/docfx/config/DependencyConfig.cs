@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         public bool IncludeInBuild { get; private set; }
 
         [JsonIgnore]
-        public RestoreGitFlags RestoreFlags => RestoreGitFlags.Bare | (IncludeInBuild ? RestoreGitFlags.None : RestoreGitFlags.DepthOne);
+        public PackageFetchOptions PackageFetchOptions => IncludeInBuild ? PackageFetchOptions.None : PackageFetchOptions.DepthOne;
 
         public DependencyConfig()
             : base()
