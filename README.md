@@ -1,16 +1,14 @@
 # Build your docs with DocFX
 
-branch | status
------|-----
-v3 | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3) [![MyGet](https://img.shields.io/myget/docfx-v3-sandbox/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-v3-sandbox) 
-v3-release | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release) [![MyGet](https://img.shields.io/myget/docfx-v3/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-v3)
-
-
-
 Build your docs website with [DocFX](https://github.com/dotnet/docfx), with landing pages, markdown documents, API references for .NET, REST and more.
 
 We are still at an early develop phase, see our [roadmap](https://github.com/dotnet/docfx/blob/v3/docs/roadmap.md) for detailed planing.
 Our current focus is conceptual document parity with https://docs.microsoft.com, template system is currently not available so the output is currently raw JSON files.
+
+branch | status
+-----|-----
+v3 | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3) [![MyGet](https://img.shields.io/myget/docfx-v3-sandbox/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-v3-sandbox) 
+v3-release | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release) [![MyGet](https://img.shields.io/myget/docfx-v3/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-v3)
 
 ## Getting Started
 
