@@ -129,10 +129,10 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveRelativeLink(
-                    file,
+                var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveLink(
                     inputMetadata.BreadcrumbPath,
-                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File));
+                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File),
+                    file);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -197,9 +197,10 @@ namespace Microsoft.Docs.Build
             var content = context.Input.ReadString(file.FilePath);
             errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file.FilePath));
 
-            var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
+            var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
+            var htmlDom = HtmlUtility.LoadHtml(html).PostMarkup();
             var wordCount = HtmlUtility.CountWord(htmlDom);
 
             ValidateBookmarks(context, file, htmlDom);
@@ -271,8 +272,7 @@ namespace Microsoft.Docs.Build
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);
 
-                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData))
-                    .StripTags().RemoveRerunCodepenIframes();
+                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).PostMarkup();
                 ValidateBookmarks(context, file, htmlDom);
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
@@ -324,7 +324,9 @@ namespace Microsoft.Docs.Build
         }
 
         private static string CreateHtmlContent(Document file, HtmlNode html)
-            => LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
+        {
+            return LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
+        }
 
         private static void ValidateBookmarks(Context context, Document file, HtmlNode html)
         {

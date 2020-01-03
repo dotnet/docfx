@@ -2,10 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -65,40 +62,39 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveRelativeLink(
-            Document relativeToFile, SourceInfo<string> path, Document referencingFile)
+        public (Error error, string link, Document file) ResolveLink(
+            SourceInfo<string> href, Document hrefRelativeTo, Document resultRlativeTo)
         {
-            var (error, link, file) = ResolveAbsoluteLink(path, referencingFile, relativeToFile);
-
-            if (file != null)
+            if (href.Value.StartsWith("xref:"))
             {
-                link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
+                var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, resultRlativeTo);
+
+                return (uidError, uidHref, declaringFile);
             }
 
-            return (error, link, file);
-        }
-
-        public (Error error, string link, Document file) ResolveAbsoluteLink(
-            SourceInfo<string> path, Document referencingFile, Document relativeToFile)
-        {
-            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(referencingFile, path, relativeToFile);
+            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, hrefRelativeTo);
 
             if (file != null)
             {
                 _buildQueue.Enqueue(file.FilePath);
             }
 
-            // NOTE: bookmark validation result depend on current inclusion stack
-            relativeToFile = relativeToFile ?? referencingFile;
-            var isSelfBookmark = linkType == LinkType.SelfBookmark || relativeToFile == file;
+            resultRlativeTo = resultRlativeTo ?? hrefRelativeTo;
+            var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRlativeTo == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
-                _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
+                _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(
-                    referencingFile, isSelfBookmark ? relativeToFile : file, fragment, isSelfBookmark, path);
+                    hrefRelativeTo, isSelfBookmark ? resultRlativeTo : file, fragment, isSelfBookmark, href);
             }
 
-            _fileLinkMapBuilder.AddFileLink(relativeToFile, link);
+            _fileLinkMapBuilder.AddFileLink(resultRlativeTo, link);
+
+            if (file != null)
+            {
+                link = UrlUtility.GetRelativeUrl(resultRlativeTo.SiteUrl, link);
+            }
 
             return (error, link, file);
         }
@@ -116,21 +112,10 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(
-            Document referencingFile, SourceInfo<string> href, Document relativeToFile)
+            SourceInfo<string> href, Document hrefRelativeTo)
         {
-            Debug.Assert(href != null);
-
-            if (href.Value.StartsWith("xref:"))
-            {
-                var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveAbsoluteXref(uid, referencingFile, relativeToFile);
-                var xrefLinkType = declaringFile != null ? LinkType.RelativePath : LinkType.External;
-
-                return (uidError, uidHref, null, xrefLinkType, declaringFile, true);
-            }
-
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
-            var (error, file, query, fragment, linkType) = TryResolveFile(referencingFile, decodedHref);
+            var (error, file, query, fragment, linkType) = TryResolveFile(hrefRelativeTo, decodedHref);
 
             if (linkType == LinkType.WindowsAbsolutePath)
             {
@@ -144,7 +129,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Self reference, don't build the file, leave href as is
-            if (file == referencingFile)
+            if (file == hrefRelativeTo)
             {
                 var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(file.SiteUrl);
 
