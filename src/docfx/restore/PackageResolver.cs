@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string ResolvePackage(PackagePath package, PackageFetchOptions options = PackageFetchOptions.None)
+        public string ResolvePackage(PackagePath package, PackageFetchOptions options)
         {
             if (!_noFetch)
             {
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void DownloadPackage(PackagePath path, PackageFetchOptions options = PackageFetchOptions.None)
+        public void DownloadPackage(PackagePath path, PackageFetchOptions options)
         {
             try
             {
@@ -77,12 +77,12 @@ namespace Microsoft.Docs.Build
                     switch (path.Type)
                     {
                         case PackageType.Git:
-                            DownloadGitRepository(path.Url, path.Branch, !options.HasFlag(PackageFetchOptions.FullHistory));
+                            DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
                             break;
                     }
                 }
             }
-            catch (Exception ex) when (options.HasFlag(PackageFetchOptions.Optional))
+            catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
             {
                 Log.Write($"Ignore optional package download failure '{path}': {ex}");
             }

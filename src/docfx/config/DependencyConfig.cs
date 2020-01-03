@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         public bool IncludeInBuild { get; private set; }
 
         [JsonIgnore]
-        public PackageFetchOptions PackageFetchOptions => IncludeInBuild ? PackageFetchOptions.FullHistory : PackageFetchOptions.FullHistory;
+        public PackageFetchOptions PackageFetchOptions => IncludeInBuild ? PackageFetchOptions.None : PackageFetchOptions.DepthOne;
 
         public DependencyConfig()
             : base()

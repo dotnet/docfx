@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal static partial class Restore
+    internal static class Restore
     {
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
             if (config.Template.Type == PackageType.Git)
             {
                 var theme = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
-                yield return (theme, PackageFetchOptions.None);
+                yield return (theme, PackageFetchOptions.DepthOne);
             }
 
             foreach (var item in GetLocalizationPackages(config, locale, repository))
@@ -164,8 +164,8 @@ namespace Microsoft.Docs.Build
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
             {
                 // fallback to master
-                yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.Optional | PackageFetchOptions.FullHistory);
-                yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.Optional | PackageFetchOptions.FullHistory);
+                yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
+                yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
                 yield break;
             }
 
@@ -178,11 +178,11 @@ namespace Microsoft.Docs.Build
                 locale,
                 config.Localization.DefaultLocale);
 
-            yield return (new PackagePath(remote, branch), PackageFetchOptions.FullHistory);
+            yield return (new PackagePath(remote, branch), PackageFetchOptions.None);
 
             if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
-                yield return (new PackagePath(repository.Remote, contributionBranch), PackageFetchOptions.FullHistory);
+                yield return (new PackagePath(repository.Remote, contributionBranch), PackageFetchOptions.None);
             }
         }
     }

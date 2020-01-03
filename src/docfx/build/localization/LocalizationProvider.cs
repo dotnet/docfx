@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
                     if (packageResolver.TryResolvePackage(
-                        new PackagePath(fallbackRemote, branch), PackageFetchOptions.FullHistory, out var fallbackRepoPath))
+                        new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
                     {
                         return (PathUtility.NormalizeFolder(Path.Combine(fallbackRepoPath, docsetSourceFolder)),
                             Repository.Create(fallbackRepoPath, branch, fallbackRemote));
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var locRepoPath = packageResolver.ResolvePackage(new PackagePath(locRemote, locBranch), PackageFetchOptions.FullHistory);
+                        var locRepoPath = packageResolver.ResolvePackage(new PackagePath(locRemote, locBranch), PackageFetchOptions.None);
                         localizationDocsetPath = PathUtility.NormalizeFolder(Path.Combine(locRepoPath, docsetSourceFolder));
                         localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote);
                         break;

@@ -9,20 +9,20 @@ namespace Microsoft.Docs.Build
     internal enum PackageFetchOptions
     {
         /// <summary>
-        /// Default fetch option.
+        /// Default fetch option. For git repositories, this fetches full history.
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// Include full commit history if the package is git.
-        /// Git contributor calculate depend on git commit history.
+        /// Uses --depth 1 to fetch git repositories.
         /// </summary>
-        FullHistory = 0b0001,
+        DepthOne = 0b0001,
 
         /// <summary>
-        /// Don't fail if the package does not exist.
-        /// Fallback branch for localized builds are typically optional.
+        /// Don't throw in case of error.
+        /// Some package dependencies are optional, like fallback branch.
+        /// Failing to restore these dependencies should not stop the build.
         /// </summary>
-        Optional = 0b0010,
+        IgnoreError = 0b0010,
     }
 }

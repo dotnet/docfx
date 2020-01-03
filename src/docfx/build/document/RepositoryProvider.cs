@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         {
             var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.Localization.DefaultLocale);
 
-            var templatePath = _packageResolver.ResolvePackage(theme);
+            var templatePath = _packageResolver.ResolvePackage(theme, PackageFetchOptions.DepthOne);
 
             if (theme.Type != PackageType.Git)
             {
