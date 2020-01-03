@@ -1,8 +1,11 @@
-Version Notes (Current Version: v2.49)
+Version Notes (Current Version: v2.48.1)
 =======================================
 
-v2.49(Pre-release)
+v2.48.1
 -----------
+1. Bug fix:
+    1. Fix failure building UWP project. (#5011)
+    2. Fix former post processor's metadata changes lost in later post processor. (#5366)
 
 v2.48
 -----------
