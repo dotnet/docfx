@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-[assembly: ApplicationPart("Microsoft.Docs.Template.Views")]
+[assembly: ApplicationPart("Microsoft.Docs.Template")]
 
 namespace Microsoft.Docs.Build
 {
