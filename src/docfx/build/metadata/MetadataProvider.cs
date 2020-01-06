@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
+        private readonly bool _hasMonikerRangeFileMetadata;
         private readonly DocumentProvider _documentProvider;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
@@ -29,14 +30,14 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
         public MetadataProvider(
-            Docset docset, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
+            Config config, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
         {
             _input = input;
             _documentProvider = documentProvider;
-            _globalMetadata = docset.Config.GlobalMetadata.ExtensionData;
+            _globalMetadata = config.GlobalMetadata.ExtensionData;
 
             MetadataSchemas = Array.ConvertAll(
-                docset.Config.MetadataSchema,
+                config.MetadataSchema,
                 schema => JsonUtility.Deserialize<JsonSchema>(
                     fileResolver.ReadString(schema), schema.Source?.File));
 
@@ -56,7 +57,9 @@ namespace Microsoft.Docs.Build
                 schema => schema.Properties.Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName)))
                     .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
 
-            foreach (var (key, item) in docset.Config.FileMetadata)
+            _hasMonikerRangeFileMetadata = config.FileMetadata.ContainsKey("monikerRange");
+
+            foreach (var (key, item) in config.FileMetadata)
             {
                 foreach (var (glob, value) in item.Value)
                 {
@@ -66,18 +69,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath file)
+        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath path)
         {
-            return _metadataCache.GetOrAdd(file, GetMetadataCore);
+            var file = _documentProvider.GetDocument(path);
+
+            switch (file.ContentType)
+            {
+                case ContentType.Unknown:
+                case ContentType.Redirection when !_hasMonikerRangeFileMetadata:
+                case ContentType.Resource when !_hasMonikerRangeFileMetadata:
+                    return (new List<Error>(), new UserMetadata());
+
+                default:
+                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(file));
+            }
         }
 
-        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath path)
+        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
         {
             var result = new JObject();
             var errors = new List<Error>();
             var yamlHeader = new JObject();
-
-            var file = _documentProvider.GetDocument(path);
 
             if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
             {
