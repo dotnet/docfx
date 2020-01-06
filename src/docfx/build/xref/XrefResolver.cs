@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error error, string href, string display, Document declaringFile) ResolveXref(
-            SourceInfo<string> href, Document hrefRelativeTo, Document resultRelativeTo)
+            SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -78,11 +78,11 @@ namespace Microsoft.Docs.Build
                 fragment.Length == 0 ? "" : fragment);
 
             // NOTE: this should also be relative to root file
-            _fileLinkMapBuilder.AddFileLink(resultRelativeTo ?? hrefRelativeTo, resolvedHref);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot ?? hrefRelativeTo, resolvedHref);
 
             if (xrefSpec?.DeclaringFile != null)
             {
-                resolvedHref = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, resolvedHref);
+                resolvedHref = UrlUtility.GetRelativeUrl(inclusionRoot.SiteUrl, resolvedHref);
             }
 
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);

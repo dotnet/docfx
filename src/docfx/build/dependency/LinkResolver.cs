@@ -63,12 +63,12 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error error, string link, Document file) ResolveLink(
-            SourceInfo<string> href, Document hrefRelativeTo, Document resultRelativeTo)
+            SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, resultRelativeTo);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, inclusionRoot);
 
                 return (uidError, uidHref, declaringFile);
             }
@@ -80,20 +80,20 @@ namespace Microsoft.Docs.Build
                 _buildQueue.Enqueue(file.FilePath);
             }
 
-            resultRelativeTo = resultRelativeTo ?? hrefRelativeTo;
-            var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRelativeTo == file;
+            inclusionRoot = inclusionRoot ?? hrefRelativeTo;
+            var isSelfBookmark = linkType == LinkType.SelfBookmark || inclusionRoot == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
                 _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(
-                    hrefRelativeTo, isSelfBookmark ? resultRelativeTo : file, fragment, isSelfBookmark, href);
+                    hrefRelativeTo, isSelfBookmark ? inclusionRoot : file, fragment, isSelfBookmark, href);
             }
 
-            _fileLinkMapBuilder.AddFileLink(resultRelativeTo, link);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot, link);
 
             if (file != null)
             {
-                link = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, link);
+                link = UrlUtility.GetRelativeUrl(inclusionRoot.SiteUrl, link);
             }
 
             return (error, link, file);
