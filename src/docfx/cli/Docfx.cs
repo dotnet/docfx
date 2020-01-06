@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                 switch (command)
                 {
                     case "restore":
-                        return await Restore.Run(workingDirectory, options);
+                        return Restore.Run(workingDirectory, options);
                     case "build":
                         return await Build.Run(workingDirectory, options);
                     case "watch":
@@ -115,6 +115,7 @@ namespace Microsoft.Docs.Build
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+                    syntax.DefineOption("dry-run", ref options.DryRun, "Don't produce artifacts, just show validation result.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Watch command

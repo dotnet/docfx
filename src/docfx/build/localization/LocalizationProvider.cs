@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class LocalizationProvider
     {
-        private readonly RestoreGitMap _restoreGitMap;
+        private readonly PackageResolver _packageResolver;
         private readonly string _locale;
         private readonly Config _config;
         private readonly bool _buildFromEnglish;
@@ -25,9 +25,9 @@ namespace Microsoft.Docs.Build
 
         public bool EnableSideBySide { get; }
 
-        public LocalizationProvider(RestoreGitMap restoreGitMap, CommandLineOptions options, Config config, string locale, string docsetPath, Repository repository)
+        public LocalizationProvider(PackageResolver packageResolver, CommandLineOptions options, Config config, string locale, string docsetPath, Repository repository)
         {
-            _restoreGitMap = restoreGitMap;
+            _packageResolver = packageResolver;
             _config = config;
             _locale = locale;
             _buildFromEnglish = !string.IsNullOrEmpty(options.Locale);
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
 
         private void SetFallbackRepository()
         {
-            if (_restoreGitMap is null || _config is null || _entryRepository is null)
+            if (_packageResolver is null || _config is null || _entryRepository is null)
             {
                 return;
             }
@@ -80,12 +80,12 @@ namespace Microsoft.Docs.Build
 
             if (!_buildFromEnglish)
             {
-                (_englishDocsetPath, _englishRepository) = _restoreGitMap != null ? GetFallbackRepository(_entryRepository, _restoreGitMap, docsetSourceFolder) : default;
+                (_englishDocsetPath, _englishRepository) = _packageResolver != null ? GetFallbackRepository(_entryRepository, _packageResolver, docsetSourceFolder) : default;
             }
             else
             {
                 if (TryGetLocalizationDocset(
-                    _restoreGitMap,
+                    _packageResolver,
                     _entryDocsetPath,
                     _entryRepository,
                     _config,
@@ -102,18 +102,18 @@ namespace Microsoft.Docs.Build
 
         private static (string fallbackDocsetPath, Repository fallbackRepo) GetFallbackRepository(
             Repository repository,
-            RestoreGitMap restoreGitMap,
+            PackageResolver packageResolver,
             string docsetSourceFolder)
         {
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    if (restoreGitMap.TryGetRestoreGitPath(
-                        new PackagePath(fallbackRemote, branch), RestoreGitFlags.None, out var fallbackRepoPath, out var fallbackRepoCommit))
+                    if (packageResolver.TryResolvePackage(
+                        new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
                     {
                         return (PathUtility.NormalizeFolder(Path.Combine(fallbackRepoPath, docsetSourceFolder)),
-                            Repository.Create(fallbackRepoPath, branch, fallbackRemote, fallbackRepoCommit));
+                            Repository.Create(fallbackRepoPath, branch, fallbackRemote));
                     }
                 }
             }
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private bool TryGetLocalizationDocset(RestoreGitMap restoreGitMap, string docsetPath, Repository docsetRepository, Config config, string docsetSourceFolder, string locale, out string localizationDocsetPath, out Repository localizationRepository)
+        private bool TryGetLocalizationDocset(PackageResolver packageResolver, string docsetPath, Repository docsetRepository, Config config, string docsetSourceFolder, string locale, out string localizationDocsetPath, out Repository localizationRepository)
         {
             Debug.Assert(!string.IsNullOrEmpty(locale));
             Debug.Assert(config != null);
@@ -145,9 +145,9 @@ namespace Microsoft.Docs.Build
                             repo.Branch,
                             locale,
                             config.Localization.DefaultLocale);
-                        var (locRepoPath, locCommit) = restoreGitMap.GetRestoreGitPath(new PackagePath(locRemote, locBranch), RestoreGitFlags.None);
+                        var locRepoPath = packageResolver.ResolvePackage(new PackagePath(locRemote, locBranch), PackageFetchOptions.None);
                         localizationDocsetPath = PathUtility.NormalizeFolder(Path.Combine(locRepoPath, docsetSourceFolder));
-                        localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote, locCommit);
+                        localizationRepository = Repository.Create(locRepoPath, locBranch, locRemote);
                         break;
                     }
                 case LocalizationMapping.Folder:

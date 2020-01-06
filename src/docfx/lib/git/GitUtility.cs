@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
+
 using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
@@ -89,26 +90,25 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// checkout existing git repository to specificed committish
+        /// Clones or update a git repository to the latest version.
         /// </summary>
-        public static void Checkout(string path, string committish)
-            => ExecuteNonQuery(path, $"-c core.longpaths=true checkout --force --progress {committish}");
-
-        public static bool IsDirty(string path)
-            => Execute(path, $"-c core.longpaths=true status --porcelain").Split('\n', StringSplitOptions.RemoveEmptyEntries).Any();
+        public static void Init(string path)
+        {
+            ExecuteNonQuery(path, "init");
+        }
 
         /// <summary>
-        /// Clones or update a git bare repository to the latest version.
+        /// checkout existing git repository to specificed committish
         /// </summary>
-        public static void InitFetchBare(Config config, string path, string url, string committish, bool depthOne = false)
+        public static void Checkout(string path, string committish, string options = null)
         {
-            InitFetch(config, path, url, committish, bare: true, depthOne);
+            ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
         }
 
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static void Fetch(Config config, string path, string url, string committish, bool depthOne = false)
+        public static void Fetch(Config config, string path, string url, string refspecs, string options = null)
         {
             // Allow test to proxy remotes to local folder
             if (GitRemoteProxy != null)
@@ -116,23 +116,9 @@ namespace Microsoft.Docs.Build
                 url = GitRemoteProxy(url);
             }
 
-            if (!config.GitShallowFetch)
-            {
-                depthOne = false;
-            }
-
             var (http, secrets) = GetGitCommandLineConfig(url, config);
-            var options = "--progress --update-head-ok --prune";
 
-            try
-            {
-                ExecuteNonQuery(path, $"{http} fetch {options} --depth {(depthOne ? "1" : "99999999")} \"{url}\" +{committish}:{committish}", secrets);
-            }
-            catch (InvalidOperationException)
-            {
-                // Fallback to fetch all branches and tags if the input committish is not supported by fetch
-                ExecuteNonQuery(path, $"{http} fetch {options} --depth 99999999 \"{url}\" +refs/heads/*:refs/heads/*", secrets);
-            }
+            ExecuteNonQuery(path, $"{http} fetch --progress {options} \"{url}\" {refspecs}", secrets);
         }
 
         /// <summary>
@@ -143,82 +129,6 @@ namespace Microsoft.Docs.Build
             var topParam = top > 0 ? $"-{top}" : "";
             return Execute(path, $"--no-pager log --pretty=format:\"%H\" {topParam} {committish}")
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        /// <summary>
-        /// Check if remote branch exists
-        /// </summary>
-        public static bool RemoteBranchExists(string remote, string branch, Config config)
-        {
-            try
-            {
-                if (GitRemoteProxy != null)
-                {
-                    remote = GitRemoteProxy(remote);
-                }
-
-                var (httpConfig, secrets) = GetGitCommandLineConfig(remote, config);
-
-                return Execute(".", $"{httpConfig} ls-remote --heads \"{remote}\" {branch}", secrets: secrets)
-                    .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-                    .Any();
-            }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Prune the worktree info
-        /// </summary>
-        public static void PruneWorkTree(string cwd)
-            => ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree prune");
-
-        /// <summary>
-        /// Create a work tree for a given repo
-        /// </summary>
-        /// <param name="cwd">The current working directory</param>
-        /// <param name="committish">The commit hash, branch or tag used to create a work tree</param>
-        /// <param name="path">The work tree path</param>
-        public static void AddWorkTree(string cwd, string committish, string path)
-        {
-            // By default, add refuses to create a new working tree when <commit-ish> is a branch name and is already checked out by another working tree and remove refuses to remove an unclean working tree.
-            // -f/ --force overrides these safeguards.
-            ExecuteNonQuery(cwd, $"-c core.longpaths=true worktree add {path} {committish} --force");
-        }
-
-        public static string[] ListTree(string cwd, string committish = null)
-        {
-            return Execute(cwd, $"ls-tree {committish ?? "HEAD"} -r --name-only")
-                    .Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        /// <summary>
-        /// Retrieve git head version
-        /// </summary>
-        public static unsafe string RevParse(string repoPath, string committish = null)
-        {
-            string result = null;
-
-            if (string.IsNullOrEmpty(committish))
-            {
-                committish = "HEAD";
-            }
-
-            if (git_repository_open(out var repo, repoPath) != 0)
-            {
-                throw new InvalidOperationException($"Not a git repo {repoPath}");
-            }
-
-            if (git_revparse_single(out var reference, repo, committish) == 0)
-            {
-                result = git_object_id(reference)->ToString();
-                git_object_free(reference);
-            }
-
-            git_repository_free(repo);
-            return result;
         }
 
         public static unsafe byte[] ReadBytes(string repoPath, string filePath, string committish)
@@ -264,31 +174,6 @@ namespace Microsoft.Docs.Build
             git_repository_free(repo);
 
             return result;
-        }
-
-        /// <summary>
-        /// Clones or update a git repository to the latest version.
-        /// </summary>
-        private static void InitFetch(Config config, string path, string url, string committish, bool bare, bool depthOne)
-        {
-            Directory.CreateDirectory(path);
-
-            if (git_repository_init(out var repo, path, is_bare: bare ? 1 : 0) != 0)
-            {
-                throw new InvalidOperationException($"Cannot initialize a git repo at {path}");
-            }
-
-            Telemetry.TrackCacheTotalCount(TelemetryName.GitRepositoryCache);
-            if (git_remote_create(out var remote, repo, "origin", url) == 0)
-            {
-                Log.Write($"Using new repository '{path}' for '{url}'");
-                Telemetry.TrackCacheMissCount(TelemetryName.GitRepositoryCache);
-                git_remote_free(remote);
-            }
-
-            git_repository_free(repo);
-
-            Fetch(config, path, url, committish, depthOne);
         }
 
         private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)

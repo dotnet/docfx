@@ -14,15 +14,17 @@ namespace Microsoft.Docs.Build
 
         private readonly string _outputPath;
         private readonly Config _config;
+        private readonly Output _output;
         private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
         private readonly ConcurrentHashSet<Document> _excludedFiles = new ConcurrentHashSet<Document>();
 
-        public PublishModelBuilder(string outputPath, Config config)
+        public PublishModelBuilder(string outputPath, Config config, Output output)
         {
             _config = config;
+            _output = output;
             _outputPath = PathUtility.NormalizeFolder(outputPath);
         }
 
@@ -60,8 +62,10 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public (PublishModel, Dictionary<Document, PublishItem>) Build(Context context, bool legacy)
+        public (List<Error> errors, PublishModel, Dictionary<Document, PublishItem>) Build()
         {
+            var errors = new List<Error>();
+
             // Handle publish url conflicts
             foreach (var (siteUrl, files) in _filesBySiteUrl)
             {
@@ -75,10 +79,10 @@ namespace Microsoft.Docs.Build
                 if (conflictMoniker.Count != 0
                     || (files.Count > 1 && files.Any(file => file.Value.Contains(NonVersion))))
                 {
-                    context.ErrorLog.Write(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
+                    errors.Add(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
                     {
-                        HandleExcludedFile(context, conflictingFile, legacy);
+                        HandleExcludedFile(conflictingFile);
                     }
                 }
             }
@@ -98,11 +102,11 @@ namespace Microsoft.Docs.Build
                     conflictingFiles.Add(removed);
                 }
 
-                context.ErrorLog.Write(Errors.OutputPathConflict(outputPath, conflictingFiles));
+                errors.Add(Errors.OutputPathConflict(outputPath, conflictingFiles));
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    HandleExcludedFile(context, conflictingFile, legacy);
+                    HandleExcludedFile(conflictingFile);
                 }
             }
 
@@ -111,7 +115,7 @@ namespace Microsoft.Docs.Build
             {
                 if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
                 {
-                    HandleExcludedFile(context, file, legacy);
+                    HandleExcludedFile(file);
                 }
             }
 
@@ -135,17 +139,17 @@ namespace Microsoft.Docs.Build
 
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
 
-            return (model, fileManifests);
+            return (errors, model, fileManifests);
         }
 
-        private void HandleExcludedFile(Context context, Document file, bool legacy)
+        private void HandleExcludedFile(Document file)
         {
-            if (_publishItems.TryGetValue(file, out var item))
+            if (!_config.DryRun && _publishItems.TryGetValue(file, out var item))
             {
                 item.HasError = true;
 
                 if (item.Path != null && IsInsideOutputFolder(item))
-                    context.Output.Delete(item.Path, legacy);
+                    _output.Delete(item.Path, _config.Legacy);
             }
         }
 

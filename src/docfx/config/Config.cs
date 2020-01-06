@@ -89,6 +89,11 @@ namespace Microsoft.Docs.Build
         public readonly bool Legacy;
 
         /// <summary>
+        /// Gets whether we are running in dry run mode
+        /// </summary>
+        public readonly bool DryRun;
+
+        /// <summary>
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
@@ -175,12 +180,6 @@ namespace Microsoft.Docs.Build
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
         public readonly PackagePath Template = new PackagePath();
-
-        /// <summary>
-        /// Gets the dependency lock file path.
-        /// It is an absolute file path or relative file path relative to docset folder.
-        /// </summary>
-        public readonly SourceInfo<string> DependencyLock = new SourceInfo<string>(string.Empty);
 
         /// <summary>
         /// When enabled, updated_at for each document will be the last build time

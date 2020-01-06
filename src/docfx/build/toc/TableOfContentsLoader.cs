@@ -350,7 +350,7 @@ namespace Microsoft.Docs.Build
             // process uid first
             if (!string.IsNullOrEmpty(uid))
             {
-                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveRelativeXref(rootPath, uid, filePath);
+                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXref(uid, filePath, rootPath);
                 errors.AddIfNotNull(uidError);
 
                 if (declaringFile != null)
@@ -373,7 +373,7 @@ namespace Microsoft.Docs.Build
             var topicHrefType = GetHrefType(topicHref);
             Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
-            var (error, link, resolvedFile) = _linkResolver.ResolveRelativeLink(rootPath, topicHref, filePath);
+            var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref, filePath, rootPath);
             errors.AddIfNotNull(error);
 
             if (resolvedFile != null)

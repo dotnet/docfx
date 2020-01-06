@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
             };
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && copy)
+            if (context.PublishModelBuilder.TryAdd(file, publishItem) && copy && !context.Config.DryRun)
             {
                 context.Output.Copy(file, outputPath);
             }

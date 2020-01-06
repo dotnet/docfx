@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                     {
                         return true;
                     }
-                    else if (node is LinkInline link && !link.IsAutoLink)
+                    else if (node is LinkInline link)
                     {
                         var href = new SourceInfo<string>(link.Url, link.ToSourceInfo());
                         link.Url = getLink(href) ?? link.Url;

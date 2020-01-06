@@ -74,9 +74,9 @@ namespace Microsoft.Docs.Build
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
             var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-test", testName));
-            var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs/"));
-            var cachePath = Path.Combine(basePath, "cache/");
-            var statePath = Path.Combine(basePath, "state/");
+            var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs"));
+            var cachePath = Path.Combine(basePath, "cache");
+            var statePath = Path.Combine(basePath, "state");
             var markerPath = Path.Combine(basePath, "marker");
 
             var variables = new Dictionary<string, string>
@@ -156,20 +156,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale)
+        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale, bool dryRun = false)
         {
-            Directory.CreateDirectory(outputPath);
-            Directory.Delete(outputPath, recursive: true);
-            Directory.CreateDirectory(outputPath);
+            var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");
 
             using (TestUtility.EnsureFilesNotChanged(docsetPath))
             {
-                var options = $"{(spec.Legacy ? "--legacy" : "")} {(locale != null ? $"--locale {locale}" : "")}"
+                var commandLine =
+                    (spec.Legacy ? "--legacy" : "") +
+                    (locale != null ? $"--locale {locale}" : "");
+
+                var options = commandLine
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                    .Concat(new[] { "--output", outputPath })
+                    .Concat(new[] { "--output", randomOutputPath })
                     .ToArray();
+
+                var dryRunOptions = dryRun ? new[] { "--dry-run" } : Array.Empty<string>();
 
                 if (spec.Restore)
                 {
@@ -177,26 +181,38 @@ namespace Microsoft.Docs.Build
                 }
                 if (spec.Build)
                 {
-                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).ToArray());
+                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).ToArray());
                 }
             }
 
-            VerifyOutput(outputPath, spec);
+            // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
+            var outputs = dryRun
+                ? new Dictionary<string, string> { [".errors.log"] = spec.Outputs[".errors.log"] }
+                : spec.Outputs;
+
+            VerifyOutput(randomOutputPath, outputs);
+
+            Directory.Delete(randomOutputPath, recursive: true);
+
+            if (!dryRun && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
+            {
+                await RunBuild(docsetPath, outputPath, spec, locale, dryRun: true);
+            }
         }
 
-        private static void VerifyOutput(string outputPath, DocfxTestSpec spec)
+        private static void VerifyOutput(string outputPath, Dictionary<string, string> outputs)
         {
-            var expectedOutputs = JObject.FromObject(spec.Outputs);
+            var expectedOutputs = JObject.FromObject(outputs);
 
             // Ensure no .errors.log file if there is no error
-            if (!spec.Outputs.ContainsKey(".errors.log"))
+            if (!outputs.ContainsKey(".errors.log"))
             {
                 expectedOutputs[".errors.log"] = JValue.CreateUndefined();
             }
 
             var actualOutputs = Directory
                 .GetFiles(outputPath, "*", SearchOption.AllDirectories)
-                .ToDictionary(file => file.Substring(outputPath.Length).Replace('\\', '/'), File.ReadAllText);
+                .ToDictionary(file => Path.GetRelativePath(outputPath, file).Replace('\\', '/'), File.ReadAllText);
 
             s_jsonDiff.Verify(expectedOutputs, actualOutputs);
         }
