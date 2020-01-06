@@ -252,7 +252,7 @@ Inside `fusion`, add `toc.yml`:
 
 ```
 - name: Conceptual
-  href: ../articles/toc.md
+  href: ../articles/toc.yml
 - name: Reference
   href: ../obj/api/toc.yml
 ```
