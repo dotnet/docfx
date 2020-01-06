@@ -249,20 +249,19 @@ outputs:
 # Produce deterministic result when redirection and file share the same publish url
 legacy: true
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   redirections.yml: |
     redirections:
       docs/a.md: /asdf
   docs/a.md:
 outputs:
-  .errors.log:
+  .errors.log: |
+    { "message_severity": "error", "code": "output-path-conflict" }
 ---
 # Redirection file href shouldn't have extension
 legacy: true
 inputs:
-  docfx.yml: |
-    template: {APP_BASE_PATH}data/template
+  docfx.yml:
   redirections.yml: |
     redirections:
       redirect.md: /redirect/to

@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                 publishItem.Path = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
             }
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy)
+            if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy && !context.Config.DryRun)
             {
                 var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new
