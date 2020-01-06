@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
+        private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
@@ -29,14 +30,15 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
         public MetadataProvider(
-            Docset docset, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
+            Config config, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
         {
             _input = input;
+            _config = config;
             _documentProvider = documentProvider;
-            _globalMetadata = docset.Config.GlobalMetadata.ExtensionData;
+            _globalMetadata = config.GlobalMetadata.ExtensionData;
 
             MetadataSchemas = Array.ConvertAll(
-                docset.Config.MetadataSchema,
+                config.MetadataSchema,
                 schema => JsonUtility.Deserialize<JsonSchema>(
                     fileResolver.ReadString(schema), schema.Source?.File));
 
@@ -56,7 +58,7 @@ namespace Microsoft.Docs.Build
                 schema => schema.Properties.Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName)))
                     .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
 
-            foreach (var (key, item) in docset.Config.FileMetadata)
+            foreach (var (key, item) in config.FileMetadata)
             {
                 foreach (var (glob, value) in item.Value)
                 {
@@ -74,6 +76,7 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Page:
                 case ContentType.TableOfContents:
+                case ContentType.Redirection when _config.FileMetadata.ContainsKey("monikerRange"):
                     return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(file));
 
                 default:
@@ -84,9 +87,15 @@ namespace Microsoft.Docs.Build
         private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
         {
             var result = new JObject();
-            var (errors, yamlHeader) = LoadMetadata(file);
+            var errors = new List<Error>();
+            var yamlHeader = new JObject();
 
-            JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
+            {
+                (errors, yamlHeader) = LoadMetadata(file);
+                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+            }
+
             JsonUtility.Merge(result, _globalMetadata);
 
             var fileMetadata = new JObject();
