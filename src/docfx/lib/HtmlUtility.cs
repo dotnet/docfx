@@ -25,6 +25,11 @@ namespace Microsoft.Docs.Build
             return doc.DocumentNode;
         }
 
+        public static HtmlNode PostMarkup(this HtmlNode node)
+        {
+            return node.StripTags().RemoveRerunCodepenIframes();
+        }
+
         public static long CountWord(this HtmlNode node)
         {
             // TODO: word count does not work for CJK locales...

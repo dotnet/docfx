@@ -143,10 +143,10 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
-                var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveRelativeLink(
-                    file,
+                var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveLink(
                     inputMetadata.BreadcrumbPath,
-                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File));
+                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File),
+                    file);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -218,9 +218,10 @@ namespace Microsoft.Docs.Build
             var content = context.Input.ReadString(file.FilePath);
             errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file.FilePath));
 
-            var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
+            var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
+            var htmlDom = HtmlUtility.LoadHtml(html).PostMarkup();
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
@@ -295,8 +296,7 @@ namespace Microsoft.Docs.Build
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);
 
-                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData))
-                    .StripTags().RemoveRerunCodepenIframes();
+                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).PostMarkup();
                 ValidateBookmarks(context, file, htmlDom);
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
