@@ -63,12 +63,12 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error error, string link, Document file) ResolveLink(
-            SourceInfo<string> href, Document hrefRelativeTo, Document resultRlativeTo)
+            SourceInfo<string> href, Document hrefRelativeTo, Document resultRelativeTo)
         {
             if (href.Value.StartsWith("xref:"))
             {
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, resultRlativeTo);
+                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, resultRelativeTo);
 
                 return (uidError, uidHref, declaringFile);
             }
@@ -80,20 +80,20 @@ namespace Microsoft.Docs.Build
                 _buildQueue.Enqueue(file.FilePath);
             }
 
-            resultRlativeTo = resultRlativeTo ?? hrefRelativeTo;
-            var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRlativeTo == file;
+            resultRelativeTo = resultRelativeTo ?? hrefRelativeTo;
+            var isSelfBookmark = linkType == LinkType.SelfBookmark || resultRelativeTo == file;
             if (!isCrossReference && (isSelfBookmark || file != null))
             {
                 _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
                 _bookmarkValidator.AddBookmarkReference(
-                    hrefRelativeTo, isSelfBookmark ? resultRlativeTo : file, fragment, isSelfBookmark, href);
+                    hrefRelativeTo, isSelfBookmark ? resultRelativeTo : file, fragment, isSelfBookmark, href);
             }
 
-            _fileLinkMapBuilder.AddFileLink(resultRlativeTo, link);
+            _fileLinkMapBuilder.AddFileLink(resultRelativeTo, link);
 
             if (file != null)
             {
-                link = UrlUtility.GetRelativeUrl(resultRlativeTo.SiteUrl, link);
+                link = UrlUtility.GetRelativeUrl(resultRelativeTo.SiteUrl, link);
             }
 
             return (error, link, file);
