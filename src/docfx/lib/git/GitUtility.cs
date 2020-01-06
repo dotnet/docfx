@@ -131,12 +131,6 @@ namespace Microsoft.Docs.Build
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public static string[] ListTree(string cwd, string committish = null)
-        {
-            return Execute(cwd, $"ls-tree {committish ?? "HEAD"} -r --name-only")
-                    .Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        }
-
         public static unsafe byte[] ReadBytes(string repoPath, string filePath, string committish)
         {
             if (git_repository_open(out var repo, repoPath) != 0)
