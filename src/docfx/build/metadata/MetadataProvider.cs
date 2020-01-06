@@ -66,25 +66,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath file)
+        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath path)
         {
-            return _metadataCache.GetOrAdd(file, GetMetadataCore);
-        }
-
-        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath path)
-        {
-            var result = new JObject();
-            var errors = new List<Error>();
-            var yamlHeader = new JObject();
-
             var file = _documentProvider.GetDocument(path);
 
-            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
+            switch (file.ContentType)
             {
-                (errors, yamlHeader) = LoadMetadata(file);
-                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
-            }
+                case ContentType.Page:
+                case ContentType.TableOfContents:
+                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(file));
 
+                default:
+                    return (new List<Error>(), new UserMetadata());
+            }
+        }
+
+        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
+        {
+            var result = new JObject();
+            var (errors, yamlHeader) = LoadMetadata(file);
+
+            JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
             JsonUtility.Merge(result, _globalMetadata);
 
             var fileMetadata = new JObject();
