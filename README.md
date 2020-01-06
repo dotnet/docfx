@@ -1,6 +1,6 @@
 # Build your docs with DocFX
 
-[![Deploy Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429)
+[![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release) [![MyGet](https://img.shields.io/myget/docfx-v3/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-v3)
 
 Build your docs website with [DocFX](https://github.com/dotnet/docfx), with landing pages, markdown documents, API references for .NET, REST and more.
 
@@ -19,11 +19,11 @@ dotnet tool install -g docfx --version "3.0.0-*" --add-source https://www.myget.
 - Run `docfx build` to build your docset.
 
 ## Binary Builds
-|Platform|Release|Pre-Release|
+|Platform|Release|Pre-release|
 |---|---|---|
-|win-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win-x64-latest.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win-x64-latest.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-win-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-win-x64-latest.zip.sha256))|
-|osx-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/dotnet-runtime-latest-osx-x64.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/dotnet-runtime-latest-osx-x64.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.zip.sha256))|
-|linux-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/dotnet-runtime-latest-linux-x64.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/dotnet-runtime-latest-linux-x64.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip.sha256))|
+|win-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip.sha256))|
+|osx-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest-latest) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.zip.sha256))|
+|linux-x64|[zip](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip) ([Checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip.sha256))|[zip](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip) ([Checksum](https://opbuildstoragesandbox.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip.sha256))|
 
 
 ## Contributing

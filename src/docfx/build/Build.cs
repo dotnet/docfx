@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
-            RestoreGitMap restoreGitMap = null;
+            PackageResolver packageResolver = null;
 
             using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
             {
@@ -42,15 +42,15 @@ namespace Microsoft.Docs.Build
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
                     var locale = LocalizationUtility.GetLocale(repository, options);
 
-                    using (restoreGitMap = RestoreGitMap.Create(docsetPath, locale))
-                    {
-                        var configLoader = new ConfigLoader(repository, errorLog);
-                        (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
-                        if (errorLog.Write(errors))
-                            return false;
+                    var configLoader = new ConfigLoader(repository, errorLog);
+                    (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
+                    if (errorLog.Write(errors))
+                        return false;
 
-                        var localizationProvider = new LocalizationProvider(restoreGitMap, options, config, locale, docsetPath, repository);
-                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, restoreGitMap, localizationProvider);
+                    using (packageResolver = new PackageResolver(docsetPath, config, noFetch: true))
+                    {
+                        var localizationProvider = new LocalizationProvider(packageResolver, options, config, locale, docsetPath, repository);
+                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, packageResolver, localizationProvider);
                         var input = new Input(docsetPath, repositoryProvider, localizationProvider);
 
                         // get docsets(build docset, fallback docset and dependency docsets)
