@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
-        private readonly Config _config;
+        private readonly bool _hasMonikerRangeFileMetadata;
         private readonly DocumentProvider _documentProvider;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
@@ -33,7 +33,6 @@ namespace Microsoft.Docs.Build
             Config config, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
         {
             _input = input;
-            _config = config;
             _documentProvider = documentProvider;
             _globalMetadata = config.GlobalMetadata.ExtensionData;
 
@@ -58,6 +57,8 @@ namespace Microsoft.Docs.Build
                 schema => schema.Properties.Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName)))
                     .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
 
+            _hasMonikerRangeFileMetadata = config.FileMetadata.ContainsKey("monikerRange");
+
             foreach (var (key, item) in config.FileMetadata)
             {
                 foreach (var (glob, value) in item.Value)
@@ -74,13 +75,13 @@ namespace Microsoft.Docs.Build
 
             switch (file.ContentType)
             {
-                case ContentType.Page:
-                case ContentType.TableOfContents:
-                case ContentType.Redirection when _config.FileMetadata.ContainsKey("monikerRange"):
-                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(file));
+                case ContentType.Unknown:
+                case ContentType.Redirection when !_hasMonikerRangeFileMetadata:
+                case ContentType.Resource when !_hasMonikerRangeFileMetadata:
+                    return (new List<Error>(), new UserMetadata());
 
                 default:
-                    return (new List<Error>(), new UserMetadata());
+                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(file));
             }
         }
 
