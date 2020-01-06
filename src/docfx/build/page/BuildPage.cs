@@ -83,6 +83,9 @@ namespace Microsoft.Docs.Build
             var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
 
+            // Mandatory metadata are metadata that are required by template to sucessfully ran to completion.
+            // The current bookmark validation for SDP validates against HTML produced from mustache,
+            // so we need to run the full template for SDP even in --dry-run mode.
             if (context.Config.DryRun && string.IsNullOrEmpty(file.Mime))
             {
                 return (errors, null, new JObject());
@@ -138,29 +141,6 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
 
-            // Mandatory metadata are metadata that are required by template to sucessfully ran to completion.
-            // The current bookmark validation for SDP validate against HTML produced from mustache,
-            // so we need to run the full template for SDP even in --dry-run mode.
-            // To speed things up for conceptual dry runs, none mandatory system metadata are not generated.
-            PopulateMandatorySystemMetadata(errors, context, file, inputMetadata, systemMetadata);
-
-            if (context.Config.DryRun)
-            {
-                return (errors, systemMetadata);
-            }
-
-            await PopulateOptionalSystemMetadata(errors, context, file, inputMetadata, systemMetadata);
-
-            return (errors, systemMetadata);
-        }
-
-        private static void PopulateMandatorySystemMetadata(List<Error> errors, Context context, Document file, UserMetadata inputMetadata, SystemMetadata systemMetadata)
-        {
-            systemMetadata.Locale = file.Docset.Locale;
-            systemMetadata.CanonicalUrl = file.CanonicalUrl;
-            systemMetadata.Path = file.SitePath;
-            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{file.Docset.Config.HostName}", systemMetadata.Locale, file.Docset.Config.BasePath.RelativePath) + "/";
-
             if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveRelativeLink(
@@ -174,10 +154,23 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
             systemMetadata.Monikers = monikers;
-        }
 
-        private static async Task PopulateOptionalSystemMetadata(List<Error> errors, Context context, Document file, UserMetadata inputMetadata, SystemMetadata systemMetadata)
-        {
+            if (context.Config.DryRun)
+            {
+                return (errors, systemMetadata);
+            }
+
+            // To speed things up for dry runs, ignore metadatas that does not produce errors.
+            // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
+            var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            errors.AddRange(contributorErrors);
+            systemMetadata.ContributionInfo = contributionInfo;
+
+            systemMetadata.Locale = file.Docset.Locale;
+            systemMetadata.CanonicalUrl = file.CanonicalUrl;
+            systemMetadata.Path = file.SitePath;
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{file.Docset.Config.HostName}", systemMetadata.Locale, file.Docset.Config.BasePath.RelativePath) + "/";
+
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
             systemMetadata.EnableLocSxs = context.LocalizationProvider.EnableSideBySide;
@@ -188,10 +181,6 @@ namespace Microsoft.Docs.Build
 
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
                 systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
-
-            var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
-            errors.AddRange(contributorErrors);
-            systemMetadata.ContributionInfo = contributionInfo;
 
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
@@ -204,6 +193,8 @@ namespace Microsoft.Docs.Build
                 systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
                     $"https://{file.Docset.Config.HostName}", "pdfstore", systemMetadata.Locale, $"{file.Docset.Config.Product}.{file.Docset.Config.Name}", "{branchName}");
             }
+
+            return (errors, systemMetadata);
         }
 
         private static async Task<(List<Error> errors, JObject model)> Load(Context context, Document file)
@@ -230,8 +221,6 @@ namespace Microsoft.Docs.Build
             var (markupErrors, htmlDom) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
-            var wordCount = context.Config.DryRun ? 0 : HtmlUtility.CountWord(htmlDom);
-
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
@@ -241,10 +230,15 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
+            if (context.Config.DryRun)
+            {
+                return (errors, new JObject());
+            }
+
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = CreateHtmlContent(context, file, htmlDom),
-                WordCount = wordCount,
+                Conceptual = CreateHtmlContent(file, htmlDom),
+                WordCount = HtmlUtility.CountWord(htmlDom),
                 RawTitle = rawTitle,
                 Title = userMetadata.Title ?? title,
             });
@@ -304,9 +298,10 @@ namespace Microsoft.Docs.Build
                 var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData))
                     .StripTags().RemoveRerunCodepenIframes();
                 ValidateBookmarks(context, file, htmlDom);
+
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = CreateHtmlContent(context, file, htmlDom),
+                    Conceptual = CreateHtmlContent(file, htmlDom),
                     ExtensionData = pageModel,
                 });
             }
@@ -317,6 +312,11 @@ namespace Microsoft.Docs.Build
         private static (TemplateModel model, JObject metadata) CreateTemplateModel(Context context, JObject pageModel, Document file)
         {
             var content = CreateContent(context, file, pageModel);
+
+            if (context.Config.DryRun)
+            {
+                return (new TemplateModel(), new JObject());
+            }
 
             // Hosting layers treats empty content as 404, so generate an empty <div></div>
             if (string.IsNullOrWhiteSpace(content))
@@ -353,13 +353,8 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static string CreateHtmlContent(Context context, Document file, HtmlNode html)
+        private static string CreateHtmlContent(Document file, HtmlNode html)
         {
-            if (context.Config.DryRun)
-            {
-                return "";
-            }
-
             return LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
         }
 
@@ -383,7 +378,7 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);
-            return CreateHtmlContent(context, file, htmlDom);
+            return CreateHtmlContent(file, htmlDom);
         }
     }
 }
