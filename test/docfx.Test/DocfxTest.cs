@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale)
+        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale, bool dryRun = false)
         {
             Directory.CreateDirectory(outputPath);
             Directory.Delete(outputPath, recursive: true);
@@ -166,10 +166,16 @@ namespace Microsoft.Docs.Build
 
             using (TestUtility.EnsureFilesNotChanged(docsetPath))
             {
-                var options = $"{(spec.Legacy ? "--legacy" : "")} {(locale != null ? $"--locale {locale}" : "")}"
+                var commandLine =
+                    (spec.Legacy ? "--legacy" : "") +
+                    (locale != null ? $"--locale {locale}" : "");
+
+                var options = commandLine
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                     .Concat(new[] { "--output", outputPath })
                     .ToArray();
+
+                var dryRunOptions = dryRun ? new[] { "--dry-run" } : Array.Empty<string>();
 
                 if (spec.Restore)
                 {
@@ -177,19 +183,29 @@ namespace Microsoft.Docs.Build
                 }
                 if (spec.Build)
                 {
-                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).ToArray());
+                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).ToArray());
                 }
             }
 
-            VerifyOutput(outputPath, spec);
+            // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
+            var outputs = dryRun
+                ? new Dictionary<string, string> { [".errors.log"] = spec.Outputs[".errors.log"] }
+                : spec.Outputs;
+
+            VerifyOutput(outputPath, outputs);
+
+            if (!dryRun && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
+            {
+                await RunBuild(docsetPath, outputPath, spec, locale, dryRun: true);
+            }
         }
 
-        private static void VerifyOutput(string outputPath, DocfxTestSpec spec)
+        private static void VerifyOutput(string outputPath, Dictionary<string, string> outputs)
         {
-            var expectedOutputs = JObject.FromObject(spec.Outputs);
+            var expectedOutputs = JObject.FromObject(outputs);
 
             // Ensure no .errors.log file if there is no error
-            if (!spec.Outputs.ContainsKey(".errors.log"))
+            if (!outputs.ContainsKey(".errors.log"))
             {
                 expectedOutputs[".errors.log"] = JValue.CreateUndefined();
             }
