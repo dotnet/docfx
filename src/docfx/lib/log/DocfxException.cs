@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -22,20 +23,43 @@ namespace Microsoft.Docs.Build
             OverwriteLevel = overwriteLevel;
         }
 
-        public static bool IsDocfxException(Exception ex, out DocfxException docfxException)
+        public static bool IsDocfxException(Exception ex, out IEnumerable<DocfxException> exceptions)
         {
-            while (ex != null)
+            List<DocfxException> result = null;
+            ExtractDocfxException(ex, ref result);
+            if (result != null && result.Count > 0)
             {
-                if (ex is DocfxException de)
-                {
-                    docfxException = de;
-                    return true;
-                }
-                ex = ex.InnerException;
+                exceptions = result;
+                return true;
             }
-
-            docfxException = null;
+            exceptions = null;
             return false;
+        }
+
+        private static void ExtractDocfxException(Exception ex, ref List<DocfxException> result)
+        {
+            switch (ex)
+            {
+                case null:
+                    break;
+
+                case DocfxException dex:
+                    result = result ?? new List<DocfxException>();
+                    result.Add(dex);
+                    break;
+
+                case AggregateException aex:
+                    result = result ?? new List<DocfxException>();
+                    foreach (var innerException in aex.InnerExceptions)
+                    {
+                        ExtractDocfxException(innerException, ref result);
+                    }
+                    break;
+
+                default:
+                    ExtractDocfxException(ex.InnerException, ref result);
+                    break;
+            }
         }
     }
 }

@@ -63,8 +63,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    Log.Write(dex);
-                    errorLog.Write(dex.Error, dex.OverwriteLevel);
+                    errorLog.Write(dex);
                     return false;
                 }
                 finally
@@ -184,7 +183,7 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                if (context.ErrorLog.Write(path, errors))
+                if (context.ErrorLog.Write(errors))
                 {
                     context.PublishModelBuilder.ExcludeFromOutput(file);
                 }
@@ -193,7 +192,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(path, dex.Error, dex.OverwriteLevel);
+                context.ErrorLog.Write(dex);
                 context.PublishModelBuilder.ExcludeFromOutput(file);
             }
             catch

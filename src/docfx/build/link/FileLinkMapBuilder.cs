@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
             if (error != null)
             {
-                _errorLog.Write(file.FilePath, error);
+                _errorLog.Write(error);
             }
 
             _links.TryAdd(new FileLinkItem()
