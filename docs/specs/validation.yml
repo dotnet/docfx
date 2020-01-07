@@ -77,6 +77,23 @@ outputs:
     ["warning","invalid-value","Invalid value for 'key2': 'XNAGameStudio'","docfx.yml",6,13]
     ["warning","unexpected-type","Expected type 'Integer' but got 'String'","a.md",2,7]
 ---
+# Report missing-attribute at file level when yaml header missing
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { "required": ["a"] }
+  a.md:
+  b.md: |
+    ---
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    ["warning","missing-attribute","Missing required attribute: 'a'","a.md",1,1]
+    ["warning","missing-attribute","Missing required attribute: 'a'","b.md",1,1]
+---
 # Allow multiple metadata schema definitions
 inputs:
   docfx.yml: |
