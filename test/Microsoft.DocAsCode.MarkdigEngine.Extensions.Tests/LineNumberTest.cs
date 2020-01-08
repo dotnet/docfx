@@ -48,8 +48,9 @@ line1
 
             TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md", files: new Dictionary<string, string>
             {
-                { "LineNumber/Program.cs", content },
-            });
+                { "LineNumber/Program.cs", content }
+            },
+            errors: new[] { "code-snippet-deprecated" });
         }
 
         [Fact]
