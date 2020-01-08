@@ -23,20 +23,14 @@ namespace Microsoft.Docs.Build
             OverwriteLevel = overwriteLevel;
         }
 
-        public static bool IsDocfxException(Exception ex, out IEnumerable<DocfxException> exceptions)
+        public static bool IsDocfxException(Exception ex, out List<DocfxException> exceptions)
         {
-            List<DocfxException> result = null;
-            ExtractDocfxException(ex, ref result);
-            if (result != null && result.Count > 0)
-            {
-                exceptions = result;
-                return true;
-            }
-            exceptions = null;
-            return false;
+            exceptions = new List<DocfxException>();
+            ExtractDocfxException(ex, exceptions);
+            return exceptions.Count > 0;
         }
 
-        private static void ExtractDocfxException(Exception ex, ref List<DocfxException> result)
+        private static void ExtractDocfxException(Exception ex, List<DocfxException> result)
         {
             switch (ex)
             {
@@ -44,20 +38,18 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case DocfxException dex:
-                    result = result ?? new List<DocfxException>();
                     result.Add(dex);
                     break;
 
                 case AggregateException aex:
-                    result = result ?? new List<DocfxException>();
                     foreach (var innerException in aex.InnerExceptions)
                     {
-                        ExtractDocfxException(innerException, ref result);
+                        ExtractDocfxException(innerException, result);
                     }
                     break;
 
                 default:
-                    ExtractDocfxException(ex.InnerException, ref result);
+                    ExtractDocfxException(ex.InnerException, result);
                     break;
             }
         }
