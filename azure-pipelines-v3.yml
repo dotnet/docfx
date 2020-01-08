@@ -122,7 +122,6 @@ jobs:
     name: DocFX
   strategy:
     matrix:
-      # build only tests
       DevSandbox:
         params: DevSandbox --timeout 20
       docs-help-pr:
@@ -144,15 +143,6 @@ jobs:
         params: mc-docs-pr --timeout 70
       ATADocs-pr:
         params: ATADocs-pr --timeout 25
-      # build and publish tests
-      edge-developer:
-        params: >
-          edge-developer --branch docs-pipeline-test --product-name MSDN 
-          --need-publish --docset-name edge-developer-ppe --timeout 25
-      CordovaDocs:
-        params: >
-          CordovaDocs --branch docs-pipeline-test --product-name MSDN 
-          --need-publish --docset-name cordovadocs-ppe --timeout 25
 
   steps:
   # Checkout
