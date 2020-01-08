@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <LangVersion>Latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <Exclude>[xunit.*]*,[*.Views]*,[*]ChakraHost.Hosting.*</Exclude>
   </PropertyGroup>
 

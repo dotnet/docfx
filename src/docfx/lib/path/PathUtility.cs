@@ -244,7 +244,7 @@ namespace Microsoft.Docs.Build
                 var pathWithUpperCase = Path.Combine(Path.GetTempPath(), "CASESENSITIVETEST" + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
                 using (new FileStream(pathWithUpperCase, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 0x1000, FileOptions.DeleteOnClose))
                 {
-                    var lowerCased = NewMethod(pathWithUpperCase);
+                    var lowerCased = pathWithUpperCase.ToLowerInvariant();
                     return !File.Exists(lowerCased);
                 }
             }
@@ -255,11 +255,6 @@ namespace Microsoft.Docs.Build
                 Debug.Fail("Casing test failed: " + exc);
                 return false;
             }
-        }
-
-        private static string NewMethod(string pathWithUpperCase)
-        {
-            return pathWithUpperCase.ToLowerInvariant();
         }
     }
 }
