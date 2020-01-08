@@ -89,14 +89,8 @@ namespace Microsoft.Docs.Build
         {
             var result = new JObject();
             var errors = new List<Error>();
-            var yamlHeader = new JObject();
 
-            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-            {
-                (errors, yamlHeader) = LoadMetadata(file);
-                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
-            }
-
+            JsonUtility.SetSourceInfo(result, new SourceInfo(file.FilePath, 1, 1));
             JsonUtility.Merge(result, _globalMetadata);
 
             var fileMetadata = new JObject();
@@ -110,7 +104,18 @@ namespace Microsoft.Docs.Build
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
-            JsonUtility.Merge(result, yamlHeader);
+
+            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
+            {
+                var (yamlHeaderErrors, yamlHeader) = LoadYamlHeader(file);
+                errors.AddRange(yamlHeaderErrors);
+
+                if (yamlHeader.Count > 0)
+                {
+                    JsonUtility.Merge(result, yamlHeader);
+                    JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+                }
+            }
 
             foreach (var (key, value) in result)
             {
@@ -157,7 +162,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private (List<Error> errors, JObject metadata) LoadMetadata(Document file)
+        private (List<Error> errors, JObject yamlHeader) LoadYamlHeader(Document file)
         {
             if (file.FilePath.EndsWith(".md"))
             {
@@ -167,18 +172,18 @@ namespace Microsoft.Docs.Build
 
             if (file.FilePath.EndsWith(".yml"))
             {
-                return LoadSchemaDocumentMetadata(_input.ReadYaml(file.FilePath), file);
+                return LoadSchemaDocumentYamlHeader(_input.ReadYaml(file.FilePath), file);
             }
 
             if (file.FilePath.EndsWith(".json"))
             {
-                return LoadSchemaDocumentMetadata(_input.ReadJson(file.FilePath), file);
+                return LoadSchemaDocumentYamlHeader(_input.ReadJson(file.FilePath), file);
             }
 
             return (new List<Error>(), new JObject());
         }
 
-        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentMetadata((List<Error>, JToken) document, Document file)
+        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentYamlHeader((List<Error>, JToken) document, Document file)
         {
             var (errors, token) = document;
             var metadata = token is JObject tokenObj ? tokenObj["metadata"] : null;

@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
             if (git_revparse_single(out var headCommit, _repo, committish) != 0)
             {
                 git_object_free(walk);
-                throw Errors.CommittishNotFound(_repository.Path, committish).ToException();
+                throw Errors.CommittishNotFound(_repository.Remote, committish).ToException();
             }
 
             var lastCommitId = *git_object_id(headCommit);

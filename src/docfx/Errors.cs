@@ -561,15 +561,11 @@ namespace Microsoft.Docs.Build
         ///   - both files with no monikers defined same uid
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error UidConflict(string uid, IEnumerable<FilePath> conflicts = null)
-        {
-            if (conflicts is null)
-            {
-                return new Error(ErrorLevel.Warning, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file");
-            }
+        public static Error UidConflict(string uid, SourceInfo source)
+            => new Error(ErrorLevel.Warning, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file", source);
 
-            return new Error(ErrorLevel.Warning, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
-        }
+        public static Error UidConflict(string uid, IEnumerable<FilePath> conflicts)
+            => new Error(ErrorLevel.Warning, "uid-conflict", $"UID '{uid}' is defined in more than one file: {Join(conflicts)}");
 
         /// <summary>
         /// Same uid defined within different versions with the different name.

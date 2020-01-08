@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
-                            errors.Add(Errors.UidConflict(uid));
+                            errors.Add(Errors.UidConflict(uid, JsonUtility.GetSourceInfo(uidValue)));
                         }
 
                         break;
