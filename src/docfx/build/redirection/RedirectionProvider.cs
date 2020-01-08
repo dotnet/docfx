@@ -169,8 +169,22 @@ namespace Microsoft.Docs.Build
         private IReadOnlyDictionary<FilePath, FilePath> GetRenameHistory(
             RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
         {
-            var publishUrlMap = new Lazy<Dictionary<string, List<(FilePath path, string siteUrl, IReadOnlyList<string> monikers)>>>(
-                () => CreatePublishUrlMap(redirectUrls));
+            var files = new ConcurrentBag<(FilePath path, string siteUrl, IReadOnlyList<string> monikers)>();
+
+            Parallel.ForEach(_buildScope.Files.Concat(redirectUrls.Keys), file =>
+            {
+                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+                if (error != null)
+                {
+                    _errorLog.Write(error);
+                }
+
+                files.Add((file, _documentProvider.GetDocument(file).SiteUrl, monikers));
+            });
+
+            var publishUrlMap = files
+                .GroupBy(file => file.siteUrl)
+                .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
 
             var renameHistory = new ConcurrentDictionary<FilePath, FilePath>();
 
@@ -189,7 +203,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 redirectUrl = RemoveTrailingIndex(redirectUrl);
-                if (!publishUrlMap.Value.TryGetValue(redirectUrl, out var docs))
+                if (!publishUrlMap.TryGetValue(redirectUrl, out var docs))
                 {
                     _errorLog.Write(Errors.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
                     return;
@@ -215,26 +229,6 @@ namespace Microsoft.Docs.Build
             });
 
             return renameHistory;
-        }
-
-        private Dictionary<string, List<(FilePath path, string siteUrl, IReadOnlyList<string> monikers)>> CreatePublishUrlMap(IReadOnlyDictionary<FilePath, string> redirectUrls)
-        {
-            var files = new ConcurrentBag<(FilePath path, string siteUrl, IReadOnlyList<string> monikers)>();
-
-            Parallel.ForEach(_buildScope.Files.Concat(redirectUrls.Keys), file =>
-            {
-                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
-                if (error != null)
-                {
-                    _errorLog.Write(error);
-                }
-
-                files.Add((file, _documentProvider.GetDocument(file).SiteUrl, monikers));
-            });
-
-            return files
-                .GroupBy(file => file.siteUrl)
-                .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
         }
 
         private static string RemoveTrailingIndex(string redirectionUrl)
