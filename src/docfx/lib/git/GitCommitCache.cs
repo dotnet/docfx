@@ -44,22 +44,21 @@ namespace Microsoft.Docs.Build
 
             ProcessUtility.WriteFile(_cacheFilePath, stream =>
             {
-                using (var writer = new BinaryWriter(stream))
-                {
-                    // Create a snapshot of commit cache to ensure count and items matches.
-                    //
-                    // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
-                    // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
-                    var commitCache = _commitCache.ToArray();
+                using var writer = new BinaryWriter(stream);
 
-                    writer.Write(commitCache.Length);
-                    foreach (var (file, cache) in commitCache)
+                // Create a snapshot of commit cache to ensure count and items matches.
+                //
+                // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
+                // https://stackoverflow.com/questions/11692389/getting-argument-exception-in-concurrent-dictionary-when-sorting-and-displaying
+                var commitCache = _commitCache.ToArray();
+
+                writer.Write(commitCache.Length);
+                foreach (var (file, cache) in commitCache)
+                {
+                    writer.Write(file);
+                    lock (cache)
                     {
-                        writer.Write(file);
-                        lock (cache)
-                        {
-                            cache.Save(writer);
-                        }
+                        cache.Save(writer);
                     }
                 }
             });
@@ -77,18 +76,16 @@ namespace Microsoft.Docs.Build
             Log.Write($"Using git commit history cache file: '{_cacheFilePath}'");
             ProcessUtility.ReadFile(_cacheFilePath, stream =>
             {
-                using (var reader = new BinaryReader(stream))
+                using var reader = new BinaryReader(stream);
+                var count = reader.ReadInt32();
+                for (var i = 0; i < count; i++)
                 {
-                    var count = reader.ReadInt32();
-                    for (var i = 0; i < count; i++)
-                    {
-                        var file = reader.ReadString();
-                        var cache = _commitCache.GetOrAdd(file, _ => new FileCommitCache(this));
+                    var file = reader.ReadString();
+                    var cache = _commitCache.GetOrAdd(file, _ => new FileCommitCache(this));
 
-                        lock (cache)
-                        {
-                            cache.Load(reader);
-                        }
+                    lock (cache)
+                    {
+                        cache.Load(reader);
                     }
                 }
             });

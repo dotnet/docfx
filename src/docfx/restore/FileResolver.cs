@@ -34,10 +34,8 @@ namespace Microsoft.Docs.Build
 
         public string ReadString(SourceInfo<string> file)
         {
-            using (var reader = new StreamReader(ReadStream(file)))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = new StreamReader(ReadStream(file));
+            return reader.ReadToEnd();
         }
 
         public Stream ReadStream(SourceInfo<string> file)
@@ -148,11 +146,9 @@ namespace Microsoft.Docs.Build
                     Directory.CreateDirectory(AppData.DownloadsRoot);
                     var tempFile = Path.Combine(AppData.DownloadsRoot, "." + Guid.NewGuid().ToString("N"));
 
-                    using (var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync())
-                    using (var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await stream.CopyToAsync(file);
-                    }
+                    using var stream = await response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync();
+                    using var file = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                    await stream.CopyToAsync(file);
                     return (tempFile, response.Headers.ETag);
                 }
             }
@@ -166,26 +162,24 @@ namespace Microsoft.Docs.Build
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."
-            using (var message = new HttpRequestMessage(HttpMethod.Get, url))
+            using var message = new HttpRequestMessage(HttpMethod.Get, url);
+            if (etag != null)
             {
-                if (etag != null)
-                {
-                    message.Headers.IfNoneMatch.Add(etag);
-                }
-
-                _credentialProvider?.Invoke(message);
-
-                if (_opsConfigAdapter != null)
-                {
-                    var response = await _opsConfigAdapter.InterceptHttpRequest(message);
-                    if (response != null)
-                    {
-                        return response;
-                    }
-                }
-
-                return await s_httpClient.SendAsync(message);
+                message.Headers.IfNoneMatch.Add(etag);
             }
+
+            _credentialProvider?.Invoke(message);
+
+            if (_opsConfigAdapter != null)
+            {
+                var response = await _opsConfigAdapter.InterceptHttpRequest(message);
+                if (response != null)
+                {
+                    return response;
+                }
+            }
+
+            return await s_httpClient.SendAsync(message);
         }
     }
 }

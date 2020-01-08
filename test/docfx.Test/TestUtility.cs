@@ -69,28 +69,22 @@ namespace Microsoft.Docs.Build
             var token = YamlUtility.ToJToken(file.Value);
             if (token is JObject obj)
             {
-                using (var memoryStream = new MemoryStream())
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                 {
-                    using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    foreach (JProperty child in obj.Children())
                     {
-                        foreach (JProperty child in obj.Children())
-                        {
-                            var entry = archive.CreateEntry(child.Name);
+                        var entry = archive.CreateEntry(child.Name);
 
-                            using (var entryStream = entry.Open())
-                            using (var sw = new StreamWriter(entryStream))
-                            {
-                                sw.Write(child.Value);
-                            }
-                        }
-                    }
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        memoryStream.Seek(0, SeekOrigin.Begin);
-                        memoryStream.CopyTo(fileStream);
+                        using var entryStream = entry.Open();
+                        using var sw = new StreamWriter(entryStream);
+                        sw.Write(child.Value);
                     }
                 }
+
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                memoryStream.CopyTo(fileStream);
             }
         }
 
@@ -108,49 +102,47 @@ namespace Microsoft.Docs.Build
                 LibGit2Sharp.Repository.Init(path);
             }
 
-            using (var repo = new LibGit2Sharp.Repository(path))
+            using var repo = new LibGit2Sharp.Repository(path);
+            if (!string.IsNullOrEmpty(remote))
             {
-                if (!string.IsNullOrEmpty(remote))
+                repo.Network.Remotes.Update("origin", r => r.Url = remote);
+            }
+
+            var lastCommit = default(Commit);
+
+            foreach (var commit in commits.Reverse())
+            {
+                var commitIndex = 0;
+                var tree = new TreeDefinition();
+
+                foreach (var file in commit.Files)
                 {
-                    repo.Network.Remotes.Update("origin", r => r.Url = remote);
+                    var content = ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "";
+                    var blob = repo.ObjectDatabase.CreateBlob(
+                        new MemoryStream(Encoding.UTF8.GetBytes(content)));
+
+                    tree.Add(file.Key, blob, Mode.NonExecutableFile);
                 }
 
-                var lastCommit = default(Commit);
+                var author = new Signature(commit.Author, commit.Email, commit.Time);
+                var currentCommit = repo.ObjectDatabase.CreateCommit(
+                    author,
+                    author,
+                    commit.Message ?? $"Commit {commitIndex++}",
+                    repo.ObjectDatabase.CreateTree(tree),
+                    lastCommit != null ? new[] { lastCommit } : Array.Empty<Commit>(),
+                    prettifyMessage: false);
 
-                foreach (var commit in commits.Reverse())
-                {
-                    var commitIndex = 0;
-                    var tree = new TreeDefinition();
+                lastCommit = currentCommit;
+            }
 
-                    foreach (var file in commit.Files)
-                    {
-                        var content = ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "";
-                        var blob = repo.ObjectDatabase.CreateBlob(
-                            new MemoryStream(Encoding.UTF8.GetBytes(content)));
-
-                        tree.Add(file.Key, blob, Mode.NonExecutableFile);
-                    }
-
-                    var author = new Signature(commit.Author, commit.Email, commit.Time);
-                    var currentCommit = repo.ObjectDatabase.CreateCommit(
-                        author,
-                        author,
-                        commit.Message ?? $"Commit {commitIndex++}",
-                        repo.ObjectDatabase.CreateTree(tree),
-                        lastCommit != null ? new[] { lastCommit } : Array.Empty<Commit>(),
-                        prettifyMessage: false);
-
-                    lastCommit = currentCommit;
-                }
-
-                if (!string.IsNullOrEmpty(branch))
-                {
-                    Commands.Checkout(repo, repo.Branches.Add(branch, lastCommit, allowOverwrite: true));
-                }
-                else
-                {
-                    Commands.Checkout(repo, lastCommit);
-                }
+            if (!string.IsNullOrEmpty(branch))
+            {
+                Commands.Checkout(repo, repo.Branches.Add(branch, lastCommit, allowOverwrite: true));
+            }
+            else
+            {
+                Commands.Checkout(repo, lastCommit);
             }
         }
 
