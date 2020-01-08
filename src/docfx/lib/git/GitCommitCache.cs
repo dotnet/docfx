@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
             ProcessUtility.WriteFile(_cacheFilePath, stream =>
             {
                 using var writer = new BinaryWriter(stream);
+
                 // Create a snapshot of commit cache to ensure count and items matches.
                 //
                 // There is a race condition in Linq ToList() method, use ConcurrentDictionary.ToArray() to create a snapshot
