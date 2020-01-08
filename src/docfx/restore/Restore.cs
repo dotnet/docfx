@@ -84,14 +84,12 @@ namespace Microsoft.Docs.Build
 
         private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository)
         {
-            using (var packageResolver = new PackageResolver(docsetPath, config))
-            {
-                ParallelUtility.ForEach(
-                    GetPackages(config, locale, repository).Distinct(),
-                    item => packageResolver.DownloadPackage(item.package, item.flags),
-                    Progress.Update,
-                    maxDegreeOfParallelism: 8);
-            }
+            using var packageResolver = new PackageResolver(docsetPath, config);
+            ParallelUtility.ForEach(
+                GetPackages(config, locale, repository).Distinct(),
+                item => packageResolver.DownloadPackage(item.package, item.flags),
+                Progress.Update,
+                maxDegreeOfParallelism: 8);
 
             EnsureLocalizationContributionBranch(config, repository);
         }

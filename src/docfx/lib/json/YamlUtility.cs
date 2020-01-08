@@ -58,10 +58,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string input, FilePath file) where T : class, new()
         {
-            using (var reader = new StringReader(input))
-            {
-                return Deserialize<T>(reader, file);
-            }
+            using var reader = new StringReader(input);
+            return Deserialize<T>(reader, file);
         }
 
         /// <summary>

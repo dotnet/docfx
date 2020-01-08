@@ -166,10 +166,8 @@ namespace Microsoft.Docs.Build
         {
             if (file.FilePath.EndsWith(".md"))
             {
-                using (var reader = _input.ReadText(file.FilePath))
-                {
-                    return ExtractYamlHeader.Extract(reader, file);
-                }
+                using var reader = _input.ReadText(file.FilePath);
+                return ExtractYamlHeader.Extract(reader, file);
             }
 
             if (file.FilePath.EndsWith(".yml"))

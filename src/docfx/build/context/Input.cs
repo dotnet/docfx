@@ -79,10 +79,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string ReadString(FilePath file)
         {
-            using (var reader = ReadText(file))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = ReadText(file);
+            return reader.ReadToEnd();
         }
 
         /// <summary>
@@ -92,10 +90,8 @@ namespace Microsoft.Docs.Build
         {
             return _jsonTokenCache.GetOrAdd(file, path =>
             {
-                using (var reader = ReadText(path))
-                {
-                    return JsonUtility.Parse(reader, path);
-                }
+                using var reader = ReadText(path);
+                return JsonUtility.Parse(reader, path);
             });
         }
 
@@ -106,10 +102,8 @@ namespace Microsoft.Docs.Build
         {
             return _yamlTokenCache.GetOrAdd(file, path =>
             {
-                using (var reader = ReadText(path))
-                {
-                    return YamlUtility.Parse(reader, path);
-                }
+                using var reader = ReadText(path);
+                return YamlUtility.Parse(reader, path);
             });
         }
 

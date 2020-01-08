@@ -29,10 +29,8 @@ namespace Microsoft.Docs.Build
         {
             EnsureNoDryRun();
 
-            using (var writer = new StreamWriter(GetDestinationPath(destRelativePath)))
-            {
-                JsonUtility.Serialize(writer, graph);
-            }
+            using var writer = new StreamWriter(GetDestinationPath(destRelativePath));
+            JsonUtility.Serialize(writer, graph);
         }
 
         /// <summary>
@@ -61,11 +59,9 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            using (var sourceStream = _input.ReadStream(file.FilePath))
-            using (var targetStream = File.Create(targetPhysicalPath))
-            {
-                sourceStream.CopyTo(targetStream);
-            }
+            using var sourceStream = _input.ReadStream(file.FilePath);
+            using var targetStream = File.Create(targetPhysicalPath);
+            sourceStream.CopyTo(targetStream);
         }
 
         public void Delete(string destRelativePath, bool legacy = false)

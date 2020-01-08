@@ -29,51 +29,46 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
-            PackageResolver packageResolver = null;
 
-            using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
+            using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
+            var stopwatch = Stopwatch.StartNew();
+
+            try
             {
-                var stopwatch = Stopwatch.StartNew();
+                // load and trace entry repository
+                var repository = Repository.Create(docsetPath);
+                Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+                var locale = LocalizationUtility.GetLocale(repository, options);
 
-                try
-                {
-                    // load and trace entry repository
-                    var repository = Repository.Create(docsetPath);
-                    Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                    var locale = LocalizationUtility.GetLocale(repository, options);
-
-                    var configLoader = new ConfigLoader(repository, errorLog);
-                    (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
-                    if (errorLog.Write(errors))
-                        return false;
-
-                    using (packageResolver = new PackageResolver(docsetPath, config, noFetch: true))
-                    {
-                        var localizationProvider = new LocalizationProvider(packageResolver, options, config, locale, docsetPath, repository);
-                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, packageResolver, localizationProvider);
-                        var input = new Input(docsetPath, repositoryProvider, localizationProvider);
-
-                        // get docsets(build docset, fallback docset and dependency docsets)
-                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
-
-                        // run build based on docsets
-                        outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);
-                        await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
-                    }
-                }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    errorLog.Write(dex);
+                var configLoader = new ConfigLoader(repository, errorLog);
+                (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
+                if (errorLog.Write(errors))
                     return false;
-                }
-                finally
-                {
-                    Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
-                    Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                    errorLog.PrintSummary();
-                }
-                return true;
+
+                using var packageResolver = new PackageResolver(docsetPath, config, noFetch: true);
+                var localizationProvider = new LocalizationProvider(packageResolver, options, config, locale, docsetPath, repository);
+                var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, packageResolver, localizationProvider);
+                var input = new Input(docsetPath, repositoryProvider, localizationProvider);
+
+                // get docsets(build docset, fallback docset and dependency docsets)
+                var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
+
+                // run build based on docsets
+                outputPath ??= Path.Combine(docsetPath, docset.Config.Output.Path);
+                await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
             }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                errorLog.Write(dex);
+                return false;
+            }
+            finally
+            {
+                Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
+                Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                errorLog.PrintSummary();
+            }
+            return true;
         }
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
@@ -105,53 +100,51 @@ namespace Microsoft.Docs.Build
             RepositoryProvider repositoryProvider,
             LocalizationProvider localizationProvider)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider))
+            using var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider);
+            context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
+
+            using (Progress.Start("Building files"))
             {
-                context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
+                await context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
+            }
 
-                using (Progress.Start("Building files"))
+            context.BookmarkValidator.Validate();
+
+            var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
+            context.ErrorLog.Write(errors);
+
+            // TODO: explicitly state that ToXrefMapModel produces errors
+            var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+
+            if (!context.Config.DryRun)
+            {
+                var dependencyMap = context.DependencyMapBuilder.Build();
+                var fileLinkMap = context.FileLinkMapBuilder.Build();
+
+                context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
+                context.Output.WriteJson(publishModel, ".publish.json");
+                context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
+                context.Output.WriteJson(fileLinkMap, ".links.json");
+
+                if (options.Legacy)
                 {
-                    await context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
-                }
-
-                context.BookmarkValidator.Validate();
-
-                var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
-                context.ErrorLog.Write(errors);
-
-                // TODO: explicitly state that ToXrefMapModel produces errors
-                var xrefMapModel = context.XrefResolver.ToXrefMapModel();
-
-                if (!context.Config.DryRun)
-                {
-                    var dependencyMap = context.DependencyMapBuilder.Build();
-                    var fileLinkMap = context.FileLinkMapBuilder.Build();
-
-                    context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
-                    context.Output.WriteJson(publishModel, ".publish.json");
-                    context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
-                    context.Output.WriteJson(fileLinkMap, ".links.json");
-
-                    if (options.Legacy)
+                    if (docset.Config.Output.Json)
                     {
-                        if (docset.Config.Output.Json)
-                        {
-                            // TODO: decouple files and dependencies from legacy.
-                            Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
-                        }
-                        else
-                        {
-                            context.TemplateEngine.CopyTo(outputPath);
-                        }
+                        // TODO: decouple files and dependencies from legacy.
+                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
+                    }
+                    else
+                    {
+                        context.TemplateEngine.CopyTo(outputPath);
                     }
                 }
-
-                context.ContributionProvider.Save();
-                context.GitCommitProvider.Save();
-
-                errorLog.Write(await context.GitHubAccessor.Save());
-                errorLog.Write(await context.MicrosoftGraphAccessor.Save());
             }
+
+            context.ContributionProvider.Save();
+            context.GitCommitProvider.Save();
+
+            errorLog.Write(await context.GitHubAccessor.Save());
+            errorLog.Write(await context.MicrosoftGraphAccessor.Save());
         }
 
         private static async Task BuildFile(Context context, FilePath path)

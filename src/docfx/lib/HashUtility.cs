@@ -16,42 +16,32 @@ namespace Microsoft.Docs.Build
 
         public static string GetMd5Hash(string input)
         {
-            using (var md5 = MD5.Create())
-            {
-                return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
-            }
+            using var md5 = MD5.Create();
+            return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
         public static string GetMd5HashShort(string input)
         {
-            using (var md5 = MD5.Create())
-            {
-                return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4);
-            }
+            using var md5 = MD5.Create();
+            return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4);
         }
 
         public static Guid GetMd5Guid(string input)
         {
-            using (var md5 = MD5.Create())
-            {
-                return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
-            }
+            using var md5 = MD5.Create();
+            return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
         public static string GetSha1Hash(string input)
         {
-            using (var sha1 = new SHA1CryptoServiceProvider())
-            {
-                return ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(input)));
-            }
+            using var sha1 = new SHA1CryptoServiceProvider();
+            return ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
         public static string GetSha1Hash(Stream input)
         {
-            using (var sha1 = SHA1.Create())
-            {
-                return ToHexString(sha1.ComputeHash(input));
-            }
+            using var sha1 = SHA1.Create();
+            return ToHexString(sha1.ComputeHash(input));
         }
 
         private static string ToHexString(byte[] bytes, int digits = 0)
