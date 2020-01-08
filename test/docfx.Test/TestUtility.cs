@@ -70,14 +70,16 @@ namespace Microsoft.Docs.Build
             if (token is JObject obj)
             {
                 using var memoryStream = new MemoryStream();
-                using var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true);
-                foreach (JProperty child in obj.Children())
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                 {
-                    var entry = archive.CreateEntry(child.Name);
+                    foreach (JProperty child in obj.Children())
+                    {
+                        var entry = archive.CreateEntry(child.Name);
 
-                    using var entryStream = entry.Open();
-                    using var sw = new StreamWriter(entryStream);
-                    sw.Write(child.Value);
+                        using var entryStream = entry.Open();
+                        using var sw = new StreamWriter(entryStream);
+                        sw.Write(child.Value);
+                    }
                 }
 
                 using var fileStream = new FileStream(filePath, FileMode.Create);
