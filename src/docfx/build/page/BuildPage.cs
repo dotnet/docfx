@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
             var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
-            var htmlDom = HtmlUtility.LoadHtml(html).PostMarkup();
+            var htmlDom = HtmlUtility.LoadHtml(html);
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
@@ -235,6 +235,8 @@ namespace Microsoft.Docs.Build
             {
                 return (errors, new JObject());
             }
+
+            htmlDom = htmlDom.PostMarkup();
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
