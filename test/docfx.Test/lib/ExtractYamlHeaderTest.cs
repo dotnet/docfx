@@ -55,12 +55,10 @@ this: is a frontmatter
 ---", "{}")]
         public void TestExtract(string content, string expectedMetadata)
         {
-            using (var reader = new StringReader(content))
-            {
-                var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
-                Assert.Empty(errors);
-                Assert.Equal(expectedMetadata.Replace('\'', '"'), JsonUtility.Serialize(metadata));
-            }
+            using var reader = new StringReader(content);
+            var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
+            Assert.Empty(errors);
+            Assert.Equal(expectedMetadata.Replace('\'', '"'), JsonUtility.Serialize(metadata));
         }
 
         [Theory]
@@ -75,15 +73,13 @@ hello
 ...", "yaml-header-not-object", "Expect yaml header to be an object, but got an array")]
         public void TestNotJObject(string content, string expectedErrorCode, string expectedErrorMessage)
         {
-            using (var reader = new StringReader(content))
+            using var reader = new StringReader(content);
+            var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
+            Assert.Collection(errors, error =>
             {
-                var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
-                Assert.Collection(errors, error =>
-                {
-                    Assert.Equal(expectedErrorCode, error.Code);
-                    Assert.Equal(expectedErrorMessage, error.Message);
-                });
-            }
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorMessage, error.Message);
+            });
         }
     }
 }

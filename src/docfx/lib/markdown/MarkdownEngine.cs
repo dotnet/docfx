@@ -42,11 +42,10 @@ namespace Microsoft.Docs.Build
             _markdownValidationRules = config.MarkdownValidationRules;
             if (!string.IsNullOrEmpty(_markdownValidationRules))
             {
-                using (var stream = fileResolver.ReadStream(config.MarkdownValidationRules))
-                {
-                    // TODO: validation rules currently only supports physical file.
-                    _markdownValidationRules = ((FileStream)stream).Name;
-                }
+                using var stream = fileResolver.ReadStream(config.MarkdownValidationRules);
+
+                // TODO: validation rules currently only supports physical file.
+                _markdownValidationRules = ((FileStream)stream).Name;
             }
 
             _pipelines = new[]

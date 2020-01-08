@@ -306,20 +306,16 @@ namespace Microsoft.Docs.Build
                 //       After token resolve does not create Document, this Exists check can be removed.
                 if (input.Exists(filePath))
                 {
-                    using (var reader = input.ReadText(filePath))
-                    {
-                        mime = JsonUtility.ReadMime(reader, filePath);
-                    }
+                    using var reader = input.ReadText(filePath);
+                    mime = JsonUtility.ReadMime(reader, filePath);
                 }
             }
             else if (filePath.EndsWith(".yml"))
             {
                 if (input.Exists(filePath))
                 {
-                    using (var reader = input.ReadText(filePath))
-                    {
-                        mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
-                    }
+                    using var reader = input.ReadText(filePath);
+                    mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
                 }
             }
 

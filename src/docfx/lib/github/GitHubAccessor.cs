@@ -172,46 +172,44 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                using (var request = new StringContent(JsonUtility.Serialize(new { query, variables }), Encoding.UTF8, "application/json"))
-                using (var response = await HttpPolicyExtensions
-                    .HandleTransientHttpError()
-                    .Or<OperationCanceledException>()
-                    .Or<IOException>()
-                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying: {api}"))
-                    .ExecuteAsync(() => SendRequest(api, request)))
+                using var request = new StringContent(JsonUtility.Serialize(new { query, variables }), Encoding.UTF8, "application/json");
+                using var response = await HttpPolicyExtensions
+.HandleTransientHttpError()
+.Or<OperationCanceledException>()
+.Or<IOException>()
+.RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying: {api}"))
+.ExecuteAsync(() => SendRequest(api, request));
+                if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
+                    Log.Write(await response.Content.ReadAsStringAsync());
+                    _fatalError = Errors.GitHubApiFailed(response.StatusCode.ToString());
+                    return (_fatalError, default, default);
+                }
+
+                var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+
+                var body = JsonConvert.DeserializeAnonymousType(
+                    content,
+                    new { data = default(T), errors = new[] { new { type = "", message = "" } } });
+
+                if (body.errors != null)
+                {
+                    foreach (var error in body.errors)
                     {
-                        Log.Write(await response.Content.ReadAsStringAsync());
-                        _fatalError = Errors.GitHubApiFailed(response.StatusCode.ToString());
-                        return (_fatalError, default, default);
-                    }
-
-                    var content = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
-
-                    var body = JsonConvert.DeserializeAnonymousType(
-                        content,
-                        new { data = default(T), errors = new[] { new { type = "", message = "" } } });
-
-                    if (body.errors != null)
-                    {
-                        foreach (var error in body.errors)
+                        switch (error.type)
                         {
-                            switch (error.type)
-                            {
-                                case "MAX_NODE_LIMIT_EXCEEDED":
-                                case "RATE_LIMITED":
-                                    _fatalError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
-                                    return (_fatalError, default, default);
+                            case "MAX_NODE_LIMIT_EXCEEDED":
+                            case "RATE_LIMITED":
+                                _fatalError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
+                                return (_fatalError, default, default);
 
-                                default:
-                                    return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), error.type, default);
-                            }
+                            default:
+                                return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), error.type, default);
                         }
                     }
-
-                    return (null, null, body.data);
                 }
+
+                return (null, null, body.data);
             }
             catch (Exception ex)
             {
