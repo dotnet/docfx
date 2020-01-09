@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
         {
             var files = new ConcurrentBag<(FilePath path, string siteUrl, IReadOnlyList<string> monikers)>();
 
-            Parallel.ForEach(_buildScope.Files.Concat(redirectUrls.Keys), file =>
+            ParallelUtility.ForEach(_errorLog, _buildScope.Files.Concat(redirectUrls.Keys), file =>
             {
                 var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
                 if (error != null)
