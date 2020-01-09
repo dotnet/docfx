@@ -62,7 +62,9 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options?.StdinConfig, options?.ToJObject());
-            var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
+            var docfxConfigFileName = Path.GetFileName(configPath);
+            var docfxConfigContent = File.ReadAllText(configPath);
+            var docfxConfig = LoadConfig(errors, docfxConfigFileName, docfxConfigContent);
             var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
@@ -85,6 +87,8 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
+
+            Telemetry.SetTelemetryConfig(config.Telemetry);
 
             return (errors, config);
         }
@@ -143,7 +147,7 @@ namespace Microsoft.Docs.Build
 
         private static Func<string, bool> FindDocsetsGlob(string workingDirectory)
         {
-            var opsConfig = OpsConfigLoader.LoadOpsConfig(workingDirectory);
+            var opsConfig = OpsConfigLoader.LoadOpsConfig(workingDirectory).opsConfig;
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>

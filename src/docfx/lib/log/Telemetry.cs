@@ -17,10 +17,10 @@ namespace Microsoft.Docs.Build
     {
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
 
-        private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"time", "name", "os", "version", "repo", "branch"));
-        private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"error", "code", "level", "os", "version", "repo", "branch"));
-        private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"cache", "name", "state", "os", "version", "repo", "branch"));
-        private static readonly Metric s_buildItemCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"count", "name", "os", "version", "repo", "branch"));
+        private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"));
+        private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildLog", "Code", "Level", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"));
+        private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"));
+        private static readonly Metric s_buildItemCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Count", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"));
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
@@ -28,15 +28,30 @@ namespace Microsoft.Docs.Build
         private static string s_repo = "<null>";
         private static string s_branch = "<null>";
 
+        private static Dictionary<string, string> s_dimensions = new Dictionary<string, string>();
+        private static string s_correlationId = Guid.NewGuid().ToString("N");
+
         public static void SetRepository(string repo, string branch)
         {
             s_repo = string.IsNullOrEmpty(repo) ? "<null>" : repo;
             s_branch = string.IsNullOrEmpty(branch) ? "<null>" : branch;
         }
 
+        public static void SetTelemetryConfig(TelemetryConfig telemetryConfig)
+        {
+            foreach (var dimension in telemetryConfig.Dimensions)
+            {
+                if (dimension.Key.Equals("CorrelationId", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(dimension.Value))
+                {
+                    s_correlationId = dimension.Value;
+                }
+                s_dimensions[dimension.Key] = dimension.Value;
+            }
+        }
+
         public static void TrackOperationTime(string name, TimeSpan duration)
         {
-            s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch);
+            s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static IDisposable TrackingOperationTime(TelemetryName name)
@@ -46,37 +61,38 @@ namespace Microsoft.Docs.Build
 
         public static void TrackErrorCount(string code, ErrorLevel level)
         {
-            s_errorCountMetric.TrackValue(1, code, level.ToString(), s_os, s_version, s_repo, s_branch);
+            s_errorCountMetric.TrackValue(1, code, level.ToString(), "User", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackCacheTotalCount(TelemetryName name)
         {
-            s_cacheCountMetric.TrackValue(1, name.ToString(), "total", s_os, s_version, s_repo, s_branch);
+            s_cacheCountMetric.TrackValue(1, name.ToString(), "total", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackCacheMissCount(TelemetryName name)
         {
-            s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch);
+            s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildItemCount(ContentType contentType)
         {
-            s_buildItemCountMetric.TrackValue(1, $"{TelemetryName.BuildItems}-{contentType}", s_os, s_version, s_repo, s_branch);
+            s_buildItemCountMetric.TrackValue(1, $"{TelemetryName.BuildItems}-{contentType}", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildCommitCount(int count)
         {
-            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch);
+            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackException(Exception ex)
         {
             s_telemetryClient.TrackException(ex, new Dictionary<string, string>
             {
-                { "os", s_os },
-                { "version", s_version },
-                { "repo", s_repo },
-                { "branch", s_branch },
+                { "OS", s_os },
+                { "Version", s_version },
+                { "Repo", s_repo },
+                { "Branch", s_branch },
+                { "CorrelationId", s_correlationId },
             });
         }
 
