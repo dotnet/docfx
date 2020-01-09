@@ -176,6 +176,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
             var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, InclusionContext.File, codeSnippet);
+            
+            _context.LogSuggestion("code-snippet-deprecated", "The legacy code snippet inclusion will be deprecated at a later date. Please use the new code extension. (http://aka.ms/codesnippet)", codeSnippet);
 
             if (content == null)
             {
