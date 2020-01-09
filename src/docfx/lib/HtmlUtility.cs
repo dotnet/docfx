@@ -25,9 +25,9 @@ namespace Microsoft.Docs.Build
             return doc.DocumentNode;
         }
 
-        public static HtmlNode PostMarkup(this HtmlNode node)
+        public static HtmlNode PostMarkup(this HtmlNode node, bool dryRun)
         {
-            return node.StripTags().RemoveRerunCodepenIframes();
+            return dryRun ? node : node.StripTags().RemoveRerunCodepenIframes();
         }
 
         public static long CountWord(this HtmlNode node)

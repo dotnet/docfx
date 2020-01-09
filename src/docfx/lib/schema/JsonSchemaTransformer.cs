@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(html).PostMarkup().WriteTo(), content);
+                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun).WriteTo(), content);
                     break;
 
                 case JsonSchemaContentType.InlineMarkdown:
@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(inlineHtml).PostMarkup().WriteTo(), content);
+                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(inlineHtml).PostMarkup(context.Config.DryRun).WriteTo(), content);
                     break;
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
