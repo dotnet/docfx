@@ -10,18 +10,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static (OpsConfig opsConfig, string opsConfigFileName, string opsConfigFileContent) LoadOpsConfig(string workingDirectory)
+        public static OpsConfig LoadOpsConfig(string workingDirectory)
         {
-            var fileName = ".openpublishing.publish.config.json";
-            var fullPath = Path.Combine(workingDirectory, fileName);
+            var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
             if (!File.Exists(fullPath))
             {
-                return (null, null, null);
+                return null;
             }
 
             var filePath = new FilePath(Path.GetRelativePath(workingDirectory, fullPath));
-            var fileContent = File.ReadAllText(fullPath);
-            return (JsonUtility.Deserialize<OpsConfig>(fileContent, filePath), fileName, fileContent);
+            return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
         }
 
         public static (string xrefEndpoint, string[] xrefQueryTags, JObject config) LoadDocfxConfig(string docsetPath, string branch)
@@ -30,7 +28,7 @@ namespace Microsoft.Docs.Build
 
             do
             {
-                var opsConfig = LoadOpsConfig(directory).opsConfig;
+                var opsConfig = LoadOpsConfig(directory);
                 if (opsConfig is null)
                 {
                     directory = Path.GetDirectoryName(directory);
