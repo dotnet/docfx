@@ -103,7 +103,7 @@ Yeah!", File);
 > more para.
 ", File);
 
-            Assert.Equal(1, tokens.Length);
+            Assert.Single(tokens);
             Assert.IsType<MarkdownBlockquoteBlockToken>(tokens[0]);
             var blockquote = (MarkdownBlockquoteBlockToken)tokens[0];
             Assert.Equal(5, blockquote.Tokens.Length);
@@ -145,7 +145,7 @@ Yeah!", File);
 
                     Assert.IsType<MarkdownNonParagraphBlockToken>(listItem.Tokens[0]);
                     var np = (MarkdownNonParagraphBlockToken)listItem.Tokens[0];
-                    Assert.Equal(1, np.Content.Tokens.Length);
+                    Assert.Single(np.Content.Tokens);
                     Assert.Equal(4, np.SourceInfo.LineNumber);
                     Assert.Equal(File, np.SourceInfo.File);
 

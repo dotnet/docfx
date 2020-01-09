@@ -45,7 +45,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -100,7 +100,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -146,7 +146,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -197,7 +197,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -240,7 +240,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -280,7 +280,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -327,7 +327,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // Foo<T>
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -542,7 +542,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // unary
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -777,7 +777,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // Foo<T>
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -830,7 +830,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(field);
@@ -931,7 +931,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var a = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(a);
@@ -1027,7 +1027,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // Foo
             {
                 var a = output.Items[0].Items[0].Items[0];
@@ -1211,7 +1211,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // Foo
             {
                 var a = output.Items[0].Items[0].Items[0];
@@ -1354,7 +1354,7 @@ End Namespace
             Assert.Equal("Test1.Foo<T>.Bar<K>(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Foo(Of T).Bar(Of K)(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
             Assert.Equal("Test1.Foo`1.Bar``1(System.Int32)", method.Name);
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var parameter = method.Syntax.Parameters[0];
             Assert.Equal("i", parameter.Name);
             Assert.Equal("System.Int32", parameter.Type);
@@ -1389,7 +1389,7 @@ Namespace Test1
 End Namespace
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code, MetadataReference.CreateFromFile(typeof(System.ComponentModel.TypeConverterAttribute).Assembly.Location)));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var type = output.Items[0].Items[0];
             Assert.NotNull(type);
             Assert.Equal(@"<Serializable>
