@@ -120,8 +120,31 @@ jobs:
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
-  steps:
+  strategy:
+    matrix:
+      DevSandbox:
+        params: DevSandbox --timeout 20
+      docs-help-pr:
+        params: >
+          docs-help-pr --branch develop --build-type PullRequest
+          --pull-request-url https://github.com/yufeih/docs-help-pr --pull-request-branch patch-1
+          --timeout 30
+      azure-docs-pr:
+        params: azure-docs-pr --timeout 150
+      Dynamics-365-Operations:
+        params: Dynamics-365-Operations --timeout 65
+      SCCMDocs-pr:
+        params: SCCMDocs-pr --branch live --timeout 30
+      SCCMDocs-pr.zh-cn:
+        params: SCCMDocs-pr.zh-cn --branch live-sxs --locale zh-cn --timeout 30
+      office-dev-O365API:
+        params: office-dev-O365API --timeout 20
+      mc-docs-pr:
+        params: mc-docs-pr --timeout 70
+      ATADocs-pr:
+        params: ATADocs-pr --timeout 25
 
+  steps:
   # Checkout
   - checkout: self
     clean: true
@@ -174,20 +197,18 @@ jobs:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
 
-  # Build
-  - powershell: ../Docs.Build/build.ps1 -noTest
-    displayName: Build
-    env:
-      BUILD_REASON: $(Build.Reason)
-
   # Run integration tests
-  - powershell: dotnet run -p ../Docs.Build/test/integration-test -c Release
+  - powershell: |
+      dotnet build ../Docs.Build/test/integration-test -c Release # a workaround for json file copy issue
+      dotnet run -p ../Docs.Build/test/integration-test -c Release -- $(params)
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
+      INTEGRATION_TEST_ROOT: D:/
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
+      DOCS_GENERATE_DOCFX_YML: 'false'
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
