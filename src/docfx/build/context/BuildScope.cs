@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<FilePath> Files { get; }
 
-        public BuildScope(Config config, Input input, Docset fallbackDocset)
+        public BuildScope(ErrorLog errorLog, Config config, Input input, Docset fallbackDocset)
         {
             _config = config;
             _globs = CreateGlobs(config);
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 var (fileNames, allFiles) = ListFiles(config, input, fallbackDocset);
 
                 var files = new ListBuilder<FilePath>();
-                ParallelUtility.ForEach(allFiles, file =>
+                ParallelUtility.ForEach(errorLog, allFiles, file =>
                 {
                     if (Glob(file.Path))
                     {

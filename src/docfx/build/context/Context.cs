@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             Output = new Output(outputPath, input, Config.DryRun);
             TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
-            BuildScope = new BuildScope(Config, Input, fallbackDocset);
+            BuildScope = new BuildScope(ErrorLog, Config, Input, fallbackDocset);
             DocumentProvider = new DocumentProvider(docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
