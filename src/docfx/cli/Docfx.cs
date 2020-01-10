@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
@@ -18,11 +19,11 @@ namespace Microsoft.Docs.Build
 {
     public static class Docfx
     {
-        internal static int Main(params string[] args)
+        internal static async Task<int> Main(params string[] args)
         {
             try
             {
-                return Run(args);
+                return await Run(args);
             }
             catch (Exception ex)
             {
@@ -50,7 +51,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static int Run(string[] args)
+        internal static async Task<int> Run(string[] args)
         {
             if (args.Length == 1 && args[0] == "--version")
             {
@@ -73,13 +74,17 @@ namespace Microsoft.Docs.Build
                 var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
                 ThreadPool.SetMinThreads(minThreads, minThreads);
 
-                return command switch
+                switch (command)
                 {
-                    "restore" => Restore.Run(workingDirectory, options),
-                    "build" => Build.Run(workingDirectory, options),
-                    "watch" => Watch.Run(workingDirectory, options),
-                    _ => 0,
-                };
+                    case "restore":
+                        return Restore.Run(workingDirectory, options);
+                    case "build":
+                        return await Build.Run(workingDirectory, options);
+                    case "watch":
+                        await Watch.Run(workingDirectory, options);
+                        break;
+                }
+                return 0;
             }
         }
 

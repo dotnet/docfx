@@ -57,9 +57,9 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public static void RestoreAgainstFileShouldNotCrash()
+        public static async Task RestoreAgainstFileShouldNotCrash()
         {
-            Docfx.Run(new [] { "restore", "docfx.Test.dll" });
+            await Docfx.Run(new [] { "restore", "docfx.Test.dll" });
         }
     }
 }
