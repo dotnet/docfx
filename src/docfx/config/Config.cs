@@ -198,11 +198,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool GitShallowFetch = true;
 
-        /// <summary>
-        /// Gets the telemetry config, including dimensions to track
-        /// </summary>
-        public readonly TelemetryConfig Telemetry = new TelemetryConfig();
-
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)

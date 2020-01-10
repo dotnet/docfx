@@ -26,27 +26,20 @@ namespace Microsoft.Docs.Build
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
 
-        private static AsyncLocal<string> s_repo = new AsyncLocal<string>();
-        private static AsyncLocal<string> s_branch = new AsyncLocal<string>();
+        private static string s_repo = "<null>";
+        private static string s_branch = "<null>";
 
-        private static AsyncLocal<Dictionary<string, string>> s_eventDimensions = new AsyncLocal<Dictionary<string, string>>();
-        private static AsyncLocal<string> s_correlationId = new AsyncLocal<string>();
+        private static string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
 
         public static void SetRepository(string repo, string branch)
         {
-            s_repo.Value = string.IsNullOrEmpty(repo) ? "<null>" : repo;
-            s_branch.Value = string.IsNullOrEmpty(branch) ? "<null>" : branch;
-        }
-
-        public static void SetTelemetryConfig(TelemetryConfig telemetryConfig)
-        {
-            s_correlationId.Value = !string.IsNullOrEmpty(telemetryConfig.CorrelationId) ? telemetryConfig.CorrelationId : Guid.NewGuid().ToString();
-            s_eventDimensions.Value = telemetryConfig.EventDimensions;
+            s_repo = string.IsNullOrEmpty(repo) ? "<null>" : repo;
+            s_branch = string.IsNullOrEmpty(branch) ? "<null>" : branch;
         }
 
         public static void TrackOperationTime(string name, TimeSpan duration)
         {
-            s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo.Value, s_branch.Value, s_correlationId.Value);
+            s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static IDisposable TrackingOperationTime(TelemetryName name)
@@ -56,27 +49,27 @@ namespace Microsoft.Docs.Build
 
         public static void TrackErrorCount(string code, ErrorLevel level)
         {
-            s_errorCountMetric.TrackValue(1, code, level.ToString(), "User", s_os, s_version, s_repo.Value, s_branch.Value, s_correlationId.Value);
+            s_errorCountMetric.TrackValue(1, code, level.ToString(), "User", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackCacheTotalCount(TelemetryName name)
         {
-            s_cacheCountMetric.TrackValue(1, name.ToString(), "total", s_os, s_version, s_repo.Value, s_branch.Value, s_correlationId.Value);
+            s_cacheCountMetric.TrackValue(1, name.ToString(), "total", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackCacheMissCount(TelemetryName name)
         {
-            s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo.Value, s_branch.Value, s_correlationId.Value);
+            s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildItemCount(ContentType contentType)
         {
-            s_buildItemCountMetric.TrackValue(1, $"{TelemetryName.BuildItems}-{contentType}", s_os, s_version, s_repo.Value, s_branch.Value, s_correlationId.Value);
+            s_buildItemCountMetric.TrackValue(1, $"{TelemetryName.BuildItems}-{contentType}", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildCommitCount(int count)
         {
-            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo.Value, s_branch.Value, s_correlationId.Value);
+            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackException(Exception ex)
@@ -85,9 +78,9 @@ namespace Microsoft.Docs.Build
             {
                 { "OS", s_os },
                 { "Version", s_version },
-                { "Repo", s_repo.Value },
-                { "Branch", s_branch.Value },
-                { "CorrelationId", s_correlationId.Value },
+                { "Repo", s_repo },
+                { "Branch", s_branch },
+                { "CorrelationId", s_correlationId },
             });
         }
 
