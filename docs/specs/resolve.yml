@@ -242,7 +242,7 @@ inputs:
   docs/redirect.md:
 outputs:
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/redirect': 'docs/redirect.md', 'docs/redirect.md [redirection]'"]
+    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/redirect': 'docs/redirect.md [redirection]', 'docs/redirect.md'"]
 ---
 # Show warning if link to a page outside build scope
 inputs:
