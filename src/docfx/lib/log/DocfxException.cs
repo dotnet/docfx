@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -16,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public Error Error { get; }
 
-        public DocfxException(Error error, Exception innerException = null, ErrorLevel? overwriteLevel = null)
+        public DocfxException(Error error, Exception? innerException = null, ErrorLevel? overwriteLevel = null)
             : base($"{error.Code}: {error.Message}", innerException)
         {
             Error = error;
@@ -30,7 +32,7 @@ namespace Microsoft.Docs.Build
             return exceptions.Count > 0;
         }
 
-        private static void ExtractDocfxException(Exception ex, List<DocfxException> result)
+        private static void ExtractDocfxException(Exception? ex, List<DocfxException> result)
         {
             switch (ex)
             {

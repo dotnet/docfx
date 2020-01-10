@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
         public int EndColumn { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo source)
+        public Error(ErrorLevel level, string code, string message, SourceInfo? source)
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
         { }
 
