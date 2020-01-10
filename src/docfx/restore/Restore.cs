@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                     // load and trace entry repository
                     var repository = Repository.Create(docsetPath);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                    var locale = LocalizationUtility.GetLocale(repository, options);
+                    var locale = LocalizationUtility.GetLocale(repository);
 
                     // load configuration from current entry or fallback repository
                     var configLoader = new ConfigLoader(repository, errorLog);
@@ -165,22 +165,6 @@ namespace Microsoft.Docs.Build
                 yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
                 yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
                 yield break;
-            }
-
-            // build from English
-            var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
-                config.Localization.Mapping,
-                config.Localization.Bilingual,
-                repository.Remote,
-                repository.Branch,
-                locale,
-                config.Localization.DefaultLocale);
-
-            yield return (new PackagePath(remote, branch), PackageFetchOptions.None);
-
-            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
-            {
-                yield return (new PackagePath(repository.Remote, contributionBranch), PackageFetchOptions.None);
             }
         }
     }

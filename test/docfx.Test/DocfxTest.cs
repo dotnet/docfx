@@ -132,30 +132,25 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("Skip watch tests");
             }
 
-            // build from en-us repo
-            // disable for now because of radom failure
-            //await RunBuild(docsetPath, outputPath, spec, spec.Locale);
-
             if (spec.Locale != null)
             {
-                // Verify build from localization docset also work
-                // Disable build from English test to see if it helps with loc test instability
+                // always build from localization docset for localization tests
                 // https://dev.azure.com/ceapex/Engineering/_build/results?buildId=97101&view=logs&j=133bd042-0fac-58b5-e6e7-01018e6dc4d4&t=b907bda6-23f1-5af4-47fe-b951a88dbb9a&l=10898
                 var locDocsetPath = t_repos.Value.FirstOrDefault(
                     repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, spec, locale: null);
+                    RunBuild(locDocsetPath, outputPath, spec);
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, spec, spec.Locale);
+                RunBuild(docsetPath, outputPath, spec);
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale, bool dryRun = false)
+        private static void RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, bool dryRun = false)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
@@ -163,9 +158,7 @@ namespace Microsoft.Docs.Build
 
             using (TestUtility.EnsureFilesNotChanged(docsetPath))
             {
-                var commandLine =
-                    (spec.Legacy ? "--legacy" : "") +
-                    (locale != null ? $"--locale {locale}" : "");
+                var commandLine = spec.Legacy ? "--legacy" : "";
 
                 var options = commandLine
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries)
@@ -195,7 +188,7 @@ namespace Microsoft.Docs.Build
 
             if (!dryRun && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
             {
-                RunBuild(docsetPath, outputPath, spec, locale, dryRun: true);
+                RunBuild(docsetPath, outputPath, spec, dryRun: true);
             }
         }
 
