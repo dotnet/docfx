@@ -165,22 +165,6 @@ namespace Microsoft.Docs.Build
                 yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
                 yield break;
             }
-
-            // build from English
-            var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
-                config.Localization.Mapping,
-                config.Localization.Bilingual,
-                repository.Remote,
-                repository.Branch,
-                locale,
-                config.Localization.DefaultLocale);
-
-            yield return (new PackagePath(remote, branch), PackageFetchOptions.None);
-
-            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
-            {
-                yield return (new PackagePath(repository.Remote, contributionBranch), PackageFetchOptions.None);
-            }
         }
     }
 }

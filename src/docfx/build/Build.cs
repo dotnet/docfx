@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                     return false;
 
                 using var packageResolver = new PackageResolver(docsetPath, config, noFetch: true);
-                var localizationProvider = new LocalizationProvider(packageResolver, options, config, locale, docsetPath, repository);
+                var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
                 var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, packageResolver, localizationProvider);
                 var input = new Input(docsetPath, repositoryProvider, localizationProvider);
 
