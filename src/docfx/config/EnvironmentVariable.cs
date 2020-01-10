@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
 
         public static string RepositoryBranch => GetValue("DOCFX_REPOSITORY_BRANCH");
 
+        public static string CorrelationId => GetValue("DOCFX_CORRELATION_ID");
+
         private static string GetValue(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);
