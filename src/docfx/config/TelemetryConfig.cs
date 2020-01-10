@@ -7,6 +7,14 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class TelemetryConfig
     {
-        public readonly Dictionary<string, string> Dimensions = new Dictionary<string, string>();
+        /// <summary>
+        /// Gets the correlation id
+        /// </summary>
+        public readonly string CorrelationId;
+
+        /// <summary>
+        /// Gets the dimensions for event telemetry
+        /// </summary>
+        public readonly Dictionary<string, string> EventDimensions = new Dictionary<string, string>();
     }
 }

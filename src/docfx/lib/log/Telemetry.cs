@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         private static string s_repo = "<null>";
         private static string s_branch = "<null>";
 
-        private static Dictionary<string, string> s_dimensions = new Dictionary<string, string>();
+        private static Dictionary<string, string> s_eventDimensions = new Dictionary<string, string>();
         private static string s_correlationId = Guid.NewGuid().ToString("N");
 
         public static void SetRepository(string repo, string branch)
@@ -39,13 +39,14 @@ namespace Microsoft.Docs.Build
 
         public static void SetTelemetryConfig(TelemetryConfig telemetryConfig)
         {
-            foreach (var dimension in telemetryConfig.Dimensions)
+            if (!string.IsNullOrEmpty(telemetryConfig.CorrelationId))
             {
-                if (dimension.Key.Equals("CorrelationId", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(dimension.Value))
-                {
-                    s_correlationId = dimension.Value;
-                }
-                s_dimensions[dimension.Key] = dimension.Value;
+                s_correlationId = telemetryConfig.CorrelationId;
+            }
+
+            foreach (var dimension in telemetryConfig.EventDimensions)
+            {
+                s_eventDimensions[dimension.Key] = dimension.Value;
             }
         }
 
