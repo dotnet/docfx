@@ -3,7 +3,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="5.2.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net472'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
