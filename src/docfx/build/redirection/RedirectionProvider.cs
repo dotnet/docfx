@@ -2,11 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -54,11 +52,11 @@ namespace Microsoft.Docs.Build
             return file;
         }
 
-        private IReadOnlyDictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
+        private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
         {
-            var redirectUrls = new ConcurrentDictionary<FilePath, string>();
+            var redirectUrls = new Dictionary<FilePath, string>();
 
-            Parallel.ForEach(redirections, item =>
+            foreach (var item in redirections)
             {
                 var path = item.SourcePath;
                 var redirectUrl = item.RedirectUrl;
@@ -66,19 +64,19 @@ namespace Microsoft.Docs.Build
                 if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                 {
                     _errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
-                    return;
+                    continue;
                 }
 
                 if (!_buildScope.Glob(path))
                 {
-                    return;
+                    continue;
                 }
 
                 var type = _documentProvider.GetContentType(path);
                 if (type != ContentType.Page)
                 {
                     _errorLog.Write(Errors.RedirectionInvalid(redirectUrl, path));
-                    return;
+                    continue;
                 }
 
                 var absoluteRedirectUrl = redirectUrl.Value.Trim();
@@ -107,7 +105,7 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
                 }
-            });
+            }
 
             return redirectUrls;
         }
@@ -169,44 +167,26 @@ namespace Microsoft.Docs.Build
         private IReadOnlyDictionary<FilePath, FilePath> GetRenameHistory(
             RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
         {
-            var files = new ConcurrentBag<(FilePath path, string siteUrl, IReadOnlyList<string> monikers)>();
+            // Convert the redirection target from redirect url to file path according to the version of redirect source
+            var renameHistory = new Dictionary<FilePath, FilePath>();
 
-            ParallelUtility.ForEach(_errorLog, _buildScope.Files.Concat(redirectUrls.Keys), file =>
-            {
-                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
-                if (error != null)
-                {
-                    _errorLog.Write(error);
-                }
-
-                files.Add((file, _documentProvider.GetDocument(file).SiteUrl, monikers));
-            });
-
-            var publishUrlMap = files
-                .GroupBy(file => file.siteUrl)
+            var publishUrlMap = _buildScope.Files.Concat(redirectUrls.Keys)
+                .GroupBy(file => _documentProvider.GetDocument(file).SiteUrl)
                 .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
 
-            var renameHistory = new ConcurrentDictionary<FilePath, FilePath>();
-
-            // Convert the redirection target from redirect url to file path according to the version of redirect source
-            Parallel.ForEach(redirections, item =>
+            foreach (var item in redirections.Where(item => item.RedirectDocumentId))
             {
-                if (!item.RedirectDocumentId)
-                {
-                    return;
-                }
-
                 var file = new FilePath(item.SourcePath, FileOrigin.Redirection);
                 if (!redirectUrls.TryGetValue(file, out var redirectUrl))
                 {
-                    return;
+                    continue;
                 }
 
                 redirectUrl = RemoveTrailingIndex(redirectUrl);
                 if (!publishUrlMap.TryGetValue(redirectUrl, out var docs))
                 {
                     _errorLog.Write(Errors.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
-                    return;
+                    continue;
                 }
 
                 var (error, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
@@ -215,19 +195,24 @@ namespace Microsoft.Docs.Build
                     _errorLog.Write(error);
                 }
 
-                var candidates = redirectionSourceMonikers.Count == 0
-                    ? docs.Where(doc => doc.monikers.Count == 0)
-                    : docs.Where(doc => doc.monikers.Intersect(redirectionSourceMonikers).Any());
-
-                foreach (var (path, _, _) in candidates)
+                List<FilePath> candidates;
+                if (redirectionSourceMonikers.Count == 0)
                 {
-                    if (!renameHistory.TryAdd(path, file))
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList();
+                }
+                else
+                {
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
+                }
+
+                foreach (var candidate in candidates)
+                {
+                    if (!renameHistory.TryAdd(candidate, file))
                     {
                         _errorLog.Write(Errors.RedirectionUrlConflict(item.RedirectUrl));
                     }
                 }
-            });
-
+            }
             return renameHistory;
         }
 
