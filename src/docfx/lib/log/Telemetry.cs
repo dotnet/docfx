@@ -43,11 +43,7 @@ namespace Microsoft.Docs.Build
             {
                 s_correlationId = telemetryConfig.CorrelationId;
             }
-
-            foreach (var dimension in telemetryConfig.EventDimensions)
-            {
-                s_eventDimensions[dimension.Key] = dimension.Value;
-            }
+            s_eventDimensions = telemetryConfig.EventDimensions;
         }
 
         public static void TrackOperationTime(string name, TimeSpan duration)
