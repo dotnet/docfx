@@ -64,7 +64,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Line = processor.LineIndex,
                 Span = new SourceSpan(sourcePosition, slice.End),
                 Extension = extension,
-                RenderProperties = renderProperties
+                RenderProperties = renderProperties,
+                Attributes = attributes
             };
 
             if (htmlAttributes != null)
