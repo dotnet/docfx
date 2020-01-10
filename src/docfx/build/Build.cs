@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 // load and trace entry repository
                 var repository = Repository.Create(docsetPath);
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                var locale = LocalizationUtility.GetLocale(repository, options);
+                var locale = LocalizationUtility.GetLocale(repository);
 
                 var configLoader = new ConfigLoader(repository, errorLog);
                 (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);

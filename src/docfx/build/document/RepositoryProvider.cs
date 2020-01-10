@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             _docsetPath = docsetPath;
             _repository = repository;
             _packageResolver = packageResolver;
-            _locale = LocalizationUtility.GetLocale(repository, options);
+            _locale = LocalizationUtility.GetLocale(repository);
             _config = config;
             _localizationProvider = localizationProvider;
             _templateRepository = new Lazy<(string, Repository)>(GetTemplateRepository);
