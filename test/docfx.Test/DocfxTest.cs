@@ -142,16 +142,16 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    await RunBuild(locDocsetPath, outputPath, spec, locale: null);
+                    await RunBuild(locDocsetPath, outputPath, spec);
                 }
             }
             else
             {
-                await RunBuild(docsetPath, outputPath, spec, spec.Locale);
+                await RunBuild(docsetPath, outputPath, spec);
             }
         }
 
-        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale, bool dryRun = false)
+        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, bool dryRun = false)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
 
             if (!dryRun && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
             {
-                await RunBuild(docsetPath, outputPath, spec, locale, dryRun: true);
+                await RunBuild(docsetPath, outputPath, spec, dryRun: true);
             }
         }
 
