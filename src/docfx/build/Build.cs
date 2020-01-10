@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 // load and trace entry repository
                 var repository = Repository.Create(docsetPath);
                 Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                var locale = LocalizationUtility.GetLocale(repository, options);
+                var locale = LocalizationUtility.GetLocale(repository);
 
                 var configLoader = new ConfigLoader(repository, errorLog);
                 (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
@@ -46,8 +46,8 @@ namespace Microsoft.Docs.Build
                     return false;
 
                 using var packageResolver = new PackageResolver(docsetPath, config, noFetch: true);
-                var localizationProvider = new LocalizationProvider(packageResolver, options, config, locale, docsetPath, repository);
-                var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, packageResolver, localizationProvider);
+                var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
+                var repositoryProvider = new RepositoryProvider(docsetPath, repository, config, packageResolver, localizationProvider);
                 var input = new Input(docsetPath, repositoryProvider, localizationProvider);
 
                 // get docsets(build docset, fallback docset and dependency docsets)
