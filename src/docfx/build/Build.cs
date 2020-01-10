@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
+        public static int Run(string workingDirectory, CommandLineOptions options)
         {
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
@@ -21,11 +21,18 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            var result = await Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.All(x => x) ? 0 : 1;
+            var hasError = false;
+            Parallel.ForEach(docsets, docset =>
+            {
+                if (BuildDocset(docset.docsetPath, docset.outputPath, options))
+                {
+                    hasError = true;
+                }
+            });
+            return hasError ? 1 : 0;
         }
 
-        private static async Task<bool> BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static bool BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config config = null;
@@ -55,12 +62,13 @@ namespace Microsoft.Docs.Build
 
                 // run build based on docsets
                 outputPath ??= Path.Combine(docsetPath, docset.Config.Output.Path);
-                await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
+                Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider).GetAwaiter().GetResult();
+                return false;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 errorLog.Write(dex);
-                return false;
+                return true;
             }
             finally
             {
@@ -68,7 +76,6 @@ namespace Microsoft.Docs.Build
                 Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                 errorLog.PrintSummary();
             }
-            return true;
         }
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(

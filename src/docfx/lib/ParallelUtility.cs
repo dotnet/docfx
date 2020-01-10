@@ -21,6 +21,12 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
+        /// <summary>
+        /// Process items in parallel.
+        /// Use this over <see cref="Parallel.ForEach"/> when:
+        ///  1. <paramref name="action"/> could potentially throw <see cref="DocfxException"/>
+        ///  2. This function should continue when <paramref name="action"/> did throw <see cref="DocfxException"/>.
+        /// </summary>
         public static void ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Action<T> action, Action<int, int> progress = null, int? maxDegreeOfParallelism = null)
         {
             Debug.Assert(maxDegreeOfParallelism == null || maxDegreeOfParallelism.Value > 0);

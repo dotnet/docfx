@@ -8,7 +8,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -42,7 +41,7 @@ namespace Microsoft.Docs.Build
 
         [YamlTest("~/docs/specs/**/*.yml")]
         [MarkdownTest("~/docs/designs/**/*.md")]
-        public static async Task Run(TestData test, DocfxTestSpec spec)
+        public static void Run(TestData test, DocfxTestSpec spec)
         {
             var (docsetPath, cachePath, statePath, outputPath, repos) = CreateDocset(test, spec);
 
@@ -54,11 +53,11 @@ namespace Microsoft.Docs.Build
 
                 if (OsMatches(spec.OS))
                 {
-                    await RunCore(test, docsetPath, outputPath, spec);
+                    RunCore(test, docsetPath, outputPath, spec);
                 }
                 else
                 {
-                    await Assert.ThrowsAnyAsync<Exception>(() => RunCore(test, docsetPath, outputPath, spec));
+                    Assert.ThrowsAny<Exception>(() => RunCore(test, docsetPath, outputPath, spec));
                 }
             }
             finally
@@ -126,7 +125,7 @@ namespace Microsoft.Docs.Build
             return (docsetPath, cachePath, statePath, outputPath, repos);
         }
 
-        private async static Task RunCore(TestData test, string docsetPath, string outputPath, DocfxTestSpec spec)
+        private static void RunCore(TestData test, string docsetPath, string outputPath, DocfxTestSpec spec)
         {
             if (spec.Watch)
             {
@@ -147,16 +146,16 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    await RunBuild(locDocsetPath, outputPath, spec, locale: null);
+                    RunBuild(locDocsetPath, outputPath, spec, locale: null);
                 }
             }
             else
             {
-                await RunBuild(docsetPath, outputPath, spec, spec.Locale);
+                RunBuild(docsetPath, outputPath, spec, spec.Locale);
             }
         }
 
-        private static async Task RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale, bool dryRun = false)
+        private static void RunBuild(string docsetPath, string outputPath, DocfxTestSpec spec, string locale, bool dryRun = false)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
@@ -177,11 +176,11 @@ namespace Microsoft.Docs.Build
 
                 if (spec.Restore)
                 {
-                    await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
+                    Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
                 }
                 if (spec.Build)
                 {
-                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).ToArray());
+                    Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).ToArray());
                 }
             }
 
@@ -196,7 +195,7 @@ namespace Microsoft.Docs.Build
 
             if (!dryRun && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
             {
-                await RunBuild(docsetPath, outputPath, spec, locale, dryRun: true);
+                RunBuild(docsetPath, outputPath, spec, locale, dryRun: true);
             }
         }
 
