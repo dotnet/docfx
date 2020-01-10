@@ -7,6 +7,8 @@ using System.Globalization;
 using System.IO;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -16,7 +18,7 @@ namespace Microsoft.Docs.Build
     [TypeConverter(typeof(PathStringTypeConverter))]
     internal struct PathString : IEquatable<PathString>, IComparable<PathString>
     {
-        private string _value;
+        private string? _value;
 
         /// <summary>
         /// A non-nullable, non-empty string that can never contain
@@ -37,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public bool Equals(PathString other) => PathUtility.PathComparer.Equals(Value, other.Value);
 
-        public override bool Equals(object obj) => obj is PathString && Equals((PathString)obj);
+        public override bool Equals(object? obj) => obj is PathString && Equals((PathString)obj);
 
         public override int GetHashCode() => PathUtility.PathComparer.GetHashCode(Value);
 
@@ -63,7 +65,7 @@ namespace Microsoft.Docs.Build
             if (b._value[0] == '/')
                 return b;
 
-            var str = a._value[a._value.Length - 1] == '/'
+            var str = a._value[^1] == '/'
                 ? a._value + b._value
                 : a._value + '/' + b._value;
 
@@ -134,12 +136,12 @@ namespace Microsoft.Docs.Build
 
             if (a.Length == b.Length + 1)
             {
-                return string.Compare(a, 0, b, 0, b.Length, PathUtility.PathComparison) == 0 && a[a.Length - 1] == '/';
+                return string.Compare(a, 0, b, 0, b.Length, PathUtility.PathComparison) == 0 && a[^1] == '/';
             }
 
             if (b.Length == a.Length + 1)
             {
-                return string.Compare(a, 0, b, 0, a.Length, PathUtility.PathComparison) == 0 && b[b.Length - 1] == '/';
+                return string.Compare(a, 0, b, 0, a.Length, PathUtility.PathComparison) == 0 && b[^1] == '/';
             }
 
             return false;
@@ -149,15 +151,18 @@ namespace Microsoft.Docs.Build
         {
             public override bool CanConvert(Type objectType) => objectType == typeof(PathString);
 
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
             {
                 var value = serializer.Deserialize<string>(reader);
-                return new PathString(value is null ? null : PathUtility.NormalizeFile(value));
+                return value is null ? default : new PathString(PathUtility.NormalizeFile(value));
             }
 
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
             {
-                writer.WriteValue(((PathString)value).Value);
+                if (value is PathString path)
+                {
+                    writer.WriteValue(path.Value);
+                }
             }
         }
 

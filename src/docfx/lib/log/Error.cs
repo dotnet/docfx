@@ -5,7 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -19,7 +20,7 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        public FilePath FilePath { get; }
+        public FilePath? FilePath { get; }
 
         public int Line { get; }
 
@@ -33,7 +34,7 @@ namespace Microsoft.Docs.Build
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
         { }
 
-        public Error(ErrorLevel level, string code, string message, FilePath file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
+        public Error(ErrorLevel level, string code, string message, FilePath? file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
         {
             Debug.Assert(!string.IsNullOrEmpty(code));
             Debug.Assert(!string.IsNullOrEmpty(message));
@@ -70,7 +71,7 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level)
         {
-            object[] payload = { level, Code, Message, FilePath?.Path, Line, Column };
+            object?[] payload = { level, Code, Message, FilePath?.Path, Line, Column };
 
             var i = payload.Length - 1;
             while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Default)))
@@ -80,7 +81,7 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Serialize(payload.Take(i + 1));
         }
 
-        public DocfxException ToException(Exception innerException = null, bool isError = true)
+        public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
             return new DocfxException(this, innerException, isError ? (ErrorLevel?)ErrorLevel.Error : null);
         }
