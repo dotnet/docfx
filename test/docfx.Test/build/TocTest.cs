@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null);
         private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory(), "en-us", s_config, null);
         private static readonly TemplateEngine s_templateEngine = TemplateEngine.Create(s_docset, s_repositoryProvider);
-        private static readonly BuildScope s_buildScope = new BuildScope(null, s_config, s_input, null);
+        private static readonly BuildScope s_buildScope = new BuildScope(s_config, s_input, null);
         private static readonly DocumentProvider s_documentProvider = new DocumentProvider(s_docset, null, s_buildScope, s_input, s_repositoryProvider, s_templateEngine);
 
         [Theory]

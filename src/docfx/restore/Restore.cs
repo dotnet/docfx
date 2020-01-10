@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     // download dependencies to disk
                     Parallel.Invoke(
                         () => RestoreFiles(docsetPath, config, errorLog).GetAwaiter().GetResult(),
-                        () => RestorePackages(docsetPath, config, errorLog, locale, repository));
+                        () => RestorePackages(docsetPath, config, locale, repository));
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
@@ -79,14 +79,13 @@ namespace Microsoft.Docs.Build
         {
             var credentialProvider = config.GetCredentialProvider();
             var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider));
-            await ParallelUtility.ForEach(errorLog, config.GetFileReferences(), fileResolver.Download);
+            await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(string docsetPath, Config config, ErrorLog errorLog, string locale, Repository repository)
+        private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository)
         {
             using var packageResolver = new PackageResolver(docsetPath, config);
             ParallelUtility.ForEach(
-                errorLog,
                 GetPackages(config, locale, repository).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags),
                 Progress.Update,

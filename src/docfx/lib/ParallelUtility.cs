@@ -21,13 +21,7 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        /// <summary>
-        /// Process items in parallel.
-        /// Use this over <see cref="Parallel.ForEach"/> when:
-        ///  1. <paramref name="action"/> could potentially throw <see cref="DocfxException"/>
-        ///  2. This function should continue when <paramref name="action"/> did throw <see cref="DocfxException"/>.
-        /// </summary>
-        public static void ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Action<T> action, Action<int, int> progress = null, int? maxDegreeOfParallelism = null)
+        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null, int? maxDegreeOfParallelism = null)
         {
             Debug.Assert(maxDegreeOfParallelism == null || maxDegreeOfParallelism.Value > 0);
 
@@ -43,24 +37,12 @@ namespace Microsoft.Docs.Build
                 },
                 item =>
                 {
-                    try
-                    {
-                        action(item);
-                        progress?.Invoke(Interlocked.Increment(ref done), total);
-                    }
-                    catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                    {
-                        errorLog.Write(dex);
-                    }
-                    catch
-                    {
-                        Log.Important($"Error processing '{item}'", ConsoleColor.DarkRed);
-                        throw;
-                    }
+                    action(item);
+                    progress?.Invoke(Interlocked.Increment(ref done), total);
                 });
         }
 
-        public static async Task ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
+        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
         {
             var done = 0;
             var total = 0;
@@ -95,7 +77,6 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     await action(item);
-                    progress?.Invoke(Interlocked.Increment(ref done), total);
                 }
                 catch (OperationCanceledException oce)
                 {
@@ -103,15 +84,7 @@ namespace Microsoft.Docs.Build
                     // https://github.com/dotnet/corefx/blob/4b36fba308d8e2d3207773952c30268ac3365eed/src/System.Threading.Tasks.Dataflow/src/Blocks/ActionBlock.cs#L142
                     throw new WrapException(oce);
                 }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    errorLog.Write(dex);
-                }
-                catch
-                {
-                    Log.Important($"Error processing '{item}'", ConsoleColor.DarkRed);
-                    throw;
-                }
+                progress?.Invoke(Interlocked.Increment(ref done), total);
             }
         }
 

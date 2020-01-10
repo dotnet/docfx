@@ -86,7 +86,6 @@ namespace Microsoft.Docs.Build
             {
                 var builder = new TableOfContentsMapBuilder();
                 ParallelUtility.ForEach(
-                    context.ErrorLog,
                     context.BuildScope.Files,
                     file => BuildTocMap(context, file, builder),
                     Progress.Update);
@@ -97,16 +96,23 @@ namespace Microsoft.Docs.Build
 
         private static void BuildTocMap(Context context, FilePath path, TableOfContentsMapBuilder tocMapBuilder)
         {
-            var file = context.DocumentProvider.GetDocument(path);
-            if (file.ContentType != ContentType.TableOfContents)
+            try
             {
-                return;
+                var file = context.DocumentProvider.GetDocument(path);
+                if (file.ContentType != ContentType.TableOfContents)
+                {
+                    return;
+                }
+
+                var (errors, _, referencedDocuments, referencedTocs) = context.TableOfContentsLoader.Load(file);
+                context.ErrorLog.Write(errors);
+
+                tocMapBuilder.Add(file, referencedDocuments, referencedTocs);
             }
-
-            var (errors, _, referencedDocuments, referencedTocs) = context.TableOfContentsLoader.Load(file);
-            context.ErrorLog.Write(errors);
-
-            tocMapBuilder.Add(file, referencedDocuments, referencedTocs);
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                context.ErrorLog.Write(dex);
+            }
         }
 
         private static (int subDirectoryCount, int parentDirectoryCount)
