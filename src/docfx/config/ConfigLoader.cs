@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             var docfxConfigFileName = Path.GetFileName(configPath);
             var docfxConfigFileContent = File.ReadAllText(configPath);
             var docfxConfig = LoadConfig(errors, docfxConfigFileName, docfxConfigFileContent);
-            var (docsetName, xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(configErrors);
 
             // Track docfx config telemetry
-            Telemetry.TrackDocfxConfig(docfxConfigFileName, docfxConfigFileContent, docsetName);
+            Telemetry.TrackDocfxConfig(docfxConfigFileName, docfxConfigFileContent, preloadConfig.Name);
 
             return (errors, config);
         }

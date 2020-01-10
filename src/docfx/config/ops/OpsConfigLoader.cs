@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
         }
 
-        public static (string docsetName, string xrefEndpoint, string[] xrefQueryTags, JObject config) LoadDocfxConfig(string docsetPath, string branch)
+        public static (string xrefEndpoint, string[] xrefQueryTags, JObject config) LoadDocfxConfig(string docsetPath, string branch)
         {
             var directory = docsetPath;
 
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private static (string docsetName, string xrefEndpoint, string[] xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
+        private static (string xrefEndpoint, string[] xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            return (docsetConfig?.DocsetName, opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
+            return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
         private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string branch, string buildSourceFolder)
