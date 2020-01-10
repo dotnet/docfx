@@ -89,13 +89,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(configErrors);
 
             // Track docfx config telemetry
-            Telemetry.TrackEvent(
-                docfxConfigFileName,
-                new Dictionary<string, string>
-                {
-                    ["Config"] = docfxConfigFileContent,
-                    ["DocsetName"] = docsetName,
-                });
+            Telemetry.TrackDocfxConfig(docfxConfigFileName, docfxConfigFileContent, docsetName);
 
             return (errors, config);
         }
