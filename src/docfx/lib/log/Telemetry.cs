@@ -71,6 +71,17 @@ namespace Microsoft.Docs.Build
             s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
+        public static void TrackEvent(string name, Dictionary<string, string> properties, Dictionary<string, double> metrics = null)
+        {
+            s_telemetryClient.TrackEvent(
+                name,
+                new Dictionary<string, string>(properties)
+                {
+                    ["CorrelationId"] = s_correlationId,
+                },
+                metrics);
+        }
+
         public static void TrackException(Exception ex)
         {
             s_telemetryClient.TrackException(ex, new Dictionary<string, string>

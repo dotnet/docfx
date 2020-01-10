@@ -62,8 +62,10 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options?.StdinConfig, options?.ToJObject());
-            var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
+            var docfxConfigFileName = Path.GetFileName(configPath);
+            var docfxConfigFileContent = File.ReadAllText(configPath);
+            var docfxConfig = LoadConfig(errors, docfxConfigFileName, docfxConfigFileContent);
+            var (docsetName, xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
@@ -85,6 +87,15 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
+
+            // Track docfx config telemetry
+            Telemetry.TrackEvent(
+                docfxConfigFileName,
+                new Dictionary<string, string>
+                {
+                    ["Config"] = docfxConfigFileContent,
+                    ["DocsetName"] = docsetName,
+                });
 
             return (errors, config);
         }
