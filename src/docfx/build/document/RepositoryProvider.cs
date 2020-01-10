@@ -22,7 +22,6 @@ namespace Microsoft.Docs.Build
         public RepositoryProvider(
             string docsetPath,
             Repository repository,
-            CommandLineOptions options,
             Config config = null,
             PackageResolver packageResolver = null,
             LocalizationProvider localizationProvider = null)
