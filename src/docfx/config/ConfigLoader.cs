@@ -86,8 +86,6 @@ namespace Microsoft.Docs.Build
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
-            Telemetry.SetTelemetryConfig(config.Telemetry);
-
             return (errors, config);
         }
 
