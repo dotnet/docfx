@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="langwordMapping.yml">
-    </EmbeddedResource>
+    <EmbeddedResource Include="langwordMapping.yml" />
     <EmbeddedResource Include="Template\*.zip" />
   </ItemGroup>
 

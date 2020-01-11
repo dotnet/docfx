@@ -5,7 +5,7 @@
     <DisableMSBuildAssemblyCopyCheck>true</DisableMSBuildAssemblyCopyCheck>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Transform\**" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Transform\**" />
   </ItemGroup>
 
   <ItemGroup>
