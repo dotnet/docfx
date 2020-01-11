@@ -1,12 +1,7 @@
 <Project>
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
-    
-    <!-- Note: by convention assembly should be named after the root namespace -->
-    <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
-    <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>
-    <Product Condition=" '$(Product)' == '' ">$(MSBuildProjectName)</Product>
-    <PackageId Condition=" '$(PackageId)' == '' ">$(MSBuildProjectName)</PackageId>
+
     <Authors>Microsoft</Authors>
     <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
     <Copyright Condition=" '$(Copyright)' == '' ">© Microsoft Corporation. All rights reserved.</Copyright>
