@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode
                 }
                 else
                 {
-                    throw new JsonReaderException(string.Format("Unsupported value {0} (type: {1}).", value, value.Type));
+                    throw new JsonReaderException($"Unsupported value {value} (type: {value.Type}).");
                 }
 
                 return model;
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode
             }
             else
             {
-                throw new JsonReaderException(string.Format("Unsupported value {0} (type: {1}).", item, item.Type));
+                throw new JsonReaderException($"Unsupported value {item} (type: {item.Type}).");
             }
         }
     }
