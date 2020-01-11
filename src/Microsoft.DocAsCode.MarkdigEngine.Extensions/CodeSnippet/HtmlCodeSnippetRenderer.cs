@@ -263,8 +263,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     {
                         HashSet<int> tagLines = new HashSet<int>();
                         var tagToCoderangeMapping = extrator.GetAllTags(allLines, ref tagLines);
-                        CodeRange cr;
-                        if (tagToCoderangeMapping.TryGetValue(obj.TagName, out cr)
+                        if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
                             || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
                         {
                             return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);

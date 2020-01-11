@@ -50,8 +50,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (!slice.CurrentChar.IsAlpha()) return false;
 
             var saved = slice;
-            int line;
-            int column;
 
             var c = slice.CurrentChar;
             var href = StringBuilderCache.Local();
@@ -78,7 +76,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var xrefInline = new XrefInline
             {
                 Href = href.ToString(),
-                Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out line, out column), processor.GetSourcePosition(slice.Start - 1)),
+                Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out var line, out var column), processor.GetSourcePosition(slice.Start - 1)),
                 Line = line,
                 Column = column
             };
@@ -96,8 +94,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private bool MatchXrefShortcutWithQuote(InlineProcessor processor, ref StringSlice slice)
         {
             var saved = slice;
-            int line;
-            int column;
 
             var startChar = slice.CurrentChar;
             var href = StringBuilderCache.Local();
@@ -120,7 +116,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var xrefInline = new XrefInline
             {
                 Href = href.ToString(),
-                Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out line, out column), processor.GetSourcePosition(slice.Start - 1)),
+                Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out var line, out var column), processor.GetSourcePosition(slice.Start - 1)),
                 Line = line,
                 Column = column
             };

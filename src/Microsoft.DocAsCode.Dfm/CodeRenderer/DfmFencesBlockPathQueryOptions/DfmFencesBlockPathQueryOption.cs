@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 var ranges = HighlightLines.Split(',');
                 int? startLine, endLine;
-                int tempStartLine, tempEndLine;
+                int tempStartLine;
                 foreach (var range in ranges)
                 {
                     var match = DfmFencesRule._dfmFencesRangeQueryStringRegex.Match(range);
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Dfm
                     {
                         // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
                         startLine = int.TryParse(match.Groups["start"].Value, out tempStartLine) ? tempStartLine : (int?)null;
-                        endLine = int.TryParse(match.Groups["start"].Value, out tempEndLine) ? tempEndLine : (int?)null;
+                        endLine = int.TryParse(match.Groups["start"].Value, out var tempEndLine) ? tempEndLine : (int?)null;
                     }
                     else
                     {
