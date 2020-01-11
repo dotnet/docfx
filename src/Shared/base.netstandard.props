@@ -21,7 +21,6 @@
 
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <RootNamespace Condition=" '$(RootNamespace)' == '' ">$(AssemblyName)</RootNamespace>
     <DebugSymbols>true</DebugSymbols>
     <ErrorReport>prompt</ErrorReport>
 
