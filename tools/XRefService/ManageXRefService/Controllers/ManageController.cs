@@ -17,7 +17,6 @@ namespace XRefService.Manage.Controllers
     using XRefService.Common.Models;
     using XRefService.Common.Utilities;
     using XRefService.Manage.Models;
-    using System;
 
     [Route("xrefs")]
     public class ManageController : Controller

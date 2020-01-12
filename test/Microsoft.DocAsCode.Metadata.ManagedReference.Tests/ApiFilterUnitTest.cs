@@ -5,18 +5,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
     using Xunit;
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.Emit;
-    using Microsoft.CodeAnalysis.MSBuild;
-
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
-
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]

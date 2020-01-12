@@ -23,7 +23,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Build.SchemaDriven;
     using System.Composition;
-    using System.Collections;
 
     [Trait("Owner", "xuzho")]
     [Trait("EntityType", "DocumentBuilder")]

@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System.Collections.Generic;
     using System.Composition;
-    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;

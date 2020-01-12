@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.SubCommands
 {
-    using System;
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Plugins;
 
