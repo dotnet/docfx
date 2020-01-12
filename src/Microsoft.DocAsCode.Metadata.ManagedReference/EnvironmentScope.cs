@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             foreach (var pair in envValues)
             {
-                // incase envValues contains duplicate keys
+                // in case envValues contains duplicate keys
                 if (!_originalEnvValues.TryGetValue(pair.Key, out var val))
                 {
                     _originalEnvValues[pair.Key] = Environment.GetEnvironmentVariable(pair.Key);

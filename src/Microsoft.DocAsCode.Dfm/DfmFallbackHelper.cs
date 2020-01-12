@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Dfm
         /// </summary>
         /// <param name="relativePath">original relative path in markdown.</param>
         /// <param name="context">markdown context</param>
-        /// <returns>item1: acutal file path. item: true if it hit fallback file. Otherwise false</returns>
+        /// <returns>item1: actual file path. item: true if it hit fallback file. Otherwise false</returns>
         public static Tuple<string, bool> GetFilePathWithFallback(string relativePath, IMarkdownContext context)
         {
             if (context == null)
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
 
             // var currentFileFolder = Path.Combine(context.GetBaseFolder(), Path.Combine(context.GetFilePathStack().Select(path => Path.GetDirectoryName(path)).ToArray()));
-            // var originalFilePath = Path.Combine(context.GetBaseFolder(),  orginalRelativePath);
+            // var originalFilePath = Path.Combine(context.GetBaseFolder(),  originalRelativePath);
             RelativePath filePathToDocset = null;
             string parentFileDirectoryToDocset = context.GetBaseFolder();
             var parents = context.GetFilePathStack();

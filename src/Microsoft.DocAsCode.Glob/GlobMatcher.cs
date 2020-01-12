@@ -171,7 +171,7 @@ namespace Microsoft.DocAsCode.Glob
             CharClass currentCharClass = null;
             string patternStart = string.Empty;
 
-            // .abc will not be matched unless . is explictly specified
+            // .abc will not be matched unless . is explicitly specified
             if (globPart.Length > 0 && globPart[0] != '.')
             {
                 patternStart = Options.HasFlag(GlobMatcherOptions.AllowDotMatch) ? PatternStartWithDotAllowed : PatternStartWithoutDotAllowed;

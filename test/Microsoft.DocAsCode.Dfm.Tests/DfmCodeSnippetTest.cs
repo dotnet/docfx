@@ -637,7 +637,7 @@ using System.IO;
         [Fact]
         public void CodeSnippetTagsShouldMatchCaseInsensitive()
         {
-            //arange
+            //arrange
             var content = @"// <tag1>
 line1
 // <tag2>
@@ -660,7 +660,7 @@ line3
         [Fact]
         public void CodeSnippetTagsShouldSucceedWhenDuplicateWithoutWarning()
         {
-            //arange
+            //arrange
             var content = @"// <tag1>
 line1
 // <tag1>
@@ -689,7 +689,7 @@ line4
         [Fact]
         public void CodeSnippetTagsShouldSucceedWhenDuplicateWithWarningWhenReferenced()
         {
-            //arange
+            //arrange
             var content = @"// <tag1>
 line1
 // <tag1>
