@@ -282,46 +282,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             return unresolvedUidList;
         }
 
-        internal async Task<IList<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
-        {
-            string url = requestUrl.Replace("{uid}", Uri.EscapeDataString(uid));
-            try
-            {
-                var data = await client.GetStreamAsync(url);
-                using (var sr = new StreamReader(data))
-                {
-                    var xsList = JsonUtility.Deserialize<List<Dictionary<string, object>>>(sr);
-                    return xsList.ConvertAll(item =>
-                    {
-                        var spec = new XRefSpec();
-                        foreach (var pair in item)
-                        {
-                            if (pair.Value is string s)
-                            {
-                                spec[pair.Key] = s;
-                            }
-                        }
-                        return spec;
-                    });
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.InnerException.Message}");
-                return null;
-            }
-            catch (Newtonsoft.Json.JsonReaderException e)
-            {
-                Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format.{e.Message}");
-                return null;
-            }
-            catch (Exception e)
-            {
-                Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.Message}");
-                return null;
-            }
-        }
-
         private List<string> ResolveByXRefMaps(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
             if (_reader == null)
@@ -344,47 +304,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             Logger.LogInfo($"{uidList.Count - list.Count} external references found in {_xrefMapUrls.Length} xref maps.");
             return list;
-        }
-
-        private List<XRefMap> LoadXRefMaps()
-        {
-            using (var client = new HttpClient())
-            {
-                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
-                var mapTasks = (from url in _xrefMapUrls
-                                select LoadXRefMap(url, client)).ToArray();
-                Task.WaitAll(mapTasks);
-                return (from t in mapTasks
-                        where t.Result != null
-                        select t.Result).ToList();
-            }
-        }
-
-        private async Task<XRefMap> LoadXRefMap(string url, HttpClient client)
-        {
-            try
-            {
-                if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri) &&
-                    uri.Scheme != "http" &&
-                    uri.Scheme != "https")
-                {
-                    Logger.LogWarning($"Ignore invalid url: {url}");
-                    return null;
-                }
-                using (var stream = await client.GetStreamAsync(uri))
-                using (var sr = new StreamReader(stream))
-                {
-                    var map = YamlUtility.Deserialize<XRefMap>(sr);
-                    map.UpdateHref(uri);
-                    Logger.LogVerbose($"Xref map ({url}) downloaded.");
-                    return map;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning($"Unable to download xref map from {url}, detail:{Environment.NewLine}{ex.ToString()}");
-                return null;
-            }
         }
 
         public string GetFilePath(string key)

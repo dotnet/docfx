@@ -606,18 +606,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             _lru.Access((ModelWithCache)sender);
         }
 
-        private static void OnLruRemoving(ModelWithCache m)
-        {
-            try
-            {
-                m.Serialize();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.File);
-            }
-        }
-
         private void ReportDependencyCore(DependencyItemSourceInfo from, DependencyItemSourceInfo to, DependencyItemSourceInfo reportedBy, string type)
         {
             DependencyGraph.ReportDependency(new DependencyItem(from, to, reportedBy, type));

@@ -94,12 +94,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private static string ParseFile(string link)
-        {
-            var queryIndex = link.IndexOfAny(new[] { '?', '#' });
-            return queryIndex == -1 ? link : link.Remove(queryIndex);
-        }
-
         private static void AddOrUpdate(Dictionary<string, ImmutableList<LinkSourceInfo>> dict, string path, LinkSourceInfo source)
             => dict[path] = dict.TryGetValue(path, out var sources) ? sources.Add(source) : ImmutableList.Create(source);
 

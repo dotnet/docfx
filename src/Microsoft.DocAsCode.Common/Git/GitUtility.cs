@@ -282,35 +282,6 @@ namespace Microsoft.DocAsCode.Common.Git
             throw new GitException(message);
         }
 
-        private static string TryRunGitCommand(string repoPath, string arguments)
-        {
-            var content = new StringBuilder();
-            try
-            {
-                RunGitCommand(repoPath, arguments, output => content.AppendLine(output));
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning($"Skipping RunGitCommand. Exception found: {ex.GetType()}, Message: {ex.Message}");
-                Logger.LogVerbose(ex.ToString());
-            }
-            return content.Length == 0 ? null : content.ToString();
-        }
-
-        private static string TryRunGitCommandAndGetLastLine(string repoPath, string arguments)
-        {
-            string content = null;
-            try
-            {
-                content = RunGitCommandAndGetLastLine(repoPath, arguments);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning($"Skipping RunGitCommandAndGetLastLine. Exception found: {ex.GetType()}, Message: {ex.Message}");
-                Logger.LogVerbose(ex.ToString());
-            }
-            return content;
-        }
 
         private static string RunGitCommandAndGetLastLine(string repoPath, string arguments)
         {

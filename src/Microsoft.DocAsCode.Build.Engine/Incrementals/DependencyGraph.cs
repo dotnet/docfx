@@ -650,19 +650,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             Write(_itemsSync, writer);
         }
 
-        private T WriteDependency<T>(Func<T> writer)
-        {
-            return Write(_itemsSync, writer);
-        }
-
         private void WriteReference(Action writer)
         {
             Write(_referenceSync, writer);
-        }
-
-        private T WriteReference<T>(Func<T> writer)
-        {
-            return Write(_referenceSync, writer);
         }
 
         private static void Read(ReaderWriterLockSlim slim, Action reader)

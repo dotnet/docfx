@@ -17,11 +17,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             // TODO implement
             return value;
         }
-
-        private object MergeCore(object value, IProcessContext context)
-        {
-            return value;
-        }
     }
 
 }
