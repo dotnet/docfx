@@ -352,7 +352,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             foreach (var item in toc.Items)
             {
-                var tocItem = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, s => IsValidHomepageLink(s));
+                var tocItem = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, IsValidHomepageLink);
                 if (tocItem != null)
                 {
                     return tocItem;

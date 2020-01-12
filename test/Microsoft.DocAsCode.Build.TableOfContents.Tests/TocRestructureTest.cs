@@ -242,7 +242,7 @@ root
                 ActionType = actionType,
                 Key = uid,
                 TypeOfKey = TreeItemKeyType.TopicUid,
-                RestructuredItems = childrenUids?.Select(s => GetTreeItem(s)).ToImmutableList(),
+                RestructuredItems = childrenUids?.Select(GetTreeItem).ToImmutableList(),
             };
         }
 
@@ -300,7 +300,7 @@ root
         {
             return layout.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .SelectMany(s => s.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                .Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => GetLineInfo(s));
+                .Where(s => !string.IsNullOrWhiteSpace(s)).Select(GetLineInfo);
         }
 
         private LineInfo GetLineInfo(string line)
