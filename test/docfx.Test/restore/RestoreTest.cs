@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
         public static async Task DownloadFile_NoFetch_Should_Fail()
         {
             await Assert.ThrowsAsync<DocfxException>(() =>
-                new FileResolver(".", noFetch: true).Download(
+                new FileResolver(".", fetchOptions: FetchOptions.NoFetch).Download(
                     new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
         }
 

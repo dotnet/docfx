@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options, bool noFetch = false)
+        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
-            var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, noFetch);
+            var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, options.FetchOptions);
             var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, xrefEndpoint, xrefQueryTags, _repository, fileResolver);
 
             // Create full config
