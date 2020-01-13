@@ -16,8 +16,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         private VersionStamp _versionToBeCompared;
 
-        private ConcurrentDictionary<string, VersionStamp> _metadataVersionCache;
-        private AsyncConcurrentCache<string, bool> _projectUpToDateSnapshot;
         private bool _versionChanged;
         private readonly BuildInfo _buildInfo;
 
@@ -38,8 +36,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             _buildInfo = buildInfo;
             _versionToBeCompared = VersionStamp.Create(checkUtcTime);
-            _metadataVersionCache = new ConcurrentDictionary<string, VersionStamp>();
-            _projectUpToDateSnapshot = new AsyncConcurrentCache<string, bool>();
         }
 
         public bool AreFilesModified(IEnumerable<string> files)
