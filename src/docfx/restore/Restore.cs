@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                     // load and trace entry repository
                     var repository = Repository.Create(docsetPath);
                     Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                    var locale = LocalizationUtility.GetLocale(repository, options);
+                    var locale = LocalizationUtility.GetLocale(repository);
 
                     // load configuration from current entry or fallback repository
                     var configLoader = new ConfigLoader(repository, errorLog);
@@ -63,8 +63,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    Log.Write(dex);
-                    return errorLog.Write(dex.Error);
+                    return errorLog.Write(dex);
                 }
                 finally
                 {
@@ -85,14 +84,12 @@ namespace Microsoft.Docs.Build
 
         private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository)
         {
-            using (var packageResolver = new PackageResolver(docsetPath, config))
-            {
-                ParallelUtility.ForEach(
-                    GetPackages(config, locale, repository).Distinct(),
-                    item => packageResolver.DownloadPackage(item.package, item.flags),
-                    Progress.Update,
-                    maxDegreeOfParallelism: 8);
-            }
+            using var packageResolver = new PackageResolver(docsetPath, config);
+            ParallelUtility.ForEach(
+                GetPackages(config, locale, repository).Distinct(),
+                item => packageResolver.DownloadPackage(item.package, item.flags),
+                Progress.Update,
+                maxDegreeOfParallelism: 8);
 
             EnsureLocalizationContributionBranch(config, repository);
         }
@@ -167,22 +164,6 @@ namespace Microsoft.Docs.Build
                 yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
                 yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
                 yield break;
-            }
-
-            // build from English
-            var (remote, branch) = LocalizationUtility.GetLocalizedRepo(
-                config.Localization.Mapping,
-                config.Localization.Bilingual,
-                repository.Remote,
-                repository.Branch,
-                locale,
-                config.Localization.DefaultLocale);
-
-            yield return (new PackagePath(remote, branch), PackageFetchOptions.None);
-
-            if (config.Localization.Bilingual && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
-            {
-                yield return (new PackagePath(repository.Remote, contributionBranch), PackageFetchOptions.None);
             }
         }
     }

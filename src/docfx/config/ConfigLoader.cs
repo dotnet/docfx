@@ -30,11 +30,12 @@ namespace Microsoft.Docs.Build
                 return new[] { (workingDirectory, options.Output) };
             }
 
-            var files = Directory.GetFiles(workingDirectory, "docfx.yml", SearchOption.AllDirectories)
-                .Concat(Directory.GetFiles(workingDirectory, "docfx.json", SearchOption.AllDirectories));
+            var files = Directory.GetFiles(workingDirectory, "docfx.*", SearchOption.AllDirectories);
 
             return (
                 from file in files
+                let extension = Path.GetExtension(file)
+                where extension.Equals(".json", PathUtility.PathComparison) || extension.Equals(".yml", PathUtility.PathComparison)
                 let configPath = Path.GetRelativePath(workingDirectory, file)
                 where glob(configPath)
                 let docsetPath = Path.GetDirectoryName(file)
@@ -91,7 +92,7 @@ namespace Microsoft.Docs.Build
         private static JObject LoadConfig(List<Error> errorBuilder, string fileName, string content)
         {
             var source = new FilePath(fileName);
-            var (errors, config) = fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+            var (errors, config) = fileName.EndsWith(".yml", PathUtility.PathComparison)
                 ? YamlUtility.Parse(content, source)
                 : JsonUtility.Parse(content, source);
 

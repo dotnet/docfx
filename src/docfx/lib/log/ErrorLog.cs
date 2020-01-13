@@ -70,26 +70,18 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(FilePath file, IEnumerable<Error> errors)
+        public bool Write(IEnumerable<DocfxException> exceptions)
         {
             var hasErrors = false;
-            foreach (var error in errors)
+            foreach (var exception in exceptions)
             {
-                if (Write(file, error))
+                Log.Write(exception);
+                if (Write(exception.Error, exception.OverwriteLevel))
                 {
                     hasErrors = true;
                 }
             }
             return hasErrors;
-        }
-
-        public bool Write(FilePath file, Error error, ErrorLevel? overwriteLevel = null)
-        {
-            return Write(
-                file == error.FilePath || error.FilePath != null
-                    ? error
-                    : new Error(error.Level, error.Code, error.Message, file, error.Line, error.Column),
-                overwriteLevel);
         }
 
         public bool Write(Error error, ErrorLevel? overwriteLevel = null)

@@ -74,11 +74,11 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(schemaErrors);
                     xrefs.AddRange(specs);
                 }
-                context.ErrorLog.Write(path, errors);
+                context.ErrorLog.Write(errors);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(path, dex.Error, dex.OverwriteLevel);
+                context.ErrorLog.Write(dex);
             }
             catch
             {

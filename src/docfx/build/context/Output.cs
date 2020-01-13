@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -9,13 +10,15 @@ namespace Microsoft.Docs.Build
     internal class Output
     {
         private readonly Input _input;
+        private readonly bool _dryRun;
 
         public string OutputPath { get; }
 
-        public Output(string outputPath, Input input)
+        public Output(string outputPath, Input input, bool dryRun)
         {
             OutputPath = Path.GetFullPath(outputPath);
             _input = input;
+            _dryRun = dryRun;
         }
 
         /// <summary>
@@ -24,10 +27,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void WriteJson(object graph, string destRelativePath)
         {
-            using (var writer = new StreamWriter(GetDestinationPath(destRelativePath)))
-            {
-                JsonUtility.Serialize(writer, graph);
-            }
+            EnsureNoDryRun();
+
+            using var writer = new StreamWriter(GetDestinationPath(destRelativePath));
+            JsonUtility.Serialize(writer, graph);
         }
 
         /// <summary>
@@ -36,6 +39,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void WriteText(string text, string destRelativePath)
         {
+            EnsureNoDryRun();
+
             File.WriteAllText(GetDestinationPath(destRelativePath), text);
         }
 
@@ -45,6 +50,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public void Copy(Document file, string destRelativePath)
         {
+            EnsureNoDryRun();
+
             var targetPhysicalPath = GetDestinationPath(destRelativePath);
             if (_input.TryGetPhysicalPath(file.FilePath, out var sourcePhysicalPath))
             {
@@ -52,16 +59,16 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            using (var sourceStream = _input.ReadStream(file.FilePath))
-            using (var targetStream = File.Create(targetPhysicalPath))
-            {
-                sourceStream.CopyTo(targetStream);
-            }
+            using var sourceStream = _input.ReadStream(file.FilePath);
+            using var targetStream = File.Create(targetPhysicalPath);
+            sourceStream.CopyTo(targetStream);
         }
 
         public void Delete(string destRelativePath, bool legacy = false)
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
+
+            EnsureNoDryRun();
 
             var destinationPath = Path.Combine(OutputPath, destRelativePath);
 
@@ -89,6 +96,14 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(destinationPath)));
 
             return destinationPath;
+        }
+
+        private void EnsureNoDryRun()
+        {
+            if (_dryRun)
+            {
+                throw new InvalidOperationException("Don't write output in --dry-run mode");
+            }
         }
     }
 }

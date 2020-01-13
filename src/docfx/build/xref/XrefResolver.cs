@@ -35,8 +35,8 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(context.Config.XrefHostName) ? docset.Config.HostName : context.Config.XrefHostName;
         }
 
-        public (Error error, string href, string display, Document declaringFile) ResolveAbsoluteXref(
-            SourceInfo<string> href, Document referencingFile, Document relativeToFile)
+        public (Error error, string href, string display, Document declaringFile) ResolveXref(
+            SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string moniker = null;
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), referencingFile);
+            var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), hrefRelativeTo);
             if (xrefError != null)
             {
                 return (xrefError, null, null, null);
@@ -71,28 +71,21 @@ namespace Microsoft.Docs.Build
             {
                 queries["view"] = moniker;
             }
+
             var resolvedHref = UrlUtility.MergeUrl(
-                RemoveSharingHost(xrefSpec.Href, referencingFile.Docset.Config.HostName),
+                RemoveSharingHost(xrefSpec.Href, hrefRelativeTo.Docset.Config.HostName),
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment);
 
             // NOTE: this should also be relative to root file
-            _fileLinkMapBuilder.AddFileLink(relativeToFile ?? referencingFile, resolvedHref);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot ?? hrefRelativeTo, resolvedHref);
 
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
-        }
-
-        public (Error error, string href, string display, Document declaringFile) ResolveRelativeXref(
-            Document relativeToFile, SourceInfo<string> href, Document referencingFile)
-        {
-            var (error, link, display, declaringFile) = ResolveAbsoluteXref(href, referencingFile, relativeToFile);
-
-            if (declaringFile != null)
+            if (xrefSpec?.DeclaringFile != null)
             {
-                link = UrlUtility.GetRelativeUrl(relativeToFile.SiteUrl, link);
+                resolvedHref = UrlUtility.GetRelativeUrl(inclusionRoot.SiteUrl, resolvedHref);
             }
 
-            return (error, link, display, declaringFile);
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
         public (Error, ExternalXrefSpec) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)

@@ -115,6 +115,7 @@ namespace Microsoft.Docs.Build
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+                    syntax.DefineOption("dry-run", ref options.DryRun, "Don't produce artifacts, just show validation result.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Watch command
@@ -128,7 +129,6 @@ namespace Microsoft.Docs.Build
                     options.StdinConfig = JsonUtility.Deserialize<JObject>(Console.ReadLine(), new FilePath("--stdin"));
                 }
 
-                options.Locale = options.Locale?.ToLowerInvariant();
                 return (command, workingDirectory, options);
             }
             catch (ArgumentSyntaxException ex)
@@ -141,7 +141,6 @@ namespace Microsoft.Docs.Build
         private static void DefineCommonOptions(ArgumentSyntax syntax, ref string workingDirectory, CommandLineOptions options)
         {
             syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
-            syntax.DefineOption("locale", ref options.Locale, "The locale of the docset to build");
             syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
             syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");

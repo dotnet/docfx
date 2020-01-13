@@ -79,10 +79,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string ReadString(FilePath file)
         {
-            using (var reader = ReadText(file))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = ReadText(file);
+            return reader.ReadToEnd();
         }
 
         /// <summary>
@@ -92,10 +90,8 @@ namespace Microsoft.Docs.Build
         {
             return _jsonTokenCache.GetOrAdd(file, path =>
             {
-                using (var reader = ReadText(path))
-                {
-                    return JsonUtility.Parse(reader, path);
-                }
+                using var reader = ReadText(path);
+                return JsonUtility.Parse(reader, path);
             });
         }
 
@@ -106,10 +102,8 @@ namespace Microsoft.Docs.Build
         {
             return _yamlTokenCache.GetOrAdd(file, path =>
             {
-                using (var reader = ReadText(path))
-                {
-                    return YamlUtility.Parse(reader, path);
-                }
+                using var reader = ReadText(path);
+                return YamlUtility.Parse(reader, path);
             });
         }
 
@@ -151,45 +145,37 @@ namespace Microsoft.Docs.Build
                 case FileOrigin.Default:
                     if (_localizationProvider?.IsLocalizationBuild == true)
                     {
-                        var (entry, repository) = _localizationProvider.GetBuildRepositoryWithDocsetEntry();
-                        return ListFilesRecursive(Path.GetFullPath(entry), null);
+                        var (entry, _) = _localizationProvider.GetBuildRepositoryWithDocsetEntry();
+                        return ListFilesRecursive(Path.GetFullPath(entry));
                     }
                     else
                     {
-                        return ListFilesRecursive(_docsetPath, null);
+                        return ListFilesRecursive(_docsetPath);
                     }
 
                 case FileOrigin.Fallback:
-                    var (fallbackEntry, fallbackRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin);
+                    var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin);
 
-                    return ListFilesRecursive(fallbackEntry, null);
+                    return ListFilesRecursive(fallbackEntry);
 
                 case FileOrigin.Dependency:
-                    var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin, dependencyName);
+                    var (dependencyEntry, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin, dependencyName);
 
-                    return ListFilesRecursive(dependencyEntry, dependencyRepository);
+                    return ListFilesRecursive(dependencyEntry);
 
                 default:
                     throw new NotSupportedException($"{nameof(ListFilesRecursive)}: {origin}");
             }
 
-            FilePath[] ListFilesRecursive(string entry, Repository repository)
+            FilePath[] ListFilesRecursive(string entry)
             {
-                if (repository != null)
-                {
-                    // todo: get tree list from repository
-                    return GitUtility.ListTree(repository.Path, repository.Commit)
-                        .Select(path => CreateFilePath(path))
-                        .ToArray();
-                }
-
                 if (!Directory.Exists(entry))
                 {
                     return Array.Empty<FilePath>();
                 }
 
                 return Directory
-                .GetFiles(entry, "*", SearchOption.AllDirectories)
+                    .GetFiles(entry, "*", SearchOption.AllDirectories)
                     .Select(path => CreateFilePath(Path.GetRelativePath(entry, path)))
                     .ToArray();
             }

@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
+        private readonly bool _hasMonikerRangeFileMetadata;
         private readonly DocumentProvider _documentProvider;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
@@ -29,14 +30,14 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
         public MetadataProvider(
-            Docset docset, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
+            Config config, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
         {
             _input = input;
             _documentProvider = documentProvider;
-            _globalMetadata = docset.Config.GlobalMetadata.ExtensionData;
+            _globalMetadata = config.GlobalMetadata.ExtensionData;
 
             MetadataSchemas = Array.ConvertAll(
-                docset.Config.MetadataSchema,
+                config.MetadataSchema,
                 schema => JsonUtility.Deserialize<JsonSchema>(
                     fileResolver.ReadString(schema), schema.Source?.File));
 
@@ -56,7 +57,9 @@ namespace Microsoft.Docs.Build
                 schema => schema.Properties.Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName)))
                     .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
 
-            foreach (var (key, item) in docset.Config.FileMetadata)
+            _hasMonikerRangeFileMetadata = config.FileMetadata.ContainsKey("monikerRange");
+
+            foreach (var (key, item) in config.FileMetadata)
             {
                 foreach (var (glob, value) in item.Value)
                 {
@@ -66,25 +69,28 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath file)
+        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath path)
         {
-            return _metadataCache.GetOrAdd(file, GetMetadataCore);
+            var file = _documentProvider.GetDocument(path);
+
+            switch (file.ContentType)
+            {
+                case ContentType.Unknown:
+                case ContentType.Redirection when !_hasMonikerRangeFileMetadata:
+                case ContentType.Resource when !_hasMonikerRangeFileMetadata:
+                    return (new List<Error>(), new UserMetadata());
+
+                default:
+                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(file));
+            }
         }
 
-        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath path)
+        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
         {
             var result = new JObject();
             var errors = new List<Error>();
-            var yamlHeader = new JObject();
 
-            var file = _documentProvider.GetDocument(path);
-
-            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
-            {
-                (errors, yamlHeader) = LoadMetadata(file);
-                JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
-            }
-
+            JsonUtility.SetSourceInfo(result, new SourceInfo(file.FilePath, 1, 1));
             JsonUtility.Merge(result, _globalMetadata);
 
             var fileMetadata = new JObject();
@@ -98,7 +104,18 @@ namespace Microsoft.Docs.Build
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
-            JsonUtility.Merge(result, yamlHeader);
+
+            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
+            {
+                var (yamlHeaderErrors, yamlHeader) = LoadYamlHeader(file);
+                errors.AddRange(yamlHeaderErrors);
+
+                if (yamlHeader.Count > 0)
+                {
+                    JsonUtility.Merge(result, yamlHeader);
+                    JsonUtility.SetSourceInfo(result, JsonUtility.GetSourceInfo(yamlHeader));
+                }
+            }
 
             foreach (var (key, value) in result)
             {
@@ -145,30 +162,28 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private (List<Error> errors, JObject metadata) LoadMetadata(Document file)
+        private (List<Error> errors, JObject yamlHeader) LoadYamlHeader(Document file)
         {
             if (file.FilePath.EndsWith(".md"))
             {
-                using (var reader = _input.ReadText(file.FilePath))
-                {
-                    return ExtractYamlHeader.Extract(reader, file);
-                }
+                using var reader = _input.ReadText(file.FilePath);
+                return ExtractYamlHeader.Extract(reader, file);
             }
 
             if (file.FilePath.EndsWith(".yml"))
             {
-                return LoadSchemaDocumentMetadata(_input.ReadYaml(file.FilePath), file);
+                return LoadSchemaDocumentYamlHeader(_input.ReadYaml(file.FilePath), file);
             }
 
             if (file.FilePath.EndsWith(".json"))
             {
-                return LoadSchemaDocumentMetadata(_input.ReadJson(file.FilePath), file);
+                return LoadSchemaDocumentYamlHeader(_input.ReadJson(file.FilePath), file);
             }
 
             return (new List<Error>(), new JObject());
         }
 
-        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentMetadata((List<Error>, JToken) document, Document file)
+        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentYamlHeader((List<Error>, JToken) document, Document file)
         {
             var (errors, token) = document;
             var metadata = token is JObject tokenObj ? tokenObj["metadata"] : null;

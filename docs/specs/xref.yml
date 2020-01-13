@@ -468,7 +468,7 @@ outputs:
   docs/b.json: |
     {"xref":{"uid":"a","href":"a.json"}}
   .errors.log: |
-    ["warning","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json"]
+    ["warning","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json",6,14]
 ---
 # uid conflict in non-root level and another SDP
 inputs:

@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <FodyGenerateXsd>false</FodyGenerateXsd>
   </PropertyGroup>
 
@@ -14,8 +14,6 @@
   <ItemGroup>
     <None Include="*.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="*.yml" CopyToOutputDirectory="PreserveNewest" />
-    <!-- Workaround https://github.com/aspnet/Razor/issues/2162 -->
-    <None Include="../../src/docfx/bin/$(Configuration)/$(TargetFramework)/docfx.deps.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -46,7 +46,13 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string> GetConfigMonikerRange(FilePath file)
         {
-            return _monikerRangeCache.GetOrAdd(file, GetFileLevelMonikerRangeCore);
+            // Fast pass to get config moniker range if the docset doesn't have any moniker config
+            if (_rules.Length == 0 && _config.Groups.Count == 0)
+            {
+                return default;
+            }
+
+            return _monikerRangeCache.GetOrAdd(file, GetConfigMonikerRangeCore);
         }
 
         public (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
@@ -108,7 +114,7 @@ namespace Microsoft.Docs.Build
             return (null, configMonikers);
         }
 
-        private SourceInfo<string> GetFileLevelMonikerRangeCore(FilePath file)
+        private SourceInfo<string> GetConfigMonikerRangeCore(FilePath file)
         {
             var (_, mapping) = _buildScope.MapPath(file.Path);
 

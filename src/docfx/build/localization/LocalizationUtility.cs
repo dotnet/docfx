@@ -60,11 +60,11 @@ namespace Microsoft.Docs.Build
             return TryGetFallbackRepository(repository.Remote, repository.Branch, out fallbackRemote, out fallbackBranch, out locale);
         }
 
-        public static string GetLocale(Repository repository, CommandLineOptions options)
+        public static string GetLocale(Repository repository)
         {
-            return options.Locale ?? (TryRemoveLocale(repository?.Branch, out _, out var branchLocale)
+            return TryRemoveLocale(repository?.Branch, out _, out var branchLocale)
                 ? branchLocale : TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
-                ? remoteLocale : default);
+                ? remoteLocale : default;
         }
 
         public static bool TryGetContributionBranch(string branch, out string contributionBranch)

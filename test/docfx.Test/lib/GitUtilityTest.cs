@@ -34,28 +34,26 @@ namespace Microsoft.Docs.Build
             var repo = Repository.Create(Path.GetFullPath(file), branch: null);
             Assert.NotNull(repo);
 
-            using (var gitCommitProvider = new GitCommitProvider())
-            {
-                var pathToRepo = PathUtility.NormalizeFile(file);
+            using var gitCommitProvider = new GitCommitProvider();
+            var pathToRepo = PathUtility.NormalizeFile(file);
 
-                // current branch
-                var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo.Path);
-                var (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo);
+            // current branch
+            var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo.Path);
+            var (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo);
 
-                Assert.Equal(
-                    exe.Replace("\r", ""),
-                    string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+            Assert.Equal(
+                exe.Replace("\r", ""),
+                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
-                // another branch
-                exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
-                (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo, "a050eaf");
+            // another branch
+            exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
+            (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo, "a050eaf");
 
-                Assert.Equal(
-                    exe.Replace("\r", ""),
-                    string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+            Assert.Equal(
+                exe.Replace("\r", ""),
+                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
-                gitCommitProvider.Save();
-            }
+            gitCommitProvider.Save();
 
         }
 

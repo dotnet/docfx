@@ -22,7 +22,6 @@ namespace Microsoft.Docs.Build
         public RepositoryProvider(
             string docsetPath,
             Repository repository,
-            CommandLineOptions options,
             Config config = null,
             PackageResolver packageResolver = null,
             LocalizationProvider localizationProvider = null)
@@ -30,7 +29,7 @@ namespace Microsoft.Docs.Build
             _docsetPath = docsetPath;
             _repository = repository;
             _packageResolver = packageResolver;
-            _locale = LocalizationUtility.GetLocale(repository, options);
+            _locale = LocalizationUtility.GetLocale(repository);
             _config = config;
             _localizationProvider = localizationProvider;
             _templateRepository = new Lazy<(string, Repository)>(GetTemplateRepository);

@@ -20,37 +20,35 @@ namespace Microsoft.Docs.Build
 
             foreach (var url in docset.Config.Xref)
             {
-                using (var stream = fileResolver.ReadStream(url))
+                using var stream = fileResolver.ReadStream(url);
+                var path = new FilePath(url);
+                if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                 {
-                    var path = new FilePath(url);
-                    if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                    LoadZipFile(result, path, stream);
+                }
+                else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    var xrefMap = YamlUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
+                    foreach (var spec in xrefMap.References)
                     {
-                        LoadZipFile(result, path, stream);
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                     }
-                    else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                }
+                else if (stream is FileStream fileStream)
+                {
+                    // Fast pass for JSON xref files
+                    foreach (var (uid, spec) in LoadJsonFile(fileStream.Name))
                     {
-                        var xrefMap = YamlUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
-                        foreach (var spec in xrefMap.References)
-                        {
-                            result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
-                        }
+                        // for same uid with multiple specs, we should respect the order of the list
+                        result.TryAdd(uid, spec);
                     }
-                    else if (stream is FileStream fileStream)
+                }
+                else
+                {
+                    var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
+                    foreach (var spec in xrefMap.References)
                     {
-                        // Fast pass for JSON xref files
-                        foreach (var (uid, spec) in LoadJsonFile(fileStream.Name))
-                        {
-                            // for same uid with multiple specs, we should respect the order of the list
-                            result.TryAdd(uid, spec);
-                        }
-                    }
-                    else
-                    {
-                        var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
-                        foreach (var spec in xrefMap.References)
-                        {
-                            result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
-                        }
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                     }
                 }
             }
@@ -70,11 +68,9 @@ namespace Microsoft.Docs.Build
             {
                 result.Add((uid, new Lazy<ExternalXrefSpec>(() =>
                 {
-                    using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        var json = ReadJsonFragment(stream, start, end);
-                        return JsonUtility.Deserialize<ExternalXrefSpec>(json, new FilePath(filePath));
-                    }
+                    using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    var json = ReadJsonFragment(stream, start, end);
+                    return JsonUtility.Deserialize<ExternalXrefSpec>(json, new FilePath(filePath));
                 })));
             }
             return result;
@@ -82,28 +78,24 @@ namespace Microsoft.Docs.Build
 
         private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, Stream stream)
         {
-            using (var archive = new ZipArchive(stream))
+            using var archive = new ZipArchive(stream);
+            foreach (var entry in archive.Entries)
             {
-                foreach (var entry in archive.Entries)
+                using var entryStream = entry.Open();
+                if (entry.FullName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
-                    using (var entryStream = entry.Open())
+                    var xrefMap = YamlUtility.Deserialize<XrefMapModel>(new StreamReader(entryStream), path);
+                    foreach (var spec in xrefMap.References)
                     {
-                        if (entry.FullName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-                        {
-                            var xrefMap = YamlUtility.Deserialize<XrefMapModel>(new StreamReader(entryStream), path);
-                            foreach (var spec in xrefMap.References)
-                            {
-                                result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
-                            }
-                        }
-                        else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                        {
-                            var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(entryStream), path);
-                            foreach (var spec in xrefMap.References)
-                            {
-                                result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
-                            }
-                        }
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                    }
+                }
+                else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(entryStream), path);
+                    foreach (var spec in xrefMap.References)
+                    {
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                     }
                 }
             }

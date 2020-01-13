@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using HtmlAgilityPack;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
@@ -15,10 +14,6 @@ namespace Microsoft.Docs.Build
 {
     internal class MarkdownEngine
     {
-        // This magic string identifies if an URL was a relative URL in source,
-        // URLs starting with this magic string are transformed into relative URL after markup.
-        private const string RelativeUrlMarker = "//////";
-
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
         private readonly MonikerProvider _monikerProvider;
@@ -47,11 +42,10 @@ namespace Microsoft.Docs.Build
             _markdownValidationRules = config.MarkdownValidationRules;
             if (!string.IsNullOrEmpty(_markdownValidationRules))
             {
-                using (var stream = fileResolver.ReadStream(config.MarkdownValidationRules))
-                {
-                    // TODO: validation rules currently only supports physical file.
-                    _markdownValidationRules = ((FileStream)stream).Name;
-                }
+                using var stream = fileResolver.ReadStream(config.MarkdownValidationRules);
+
+                // TODO: validation rules currently only supports physical file.
+                _markdownValidationRules = ((FileStream)stream).Name;
             }
 
             _pipelines = new[]
@@ -80,7 +74,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, HtmlNode html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType)
+        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -94,18 +88,8 @@ namespace Microsoft.Docs.Build
                     t_status.Value.Push(status);
 
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
-                    var htmlNode = HtmlUtility.LoadHtml(html);
 
-                    var htmlNodeWithRelativeLink = HtmlUtility.TransformLinks(htmlNode, (href, _) =>
-                    {
-                        if (href.StartsWith(RelativeUrlMarker))
-                        {
-                            return UrlUtility.GetRelativeUrl(file.SiteUrl, href.Substring(RelativeUrlMarker.Length));
-                        }
-                        return href;
-                    });
-
-                    return (status.Errors, htmlNodeWithRelativeLink.StripTags().RemoveRerunCodepenIframes());
+                    return (status.Errors, html);
                 }
                 finally
                 {
@@ -195,13 +179,8 @@ namespace Microsoft.Docs.Build
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value.Peek();
-            var (error, link, file) = _linkResolver.ResolveAbsoluteLink(
+            var (error, link, file) = _linkResolver.ResolveLink(
                 href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-
-            if (file != null)
-            {
-                link = RelativeUrlMarker + link;
-            }
 
             status.Errors.AddIfNotNull(error);
             return link;
@@ -210,13 +189,8 @@ namespace Microsoft.Docs.Build
         private (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
         {
             var status = t_status.Value.Peek();
-            var (error, link, display, declaringFile) = _xrefResolver.ResolveAbsoluteXref(
+            var (error, link, display, _) = _xrefResolver.ResolveXref(
                 href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-
-            if (declaringFile != null)
-            {
-                link = RelativeUrlMarker + link;
-            }
 
             if (!isShorthand)
             {

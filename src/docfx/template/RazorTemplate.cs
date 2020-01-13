@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+[assembly: ApplicationPart("Microsoft.Docs.Template")]
 
 namespace Microsoft.Docs.Build
 {
@@ -31,33 +34,30 @@ namespace Microsoft.Docs.Build
                 context.Items["model"] = model;
             });
 
-            using (var reader = new StreamReader(httpContext.Response.Body))
+            using var reader = new StreamReader(httpContext.Response.Body);
+            var body = reader.ReadToEnd();
+            var statusCode = httpContext.Response.StatusCode;
+
+            if (statusCode != 200)
             {
-                var body = reader.ReadToEnd();
-                var statusCode = httpContext.Response.StatusCode;
-
-                if (statusCode != 200)
-                {
-                    var message = $"Render '{template}' failed with status code {statusCode}:\n{body}";
-                    throw new InvalidOperationException(message);
-                }
-
-                return body;
+                var message = $"Render '{template}' failed with status code {statusCode}:\n{body}";
+                throw new InvalidOperationException(message);
             }
+
+            return body;
         }
 
         private static TestServer StartServer()
         {
             return new TestServer(
                 new WebHostBuilder()
-                    .UseEnvironment(EnvironmentName.Production)
+                    .UseEnvironment(Environments.Production)
                     .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
 
             void ConfigureServices(IServiceCollection services)
             {
-                services.AddMvc()
-                        .ConfigureApplicationPartManager(parts =>
+                services.AddMvc().ConfigureApplicationPartManager(parts =>
                         {
                             // Ensure we only have one private TemplateController
                             parts.FeatureProviders.Remove(parts.FeatureProviders.First(fp => fp is IApplicationFeatureProvider<ControllerFeature>));
@@ -67,11 +67,14 @@ namespace Microsoft.Docs.Build
 
             void Configure(IApplicationBuilder app)
             {
-                app.UseMvc(
-                    routes => routes.MapRoute(
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapRazorPages();
+                    endpoints.MapControllerRoute(
                         name: "content",
-                        template: "{*url}",
-                        defaults: new { controller = "Template", action = "Get" }));
+                        pattern: "{controller=Template}/{action=Get}");
+                });
             }
         }
 

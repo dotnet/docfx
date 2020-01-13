@@ -10,8 +10,8 @@ namespace Microsoft.Docs.Build
         public string Output;
         public bool Legacy;
         public bool Verbose;
+        public bool DryRun;
         public bool Stdin;
-        public string Locale;
         public string Template;
         public int Port;
 
@@ -33,6 +33,7 @@ namespace Microsoft.Docs.Build
             {
                 ["output"] = output,
                 ["legacy"] = Legacy,
+                ["dryRun"] = DryRun,
             };
 
             if (Template != null)

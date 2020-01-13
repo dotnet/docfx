@@ -29,52 +29,46 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
-            PackageResolver packageResolver = null;
 
-            using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
+            using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
+            var stopwatch = Stopwatch.StartNew();
+
+            try
             {
-                var stopwatch = Stopwatch.StartNew();
+                // load and trace entry repository
+                var repository = Repository.Create(docsetPath);
+                Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+                var locale = LocalizationUtility.GetLocale(repository);
 
-                try
-                {
-                    // load and trace entry repository
-                    var repository = Repository.Create(docsetPath);
-                    Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                    var locale = LocalizationUtility.GetLocale(repository, options);
-
-                    var configLoader = new ConfigLoader(repository, errorLog);
-                    (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
-                    if (errorLog.Write(errors))
-                        return false;
-
-                    using (packageResolver = new PackageResolver(docsetPath, config, noFetch: true))
-                    {
-                        var localizationProvider = new LocalizationProvider(packageResolver, options, config, locale, docsetPath, repository);
-                        var repositoryProvider = new RepositoryProvider(docsetPath, repository, options, config, packageResolver, localizationProvider);
-                        var input = new Input(docsetPath, repositoryProvider, localizationProvider);
-
-                        // get docsets(build docset, fallback docset and dependency docsets)
-                        var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
-
-                        // run build based on docsets
-                        outputPath = outputPath ?? Path.Combine(docsetPath, docset.Config.Output.Path);
-                        await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
-                    }
-                }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    Log.Write(dex);
-                    errorLog.Write(dex.Error, dex.OverwriteLevel);
+                var configLoader = new ConfigLoader(repository, errorLog);
+                (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
+                if (errorLog.Write(errors))
                     return false;
-                }
-                finally
-                {
-                    Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
-                    Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                    errorLog.PrintSummary();
-                }
-                return true;
+
+                using var packageResolver = new PackageResolver(docsetPath, config, noFetch: true);
+                var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
+                var repositoryProvider = new RepositoryProvider(docsetPath, repository, config, packageResolver, localizationProvider);
+                var input = new Input(docsetPath, repositoryProvider, localizationProvider);
+
+                // get docsets(build docset, fallback docset and dependency docsets)
+                var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
+
+                // run build based on docsets
+                outputPath ??= Path.Combine(docsetPath, docset.Config.Output.Path);
+                await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
             }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                errorLog.Write(dex);
+                return false;
+            }
+            finally
+            {
+                Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
+                Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                errorLog.PrintSummary();
+            }
+            return true;
         }
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
@@ -106,20 +100,25 @@ namespace Microsoft.Docs.Build
             RepositoryProvider repositoryProvider,
             LocalizationProvider localizationProvider)
         {
-            using (var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider))
+            using var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider);
+            context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
+
+            using (Progress.Start("Building files"))
             {
-                context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
+                await context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
+            }
 
-                using (Progress.Start("Building files"))
-                {
-                    await context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
-                }
+            context.BookmarkValidator.Validate();
 
-                context.BookmarkValidator.Validate();
+            var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
+            context.ErrorLog.Write(errors);
 
-                var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context, docset.Legacy);
+            // TODO: explicitly state that ToXrefMapModel produces errors
+            var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+
+            if (!context.Config.DryRun)
+            {
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var xrefMapModel = context.XrefResolver.ToXrefMapModel();
                 var fileLinkMap = context.FileLinkMapBuilder.Build();
 
                 context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
@@ -139,13 +138,13 @@ namespace Microsoft.Docs.Build
                         context.TemplateEngine.CopyTo(outputPath);
                     }
                 }
-
-                context.ContributionProvider.Save();
-                context.GitCommitProvider.Save();
-
-                errorLog.Write(await context.GitHubAccessor.Save());
-                errorLog.Write(await context.MicrosoftGraphAccessor.Save());
             }
+
+            context.ContributionProvider.Save();
+            context.GitCommitProvider.Save();
+
+            errorLog.Write(await context.GitHubAccessor.Save());
+            errorLog.Write(await context.MicrosoftGraphAccessor.Save());
         }
 
         private static async Task BuildFile(Context context, FilePath path)
@@ -177,7 +176,7 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                if (context.ErrorLog.Write(path, errors))
+                if (context.ErrorLog.Write(errors))
                 {
                     context.PublishModelBuilder.ExcludeFromOutput(file);
                 }
@@ -186,7 +185,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                context.ErrorLog.Write(path, dex.Error, dex.OverwriteLevel);
+                context.ErrorLog.Write(dex);
                 context.PublishModelBuilder.ExcludeFromOutput(file);
             }
             catch

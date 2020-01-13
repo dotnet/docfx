@@ -96,11 +96,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string Serialize(object graph, bool indent = false)
         {
-            using (var writer = new StringWriter())
-            {
-                Serialize(writer, graph, indent);
-                return writer.ToString();
-            }
+            using var writer = new StringWriter();
+            Serialize(writer, graph, indent);
+            return writer.ToString();
         }
 
         /// <summary>
@@ -109,10 +107,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(string json, FilePath file) where T : class, new()
         {
-            using (var reader = new StringReader(json))
-            {
-                return Deserialize<T>(reader, file);
-            }
+            using var reader = new StringReader(json);
+            return Deserialize<T>(reader, file);
         }
 
         /// <summary>
@@ -121,28 +117,26 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T Deserialize<T>(TextReader json, FilePath file) where T : class, new()
         {
-            using (var reader = new JsonTextReader(json))
+            using var reader = new JsonTextReader(json);
+            try
             {
-                try
-                {
-                    var status = new Status { FilePath = file };
+                var status = new Status { FilePath = file };
 
-                    t_status.Value.Push(status);
+                t_status.Value.Push(status);
 
-                    return s_serializer.Deserialize<T>(reader) ?? new T();
-                }
-                catch (JsonReaderException ex)
-                {
-                    throw ToError(ex, file).ToException(ex);
-                }
-                catch (JsonSerializationException ex)
-                {
-                    throw ToError(ex, file).ToException(ex);
-                }
-                finally
-                {
-                    t_status.Value.Pop();
-                }
+                return s_serializer.Deserialize<T>(reader) ?? new T();
+            }
+            catch (JsonReaderException ex)
+            {
+                throw ToError(ex, file).ToException(ex);
+            }
+            catch (JsonSerializationException ex)
+            {
+                throw ToError(ex, file).ToException(ex);
+            }
+            finally
+            {
+                t_status.Value.Pop();
             }
         }
 
@@ -195,10 +189,8 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                using (var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None })
-                {
-                    return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
-                }
+                using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
+                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
             }
             catch (JsonReaderException ex)
             {
@@ -401,21 +393,19 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                using (var json = new JsonTextReader(reader))
+                using var json = new JsonTextReader(reader);
+                if (json.Read() && json.TokenType == JsonToken.StartObject)
                 {
-                    if (json.Read() && json.TokenType == JsonToken.StartObject)
+                    if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
                     {
-                        if (json.Read() && json.TokenType == JsonToken.PropertyName && json.Value is string str && str == "$schema")
+                        if (json.Read() && json.Value is string schema)
                         {
-                            if (json.Read() && json.Value is string schema)
-                            {
-                                var lineInfo = (IJsonLineInfo)json;
-                                return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
-                            }
+                            var lineInfo = (IJsonLineInfo)json;
+                            return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
                         }
                     }
-                    return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
                 }
+                return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
             }
             catch (JsonReaderException)
             {
