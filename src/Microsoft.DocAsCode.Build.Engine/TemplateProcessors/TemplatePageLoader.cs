@@ -10,15 +10,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class TemplatePageLoader
     {
-        private readonly IResourceFileReader _reader;
-        private readonly int _maxParallelism;
         private readonly RendererLoader _rendererLoader;
         private readonly PreprocessorLoader _preprocessorLoader;
 
         public TemplatePageLoader(IResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
         {
-            _reader = reader;
-            _maxParallelism = maxParallelism;
             _rendererLoader = new RendererLoader(reader, maxParallelism);
             _preprocessorLoader = new PreprocessorLoader(reader, context, maxParallelism);
         }

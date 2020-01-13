@@ -13,12 +13,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class TemplatePreprocessorLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;
-        private readonly string _outputFolder;
 
         public TemplatePreprocessorLoaderUnitTest()
         {
             _inputFolder = GetRandomFolder();
-            _outputFolder = GetRandomFolder();
         }
 
         [Fact]

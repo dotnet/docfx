@@ -26,7 +26,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     {
         private string _outputFolder;
         private string _inputFolder;
-        private string _templateFolder;
         private FileCollection _defaultFiles;
         private ApplyTemplateSettings _applyTemplateSettings;
 
@@ -37,7 +36,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         {
             _outputFolder = GetRandomFolder();
             _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
             _defaultFiles.Add(DocumentType.Article, new[] { "TestData/swagger/contacts.json" }, "TestData/");
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
