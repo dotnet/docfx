@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Glob.Tests
         {
            "abc/"
         }, false)]
-        // To match folders, / should be explictly specified
+        // To match folders, / should be explicitly specified
         [InlineData("**/", new string[]
         {
             "bdir/", "bdir/cdir/"

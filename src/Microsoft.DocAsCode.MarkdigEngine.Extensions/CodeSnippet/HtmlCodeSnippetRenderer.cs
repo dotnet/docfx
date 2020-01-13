@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private static readonly string LispCodeSnippetRegionStartLineTemplate = ";<{tagname}>";
         private static readonly string LispCodeSnippetRegionEndLineTemplate = ";<{tagname}>";
 
-        // Language names and aliases fllow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
+        // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration

@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal(0, listener.Items.Count);
                 Assert.Equal(0, templates.Count);
 
-                // only allowes file under root folder
+                // only allows file under root folder
                 var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
                 templates = LoadAllTemplates();
                 Assert.Equal(0, listener.Items.Count);
