@@ -49,8 +49,6 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
 
             private readonly DfmEngineBuilder _builder;
 
-            private readonly ImmutableDictionary<string, string> _tokens;
-
             private readonly YamlHeaderMarkdownRenderer _renderer;
 
             public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyList<string> fallbackFolders = null)
@@ -58,7 +56,6 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
                 _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
-                _tokens = tokens;
                 _renderer = new YamlHeaderMarkdownRenderer();
             }
 

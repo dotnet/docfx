@@ -16,12 +16,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class TemplatePageLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;
-        private readonly string _outputFolder;
 
         public TemplatePageLoaderUnitTest()
         {
             _inputFolder = GetRandomFolder();
-            _outputFolder = GetRandomFolder();
         }
 
         [Fact]
