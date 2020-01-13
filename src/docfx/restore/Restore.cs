@@ -153,11 +153,6 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (config.Localization.Mapping == LocalizationMapping.Folder)
-            {
-                yield break;
-            }
-
             if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
             {
                 // fallback to master

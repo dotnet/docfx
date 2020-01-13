@@ -33,15 +33,12 @@ namespace Microsoft.Docs.Build
             return s_lrmAdjustment.Replace(text, me => $"{me.Groups[1]}{me.Groups[2]}&lrm;{me.Groups[3]}{me.Groups[4]}");
         }
 
-        /// <summary>
-        /// The loc repo remote and branch based on localization mapping<see cref="LocalizationMapping"/>
-        /// </summary>
-        public static (string remote, string branch) GetLocalizedRepo(LocalizationMapping mapping, bool bilingual, string remote, string branch, string locale, string defaultLocale)
+        public static (string remote, string branch) GetLocalizedRepo(bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
-            var newRemote = GetLocalizationName(mapping, remote, locale, defaultLocale);
+            var newRemote = GetLocalizationName(remote, locale, defaultLocale);
             var newBranch = bilingual
-                ? GetLocalizationBranch(mapping, GetBilingualBranch(mapping, branch), locale, defaultLocale)
-                : GetLocalizationBranch(mapping, branch, locale, defaultLocale);
+                ? GetLocalizationBranch(GetBilingualBranch(branch), locale, defaultLocale)
+                : GetLocalizationBranch(branch, locale, defaultLocale);
 
             return (newRemote, newBranch);
         }
@@ -99,11 +96,11 @@ namespace Microsoft.Docs.Build
             {
                 case PackageType.Folder:
                     return new PackagePath(
-                        GetLocalizationName(LocalizationMapping.Repository, theme.Path, locale, defaultLocale));
+                        GetLocalizationName(theme.Path, locale, defaultLocale));
 
                 case PackageType.Git:
                     return new PackagePath(
-                        GetLocalizationName(LocalizationMapping.Repository, theme.Url, locale, defaultLocale),
+                        GetLocalizationName(theme.Url, locale, defaultLocale),
                         theme.Branch);
 
                 default:
@@ -163,23 +160,13 @@ namespace Microsoft.Docs.Build
             return locale != null;
         }
 
-        private static string GetBilingualBranch(LocalizationMapping mapping, string branch)
+        private static string GetBilingualBranch(string branch)
         {
-            if (mapping == LocalizationMapping.Folder)
-            {
-                return branch;
-            }
-
             return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
         }
 
-        private static string GetLocalizationBranch(LocalizationMapping mapping, string branch, string locale, string defaultLocale)
+        private static string GetLocalizationBranch(string branch, string locale, string defaultLocale)
         {
-            if (mapping != LocalizationMapping.Branch)
-            {
-                return branch;
-            }
-
             if (string.IsNullOrEmpty(branch))
             {
                 return branch;
@@ -203,13 +190,8 @@ namespace Microsoft.Docs.Build
             return $"{branch}.{locale}";
         }
 
-        private static string GetLocalizationName(LocalizationMapping mapping, string name, string locale, string defaultLocale)
+        private static string GetLocalizationName(string name, string locale, string defaultLocale)
         {
-            if (mapping == LocalizationMapping.Folder)
-            {
-                return name;
-            }
-
             if (string.Equals(locale, defaultLocale))
             {
                 return name;
@@ -225,7 +207,7 @@ namespace Microsoft.Docs.Build
                 return name;
             }
 
-            var newLocale = mapping == LocalizationMapping.Repository ? $".{locale}" : ".loc";
+            var newLocale = $".{locale}";
             if (name.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
             {
                 return name;
