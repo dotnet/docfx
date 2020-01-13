@@ -27,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     {
         private string _outputFolder;
         private string _inputFolder;
-        private string _templateFolder;
         private FileCollection _defaultFiles;
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
@@ -39,7 +38,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         {
             _outputFolder = GetRandomFolder();
             _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
             _defaultFiles.Add(DocumentType.Article, new[] { "TestData/mref/CatLibrary.Cat-2.yml" }, "TestData/");
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
