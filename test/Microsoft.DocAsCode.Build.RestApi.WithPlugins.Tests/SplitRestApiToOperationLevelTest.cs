@@ -27,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
     {
         private string _inputFolder;
         private string _outputFolder;
-        private string _templateFolder;
         private FileCollection _defaultFiles;
         private readonly ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
@@ -38,7 +37,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
         {
             _inputFolder = GetRandomFolder();
             _outputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
             _defaultFiles.Add(DocumentType.Article, new[] { "TestData/swagger/petstore.json" }, "TestData/");
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
