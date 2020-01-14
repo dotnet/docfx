@@ -4,8 +4,6 @@
 namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 {
     using System;
-    using System.Collections.Generic;
-
     using YamlDotNet.Serialization;
 
     public interface IExtensibleTypeInspector : ITypeInspector

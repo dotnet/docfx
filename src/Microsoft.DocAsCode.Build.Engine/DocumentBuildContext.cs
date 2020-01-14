@@ -192,8 +192,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void ResolveExternalXRefSpec()
         {
             Task.WaitAll(
-                Task.Run(() => ResolveExternalXRefSpecForSpecs()),
-                Task.Run(() => ResolveExternalXRefSpecForNoneSpecsAsync()));
+                Task.Run(ResolveExternalXRefSpecForSpecs),
+                Task.Run(ResolveExternalXRefSpecForNoneSpecsAsync));
         }
 
         private void ResolveExternalXRefSpecForSpecs()

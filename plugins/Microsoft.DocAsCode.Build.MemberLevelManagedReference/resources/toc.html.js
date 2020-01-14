@@ -52,7 +52,7 @@ exports.transform = function (model) {
     }
 
     function transformItem(item, level) {
-        // set to null incase mustache looks up
+        // set to null in case mustache looks up
         item.topicHref = item.topicHref || null;
         item.tocHref = item.tocHref || null;
         item.name = item.name || null;

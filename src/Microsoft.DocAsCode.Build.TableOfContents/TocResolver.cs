@@ -14,13 +14,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
     internal sealed class TocResolver
     {
-        private readonly IHostService _host;
         private readonly Dictionary<string, TocItemInfo> _collection;
         private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = new Dictionary<FileAndType, TocItemInfo>();
 
-        public TocResolver(IHostService host, Dictionary<string, TocItemInfo> collection)
+        public TocResolver(Dictionary<string, TocItemInfo> collection)
         {
-            _host = host;
             _collection = collection;
         }
 
@@ -352,7 +350,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             foreach (var item in toc.Items)
             {
-                var tocItem = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, s => IsValidHomepageLink(s));
+                var tocItem = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, IsValidHomepageLink);
                 if (tocItem != null)
                 {
                     return tocItem;

@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             JsonUtility.Serialize(indexDataFilePath, indexData, Formatting.Indented);
 
-            // add index.json to mainfest as resource file
+            // add index.json to manifest as resource file
             var manifestItem = new ManifestItem
             {
                 DocumentType = "Resource",

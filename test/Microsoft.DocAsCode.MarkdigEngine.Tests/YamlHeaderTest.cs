@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void TestDfmYamlHeader_General()
         {
-            //arange
+            //arrange
             var content = @"---
 title: ""如何使用 Visual C++ 工具集报告问题 | Microsoft Docs""
 ms.custom: 

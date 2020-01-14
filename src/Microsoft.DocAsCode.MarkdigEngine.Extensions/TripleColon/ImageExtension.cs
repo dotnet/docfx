@@ -8,12 +8,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Net;
-    using System.Net.Mime;
     using System.Security.Cryptography;
     using System.Text;
-    using System.Text.RegularExpressions;
 
     public class ImageExtension : ITripleColonExtensionInfo
     {
