@@ -116,10 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void CopyResource(Stream stream, string filePath, bool overwrite)
         {
-            Copy(fs =>
-            {
-                stream.CopyTo(fs);
-            }, filePath, overwrite);
+            Copy(stream.CopyTo, filePath, overwrite);
         }
 
         private static void Copy(Action<Stream> streamHandler, string filePath, bool overwrite)

@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
 
     internal static class ReflectionUtility
     {

@@ -4,9 +4,6 @@
 namespace Microsoft.DocAsCode.HtmlToPdf
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-
     using Microsoft.DocAsCode.Plugins;
 
     public static class ManifestUtility

@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode
                 jItems = JContainer.Load(reader);
             }
             else throw new JsonReaderException($"{reader.TokenType.ToString()} is not a valid {objectType.Name}.");
-            return new FileMetadataPairs(jItems.Select(s => ParseItem(s)).ToList());
+            return new FileMetadataPairs(jItems.Select(ParseItem).ToList());
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

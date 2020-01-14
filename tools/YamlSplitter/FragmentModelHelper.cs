@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
 {
     using Microsoft.DocAsCode.Build.OverwriteDocuments;
     using Microsoft.DocAsCode.MarkdigEngine;
-    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
     using Microsoft.DocAsCode.Plugins;
 
     using System.Collections.Generic;

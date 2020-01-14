@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             {
                 Content = ApiBuildOutputUtility.TransformToLanguagePairList(model.Content, model.Contents, supportedLanguages),
                 Parameters = model.Parameters?.Select(s => ApiParameterBuildOutput.FromModel(s, references, supportedLanguages)).ToList(),
-                TypeParameters = model.TypeParameters?.Select(s => ApiParameterBuildOutput.FromModel(s)).ToList(),
+                TypeParameters = model.TypeParameters?.Select(ApiParameterBuildOutput.FromModel).ToList(),
                 Return = ApiParameterBuildOutput.FromModel(model.Return, references, supportedLanguages),
                 _needExpand = false,
             };
@@ -59,8 +59,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return new ApiSyntaxBuildOutput
             {
                 Content = ApiBuildOutputUtility.TransformToLanguagePairList(model.Content, model.Contents, supportedLanguages),
-                Parameters = model.Parameters?.Select(s => ApiParameterBuildOutput.FromModel(s)).ToList(),
-                TypeParameters = model.TypeParameters?.Select(s => ApiParameterBuildOutput.FromModel(s)).ToList(),
+                Parameters = model.Parameters?.Select(ApiParameterBuildOutput.FromModel).ToList(),
+                TypeParameters = model.TypeParameters?.Select(ApiParameterBuildOutput.FromModel).ToList(),
                 Return = ApiParameterBuildOutput.FromModel(model.Return),
             };
         }

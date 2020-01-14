@@ -4,8 +4,6 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     using System;
-    using System.Collections.Generic;
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
