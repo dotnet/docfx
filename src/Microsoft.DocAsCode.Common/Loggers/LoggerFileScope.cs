@@ -42,8 +42,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static LoggerFileScope Restore(object captured)
         {
-            var capturedScope = captured as CapturedLoggerFileScope;
-            if (capturedScope == null)
+            if (!(captured is CapturedLoggerFileScope capturedScope))
             {
                 return null;
             }

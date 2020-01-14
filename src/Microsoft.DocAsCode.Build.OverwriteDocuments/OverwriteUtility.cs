@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         {
             if (!fragments.ContainsKey(uid))
             {
-                fragments.Add(uid, new MarkdownFragment()
+                fragments.Add(uid, new MarkdownFragment
                 {
                     Uid = uid,
                     Properties = new Dictionary<string, MarkdownProperty>(),
@@ -97,7 +97,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         {
             if (!fragment.Properties.ContainsKey(oPath))
             {
-                fragment.Properties[oPath] = new MarkdownProperty()
+                fragment.Properties[oPath] = new MarkdownProperty
                 {
                     OPath = oPath
                 };
@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
             }
 
-            return new MarkdownFragment()
+            return new MarkdownFragment
             {
                 Uid = model.Uid,
                 Metadata = metadata,
@@ -145,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     content = piece;
                 }
             }
-            return new MarkdownProperty()
+            return new MarkdownProperty
             {
                 OPath = model.PropertyName,
                 Content = content

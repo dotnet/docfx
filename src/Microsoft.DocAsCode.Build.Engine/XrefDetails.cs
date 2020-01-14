@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new NotSupportedException("Only xref node is supported!");
             }
             var rawUid = node.GetAttributeValue("uid", null);
-            var xref = new XRefDetails()
+            var xref = new XRefDetails
             {
                 InnerHtml = node.InnerHtml,
                 Uid = rawUid,

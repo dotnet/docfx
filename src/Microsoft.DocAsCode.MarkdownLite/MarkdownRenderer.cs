@@ -377,8 +377,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 const string ListStartString = "* ";
                 foreach (var t in token.Tokens)
                 {
-                    var listItemToken = t as MarkdownListItemBlockToken;
-                    if (listItemToken == null)
+                    if (!(t is MarkdownListItemBlockToken listItemToken))
                     {
                         throw new Exception($"token {t.GetType()} is not unordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{t.SourceInfo.Markdown}");
                     }
@@ -390,9 +389,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 for (int i = 0; i < token.Tokens.Length; ++i)
                 {
-                    var listItemToken = token.Tokens[i] as MarkdownListItemBlockToken;
-
-                    if (listItemToken == null)
+                    if (!(token.Tokens[i] is MarkdownListItemBlockToken listItemToken))
                     {
                         throw new Exception($"token {token.Tokens[i].GetType()} is not ordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{token.Tokens[i].SourceInfo.Markdown}");
                     }

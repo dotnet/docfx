@@ -191,7 +191,7 @@ blabla";
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
-            var builder = new DfmEngineBuilder(new Options() { Mangle = false });
+            var builder = new DfmEngineBuilder(new Options { Mangle = false });
             var mrb = new MarkdownValidatorBuilder(
                 new CompositionContainer(
                     new ContainerConfiguration()

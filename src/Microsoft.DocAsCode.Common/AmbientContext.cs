@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.Common
                 return null;
             }
 
-            return new AmbientContext()
+            return new AmbientContext
             {
                 Id = objs[0] as string,
                 _counterRef = objs[1] as long[],
