@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void ResolveReference()
         {
-            WriteDependency(() => ResolveReferenceCore());
+            WriteDependency(ResolveReferenceCore);
         }
 
         public bool HasDependencyReportedBy(string reportedBy)
@@ -346,7 +346,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private void ResolveReferenceCore()
         {
-            ReadReference(() => ResolveReferenceCoreNoLock());
+            ReadReference(ResolveReferenceCoreNoLock);
             _isResolved = true;
         }
 
