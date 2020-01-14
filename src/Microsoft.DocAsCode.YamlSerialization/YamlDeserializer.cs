@@ -177,12 +177,12 @@ namespace Microsoft.DocAsCode.YamlSerialization
         {
             if (parser == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(parser));
             }
 
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             var hasStreamStart = parser.Allow<StreamStart>() != null;

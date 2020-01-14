@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (item.Model == null || item.Model.Content == null)
             {
-                throw new ArgumentNullException("Content for item.Model should not be null!");
+                throw new ArgumentNullException(nameof(item), "Content for item.Model should not be null!");
             }
 
             var model = ConvertObjectToDictionary(item.Model.Content);

@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (renderer == null && preprocessor == null)
             {
-                throw new ArgumentNullException("Both renderer and preprocessor are null");
+                throw new ArgumentNullException(nameof(renderer), "Both renderer and preprocessor are null");
             }
 
             Renderer = renderer;

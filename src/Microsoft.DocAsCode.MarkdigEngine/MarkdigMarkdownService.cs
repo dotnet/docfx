@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var filePath = document.GetData("filePath") as string;
             if (filePath == null)
             {
-                throw new ArgumentNullException("file path can't be found in AST.");
+                throw new ArgumentNullException(nameof(document), "file path can't be found in AST.");
             }
 
             var pipeline = CreateMarkdownPipeline(isInline, enableValidation: false);

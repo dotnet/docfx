@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             if (maxLoopCount <= 0)
             {
-                throw new ArgumentOutOfRangeException("Should be great than 0.", nameof(maxLoopCount));
+                throw new ArgumentOutOfRangeException(nameof(maxLoopCount), "Should be great than 0.");
             }
             return new MarkdownLoopTokenRewriter(rewriter, maxLoopCount);
         }
