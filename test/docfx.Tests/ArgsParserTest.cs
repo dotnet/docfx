@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Tests
 {
-    using System;
     using System.IO;
 
     using Microsoft.DocAsCode.Plugins;

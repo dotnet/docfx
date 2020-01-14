@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
     using System.Reflection;
 
-    using Microsoft.DocAsCode.Common;
-
     [Serializable]
     public class ResourceFinder
     {

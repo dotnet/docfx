@@ -3,12 +3,7 @@
 
 namespace Microsoft.DocAsCode
 {
-    using System;
-    using System.Collections.Generic;
-
     using CommandLine;
-
-    using Microsoft.DocAsCode.Common;
 
     [OptionUsage("dependency [<dependency output file path>]")]
     internal class DependencyCommandOptions : ICanPrintHelpMessage

@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
-    using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
 
     public class XRefMap : IXRefContainer

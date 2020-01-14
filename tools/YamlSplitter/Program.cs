@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
     using Microsoft.DocAsCode.Tools.YamlSplitter.Models;
 
     using CommandLine;
-    using Newtonsoft.Json.Schema;
     using YamlDotNet.RepresentationModel;
 
     using System;

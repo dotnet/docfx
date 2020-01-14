@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 

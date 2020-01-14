@@ -3,23 +3,16 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Build.TableOfContents;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
-
-    using Newtonsoft.Json.Linq;
     using Xunit;
 
     [Trait("Owner", "lianwei")]
