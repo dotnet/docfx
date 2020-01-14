@@ -44,8 +44,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
                 }
 
                 var propertyValue = nestedObjectDeserializer(reader, property.Type);
-                var propertyValuePromise = propertyValue as IValuePromise;
-                if (propertyValuePromise == null)
+                if (!(propertyValue is IValuePromise propertyValuePromise))
                 {
                     var convertedValue = TypeConverter.ChangeType(propertyValue, property.Type);
                     property.Write(value, convertedValue);

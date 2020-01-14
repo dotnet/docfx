@@ -264,8 +264,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return dictionary;
             }
 
-            var objectModel = ConvertToObjectHelper.ConvertStrongTypeToObject(model) as IDictionary<string, object>;
-            if (objectModel == null)
+            if (!(ConvertToObjectHelper.ConvertStrongTypeToObject(model) is IDictionary<string, object> objectModel))
             {
                 throw new ArgumentException("Only object model is supported for template transformation.");
             }

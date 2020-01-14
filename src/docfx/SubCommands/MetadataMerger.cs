@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void MergePageViewModel(MetadataMergeParameters parameters)
         {
-            var p = new ManagedReferenceDocumentProcessor()
+            var p = new ManagedReferenceDocumentProcessor
             {
                 BuildSteps = new List<IDocumentBuildStep>
                 {

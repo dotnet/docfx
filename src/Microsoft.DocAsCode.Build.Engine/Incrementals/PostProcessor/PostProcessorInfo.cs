@@ -9,8 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public override bool Equals(object obj)
         {
-            var another = obj as PostProcessorInfo;
-            if (another == null)
+            if (!(obj is PostProcessorInfo another))
             {
                 return false;
             }

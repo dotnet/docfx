@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public IEnumerable<DependencyType> GetDependencyTypesToRegister() => new[]
         {
-            new DependencyType()
+            new DependencyType
             {
                 Name = DependencyTypeName.Children,
                 Phase = BuildPhase.Link,

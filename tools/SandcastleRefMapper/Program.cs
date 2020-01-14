@@ -22,11 +22,11 @@ namespace Microsoft.DocAsCode.Tools.SandcastleRefMapper
     {
         public static Task<int> Main(string[] args)
         {
-            RootCommand rootCommand = new RootCommand()
+            RootCommand rootCommand = new RootCommand
             {
                 Handler = CommandHandler.Create(new Action<string, Uri, FileInfo>(Execute))
             };
-            rootCommand.Argument = new Argument<string>()
+            rootCommand.Argument = new Argument<string>
             {
                 Name = "inputAssemblyPath",
                 Description = "Assembly to create Xref Map for"
@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Tools.SandcastleRefMapper
             MetadataItem metadata = controller.ExtractMetadata(parameters);
             Queue<MetadataItem> metadataItems = new Queue<MetadataItem>();
             metadataItems.Enqueue(metadata);
-            XRefMap refMap = new XRefMap()
+            XRefMap refMap = new XRefMap
             {
                 BaseUrl = baseUrl.AbsoluteUri,
                 References = new List<XRefSpec>()
@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.Tools.SandcastleRefMapper
                         continue;
                 }
 
-                refMap.References.Add(new XRefSpec()
+                refMap.References.Add(new XRefSpec
                 {
                     Uid = item.Name,
                     Name = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default, null),

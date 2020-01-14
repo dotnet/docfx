@@ -37,8 +37,7 @@ namespace Microsoft.DocAsCode.Dfm
                 return null;
             }
             var openATag = headToken.Content.Tokens[0] as MarkdownTagInlineToken;
-            var closeATag = headToken.Content.Tokens[1] as MarkdownTagInlineToken;
-            if (openATag == null || closeATag == null)
+            if (openATag == null || !(headToken.Content.Tokens[1] is MarkdownTagInlineToken closeATag))
             {
                 return null;
             }
