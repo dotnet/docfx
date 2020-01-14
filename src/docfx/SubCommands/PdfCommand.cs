@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
                 }
 
-                config = new PdfJsonConfig()
+                config = new PdfJsonConfig
                 {
                     BaseDirectory = EnvironmentContext.BaseDirectory
                 };

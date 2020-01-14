@@ -284,7 +284,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange() { Start = 0, End = allLines.Length } });
+                return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange { Start = 0, End = allLines.Length } });
             }
 
             return string.Empty;
