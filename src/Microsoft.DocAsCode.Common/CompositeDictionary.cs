@@ -243,8 +243,8 @@ namespace Microsoft.DocAsCode.Common
                             var getted = dict.TryGetValue(key, out TValue value);
                             return new KeyValuePair<bool, object>(getted, value);
                         },
-                    Remove = key => dict.Remove(key),
-                    Clear = () => dict.Clear(),
+                    Remove = dict.Remove,
+                    Clear = dict.Clear,
                     Count = () => dict.Count,
                 });
                 return this;

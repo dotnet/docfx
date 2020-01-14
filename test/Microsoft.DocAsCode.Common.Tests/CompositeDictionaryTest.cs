@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.False(c.CD.TryGetValue("b", out value));
             Assert.Null(value);
             Assert.Equal(3, c.CD.Count);
-            Assert.Equal(1, c.D1.Count);
+            Assert.Single(c.D1);
 
             Assert.Equal("x", c.CD["D3.c"]);
             c.CD["D3.c"] = "y";
@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(3, c.CD.Count);
 
             c.CD.Clear();
-            Assert.Equal(0, c.CD.Count);
+            Assert.Empty(c.CD);
         }
 
         [Fact]

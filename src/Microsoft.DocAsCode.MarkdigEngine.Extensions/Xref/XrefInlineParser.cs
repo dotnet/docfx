@@ -3,12 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using Markdig.Helpers;
     using Markdig.Parsers;
     using Markdig.Renderers.Html;
@@ -34,8 +28,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var href = StringBuilderCache.Local();
             var c = slice.CurrentChar;
             var startChar = '\0';
-            int line;
-            int column;
 
             if (c == '\'' || c == '"')
             {
@@ -65,7 +57,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var xrefInline = new XrefInline
             {
                 Href = href.ToString().Trim(),
-                Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out line, out column), processor.GetSourcePosition(slice.Start - 1)),
+                Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out var line, out var column), processor.GetSourcePosition(slice.Start - 1)),
                 Line = line,
                 Column = column
             };

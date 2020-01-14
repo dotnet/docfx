@@ -414,7 +414,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return getName(list[0]);
             }
-            return string.Concat(list.ConvertAll(item => getName(item)).ToArray());
+            return string.Concat(list.ConvertAll(getName).ToArray());
         }
 
         private static List<SpecViewModel> GetSpec(ReferenceItem reference, SyntaxLanguage language)

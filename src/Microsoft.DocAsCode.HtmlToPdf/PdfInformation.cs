@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.HtmlToPdf
 {
-    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;

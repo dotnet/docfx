@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using System.Collections.Generic;
-    using System.IO;
     using Xunit;
 
     public class CodeSnippetTest
@@ -33,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void CodeSnippetGeneral()
         {
-            //arange
+            //arrange
             var content = @"    line for start & end
     // <tag1>
     line1
@@ -118,7 +117,7 @@ print(azureml.core.VERSION)</code></pre>";
         [Fact]
         public void NotebookCodeSnippetMultipleTagFound()
         {
-            //arange
+            //arrange
             var content = @"{
  ""cells"": [
   {
@@ -651,7 +650,7 @@ public static void Foo()
         [Fact]
         public void CodeSnippetShouldVerifyTagname()
         {
-            //arange
+            //arrange
             var content = @"    line for start & end
     // <tag1>
     line1

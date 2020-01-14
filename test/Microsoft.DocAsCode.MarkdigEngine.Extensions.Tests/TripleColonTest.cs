@@ -3,10 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Markdig.Syntax;
-    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
     using Xunit;
 

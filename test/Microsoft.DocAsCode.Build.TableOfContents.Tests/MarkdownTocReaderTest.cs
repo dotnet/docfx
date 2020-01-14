@@ -53,12 +53,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 Assert.Null(toc0[1].Href);
                 {
                     var toc0_1 = toc0[1].Items;
-                    Assert.Equal(1, toc0_1.Count);
+                    Assert.Single(toc0_1);
                     Assert.Equal("Article4", toc0_1[0].Name);
                     Assert.Equal("article4.md", toc0_1[0].Href);
                     {
                         var toc0_1_0 = toc0_1[0].Items;
-                        Assert.Equal(1, toc0_1_0.Count);
+                        Assert.Single(toc0_1_0);
                         Assert.Equal("Article5", toc0_1_0[0].Name);
                         Assert.Equal("article5.md", toc0_1_0[0].Href);
                     }
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             Assert.Equal("article7.md", toc[1].Href);
             {
                 var toc1 = toc[1].Items;
-                Assert.Equal(1, toc1.Count);
+                Assert.Single(toc1);
                 Assert.Equal("External", toc1[0].Name);
                 Assert.Equal("http://www.microsoft.com", toc1[0].Href);
             }

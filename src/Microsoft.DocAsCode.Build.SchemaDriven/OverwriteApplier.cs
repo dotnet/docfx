@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 transformed["conceptual"] = context.ContentAnchorParser.Content;
             }
 
-            // add SouceDetail back to transformed, in week type
+            // add SourceDetail back to transformed, in week type
             if (overwrite.Documentation != null)
             {
                 transformed[Constants.PropertyName.Documentation] = new Dictionary<string, object>

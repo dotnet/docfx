@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
@@ -62,9 +61,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var item0 = model.Children[0];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item0.Uid);
             Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">You can get a collection of contacts from your tenant.</p>\n", item0.Summary);
-            Assert.Equal(1, item0.Parameters.Count);
+            Assert.Single(item0.Parameters);
             Assert.Equal("1.6", item0.Parameters[0].Metadata["default"]);
-            Assert.Equal(1, item0.Responses.Count);
+            Assert.Single(item0.Responses);
             Assert.Equal("200", item0.Responses[0].HttpStatusCode);
 
             // Verify tags of child
@@ -79,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("contact", tag0.Name);
             Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about the <strong>contacts</strong></p>\n", tag0.Description);
             Assert.Equal("contact-bookmark", tag0.HtmlId);
-            Assert.Equal(1, tag0.Metadata.Count);
+            Assert.Single(tag0.Metadata);
             var externalDocs = (JObject)tag0.Metadata["externalDocs"];
             Assert.NotNull(externalDocs);
             Assert.Equal("Find out more", externalDocs["description"]);
@@ -110,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
             // When operation parameters is not set, inherit from th parameters for post operation
             var item4 = model.Children[4];
-            Assert.Equal(1, item4.Parameters.Count);
+            Assert.Single(item4.Parameters);
             Assert.Equal("api-version", item4.Parameters[0].Name);
             Assert.Equal(true, item4.Parameters[0].Metadata["required"]);
 
