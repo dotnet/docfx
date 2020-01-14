@@ -184,7 +184,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex.ToString()}");
+                        Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex}");
                     }
                 });
 

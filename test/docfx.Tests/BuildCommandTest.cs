@@ -219,7 +219,7 @@ namespace Microsoft.DocAsCode.Tests
             }).Config;
             Assert.Equal("value", config.GlobalMetadata["key"]);
 
-            var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
+            var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value}").ToList();
             Assert.Equal(new List<string>
             {
                 "filepattern1: string",
@@ -244,7 +244,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("global.deprecated.json", config.GlobalMetadata["key"]);
             Assert.Equal("deprecated", config.GlobalMetadata["global.deprecated"]);
 
-            var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
+            var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value}").ToList();
             Assert.Equal(new List<string>
             {
                 "filepattern1: string",
@@ -282,7 +282,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("2", config.GlobalMetadata["global2"]);
             Assert.Equal("deprecated", config.GlobalMetadata["global.deprecated"]);
 
-            var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
+            var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value}").ToList();
             Assert.Equal(new List<string>
             {
                 "filepattern1: string",

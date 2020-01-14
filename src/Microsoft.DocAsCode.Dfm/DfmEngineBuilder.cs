@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Dfm
                 else
                 {
                     dict[groupId]++;
-                    groupId = groupId + "-" + index.ToString();
+                    groupId = groupId + "-" + index;
                 }
             }
             if (token.Id == groupId)
@@ -250,7 +250,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex.ToString()}");
+                Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex}");
             }
             return null;
         }

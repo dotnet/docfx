@@ -628,7 +628,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
                 catch (Exception)
                 {
-                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
+                    Logger.LogWarning($"Unknown version metadata: {jarray}");
                 }
             }
 

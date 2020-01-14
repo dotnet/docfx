@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             if (idTable.TryGetValue(Id, out int count))
             {
-                var newId = Id + "-" + count.ToString();
+                var newId = Id + "-" + count;
                 idTable[Id] = count + 1;
                 return GenerateNewId(idTable, newId);
             }

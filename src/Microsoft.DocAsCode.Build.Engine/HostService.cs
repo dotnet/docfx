@@ -610,7 +610,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.File);
+                Logger.LogWarning($"Unable to serialize model, details:{ex}", file: m.File);
             }
         }
 

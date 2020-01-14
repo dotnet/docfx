@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return "[" +
                 EscapeText(string.Join(string.Empty, _ch)) +
                 "]{" +
-                _minOccur.ToString() +
+                _minOccur +
                 "," +
                 (_maxOccur == int.MaxValue ? string.Empty : _maxOccur.ToString()) +
                 "}";

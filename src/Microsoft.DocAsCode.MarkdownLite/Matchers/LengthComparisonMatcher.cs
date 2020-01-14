@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override string ToString()
         {
-            return "(Length:" + _comparsion.ToString() + "<" + _groupName + ">)";
+            return "(Length:" + _comparsion + "<" + _groupName + ">)";
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Tools.GEmojiCodeGenerators
                     }
                     foreach (var aliase in aliases)
                     {
-                        sw.WriteLine($"                [\"{aliase.ToString()}\"] = \"{emoji}\",");
+                        sw.WriteLine($"                [\"{aliase}\"] = \"{emoji}\",");
                     }
                 }
 

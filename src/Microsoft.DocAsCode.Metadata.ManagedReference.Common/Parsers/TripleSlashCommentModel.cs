@@ -320,7 +320,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 if (context.Source == null || string.IsNullOrEmpty(context.Source.Path))
                 {
-                    Logger.LogWarning($"Unable to get source file path for {node.ToString()}");
+                    Logger.LogWarning($"Unable to get source file path for {node}");
                     return;
                 }
 

@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             while (true)
             {
-                var entryName = Guid.NewGuid().ToString() + ".yml";
+                var entryName = Guid.NewGuid() + ".yml";
                 if (!HasEntryCore(entryName))
                 {
                     return CreateCore(entryName, map);

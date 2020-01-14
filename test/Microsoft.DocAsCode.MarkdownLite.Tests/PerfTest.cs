@@ -90,7 +90,7 @@ Numbered list:
                 }
                 else
                 {
-                    idPostFix = "-" + i.ToString();
+                    idPostFix = "-" + i;
                 }
                 yield return $@"<h1 id=""heading{idPostFix}"">Heading</h1>";
                 yield return $@"<h2 id=""sub-heading{idPostFix}"">Sub-heading</h2>";

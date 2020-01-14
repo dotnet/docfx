@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             catch (JsonReaderException ex)
             {
-                _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex.ToString(), obj);
+                _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex, obj);
                 return string.Empty;
             }
 

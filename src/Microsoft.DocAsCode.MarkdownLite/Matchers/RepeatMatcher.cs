@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             return _inner.ToString() +
                 "{" +
-                _minOccur.ToString() +
+                _minOccur +
                 "," +
                 (_maxOccur == int.MaxValue ? string.Empty : _maxOccur.ToString()) +
                 "}";

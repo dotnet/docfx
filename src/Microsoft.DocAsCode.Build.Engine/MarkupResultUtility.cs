@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             anchorInHref = null;
                         }
 
-                        link.Value = file.UrlEncode().ToString() + anchorInHref;
+                        link.Value = file.UrlEncode() + anchorInHref;
                     }
 
                     if (!fileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))

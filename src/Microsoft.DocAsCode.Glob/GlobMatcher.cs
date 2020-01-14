@@ -225,7 +225,7 @@ namespace Microsoft.DocAsCode.Glob
                             else if (c == ']' && !escaping)
                             {
                                 // current char class ends when meeting the first non-escaping ]
-                                builder.Append(currentCharClass.ToString());
+                                builder.Append(currentCharClass);
                                 currentCharClass = null;
                                 break;
                             }
@@ -647,7 +647,7 @@ namespace Microsoft.DocAsCode.Glob
                             foreach (StringBuilder sb in result)
                             {
                                 StringBuilder newsb = new StringBuilder(sb.ToString());
-                                newsb.Append(builder.ToString());
+                                newsb.Append(builder);
                                 tmp.Add(newsb);
                             }
                         }
@@ -724,7 +724,7 @@ namespace Microsoft.DocAsCode.Glob
                 {
                     _chars.Insert(0, "\\");
                 }
-                return $"[{_chars.ToString()}]";
+                return $"[{_chars}]";
             }
         }
 

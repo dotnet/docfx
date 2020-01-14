@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return innerRenderer;
             }
-            var type = _module.DefineType("renderer-t" + Interlocked.Increment(ref _typeCounter).ToString(), TypeAttributes.Public | TypeAttributes.Class, typeof(PlugableRendererBase));
+            var type = _module.DefineType("renderer-t" + Interlocked.Increment(ref _typeCounter), TypeAttributes.Public | TypeAttributes.Class, typeof(PlugableRendererBase));
             var f = type.DefineField("f", typeof(IDfmCustomizedRendererPart[]), FieldAttributes.Private | FieldAttributes.InitOnly);
             DefineConstructor(type, f);
             List<IDfmCustomizedRendererPart> partList = new List<IDfmCustomizedRendererPart>();

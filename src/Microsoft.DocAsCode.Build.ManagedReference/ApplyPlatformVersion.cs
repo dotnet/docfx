@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
                 catch (Exception)
                 {
-                    Logger.LogWarning($"Unknown platform-version metadata: {jarray.ToString()}");
+                    Logger.LogWarning($"Unknown platform-version metadata: {jarray}");
                 }
             }
 

@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             return EscapeText(_ch.ToString()) +
                 "{" +
-                _minOccur.ToString() +
+                _minOccur +
                 "," +
                 (_maxOccur == int.MaxValue ? string.Empty : _maxOccur.ToString()) +
                 "}";

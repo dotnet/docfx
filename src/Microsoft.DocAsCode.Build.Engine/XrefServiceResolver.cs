@@ -167,7 +167,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var mvc = HttpUtility.ParseQueryString(UriUtility.GetQueryString(item.Href));
                     mvc[name] = value;
                     item.Href = UriUtility.GetPath(item.Href) +
-                        "?" + mvc.ToString() +
+                        "?" + mvc +
                         UriUtility.GetFragment(item.Href);
                 }
                 return list;

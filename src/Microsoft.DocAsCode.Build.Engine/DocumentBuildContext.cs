@@ -382,7 +382,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Unable to download xref map from {url}, detail:{Environment.NewLine}{ex.ToString()}");
+                Logger.LogWarning($"Unable to download xref map from {url}, detail:{Environment.NewLine}{ex}");
                 return null;
             }
         }
