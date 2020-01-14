@@ -90,24 +90,24 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!string.IsNullOrEmpty(this.Language))
             {
-                sb.Append(string.Format(@" class=""lang-{0}""", this.Language));
+                sb.Append($@" class=""lang-{this.Language}""");
             }
 
             if (!string.IsNullOrEmpty(this.Name))
             {
-                sb.Append(string.Format(@" name=""{0}""", this.Name));
+                sb.Append($@" name=""{this.Name}""");
             }
 
             if (!string.IsNullOrEmpty(this.Title))
             {
-                sb.Append(string.Format(@" title=""{0}""", this.Title));
+                sb.Append($@" title=""{this.Title}""");
             }
 
             var highlightRangesString = GetHighlightLinesString();
 
             if(highlightRangesString != string.Empty)
             {
-                sb.Append(string.Format(@" highlight-lines=""{0}""", highlightRangesString));
+                sb.Append($@" highlight-lines=""{highlightRangesString}""");
             }
 
             return sb.ToString();

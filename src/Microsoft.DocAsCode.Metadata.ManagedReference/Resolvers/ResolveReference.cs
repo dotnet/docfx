@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 else
                 {
-                    Debug.Fail(string.Format("Reference not found: {0}", key));
+                    Debug.Fail($"Reference not found: {key}");
                 }
             }
         }
