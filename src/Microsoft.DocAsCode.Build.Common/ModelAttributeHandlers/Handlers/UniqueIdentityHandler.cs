@@ -44,22 +44,19 @@ namespace Microsoft.DocAsCode.Build.Common
                     return null;
                 }
 
-                var val = currentObj as string;
-                if (val != null)
+                if (currentObj is string val)
                 {
                     context.LinkToUids.Add(val);
                 }
                 else
                 {
-                    var list = currentObj as IEnumerable;
-                    if (list != null)
+                    if (currentObj is IEnumerable list)
                     {
                         foreach (var i in list)
                         {
                             if (i != null)
                             {
-                                var item = i as string;
-                                if (item != null)
+                                if (i is string item)
                                 {
                                     context.LinkToUids.Add(item);
                                 }

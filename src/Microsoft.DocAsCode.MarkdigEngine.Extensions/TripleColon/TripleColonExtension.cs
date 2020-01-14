@@ -45,8 +45,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-            var htmlRenderer = renderer as HtmlRenderer;
-            if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<TripleColonRenderer>())
+            if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<TripleColonRenderer>())
             {
                 htmlRenderer.ObjectRenderers.Insert(0, new TripleColonRenderer());
             }

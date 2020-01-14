@@ -38,8 +38,7 @@ namespace Microsoft.DocAsCode.Dfm
             var splitTokens = DfmBlockquoteHelper.SplitBlockquoteTokens(token.Tokens);
             foreach (var splitToken in splitTokens)
             {
-                var sectionToken = splitToken.Token as DfmSectionBlockToken;
-                if (sectionToken != null)
+                if (splitToken.Token is DfmSectionBlockToken sectionToken)
                 {
                     content += Insert(sectionToken, ExposeTokenNameInDfm(sectionToken));
                     foreach (var item in splitToken.InnerTokens)
@@ -49,8 +48,7 @@ namespace Microsoft.DocAsCode.Dfm
                     continue;
                 }
 
-                var noteToken = splitToken.Token as DfmNoteBlockToken;
-                if (noteToken != null)
+                if (splitToken.Token is DfmNoteBlockToken noteToken)
                 {
                     var type = noteToken.NoteType.ToUpper();
                     content += Insert(noteToken, type);
@@ -61,8 +59,7 @@ namespace Microsoft.DocAsCode.Dfm
                     continue;
                 }
 
-                var videoToken = splitToken.Token as DfmVideoBlockToken;
-                if (videoToken != null)
+                if (splitToken.Token is DfmVideoBlockToken videoToken)
                 {
                     content += Insert(videoToken, $"{ExposeTokenNameInDfm(videoToken)}>{videoToken.Link}");
                     continue;

@@ -15,8 +15,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             {
                 return (T)obj;
             }
-            var jtoken = obj as JToken;
-            if (jtoken != null)
+
+            if (obj is JToken jtoken)
             {
                 return jtoken.ToObject<T>();
             }
