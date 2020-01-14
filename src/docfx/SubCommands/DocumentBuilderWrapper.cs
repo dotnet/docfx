@@ -120,8 +120,7 @@ namespace Microsoft.DocAsCode.SubCommands
             // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
             if (metadata != null && metadata.TryGetValue("_enableSearch", out object value))
             {
-                var isSearchable = value as bool?;
-                if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
+                if (value is bool isSearchable && isSearchable && !postProcessorNames.Contains("ExtractSearchIndex"))
                 {
                     postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
                 }

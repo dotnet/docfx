@@ -114,8 +114,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
                 else
                 {
-                    var listObject = childObject as List<object>;
-                    if (listObject != null)
+                    if (childObject is List<object> listObject)
                     {
                         object value;
                         var goodItems = (from item in listObject
