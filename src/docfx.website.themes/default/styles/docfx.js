@@ -456,6 +456,16 @@ $(function () {
           return;
         }
         tocFilterClearButton.fadeIn();
+
+        // set all parent nodes status
+        $('#toc li>a').filter(function (i, e) {
+          return $(e).siblings().length > 0
+        }).each(function (i, anchor) {
+          var parent = $(anchor).parent();
+          parent.addClass(hide);
+          parent.removeClass(show);
+          parent.removeClass(filtered);
+        })
         
         // Get leaf nodes
         $('#toc li>a').filter(function (i, e) {
