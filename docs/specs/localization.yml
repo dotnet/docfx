@@ -1,4 +1,5 @@
 # restore loc repo with dependencies 1
+locale: zh-cn
 repos:
   https://docs.com/restore1#master:
     - files:
@@ -22,6 +23,7 @@ outputs:
 ---
 # restore loc repo with dependencies 2
 # [bilingual]
+locale: zh-cn
 repos:
   https://docs.com/restore2#master:
     - files:
@@ -49,6 +51,7 @@ outputs:
     ["warning","link-out-of-scope","File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","docs/loc.md",1,1]
 ---
 # edit url convention without source locale 1
+locale: zh-cn
 repos: 
   https://docfx.com/edit-url1#live:
     - files:
@@ -66,6 +69,7 @@ outputs:
     { "content_git_url": "*dotnet/docfx.zh-cn/blob/live/*"}
 ---
 # edit url convention with source locale 1
+locale: zh-cn
 repos: 
   https://docfx.com/edit-url3#live:
     - files:
@@ -83,6 +87,7 @@ outputs:
     { "content_git_url": "*dotnet/docfx.en-us.zh-cn/blob/live/*"}
 ---
 # loc file contributor info 1
+locale: zh-cn
 repos: 
   https://github.com/c/contribution1#master:
     - files:
@@ -101,6 +106,7 @@ outputs:
 ---
 # loc file contributor info 4
 # bilingual
+locale: zh-cn
 repos: 
   https://github.com/c/contribution4#master:
     - files:
@@ -123,6 +129,7 @@ outputs:
     }
 ---
 # loc page link and content fallback 1
+locale: zh-cn
 repos:
   https://docs.com/page-fallback1#master:
     - files:
@@ -140,6 +147,7 @@ outputs:
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # loc resource fallback 1
+locale: zh-cn
 repos:
   https://docs.com/resource-fallback1#master:
     - files:
@@ -156,6 +164,7 @@ outputs:
 ---
 # loc resource fallback 3
 # bilingual
+locale: zh-cn
 repos:
   https://docs.com/resource-fallback3#master:
     - files:
@@ -176,6 +185,7 @@ outputs:
     { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
 ---
 # loc build with TOC map, loc TOC has higher priority
+locale: zh-cn
 repos:
   https://docs.com/toc1#master:
     - files:
@@ -201,6 +211,7 @@ outputs:
     {"items": [{"name": "reference a", "href": "a"},{"name": "reference b", "href": "b"}]}
 ---
 # loc build with mixed toc map
+locale: zh-cn
 repos:
   https://docs.com/toc2#master:
     - files:
@@ -221,6 +232,7 @@ outputs:
     {"items": [{"name": "reference a", "href": "a"}]}
 ---
 # loc build with xref map, loc file has higher priority
+locale: zh-cn
 repos:
   https://docs.com/xref1#master:
     - files:
@@ -243,6 +255,7 @@ outputs:
   docs/b.json:
 ---
 # loc build with mixed xref map
+locale: zh-cn
 repos:
   https://docs.com/xref2#master:
     - files:
@@ -269,6 +282,7 @@ outputs:
     {"references":[{"uid":"a","href":"https://docs.com/docs/a?branch=master","name":"a"},{"uid":"c","href":"https://docs.com/docs/c?branch=master","name":"c"}]}
 ---
 # built metadata for loc files 1
+locale: zh-cn
 repos:
   https://docs.com/metadata1#master:
     - files:
@@ -284,6 +298,7 @@ outputs:
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591",}
 ---
 # bilingual build 1
+locale: zh-cn
 repos:
   https://github.com/ss/c:
     - files:
@@ -312,6 +327,7 @@ outputs:
     }
 ---
 # bilingual page's `gitcommit` url follows sxs content's commit history
+locale: zh-cn
 repos:
   https://github.com/bilingual/a:
     - files:
@@ -335,6 +351,7 @@ outputs:
 # conflicted toc files(source and loc)
 # 1. should not report warning
 # 2. `_tocRel` should be resolved to loc toc
+locale: zh-cn
 repos:
   https://github.com/conflictedtoc/a:
     - files:
@@ -355,6 +372,7 @@ outputs:
     {"items":[{"name": "yml reference a"}]}
 ---
 # fallback to deleted token/codesnippet
+locale: zh-cn
 repos:
   https://github.com/deletedtoken/a:
     - files:
@@ -382,6 +400,7 @@ outputs:
     {"dependencies": {"a/docs/tokena.md": undefined}}
 ---
 # fallback to deleted resource
+locale: zh-cn
 repos:
   https://github.com/deletedres/a:
     - files:
@@ -407,6 +426,7 @@ outputs:
     {"dependencies":{"docs/a.md":[{"source":"docs/resource.png","type":"link"}]}}
 ---
 # fallback to deleted toc
+locale: zh-cn
 repos:
   https://github.com/deletedtoc/a:
     - files:
@@ -473,6 +493,7 @@ outputs:
     ["error","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md",1,1]
 ---
 # fallback to inclusion parent toc
+locale: zh-cn
 repos:
   https://github.com/inclusiontoc/a:
     - files:
@@ -499,6 +520,7 @@ outputs:
 ---
 # loc build with different dependency git repository 1
 # bilingual
+locale: zh-cn
 repos:
   https://github.com/locconfig2/c:
     - files:
@@ -546,6 +568,7 @@ outputs:
     { "conceptual": "<p>Learn c#&lrm;.</p>" }
 ---
 # VSTS localized repo
+locale: zh-cn
 repos:
   https://docascode.visualstudio.com/repo/_git/a#live:
     - files:
@@ -563,6 +586,7 @@ outputs:
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # VSTS localized repo with bilingual
+locale: zh-cn
 repos:
   https://docascode.visualstudio.com/repo/_git/b#live:
     - files:
@@ -585,6 +609,7 @@ outputs:
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # fallback to never existing token in multiple files
+locale: zh-cn
 repos:
   https://github.com/neverexist/a:
     - files:
@@ -606,6 +631,7 @@ outputs:
     ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/3.md'.","docs/3.md",1,1]
 ---
 # fallback to corresponding source branch 1
+locale: zh-cn
 repos:
   https://docs.com/branch-fallback1#test:
     - files:
@@ -628,6 +654,7 @@ outputs:
 ---
 # fallback to corresponding source branch 2
 # [bilingual]
+locale: zh-cn
 repos:
   https://docs.com/branch-fallback2#test:
     - files:
@@ -654,6 +681,7 @@ outputs:
     { "conceptual":"<p>test</p>"}
 ---
 # Do not validate bookmark for fallback content
+locale: zh-cn
 repos:
   https://docs.com/fallback-content-bookmark-validation#master:
     - files:
@@ -667,6 +695,7 @@ outputs:
   b.json:
 ---
 # Loc with multiple docsets
+locale: zh-cn
 repos:
   https://docs.com/config-not-root#test:
     - files:
@@ -691,6 +720,7 @@ outputs:
     { "conceptual":"<p>test</p>"}
 ---
 # should fallback to deleted TOC.md not TOC.json
+locale: zh-cn
 repos:
   https://github.com/deletedtoc-1/a:
     - files:
@@ -716,6 +746,7 @@ outputs:
     {"items":[{"href":"b"}]}
 ---
 # should not fallback to deleted TOC.md if TOC.yml exists
+locale: zh-cn
 repos:
   https://github.com/deletedtoc-2/a:
     - files:

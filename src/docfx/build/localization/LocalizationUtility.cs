@@ -36,9 +36,7 @@ namespace Microsoft.Docs.Build
         public static (string remote, string branch) GetLocalizedRepo(bool bilingual, string remote, string branch, string locale, string defaultLocale)
         {
             var newRemote = GetLocalizationName(remote, locale, defaultLocale);
-            var newBranch = bilingual
-                ? GetLocalizationBranch(GetBilingualBranch(branch), locale, defaultLocale)
-                : GetLocalizationBranch(branch, locale, defaultLocale);
+            var newBranch = bilingual ? GetBilingualBranch(branch) : branch;
 
             return (newRemote, newBranch);
         }
@@ -163,31 +161,6 @@ namespace Microsoft.Docs.Build
         private static string GetBilingualBranch(string branch)
         {
             return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
-        }
-
-        private static string GetLocalizationBranch(string branch, string locale, string defaultLocale)
-        {
-            if (string.IsNullOrEmpty(branch))
-            {
-                return branch;
-            }
-
-            if (string.IsNullOrEmpty(locale))
-            {
-                return branch;
-            }
-
-            if (string.Equals(locale, defaultLocale))
-            {
-                return branch;
-            }
-
-            if (branch.EndsWith(locale, StringComparison.OrdinalIgnoreCase))
-            {
-                return branch;
-            }
-
-            return $"{branch}.{locale}";
         }
 
         private static string GetLocalizationName(string name, string locale, string defaultLocale)
