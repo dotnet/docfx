@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Common.Git
 
         public override string ToString()
         {
-            return string.Format("branch: {0}, url: {1}, file: {2}", RemoteBranch, RemoteRepositoryUrl, RelativePath);
+            return $"branch: {RemoteBranch}, url: {RemoteRepositoryUrl}, file: {RelativePath}";
         }
     }
 }
