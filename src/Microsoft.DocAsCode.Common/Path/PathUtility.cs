@@ -178,7 +178,7 @@ namespace Microsoft.DocAsCode.Common
 
                     if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(file, destinationPath))
                     {
-                        messageHandler?.Invoke(string.Format("Copying file from '{0}' to '{1}'", file, destinationPath));
+                        messageHandler?.Invoke($"Copying file from '{file}' to '{destinationPath}'");
                         var targetDirectory = Path.GetDirectoryName(destinationPath);
                         if (!string.IsNullOrEmpty(targetDirectory))
                         {
@@ -190,7 +190,7 @@ namespace Microsoft.DocAsCode.Common
                     }
                     else
                     {
-                        messageHandler?.Invoke(string.Format("{0} is already latest.", destinationPath));
+                        messageHandler?.Invoke($"{destinationPath} is already latest.");
                     }
                 }
                 catch (Exception e)
