@@ -219,6 +219,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             public List<string> Platform { get; set; }
             public string File { get; set; }
             public Dictionary<string, object> Metadata { get; set; }
+            public bool IsExplicitInterfaceImplementation { get; set; }
         }
     }
 }
