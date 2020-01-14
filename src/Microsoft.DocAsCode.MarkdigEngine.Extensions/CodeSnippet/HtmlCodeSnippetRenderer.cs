@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -108,7 +107,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private static readonly string LispCodeSnippetRegionStartLineTemplate = ";<{tagname}>";
         private static readonly string LispCodeSnippetRegionEndLineTemplate = ";<{tagname}>";
 
-        // Language names and aliases fllow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
+        // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
@@ -206,7 +205,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return string.Empty;
             }
 
-            string sourceJsonPath = string.Format("$..cells[?(@.metadata.name=='{0}')].source", tagName);
+            string sourceJsonPath = $"$..cells[?(@.metadata.name=='{tagName}')].source";
             JToken sourceObject = null;
             try
             {
@@ -214,13 +213,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             catch (JsonException)
             {
-                _context.LogError("mutiple-tags-with-same-name", string.Format("Multiple entries with the name '{0}' where found in the notebook.", tagName), obj);
+                _context.LogError("mutiple-tags-with-same-name", $"Multiple entries with the name '{tagName}' where found in the notebook.", obj);
                 return string.Empty;
             }
 
             if (sourceObject == null)
             {
-                _context.LogError("tag-not-found", string.Format("The name '{0}' is not present in the notebook file.", tagName), obj);
+                _context.LogError("tag-not-found", $"The name '{tagName}' is not present in the notebook file.", obj);
                 return string.Empty;
             }
 
@@ -263,8 +262,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     {
                         HashSet<int> tagLines = new HashSet<int>();
                         var tagToCoderangeMapping = extrator.GetAllTags(allLines, ref tagLines);
-                        CodeRange cr;
-                        if (tagToCoderangeMapping.TryGetValue(obj.TagName, out cr)
+                        if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
                             || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
                         {
                             return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
@@ -431,10 +429,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var warningTitle = _context.GetToken(warningTitleId) ?? defaultWarningTitle;
             var warningMessage = _context.GetToken(warningMessageId) ?? defaultWarningMessage;
 
-            return string.Format(@"<div class=""WARNING"">
-{0}
-<p>{1}</p>
-</div>", warningTitle, warningMessage);
+            return $@"<div class=""WARNING"">
+{warningTitle}
+<p>{warningMessage}</p>
+</div>";
 
         }
     }

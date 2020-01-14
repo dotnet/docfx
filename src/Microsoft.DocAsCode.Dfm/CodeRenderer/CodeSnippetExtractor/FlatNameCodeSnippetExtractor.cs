@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Text.RegularExpressions;
 
     /// <summary>
-    /// Flat name extrator works for snippet name exists in both start and end line representations
+    /// Flat name extractor works for snippet name exists in both start and end line representations
     /// E.g., comment representation needs snippet name exists in both start and end line comment
     /// </summary>
     public class FlatNameCodeSnippetExtractor : CodeSnippetRegexExtractor

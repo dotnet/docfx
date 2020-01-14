@@ -13,12 +13,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class TemplatePreprocessorLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;
-        private readonly string _outputFolder;
 
         public TemplatePreprocessorLoaderUnitTest()
         {
             _inputFolder = GetRandomFolder();
-            _outputFolder = GetRandomFolder();
         }
 
         [Fact]
@@ -28,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { return model; }");
 
-                Assert.Equal(0, listener.Items.Count);
+                Assert.Empty(listener.Items);
 
                 Assert.NotNull(preprocessor);
                 Assert.False(preprocessor.ContainsGetOptions);

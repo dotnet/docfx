@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (IsEmpty) return null;
 
-            // incase relative path is combined by backslash \
+            // in case relative path is combined by backslash \
             if (!Names.Contains(StringExtension.ToNormalizedPath(name.Trim()), ResourceComparer)) return null;
             var filePath = Path.Combine(_directory, name);
             return new FileStream(filePath, FileMode.Open, FileAccess.Read);

@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Assert
             var logs = _listener.Items;
-            Assert.Equal(1, logs.Count);
+            Assert.Single(logs);
             var expected = new[]
             {
                 Tuple.Create("Invalid link: '<a href=\"#invalid\">test</a>'. The file test.md doesn't contain a bookmark named 'invalid'.", "test.md"),

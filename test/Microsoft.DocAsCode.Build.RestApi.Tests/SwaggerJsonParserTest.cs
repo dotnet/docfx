@@ -19,16 +19,16 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var swaggerFile = @"TestData\swagger\simple_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-            Assert.Equal(1, swagger.Paths.Values.Count);
+            Assert.Single(swagger.Paths.Values);
             var actionJObject = swagger.Paths["/contacts"].Metadata["get"] as JObject;
             Assert.NotNull(actionJObject);
             var action = actionJObject.ToObject<OperationObject>();
             var parameters = action.Parameters;
-            Assert.Equal(1, parameters.Count);
+            Assert.Single(parameters);
             Assert.Equal("query", parameters[0].Metadata["in"]);
-            Assert.Equal(1, action.Responses.Count);
+            Assert.Single(action.Responses);
             var response = action.Responses["200"];
-            Assert.Equal(1, response.Examples.Count);
+            Assert.Single(response.Examples);
             var example = response.Examples["application/json"];
             Assert.NotNull(example);
         }
@@ -39,8 +39,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var swaggerFile = @"TestData\swagger\ref_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-            Assert.Equal(1, swagger.Paths.Count);
-            Assert.Equal(1, swagger.Paths["/contacts"].Metadata.Count);
+            Assert.Single(swagger.Paths);
+            Assert.Single(swagger.Paths["/contacts"].Metadata);
             var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
             Assert.NotNull(actionJObject);
             var action = actionJObject.ToObject<OperationObject>();
@@ -64,9 +64,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var message = properties["message"];
             Assert.Equal("A message describing the error, intended to be suitable for display in a user interface.", message["description"]);
 
-            Assert.Equal(1, action.Responses.Count);
+            Assert.Single(action.Responses);
             var response = action.Responses["204"];
-            Assert.Equal(1, response.Examples.Count);
+            Assert.Single(response.Examples);
             var example = response.Examples["application/json"];
             Assert.NotNull(example);
         }
@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("contact", tag0.Name);
             Assert.Equal("Everything about the **contacts**", tag0.Description);
             Assert.Equal("contact-bookmark", tag0.BookmarkId);
-            Assert.Equal(1, tag0.Metadata.Count);
+            Assert.Single(tag0.Metadata);
             var externalDocs = (JObject)tag0.Metadata["externalDocs"];
             Assert.NotNull(externalDocs);
             Assert.Equal("Find out more", externalDocs["description"]);
@@ -96,7 +96,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             const string swaggerFile = @"TestData\swagger\pathParameters_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-            Assert.Equal(1, swagger.Paths.Values.Count);
+            Assert.Single(swagger.Paths.Values);
             var parameters = swagger.Paths["/contacts"].Parameters;
             Assert.Equal(2, parameters.Count);
 
@@ -117,7 +117,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             const string swaggerFile = @"TestData\swagger\loopref_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-            Assert.Equal(1, swagger.Paths.Values.Count);
+            Assert.Single(swagger.Paths.Values);
             var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
             Assert.NotNull(actionJObject);
             var action = actionJObject.ToObject<OperationObject>();
@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             const string swaggerFile = @"TestData\swagger\externalLoopRef_A.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-            Assert.Equal(1, swagger.Paths.Values.Count);
+            Assert.Single(swagger.Paths.Values);
             var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
             Assert.NotNull(actionJObject);
             var action = actionJObject.ToObject<OperationObject>();

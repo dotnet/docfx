@@ -79,7 +79,7 @@ This is a function
 ".Replace("\r\n", "\n"), function.Summary);
             Assert.Equal("System.Int32", function.SeeAlsos[0].LinkId);
             Assert.Equal("This is a param as <xref href=\"System.Int32\" data-throw-if-not-resolved=\"false\"></xref>", function.Syntax.Parameters[0].Description);
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var parameter = function.Syntax.Parameters[0];
             Assert.Equal("i", parameter.Name);
             Assert.Equal("System.Int32", parameter.Type);
@@ -100,13 +100,13 @@ namespace Test1.Test2
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
             Assert.Equal("Test1.Test2", ns.DisplayNames[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Test2", ns.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Test2", ns.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-            Assert.Equal(0, ns.Modifiers.Count);
+            Assert.Empty(ns.Modifiers);
         }
 
         [Trait("Related", "Generic")]
@@ -138,7 +138,7 @@ namespace Test1
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
             MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), null, options: new ExtractMetadataOptions { PreserveRawInlineComments = true });
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -149,7 +149,7 @@ namespace Test1
                 Assert.Equal(@"public sealed class Class1<T>
     where T : struct, IEnumerable<T>", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.NotNull(type.Syntax.TypeParameters);
-                Assert.Equal(1, type.Syntax.TypeParameters.Count);
+                Assert.Single(type.Syntax.TypeParameters);
                 Assert.Equal("T", type.Syntax.TypeParameters[0].Name);
                 Assert.Null(type.Syntax.TypeParameters[0].Type);
                 Assert.Equal("The type", type.Syntax.TypeParameters[0].Description);
@@ -185,7 +185,7 @@ namespace Test1
                 Assert.Equal("Class1<T>.Items", proptery.DisplayNamesWithType.First().Value);
                 Assert.Equal("Test1.Class1<T>.Items", proptery.DisplayQualifiedNames.First().Value);
                 Assert.Equal("Test1.Class1`1.Items", proptery.Name);
-                Assert.Equal(0, proptery.Syntax.Parameters.Count);
+                Assert.Empty(proptery.Syntax.Parameters);
                 var returnValue = proptery.Syntax.Return;
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", returnValue.Type);
@@ -234,7 +234,7 @@ namespace Test1
                 Assert.Equal("Class1<T>.Items2", proptery.DisplayNamesWithType.First().Value);
                 Assert.Equal("Test1.Class1<T>.Items2", proptery.DisplayQualifiedNames.First().Value);
                 Assert.Equal("Test1.Class1`1.Items2", proptery.Name);
-                Assert.Equal(0, proptery.Syntax.Parameters.Count);
+                Assert.Empty(proptery.Syntax.Parameters);
                 var returnValue = proptery.Syntax.Return;
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", returnValue.Type);
@@ -248,11 +248,11 @@ namespace Test1
 
                 Assert.True(output.References.ContainsKey("Test1.Class1`1"));
                 var refenence = output.References["Test1.Class1`1"];
-                Assert.Equal(true, refenence.IsDefinition);
+                Assert.True(refenence.IsDefinition);
                 Assert.Equal("Test1", refenence.Parent);
                 Assert.True(output.References.ContainsKey("Test1"));
                 refenence = output.References["Test1"];
-                Assert.Equal(true, refenence.IsDefinition);
+                Assert.True(refenence.IsDefinition);
                 Assert.Null(refenence.Parent);
 
                 Assert.True(output.References.ContainsKey("System.Collections.Generic.Dictionary`2"));
@@ -277,7 +277,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
@@ -301,7 +301,7 @@ namespace Test1
                 Assert.Equal("IFoo.Count", property.DisplayNamesWithType.First().Value);
                 Assert.Equal("Test1.IFoo.Count", property.DisplayQualifiedNames.First().Value);
                 Assert.Equal("Test1.IFoo.Count", property.Name);
-                Assert.Equal(0, property.Syntax.Parameters.Count);
+                Assert.Empty(property.Syntax.Parameters);
                 var returnValue = property.Syntax.Return;
                 Assert.NotNull(returnValue);
                 Assert.NotNull(returnValue.Type);
@@ -334,7 +334,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
 
             var ifoo = output.Items[0].Items[0];
             Assert.NotNull(ifoo);
@@ -379,7 +379,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
 
             var foo = output.Items[0].Items[0];
             Assert.NotNull(foo);
@@ -388,7 +388,7 @@ namespace Test1
             Assert.Equal("Test1.Foo<T>", foo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public class Foo<T> : IFoo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
             Assert.NotNull(foo.Implements);
-            Assert.Equal(1, foo.Implements.Count);
+            Assert.Single(foo.Implements);
             Assert.Equal(new[] { "Test1.IFoo" }, foo.Implements);
             Assert.Equal(new[] { "public", "class" }, foo.Modifiers[SyntaxLanguage.CSharp]);
 
@@ -419,7 +419,7 @@ namespace Test1
                 var item = output.References["System.Object"];
                 Assert.Equal("System", item.Parent);
                 Assert.NotNull(item);
-                Assert.Equal(1, item.Parts[SyntaxLanguage.CSharp].Count);
+                Assert.Single(item.Parts[SyntaxLanguage.CSharp]);
 
                 Assert.Equal("System.Object", item.Parts[SyntaxLanguage.CSharp][0].Name);
                 Assert.Equal("Object", item.Parts[SyntaxLanguage.CSharp][0].DisplayName);
@@ -531,7 +531,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -582,7 +582,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -637,7 +637,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -661,7 +661,7 @@ namespace Test1
                 Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
 
                 Assert.NotNull(type.Syntax.Parameters);
-                Assert.Equal(1, type.Syntax.Parameters.Count);
+                Assert.Single(type.Syntax.Parameters);
                 Assert.Equal("x", type.Syntax.Parameters[0].Name);
                 Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", type.Syntax.Parameters[0].Type);
                 Assert.NotNull(type.Syntax.Return);
@@ -720,7 +720,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // Foo<T>
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -865,7 +865,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -1005,7 +1005,7 @@ namespace Test
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.Equal(2, ns.Items.Count);
             {
@@ -1019,7 +1019,7 @@ namespace Test
                 Assert.Null(type.Implements);
 
                 // Verify member with EditorBrowsable.Never should be filtered out
-                Assert.Equal(0, type.Items.Count);
+                Assert.Empty(type.Items);
             }
             {
                 var type = ns.Items[1];
@@ -1032,7 +1032,7 @@ namespace Test
                 Assert.Equal("Test.IInterface", type.Implements[0]);
 
                 // Verify EII member with EditorBrowsable.Never should be filtered out
-                Assert.Equal(0, type.Items.Count);
+                Assert.Empty(type.Items);
             }
         }
 
@@ -1076,7 +1076,7 @@ namespace Test1
 ";
             var compilation = CreateCompilationFromCSharpCode(code);
             MetadataItem output = GenerateYamlMetadata(compilation, options: new ExtractMetadataOptions { RoslynExtensionMethods = GetAllExtensionMethodsFromCompilation(new[] { compilation }) });
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // FooImple<T>
             {
                 var method = output.Items[0].Items[1].Items[0];
@@ -1093,7 +1093,7 @@ namespace Test1
             {
                 Assert.Equal("Test1.FooImple`1.Test1.Extension.Eat``1", extensionMethods[0]);
                 var reference = output.References[extensionMethods[0]];
-                Assert.Equal(false, reference.IsDefinition);
+                Assert.False(reference.IsDefinition);
                 Assert.Equal("Test1.Extension.Eat``1(Test1.FooImple{``0})", reference.Definition);
                 Assert.Equal("Eat<T>()", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
                 Assert.Equal("Extension.Eat<T>()", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayNamesWithType)));
@@ -1101,29 +1101,29 @@ namespace Test1
             {
                 Assert.Equal("Test1.Foo{`0[]}.Test1.Extension.Play``2({T}[],{Way})", extensionMethods[1]);
                 var reference = output.References[extensionMethods[1]];
-                Assert.Equal(false, reference.IsDefinition);
+                Assert.False(reference.IsDefinition);
                 Assert.Equal("Test1.Extension.Play``2(Test1.Foo{``0},``0,``1)", reference.Definition);
                 Assert.Equal("Play<T[], Way>(T[], Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
                 Assert.Equal("Extension.Play<T[], Way>(T[], Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayNamesWithType)));
             }
             // FooImple2<T>
             extensionMethods = output.Items[0].Items[2].ExtensionMethods;
-            Assert.Equal(1, extensionMethods.Count);
+            Assert.Single(extensionMethods);
             {
                 Assert.Equal("Test1.Foo{System.Object}.Test1.Extension.Play``2(System.Object,{Way})", extensionMethods[0]);
                 var reference = output.References[extensionMethods[0]];
-                Assert.Equal(false, reference.IsDefinition);
+                Assert.False(reference.IsDefinition);
                 Assert.Equal("Test1.Extension.Play``2(Test1.Foo{``0},``0,``1)", reference.Definition);
                 Assert.Equal("Play<Object, Way>(Object, Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
                 Assert.Equal("Extension.Play<Object, Way>(Object, Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayNamesWithType)));
             }
             // FooImple3<T>
             extensionMethods = output.Items[0].Items[3].ExtensionMethods;
-            Assert.Equal(1, extensionMethods.Count);
+            Assert.Single(extensionMethods);
             {
                 Assert.Equal("Test1.Foo{Test1.Foo{`0[]}}.Test1.Extension.Play``2(Test1.Foo{{T}[]},{Way})", extensionMethods[0]);
                 var reference = output.References[extensionMethods[0]];
-                Assert.Equal(false, reference.IsDefinition);
+                Assert.False(reference.IsDefinition);
                 Assert.Equal("Test1.Extension.Play``2(Test1.Foo{``0},``0,``1)", reference.Definition);
                 Assert.Equal("Play<Foo<T[]>, Way>(Foo<T[]>, Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
                 Assert.Equal("Extension.Play<Foo<T[]>, Way>(Foo<T[]>, Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayNamesWithType)));
@@ -1134,7 +1134,7 @@ namespace Test1
             {
                 Assert.Equal("Test1.Doll.Test1.Extension.Rain", extensionMethods[0]);
                 var reference = output.References[extensionMethods[0]];
-                Assert.Equal(false, reference.IsDefinition);
+                Assert.False(reference.IsDefinition);
                 Assert.Equal("Test1.Extension.Rain(Test1.Doll)", reference.Definition);
                 Assert.Equal("Rain()", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
                 Assert.Equal("Extension.Rain()", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayNamesWithType)));
@@ -1142,7 +1142,7 @@ namespace Test1
             {
                 Assert.Equal("Test1.Doll.Test1.Extension.Rain(Test1.Doll)", extensionMethods[1]);
                 var reference = output.References[extensionMethods[1]];
-                Assert.Equal(false, reference.IsDefinition);
+                Assert.False(reference.IsDefinition);
                 Assert.Equal("Test1.Extension.Rain(Test1.Doll,Test1.Doll)", reference.Definition);
                 Assert.Equal("Rain(Doll)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
                 Assert.Equal("Extension.Rain(Doll)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayNamesWithType)));
@@ -1192,7 +1192,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // unary
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -1480,7 +1480,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var constructor = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(constructor);
@@ -1557,7 +1557,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(field);
@@ -1669,7 +1669,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var a = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(a);
@@ -1794,7 +1794,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var a = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(a);
@@ -1950,7 +1950,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             // Foo<T>
             {
                 var indexer = output.Items[0].Items[0].Items[0];
@@ -2102,7 +2102,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
@@ -2201,7 +2201,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Bar<K>(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo(Of T).Bar(Of K)(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.Bar``1(System.Int32)", method.Name);
-                Assert.Equal(1, method.Syntax.Parameters.Count);
+                Assert.Single(method.Syntax.Parameters);
                 var parameter = method.Syntax.Parameters[0];
                 Assert.Equal("i", parameter.Name);
                 Assert.Equal("System.Int32", parameter.Type);
@@ -2219,7 +2219,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo(Of T).Item(System.Int32)", indexer.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.Item(System.Int32)", indexer.Name);
-                Assert.Equal(1, indexer.Syntax.Parameters.Count);
+                Assert.Single(indexer.Syntax.Parameters);
                 var parameter = indexer.Syntax.Parameters[0];
                 Assert.Equal("index", parameter.Name);
                 Assert.Equal("System.Int32", parameter.Type);
@@ -2295,7 +2295,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(field);
@@ -2372,7 +2372,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo", type.Name);
-                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Single(type.Inheritance);
                 Assert.Equal("System.Object", type.Inheritance[0]);
 
                 Assert.Equal(@"public static class Foo", type.Syntax.Content[SyntaxLanguage.CSharp]);
@@ -2408,7 +2408,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T1, T2>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo(Of T1, T2)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`2", type.Name);
-                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Single(type.Inheritance);
                 Assert.Equal("System.Object", type.Inheritance[0]);
             }
             {
@@ -2421,7 +2421,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T1, T2>.Bar<T3>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo(Of T1, T2).Bar(Of T3)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`2.Bar`1", type.Name);
-                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Single(type.Inheritance);
                 Assert.Equal("System.Object", type.Inheritance[0]);
             }
             {
@@ -2434,7 +2434,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T1, T2>.FooBar", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo(Of T1, T2).FooBar", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`2.FooBar", type.Name);
-                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Single(type.Inheritance);
                 Assert.Equal("System.Object", type.Inheritance[0]);
             }
         }
@@ -2489,13 +2489,13 @@ public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[Synta
             Assert.Equal("System.SerializableAttribute", @class.Attributes[0].Type);
             Assert.Equal("System.SerializableAttribute.#ctor", @class.Attributes[0].Constructor);
             Assert.NotNull(@class.Attributes[0].Arguments);
-            Assert.Equal(0, @class.Attributes[0].Arguments.Count);
+            Assert.Empty(@class.Attributes[0].Arguments);
             Assert.Null(@class.Attributes[0].NamedArguments);
 
             Assert.Equal("System.AttributeUsageAttribute", @class.Attributes[1].Type);
             Assert.Equal("System.AttributeUsageAttribute.#ctor(System.AttributeTargets)", @class.Attributes[1].Constructor);
             Assert.NotNull(@class.Attributes[1].Arguments);
-            Assert.Equal(1, @class.Attributes[1].Arguments.Count);
+            Assert.Single(@class.Attributes[1].Arguments);
             Assert.Equal("System.AttributeTargets", @class.Attributes[1].Arguments[0].Type);
             Assert.Equal(32767, @class.Attributes[1].Arguments[0].Value);
             Assert.NotNull(@class.Attributes[1].NamedArguments);
@@ -2510,7 +2510,7 @@ public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[Synta
             Assert.Equal("System.ComponentModel.TypeConverterAttribute", @class.Attributes[2].Type);
             Assert.Equal("System.ComponentModel.TypeConverterAttribute.#ctor(System.Type)", @class.Attributes[2].Constructor);
             Assert.NotNull(@class.Attributes[2].Arguments);
-            Assert.Equal(1, @class.Attributes[2].Arguments.Count);
+            Assert.Single(@class.Attributes[2].Arguments);
             Assert.Equal("System.Type", @class.Attributes[2].Arguments[0].Type);
             Assert.Equal("Test1.TestAttribute", @class.Attributes[2].Arguments[0].Value);
             Assert.Null(@class.Attributes[2].NamedArguments);
@@ -2518,7 +2518,7 @@ public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[Synta
             Assert.Equal("System.ComponentModel.TypeConverterAttribute", @class.Attributes[3].Type);
             Assert.Equal("System.ComponentModel.TypeConverterAttribute.#ctor(System.Type)", @class.Attributes[3].Constructor);
             Assert.NotNull(@class.Attributes[3].Arguments);
-            Assert.Equal(1, @class.Attributes[3].Arguments.Count);
+            Assert.Single(@class.Attributes[3].Arguments);
             Assert.Equal("System.Type", @class.Attributes[3].Arguments[0].Type);
             Assert.Equal("Test1.TestAttribute[]", @class.Attributes[3].Arguments[0].Value);
             Assert.Null(@class.Attributes[3].NamedArguments);
@@ -2526,7 +2526,7 @@ public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[Synta
             Assert.Equal("Test1.TestAttribute", @class.Attributes[4].Type);
             Assert.Equal("Test1.TestAttribute.#ctor(System.Object)", @class.Attributes[4].Constructor);
             Assert.NotNull(@class.Attributes[4].Arguments);
-            Assert.Equal(1, @class.Attributes[4].Arguments.Count);
+            Assert.Single(@class.Attributes[4].Arguments);
             Assert.Equal("System.String", @class.Attributes[4].Arguments[0].Type);
             Assert.Equal("test", @class.Attributes[4].Arguments[0].Value);
             Assert.Null(@class.Attributes[4].NamedArguments);
@@ -2563,7 +2563,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(field);
@@ -2585,7 +2585,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(field);
@@ -2609,7 +2609,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
             var method = ns.Items[0].Items[0];
@@ -2635,13 +2635,13 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
             var i1 = ns.Items[0];
             Assert.NotNull(i1);
             Assert.Equal("Test1.I1`1", i1.Name);
-            Assert.Equal(1, i1.Items.Count);
+            Assert.Single(i1.Items);
             Assert.Null(i1.InheritedMembers);
             var m1 = i1.Items[0];
             Assert.Equal("Test1.I1`1.M1(`0)", m1.Name);
@@ -2649,7 +2649,7 @@ namespace Test1
             var i2 = ns.Items[1];
             Assert.NotNull(i2);
             Assert.Equal("Test1.I2`1", i2.Name);
-            Assert.Equal(0, i2.Items.Count);
+            Assert.Empty(i2.Items);
             Assert.Equal(2, i2.InheritedMembers.Count);
             Assert.Equal(new[] { "Test1.I1{System.String}.M1(System.String)", "Test1.I1{{T}}.M1({T})" }, i2.InheritedMembers);
 
@@ -2676,13 +2676,13 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            Assert.Equal(1, output.Items.Count);
+            Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
             var foo = ns.Items[0];
             Assert.NotNull(foo);
             Assert.Equal("Test1.Foo", foo.Name);
-            Assert.Equal(1, foo.Items.Count);
+            Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.Int32)", bar.Name);
             Assert.Equal("public int Bar(int x = 0)", bar.Syntax.Content[SyntaxLanguage.CSharp]);

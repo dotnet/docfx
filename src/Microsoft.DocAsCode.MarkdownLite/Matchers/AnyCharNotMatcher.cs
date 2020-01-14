@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    using System;
-
     internal sealed class AnyCharNotMatcher : Matcher, IRepeatable
     {
         private readonly char _ch;

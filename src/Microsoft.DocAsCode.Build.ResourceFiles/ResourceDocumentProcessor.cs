@@ -7,12 +7,8 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
-    using System.Linq;
-
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Common.Git;
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(typeof(IDocumentProcessor))]

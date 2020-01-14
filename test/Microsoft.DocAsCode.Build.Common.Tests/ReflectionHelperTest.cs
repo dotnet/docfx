@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             };
             Assert.Equal("Hello", ReflectionHelper.GetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty1))));
             Assert.Equal(100, ReflectionHelper.GetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty2))));
-            Assert.Equal(null, ReflectionHelper.GetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty3))));
+            Assert.Null(ReflectionHelper.GetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty3))));
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             };
             Assert.Equal("Hello", ReflectionHelper.GetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty1))));
             Assert.Equal(100, ReflectionHelper.GetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty2))));
-            Assert.Equal(null, ReflectionHelper.GetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty3))));
+            Assert.Null(ReflectionHelper.GetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty3))));
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             };
             Assert.Equal("Hello", ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty1))));
             Assert.Equal(100, ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty2))));
-            Assert.Equal(null, ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3))));
+            Assert.Null(ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3))));
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             };
             Assert.Equal("Hello", ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty1))));
             Assert.Equal(100, ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty2))));
-            Assert.Equal(null, ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3))));
+            Assert.Null(ReflectionHelper.GetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3))));
         }
 
         [Fact]
@@ -73,13 +73,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             ReflectionHelper.SetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty1)), "Hello");
             Assert.Equal("Hello", obj.MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty1)), null);
-            Assert.Equal(null, obj.MyProperty1);
+            Assert.Null(obj.MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty2)), 100);
             Assert.Equal(100, obj.MyProperty2);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty3)), true);
-            Assert.Equal(true, obj.MyProperty3);
+            Assert.True(obj.MyProperty3);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyClass).GetProperty(nameof(MyClass.MyProperty3)), null);
-            Assert.Equal(null, obj.MyProperty3);
+            Assert.Null(obj.MyProperty3);
         }
 
         [Fact]
@@ -89,13 +89,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             ReflectionHelper.SetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty1)), "Hello");
             Assert.Equal("Hello", ((MyStruct)obj).MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty1)), null);
-            Assert.Equal(null, ((MyStruct)obj).MyProperty1);
+            Assert.Null(((MyStruct)obj).MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty2)), 100);
             Assert.Equal(100, ((MyStruct)obj).MyProperty2);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty3)), true);
-            Assert.Equal(true, ((MyStruct)obj).MyProperty3);
+            Assert.True(((MyStruct)obj).MyProperty3);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyStruct).GetProperty(nameof(MyStruct.MyProperty3)), null);
-            Assert.Equal(null, ((MyStruct)obj).MyProperty3);
+            Assert.Null(((MyStruct)obj).MyProperty3);
         }
 
         [Fact]
@@ -105,13 +105,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty1)), "Hello");
             Assert.Equal("Hello", obj.MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty1)), null);
-            Assert.Equal(null, obj.MyProperty1);
+            Assert.Null(obj.MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty2)), 100);
             Assert.Equal(100, obj.MyProperty2);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3)), true);
-            Assert.Equal(true, obj.MyProperty3);
+            Assert.True(obj.MyProperty3);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3)), null);
-            Assert.Equal(null, obj.MyProperty3);
+            Assert.Null(obj.MyProperty3);
         }
 
         [Fact]
@@ -121,13 +121,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty1)), "Hello");
             Assert.Equal("Hello", obj.MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty1)), null);
-            Assert.Equal(null, obj.MyProperty1);
+            Assert.Null(obj.MyProperty1);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty2)), 100);
             Assert.Equal(100, obj.MyProperty2);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3)), true);
-            Assert.Equal(true, obj.MyProperty3);
+            Assert.True(obj.MyProperty3);
             ReflectionHelper.SetPropertyValue(obj, typeof(MyInterface).GetProperty(nameof(MyInterface.MyProperty3)), null);
-            Assert.Equal(null, obj.MyProperty3);
+            Assert.Null(obj.MyProperty3);
         }
 
         public class MyClass : MyInterface

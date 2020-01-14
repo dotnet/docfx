@@ -13,13 +13,11 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     public class ExternalReferencePackageWriter : IDisposable
     {
         private readonly string _packageFile;
-        private readonly Uri _baseUri;
         private readonly ZipArchive _zip;
 
         private ExternalReferencePackageWriter(string packageFile, Uri baseUri, bool append)
         {
             _packageFile = packageFile;
-            _baseUri = baseUri;
             if (append && File.Exists(packageFile))
             {
                 _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Open, FileAccess.ReadWrite), ZipArchiveMode.Update);

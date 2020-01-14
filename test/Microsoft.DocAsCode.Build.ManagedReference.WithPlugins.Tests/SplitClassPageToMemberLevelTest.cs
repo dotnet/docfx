@@ -27,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     {
         private string _outputFolder;
         private string _inputFolder;
-        private string _templateFolder;
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
 
@@ -38,7 +37,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         {
             _outputFolder = GetRandomFolder();
             _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
             {
                 RawModelExportSettings = { Export = true },
@@ -73,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
                 Assert.Equal(true, model.Metadata["_splitReference"]);
-                Assert.Equal(false, model.Metadata.ContainsKey("_splitFrom"));
+                Assert.False(model.Metadata.ContainsKey("_splitFrom"));
                 Assert.Equal(MemberType.Constructor, model.Type);
                 Assert.Equal(3, model.Children.Count);
             }
@@ -148,7 +146,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);
-                Assert.Equal(1, model.Items.Count);
+                Assert.Single(model.Items);
                 Assert.Equal("CatLibrary.Cat%602.html", model.Items[0].TopicHref);
                 Assert.Equal(16, model.Items[0].Items.Count);
                 Assert.Equal("CatLibrary.Cat-2.op_Addition.html", model.Items[0].Items[0].TopicHref);
@@ -170,7 +168,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
                 // NOTE: split output files have the same source file path
                 var groups = manifest.Files.GroupBy(s => s.SourceRelativePath).ToList().OrderByDescending(s => s.Count()).ToList();
-                Assert.Equal(1, groups.Count);
+                Assert.Single(groups);
             }
         }
 
@@ -209,7 +207,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
                 Assert.Equal(MemberType.Method, model.Type);
-                Assert.Equal(1, model.Children.Count);
+                Assert.Single(model.Children);
                 Assert.Equal(new List<string> { "net-11", "net-20", "netcore-10" }, model.Platform);
                 Assert.True(model.IsExplicitInterfaceImplementation);
             }
@@ -218,7 +216,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);
-                Assert.Equal(1, model.Items.Count);
+                Assert.Single(model.Items);
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.html", model.Items[0].TopicHref);
                 Assert.Equal(38, model.Items[0].Items.Count);
 

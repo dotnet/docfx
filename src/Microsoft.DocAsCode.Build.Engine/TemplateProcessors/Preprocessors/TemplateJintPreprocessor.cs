@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// Support require functionality as similar to NodeJS and RequireJS:
         /// use `exports` to export the properties for one module
         /// use `require` to use the exported module
-        /// 
+        ///
         /// Sample:
         ///
         /// 1. A common script file common.js:
@@ -70,8 +70,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             error = new Action<object>(s => Logger.LogError((s ?? NullString).ToString())),
         };
 
-        private readonly Engine _engine;
-
         private Func<object, object> _transformFunc;
 
         private Func<object, object> _getOptionsFunc;
@@ -80,11 +78,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (!string.IsNullOrWhiteSpace(scriptResource.Content))
             {
-                _engine = SetupEngine(resourceCollection, scriptResource, context);
-            }
-            else
-            {
-                _engine = null;
+                SetupEngine(resourceCollection, scriptResource, context);
             }
 
             ContainsGetOptions = _getOptionsFunc != null;
