@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void XrefTestGeneral()
         {
-            //arange
+            //arrange
             var content = @"<xref:Microsoft.Build.Tasks>
 \<xref:Microsoft.Build.Tasks>
 \\<xref:Microsoft.Build.Tasks>

@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode
             AddDashesToOption = true
         };
 
-        private static readonly string License;
         private static readonly string GeneralUsage;
         private static readonly string ProductName;
 
@@ -31,7 +30,6 @@ namespace Microsoft.DocAsCode
             var usage = assembly.GetCustomAttribute<AssemblyUsageAttribute>()?.Value;
             AddLinesToHelpText(HelpText, license);
             ProductName = name;
-            License = license;
             GeneralUsage = usage;
         }
 

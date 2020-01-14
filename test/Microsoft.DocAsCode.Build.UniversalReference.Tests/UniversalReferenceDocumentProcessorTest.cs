@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -21,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
     {
         private string _outputFolder;
         private string _inputFolder;
-        private string _templateFolder;
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
 
@@ -29,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         private const string TestDataDirectory = "TestData";
         private const string YmlDirectoryName = "yml";
         private const string OverwriteDirectoryName = "overwrite";
-        private const string RawModelDirectoryName = "raw";
         private static readonly string YmlDataDirectory = Path.Combine(TestDataDirectory, YmlDirectoryName);
         private static readonly string OverwriteDataDirectory = Path.Combine(TestDataDirectory, OverwriteDirectoryName);
 
@@ -37,7 +34,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         {
             _outputFolder = GetRandomFolder();
             _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
             {
                 RawModelExportSettings = { Export = true },

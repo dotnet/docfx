@@ -16,12 +16,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class TemplatePageLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;
-        private readonly string _outputFolder;
 
         public TemplatePageLoaderUnitTest()
         {
             _inputFolder = GetRandomFolder();
-            _outputFolder = GetRandomFolder();
         }
 
         [Fact]
@@ -38,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Empty(listener.Items);
                 Assert.Empty(templates);
 
-                // only allowes file under root folder
+                // only allows file under root folder
                 var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
                 templates = LoadAllTemplates();
                 Assert.Empty(listener.Items);

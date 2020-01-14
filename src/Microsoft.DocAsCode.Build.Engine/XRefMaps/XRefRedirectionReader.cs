@@ -12,12 +12,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     public abstract class XRefRedirectionReader : IXRefContainerReader
     {
         private readonly string _majorName;
-        private readonly HashSet<string> _mapNames;
 
         protected XRefRedirectionReader(string majorName, HashSet<string> mapNames)
         {
             _majorName = majorName ?? throw new ArgumentNullException(nameof(majorName));
-            _mapNames = mapNames ?? throw new ArgumentNullException(nameof(mapNames));
             if (!mapNames.Contains(majorName))
             {
                 throw new ArgumentException("Major map not found.");

@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.DataContracts.UniversalReference
 
         /// <summary>
         /// item's documentation's source detail
-        /// as ovwrite document targets uid, DocumentationInDevLangs is not supported
+        /// as overwrite document targets uid, DocumentationInDevLangs is not supported
         /// </summary>
         [YamlMember(Alias = Constants.PropertyName.Documentation)]
         [JsonProperty(Constants.PropertyName.Documentation)]

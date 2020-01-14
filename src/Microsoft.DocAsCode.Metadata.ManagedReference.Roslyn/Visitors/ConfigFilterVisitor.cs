@@ -9,13 +9,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public class ConfigFilterVisitor : DelegatingFilterVisitor
     {
-        private string _configFile;
         private ConfigFilterRule _configRule;
 
         public ConfigFilterVisitor(IFilterVisitor inner, string configFile)
             : base(inner)
         {
-            _configFile = configFile;
             _configRule = ConfigFilterRule.Load(configFile);
         }
 

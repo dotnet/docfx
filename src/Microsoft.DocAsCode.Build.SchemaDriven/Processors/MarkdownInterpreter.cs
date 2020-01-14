@@ -6,9 +6,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     using System;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
-    using HtmlAgilityPack;
     public class MarkdownInterpreter : IInterpreter
     {
         public bool CanInterpret(BaseSchema schema)

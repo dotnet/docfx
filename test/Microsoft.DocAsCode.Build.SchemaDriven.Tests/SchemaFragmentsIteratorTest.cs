@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
         [Fact]
         public void TestSchemaFragmentsIterator()
         {
-            // arrage
+            // arrange
             var counter = new UidPropertyCounter();
             var iterator = new SchemaFragmentsIterator(counter);
             DocumentSchema schema;

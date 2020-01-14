@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
     using System;
-    using System.Composition;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;

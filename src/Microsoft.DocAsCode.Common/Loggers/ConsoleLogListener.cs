@@ -5,7 +5,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.IO;
 
     public sealed class ConsoleLogListener : ILoggerListener
     {

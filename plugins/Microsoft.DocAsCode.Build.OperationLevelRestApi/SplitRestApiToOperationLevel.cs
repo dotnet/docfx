@@ -154,7 +154,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
             var originalFile = model.FileAndType.File;
             var fileExtension = Path.GetExtension(originalFile);
 
-            // When split into operation for petstore.swagger.json, the operation file path should be petstore/{operationName}.json, to prevent operation name confliction
+            // When split into operation for petstore.swagger.json, the operation file path should be petstore/{operationName}.json, to prevent operation name conflict
             var originalFileName = Path.GetFileName(originalFile);
             var subDirectory = originalFileName.Remove(originalFileName.IndexOf('.'));
             var directory = Path.GetDirectoryName(originalFile);
