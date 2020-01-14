@@ -115,10 +115,8 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             Dictionary<string, object> metadata = null;
             if (!string.IsNullOrEmpty(model.YamlCodeBlock))
             {
-                using (TextReader sr = new StringReader(model.YamlCodeBlock))
-                {
-                    metadata = YamlUtility.Deserialize<Dictionary<string, object>>(sr);
-                }
+                using TextReader sr = new StringReader(model.YamlCodeBlock);
+                metadata = YamlUtility.Deserialize<Dictionary<string, object>>(sr);
             }
 
             return new MarkdownFragment()

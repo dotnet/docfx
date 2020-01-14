@@ -22,20 +22,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [Fact]
         public void TestLoaderWithValidInput()
         {
-            using (var listener = new TestListenerScope("TestLoaderWhenStandalonePreprocessorExists"))
-            {
-                var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { return model; }");
+            using var listener = new TestListenerScope("TestLoaderWhenStandalonePreprocessorExists");
+            var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { return model; }");
 
-                Assert.Empty(listener.Items);
+            Assert.Empty(listener.Items);
 
-                Assert.NotNull(preprocessor);
-                Assert.False(preprocessor.ContainsGetOptions);
-                Assert.True(preprocessor.ContainsModelTransformation);
+            Assert.NotNull(preprocessor);
+            Assert.False(preprocessor.ContainsGetOptions);
+            Assert.True(preprocessor.ContainsModelTransformation);
 
-                var input = new { a = 1 };
-                var output = preprocessor.TransformModel(input);
-                Assert.Equal(input.a, ((dynamic)output).a);
-            }
+            var input = new { a = 1 };
+            var output = preprocessor.TransformModel(input);
+            Assert.Equal(input.a, ((dynamic)output).a);
         }
 
         private ITemplatePreprocessor Load(string path, string content)

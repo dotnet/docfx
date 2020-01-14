@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
             else
             {
-                Logger.LogWarning($"No TOC file is included, no PDF file will be generated.");
+                Logger.LogWarning("No TOC file is included, no PDF file will be generated.");
                 return;
             }
 
@@ -190,10 +190,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
             using (var fileStream = new FileStream(Path.Combine(_pdfOptions.DestDirectory, _pdfOptions.PdfDocsetName + FileExtensions.JsonExtension), FileMode.Create, FileAccess.Write))
             {
-                using (var ws = new StreamWriter(fileStream))
-                {
-                    JsonUtility.Serialize(ws, pdfInformations);
-                }
+                using var ws = new StreamWriter(fileStream);
+                JsonUtility.Serialize(ws, pdfInformations);
             }
 
             if (_pdfOptions.GenerateAppendices)

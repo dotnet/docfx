@@ -311,12 +311,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             var actual = new Func<FileModel>(
                 () =>
                 {
-                    using (var ms = new MemoryStream())
-                    {
-                        p.SaveIntermediateModel(expected, ms);
-                        ms.Position = 0;
-                        return p.LoadIntermediateModel(ms);
-                    }
+                    using var ms = new MemoryStream();
+                    p.SaveIntermediateModel(expected, ms);
+                    ms.Position = 0;
+                    return p.LoadIntermediateModel(ms);
                 })();
             var actualVM = (PageViewModel)actual.Content;
 
@@ -402,10 +400,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 TemplateManager = _templateManager
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            builder.Build(parameters);
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()

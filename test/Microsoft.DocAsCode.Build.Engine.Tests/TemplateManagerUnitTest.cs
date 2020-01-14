@@ -35,17 +35,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var testFinder = new ResourceFinder(this.GetType().Assembly, "tmpl");
 
             // 1. Support tmpl1.zip
-            using (var result = testFinder.Find("tmpl1"))
-            {
-                Assert.NotNull(result);
-                Assert.Equal(2, result.Names.Count());
-                var item = result.GetResource("tmpl1.dot.$");
-                Assert.Equal("This is file with complex filename characters", item);
+            using var result = testFinder.Find("tmpl1");
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Names.Count());
+            var item = result.GetResource("tmpl1.dot.$");
+            Assert.Equal("This is file with complex filename characters", item);
 
-                // backslash is also supported
-                item = result.GetResource(@"sub\file1");
-                Assert.Equal("This is file inside a subfolder", item);
-            }
+            // backslash is also supported
+            item = result.GetResource(@"sub\file1");
+            Assert.Equal("This is file inside a subfolder", item);
         }
 
         [Trait("Related", "ResourceFinder")]
@@ -539,7 +537,7 @@ exports.transform = function (model){
                 );
             var outputFilePath1 = Path.Combine(_outputFolder, "file.html");
             Assert.True(File.Exists(outputFilePath1));
-            Assert.Equal($"True,True", File.ReadAllText(outputFilePath1));
+            Assert.Equal("True,True", File.ReadAllText(outputFilePath1));
         }
 
         [Fact]
@@ -568,7 +566,7 @@ exports.transform = function (model){
                 );
             var outputFilePath1 = Path.Combine(_outputFolder, "file.html");
             Assert.True(File.Exists(outputFilePath1));
-            Assert.Equal($"2019-08-19T05:40:30.000Z", File.ReadAllText(outputFilePath1));
+            Assert.Equal("2019-08-19T05:40:30.000Z", File.ReadAllText(outputFilePath1));
         }
         #endregion
 
@@ -885,32 +883,30 @@ test2
             if (Directory.Exists(templateFolder))
                 Directory.Delete(templateFolder, true);
             WriteTemplate(templateFolder, templateFiles);
-            using (var resource = new ResourceFinder(null, null).Find(templateFolder))
+            using var resource = new ResourceFinder(null, null).Find(templateFolder);
+            var context = new DocumentBuildContext(inputFolder);
+            var processor = new TemplateProcessor(resource, context, 4);
+            foreach (var item in items)
             {
-                var context = new DocumentBuildContext(inputFolder);
-                var processor = new TemplateProcessor(resource, context, 4);
-                foreach (var item in items)
+                if (item.ResourceFile != null)
                 {
-                    if (item.ResourceFile != null)
-                    {
-                        var dir = Path.GetDirectoryName(item.ResourceFile);
-                        if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                        File.Create(item.ResourceFile).Dispose();
-                    }
-                    if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Directory.GetCurrentDirectory();
-                    item.Model = new ModelWithCache(model);
+                    var dir = Path.GetDirectoryName(item.ResourceFile);
+                    if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                    File.Create(item.ResourceFile).Dispose();
                 }
-                var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                EnvironmentContext.SetBaseDirectory(inputFolder);
-                EnvironmentContext.SetOutputDirectory(outputFolder);
-                try
-                {
-                    processor.Process(items.ToList(), settings);
-                }
-                finally
-                {
-                    EnvironmentContext.Clean();
-                }
+                if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Directory.GetCurrentDirectory();
+                item.Model = new ModelWithCache(model);
+            }
+            var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
+            EnvironmentContext.SetBaseDirectory(inputFolder);
+            EnvironmentContext.SetOutputDirectory(outputFolder);
+            try
+            {
+                processor.Process(items.ToList(), settings);
+            }
+            finally
+            {
+                EnvironmentContext.Clean();
             }
         }
 

@@ -335,16 +335,14 @@ namespace Microsoft.DocAsCode.SubCommands
             Dictionary<string, object> globalMetadata = null;
             if (globalMetadataContent != null)
             {
-                using (var sr = new StringReader(globalMetadataContent))
+                using var sr = new StringReader(globalMetadataContent);
+                try
                 {
-                    try
-                    {
-                        globalMetadata = JsonUtility.Deserialize<Dictionary<string, object>>(sr, GetToObjectSerializer());
-                    }
-                    catch (JsonException e)
-                    {
-                        Logger.LogWarning($"Metadata from \"--globalMetadata {globalMetadataContent}\" is not a valid JSON format global metadata, ignored: {e.Message}");
-                    }
+                    globalMetadata = JsonUtility.Deserialize<Dictionary<string, object>>(sr, GetToObjectSerializer());
+                }
+                catch (JsonException e)
+                {
+                    Logger.LogWarning($"Metadata from \"--globalMetadata {globalMetadataContent}\" is not a valid JSON format global metadata, ignored: {e.Message}");
                 }
             }
 

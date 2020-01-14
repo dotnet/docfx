@@ -26,11 +26,9 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(body));
             }
 
-            using (var semaphore = new SemaphoreSlim(maxParallelism))
-            {
-                // warning "access to disposed closure" around "semaphore" could be ignored as it is inside Task.WhenAll
-                await Task.WhenAll(from s in source select ForEachCoreAsync(body, semaphore, s));
-            }
+            using var semaphore = new SemaphoreSlim(maxParallelism);
+            // warning "access to disposed closure" around "semaphore" could be ignored as it is inside Task.WhenAll
+            await Task.WhenAll(from s in source select ForEachCoreAsync(body, semaphore, s));
         }
 
         private static async Task ForEachCoreAsync<T>(Func<T, Task> body, SemaphoreSlim semaphore, T s)
@@ -75,11 +73,9 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(body));
             }
 
-            using (var semaphore = new SemaphoreSlim(maxParallelism))
-            {
-                // warning "access to disposed closure" around "semaphore" could be ignored as it is inside Task.WhenAll
-                return await Task.WhenAll(from s in source select SelectCoreAsync(body, semaphore, s));
-            }
+            using var semaphore = new SemaphoreSlim(maxParallelism);
+            // warning "access to disposed closure" around "semaphore" could be ignored as it is inside Task.WhenAll
+            return await Task.WhenAll(from s in source select SelectCoreAsync(body, semaphore, s));
         }
 
         private static async Task<TResult> SelectCoreAsync<TSource, TResult>(Func<TSource, Task<TResult>> body, SemaphoreSlim semaphore, TSource s)

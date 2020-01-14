@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public virtual string GetResource(string name)
         {
-            using (var stream = GetResourceStream(name))
-                return GetString(stream);
+            using var stream = GetResourceStream(name);
+            return GetString(stream);
         }
 
         public IEnumerable<ResourceInfo> GetResources(string selector = null)
@@ -80,10 +80,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (stream == null) return null;
 
-            using (var reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
     }
 }

@@ -158,11 +158,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             MD5 md5 = MD5.Create();
 
-            using (FileCollectionStream reader = new FileCollectionStream(files))
-            {
-                var hash = md5.ComputeHash(reader);
-                return BitConverter.ToString(hash).Replace("-", "");
-            }
+            using FileCollectionStream reader = new FileCollectionStream(files);
+            var hash = md5.ComputeHash(reader);
+            return BitConverter.ToString(hash).Replace("-", "");
         }
 
         class FileCollectionStream : Stream

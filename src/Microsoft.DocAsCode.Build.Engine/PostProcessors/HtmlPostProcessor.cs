@@ -75,10 +75,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var document = new HtmlDocument();
                 try
                 {
-                    using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(tuple.OutputFile))
-                    {
-                        document.Load(stream, Encoding.UTF8);
-                    }
+                    using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(tuple.OutputFile);
+                    document.Load(stream, Encoding.UTF8);
                 }
                 catch (Exception ex)
                 {

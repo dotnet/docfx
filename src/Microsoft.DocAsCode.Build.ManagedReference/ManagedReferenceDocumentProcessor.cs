@@ -350,40 +350,32 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         protected virtual void SerializeModel(object model, Stream stream)
         {
-            using (var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true))
-            using (var lease = _serializerPool.Rent())
-            {
-                lease.Resource.Serialize(sw, model);
-            }
+            using var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true);
+            using var lease = _serializerPool.Rent();
+            lease.Resource.Serialize(sw, model);
         }
 
         protected virtual object DeserializeModel(Stream stream)
         {
-            using (var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true))
-            using (var jr = new JsonTextReader(sr))
-            using (var lease = _serializerPool.Rent())
-            {
-                return lease.Resource.Deserialize(jr);
-            }
+            using var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true);
+            using var jr = new JsonTextReader(sr);
+            using var lease = _serializerPool.Rent();
+            return lease.Resource.Deserialize(jr);
         }
 
         protected virtual void SerializeProperties(IDictionary<string, object> properties, Stream stream)
         {
-            using (var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true))
-            using (var lease = _serializerPool.Rent())
-            {
-                lease.Resource.Serialize(sw, properties);
-            }
+            using var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true);
+            using var lease = _serializerPool.Rent();
+            lease.Resource.Serialize(sw, properties);
         }
 
         protected virtual IDictionary<string, object> DeserializeProperties(Stream stream)
         {
-            using (var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true))
-            using (var jr = new JsonTextReader(sr))
-            using (var lease = _serializerPool.Rent())
-            {
-                return (IDictionary<string, object>)lease.Resource.Deserialize<object>(jr);
-            }
+            using var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true);
+            using var jr = new JsonTextReader(sr);
+            using var lease = _serializerPool.Rent();
+            return (IDictionary<string, object>)lease.Resource.Deserialize<object>(jr);
         }
 
         protected virtual JsonSerializer GetSerializer()

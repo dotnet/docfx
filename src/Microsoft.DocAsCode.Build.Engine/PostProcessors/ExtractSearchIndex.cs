@@ -64,10 +64,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     try
                     {
-                        using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(filePath))
-                        {
-                            html.Load(stream, Encoding.UTF8);
-                        }
+                        using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(filePath);
+                        html.Load(stream, Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {

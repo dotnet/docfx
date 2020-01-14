@@ -324,78 +324,76 @@ overwrite in contents block
         [Fact]
         public void TestFragmentsWithIncremental()
         {
-            using (var listener = new TestListenerScope(nameof(TestFragmentsWithIncremental)))
+            using var listener = new TestListenerScope(nameof(TestFragmentsWithIncremental));
+            // first build
+            using (new LoggerPhaseScope("FirstBuild"))
             {
-                // first build
-                using (new LoggerPhaseScope("FirstBuild"))
-                {
-                    BuildDocument(_files);
-                }
-                Assert.True(File.Exists(_rawModelFilePath));
-                var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-                Assert.Null(rawModel["summary"]);
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                ClearLog(listener.Items);
+                BuildDocument(_files);
+            }
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Null(rawModel["summary"]);
+            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+            ClearLog(listener.Items);
 
-                // add fragments
-                var mdFile = CreateFile(
-                    "Suppressions.yml.md",
-                    @"# `management.azure.com.advisor.suppressions`
+            // add fragments
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"# `management.azure.com.advisor.suppressions`
 ## ``summary``
 I add a summary.
 With [!include[invalid](invalid.md)]",
-                    _inputFolder);
-                using (new LoggerPhaseScope("AddFragments"))
-                {
-                    BuildDocument(_files);
-                }
-                Assert.True(File.Exists(_rawModelFilePath));
-                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-                Assert.NotNull(rawModel["summary"]);
-                Assert.Contains("I add a summary", rawModel["summary"].ToString());
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
-                List<string> lastMessages;
-                var messages = ClearLog(listener.Items);
+                _inputFolder);
+            using (new LoggerPhaseScope("AddFragments"))
+            {
+                BuildDocument(_files);
+            }
+            Assert.True(File.Exists(_rawModelFilePath));
+            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.NotNull(rawModel["summary"]);
+            Assert.Contains("I add a summary", rawModel["summary"].ToString());
+            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+            List<string> lastMessages;
+            var messages = ClearLog(listener.Items);
 
-                // modify fragments
-                UpdateFile(
-                    "Suppressions.yml.md",
-                    new string[] { @"# `management.azure.com.advisor.suppressions`",
+            // modify fragments
+            UpdateFile(
+                "Suppressions.yml.md",
+                new string[] { @"# `management.azure.com.advisor.suppressions`",
                     "## ``summary``",
                     "I update a summary.",
                     "With [!include[invalid](invalid.md)]",
-                    },
-                    _inputFolder);
-                using (new LoggerPhaseScope("ModifyFragments"))
-                {
-                    BuildDocument(_files);
-                }
-                Assert.True(File.Exists(_rawModelFilePath));
-                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-                Assert.NotNull(rawModel["summary"]);
-                Assert.Contains("I update a summary", rawModel["summary"].ToString());
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
-                lastMessages = messages;
-                messages = ClearLog(listener.Items);
-                Assert.True(messages.SequenceEqual(lastMessages));
-
-                // rebuild
-                using (new LoggerPhaseScope("Rebuild"))
-                {
-                    BuildDocument(_files);
-                }
-                Assert.True(File.Exists(_rawModelFilePath));
-                rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-                Assert.NotNull(rawModel["summary"]);
-                Assert.Contains("I update a summary", rawModel["summary"].ToString());
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
-                lastMessages = messages;
-                messages = ClearLog(listener.Items);
-                Assert.True(messages.SequenceEqual(lastMessages));
+                },
+                _inputFolder);
+            using (new LoggerPhaseScope("ModifyFragments"))
+            {
+                BuildDocument(_files);
             }
+            Assert.True(File.Exists(_rawModelFilePath));
+            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.NotNull(rawModel["summary"]);
+            Assert.Contains("I update a summary", rawModel["summary"].ToString());
+            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+            lastMessages = messages;
+            messages = ClearLog(listener.Items);
+            Assert.True(messages.SequenceEqual(lastMessages));
+
+            // rebuild
+            using (new LoggerPhaseScope("Rebuild"))
+            {
+                BuildDocument(_files);
+            }
+            Assert.True(File.Exists(_rawModelFilePath));
+            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.NotNull(rawModel["summary"]);
+            Assert.Contains("I update a summary", rawModel["summary"].ToString());
+            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+            lastMessages = messages;
+            messages = ClearLog(listener.Items);
+            Assert.True(messages.SequenceEqual(lastMessages));
         }
 
         private List<string> ClearLog(List<ILogItem> items)
@@ -415,10 +413,8 @@ With [!include[invalid](invalid.md)]",
                 TemplateManager = _templateManager,
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null, "obj"))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null, "obj");
+            builder.Build(parameters);
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()

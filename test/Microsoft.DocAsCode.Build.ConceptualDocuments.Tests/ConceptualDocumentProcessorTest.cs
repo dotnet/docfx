@@ -134,7 +134,7 @@ content);
                 var outputHtml = GetOutputFilePath(file);
                 Assert.True(File.Exists(outputHtml));
                 var content = File.ReadAllText(outputHtml);
-                Assert.Equal($@"<p><a href=""a#b"">Main</a></p>
+                Assert.Equal(@"<p><a href=""a#b"">Main</a></p>
 ".Replace("\r\n", "\n"),
 content);
             }
@@ -377,10 +377,8 @@ Some content";
                 TemplateManager = _templateManager
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            builder.Build(parameters);
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()

@@ -117,8 +117,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var pipeline = CreateMarkdownPipeline(isInline, enableValidation: false);
 
             using (InclusionContext.PushFile((RelativePath)filePath))
-            using (var writer = new StringWriter())
             {
+                using var writer = new StringWriter();
                 var renderer = new HtmlRenderer(writer);
                 pipeline.Setup(renderer);
                 renderer.Render(document);

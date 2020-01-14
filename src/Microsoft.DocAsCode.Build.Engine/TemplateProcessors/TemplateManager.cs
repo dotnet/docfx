@@ -48,11 +48,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var sb = new StringBuilder();
             using (var templateResource = CreateTemplateResource(_templates))
-            using (var md5 = MD5.Create())
             {
+                using var md5 = MD5.Create();
                 foreach (var name in from n in templateResource.Names ?? Enumerable.Empty<string>()
-                                     orderby n
-                                     select n)
+                    orderby n
+                    select n)
                 {
                     var hash = Convert.ToBase64String(md5.ComputeHash(templateResource.GetResourceStream(name)));
                     sb.Append(name);
@@ -93,8 +93,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             bool isEmpty = true;
 
             using (new LoggerPhaseScope("ExportResourceFiles", LogLevel.Verbose))
-            using (var templateResource = CreateTemplateResource(resourceNames))
             {
+                using var templateResource = CreateTemplateResource(resourceNames);
                 if (templateResource.IsEmpty)
                 {
                     Logger.Log(LogLevel.Warning, $"No resource found for [{StringExtension.ToDelimitedString(resourceNames)}].");
@@ -130,8 +130,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Directory.CreateDirectory(subfolder);
                 }
 
-                using (var fs = new FileStream(filePath, fileMode, FileAccess.ReadWrite, FileShare.ReadWrite))
-                    streamHandler(fs);
+                using var fs = new FileStream(filePath, fileMode, FileAccess.ReadWrite, FileShare.ReadWrite);
+                streamHandler(fs);
             }
             catch (IOException e)
             {
