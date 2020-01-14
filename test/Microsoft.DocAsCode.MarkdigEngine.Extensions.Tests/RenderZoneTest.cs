@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void KitchenSink()
         {
-            //arange
+            //arrange
             var content = @"# Article 2
 
 Shared content.
@@ -77,7 +77,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void AttributeMissingClosingQuote()
         {
-            //arange
+            //arrange
             var source = @"::: zone target=""chromeless";
 
             // assert
@@ -89,7 +89,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void MissingEndTag()
         {
-            //arange
+            //arrange
             var source1 = @"::: zone target=""chromeless""";
             var source2 = @"::: zone target=""chromeless""
 ::: zone-end";
@@ -106,7 +106,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void NotNested()
         {
-            //arange
+            //arrange
             var content = @"::: zone target=""chromeless""
 ::: zone target=""pdf""
 ::: zone-end
@@ -140,7 +140,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PdfPivotInvalid()
         {
-            //arange
+            //arrange
             var source = @"::: zone target = ""pdf""  pivot = ""foo""  ";
 
             // assert
@@ -152,7 +152,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PivotInvalid()
         {
-            //arange
+            //arrange
             var source = @"::: zone pivot = ""**""
 ::: zone-end";
 
@@ -165,7 +165,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PivotInvalid2()
         {
-            //arange
+            //arrange
             var source = @"::: zone pivot = ""a b""
 ::: zone-end";
 
@@ -178,7 +178,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PivotCommaDelimited()
         {
-            //arange
+            //arrange
             var source = @"::: zone pivot = ""a,b""
 ::: zone-end";
 
@@ -192,7 +192,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void UnexpectedAttribute()
         {
-            //arange
+            //arrange
             var source = @"::: zone target=""pdf"" something";
 
             // assert
@@ -204,7 +204,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void DuplicateAttribute()
         {
-            //arange
+            //arrange
             var source = @"::: zone target=""pdf"" target=""docs""";
 
             // assert
@@ -216,7 +216,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void InvalidAttribute()
         {
-            //arange
+            //arrange
             var source = @"::: zone *=""pdf""";
 
             // assert
@@ -228,7 +228,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void TextAfterEndTag()
         {
-            //arange
+            //arrange
             var source = @":::zone
 :::zone-end asdjklf";
 

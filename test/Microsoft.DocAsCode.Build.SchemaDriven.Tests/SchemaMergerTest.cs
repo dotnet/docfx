@@ -3,19 +3,13 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
-
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
@@ -252,49 +246,49 @@ Overwrite with content
                 Assert.Equal(2, rawModel["intValue"].Value<int>());
                 Assert.Equal("string1", rawModel["stringValue"].Value<string>());
                 Assert.Equal("abc", rawModel["ignoreValue"].Value<string>());
-                Assert.Equal(true, rawModel["boolValue"].Value<bool>());
+                Assert.True(rawModel["boolValue"].Value<bool>());
                 Assert.Equal("notEmpty", rawModel["empty"].Value<string>());
 
-                Assert.Equal(1, rawModel["stringArrayValue"].Count());
+                Assert.Single(rawModel["stringArrayValue"]);
                 Assert.Equal(".NET", rawModel["stringArrayValue"][0].Value<string>());
 
                 Assert.Equal(2, rawModel["intArrayValue"].Count());
                 Assert.Equal(1, rawModel["intArrayValue"][0].Value<int>());
                 Assert.Equal(2, rawModel["intArrayValue"][1].Value<int>());
 
-                Assert.Equal(0, rawModel["emptyArray"].Count());
+                Assert.Empty(rawModel["emptyArray"]);
 
                 var array1 = rawModel["array"][0];
 
                 Assert.Equal(2, array1["intValue"].Value<int>());
                 Assert.Equal($"<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"34\" sourceendlinenumber=\"34\">Nice</p>\n", array1["stringValue"].Value<string>());
                 Assert.Equal("abcdef", array1["ignoreValue"].Value<string>());
-                Assert.Equal(false, array1["boolValue"].Value<bool>());
+                Assert.False(array1["boolValue"].Value<bool>());
                 Assert.Equal(3, array1["empty"].Value<int>());
 
-                Assert.Equal(1, array1["stringArrayValue"].Count());
+                Assert.Single(array1["stringArrayValue"]);
                 Assert.Equal(".NET", array1["stringArrayValue"][0].Value<string>());
 
                 Assert.Equal(2, array1["intArrayValue"].Count());
                 Assert.Equal(1, array1["intArrayValue"][0].Value<int>());
                 Assert.Equal(2, array1["intArrayValue"][1].Value<int>());
 
-                Assert.Equal(0, array1["emptyArray"].Count());
+                Assert.Empty(array1["emptyArray"]);
 
                 var dict = rawModel["dict"];
 
                 Assert.Equal(3, dict["intValue"].Value<int>());
                 Assert.Equal($"<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"34\" sourceendlinenumber=\"34\">Nice</p>\n", dict["stringValue"].Value<string>());
-                Assert.Equal(false, dict["boolValue"].Value<bool>());
+                Assert.False(dict["boolValue"].Value<bool>());
                 Assert.Equal(4, dict["empty"].Value<int>());
 
-                Assert.Equal(1, dict["stringArrayValue"].Count());
+                Assert.Single(dict["stringArrayValue"]);
                 Assert.Equal(".NET", dict["stringArrayValue"][0].Value<string>());
 
-                Assert.Equal(1, dict["intArrayValue"].Count());
+                Assert.Single(dict["intArrayValue"]);
                 Assert.Equal(4, dict["intArrayValue"][0].Value<int>());
 
-                Assert.Equal(0, dict["emptyArray"].Count());
+                Assert.Empty(dict["emptyArray"]);
                 Assert.Equal($"<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"41\" sourceendlinenumber=\"41\">Cool</p>\n", dict["another"].Value<string>());
                 Assert.Equal($"<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"47\" sourceendlinenumber=\"47\">Overwrite with content</p>\n", dict["summary"].Value<string>());
             }

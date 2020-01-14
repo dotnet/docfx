@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { return model; }");
 
-                Assert.Equal(0, listener.Items.Count);
+                Assert.Empty(listener.Items);
 
                 Assert.NotNull(preprocessor);
                 Assert.False(preprocessor.ContainsGetOptions);

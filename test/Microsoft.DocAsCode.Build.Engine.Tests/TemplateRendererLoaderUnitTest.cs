@@ -28,24 +28,24 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             using (var listener = new TestListenerScope("NoTemplate"))
             {
                 var renderers = LoadAllRenderers();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, renderers.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(renderers);
 
                 var file1 = CreateFile("a.js", string.Empty, _inputFolder);
                 renderers = LoadAllRenderers();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, renderers.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(renderers);
 
                 // only allows file under root folder
                 var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
                 renderers = LoadAllRenderers();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, renderers.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(renderers);
 
                 var file3 = CreateFile("a.tmpl.js", string.Empty, _inputFolder);
                 renderers = LoadAllRenderers();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, renderers.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(renderers);
             }
         }
 
@@ -58,9 +58,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 var renderers = LoadAllRenderers();
 
-                Assert.Equal(0, listener.Items.Count);
+                Assert.Empty(listener.Items);
 
-                Assert.Equal(1, renderers.Count);
+                Assert.Single(renderers);
                 var renderer = renderers[0];
                 Assert.NotNull(renderer);
 
@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 var renderer = Load(path);
 
-                Assert.Equal(0, listener.Items.Count);
+                Assert.Empty(listener.Items);
 
                 Assert.NotNull(renderer);
 

@@ -145,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
             var originalFile = model.FileAndType.File;
             var fileExtension = Path.GetExtension(originalFile);
 
-            // When handlering tags in petstore.swagger.json, the tag file path should be petstore/tag.json, to prevent tag name confliction
+            // When handling tags in petstore.swagger.json, the tag file path should be petstore/tag.json, to prevent tag name conflict
             var originalFileName = Path.GetFileName(originalFile);
             var subDirectory = originalFileName.Remove(originalFileName.IndexOf('.'));
             var directory = Path.GetDirectoryName(originalFile);

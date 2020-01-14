@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Composition.Hosting;
     using System.Linq;
