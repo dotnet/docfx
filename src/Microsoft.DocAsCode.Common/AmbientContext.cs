@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Common
         /// <returns>The generated correlation id.</returns>
         public string GenerateNextCorrelationId()
         {
-            return string.Format("{0}.{1}", Id, Interlocked.Increment(ref _counterRef[0]).ToString());
+            return $"{Id}.{Interlocked.Increment(ref _counterRef[0]).ToString()}";
         }
 
         /// <summary>

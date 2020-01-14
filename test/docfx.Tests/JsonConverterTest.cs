@@ -153,15 +153,14 @@ namespace Microsoft.DocAsCode.Tests
 
         private static object ConvertJObjectToObject(object raw)
         {
-            var jValue = raw as JValue;
-            if (jValue != null) { return jValue.Value; }
-            var jArray = raw as JArray;
-            if (jArray != null)
+            if (raw is JValue jValue) { return jValue.Value; }
+
+            if (raw is JArray jArray)
             {
-                return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
+                return jArray.Select(ConvertJObjectToObject).ToArray();
             }
-            var jObject = raw as JObject;
-            if (jObject != null)
+
+            if (raw is JObject jObject)
             {
                 return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
             }
@@ -185,8 +184,7 @@ namespace Microsoft.DocAsCode.Tests
                 && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
             {
                 Predicate<object> newShouldSerialize = obj => {
-                    var collection = property.ValueProvider.GetValue(obj) as ICollection;
-                    return collection == null || collection.Count != 0;
+                    return !(property.ValueProvider.GetValue(obj) is ICollection collection) || collection.Count != 0;
                 };
                 Predicate<object> oldShouldSerialize = property.ShouldSerialize;
                 property.ShouldSerialize = oldShouldSerialize != null

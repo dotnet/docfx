@@ -38,10 +38,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             ExtensionsHelper.SkipSpaces(ref slice);
 
             var extensionName = "triple-colon";
-            ITripleColonExtensionInfo extension;
-            IDictionary<string, string> attributes;
-            HtmlAttributes htmlAttributes;
-            IDictionary<string, string> renderProperties;
             Action<string> logError = (string message) => _context.LogError(
                 $"invalid-{extensionName}",
                 $"Invalid {extensionName} on line {processor.LineIndex}. \"{slice.Text}\" is invalid. {message}",
@@ -49,10 +45,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 line: processor.LineIndex);
 
             if (!TryMatchIdentifier(ref slice, out extensionName)
-                || !_extensions.TryGetValue(extensionName, out extension)
+                || !_extensions.TryGetValue(extensionName, out var extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
-                || !TryMatchAttributes(ref slice, out attributes, extensionName, extension.SelfClosing, logError)
-                || !extension.TryProcessAttributes(attributes, out htmlAttributes, out renderProperties, logError, processor))
+                || !TryMatchAttributes(ref slice, out var attributes, extensionName, extension.SelfClosing, logError)
+                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, processor))
             {
                 return BlockState.None;
             }
@@ -218,8 +214,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     return true;
                 }
-                string attributeName;
-                if (!TryMatchIdentifier(ref slice, out attributeName))
+
+                if (!TryMatchIdentifier(ref slice, out var attributeName))
                 {
                     logError($"Invalid attribute.");
                     return false;

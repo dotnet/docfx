@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Common
             }
             if (raw is JArray jArray)
             {
-                return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
+                return jArray.Select(ConvertJObjectToObject).ToArray();
             }
             if (raw is JObject jObject)
             {

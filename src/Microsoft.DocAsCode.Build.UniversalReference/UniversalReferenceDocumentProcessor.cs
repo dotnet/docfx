@@ -251,8 +251,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 foreach (var pair in item.Additional)
                 {
-                    var s = pair.Value as string;
-                    if (s != null)
+                    if (pair.Value is string s)
                     {
                         result[pair.Key] = s;
                     }
