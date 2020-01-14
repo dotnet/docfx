@@ -14,13 +14,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
     internal sealed class TocResolver
     {
-        private readonly IHostService _host;
         private readonly Dictionary<string, TocItemInfo> _collection;
         private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = new Dictionary<FileAndType, TocItemInfo>();
 
-        public TocResolver(IHostService host, Dictionary<string, TocItemInfo> collection)
+        public TocResolver(Dictionary<string, TocItemInfo> collection)
         {
-            _host = host;
             _collection = collection;
         }
 

@@ -616,7 +616,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (!_types.ContainsKey(dependency.Type))
             {
                 // When the processor contains no files other than overwrites, this processor will not even loaded,
-                // As a result, the dependency types inside this processer will not be registered
+                // As a result, the dependency types inside this processor will not be registered
                 // This is a common case from now on so there is no need to log warning
                 // Logger.LogWarning($"dependency type {dependency.Type} isn't registered yet.");
                 return false;

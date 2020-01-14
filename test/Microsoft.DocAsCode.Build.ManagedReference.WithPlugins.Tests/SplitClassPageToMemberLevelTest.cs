@@ -27,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     {
         private string _outputFolder;
         private string _inputFolder;
-        private string _templateFolder;
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
 
@@ -38,7 +37,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         {
             _outputFolder = GetRandomFolder();
             _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
             {
                 RawModelExportSettings = { Export = true },

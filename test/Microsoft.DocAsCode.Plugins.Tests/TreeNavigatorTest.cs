@@ -3,11 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-
     using Xunit;
 
     using Microsoft.DocAsCode.Plugins;

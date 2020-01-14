@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 {
-    using System;
-
     using Microsoft.DocAsCode.Common;
 
     internal class JsonLocationInfo

@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 tocCache[model.OriginalFileAndType.FullPath] = new TocItemInfo(model.OriginalFileAndType, (TocItemViewModel)model.Content);
             }
-            var tocResolver = new TocResolver(host, tocCache);
+            var tocResolver = new TocResolver(tocCache);
             foreach (var key in tocCache.Keys.ToList())
             {
                 tocCache[key] = tocResolver.Resolve(key);

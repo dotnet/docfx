@@ -4,10 +4,6 @@
 namespace Microsoft.DocAsCode.Glob.Tests
 {
     using Glob;
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
     using Xunit;
 
     public class GlobMatcherTest
@@ -85,7 +81,7 @@ namespace Microsoft.DocAsCode.Glob.Tests
         {
            "abc/"
         }, false)]
-        // To match folders, / should be explictly specified
+        // To match folders, / should be explicitly specified
         [InlineData("**/", new string[]
         {
             "bdir/", "bdir/cdir/"

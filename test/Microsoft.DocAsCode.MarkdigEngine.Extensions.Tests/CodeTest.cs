@@ -3,10 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
     using Xunit;
 
     public class CodeTest

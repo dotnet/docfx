@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System.Text.RegularExpressions;
-
     public class MarkdownParagraphBlockRule : IMarkdownRule
     {
         public static readonly MarkdownParagraphBlockRule Instance = new MarkdownParagraphBlockRule();
