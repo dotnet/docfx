@@ -15,7 +15,7 @@ DocFX build supports localization contents, there are a few features need to be 
 
 - Treats localization content as the replacing content of source, they are not independent repo for publishing but only stores the corresponding loc content.
 - Localization publishing mixes the loc content and source content, loc content has higher priority to replace the source content.
-- Localization publishing uses source configuration and localization **overwrite** configuration
+- No **overwrite** configuration, localization repository should use its own configuration
 
 ## Workflow
 
@@ -26,20 +26,7 @@ DocFX build supports localization contents, there are a few features need to be 
   - No more specified fallback features, there is always mixed (Loc + Source) full set content for build/publishing  
   - All features are equal to Source + Loc, less Loc repo specified features  
   - Less Loc configurations to maintain and configuration changes in source repo will immediately be applied to Loc  
-  - Loc content can be stored in any places(one repo or multiple repo), what we need is the **mappings between Source content and Loc content**  
-  
-Below kinds of mappings are considered to be supported and there is a **strong convention** between source repo and loc repo:
-
-  - **Folder**, localization files are stored in the **same repository** with source files but under different **locale folder**
-    ```txt
-    source file         -->         localization files
-    /readme.md          -->         /_localization/zh-cn/readme.md
-    /files/a.md         -->         /_localization/de-de/files/a.md
-    ```
-  - **Repository**, localization files are stored in an **independent repository** per locale but keep the **same folder structure**
-      
-    Here is an string convention for loc repo name:
-    
+  - Loc content is stored in its own repository per locale but keep the **same folder structure**. Here is the string convention for loc repo name:
       - `{source-repo-name}` -> `{source-repo-name}.{locale}`
     
     ```txt
@@ -50,44 +37,23 @@ Below kinds of mappings are considered to be supported and there is a **strong c
     
     > NOTE: The loc org name can be different, it should be configurable
 
-  - **Branch**, localization files are stored in ONE **different repository** for **all locales** under different **locale branch**
-
-    Here is an string convention for loc repo name:
-    
-      - `{source-repo-name}` -> `{source-repo-name}.loc`
-
-    Here is an string convention for loc repo branch name:
-
-      - `{source-branch}` -> `{source-branch}.{locale}`
-    
-    ```txt
-    repo mapping example:
-    source repo       ->locale->      localization repo
-    dotnet/docfx        zh-cn         dotnet/docfx.loc
-    dotnet/docfx        de-de         dotnet/docfx.loc
-    branch mapping example:
-    source branch           -->           localization branch
-    master                  -->           master.zh-cn
-    live                    -->           live.de-de
-    ```
-
 ## [URL Schema and File Output](https://github.com/dotnet/docfx/blob/v3/docs/designs/output.md#url-schema)
 
 ### Dynamic rendering
 
 For dynamic rendering, some fallbacks happen in rendering side, so the build output only need contain loc built content, the source content are involved in the build, but they will not show in the output package.
 
-Input:(docfx build --locale zh-cn)
+Input:(docfx build)
 ```text
+#zh-cn(repo/folder/branch):
+    |- articles/
+    |   |- a.md(includes token.md and links to b.md and a.png)
 #en-us(repo):
     |- articles/
     |   |- a.md(include token.md and links to b.md and a.png)
     |   |- token.md
     |   |- a.png
     |   |- b.md
-#zh-cn(repo/folder/branch):
-    |- articles/
-    |   |- a.md(includes token.md and links to b.md and a.png)
 ```
 
 For above case, there is only `a.md` in loc docset, the source docset's `token.md`, `a.png` and `b.md` will be involved in loc docset build(resolving link, inclusion) but not going to show in output package.
@@ -161,8 +127,6 @@ Then it brings new problem: the `contributor info` need to be extracted from `ra
 ```
 
 So, during docfx build, if the current building content is sxs content, docfx will extract the contributors from corresponding raw content.
-
-> NOTE: For `branch mapping` localization repos(all locales in one repo under different branch), the sxs branch name follow this convention: `{branch}.locale` -> `{branch}-sxs.{locale}`
 
 ### Lookup no-existing source resources(token/codesnippet/image)
 
