@@ -311,7 +311,7 @@ items:
             Assert.NotNull(model.Metadata["metadata"]);
 
             var meta = (JObject)model.Metadata["metadata"];
-            Assert.Equal(1, meta.Count);
+            Assert.Single(meta);
             Assert.Equal("content", meta["meta"]);
 
             var expectedModel = new TocItemViewModel

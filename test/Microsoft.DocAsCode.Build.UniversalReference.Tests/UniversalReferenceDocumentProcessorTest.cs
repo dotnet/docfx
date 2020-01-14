@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             Assert.NotNull(classModel);
             Assert.Equal("Test UniversalReferenceDocumentProcessor", classModel.Metadata["meta"]);
 
-            Assert.Equal(1, classModel.SupportedLanguages.Length);
+            Assert.Single(classModel.SupportedLanguages);
             Assert.Equal("python", classModel.SupportedLanguages[0]);
 
             Assert.Equal("Class", classModel.Type);
@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             Assert.Equal("cntk.cntk_py.Value", classModel.Inheritance[0].Value[0].Type.Uid);
             Assert.Equal("builtins.object", classModel.Inheritance[0].Value[0].Inheritance[0].Type.Uid);
 
-            Assert.Equal(1, classModel.Children.Count);
+            Assert.Single(classModel.Children);
             Assert.Equal("python", classModel.Children[0].Language);
             Assert.Equal(5, classModel.Children[0].Value.Count);
 

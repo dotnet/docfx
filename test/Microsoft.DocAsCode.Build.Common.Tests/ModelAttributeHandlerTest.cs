@@ -31,8 +31,8 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             var context = Handle(model);
 
             Assert.Equal(2, context.LinkToUids.Count);
-            Assert.True(context.LinkToUids.Contains(model.Identity));
-            Assert.True(context.LinkToUids.Contains(model.Identities[0]));
+            Assert.Contains(model.Identity, context.LinkToUids);
+            Assert.Contains(model.Identities[0], context.LinkToUids);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             };
             model.Reference = model;
             var context = Handle(model);
-            Assert.Equal(1, context.LinkToUids.Count);
+            Assert.Single(context.LinkToUids);
         }
 
         [Fact]
@@ -135,10 +135,10 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
             var context = Handle(model);
 
-            Assert.Equal(1, context.LinkToUids.Count);
-            Assert.Equal(1, context.LinkToFiles.Count);
-            Assert.Equal(1, context.FileLinkSources.Count);
-            Assert.Equal(1, context.UidLinkSources.Count);
+            Assert.Single(context.LinkToUids);
+            Assert.Single(context.LinkToFiles);
+            Assert.Single(context.FileLinkSources);
+            Assert.Single(context.UidLinkSources);
             Assert.Equal(
                 @"<p sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Hello <em>world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1""></xref>, <a href=""link.md"" data-raw-source=""[link](link.md)"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">link</a></p>
 ".Replace("\r\n", "\n"),
@@ -176,10 +176,10 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             context.PlaceholderContent = "placeholder";
             context = Handle(model, context);
 
-            Assert.Equal(1, context.LinkToUids.Count);
-            Assert.Equal(1, context.LinkToFiles.Count);
-            Assert.Equal(1, context.FileLinkSources.Count);
-            Assert.Equal(1, context.UidLinkSources.Count);
+            Assert.Single(context.LinkToUids);
+            Assert.Single(context.LinkToFiles);
+            Assert.Single(context.FileLinkSources);
+            Assert.Single(context.UidLinkSources);
             var expected = @"<p sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Hello <em>world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1""></xref>, <a href=""link.md"" data-raw-source=""[link](link.md)"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">link</a></p>
 ".Replace("\r\n", "\n");
             Assert.Equal(expected, model.Content);
@@ -224,9 +224,9 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             context = Handle(model, context);
 
             Assert.Equal(3, context.LinkToUids.Count);
-            Assert.Equal(1, context.LinkToFiles.Count);
-            Assert.Equal(1, context.FileLinkSources.Count);
-            Assert.Equal(1, context.UidLinkSources.Count);
+            Assert.Single(context.LinkToFiles);
+            Assert.Single(context.FileLinkSources);
+            Assert.Single(context.UidLinkSources);
             var expected = @"<p sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Hello <em>world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1""></xref>, <a href=""link.md"" data-raw-source=""[link](link.md)"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">link</a></p>
 ".Replace("\r\n", "\n");
             Assert.Equal(expected, model.Content);
@@ -252,10 +252,10 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             context.PlaceholderContent = "placeholder";
             context = Handle(model, context);
 
-            Assert.Equal(1, context.LinkToUids.Count);
-            Assert.Equal(0, context.LinkToFiles.Count);
-            Assert.Equal(0, context.FileLinkSources.Count);
-            Assert.Equal(1, context.UidLinkSources.Count);
+            Assert.Single(context.LinkToUids);
+            Assert.Empty(context.LinkToFiles);
+            Assert.Empty(context.FileLinkSources);
+            Assert.Single(context.UidLinkSources);
             Assert.Equal("<p sourcefile=\"test\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><em>list</em></p>\n", model.ListContent[0]);
             Assert.Equal("<p sourcefile=\"test\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><xref href=\"xref\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@xref\" sourcefile=\"test\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"></xref></p>\n", model.ArrayContent[0]);
             Assert.Equal("placeholder", model.ArrayContent[1]);
@@ -275,10 +275,10 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
             var context = Handle(model);
 
-            Assert.Equal(0, context.LinkToUids.Count);
-            Assert.Equal(0, context.UidLinkSources.Count);
-            Assert.Equal(1, context.LinkToFiles.Count);
-            Assert.Equal(1, context.FileLinkSources.Count);
+            Assert.Empty(context.LinkToUids);
+            Assert.Empty(context.UidLinkSources);
+            Assert.Single(context.LinkToFiles);
+            Assert.Single(context.FileLinkSources);
             Assert.Equal("~/linkTarget", model.Href);
         }
         #endregion
