@@ -219,7 +219,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
 
                     // We can only globally shrink once to avoid invalid reference.
-                    // Shrink multiplie times may remove files that are already linked in saved manifest.
+                    // Shrink multiple times may remove files that are already linked in saved manifest.
                     if (_intermediateFolder != null)
                     {
                         // TODO: shrink here is not safe as post processor may update it.

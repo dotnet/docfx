@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System.Collections.Generic;
     using System.Composition;
-    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -104,23 +103,23 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             // Validate here as OverwriteDocumentModelCreater already filtered some invalid cases, e.g. duplicated H2
             ValidateWithSchema(fragments, model);
 
-            // 4. Apply schema to OverwriteDocument, and merge with skeyleton YAML object
+            // 4. Apply schema to OverwriteDocument, and merge with skeleton YAML object
             foreach (var overwriteDocumentModel in overwriteDocumentModels)
             {
-                var uidDefinitons = model.Uids.Where(s => s.Name == overwriteDocumentModel.Uid).ToList();
-                if (uidDefinitons.Count == 0)
+                var uidDefinitions = model.Uids.Where(s => s.Name == overwriteDocumentModel.Uid).ToList();
+                if (uidDefinitions.Count == 0)
                 {
                     Logger.LogWarning(
                         $"Unable to find UidDefinition for Uid: { overwriteDocumentModel.Uid}",
                         code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                     continue;
                 }
-                if (uidDefinitons.Count > 1)
+                if (uidDefinitions.Count > 1)
                 {
-                    Logger.LogWarning($"There are more than one UidDefinitions found for Uid {overwriteDocumentModel.Uid} in lines {string.Join(", ", uidDefinitons.Select(uid => uid.Line).ToList())}");
+                    Logger.LogWarning($"There are more than one UidDefinitions found for Uid {overwriteDocumentModel.Uid} in lines {string.Join(", ", uidDefinitions.Select(uid => uid.Line).ToList())}");
                 }
 
-                var ud = uidDefinitons[0];
+                var ud = uidDefinitions[0];
                 var jsonPointer = new JsonPointer(ud.Path).GetParentPointer();
                 var schemaForCurrentUid = jsonPointer.FindSchema(schema);
                 var source = jsonPointer.GetValue(model.Content);

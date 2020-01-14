@@ -8,8 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 	using Markdig.Syntax;
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text.RegularExpressions;
+    using System.Text.RegularExpressions;
 
 	public class ZoneExtension : ITripleColonExtensionInfo
     {

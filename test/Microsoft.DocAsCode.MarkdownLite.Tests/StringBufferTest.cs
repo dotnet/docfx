@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
-    using System.Collections.Generic;
-
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;

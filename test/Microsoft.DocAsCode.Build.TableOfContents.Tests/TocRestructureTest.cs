@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
-    using System.IO;
-
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
