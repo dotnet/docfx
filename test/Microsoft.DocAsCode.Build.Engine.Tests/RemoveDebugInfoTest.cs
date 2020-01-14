@@ -3,11 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
-    using System.Collections.Generic;
     using System.IO;
-    using System.Reflection;
-
-    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 

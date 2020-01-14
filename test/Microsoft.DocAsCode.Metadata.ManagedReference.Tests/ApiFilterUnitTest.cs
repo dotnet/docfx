@@ -5,18 +5,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
     using Xunit;
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.Emit;
-    using Microsoft.CodeAnalysis.MSBuild;
-
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
-
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
@@ -136,7 +128,7 @@ namespace Test1
             {
                 var class1 = @namespace.Items[0];
                 Assert.Equal("Test1.Class1", class1.Name);
-                Assert.Equal(1, class1.Items.Count);
+                Assert.Single(class1.Items);
                 var method = class1.Items[0];
                 Assert.Equal("Test1.Class1.Func1(System.Int32)", method.Name);
             }
@@ -150,7 +142,7 @@ namespace Test1
             {
                 var class4 = @namespace.Items[2];
                 Assert.Equal("Test1.Class3.Class4", class4.Name);
-                Assert.Equal(0, class4.Items.Count);
+                Assert.Empty(class4.Items);
             }
             {
                 var class6 = @namespace.Items[3];
@@ -163,7 +155,7 @@ namespace Test1
             var nestedNamespace = output.Items[1];
             Assert.NotNull(nestedNamespace);
             Assert.Equal("Test1.Test2.Test3", nestedNamespace.Name);
-            Assert.Equal(1, nestedNamespace.Items.Count);
+            Assert.Single(nestedNamespace.Items);
             {
                 var class5 = nestedNamespace.Items[0];
                 Assert.Equal("Test1.Test2.Test3.Class5", class5.Name);
@@ -193,7 +185,7 @@ namespace Test1
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             var @namespace = output.Items[0];
             var class1 = @namespace.Items[0];
-            Assert.Equal(1, class1.Attributes.Count);
+            Assert.Single(class1.Attributes);
             Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
         }
 
@@ -225,9 +217,9 @@ namespace Test1
 }";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
             var @namespace = output.Items[0];
-            Assert.Equal(1, @namespace.Items.Count);
+            Assert.Single(@namespace.Items);
             var class1 = @namespace.Items[0];
-            Assert.Equal(1, class1.Attributes.Count);
+            Assert.Single(class1.Attributes);
             Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
         }
 

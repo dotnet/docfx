@@ -305,7 +305,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (csFiles.Count > 0)
             {
-                var csContent = string.Join(Environment.NewLine, csFiles.Select(s => File.ReadAllText(s)));
+                var csContent = string.Join(Environment.NewLine, csFiles.Select(File.ReadAllText));
                 var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
                 if (csCompilation != null)
                 {
@@ -319,7 +319,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (vbFiles.Count > 0)
             {
-                var vbContent = string.Join(Environment.NewLine, vbFiles.Select(s => File.ReadAllText(s)));
+                var vbContent = string.Join(Environment.NewLine, vbFiles.Select(File.ReadAllText));
                 var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
                 if (vbCompilation != null)
                 {

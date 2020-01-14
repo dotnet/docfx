@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
-    using System.Collections.Generic;
     using System.Linq;
 
     using Xunit;

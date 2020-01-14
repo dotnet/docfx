@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    using System;
     using System.ComponentModel;
 
     public enum ProcessingPriority

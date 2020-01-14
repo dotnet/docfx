@@ -158,7 +158,7 @@ namespace Microsoft.DocAsCode.Tests
             var jArray = raw as JArray;
             if (jArray != null)
             {
-                return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
+                return jArray.Select(ConvertJObjectToObject).ToArray();
             }
             var jObject = raw as JObject;
             if (jObject != null)

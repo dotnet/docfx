@@ -1323,8 +1323,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                      SyntaxFactory.IdentifierName(pair.Name))).ToList();
                     if (exprs.Count > 0)
                     {
-                        return exprs.Aggregate<ExpressionSyntax>((x, y) =>
-                            SyntaxFactory.OrExpression(x, y));
+                        return exprs.Aggregate<ExpressionSyntax>(SyntaxFactory.OrExpression);
                     }
                 }
                 else

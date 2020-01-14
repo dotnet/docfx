@@ -6,9 +6,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System;
     using System.Collections.Generic;
     using System.IO;
-
-    using MarkdigEngine.Extensions;
-
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 

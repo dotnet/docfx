@@ -1,9 +1,7 @@
 ﻿namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition;
     using System.IO;
     using System.Linq;
     using Microsoft.DocAsCode.Build.Engine;
