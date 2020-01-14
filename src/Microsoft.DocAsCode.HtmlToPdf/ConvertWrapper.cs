@@ -243,7 +243,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             var htmlFiles = Directory.GetFiles(fullPath, HtmlFilePattern, SearchOption.AllDirectories);
 
-            ITransformer transformer = new FrameTransformer();
+            var transformer = new FrameTransformer();
             transformer.Transform(htmlFiles);
         }
 
@@ -251,14 +251,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             if (_pdfOptions.NeedGeneratePdfExternalLink)
             {
-                ITransformer transformer = new HtmlNotInTocTransformer(basePath, manifestUrlCache, _pdfOptions);
+                var transformer = new HtmlNotInTocTransformer(basePath, manifestUrlCache, _pdfOptions);
                 transformer.Transform(tocHtmls.Distinct());
             }
         }
 
         private void RemoveQueryStringAndBookmarkTransformer(string tocPageFilePath)
         {
-            ITransformer transformer = new RemoveQueryStringTransformer();
+            var transformer = new RemoveQueryStringTransformer();
             transformer.Transform(new List<string> { tocPageFilePath });
         }
 
@@ -266,7 +266,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             if (_pdfOptions.NeedGeneratePdfExternalLink)
             {
-                ITransformer transformer = new AbsolutePathInTocPageFileTransformer(_pdfOptions);
+                var transformer = new AbsolutePathInTocPageFileTransformer(_pdfOptions);
                 transformer.Transform(new List<string> { tocPage });
             }
         }

@@ -50,8 +50,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             IXRefContainer container;
             container = await _downloader.DownloadAsync(uri);
-            var map = container as XRefMap;
-            if (map == null)
+            if (!(container is XRefMap map))
             {
                 // not support download an xref archive, or reference to an xref archive
                 return null;

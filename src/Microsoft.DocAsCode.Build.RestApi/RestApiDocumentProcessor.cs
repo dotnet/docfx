@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             var repoInfo = GitUtility.TryGetFileDetail(filePath);
             if (repoInfo != null)
             {
-                swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
+                swagger.Metadata["source"] = new SourceDetail { Remote = repoInfo };
             }
 
             swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);

@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var source = "[!INCLUDE [title](~/token1573.md)]";
             var expected = @"<p><strong>token content</strong></p>";
 
-            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>()
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "token1573.md", "**token content**"}
             });
