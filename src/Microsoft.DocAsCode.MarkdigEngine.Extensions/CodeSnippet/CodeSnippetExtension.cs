@@ -22,8 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-            var htmlRenderer = renderer as HtmlRenderer;
-            if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<HtmlCodeSnippetRenderer>())
+            if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<HtmlCodeSnippetRenderer>())
             {
                 // Must be inserted before CodeBlockRenderer
                 htmlRenderer.ObjectRenderers.Insert(0, new HtmlCodeSnippetRenderer(_context));

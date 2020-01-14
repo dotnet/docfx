@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
     public class DocfxFlavoredMarked
     {
         public static Options CreateDefaultOptions() =>
-            new Options() { Mangle = false, XHtml = true };
+            new Options { Mangle = false, XHtml = true };
 
         public static DfmEngineBuilder CreateBuilder(string baseDir) =>
             CreateBuilder(baseDir, null);
@@ -27,19 +27,19 @@ namespace Microsoft.DocAsCode.Dfm
 
         public static string Markup(string src, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
         {
-            var engine = CreateBuilder(null).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
+            var engine = CreateBuilder(null).CreateDfmEngine(new DfmRenderer { Tokens = tokens });
             return engine.Markup(src, path, dependency);
         }
 
         public static string Markup(string baseDir, string templateDir, Options options, string src, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
         {
-            var engine = CreateBuilder(baseDir, templateDir, options ?? CreateDefaultOptions()).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
+            var engine = CreateBuilder(baseDir, templateDir, options ?? CreateDefaultOptions()).CreateDfmEngine(new DfmRenderer { Tokens = tokens });
             return engine.Markup(src, path, dependency);
         }
 
         public static string Markup(string baseDir, string src, IReadOnlyList<string> fallbackFolders, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
         {
-            var engine = CreateBuilder(baseDir, null, null, fallbackFolders).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
+            var engine = CreateBuilder(baseDir, null, null, fallbackFolders).CreateDfmEngine(new DfmRenderer { Tokens = tokens });
             return engine.Markup(src, path, dependency);
         }
     }

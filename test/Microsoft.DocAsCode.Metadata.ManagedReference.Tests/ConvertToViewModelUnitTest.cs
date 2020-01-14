@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                         { SyntaxLanguage.CSharp, "N1" },
                         { SyntaxLanguage.VB, "N1" },
                     },
-                    DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>()
+                    DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
                     {
                         { SyntaxLanguage.CSharp, "N1" },
                         { SyntaxLanguage.VB, "N1" },
@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                 { SyntaxLanguage.CSharp, "C1" },
                                 { SyntaxLanguage.VB, "C1" },
                             },
-                            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>()
+                            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
                             {
                                 { SyntaxLanguage.CSharp, "N1.C1" },
                                 { SyntaxLanguage.VB, "N1.C1" },

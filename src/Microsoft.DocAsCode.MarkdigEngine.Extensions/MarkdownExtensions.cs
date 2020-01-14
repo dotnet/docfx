@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = Constants.FencedCodePrefix });
+                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser { InfoPrefix = Constants.FencedCodePrefix });
             }
             return pipeline;
         }

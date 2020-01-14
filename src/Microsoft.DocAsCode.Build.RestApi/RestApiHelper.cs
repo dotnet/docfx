@@ -111,8 +111,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         public static void CheckSpecificKey(JToken jToken, string key, Action action)
         {
-            var jArray = jToken as JArray;
-            if (jArray != null)
+            if (jToken is JArray jArray)
             {
                 foreach (var item in jArray)
                 {
@@ -120,8 +119,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 }
             }
 
-            var jObject = jToken as JObject;
-            if (jObject != null)
+            if (jToken is JObject jObject)
             {
                 foreach (var pair in jObject)
                 {

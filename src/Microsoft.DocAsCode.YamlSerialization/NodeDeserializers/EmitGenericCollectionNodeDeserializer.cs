@@ -89,8 +89,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
                 var current = reader.Current;
 
                 var value = nestedObjectDeserializer(reader, typeof(TItem));
-                var promise = value as IValuePromise;
-                if (promise == null)
+                if (!(value is IValuePromise promise))
                 {
                     result.Add(TypeConverter.ChangeType<TItem>(value));
                 }

@@ -10,8 +10,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public bool Aggregate(BlockAggregateContext context)
         {
-            var block = context.CurrentBlock as TBlock;
-            if (block != null)
+            if (context.CurrentBlock is TBlock block)
             {
                 return AggregateCore(block, context);
             }

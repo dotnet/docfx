@@ -17,8 +17,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-            var htmlRenderer = renderer as HtmlRenderer;
-            if (htmlRenderer != null && !htmlRenderer.ObjectRenderers.Contains<HtmlXrefInlineRender>())
+            if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<HtmlXrefInlineRender>())
             {
                 // Must be inserted before CodeBlockRenderer
                 htmlRenderer.ObjectRenderers.Insert(0, new HtmlXrefInlineRender());
