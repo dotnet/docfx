@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode
 
         public FileMetadataPairs(FileMetadataPairsItem item)
         {
-            _items = new List<FileMetadataPairsItem>() { item };
+            _items = new List<FileMetadataPairsItem> { item };
         }
 
         public FileMetadataPairsItem this[int index]

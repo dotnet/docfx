@@ -33,7 +33,7 @@
                 return false;
             }
 
-            processor.Inline = new NolocInline()
+            processor.Inline = new NolocInline
             {
                 Text = text
             };

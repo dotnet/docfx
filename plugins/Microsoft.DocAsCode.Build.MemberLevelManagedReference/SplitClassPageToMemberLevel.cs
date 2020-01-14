@@ -479,7 +479,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
         {
-            var result = new TreeItem()
+            var result = new TreeItem
             {
                 Metadata =
                 {
