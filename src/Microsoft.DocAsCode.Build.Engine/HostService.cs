@@ -426,7 +426,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 File.Copy(
                                     Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), item.FilePath),
                                     Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
-                                items.Add(new ModelManifestItem() { SourceFilePath = item.SourceFilePath, FilePath = fileName });
+                                items.Add(new ModelManifestItem { SourceFilePath = item.SourceFilePath, FilePath = fileName });
                             }
                         }
                     }
@@ -443,7 +443,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 processor.SaveIntermediateModel(model, stream);
                             }
-                            items.Add(new ModelManifestItem() { SourceFilePath = model.FileAndType.File, FilePath = fileName });
+                            items.Add(new ModelManifestItem { SourceFilePath = model.FileAndType.File, FilePath = fileName });
                         }
                     }
                     lock (cmm)
