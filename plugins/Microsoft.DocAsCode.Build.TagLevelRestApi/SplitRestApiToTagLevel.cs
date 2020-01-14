@@ -179,9 +179,9 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
 
         private TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)
         {
-            return new TreeItem()
+            return new TreeItem
             {
-                Metadata = new Dictionary<string, object>()
+                Metadata = new Dictionary<string, object>
                 {
                     [Constants.PropertyName.Name] = root.Name,
                     [Constants.PropertyName.TopicUid] = root.Uid

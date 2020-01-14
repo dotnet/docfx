@@ -344,7 +344,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     var p = parameters.Clone();
                     if (!string.IsNullOrEmpty(pair.Key))
                     {
-                        p.GroupInfo = new GroupInfo()
+                        p.GroupInfo = new GroupInfo
                         {
                             Name = pair.Key,
                         };

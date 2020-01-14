@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public static class YamlMetadataResolver
     {
         // Order matters
-        private static readonly List<IResolverPipeline> pipelines = new List<IResolverPipeline>()
+        private static readonly List<IResolverPipeline> pipelines = new List<IResolverPipeline>
         {
             new LayoutCheckAndCleanup(),
             new SetParent(),
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             bool preserveRawInlineComments)
         {
             MetadataModel viewModel = new MetadataModel();
-            viewModel.TocYamlViewModel = new MetadataItem()
+            viewModel.TocYamlViewModel = new MetadataItem
             {
                 Type = MemberType.Toc,
                 Items = allMembers.Where(s => s.Value.Type == MemberType.Namespace).Select(s => s.Value).ToList(),
