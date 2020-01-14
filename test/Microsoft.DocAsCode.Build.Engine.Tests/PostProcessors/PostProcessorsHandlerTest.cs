@@ -1021,8 +1021,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             foreach (var type in types)
             {
                 var instance = Activator.CreateInstance(type);
-                var postProcessor = instance as IPostProcessor;
-                if (postProcessor == null)
+                if (!(instance is IPostProcessor postProcessor))
                 {
                     throw new InvalidOperationException($"{type} should implement {nameof(IPostProcessor)}.");
                 }
