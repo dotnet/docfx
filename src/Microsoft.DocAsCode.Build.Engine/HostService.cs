@@ -553,8 +553,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<UidDefinition>> e)
         {
-            var m = sender as FileModel;
-            if (m == null)
+            if (!(sender is FileModel m))
             {
                 return;
             }
@@ -586,8 +585,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void HandleFileOrBaseDirChanged(object sender, EventArgs e)
         {
-            var m = sender as FileModel;
-            if (m == null)
+            if (!(sender is FileModel m))
             {
                 return;
             }

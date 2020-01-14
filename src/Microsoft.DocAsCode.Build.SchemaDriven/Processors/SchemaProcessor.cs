@@ -67,8 +67,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             {
                 foreach (var keyRaw in dict.Keys.ToList())
                 {
-                    var key = keyRaw as string;
-                    if (key != null)
+                    if (keyRaw is string key)
                     {
                         BaseSchema baseSchema = null;
                         schema?.Properties?.TryGetValue(key, out baseSchema);

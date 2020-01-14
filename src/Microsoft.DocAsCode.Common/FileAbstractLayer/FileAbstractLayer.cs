@@ -143,8 +143,8 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new InvalidOperationException();
             }
-            var srfw = Writer as ISupportRandomFileWriter;
-            if (srfw == null)
+
+            if (!(Writer is ISupportRandomFileWriter srfw))
             {
                 throw new NotSupportedException();
             }

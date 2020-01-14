@@ -19,8 +19,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public override bool Equals(object obj)
         {
-            var other = obj as JsonLocationInfo;
-            if (other == null)
+            if (!(obj is JsonLocationInfo other))
             {
                 return false;
             }
