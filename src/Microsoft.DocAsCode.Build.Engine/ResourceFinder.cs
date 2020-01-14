@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _assembly = assembly;
             if (assembly != null)
             {
-                _resourcePrefix = string.Format("{0}.{1}.", assembly.GetName().Name, rootNamespace);
+                _resourcePrefix = $"{assembly.GetName().Name}.{rootNamespace}.";
                 _embeddedResourceNames = assembly.GetManifestResourceNames();
             }
             else
