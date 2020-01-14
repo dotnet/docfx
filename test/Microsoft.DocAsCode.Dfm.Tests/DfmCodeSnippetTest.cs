@@ -4,20 +4,13 @@
 namespace Microsoft.DocAsCode.Dfm.Tests
 {
     using System.Collections.Generic;
-    using System.Composition.Hosting;
-    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
-    using System.Xml;
-
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Dfm;
-    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
     [Collection("docfx STA")]

@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 

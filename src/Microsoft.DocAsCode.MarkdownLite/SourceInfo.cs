@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System.Runtime.CompilerServices;
-
     public struct SourceInfo
     {
         private int _validLineCount;

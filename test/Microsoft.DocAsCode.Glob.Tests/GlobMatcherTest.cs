@@ -4,10 +4,6 @@
 namespace Microsoft.DocAsCode.Glob.Tests
 {
     using Glob;
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
     using Xunit;
 
     public class GlobMatcherTest

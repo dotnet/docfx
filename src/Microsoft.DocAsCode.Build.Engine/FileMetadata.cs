@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Glob;
 
-    using Newtonsoft.Json;
-
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>
     {
         public string BaseDir { get; }

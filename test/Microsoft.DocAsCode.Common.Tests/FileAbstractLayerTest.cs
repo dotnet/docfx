@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Common.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;

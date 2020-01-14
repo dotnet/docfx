@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode
 
     using CommandLine;
 
-    using Microsoft.DocAsCode.Common;
-
     [OptionUsage("metadata [<docfx.json file path>]")]
     [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
     internal class MetadataCommandOptions : LogOptions, ICanPrintHelpMessage

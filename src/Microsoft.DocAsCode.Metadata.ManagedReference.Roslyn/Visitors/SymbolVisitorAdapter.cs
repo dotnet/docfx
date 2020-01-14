@@ -8,12 +8,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Immutable;
     using System.Diagnostics;
     using System.Linq;
-    using System.IO;
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
-
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
 
