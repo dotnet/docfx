@@ -20,8 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public override bool Equals(object obj)
         {
-            var another = obj as ProcessorStepInfo;
-            if (another == null)
+            if (!(obj is ProcessorStepInfo another))
             {
                 return false;
             }

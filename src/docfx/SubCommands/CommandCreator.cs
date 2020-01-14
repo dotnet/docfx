@@ -30,8 +30,8 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 throw new OptionParserException();
             }
-            var helpOption = options as ICanPrintHelpMessage;
-            if (helpOption != null && helpOption.PrintHelpMessage)
+
+            if (options is ICanPrintHelpMessage helpOption && helpOption.PrintHelpMessage)
             {
                 return new HelpCommand(GetHelpText());
             }
@@ -39,8 +39,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var buildOption = options as BuildCommandOptions;
             string root = Path.GetDirectoryName(buildOption?.ConfigFile ?? Directory.GetCurrentDirectory());
 
-            var logOption = options as LogOptions;
-            if (logOption != null)
+            if (options is LogOptions logOption)
             {
                 if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindAsyncListener(l => l is ReportLogListener) == null)
                 {
