@@ -62,9 +62,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private static string ParseHeading(HeadingBlock headBlock)
         {
             var tokens = headBlock.Inline.ToList();
-            var openATag = tokens[0] as HtmlInline;
-            var closeATag = tokens[1] as HtmlInline;
-            if (openATag == null || closeATag == null)
+            if (!(tokens[0] is HtmlInline openATag) || !(tokens[1] is HtmlInline closeATag))
             {
                 return null;
             }
