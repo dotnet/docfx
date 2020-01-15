@@ -36,10 +36,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var stream = PostProcessorHost.LoadContextInfo();
             if (stream != null)
             {
-                using (var sw = new StreamReader(stream))
-                {
-                    htmlList = JsonUtility.Deserialize<List<string>>(sw);
-                }
+                using var sw = new StreamReader(stream);
+                htmlList = JsonUtility.Deserialize<List<string>>(sw);
             }
 
             foreach (var relPath in from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
@@ -57,8 +55,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
 
             using (var saveStream = PostProcessorHost.SaveContextInfo())
-            using (var sw = new StreamWriter(saveStream))
             {
+                using var sw = new StreamWriter(saveStream);
                 JsonUtility.Serialize(sw, htmlList);
             }
 

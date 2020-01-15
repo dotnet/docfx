@@ -34,17 +34,18 @@ namespace Microsoft.DocAsCode.SubCommands
             var outputFile = string.IsNullOrEmpty(_options.DependencyFile) ? Path.Combine(Directory.GetCurrentDirectory(), "dep.json") : _options.DependencyFile;
 
             var dependency = Load(intermediateFolder, versionName);
-            Logger.LogInfo($"Exporting dependency file...");
+            Logger.LogInfo("Exporting dependency file...");
             try
             {
                 var expandedDependency = dependency == null ?
                     ExpandedDependencyMap.Empty :
                     ExpandedDependencyMap.ConstructFromDependencyGraph(dependency);
                 using (var fs = File.Create(outputFile))
-                using (var writer = new StreamWriter(fs))
                 {
+                    using var writer = new StreamWriter(fs);
                     expandedDependency.Save(writer);
                 }
+
                 Logger.LogInfo($"Dependency file exported at path: {outputFile}.");
             }
             catch (Exception ex)

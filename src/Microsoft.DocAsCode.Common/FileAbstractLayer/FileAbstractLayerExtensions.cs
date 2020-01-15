@@ -20,10 +20,8 @@ namespace Microsoft.DocAsCode.Common
 
         public static string ReadAllText(this FileAbstractLayer fal, RelativePath file)
         {
-            using (var sr = OpenReadText(fal, file))
-            {
-                return sr.ReadToEnd();
-            }
+            using var sr = OpenReadText(fal, file);
+            return sr.ReadToEnd();
         }
 
         public static string ReadAllText(this FileAbstractLayer fal, string file) =>
@@ -37,10 +35,8 @@ namespace Microsoft.DocAsCode.Common
 
         public static void WriteAllText(this FileAbstractLayer fal, RelativePath file, string content)
         {
-            using (var writer = CreateText(fal, file))
-            {
-                writer.Write(content);
-            }
+            using var writer = CreateText(fal, file);
+            writer.Write(content);
         }
 
         public static void WriteAllText(this FileAbstractLayer fal, string file, string content) =>

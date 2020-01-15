@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-row", $"Row has some invalid chars in the ending.", block);
+                _context.LogWarning("invalid-row", "Row has some invalid chars in the ending.", block);
             }
 
             block.UpdateSpanEnd(slice.End);

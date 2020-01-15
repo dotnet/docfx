@@ -27,10 +27,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return default;
             }
-            using (var reader = new StreamReader(fileName))
-            {
-                return JsonUtility.Deserialize<T>(reader);
-            }
+
+            using var reader = new StreamReader(fileName);
+            return JsonUtility.Deserialize<T>(reader);
         }
 
         public static T LoadIntermediateFile<T>(string fileName, JsonSerializerSettings settings)
@@ -49,10 +48,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return null;
             }
-            using (var reader = new StreamReader(dependencyFile))
-            {
-                return DependencyGraph.Load(reader);
-            }
+
+            using var reader = new StreamReader(dependencyFile);
+            return DependencyGraph.Load(reader);
         }
 
         public static void SaveDependency(string fileName, DependencyGraph dg)
@@ -65,10 +63,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            using (var writer = new StreamWriter(fileName))
-            {
-                dg.Save(writer);
-            }
+
+            using var writer = new StreamWriter(fileName);
+            dg.Save(writer);
         }
 
         public static void SaveIntermediateFile<T>(string fileName, T content)
@@ -77,10 +74,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new ArgumentNullException(nameof(fileName));
             }
-            using (var writer = new StreamWriter(fileName))
-            {
-                JsonUtility.Serialize(writer, content);
-            }
+
+            using var writer = new StreamWriter(fileName);
+            JsonUtility.Serialize(writer, content);
         }
 
         public static void SaveIntermediateFile<T>(string fileName, T content, JsonSerializerSettings settings)
@@ -99,19 +95,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return null;
             }
-            using (var reader = new StreamReader(file))
+
+            using var reader = new StreamReader(file);
+            var bm = new BuildMessage();
+            var content = JsonUtility.Deserialize<Dictionary<BuildPhase, string>>(reader);
+            foreach (var c in content)
             {
-                var bm = new BuildMessage();
-                var content = JsonUtility.Deserialize<Dictionary<BuildPhase, string>>(reader);
-                foreach (var c in content)
-                {
-                    using (var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value), UTF8))
-                    {
-                        bm[c.Key] = BuildMessageInfo.Load(sr);
-                    }
-                }
-                return bm;
+                using var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value), UTF8);
+                bm[c.Key] = BuildMessageInfo.Load(sr);
             }
+            return bm;
         }
 
         public static void SaveBuildMessage(string fileName, BuildMessage bm)
@@ -124,14 +117,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            using (var writer = new StreamWriter(fileName))
-            {
-                JsonUtility.Serialize(
-                    writer,
-                    bm.ToDictionary(
-                        p => p.Key,
-                        p => SaveSerializedBuildMessageInfo(p.Value, Path.GetDirectoryName(fileName))));
-            }
+
+            using var writer = new StreamWriter(fileName);
+            JsonUtility.Serialize(
+                writer,
+                bm.ToDictionary(
+                    p => p.Key,
+                    p => SaveSerializedBuildMessageInfo(p.Value, Path.GetDirectoryName(fileName))));
         }
 
         public static string GetDependencyKey(FileAndType file)
@@ -220,10 +212,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 var tempFile = GetRandomEntry(baseDir);
                 using (var fs = File.Create(Path.Combine(baseDir, tempFile)))
-                using (var writer = new StreamWriter(fs, UTF8))
                 {
+                    using var writer = new StreamWriter(fs, UTF8);
                     bmi.Save(writer);
                 }
+
                 return tempFile;
             });
     }

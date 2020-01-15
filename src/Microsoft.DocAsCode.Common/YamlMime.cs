@@ -40,11 +40,10 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(file));
             }
-            using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(file))
-            using (var reader = new StreamReader(stream))
-            {
-                return ReadMime(reader);
-            }
+
+            using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(file);
+            using var reader = new StreamReader(stream);
+            return ReadMime(reader);
         }
     }
 }

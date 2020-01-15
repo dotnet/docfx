@@ -177,13 +177,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
 
-            using (var listener = new TestListenerScope(nameof(UniversalReferenceDocumentProcessorTest)))
-            {
-                BuildDocument(files);
-                Assert.NotNull(listener.Items);
-                Assert.Single(listener.Items);
-                Assert.Contains("Uid must not be null or empty", listener.Items[0].Message);
-            }
+            using var listener = new TestListenerScope(nameof(UniversalReferenceDocumentProcessorTest));
+            BuildDocument(files);
+            Assert.NotNull(listener.Items);
+            Assert.Single(listener.Items);
+            Assert.Contains("Uid must not be null or empty", listener.Items[0].Message);
         }
 
         private void BuildDocument(FileCollection files)
@@ -200,10 +198,8 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
                 TemplateManager = _templateManager
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            builder.Build(parameters);
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()

@@ -86,12 +86,10 @@ namespace Microsoft.DocAsCode.Dfm
                     if (!_weakReference.TryGetTarget(out string content))
                     {
                         _fs.Seek(0, SeekOrigin.Begin);
-                        using (StreamReader reader = new StreamReader(_fs, Encoding.UTF8, true, 4096, true))
-                        {
-                            string result = reader.ReadToEnd();
-                            _weakReference.SetTarget(result);
-                            return result;
-                        }
+                        using StreamReader reader = new StreamReader(_fs, Encoding.UTF8, true, 4096, true);
+                        string result = reader.ReadToEnd();
+                        _weakReference.SetTarget(result);
+                        return result;
                     }
 
                     return content;
@@ -100,8 +98,8 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     _weakReference.SetTarget(value);
                     _fs.SetLength(0);
-                    using (StreamWriter writer = new StreamWriter(_fs, Encoding.UTF8, 4096, true))
-                        writer.Write(value);
+                    using StreamWriter writer = new StreamWriter(_fs, Encoding.UTF8, 4096, true);
+                    writer.Write(value);
                 }
             }
 

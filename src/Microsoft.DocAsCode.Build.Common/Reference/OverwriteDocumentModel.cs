@@ -81,14 +81,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public T ConvertTo<T>() where T : class
         {
-            using (var sw = new StringWriter())
-            {
-                YamlUtility.Serialize(sw, this);
-                using (var sr = new StringReader(sw.ToString()))
-                {
-                    return YamlUtility.Deserialize<T>(sr);
-                }
-            }
+            using var sw = new StringWriter();
+            YamlUtility.Serialize(sw, this);
+            using var sr = new StringReader(sw.ToString());
+            return YamlUtility.Deserialize<T>(sr);
         }
     }
 }

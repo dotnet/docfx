@@ -185,7 +185,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (lastXrefMap == null)
                     {
-                        throw new BuildCacheException($"Full build hasn't loaded XRefMap.");
+                        throw new BuildCacheException("Full build hasn't loaded XRefMap.");
                     }
                     if (!lastXrefMap.TryGetValue(file, out List<XRefSpec> specs))
                     {
@@ -210,7 +210,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var fileFromWorkingFolder = ((RelativePath)file).GetPathFromWorkingFolder();
                     if (lastFileMap == null)
                     {
-                        throw new BuildCacheException($"Full build hasn't loaded File Map.");
+                        throw new BuildCacheException("Full build hasn't loaded File Map.");
                     }
 
                     // for overwrite files, it don't exist in filemap
@@ -360,20 +360,16 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (LastBuildVersionInfo?.ExternalXRefSpecFile != null)
             {
-                using (var reader = File.OpenText(Path.Combine(LastBuildVersionInfo.BaseDir, LastBuildVersionInfo.ExternalXRefSpecFile)))
-                {
-                    Context.LoadExternalXRefSpec(reader);
-                }
+                using var reader = File.OpenText(Path.Combine(LastBuildVersionInfo.BaseDir, LastBuildVersionInfo.ExternalXRefSpecFile));
+                Context.LoadExternalXRefSpec(reader);
             }
         }
 
         private void SaveExternalXRefSpec()
         {
             CurrentBuildVersionInfo.ExternalXRefSpecFile = IncrementalUtility.CreateRandomFileName(CurrentBuildVersionInfo.BaseDir);
-            using (var writer = File.CreateText(Path.Combine(CurrentBuildVersionInfo.BaseDir, CurrentBuildVersionInfo.ExternalXRefSpecFile)))
-            {
-                Context.SaveExternalXRefSpec(writer);
-            }
+            using var writer = File.CreateText(Path.Combine(CurrentBuildVersionInfo.BaseDir, CurrentBuildVersionInfo.ExternalXRefSpecFile));
+            Context.SaveExternalXRefSpec(writer);
         }
 
         #endregion
