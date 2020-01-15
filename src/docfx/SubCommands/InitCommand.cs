@@ -338,7 +338,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 /**/obj/
 {config.Build.Destination}
 ");
-            var apiGitignore = Tuple.Create("api/.gitignore", $@"###############
+            var apiGitignore = Tuple.Create("api/.gitignore", @"###############
 #  temp file  #
 ###############
 *.yml

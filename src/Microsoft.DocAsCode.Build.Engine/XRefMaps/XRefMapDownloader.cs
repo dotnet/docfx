@@ -105,10 +105,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return XRefArchive.Open(filePath, XRefArchiveMode.Read);
             }
-            using (var sr = File.OpenText(filePath))
-            {
-                return YamlUtility.Deserialize<XRefMap>(sr);
-            }
+
+            using var sr = File.OpenText(filePath);
+            return YamlUtility.Deserialize<XRefMap>(sr);
         }
 
         protected static async Task<XRefMap> DownloadFromWebAsync(Uri uri)
@@ -116,15 +115,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             var baseUrl = uri.GetLeftPart(UriPartial.Path);
             baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
 
-            using (var wc = new WebClient())
-            using (var stream = await wc.OpenReadTaskAsync(uri))
-            using (var sr = new StreamReader(stream))
-            {
-                var map = YamlUtility.Deserialize<XRefMap>(sr);
-                map.BaseUrl = baseUrl;
-                UpdateHref(map, null);
-                return map;
-            }
+            using var wc = new WebClient();
+            using var stream = await wc.OpenReadTaskAsync(uri);
+            using var sr = new StreamReader(stream);
+            var map = YamlUtility.Deserialize<XRefMap>(sr);
+            map.BaseUrl = baseUrl;
+            UpdateHref(map, null);
+            return map;
         }
 
         private XRefMap DownloadFromAssembly(Uri uri)
@@ -139,11 +136,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             var resourceName = assemblyName + "." + path.Substring(index + 1);
 
             var assembly = AppDomain.CurrentDomain.Load(assemblyName);
-            using (var stream = assembly.GetManifestResourceStream(resourceName))
-            using (var sr = new StreamReader(stream))
-            {
-                return YamlUtility.Deserialize<XRefMap>(sr);
-            }
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var sr = new StreamReader(stream);
+            return YamlUtility.Deserialize<XRefMap>(sr);
         }
 
         public static void UpdateHref(XRefMap map, Uri uri)

@@ -563,10 +563,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     continue;
                 }
-                using (var stream = File.OpenRead(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
-                {
-                    step.LoadContext(stream);
-                }
+
+                using var stream = File.OpenRead(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile));
+                step.LoadContext(stream);
             }
         }
 
@@ -593,10 +592,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     continue;
                 }
-                using (var stream = File.Create(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
-                {
-                    step.SaveContext(stream);
-                }
+
+                using var stream = File.Create(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile));
+                step.SaveContext(stream);
             }
         }
 

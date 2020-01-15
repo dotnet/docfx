@@ -39,12 +39,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         private SwaggerObjectBase Load(string swaggerPath)
         {
-            using (JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(swaggerPath)))
-            {
-                reader.DateParseHandling = DateParseHandling.None;
-                var token = JToken.ReadFrom(reader);
-                return LoadCore(token, swaggerPath);
-            }
+            using JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(swaggerPath));
+            reader.DateParseHandling = DateParseHandling.None;
+            var token = JToken.ReadFrom(reader);
+            return LoadCore(token, swaggerPath);
         }
 
         private SwaggerObjectBase LoadCore(JToken token, string swaggerPath)
@@ -166,10 +164,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             {
                 throw new DocfxException($"External swagger path not exist: {externalSwaggerPath}.");
             }
-            using (JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(externalSwaggerPath)))
-            {
-                return JObject.Load(reader);
-            }
+
+            using JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(externalSwaggerPath));
+            return JObject.Load(reader);
         }
 
         private SwaggerObjectBase ResolveReferences(SwaggerObjectBase swaggerBase, string swaggerPath, Stack<JsonLocationInfo> refStack)

@@ -787,7 +787,7 @@ exports.getOptions = function (){
                             $"Test link: <a href=\"c:\\a.md\" data-raw-source=\"[link 4](c:\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link 4</a>",
                             $"Test link: <a href=\"\\a.md\" data-raw-source=\"[link 5](\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">link 5</a>",
                             $"Test link: <a href=\"urn:a.md\" data-raw-source=\"[link 6](urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">link 6</a>",
-                            $"Test link: [link 7](bad urn:a.md)",
+                            "Test link: [link 7](bad urn:a.md)",
                             $"Test link: <a href=\"~/{_inputFolder}/test/test.md#top\" data-raw-source=\"[link 8](test/test.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\" sourceendlinenumber=\"9\">link 8</a>",
                             $"Test link: <a href=\"a.md#top\" data-raw-source=\"[link 9](a.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link 9</a>",
                             $"Test link: <a href=\"#top\" data-raw-source=\"[link 10](#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">link 10</a></p>",
@@ -798,15 +798,15 @@ exports.getOptions = function (){
                             "\n",
                             "",
                             "<p>Test link: <a href=\"test/test.html\">link 1</a>",
-                            $"Test link: <a href=\"http://www.microsoft.com\">link 2</a>",
-                            $"Test link: <a href=\"a%20b%20c.md\">link 3</a>",
-                            $"Test link: <a href=\"c:\\a.md\">link 4</a>",
-                            $"Test link: <a href=\"\\a.md\">link 5</a>",
-                            $"Test link: <a href=\"urn:a.md\">link 6</a>",
-                            $"Test link: [link 7](bad urn:a.md)",
-                            $"Test link: <a href=\"test/test.html#top\">link 8</a>",
-                            $"Test link: <a href=\"a.md#top\">link 9</a>",
-                            $"Test link: <a href=\"#top\">link 10</a></p>",
+                            "Test link: <a href=\"http://www.microsoft.com\">link 2</a>",
+                            "Test link: <a href=\"a%20b%20c.md\">link 3</a>",
+                            "Test link: <a href=\"c:\\a.md\">link 4</a>",
+                            "Test link: <a href=\"\\a.md\">link 5</a>",
+                            "Test link: <a href=\"urn:a.md\">link 6</a>",
+                            "Test link: [link 7](bad urn:a.md)",
+                            "Test link: <a href=\"test/test.html#top\">link 8</a>",
+                            "Test link: <a href=\"a.md#top\">link 9</a>",
+                            "Test link: <a href=\"#top\">link 10</a></p>",
                             ""),
                         File.ReadAllText(conceptualOutputPath));
                     Assert.Equal("Conceptual", model["type"]);
@@ -861,7 +861,7 @@ exports.getOptions = function (){
                         "\n",
                         "<p><a href=\"invalid-a.md\">link a</a>",
                         "<a href=\"../b/invalid-b.md\">link b</a></p>",
-                        $"<p><a href=\"invalid-a.md\">link a</a>",
+                        "<p><a href=\"invalid-a.md\">link a</a>",
                         "<a href=\"../b/invalid-b.md\">link b</a></p>", ""),
                     File.ReadAllText(conceptualOutputPath));
             }
@@ -944,8 +944,8 @@ exports.getOptions = function (){
                     Assert.Equal(
                         string.Join(
                             "\n",
-                            $@"<p>Standard token.</p>",
-                            $@"<p>Fallback token.</p>",
+                            @"<p>Standard token.</p>",
+                            @"<p>Fallback token.</p>",
                             ""),
                         File.ReadAllText(conceptualOutputPath));
                     Assert.Equal("Conceptual", model["type"]);
@@ -1082,27 +1082,25 @@ exports.getOptions = function (){
             string versionDir = null,
             string falName = null)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            if (applyTemplateSettings == null)
             {
-                if (applyTemplateSettings == null)
-                {
-                    applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
-                    applyTemplateSettings.RawModelExportSettings.Export = true;
-                }
-                var parameters = new DocumentBuildParameters
-                {
-                    Files = files,
-                    OutputBaseDir = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-                    ApplyTemplateSettings = applyTemplateSettings,
-                    Metadata = metadata?.ToImmutableDictionary(),
-                    TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
-                    TemplateDir = templateFolder,
-                    VersionDir = versionDir,
-                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
-                    FALName = falName,
-                };
-                builder.Build(parameters);
+                applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
+                applyTemplateSettings.RawModelExportSettings.Export = true;
             }
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
+                ApplyTemplateSettings = applyTemplateSettings,
+                Metadata = metadata?.ToImmutableDictionary(),
+                TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
+                TemplateDir = templateFolder,
+                VersionDir = versionDir,
+                XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
+                FALName = falName,
+            };
+            builder.Build(parameters);
         }
 
         private IEnumerable<Assembly> LoadAssemblies()

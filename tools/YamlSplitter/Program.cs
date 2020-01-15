@@ -76,11 +76,9 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             var schemas = new Dictionary<string, DocumentSchema>();
             foreach (var schemaFile in Directory.EnumerateFiles(schemaFolderPath, "*.schema.json"))
             {
-                using (var sr = new StreamReader(schemaFile))
-                {
-                    var schema = DocumentSchema.Load(sr, schemaFile.Remove(schemaFile.Length - ".schema.json".Length));
-                    schemas.Add(schema.Title, schema);
-                }
+                using var sr = new StreamReader(schemaFile);
+                var schema = DocumentSchema.Load(sr, schemaFile.Remove(schemaFile.Length - ".schema.json".Length));
+                schemas.Add(schema.Title, schema);
             }
 
             return schemas;

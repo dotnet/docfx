@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (parameters.All(p => p.Files.Count == 0))
                 {
                     Logger.LogWarning(
-                        $"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
+                        "No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
                         code: WarningCodes.Build.EmptyInputFiles);
                 }
 
@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (noContentFound)
                 {
                     Logger.LogWarning(
-                        $"No content file found. Please make sure the content section of docfx.json is correctly configured.",
+                        "No content file found. Please make sure the content section of docfx.json is correctly configured.",
                         code: WarningCodes.Build.EmptyInputContents);
                 }
                 else if (emptyContentGroups.Count > 0)
@@ -351,7 +351,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo)
         {
-            using (var builder = new SingleDocumentBuilder
+            using var builder = new SingleDocumentBuilder
             {
                 CurrentBuildInfo = currentBuildInfo,
                 LastBuildInfo = lastBuildInfo,
@@ -359,10 +359,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
                 Processors = Processors,
                 MarkdownServiceProvider = markdownServiceProvider,
-            })
-            {
-                return builder.Build(parameter);
-            }
+            };
+            return builder.Build(parameter);
         }
 
         private List<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
@@ -385,9 +383,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                         var fileName = Path.GetFileName(pair.Key);
 
                         using (new LoggerFileScope(fileName))
-                        using (var stream = pair.Value)
-                        using (var sr = new StreamReader(stream))
                         {
+                            using var stream = pair.Value;
+                            using var sr = new StreamReader(stream);
                             DocumentSchema schema;
                             try
                             {

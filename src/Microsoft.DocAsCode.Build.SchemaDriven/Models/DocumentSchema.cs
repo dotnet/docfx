@@ -38,70 +38,68 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public static DocumentSchema Load(TextReader reader, string title)
         {
             DocumentSchema schema;
-            using (var jtr = new JsonTextReader(reader))
+            using var jtr = new JsonTextReader(reader);
+            JSchema jSchema;
+            JObject jObject;
+            try
             {
-                JSchema jSchema;
-                JObject jObject;
-                try
-                {
-                    jObject = JObject.Load(jtr);
-                    jSchema = JSchema.Load(jObject.CreateReader());
-                }
-                catch (Exception e) when (e is JSchemaException || e is JsonException)
-                {
-                    throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
-                }
-
-                var validator = new SchemaValidator(jObject, jSchema);
-
-                // validate schema here
-                validator.ValidateMetaSchema();
-
-                try
-                {
-                    schema = LoadSchema<DocumentSchema>(jSchema, new Dictionary<JSchema, BaseSchema>());
-                    schema.SchemaVersion = jSchema.SchemaVersion;
-                    schema.Id = jSchema.Id;
-                    schema.Version = GetValueFromJSchemaExtensionData<string>(jSchema, "version");
-                    schema.Metadata = GetValueFromJSchemaExtensionData<string>(jSchema, "metadata");
-                    schema.Validator = validator;
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
-                }
-
-                if (string.IsNullOrWhiteSpace(schema.Title))
-                {
-                    if (string.IsNullOrWhiteSpace(title))
-                    {
-                        throw new InvalidSchemaException($"Title of schema must be specified.");
-                    }
-                    schema.Title = title;
-                }
-
-                if (schema.Type != JSchemaType.Object)
-                {
-                    throw new InvalidSchemaException("Type for the root schema object must be object");
-                }
-
-                if (!JsonPointer.TryCreate(schema.Metadata, out var pointer))
-                {
-                    throw new InvalidJsonPointerException($"Metadata's json pointer {schema.Metadata} is invalid.");
-                }
-
-                var metadataSchema = pointer.FindSchema(schema);
-                if (metadataSchema != null && metadataSchema.Type != JSchemaType.Object)
-                {
-                    throw new InvalidJsonPointerException($"The referenced object is in type: {metadataSchema.Type}, only object can be a metadata reference");
-                }
-
-                schema.MetadataReference = pointer;
-                schema.AllowOverwrite = CheckOverwriteAbility(schema);
-                schema.Hash = JsonUtility.Serialize(jObject).GetMd5String();
-
-                return schema;
+                jObject = JObject.Load(jtr);
+                jSchema = JSchema.Load(jObject.CreateReader());
             }
+            catch (Exception e) when (e is JSchemaException || e is JsonException)
+            {
+                throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
+            }
+
+            var validator = new SchemaValidator(jObject, jSchema);
+
+            // validate schema here
+            validator.ValidateMetaSchema();
+
+            try
+            {
+                schema = LoadSchema<DocumentSchema>(jSchema, new Dictionary<JSchema, BaseSchema>());
+                schema.SchemaVersion = jSchema.SchemaVersion;
+                schema.Id = jSchema.Id;
+                schema.Version = GetValueFromJSchemaExtensionData<string>(jSchema, "version");
+                schema.Metadata = GetValueFromJSchemaExtensionData<string>(jSchema, "metadata");
+                schema.Validator = validator;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
+            }
+
+            if (string.IsNullOrWhiteSpace(schema.Title))
+            {
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                    throw new InvalidSchemaException("Title of schema must be specified.");
+                }
+                schema.Title = title;
+            }
+
+            if (schema.Type != JSchemaType.Object)
+            {
+                throw new InvalidSchemaException("Type for the root schema object must be object");
+            }
+
+            if (!JsonPointer.TryCreate(schema.Metadata, out var pointer))
+            {
+                throw new InvalidJsonPointerException($"Metadata's json pointer {schema.Metadata} is invalid.");
+            }
+
+            var metadataSchema = pointer.FindSchema(schema);
+            if (metadataSchema != null && metadataSchema.Type != JSchemaType.Object)
+            {
+                throw new InvalidJsonPointerException($"The referenced object is in type: {metadataSchema.Type}, only object can be a metadata reference");
+            }
+
+            schema.MetadataReference = pointer;
+            schema.AllowOverwrite = CheckOverwriteAbility(schema);
+            schema.Hash = JsonUtility.Serialize(jObject).GetMd5String();
+
+            return schema;
         }
 
         private static T LoadSchema<T>(JSchema schema, Dictionary<JSchema, BaseSchema> cache) where T : BaseSchema, new()

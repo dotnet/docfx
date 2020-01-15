@@ -25,22 +25,20 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public T Load<T>(string contextName, Func<Stream, T> loader)
         {
-            using (var stream = PostProcessorHost?.LoadContextInfo())
+            using var stream = PostProcessorHost?.LoadContextInfo();
+            if (stream == null)
             {
-                if (stream == null)
-                {
-                    return default(T);
-                }
-                var deserializer = new StreamDeserializer(stream);
-                var seg = deserializer.ReadSegment();
-                var entries = deserializer.ReadDictionaryLazy(seg);
-                if (!entries.TryGetValue(contextName, out Lazy<object> lazy))
-                {
-                    return default(T);
-                }
-                var bytes = (byte[])lazy.Value;
-                return loader(new MemoryStream(bytes));
+                return default(T);
             }
+            var deserializer = new StreamDeserializer(stream);
+            var seg = deserializer.ReadSegment();
+            var entries = deserializer.ReadDictionaryLazy(seg);
+            if (!entries.TryGetValue(contextName, out Lazy<object> lazy))
+            {
+                return default(T);
+            }
+            var bytes = (byte[])lazy.Value;
+            return loader(new MemoryStream(bytes));
         }
 
         public void Save(string contextName, Action<Stream> saver)
@@ -52,15 +50,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Save()
         {
-            using (var stream = PostProcessorHost?.SaveContextInfo())
+            using var stream = PostProcessorHost?.SaveContextInfo();
+            if (stream == null || PostProcessorHost?.ShouldTraceIncrementalInfo == false)
             {
-                if (stream == null || PostProcessorHost?.ShouldTraceIncrementalInfo == false)
-                {
-                    return;
-                }
-                var serializer = new StreamSerializer(stream);
-                serializer.Write(_savingContext);
+                return;
             }
+            var serializer = new StreamSerializer(stream);
+            serializer.Write(_savingContext);
         }
     }
 }

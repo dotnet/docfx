@@ -72,11 +72,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string Render(object model)
         {
-            using (var writer = new StringWriter())
-            {
-                _template.Render(model, writer, _resourceTemplateLocator.GetTemplate);
-                return writer.ToString();
-            }
+            using var writer = new StringWriter();
+            _template.Render(model, writer, _resourceTemplateLocator.GetTemplate);
+            return writer.ToString();
         }
 
         /// <summary>

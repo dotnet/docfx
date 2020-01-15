@@ -88,10 +88,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 Directory.CreateDirectory(directoryName);
             }
 
-            using (var fileStream = new FileStream(outputFileName, FileMode.Create))
-            {
-                SaveCore(fileStream);
-            }
+            using var fileStream = new FileStream(outputFileName, FileMode.Create);
+            SaveCore(fileStream);
         }
 
         #endregion
@@ -121,7 +119,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 this._htmlToPdfOptions.IsQuiet = false;
             }
 
-            using (var process = new Process
+            using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -132,31 +130,27 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     FileName = Constants.PdfCommandName,
                     Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" " + arguments)),
                 }
-            })
+            };
+            using(new LoggerPhaseScope(Constants.PdfCommandName))
             {
-                using(new LoggerPhaseScope(Constants.PdfCommandName))
+                Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
+                process.Start();
+                if (_htmlToPdfOptions.IsReadArgsFromStdin)
                 {
-                    Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
-                    process.Start();
-                    if (_htmlToPdfOptions.IsReadArgsFromStdin)
-                    {
-                        using (var standardInput = process.StandardInput)
-                        {
-                            standardInput.AutoFlush = true;
-                            standardInput.Write(arguments);
-                        }
-                    }
-                    if (_htmlToPdfOptions.IsOutputToStdout)
-                    {
-                        using (var standardOutput = process.StandardOutput)
-                        {
-                            standardOutput.BaseStream.CopyTo(stream);
-                        }
-                        if (stream.CanSeek)
-                            Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
-                    }
-                    process.WaitForExit(TimeoutInMilliseconds);
+                    using var standardInput = process.StandardInput;
+                    standardInput.AutoFlush = true;
+                    standardInput.Write(arguments);
                 }
+                if (_htmlToPdfOptions.IsOutputToStdout)
+                {
+                    using (var standardOutput = process.StandardOutput)
+                    {
+                        standardOutput.BaseStream.CopyTo(stream);
+                    }
+                    if (stream.CanSeek)
+                        Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
+                }
+                process.WaitForExit(TimeoutInMilliseconds);
             }
         }
 
@@ -278,34 +272,24 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             if (_htmlFilePaths.Count > 0)
             {
                 var outlines = GetOutlines();
-                using (var pdfStream = new MemoryStream())
-                {
-                    ConvertToStream($"{string.Join(" ", _htmlFilePaths.Select(WrapQuoteToPath))} -", pdfStream);
-                    pdfStream.Position = 0;
+                using var pdfStream = new MemoryStream();
+                ConvertToStream($"{string.Join(" ", _htmlFilePaths.Select(WrapQuoteToPath))} -", pdfStream);
+                pdfStream.Position = 0;
 
-                    using (var pdfReader = new PdfReader(pdfStream))
-                    {
-                        using (var pdfStamper = new PdfStamper(pdfReader, stream))
-                        {
-                            pdfStamper.Outlines = outlines;
-                        }
-                    }
-                }
+                using var pdfReader = new PdfReader(pdfStream);
+                using var pdfStamper = new PdfStamper(pdfReader, stream);
+                pdfStamper.Outlines = outlines;
             }
         }
 
         private T Convert<T>(string arguments, Func<PdfReader, T> readerFunc)
         {
-            using (var pdfStream = new MemoryStream())
-            {
-                ConvertToStream(arguments, pdfStream);
-                pdfStream.Position = 0;
+            using var pdfStream = new MemoryStream();
+            ConvertToStream(arguments, pdfStream);
+            pdfStream.Position = 0;
 
-                using (var pdfReader = new PdfReader(pdfStream))
-                {
-                    return readerFunc(pdfReader);
-                }
-            }
+            using var pdfReader = new PdfReader(pdfStream);
+            return readerFunc(pdfReader);
         }
 
         #endregion

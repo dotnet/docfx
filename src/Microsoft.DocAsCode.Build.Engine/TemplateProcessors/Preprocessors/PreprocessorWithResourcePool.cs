@@ -16,14 +16,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             _preprocessorPool = ResourcePool.Create(creater, maxParallelism);
             try
             {
-                using (var preprocessor = _preprocessorPool.Rent())
-                {
-                    var inner = preprocessor.Resource;
-                    ContainsGetOptions = inner.ContainsGetOptions;
-                    ContainsModelTransformation = inner.ContainsModelTransformation;
-                    Path = inner.Path;
-                    Name = inner.Name;
-                }
+                using var preprocessor = _preprocessorPool.Rent();
+                var inner = preprocessor.Resource;
+                ContainsGetOptions = inner.ContainsGetOptions;
+                ContainsModelTransformation = inner.ContainsModelTransformation;
+                Path = inner.Path;
+                Name = inner.Name;
             }
             catch (Exception e)
             {
@@ -51,16 +49,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
 
-            using (var lease = _preprocessorPool.Rent())
+            using var lease = _preprocessorPool.Rent();
+            try
             {
-                try
-                {
-                    return lease.Resource.GetOptions(model);
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidPreprocessorException($"Error running GetOptions function inside template preprocessor: {e.Message}");
-                }
+                return lease.Resource.GetOptions(model);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidPreprocessorException($"Error running GetOptions function inside template preprocessor: {e.Message}");
             }
         }
 
@@ -71,16 +67,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return model;
             }
 
-            using (var lease = _preprocessorPool.Rent())
+            using var lease = _preprocessorPool.Rent();
+            try
             {
-                try
-                {
-                    return lease.Resource.TransformModel(model);
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {e.Message}");
-                }
+                return lease.Resource.TransformModel(model);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {e.Message}");
             }
         }
     }

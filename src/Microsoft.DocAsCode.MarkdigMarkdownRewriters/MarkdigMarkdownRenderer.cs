@@ -401,13 +401,11 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             using (var response = await _client.GetAsync(requestUrl))
             {
                 response.EnsureSuccessStatusCode();
-                using (var content = response.Content)
+                using var content = response.Content;
+                var result = await content.ReadAsStringAsync();
+                if (!string.Equals("[]", result))
                 {
-                    var result = await content.ReadAsStringAsync();
-                    if (!string.Equals("[]", result))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 

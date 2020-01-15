@@ -62,10 +62,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             lock (_locker)
             {
-                using (var stream = GetResourceStreamCore(name))
-                {
-                    return GetString(stream);
-                }
+                using var stream = GetResourceStreamCore(name);
+                return GetString(stream);
             }
         }
 

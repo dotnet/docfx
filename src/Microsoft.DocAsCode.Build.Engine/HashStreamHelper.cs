@@ -16,10 +16,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             var cs = new CircularStream();
             hashTask = Task.Run(() =>
             {
-                using (var csr = cs.CreateReaderView())
-                {
-                    return MD5.Create().ComputeHash(csr);
-                }
+                using var csr = cs.CreateReaderView();
+                return MD5.Create().ComputeHash(csr);
             });
             return new CompositeStream(stream, cs.CreateWriterView());
         }

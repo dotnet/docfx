@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-nested-column", $"NestedColumn have some invalid chars in the ending.", block);
+                _context.LogWarning("invalid-nested-column", "NestedColumn have some invalid chars in the ending.", block);
             }
 
             block.UpdateSpanEnd(slice.End);

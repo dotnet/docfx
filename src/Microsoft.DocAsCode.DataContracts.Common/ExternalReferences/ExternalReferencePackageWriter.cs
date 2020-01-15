@@ -58,11 +58,9 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 entry = _zip.GetEntry(entryName);
             }
             entry = entry ?? _zip.CreateEntry(entryName);
-            using (var stream = entry.Open())
-            using (var sw = new StreamWriter(stream))
-            {
-                YamlUtility.Serialize(sw, vm);
-            }
+            using var stream = entry.Open();
+            using var sw = new StreamWriter(stream);
+            YamlUtility.Serialize(sw, vm);
         }
 
         public void Dispose()

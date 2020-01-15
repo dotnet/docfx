@@ -24,20 +24,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     lock (_reader)
                     {
-                        using (var stream = _reader.GetResourceStream(s))
+                        using var stream = _reader.GetResourceStream(s);
+                        if (stream == null)
                         {
-                            if (stream == null)
-                            {
-                                return null;
-                            }
-
-                            var template = new Nustache.Core.Template(name);
-                            using (StreamReader reader = new StreamReader(stream))
-                            {
-                                template.Load(reader);
-                            }
-                            return template;
+                            return null;
                         }
+
+                        var template = new Nustache.Core.Template(name);
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            template.Load(reader);
+                        }
+                        return template;
                     }
                 });
         }

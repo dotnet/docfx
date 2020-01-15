@@ -52,9 +52,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
         public void TestSchemaReachedLimits()
         {
             // Json.NET schema has limitation of 1000 calls per hour
-            using (var listener = new TestListenerScope("TestInvalidMetadataReference"))
-            {
-                var schemaFile = CreateFile("template/schemas/limit.test.schema.json", @"
+            using var listener = new TestListenerScope("TestInvalidMetadataReference");
+            var schemaFile = CreateFile("template/schemas/limit.test.schema.json", @"
 {
   ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
   ""version"": ""1.0.0"",
@@ -69,18 +68,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 }
 ", _templateFolder);
 
-                var inputFiles = Enumerable.Range(0, 2000)
-                    .Select(s => CreateFile($"normal{s}.yml", @"### YamlMime:LimitTest
+            var inputFiles = Enumerable.Range(0, 2000)
+                .Select(s => CreateFile($"normal{s}.yml", @"### YamlMime:LimitTest
 metadata: Web Apps Documentation
 ", _inputFolder)).ToArray();
 
-                FileCollection files = new FileCollection(_defaultFiles);
-                files.Add(DocumentType.Article, inputFiles, _inputFolder);
-                BuildDocument(files);
-                Assert.Equal(2, listener.Items.Count);
-                Assert.Single(listener.Items.Where(s => s.Message == "There is no template processing document type(s): LimitTest"));
-                Assert.True(LimitationReached(listener));
-            }
+            FileCollection files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, inputFiles, _inputFolder);
+            BuildDocument(files);
+            Assert.Equal(2, listener.Items.Count);
+            Assert.Single(listener.Items.Where(s => s.Message == "There is no template processing document type(s): LimitTest"));
+            Assert.True(LimitationReached(listener));
         }
 
         private void BuildDocument(FileCollection files)
@@ -97,10 +95,8 @@ metadata: Web Apps Documentation
                 TemplateManager = _templateManager,
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            builder.Build(parameters);
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
