@@ -124,7 +124,11 @@ namespace Microsoft.Docs.Build
 
                 t_status.Value.Push(status);
 
-                return s_serializer.Deserialize<T>(reader) ?? new T();
+                var result = s_serializer.Deserialize<T>(reader) ?? new T();
+
+                // work around for invalid ending json
+                reader.Read();
+                return result;
             }
             catch (JsonReaderException ex)
             {
