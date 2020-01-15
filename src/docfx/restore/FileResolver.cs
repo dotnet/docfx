@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                if (_fetchOptions == FetchOptions.None && File.Exists(filePath))
+                if (_fetchOptions != FetchOptions.NoCache && File.Exists(filePath))
                 {
                     return;
                 }

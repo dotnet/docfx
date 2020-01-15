@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             {
                 if (File.Exists(gitDocfxHead))
                 {
-                    if (_fetchOptions == FetchOptions.None)
+                    if (_fetchOptions != FetchOptions.NoCache)
                     {
                         return;
                     }
