@@ -26,8 +26,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// 1. If TemplateName is file, it is considered as the default template
         /// 2. If TemplateName is a folder, files inside the folder is considered as the template, each file is named after {DocumentType}.{extension}
         /// </summary>
-        /// <param name="templateName"></param>
-        /// <param name="resourceProvider"></param>
         public TemplateProcessor(ResourceFileReader resourceProvider, DocumentBuildContext context, int maxParallelism = 0)
         {
             if (maxParallelism <= 0)

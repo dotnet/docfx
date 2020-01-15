@@ -66,8 +66,6 @@ namespace Microsoft.DocAsCode.Glob
         /// Currently not used
         /// TODO: add test case
         /// </summary>
-        /// <param name="glob"></param>
-        /// <returns></returns>
         public Regex GetRegex()
         {
             var regexParts = _items.Select(ConvertSingleGlob);
@@ -155,7 +153,6 @@ namespace Microsoft.DocAsCode.Glob
         /// Convert each part to Regex
         /// </summary>
         /// <param name="globPart">Part of glob that does not contain '/'</param>
-        /// <returns></returns>
         private GlobRegexItem ConvertSingleGlobPart(string globPart)
         {
             // Return GlobStar for **
@@ -322,8 +319,6 @@ namespace Microsoft.DocAsCode.Glob
         /// **.cs equals to **/*.cs
         /// a**.cs equals to a*.cs
         /// </summary>
-        /// <param name="globParts"></param>
-        /// <returns></returns>
         private IEnumerable<string> ExpandGlobStarShortcut(IEnumerable<string> globParts)
         {
             foreach(var part in globParts)
@@ -459,8 +454,6 @@ namespace Microsoft.DocAsCode.Glob
         /// <summary>
         /// {a,b}c => [ac, bc]
         /// </summary>
-        /// <param name="pattern"></param>
-        /// <returns></returns>
         internal static string[] ExpandGroup(string pattern, GlobMatcherOptions options = DefaultOptions)
         {
             GlobUngrouper ungrouper = new GlobUngrouper();

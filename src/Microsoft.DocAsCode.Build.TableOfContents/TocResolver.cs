@@ -366,8 +366,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// 3. folder is not supported
         /// 4. refer to an `uid`
         /// </summary>
-        /// <param name="href"></param>
-        /// <returns></returns>
         private bool IsValidHomepageLink(TocItemViewModel tocItem)
         {
             if (!string.IsNullOrEmpty(tocItem.TopicUid))

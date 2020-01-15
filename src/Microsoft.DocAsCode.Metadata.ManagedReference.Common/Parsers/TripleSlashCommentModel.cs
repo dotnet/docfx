@@ -174,9 +174,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// Get summary node out from triple slash comments
         /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="normalize"></param>
-        /// <returns></returns>
         /// <example>
         /// <code> <see cref="Hello"/></code>
         /// </example>
@@ -194,9 +191,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <remarks>
         /// <para>This is a sample of exception node</para>
         /// </remarks>
-        /// <param name="xml"></param>
-        /// <param name="normalize"></param>
-        /// <returns></returns>
         private string GetRemarks(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/remarks";
@@ -214,9 +208,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// Get exceptions nodes out from triple slash comments
         /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="normalize"></param>
-        /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
         private List<ExceptionInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
@@ -232,9 +223,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// To get `see` tags out
         /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
         /// <see cref="SpecIdHelper"/>
         /// <see cref="SourceSwitch"/>
         private List<LinkInfo> GetSees(XPathNavigator nav, ITripleSlashCommentParserContext context)
@@ -250,9 +238,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// To get `seealso` tags out
         /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
         /// <seealso cref="WaitForChangedResult"/>
         /// <seealso cref="http://google.com">ABCS</seealso>
         private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, ITripleSlashCommentParserContext context)
@@ -268,9 +253,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// To get `example` tags out
         /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
         /// <example>
         /// This sample shows how to call the <see cref="GetExceptions(string, ITripleSlashCommentParserContext)"/> method.
         /// <code>
@@ -330,7 +312,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (!Path.IsPathRooted(path))
                 {
                     var basePath = !string.IsNullOrEmpty(context.CodeSourceBasePath) ? context.CodeSourceBasePath : Path.GetDirectoryName(Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Path));
-                    
+
                     path = Path.Combine(basePath, path);
                 }
 
@@ -485,7 +467,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         if (cRefTarget != null)
                         {
                             if (item.Parent?.Parent == null)
-                            {   
+                            {
                                 // <see> or <seealso> is top-level tag. Keep it, but set resolved references.
                                 item.SetAttributeValue("refId", cRefTarget.Id);
                                 item.SetAttributeValue("cref", cRefTarget.CommentId);
@@ -715,7 +697,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// Remove least common whitespces in each line of xml
         /// </summary>
-        /// <param name="xml"></param>
         /// <returns>xml after removing least common whitespaces</returns>
         private static string RemoveLeadingSpaces(string xml)
         {
@@ -757,7 +738,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// otherwise text node start position always aligns with the start position of its parent line(the last previous line that starts with xml node)
         /// Trim newline character for code element.
         /// </summary>
-        /// <param name="xml"></param>
         /// <param name="parentIndex">the start position of the last previous line that starts with xml node</param>
         /// <returns>normalized xml</returns>
         private static string NormalizeXml(string xml, int parentIndex)
@@ -802,8 +782,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// `>` is always encoded to `&gt;` in XML, when triple-slash-comments is considered as Markdown content, `>` is considered as blockquote
         /// Decode `>` to enable the Markdown syntax considering `>` is not a Must-Encode in Text XElement
         /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
         private static string GetInnerXml(XPathNavigator node)
         {
             using (var sw = new StringWriter(CultureInfo.InvariantCulture))

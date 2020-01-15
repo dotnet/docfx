@@ -19,7 +19,6 @@ namespace Microsoft.DocAsCode.Plugins
         /// </summary>
         /// <param name="key">The file key of current file</param>
         /// <param name="filePath">The final file path for current file</param>
-        /// <returns></returns>
         void SetFilePath(string key, string filePath);
 
         // string GetXrefName(string key);

@@ -71,8 +71,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// 
         /// }
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
         public TransformModelOptions GetOptions(object model)
         {
             object obj = Preprocessor?.GetOptions(model) ?? null;
@@ -89,7 +87,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// TODO: refactor to merge model and attrs into one input model
         /// </summary>
         /// <param name="model">The raw model</param>
-        /// <param name="attrs">The system generated attributes</param>
         /// <returns>The view model</returns>
         public object TransformModel(object model)
         {
@@ -122,7 +119,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// {{! include('file') }}
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
-        /// <param name="template"></param>
         private IEnumerable<TemplateResourceInfo> ExtractDependentResources(string templateName)
         {
             if (Renderer == null || Renderer.Dependencies == null)

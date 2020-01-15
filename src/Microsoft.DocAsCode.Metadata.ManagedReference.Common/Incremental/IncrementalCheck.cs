@@ -64,8 +64,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// If file does not exists, return **true**?? ==> should have checked exists before calling.
         /// If file's last modified time is newer, return true; otherwise, return false
         /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public bool IsFileModified(string file)
         {
             if (string.IsNullOrEmpty(file))

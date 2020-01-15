@@ -92,8 +92,6 @@ namespace Microsoft.DocAsCode.Common
         /// <summary>
         /// http://stackoverflow.com/questions/422090/in-c-sharp-check-that-filename-is-possibly-valid-not-that-it-exists
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         public static bool IsVaildFilePath(string path)
         {
             FileInfo fi = null;
@@ -284,10 +282,6 @@ namespace Microsoft.DocAsCode.Common
         /// <summary>
         /// Also change backslash to forward slash
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="kind"></param>
-        /// <param name="basePath"></param>
-        /// <returns></returns>
         public static string FormatPath(this string path, UriKind kind, string basePath = null)
         {
             if (kind == UriKind.RelativeOrAbsolute)

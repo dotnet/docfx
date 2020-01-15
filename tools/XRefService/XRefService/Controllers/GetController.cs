@@ -37,9 +37,6 @@ namespace XRefService.Get.Controllers
         /// <summary>
         /// TODO: https://sqlblogcasts.com/blogs/simons/archive/2008/12/18/LINQ-to-SQL---Enabling-Fulltext-searching.aspx
         /// </summary>
-        /// <param name="pattern"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetByPattern([FromQuery]string pattern, [FromQuery]int count = 100)
         {

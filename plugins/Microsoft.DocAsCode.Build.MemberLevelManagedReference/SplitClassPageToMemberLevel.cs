@@ -37,9 +37,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         /// <summary>
         /// Extract: group with overload
         /// </summary>
-        /// <param name="models"></param>
-        /// <param name="host"></param>
-        /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             var modelsDict = new Dictionary<string, FileModel>(FilePathComparer.OSPlatformSensitiveStringComparer);

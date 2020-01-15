@@ -35,8 +35,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// TODO: This is not thread safe, only expose GetResource in interface
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
         public override Stream GetResourceStream(string name)
         {
             if (IsEmpty) return null;

@@ -38,8 +38,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// Must guarantee thread safety
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
         internal ManifestItem Transform(InternalManifestItem item)
         {
             if (item.Model == null || item.Model.Content == null)

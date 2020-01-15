@@ -91,8 +91,6 @@ namespace Microsoft.DocAsCode.SubCommands
         /// <summary>
         /// TODO: refactor
         /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
         private static BuildJsonConfig ParseOptions(BuildCommandOptions options)
         {
             var configFile = GetConfigFilePath(options);

@@ -123,8 +123,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
         /// <summary>
         /// TODO: merge with the one in XrefDetails
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         private static string GetHtmlId(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
@@ -150,7 +148,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
         /// UID is joined by '/', if segment ends with '/', use that one instead
         /// </summary>
         /// <param name="segments">The segments to generate UID</param>
-        /// <returns></returns>
         private static string GenerateUid(params string[] segments)
         {
             return string.Join("/", segments.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.Trim('/')));
@@ -161,7 +158,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
         /// </summary>
         /// <param name="operationParameters">Operation's parameters</param>
         /// <param name="pathParameters">Path's parameters</param>
-        /// <returns></returns>
         private static IEnumerable<ParameterObject> GetParametersForOperation(List<ParameterObject> operationParameters, List<ParameterObject> pathParameters)
         {
             if (pathParameters == null || pathParameters.Count == 0)

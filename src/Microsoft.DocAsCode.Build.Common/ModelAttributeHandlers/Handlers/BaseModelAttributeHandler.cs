@@ -96,9 +96,6 @@ namespace Microsoft.DocAsCode.Build.Common
         /// <summary>
         /// By default enumerate Dictionary's value if it does not have defined Attribute
         /// </summary>
-        /// <param name="declaringObject"></param>
-        /// <param name="currentPropertyInfo"></param>
-        /// <param name="context"></param>
         protected virtual object HandleDictionaryType(object currentObj, HandleModelAttributesContext context)
         {
             if (currentObj == null)
@@ -116,8 +113,6 @@ namespace Microsoft.DocAsCode.Build.Common
         /// <summary>
         /// By default enumerate Enumerable type if it does not have defined Attribute
         /// </summary>
-        /// <param name="currentObj"></param>
-        /// <param name="context"></param>
         protected virtual object HandleIEnumerableType(object currentObj, HandleModelAttributesContext context)
         {
             if (currentObj == null)
@@ -132,8 +127,6 @@ namespace Microsoft.DocAsCode.Build.Common
         /// <summary>
         /// By default skip Primitive type if it does not have defined Attribute
         /// </summary>
-        /// <param name="currentObj"></param>
-        /// <param name="context"></param>
         protected virtual object ProcessPrimitiveType(object currentObj, HandleModelAttributesContext context)
         {
             return currentObj;
@@ -142,8 +135,6 @@ namespace Microsoft.DocAsCode.Build.Common
         /// <summary>
         /// By default step into NonPrimitive type if it does not have defined Attribute
         /// </summary>
-        /// <param name="currentObj"></param>
-        /// <param name="context"></param>
         protected virtual object ProcessNonPrimitiveType(object currentObj, HandleModelAttributesContext context)
         {
             // skip string type

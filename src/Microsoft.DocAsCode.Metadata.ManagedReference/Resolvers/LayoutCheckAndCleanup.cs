@@ -11,11 +11,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class LayoutCheckAndCleanup : IResolverPipeline
     {
         /// <summary>
-        /// The yaml layout should be 
+        /// The yaml layout should be
         /// namespace -- class level -- method level
         /// </summary>
-        /// <param name="allMembers"></param>
-        /// <returns></returns>
         public void Run(MetadataModel yaml, ResolverContext context)
         {
             StringBuilder message = new StringBuilder();
@@ -69,8 +67,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// e.g. Classes
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
         private string CheckNamespaceMembers(MetadataItem member)
         {
             StringBuilder message = new StringBuilder();
@@ -107,8 +103,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// e.g. Methods
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
         private string CheckNamespaceMembersMembers(MetadataItem member)
         {
             StringBuilder message = new StringBuilder();

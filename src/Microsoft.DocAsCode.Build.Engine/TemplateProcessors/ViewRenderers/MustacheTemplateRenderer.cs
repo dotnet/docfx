@@ -84,7 +84,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// {{! include('file') }}
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
-        /// <param name="template"></param>
         private IEnumerable<string> ExtractDependencyResourceNames(string template)
         {
             foreach (Match match in IncludeRegex.Matches(template))

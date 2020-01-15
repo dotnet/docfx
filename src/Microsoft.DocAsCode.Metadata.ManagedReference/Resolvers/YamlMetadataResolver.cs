@@ -24,11 +24,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         };
 
         /// <summary>
-        /// TODO: input Namespace list instead; 
+        /// TODO: input Namespace list instead;
         /// TODO: Save to ...yml.map
         /// </summary>
-        /// <param name="allMembers"></param>
-        /// <returns></returns>
         public static MetadataModel ResolveMetadata(
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,

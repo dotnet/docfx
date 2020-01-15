@@ -36,8 +36,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <summary>
         /// if context.EnableSourceInfo is true: add sourceFile, sourceStartLineNumber, sourceEndLineNumber in each MarkdownObject
         /// </summary>
-        /// <param name="markdownObject"></param>
-        /// <param name="context"></param>
         private static void AddSourceInfoInDataEntry(MarkdownObject markdownObject, string filePath)
         {
             if (markdownObject == null || filePath == null) return;

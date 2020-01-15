@@ -21,8 +21,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// Allow multiple items in one yml file
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public static bool AllowMultipleItems(this MemberType type)
         {
             return type == MemberType.Class || type == MemberType.Enum || type == MemberType.Delegate || type == MemberType.Interface || type == MemberType.Struct;
@@ -66,8 +64,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// Only when Namespace is not empty, return it
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
         public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(this MetadataItem item)
         {
             MetadataItem shrinkedItem = new MetadataItem

@@ -39,10 +39,6 @@ namespace Microsoft.DocAsCode.Build.Common
         /// <summary>
         /// TODO: use Attributes to automatically markup and handle uid inside the model instead of pass in the itemBuilder action
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="model"></param>
-        /// <param name="itemBuilder"></param>
-        /// <returns></returns>
         public static IEnumerable<T> Transform<T>(FileModel model, string uid, Func<T, T> itemBuilder) where T : class, IOverwriteDocumentViewModel
         {
             if (model == null)
@@ -106,11 +102,6 @@ namespace Microsoft.DocAsCode.Build.Common
             /// <summary>
             /// AWARENESS: not thread safe
             /// </summary>
-            /// <param name="reader"></param>
-            /// <param name="expectedType"></param>
-            /// <param name="state"></param>
-            /// <param name="nestedObjectDeserializer"></param>
-            /// <returns></returns>
             public object DeserializeValue(IParser parser, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
             {
                 object value = _innerDeserializer.DeserializeValue(parser, expectedType, state, nestedObjectDeserializer);

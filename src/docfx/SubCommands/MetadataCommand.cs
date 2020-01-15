@@ -175,8 +175,6 @@ namespace Microsoft.DocAsCode.SubCommands
         /// <summary>
         /// <n1>=<v1>;<n2>=<v2>
         /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
         private static Dictionary<string, string> ResolveMSBuildProperties(MetadataCommandOptions options)
         {
             var properties = new Dictionary<string, string>();

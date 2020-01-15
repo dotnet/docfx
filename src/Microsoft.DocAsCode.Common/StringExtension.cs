@@ -64,8 +64,6 @@ namespace Microsoft.DocAsCode.Common
         /// Also, Website URL should be case sensitive consider the server might be running under Linux/Unix
         /// So we could even not lower the path under Windows as the generated YAML should be ideally OS irrelevant
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         public static string ToNormalizedFullPath(this string path)
         {
             if (string.IsNullOrEmpty(path)) return null;

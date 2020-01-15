@@ -66,8 +66,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// file can start with "./" or using regex
         /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public static IEnumerable<string> GetResourceName(string file, string templateName, IResourceFileReader reader)
         {
             if (string.IsNullOrWhiteSpace(file) || file == "./")
