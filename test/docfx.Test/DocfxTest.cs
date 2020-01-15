@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
 
                 if (spec.Restore)
                 {
-                    await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).Concat(new[] { "--use-cache" }).ToArray());
+                    await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
                 }
                 if (spec.Build)
                 {
