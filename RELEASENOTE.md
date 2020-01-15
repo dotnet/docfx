@@ -3,6 +3,7 @@ Version Notes (Current Version: v2.49)
 
 v2.49(Pre-release)
 -----------
+1. Add `cref` attribute support (#1306) for inheritdoc and fix copying from templated sources (#1516).
 
 v2.48
 -----------
