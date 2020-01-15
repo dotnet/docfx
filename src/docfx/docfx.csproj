@@ -21,7 +21,9 @@
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.0" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.15" />
-    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.48.0" />
+    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.49.0-b-200114012-g8fd110" />
+    <!--TODO: remove this once Validations.DocFx.Adapter updates to use MarkdigEngine.Extensions 2.49-->
+    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Validators" Version="2.48.1" />
     <PackageReference Include="Microsoft.Graph" Version="1.21.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.7.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
