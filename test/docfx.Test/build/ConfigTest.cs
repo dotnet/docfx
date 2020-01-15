@@ -13,36 +13,33 @@ namespace Microsoft.Docs.Build
     public static class ConfigTest
     {
         [Theory]
-        [InlineData(LocalizationMapping.Repository, null, "zh-cn", null)]
-        [InlineData(LocalizationMapping.Repository, "", "zh-cn", "")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/name", "", "https://github.com/docfx/name")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/name", null, "https://github.com/docfx/name")]
-        [InlineData(LocalizationMapping.Folder, "https://github.com/docfx/name", "zh-cn", "https://github.com/docfx/name")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/name", "zh-cn", "https://github.com/docfx/name.zh-cn")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/name.en-us", "zh-cn", "https://github.com/docfx/name.en-us.zh-cn")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/name.zh-cn", "zh-cn", "https://github.com/docfx/name.zh-cn")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/name.en", "zh-cn", "https://github.com/docfx/name.en.zh-cn")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/test-repo", "en-us", "https://github.com/docfx/test-repo")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/en-us", "zh-cn", "https://github.com/docfx/en-us.zh-cn")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/test-repo", "bs-Cyrl-BA", "https://github.com/docfx/test-repo.bs-Cyrl-BA")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/test-repo.en-us", "bs-Cyrl-BA", "https://github.com/docfx/test-repo.en-us.bs-Cyrl-BA")]
-        [InlineData(LocalizationMapping.Repository, "https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.bs-Cyrl-BA.sr-Latn-RS", "bs-Cyrl-BA")]
-        [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
-        [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend.en-us", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.en-us.sr-Latn-RS")]
-        [InlineData(LocalizationMapping.Repository, "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
-        public static void LocConfigConventionRepoRemote(LocalizationMapping locMappingType, string sourceName, string locale, string locName, string defaultLocale = "en-us")
-            => Assert.Equal(locName, LocalizationUtility.GetLocalizedRepo(locMappingType, false, sourceName, "master", locale, defaultLocale).remote);
+        [InlineData(null, "zh-cn", null)]
+        [InlineData("", "zh-cn", "")]
+        [InlineData("https://github.com/docfx/name", "", "https://github.com/docfx/name")]
+        [InlineData("https://github.com/docfx/name", null, "https://github.com/docfx/name")]
+        [InlineData("https://github.com/docfx/name", "zh-cn", "https://github.com/docfx/name.zh-cn")]
+        [InlineData("https://github.com/docfx/name.en-us", "zh-cn", "https://github.com/docfx/name.en-us.zh-cn")]
+        [InlineData("https://github.com/docfx/name.zh-cn", "zh-cn", "https://github.com/docfx/name.zh-cn")]
+        [InlineData("https://github.com/docfx/name.en", "zh-cn", "https://github.com/docfx/name.en.zh-cn")]
+        [InlineData("https://github.com/docfx/test-repo", "en-us", "https://github.com/docfx/test-repo")]
+        [InlineData("https://github.com/docfx/en-us", "zh-cn", "https://github.com/docfx/en-us.zh-cn")]
+        [InlineData("https://github.com/docfx/test-repo", "bs-Cyrl-BA", "https://github.com/docfx/test-repo.bs-Cyrl-BA")]
+        [InlineData("https://github.com/docfx/test-repo.en-us", "bs-Cyrl-BA", "https://github.com/docfx/test-repo.en-us.bs-Cyrl-BA")]
+        [InlineData("https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.bs-Cyrl-BA.sr-Latn-RS", "bs-Cyrl-BA")]
+        [InlineData("https://test.visualstudio.com/_git/TripleCrown.Backend", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
+        [InlineData("https://test.visualstudio.com/_git/TripleCrown.Backend.en-us", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.en-us.sr-Latn-RS")]
+        [InlineData("https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
+        public static void LocConfigConventionRepoRemote(string sourceName, string locale, string locName, string defaultLocale = "en-us")
+            => Assert.Equal(locName, LocalizationUtility.GetLocalizedRepo(false, sourceName, "master", locale, defaultLocale).remote);
 
         [Theory]
-        [InlineData(LocalizationMapping.Folder, true, "master", "zh-cn", "master")]
-        [InlineData(LocalizationMapping.Repository, true, "", "zh-cn", "")]
-        [InlineData(LocalizationMapping.Repository, true, null, "zh-cn", null)]
-        [InlineData(LocalizationMapping.Repository, false, "master", "zh-cn", "master")]
-        [InlineData(LocalizationMapping.Repository, false, "master", "en-us", "master")]
-        [InlineData(LocalizationMapping.Repository, true, "master", "zh-cn", "master-sxs")]
-        [InlineData(LocalizationMapping.Branch, true, "master", "zh-cn", "master-sxs.zh-cn")]
-        public static void LocConfigConventionRepoBranch(LocalizationMapping locMappingType, bool enableBilingual, string sourceBranch, string locale, string targetBranch)
-            => Assert.Equal(targetBranch, LocalizationUtility.GetLocalizedRepo(locMappingType, enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
+        [InlineData(true, "", "zh-cn", "")]
+        [InlineData(true, null, "zh-cn", null)]
+        [InlineData(false, "master", "zh-cn", "master")]
+        [InlineData(false, "master", "en-us", "master")]
+        [InlineData(true, "master", "zh-cn", "master-sxs")]
+        public static void LocConfigConventionRepoBranch(bool enableBilingual, string sourceBranch, string locale, string targetBranch)
+            => Assert.Equal(targetBranch, LocalizationUtility.GetLocalizedRepo(enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
 
         [Theory]
         [InlineData("https://github.com/docs/theme", "en-us", "en-us", "https://github.com/docs/theme#master")]
