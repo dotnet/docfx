@@ -96,12 +96,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             RenderDelegate = (renderer, obj) =>
             {
-                var currentId = string.Empty;
-                var currentRange = string.Empty;
-                var currentSource = string.Empty;
-                obj.Attributes.TryGetValue("id", out currentId); //it's okay if this is null
-                obj.Attributes.TryGetValue("range", out currentRange); //it's okay if this is null
-                obj.Attributes.TryGetValue("source", out currentSource); //source has already been checked above
+                obj.Attributes.TryGetValue("id", out var currentId); //it's okay if this is null
+                obj.Attributes.TryGetValue("range", out var currentRange); //it's okay if this is null
+                obj.Attributes.TryGetValue("source", out var currentSource); //source has already been checked above
                 var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, obj);
                 if (string.IsNullOrEmpty(code))
                 {
@@ -146,7 +143,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 logError($"You must set only either Range or Id, but not both.");
             }
-            
+
             var codeSections = new List<string>();
 
             if (!string.IsNullOrEmpty(range))
@@ -214,18 +211,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var rangeParts = codeRange.Split('-');
                     if (!string.IsNullOrEmpty(rangeParts[1]))
                     {
-                        var beg = 0;
-                        var end = 0;
-                        if(int.TryParse(rangeParts[0], out beg)
-                            && int.TryParse(rangeParts[1], out end))
+                        if(int.TryParse(rangeParts[0], out var beg)
+                           && int.TryParse(rangeParts[1], out var end))
                         {
                             beg--;
                             end--;
-                        } else
+                        }
+                        else
                         {
                             logError($"Your ranges must be numbers.");
                             return null;
                         }
+
                         if(beg > codeLines.Length || end > codeLines.Length)
                         {
                             logError($"Your range is greater than the number of lines in the document.");
@@ -240,9 +237,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                     else
                     {
-                        var section = string.Empty;
-                        var beg = 0;
-                        if (int.TryParse(rangeParts[0], out beg))
+                        if (int.TryParse(rangeParts[0], out var beg))
                         {
                             beg--;
                         }
@@ -252,6 +247,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                             return null;
                         }
                         var end = codeLines.Length;
+                        var section = string.Empty;
                         for (var i = beg; i < end; i++)
                         {
                             section += codeLines[i] + "\n";
@@ -261,8 +257,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 else
                 {
-                    var beg = 0;
-                    if (int.TryParse(codeRange, out beg))
+                    if (int.TryParse(codeRange, out var beg))
                     {
                         codeSections.Add(codeLines[beg--]);
                     }

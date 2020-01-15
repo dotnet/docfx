@@ -318,8 +318,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                     else
                     {
-                        int indentSpaces = 0;
-                        string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
+                        string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out var indentSpaces);
                         commonIndent = Math.Min(commonIndent, indentSpaces);
                         codeLines.Add(rawCodeLine);
                     }

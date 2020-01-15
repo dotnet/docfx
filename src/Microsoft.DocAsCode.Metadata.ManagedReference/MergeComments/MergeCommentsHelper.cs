@@ -88,8 +88,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             foreach (var uidAndComment in list)
             {
-                MetadataItem item = null;
-                if (allItemsInAssembly.TryGetValue(uidAndComment.CommentId, out item))
+                if (allItemsInAssembly.TryGetValue(uidAndComment.CommentId, out var item))
                 {
                     PatchViewModel(item, uidAndComment.Comment);
                 }

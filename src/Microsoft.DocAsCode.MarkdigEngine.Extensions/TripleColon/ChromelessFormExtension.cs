@@ -75,8 +75,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             RenderDelegate = (renderer, obj) =>
             {
-                var buttonText = "Submit";
-                obj.RenderProperties.TryGetValue("submitText", out buttonText);
+                obj.RenderProperties.TryGetValue("submitText", out var buttonText);
 
                 renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
                 renderer.WriteLine("<div></div>");
