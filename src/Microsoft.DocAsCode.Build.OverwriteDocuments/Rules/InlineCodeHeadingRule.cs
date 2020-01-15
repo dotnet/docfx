@@ -30,8 +30,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         private CodeInline ParseCore(Block block)
         {
-            var heading = block as HeadingBlock;
-            if (heading == null
+            if (!(block is HeadingBlock heading)
                 || NeedCheckLevel && heading.Level != Level
                 || heading.Inline.FirstChild != heading.Inline.LastChild)
             {

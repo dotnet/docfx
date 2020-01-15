@@ -127,7 +127,7 @@ namespace Example
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
-                Source = new SourceDetail()
+                Source = new SourceDetail
                 {
                     Path = Path.Combine(inputFolder, "Source.cs"),
                 }
@@ -168,7 +168,7 @@ Classes in assemblies are by definition complete.
 remarks);
 
             var exceptions = commentModel.Exceptions;
-            Assert.Equal(1, exceptions.Count);
+            Assert.Single(exceptions);
             Assert.Equal("System.Xml.XmlException", exceptions[0].Type);
             Assert.Equal(@"This is a sample of exception node. Ref <a href=""http://exception.com"">Exception</a>", exceptions[0].Description);
 
@@ -302,7 +302,7 @@ This is an example using source reference.
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
-                Source = new SourceDetail()
+                Source = new SourceDetail
                 {
                     Path = Path.Combine(inputFolder, "Source.cs"),
                 }

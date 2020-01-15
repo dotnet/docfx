@@ -2,9 +2,6 @@
 {
     using Markdig.Helpers;
     using Markdig.Parsers;
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     public class NolocParser : InlineParser
     {
@@ -36,7 +33,7 @@
                 return false;
             }
 
-            processor.Inline = new NolocInline()
+            processor.Inline = new NolocInline
             {
                 Text = text
             };

@@ -27,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     {
         private string _outputFolder;
         private string _inputFolder;
-        private string _templateFolder;
         private readonly FileCreator _fileCreator;
         private ApplyTemplateSettings _applyTemplateSettings;
 
@@ -37,7 +36,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         {
             _outputFolder = GetRandomFolder();
             _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
             _applyTemplateSettings.RawModelExportSettings.Export = true;
             _fileCreator = new FileCreator(_inputFolder);
@@ -313,7 +311,7 @@ items:
             Assert.NotNull(model.Metadata["metadata"]);
 
             var meta = (JObject)model.Metadata["metadata"];
-            Assert.Equal(1, meta.Count);
+            Assert.Single(meta);
             Assert.Equal("content", meta["meta"]);
 
             var expectedModel = new TocItemViewModel

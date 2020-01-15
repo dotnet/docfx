@@ -16,12 +16,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class TemplatePageLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;
-        private readonly string _outputFolder;
 
         public TemplatePageLoaderUnitTest()
         {
             _inputFolder = GetRandomFolder();
-            _outputFolder = GetRandomFolder();
         }
 
         [Fact]
@@ -30,24 +28,24 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             using (var listener = new TestListenerScope("NoTemplate"))
             {
                 var templates = LoadAllTemplates();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, templates.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(templates);
 
                 var file1 = CreateFile("a.js", string.Empty, _inputFolder);
                 templates = LoadAllTemplates();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, templates.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(templates);
 
-                // only allowes file under root folder
+                // only allows file under root folder
                 var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
                 templates = LoadAllTemplates();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, templates.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(templates);
 
                 var file3 = CreateFile("a.tmpl.js", string.Empty, _inputFolder);
                 templates = LoadAllTemplates();
-                Assert.Equal(0, listener.Items.Count);
-                Assert.Equal(0, templates.Count);
+                Assert.Empty(listener.Items);
+                Assert.Empty(templates);
             }
         }
 
@@ -60,9 +58,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 var templates = LoadAllTemplates();
 
-                Assert.Equal(0, listener.Items.Count);
+                Assert.Empty(listener.Items);
 
-                Assert.Equal(1, templates.Count);
+                Assert.Single(templates);
                 var template = templates[0];
                 Assert.NotNull(template.Renderer);
                 Assert.Equal(TemplateType.Default, template.TemplateType);
@@ -85,9 +83,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 var templates = LoadAllTemplates();
 
-                Assert.Equal(0, listener.Items.Count);
+                Assert.Empty(listener.Items);
 
-                Assert.Equal(1, templates.Count);
+                Assert.Single(templates);
                 var template = templates[0];
                 Assert.NotNull(template.Renderer);
                 Assert.Equal(TemplateType.Primary, template.TemplateType);
@@ -112,9 +110,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 var templates = LoadAllTemplates();
 
-                Assert.Equal(0, listener.Items.Count);
+                Assert.Empty(listener.Items);
 
-                Assert.Equal(1, templates.Count);
+                Assert.Single(templates);
                 var template = templates[0];
                 Assert.Null(template.Renderer);
                 Assert.Equal(TemplateType.Default, template.TemplateType);

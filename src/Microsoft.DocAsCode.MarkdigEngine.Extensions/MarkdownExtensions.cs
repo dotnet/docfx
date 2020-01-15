@@ -43,9 +43,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
             return pipeline;
         }
-    
-        /// <summary>	
-        /// This extension removes all the block parser except paragragh. Please use this extension in the last.	
+
+        /// <summary>
+        /// This extension removes all the block parser except paragraph. Please use this extension in the last.
         /// </summary>
         public static MarkdownPipelineBuilder UseInlineOnly(this MarkdownPipelineBuilder pipeline)
         {
@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = Constants.FencedCodePrefix });
+                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser { InfoPrefix = Constants.FencedCodePrefix });
             }
             return pipeline;
         }

@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 listener.Dispose();
                 // prevent marshal listener.
-                _listeners.RemoveAll(l => listener.Equals(l));
+                _listeners.RemoveAll(listener.Equals);
             }
         }
 

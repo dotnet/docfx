@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         {
                             if (mapNode.Children.ContainsKey(mergeKey))
                             {
-                                var opath = string.Format("{0}[{1}=\"{2}\"]", parentOPath, mergeKey, mapNode.Children[mergeKey].ToString());
+                                var opath = $"{parentOPath}[{mergeKey}=\"{mapNode.Children[mergeKey].ToString()}\"]";
                                 TraverseCore(item, fragments, schema.Items, opath, uid);
                             }
                             else

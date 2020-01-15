@@ -45,19 +45,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
-            var namespaceSymbol = symbol as INamespaceSymbol;
-            if (namespaceSymbol != null && namespaceSymbol.IsGlobalNamespace)
+            if (symbol is INamespaceSymbol namespaceSymbol && namespaceSymbol.IsGlobalNamespace)
             {
                 return GlobalNamespaceId;
             }
 
-            var assemblySymbol = symbol as IAssemblySymbol;
-            if (assemblySymbol != null)
+            if (symbol is IAssemblySymbol assemblySymbol)
             {
                 return assemblySymbol.MetadataName;
             }
-            var dynamicSymbol = symbol as IDynamicTypeSymbol;
-            if (dynamicSymbol != null)
+
+            if (symbol is IDynamicTypeSymbol dynamicSymbol)
             {
                 return typeof(object).FullName;
             }

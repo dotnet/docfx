@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.Common.Tests
 {
-    using System;
-
     using Microsoft.DocAsCode.Common;
 
     using Xunit;

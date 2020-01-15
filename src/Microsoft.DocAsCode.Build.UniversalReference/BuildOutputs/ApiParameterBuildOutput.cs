@@ -5,8 +5,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 {
     using System;
     using System.Collections.Generic;
-
-    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;

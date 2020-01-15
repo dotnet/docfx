@@ -49,8 +49,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 throw new ArgumentNullException(nameof(parser));
             }
-            var context = parser.Context as MarkdownBlockContext;
-            if (context == null)
+
+            if (!(parser.Context is MarkdownBlockContext context))
             {
                 throw new InvalidOperationException($"{nameof(parser)}.{nameof(parser.Context)}(type:{parser.Context.GetType().FullName}) is invalid.");
             }

@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using YamlDotNet.Serialization;
 
     [Serializable]

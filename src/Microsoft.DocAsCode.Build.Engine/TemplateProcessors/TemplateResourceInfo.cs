@@ -13,8 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public override bool Equals(object obj)
         {
-            var target = obj as TemplateResourceInfo;
-            if (target == null)
+            if (!(obj is TemplateResourceInfo target))
             {
                 return false;
             }

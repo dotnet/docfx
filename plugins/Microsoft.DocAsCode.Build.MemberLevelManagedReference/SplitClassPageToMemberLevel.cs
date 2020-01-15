@@ -211,7 +211,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             model.Content = page;
 
             AddModelToDict(model, models, dupeModels);
-            return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
+            return new SplittedResult(primaryItem.Uid, children.OrderBy(GetDisplayName), splittedModels);
         }
 
         private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
@@ -479,7 +479,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
         {
-            var result = new TreeItem()
+            var result = new TreeItem
             {
                 Metadata =
                 {

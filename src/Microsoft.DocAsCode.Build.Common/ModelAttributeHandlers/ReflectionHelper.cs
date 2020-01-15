@@ -174,7 +174,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public static bool IsDictionaryType(Type type)
         {
-            return _isDictionaryCache.GetOrAdd(type, t => IsDictionaryTypeCore(t));
+            return _isDictionaryCache.GetOrAdd(type, IsDictionaryTypeCore);
         }
 
         private static bool IsDictionaryTypeCore(Type type)

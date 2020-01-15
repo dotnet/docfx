@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Generic;
-    using System.Collections.Immutable;
 
     public class MarkdownNonParagraphBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownNonParagraphBlockToken>
     {

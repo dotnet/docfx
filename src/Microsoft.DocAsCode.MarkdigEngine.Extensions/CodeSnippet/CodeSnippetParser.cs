@@ -235,8 +235,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var queryString = query.ToString().Trim();
 
-            CodeRange codeRange;
-            if (TryGetLineRange(queryString, out codeRange))
+            if (TryGetLineRange(queryString, out var codeRange))
             {
                 codeSnippet.BookMarkRange = codeRange;
             }
@@ -332,9 +331,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         codeSnippet.HighlightRanges = temp;
                         break;
                     case "dedent":
-                        int dedent;
 
-                        if (!int.TryParse(value, out dedent))
+                        if (!int.TryParse(value, out var dedent))
                         {
                             return false;
                         }
@@ -364,8 +362,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             foreach (var range in rangesSplit)
             {
-                CodeRange codeRange;
-                if (!TryGetLineRange(range, out codeRange, false))
+                if (!TryGetLineRange(range, out var codeRange, false))
                 {
                     return false;
                 }
@@ -386,12 +383,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             codeRange = null;
             if (string.IsNullOrEmpty(query)) return false;
 
-            int startLine, endLine;
+            int endLine;
 
             var splitLine = query.Split(new[] { '-' });
             if (splitLine.Length > 2) return false;
 
-            var result = TryGetLineNumber(splitLine[0], out startLine, withL);
+            var result = TryGetLineNumber(splitLine[0], out var startLine, withL);
             endLine = startLine;
 
             if (splitLine.Length > 1)

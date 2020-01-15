@@ -5,6 +5,12 @@ v2.49(Pre-release)
 -----------
 1. Add `cref` attribute support (#1306) for inheritdoc and fix copying from templated sources (#1516).
 
+v2.48.1
+-----------
+1. Bug fix:
+    1. Fix failure building UWP project. (#5011)
+    2. Fix former post processor's metadata changes lost in later post processor. (#5366)
+
 v2.48
 -----------
 

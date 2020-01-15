@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void MonikerRangeTestGeneral()
         {
-            //arange
+            //arrange
             var source = @"# Article 2
 
 Shared content.
@@ -57,7 +57,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void MonikerRangeTestInvalid()
         {
-            //arange
+            //arrange
             var source = @"::: moniker range=""azure-rest-1.0";
 
             // assert
@@ -69,7 +69,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void MonikerRangeTestNotClosed()
         {
-            //arange
+            //arrange
             var source1 = @"::: moniker range=""start""";
             var source2 = @"::: moniker range=""start""
 ::: moniker-end";

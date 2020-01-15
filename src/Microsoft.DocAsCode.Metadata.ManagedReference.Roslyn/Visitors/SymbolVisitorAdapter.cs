@@ -8,12 +8,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Immutable;
     using System.Diagnostics;
     using System.Linq;
-    using System.IO;
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
-
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
 
@@ -708,16 +705,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     if ((object)reduced != null)
                     {
                         // update reference
-                        // Roslyn could get the instaniated type. e.g.
+                        // Roslyn could get the instantiated type. e.g.
                         // <code>
                         // public class Foo<T> {}
                         // public class FooImple<T> : Foo<Foo<T[]>> {}
                         // public static class Extension { public static void Play<Tool, Way>(this Foo<Tool> foo, Tool t, Way w) {} }
                         // </code>
                         // Roslyn generated id for the reduced extension method of FooImple<T> is like "Play``2(Foo{`0[]},``1)"
-                        var typeParamterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
+                        var typeParameterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
                         var methodGenericParameters = reduced.IsGenericMethod ? (from p in reduced.TypeParameters select p.Name).ToList() : EmptyListOfString;
-                        var id = AddSpecReference(reduced, typeParamterNames, methodGenericParameters);
+                        var id = AddSpecReference(reduced, typeParameterNames, methodGenericParameters);
 
                         extensions.Add(id);
                     }
@@ -832,8 +829,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (arg.Value != null)
             {
-                var type = arg.Value as ITypeSymbol;
-                if (type != null)
+                if (arg.Value is ITypeSymbol type)
                 {
                     if (!FilterVisitor.CanVisitApi(type))
                     {
@@ -848,8 +844,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private object GetConstantValueForArgumentInfo(TypedConstant arg)
         {
-            var type = arg.Value as ITypeSymbol;
-            if (type != null)
+            if (arg.Value is ITypeSymbol type)
             {
                 return AddSpecReference(type);
             }
@@ -894,8 +889,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else if (arg.Value != null)
             {
-                var type = arg.Value as ITypeSymbol;
-                if (type != null)
+                if (arg.Value is ITypeSymbol type)
                 {
                     if (!FilterVisitor.CanVisitApi(type))
                     {

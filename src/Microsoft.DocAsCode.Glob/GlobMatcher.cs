@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Glob
         /// <returns></returns>
         public Regex GetRegex()
         {
-            var regexParts = _items.Select(s => ConvertSingleGlob(s));
+            var regexParts = _items.Select(ConvertSingleGlob);
             var content = string.Join("|", regexParts);
             // Matches the entire pattern
             content = $"^(?:{content})$";
@@ -124,7 +124,7 @@ namespace Microsoft.DocAsCode.Glob
 
             // **.cs is a shortcut for **/*.cs
             var items = globs
-                .Select(glob => ExpandGlobStarShortcut(Split(glob, '/')).Select(s => ConvertSingleGlobPart(s)).ToArray());
+                .Select(glob => ExpandGlobStarShortcut(Split(glob, '/')).Select(ConvertSingleGlobPart).ToArray());
             return items;
         }
 
@@ -142,7 +142,7 @@ namespace Microsoft.DocAsCode.Glob
 
         private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
         {
-            var items = regexItems.Select(s => GlobRegexItemToRegex(s));
+            var items = regexItems.Select(GlobRegexItemToRegex);
             return string.Join(@"\/", items);
         }
 
@@ -171,7 +171,7 @@ namespace Microsoft.DocAsCode.Glob
             CharClass currentCharClass = null;
             string patternStart = string.Empty;
 
-            // .abc will not be matched unless . is explictly specified
+            // .abc will not be matched unless . is explicitly specified
             if (globPart.Length > 0 && globPart[0] != '.')
             {
                 patternStart = Options.HasFlag(GlobMatcherOptions.AllowDotMatch) ? PatternStartWithDotAllowed : PatternStartWithoutDotAllowed;

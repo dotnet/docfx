@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 tocCache[model.OriginalFileAndType.FullPath] = new TocItemInfo(model.OriginalFileAndType, (TocItemViewModel)model.Content);
             }
-            var tocResolver = new TocResolver(host, tocCache);
+            var tocResolver = new TocResolver(tocCache);
             foreach (var key in tocCache.Keys.ToList())
             {
                 tocCache[key] = tocResolver.Resolve(key);
@@ -89,9 +89,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
             catch (Exception e)
             {
-                var message = $"{file} is not a valid TOC File: {e.Message}";
-                Logger.LogError(message);
-                throw new DocumentException(message, e);
+                throw new DocumentException($"{file} is not a valid TOC File: {e.Message}", e);
             }
 
             throw new NotSupportedException($"{file} is not a valid TOC file, supported TOC files should be either \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");

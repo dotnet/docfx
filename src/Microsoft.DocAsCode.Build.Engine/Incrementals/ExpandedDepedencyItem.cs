@@ -4,9 +4,6 @@
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     using Microsoft.DocAsCode.Common;
 
     using Newtonsoft.Json;
