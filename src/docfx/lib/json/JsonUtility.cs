@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
 
                 var result = s_serializer.Deserialize<T>(reader) ?? new T();
 
-                // work around for invalid ending json
+                // workaround for invalid ending json
                 reader.Read();
                 return result;
             }
