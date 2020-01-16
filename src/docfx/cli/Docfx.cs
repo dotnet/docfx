@@ -110,6 +110,7 @@ namespace Microsoft.Docs.Build
                     // Restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
+                    syntax.DefineOption("force", ref options.Force, "Always fetch the latest content, without reading from disk cache.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Build command

@@ -13,15 +13,15 @@ namespace Microsoft.Docs.Build
 
         private readonly string _docsetPath;
         private readonly Config _config;
-        private readonly bool _noFetch;
+        private readonly FetchOptions _fetchOptions;
 
         private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
 
-        public PackageResolver(string docsetPath, Config config, bool noFetch = false)
+        public PackageResolver(string docsetPath, Config config, FetchOptions fetchOptions = default)
         {
             _docsetPath = docsetPath;
             _config = config;
-            _noFetch = noFetch;
+            _fetchOptions = fetchOptions;
         }
 
         public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, out string path)
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
         {
-            if (!_noFetch)
+            if (_fetchOptions != FetchOptions.NoFetch)
             {
                 DownloadPackage(package, options);
             }
@@ -108,6 +108,10 @@ namespace Microsoft.Docs.Build
             {
                 if (File.Exists(gitDocfxHead))
                 {
+                    if (_fetchOptions != FetchOptions.NoCache)
+                    {
+                        return;
+                    }
                     File.Delete(gitDocfxHead);
                 }
                 DownloadGitRepositoryCore(gitPath, url, committish, depthOne);

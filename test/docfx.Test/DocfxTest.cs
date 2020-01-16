@@ -54,11 +54,11 @@ namespace Microsoft.Docs.Build
 
                 if (OsMatches(spec.OS))
                 {
-                    await RunCore(test, docsetPath, outputPath, spec);
+                    await RunCore(docsetPath, outputPath, spec);
                 }
                 else
                 {
-                    await Assert.ThrowsAnyAsync<Exception>(() => RunCore(test, docsetPath, outputPath, spec));
+                    await Assert.ThrowsAnyAsync<Exception>(() => RunCore(docsetPath, outputPath, spec));
                 }
             }
             finally
@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
             return (docsetPath, cachePath, statePath, outputPath, repos);
         }
 
-        private async static Task RunCore(TestData test, string docsetPath, string outputPath, DocfxTestSpec spec)
+        private async static Task RunCore(string docsetPath, string outputPath, DocfxTestSpec spec)
         {
             if (spec.Watch)
             {
