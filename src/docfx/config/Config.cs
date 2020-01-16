@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets host name used for generating .xrefmap.json
         /// </summary>
-        public string XrefHostName { get; private set; } = string.Empty;
+        public readonly string XrefHostName = string.Empty;
 
         /// <summary>
         /// Gets whether we are running in legacy mode

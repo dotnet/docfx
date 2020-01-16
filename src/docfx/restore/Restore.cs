@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
                     // load configuration from current entry or fallback repository
                     var configLoader = new ConfigLoader(repository, errorLog);
-                    (errors, config) = configLoader.Load(docsetPath, locale, options);
+                    (errors, config) = configLoader.Load(docsetPath, ref locale, options);
                     if (errorLog.Write(errors))
                         return true;
 

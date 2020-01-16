@@ -459,7 +459,7 @@ inputs:
   .openpublishing.publish.config.json: |
     {
       "docsets_to_publish": [
-        { "build_source_folder": ".", "open_to_public_contributors": true },
+        { "build_source_folder": ".", "open_to_public_contributors": true, "locale": "zh-cn" },
         { "build_source_folder": "b", "open_to_public_contributors": true }
       ]
     }

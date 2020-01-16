@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options)
+        public (List<Error> errors, Config config) Load(string docsetPath, ref string locale, CommandLineOptions options)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
@@ -63,7 +63,8 @@ namespace Microsoft.Docs.Build
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options?.StdinConfig, options?.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
+            var (xrefEndpoint, xrefQueryTags, opsLocale, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
+            locale = opsLocale ?? locale;
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
