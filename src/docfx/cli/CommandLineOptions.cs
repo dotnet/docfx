@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         public bool Verbose;
         public bool DryRun;
         public bool Stdin;
-        public bool Force;
+        public bool UseCache;
         public bool NoFetch;
         public string Template;
         public int Port;
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public FetchOptions FetchOptions => NoFetch
             ? FetchOptions.NoFetch
-            : (Force ? FetchOptions.NoCache : FetchOptions.None);
+            : (UseCache ? FetchOptions.UseCache : FetchOptions.None);
 
         public JObject ToJObject()
         {
