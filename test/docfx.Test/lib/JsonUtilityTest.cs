@@ -445,6 +445,14 @@ namespace Microsoft.Docs.Build
             Assert.Equal("{\"b\":1,\"d\":false}", result);
         }
 
+        [Theory]
+        [InlineData("{}---")]
+        [InlineData("{}{}")]
+        public void TestInvalidJson(string json)
+        {
+            Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(json, new FilePath("path")));
+        }
+
         [Fact]
         public void TestDeserializeWithSourceInfo()
         {
@@ -459,7 +467,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestExtensionDataWithSourceInfo()
         {
-            var (_, result) = DeserializeWithValidation<ClassWithExtensionData>("{\"a\": 1}");
+            var (_, result) = DeserializeWithValidation<ClassWithExtensionData>("{\"a\": 1} ");
             Assert.NotNull(result.ExtensionData["a"]);
 
             var valueSource = JsonUtility.GetSourceInfo(result.ExtensionData["a"]);
