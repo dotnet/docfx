@@ -473,8 +473,8 @@ inputs:
   c/docfx.yml:
   c/c.md:
 outputs:
-  a.json: '{ "open_to_public_contributors": true }'
-  b/b.json: '{ "open_to_public_contributors": false }'
+  a.json: '{ "open_to_public_contributors": true, "locale": "zh-cn", "canonical_url": "https://docs.com/zh-cn/a" }'
+  b/b.json: '{ "open_to_public_contributors": false, "locale": "en-us", "canonical_url": "https://docs.com/en-us/b" }'
 ---
 # Peak .openpublishing.publish.config.json for multiple docsets, dependencies and themes
 repos:

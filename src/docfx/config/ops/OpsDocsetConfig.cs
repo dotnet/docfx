@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public readonly bool OpenToPublicContributors;
 
-        public readonly string Local;
+        public readonly string Locale;
 
         public readonly string[] XrefQueryTags = Array.Empty<string>();
     }

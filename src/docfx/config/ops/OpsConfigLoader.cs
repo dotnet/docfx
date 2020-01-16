@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, docsetConfig?.Local, result);
+            return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, docsetConfig?.Locale, result);
         }
 
         private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string branch, string buildSourceFolder)
