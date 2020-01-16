@@ -448,9 +448,18 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("{}---")]
         [InlineData("{}{}")]
-        public void TestInvalidJson(string json)
+        public void TestDeserializeJsonWithCheckAddionalContent(string json)
         {
-            Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(json, new FilePath("path")));
+            Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(json, new FilePath("path"), true));
+        }
+
+        [Theory]
+        [InlineData("{}---")]
+        [InlineData("{}{}")]
+        public void TestDeserializeJsonWithoutCheckAddionalContent(string json)
+        {
+            var result = JsonUtility.Deserialize<ClassWithSourceInfo>(json, new FilePath("path"), false);
+            Assert.NotNull(result);
         }
 
         [Fact]
