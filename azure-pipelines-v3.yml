@@ -123,26 +123,26 @@ jobs:
   strategy:
     matrix:
       DevSandbox:
-        params: DevSandbox --timeout 20
+        params: https://github.com/OPS-E2E-PPE/DevSandbox --timeout 20
       docs-help-pr:
         params: >
-          docs-help-pr --branch develop --build-type PullRequest
+          docs-help-pr --build-type PullRequest
           --pull-request-url https://github.com/yufeih/docs-help-pr --pull-request-branch patch-1
           --timeout 30
       azure-docs-pr:
-        params: azure-docs-pr --timeout 150
+        params: https://github.com/OPS-E2E-PPE/azure-docs-pr --timeout 150
       Dynamics-365-Operations:
-        params: Dynamics-365-Operations --timeout 65
+        params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --timeout 65
       SCCMDocs-pr:
-        params: SCCMDocs-pr --branch live --timeout 30
+        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr --branch live --timeout 30
       SCCMDocs-pr.zh-cn:
-        params: SCCMDocs-pr.zh-cn --branch live-sxs --locale zh-cn --timeout 30
+        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch live-sxs --locale zh-cn --timeout 30
       office-dev-O365API:
-        params: office-dev-O365API --timeout 20
+        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
       mc-docs-pr:
-        params: mc-docs-pr --timeout 70
+        params: https://github.com/opse2epr/mc-docs-pr --timeout 70
       ATADocs-pr:
-        params: ATADocs-pr --timeout 25
+        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --timeout 25
 
   steps:
   # Checkout
