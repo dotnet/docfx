@@ -264,33 +264,14 @@ inputs:
     Link to @a?displayProperty=fullName
     Link to @a??displayProperty=fullName
     Link to <xref:a?displayProperty=notExisting>
-  _themes/ContentTemplate/schemas/TestData.schema.json:  |
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "name": {
-          "type": "string"
-        },
-        "fullName": {
-           "type": "string"
-        },
-        "description": {
-           "type": "string"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        }
+        "uid": { "contentType": "uid" },
+        "fullName": { "type": "string" },
+        "name": { "type": "string" }
       },
-      "xrefProperties": [
-        "name",
-        "fullName",
-        "description"
-       ]
+      "xrefProperties": ["name", "fullName", "description"]
     }
 outputs:
   docs/c.json: | 
@@ -335,18 +316,10 @@ repos:
             "uid": "a"
           }
         docs/c.md: Link to @a
-        _themes/ContentTemplate/schemas/TestData.schema.json:  |
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
-            "type": "object",
-            "additionalProperties": false,
             "properties": {
-              "uid": {
-                "type": "string",
-                "contentType": "uid"
-              },
-              "$schema": {
-                "type": "string"
-              }
+              "uid": { "contentType": "uid" }
             }
           }
 outputs:
@@ -382,32 +355,14 @@ repos:
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "name": {
-                "type": "string"
-              },
-              "fullName": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "uid": {
-                "type": "string",
-                "contentType": "uid"
-              },
-              "$schema": {
-                "type": "string"
-              },
-              "xref": {
-                "type": "string",
-                "contentType": "Xref"
-              }
+              "uid": { "contentType": "uid" },
+              "xref": { "contentType": "Xref" },
+              "name": { "type": "string" },
+              "fullName": { "type": "string" },
+              "description": { "type": "string" },
+              "$schema": { "type": "string" }
             },
-            "xrefProperties": [
-              "name",
-              "fullName",
-              "description"
-            ]
+            "xrefProperties": ["name", "fullName", "description"]
           }
 outputs:
   docs/a.json:
@@ -452,37 +407,13 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "xref": "a"
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json:  |
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "name": {
-          "type": "string"
-        },
-        "fullName": {
-           "type": "string"
-        },
-        "description": {
-           "type": "string"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        },
-        "xref": {
-           "type": "string",
-           "contentType": "Xref"
-        },
+        "uid": { "contentType": "uid" },
+        "xref": { "contentType": "Xref" }
       },
-      "xrefProperties": [
-        "name",
-        "fullName",
-        "description"
-       ]
+      "xrefProperties": ["name", "fullName", "description"]
     }
 outputs:
   docs/b.json: | 
@@ -516,29 +447,15 @@ inputs:
   docs/b.md: Link to @a.b
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties":false,
       "properties": {
-        "uid": {
-          "type": "string",
-          "contentType": "uid"
-        },
-        "description": {
-          "type": "string"
-        },
-        "data": {
-          "$ref": "#"
-        },
+        "uid": { "contentType": "uid" },
+        "description": { "type": "string" },
+        "data": { "$ref": "#" },
         "array": {
-          "type": "array",
-          "items": {
-            "$ref": "#"
-          }
+          "items": { "$ref": "#" }
         }
       },
-      "xrefProperties":[
-        "description"
-      ]
+      "xrefProperties":["description"]
     }
 outputs:
   docs/a.json:
@@ -589,25 +506,12 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "xref": "a"
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json:  |
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "data": {
-           "$ref": "#"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        },
-        "xref": {
-           "type": "string",
-           "contentType": "Xref"
-        },
+        "data": { "$ref": "#" },
+        "uid": { "contentType": "uid" },
+        "xref": { "contentType": "Xref" }
       }
     }
 outputs:
@@ -634,21 +538,11 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "b"
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json:  |
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "data": {
-           "$ref": "#"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        }
+        "data": { "$ref": "#" },
+        "uid": { "contentType": "uid" }
       }
     }
 outputs:
@@ -666,26 +560,13 @@ inputs:
       "uid": "a",
       "summary": "    Hello `docfx`!"
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json:  |
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "summary": {
-           "type": "string",
-           "contentType": "Markdown"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        }
+        "summary": { "contentType": "Markdown" },
+        "uid": { "contentType": "uid" }
       },
-      "xrefProperties": [
-        "summary"
-      ]
+      "xrefProperties": ["summary"]
     }
 outputs:
   docs/a.json:
@@ -703,24 +584,11 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "inlineDescription": {
-           "type": "string",
-           "contentType": "InlineMarkdown"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        }
+        "inlineDescription": { "contentType": "InlineMarkdown" },
+        "uid": { "contentType": "uid" }
       },
-      "xrefProperties": [
-        "inlineDescription"
-      ]
+      "xrefProperties": [ "inlineDescription" ]
     }
 outputs:
   docs/a.json:
@@ -740,24 +608,11 @@ inputs:
     Hello `docfx`!
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "inlineDescription": {
-           "type": "string",
-           "contentType": "InlineMarkdown"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        }
+        "inlineDescription": { "contentType": "InlineMarkdown" },
+        "uid": { "contentType": "uid" }
       },
-      "xrefProperties": [
-        "inlineDescription"
-      ]
+      "xrefProperties": ["inlineDescription"]
     }
 outputs:
   docs/a.json:
@@ -1013,35 +868,18 @@ inputs:
       "inlineDescription": "description for b",
       "summary": "Link to @a",
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json:  |
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "summary": {
-           "type": "string",
-           "contentType": "Markdown"
-        },
-        "inlineDescription": {
-           "type": "string",
-           "contentType": "InlineMarkdown"
-        },
-        "uid": {
-           "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        },
-        "name": {
-           "type": "string"
-        }
+        "summary": { "contentType": "Markdown" },
+        "inlineDescription": { "contentType": "InlineMarkdown" },
+        "uid": { "contentType": "uid" },
+        "name": { "type": "string" },
+        "$schema": { "type": "string" }
       },
-      "xrefProperties": [
-        "name",
-        "summary",
-        "inlineDescription"
-       ]
+      "xrefProperties": ["name", "summary", "inlineDescription"]
     }
 outputs:
   docs/a.json: |
@@ -1155,53 +993,25 @@ repos:
           Link to @children.c?displayProperty=child.c
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
-            "type": "object",
-            "additionalProperties":false,
             "definitions": {
               "testChild": {
-                "type": "object",
                 "properties": {
-                  "a": {
-                    "type": "string"
-                  },
-                  "b": {
-                    "type": "string"
-                  },
-                  "uid": {
-                    "type": "string",
-                    "contentType": "uid"
-                  },
-                  "child.c": {
-                    "type": "string"
-                  }
+                  "a": { "type": "string" },
+                  "child.c": { "type": "string" },
+                  "uid": { "contentType": "uid" }
                 },
-                "xrefProperties":[
-                  "a",
-                  "child.c"
-                ]
+                "xrefProperties":["a", "child.c"]
               }
             },
             "properties": {
-              "description": {
-                "type": "string"
-              },
-              "uid": {
-                "type": "string",
-                "contentType": "uid"
-              },
-              "child": {
-                "$ref": "#/definitions/testChild"
-              },
+              "description": { "type": "string" },
+              "uid": { "contentType": "uid" },
+              "child": { "$ref": "#/definitions/testChild" },
               "children": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/testChild"
-                }
+                "items": { "$ref": "#/definitions/testChild" }
               }
             },
-            "xrefProperties":[
-              "description"
-            ]
+            "xrefProperties":["description"]
           }
 outputs:
   docs/a.json:
@@ -1304,52 +1114,27 @@ repos:
                 - "3.0"
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
-            "type": "object",
-            "additionalProperties":false,
             "definitions": {
               "testChild": {
-                "type": "object",
                 "properties": {
-                  "uid": {
-                    "type": "string",
-                    "contentType": "uid"
-                  },
-                  "list": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
+                  "uid": { "contentType": "uid" },
+                  "list": { "items": { "type": "string" }
                   }
                 },
-                "xrefProperties": [
-                  "list"
-                ]
+                "xrefProperties": ["list"]
               }
             },
             "properties": {
-              "uid": {
-                "type": "string",
-                "contentType": "uid"
-              },
-              "child": {
-                "$ref": "#/definitions/testChild"
-              },
-              "children": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/testChild"
-                }
+              "uid": { "contentType": "uid" },
+              "child": { "$ref": "#/definitions/testChild" },
+              "children": { 
+                "items": { "$ref": "#/definitions/testChild" }
               },
               "list": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
+                "items": { "type": "string" }
               }
             },
-            "xrefProperties":[
-              "list"
-            ]
+            "xrefProperties":["list"]
           }
 outputs:
   docs/a.json:

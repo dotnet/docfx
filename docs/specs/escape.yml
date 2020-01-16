@@ -136,31 +136,11 @@ inputs:
     Link to <xref:a%2A>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "name": {
-           "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "uid": {
-          "type": "string",
-           "contentType": "uid"
-        },
-        "$schema": {
-           "type": "string"
-        }
+        "uid": { "contentType": "uid" },
+        "description": { "type": "string" }
       },
-      "xrefProperties": [
-        "name",
-        "fullName",
-        "description"
-      ]
+      "xrefProperties": ["name", "fullName", "description"]
     }
 outputs:
   a.json:
