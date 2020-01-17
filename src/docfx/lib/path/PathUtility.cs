@@ -11,6 +11,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -29,7 +31,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Finds a yaml or json file under the specified location
         /// </summary>
-        public static string FindYamlOrJson(string directory, string fileNameWithoutExtension)
+        public static string? FindYamlOrJson(string directory, string fileNameWithoutExtension)
         {
             var pathWithoutExtension = Path.Combine(directory, fileNameWithoutExtension);
             var fullPath = NormalizeFile(pathWithoutExtension + ".yml");
@@ -106,7 +108,7 @@ namespace Microsoft.Docs.Build
         public static string NormalizeFile(string path)
         {
             path = Normalize(path);
-            return path.EndsWith('/') ? path.Substring(0, path.Length - 1) : path;
+            return path.EndsWith('/') ? path[0..^1] : path;
         }
 
         /// <summary>
@@ -162,7 +164,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (path[path.Length - 1] == '/' && res.Length > 0 && res[res.Length - 1] != '/')
+            if (path[^1] == '/' && res.Length > 0 && res[res.Length - 1] != '/')
             {
                 res.Append('/');
             }

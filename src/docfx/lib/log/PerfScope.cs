@@ -4,6 +4,8 @@
 using System;
 using System.Diagnostics;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal struct PerfScope : IDisposable

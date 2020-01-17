@@ -4,14 +4,16 @@
 using System;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(BasePathJsonConverter))]
     internal readonly struct BasePath
     {
-        private readonly string _original;
+        private readonly string? _original;
 
-        private readonly string _relativePath;
+        private readonly string? _relativePath;
 
         public string Original => _original ?? "/";
 
@@ -24,19 +26,19 @@ namespace Microsoft.Docs.Build
             _relativePath = value.StartsWith('/') ? value.TrimStart('/') : value;
         }
 
-        public override string ToString() => _original;
+        public override string? ToString() => _original;
 
         private class BasePathJsonConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType) => objectType == typeof(PathString);
 
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
             {
                 var value = serializer.Deserialize<string>(reader);
-                return new BasePath(value);
+                return value is null ? default : new BasePath(value);
             }
 
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
                 => throw new NotSupportedException();
         }
     }
