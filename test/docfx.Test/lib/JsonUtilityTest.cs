@@ -450,7 +450,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{}{}")]
         public void TestDeserializeJsonWithCheckAddionalContent(string json)
         {
-            Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(json, new FilePath("path"), true));
+            Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), true));
         }
 
         [Theory]
@@ -458,7 +458,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{}{}")]
         public void TestDeserializeJsonWithoutCheckAddionalContent(string json)
         {
-            var result = JsonUtility.Deserialize<ClassWithSourceInfo>(json, new FilePath("path"), false);
+            var result = JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), false);
             Assert.NotNull(result);
         }
 

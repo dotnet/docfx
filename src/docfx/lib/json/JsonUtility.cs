@@ -115,17 +115,17 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json, FilePath file, bool checkAddionalContent = true) where T : class, new()
+        public static T Deserialize<T>(string json, FilePath file) where T : class, new()
         {
             using var reader = new StringReader(json);
-            return Deserialize<T>(reader, file, checkAddionalContent);
+            return Deserialize<T>(reader, file, true);
         }
 
         /// <summary>
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader json, FilePath file, bool checkAddionalContent = true) where T : class, new()
+        public static T Deserialize<T>(TextReader json, FilePath file, bool checkAdditionalContent = true) where T : class, new()
         {
             using var reader = new JsonTextReader(json);
             try
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
 
                 t_status.Value.Push(status);
 
-                return (checkAddionalContent
+                return (checkAdditionalContent
                     ? s_serializerCheckingAddional.Deserialize<T>(reader)
                     : s_serializer.Deserialize<T>(reader))
                     ?? new T();
