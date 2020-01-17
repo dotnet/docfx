@@ -204,7 +204,7 @@ jobs:
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
-      INTEGRATION_TEST_ROOT: D:/
+      INTEGRATION_TEST_ROOT: D:/docs-pipeline.integration-test.test-data
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
