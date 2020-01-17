@@ -118,42 +118,41 @@ namespace Microsoft.DocAsCode.Common
         {
             int exitCode;
             using (var outputStream = new MemoryStream())
-            using (var errorStream = new MemoryStream())
             {
-                using (var outputStreamWriter = new StreamWriter(outputStream))
-                using (var errorStreamWriter = new StreamWriter(errorStream))
+                using var errorStream = new MemoryStream();
+                using var outputStreamWriter = new StreamWriter(outputStream);
+                using var errorStreamWriter = new StreamWriter(errorStream);
+                if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
                 {
-                    if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+                    exitCode = RunCommand(new CommandInfo
                     {
-                        exitCode = RunCommand(new CommandInfo
-                        {
-                            // type is a bash command, hence should be an argument to 'bash'
-                            Name = "bash",
-                            Arguments = $"-c \"type {commandName}\""
-                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 60000);
-                    }
-                    else
-                    {
-                        exitCode = RunCommand(new CommandInfo
-                        {
-                            Name = "where",
-                            Arguments = commandName
-                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 60000);
-                    }
-
-                    // writer streams have to be flushed before reading from memory streams
-                    // make sure that streamwriter is not closed before reading from memory stream
-                    outputStreamWriter.Flush();
-                    errorStreamWriter.Flush();
-
-                    var outputString = System.Text.Encoding.UTF8.GetString(outputStream.ToArray());
-                    var errorString = System.Text.Encoding.UTF8.GetString(errorStream.ToArray());
-
-                    // Allow caller to decide what to do with the output and error logs 
-                    processOutput?.Invoke(outputString);
-                    processError?.Invoke(errorString);
+                        // type is a bash command, hence should be an argument to 'bash'
+                        Name = "bash",
+                        Arguments = $"-c \"type {commandName}\""
+                    }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 60000);
                 }
+                else
+                {
+                    exitCode = RunCommand(new CommandInfo
+                    {
+                        Name = "where",
+                        Arguments = commandName
+                    }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 60000);
+                }
+
+                // writer streams have to be flushed before reading from memory streams
+                // make sure that streamwriter is not closed before reading from memory stream
+                outputStreamWriter.Flush();
+                errorStreamWriter.Flush();
+
+                var outputString = System.Text.Encoding.UTF8.GetString(outputStream.ToArray());
+                var errorString = System.Text.Encoding.UTF8.GetString(errorStream.ToArray());
+
+                // Allow caller to decide what to do with the output and error logs 
+                processOutput?.Invoke(outputString);
+                processError?.Invoke(errorString);
             }
+
             return exitCode == 0;
         }
     }

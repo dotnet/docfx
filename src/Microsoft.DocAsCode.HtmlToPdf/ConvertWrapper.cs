@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
             else
             {
-                Logger.LogWarning($"No TOC file is included, no PDF file will be generated.");
+                Logger.LogWarning("No TOC file is included, no PDF file will be generated.");
                 return;
             }
 
@@ -190,10 +190,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
             using (var fileStream = new FileStream(Path.Combine(_pdfOptions.DestDirectory, _pdfOptions.PdfDocsetName + FileExtensions.JsonExtension), FileMode.Create, FileAccess.Write))
             {
-                using (var ws = new StreamWriter(fileStream))
-                {
-                    JsonUtility.Serialize(ws, pdfInformations);
-                }
+                using var ws = new StreamWriter(fileStream);
+                JsonUtility.Serialize(ws, pdfInformations);
             }
 
             if (_pdfOptions.GenerateAppendices)
@@ -237,7 +235,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             return manifest.Files.SingleOrDefault(f =>
             {
                 return FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(Path.GetDirectoryName(f.SourceRelativePath), Path.GetDirectoryName(tocFile.SourceRelativePath))
-                    && (string.Compare("cover.md", Path.GetFileName(f.SourceRelativePath), ignoreCase: true) == 0);
+                    && string.Equals("cover.md", Path.GetFileName(f.SourceRelativePath), StringComparison.OrdinalIgnoreCase);
             });
         }
 
@@ -245,7 +243,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             var htmlFiles = Directory.GetFiles(fullPath, HtmlFilePattern, SearchOption.AllDirectories);
 
-            ITransformer transformer = new FrameTransformer();
+            var transformer = new FrameTransformer();
             transformer.Transform(htmlFiles);
         }
 
@@ -253,14 +251,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             if (_pdfOptions.NeedGeneratePdfExternalLink)
             {
-                ITransformer transformer = new HtmlNotInTocTransformer(basePath, manifestUrlCache, _pdfOptions);
+                var transformer = new HtmlNotInTocTransformer(basePath, manifestUrlCache, _pdfOptions);
                 transformer.Transform(tocHtmls.Distinct());
             }
         }
 
         private void RemoveQueryStringAndBookmarkTransformer(string tocPageFilePath)
         {
-            ITransformer transformer = new RemoveQueryStringTransformer();
+            var transformer = new RemoveQueryStringTransformer();
             transformer.Transform(new List<string> { tocPageFilePath });
         }
 
@@ -268,7 +266,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             if (_pdfOptions.NeedGeneratePdfExternalLink)
             {
-                ITransformer transformer = new AbsolutePathInTocPageFileTransformer(_pdfOptions);
+                var transformer = new AbsolutePathInTocPageFileTransformer(_pdfOptions);
                 transformer.Transform(new List<string> { tocPage });
             }
         }

@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public IEnumerable<DependencyType> GetDependencyTypesToRegister() => new[]
         {
-            new DependencyType()
+            new DependencyType
             {
                 Name = DependencyTypeName.Reference,
                 Phase = BuildPhase.Link,

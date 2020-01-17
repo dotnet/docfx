@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var id = VisitorHelper.GetId(symbol);
 
-            ReferenceItem reference = new ReferenceItem()
+            ReferenceItem reference = new ReferenceItem
             {
                 Parts = new SortedList<SyntaxLanguage, List<LinkItem>>(),
                 IsDefinition = symbol.IsDefinition,
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (!references.TryGetValue(id, out ReferenceItem reference))
             {
                 // Add id to reference dictionary
-                references[id] = new ReferenceItem() { CommentId = commentId };
+                references[id] = new ReferenceItem { CommentId = commentId };
             }
 
             return id;
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             string uidBody = VisitorHelper.GetOverloadIdBody(symbol);
 
-            ReferenceItem reference = new ReferenceItem()
+            ReferenceItem reference = new ReferenceItem
             {
                 Parts = new SortedList<SyntaxLanguage, List<LinkItem>>(),
                 IsDefinition = true,
@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingSymbol?.MetadataName}.");
             }
-            ReferenceItem reference = new ReferenceItem()
+            ReferenceItem reference = new ReferenceItem
             {
                 Parts = new SortedList<SyntaxLanguage, List<LinkItem>>()
             };

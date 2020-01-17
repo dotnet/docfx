@@ -217,7 +217,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (!TryMatchIdentifier(ref slice, out var attributeName))
                 {
-                    logError($"Invalid attribute.");
+                    logError("Invalid attribute.");
                     return false;
                 }
                 if (attributes.ContainsKey(attributeName))

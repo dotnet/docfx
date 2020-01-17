@@ -71,23 +71,21 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private async Task<List<XRefSpec>> ResolveCoreAsync(string url)
         {
-            using (var stream = await _client.GetStreamAsync(url))
-            using (var sr = new StreamReader(stream))
+            using var stream = await _client.GetStreamAsync(url);
+            using var sr = new StreamReader(stream);
+            var xsList = JsonUtility.Deserialize<List<Dictionary<string, object>>>(sr);
+            return xsList.ConvertAll(item =>
             {
-                var xsList = JsonUtility.Deserialize<List<Dictionary<string, object>>>(sr);
-                return xsList.ConvertAll(item =>
+                var spec = new XRefSpec();
+                foreach (var pair in item)
                 {
-                    var spec = new XRefSpec();
-                    foreach (var pair in item)
+                    if (pair.Value is string s)
                     {
-                        if (pair.Value is string s)
-                        {
-                            spec[pair.Key] = s;
-                        }
+                        spec[pair.Key] = s;
                     }
-                    return spec;
-                });
-            }
+                }
+                return spec;
+            });
         }
     }
 }

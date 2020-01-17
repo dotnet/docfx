@@ -56,8 +56,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                         // fetch operations from metadata
                         if (OperationNames.Contains(op.Key, StringComparer.OrdinalIgnoreCase))
                         {
-                            var opJObject = op.Value as JObject;
-                            if (opJObject == null)
+                            if (!(op.Value is JObject opJObject))
                             {
                                 throw new InvalidOperationException($"Value of {op.Key} should be JObject");
                             }

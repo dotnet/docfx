@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                     {
                         if (!references.TryGetValue(type, out ReferenceViewModel reference))
                         {
-                            reference = references[type] = new ReferenceViewModel() { Uid = type };
+                            reference = references[type] = new ReferenceViewModel { Uid = type };
                         }
 
                         model.Item2.References.Add(reference);

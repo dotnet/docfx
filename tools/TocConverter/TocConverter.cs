@@ -33,11 +33,9 @@ namespace Microsoft.DocAsCode.Tools.TocConverter
 
         private static void ConvertCore(string tocMarkdownFilePath, string tocYmlPath)
         {
-            using (var sr = new StreamReader(tocMarkdownFilePath))
-            {
-                var tocModel = MarkdownTocReader.LoadToc(sr.ReadToEnd(), tocMarkdownFilePath);
-                YamlUtility.Serialize(tocYmlPath, tocModel);
-            }
+            using var sr = new StreamReader(tocMarkdownFilePath);
+            var tocModel = MarkdownTocReader.LoadToc(sr.ReadToEnd(), tocMarkdownFilePath);
+            YamlUtility.Serialize(tocYmlPath, tocModel);
         }
     }
 }

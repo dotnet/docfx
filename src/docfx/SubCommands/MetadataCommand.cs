@@ -69,12 +69,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
                     // TODO: Use plugin to generate metadata for files with different extension?
-                    using (var worker = new ExtractMetadataWorker(inputModel))
-                    {
-                        // Use task.run to get rid of current context (causing deadlock in xunit)
-                        var task = Task.Run(worker.ExtractMetadataAsync);
-                        task.Wait();
-                    }
+                    using var worker = new ExtractMetadataWorker(inputModel);
+                    // Use task.run to get rid of current context (causing deadlock in xunit)
+                    var task = Task.Run(worker.ExtractMetadataAsync);
+                    task.Wait();
                 }
 
                 VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;

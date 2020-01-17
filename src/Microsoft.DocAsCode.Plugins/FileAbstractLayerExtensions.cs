@@ -14,24 +14,20 @@ namespace Microsoft.DocAsCode.Plugins
 
         public static string ReadAllText(this IFileAbstractLayer fal, string file)
         {
-            using (var reader = OpenReadText(fal, file))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = OpenReadText(fal, file);
+            return reader.ReadToEnd();
         }
 
         public static string[] ReadAllLines(this IFileAbstractLayer fal, string file)
         {
-            using (var reader = OpenReadText(fal, file))
+            using var reader = OpenReadText(fal, file);
+            string line;
+            var list = new List<string>();
+            while ((line = reader.ReadLine()) !=null)
             {
-                string line;
-                var list = new List<string>();
-                while ((line = reader.ReadLine()) !=null)
-                {
-                    list.Add(line);
-                }
-                return list.ToArray();
+                list.Add(line);
             }
+            return list.ToArray();
         }
 
         public static StreamWriter CreateText(this IFileAbstractLayer fal, string file) =>
@@ -39,10 +35,8 @@ namespace Microsoft.DocAsCode.Plugins
 
         public static void WriteAllText(this IFileAbstractLayer fal, string file, string content)
         {
-            using (var writer = CreateText(fal, file))
-            {
-                writer.Write(content);
-            }
+            using var writer = CreateText(fal, file);
+            writer.Write(content);
         }
 
         public static bool HasProperty(this IFileAbstractLayer fal, string file, string propertyName)

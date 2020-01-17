@@ -40,8 +40,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             public void Validate(IMarkdownToken token)
             {
-                var t = token as TToken;
-                if (t != null)
+                if (token is TToken t)
                 {
                     Validator(t);
                 }

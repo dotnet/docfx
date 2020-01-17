@@ -334,46 +334,38 @@ namespace Microsoft.DocAsCode.Common.Git
                 throw new ArgumentException($"Can't find repo: {repoPath}");
             }
 
-            using (var outputStream = new MemoryStream())
-            using (var errorStream = new MemoryStream())
+            using var outputStream = new MemoryStream();
+            using var errorStream = new MemoryStream();
+            int exitCode;
+
+            using var outputStreamWriter = new StreamWriter(outputStream, encoding, bufferSize, true);
+            using var errorStreamWriter = new StreamWriter(errorStream, encoding, bufferSize, true);
+            exitCode = CommandUtility.RunCommand(new CommandInfo
             {
-                int exitCode;
+                Name = CommandName,
+                Arguments = arguments,
+                WorkingDirectory = repoPath,
+            }, outputStreamWriter, errorStreamWriter, GitTimeOut);
 
-                using (var outputStreamWriter = new StreamWriter(outputStream, encoding, bufferSize, true))
-                using (var errorStreamWriter = new StreamWriter(errorStream, encoding, bufferSize, true))
+            // writer streams have to be flushed before reading from memory streams
+            // make sure that streamwriter is not closed before reading from memory stream
+            outputStreamWriter.Flush();
+            errorStreamWriter.Flush();
+
+            if (exitCode != 0)
+            {
+                errorStream.Position = 0;
+                using var errorStreamReader = new StreamReader(errorStream, encoding, false, bufferSize, true);
+                ProcessErrorMessage(errorStreamReader.ReadToEnd());
+            }
+            else
+            {
+                outputStream.Position = 0;
+                using var streamReader = new StreamReader(outputStream, encoding, false, bufferSize, true);
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
                 {
-                    exitCode = CommandUtility.RunCommand(new CommandInfo
-                    {
-                        Name = CommandName,
-                        Arguments = arguments,
-                        WorkingDirectory = repoPath,
-                    }, outputStreamWriter, errorStreamWriter, GitTimeOut);
-
-                    // writer streams have to be flushed before reading from memory streams
-                    // make sure that streamwriter is not closed before reading from memory stream
-                    outputStreamWriter.Flush();
-                    errorStreamWriter.Flush();
-
-                    if (exitCode != 0)
-                    {
-                        errorStream.Position = 0;
-                        using (var errorStreamReader = new StreamReader(errorStream, encoding, false, bufferSize, true))
-                        {
-                            ProcessErrorMessage(errorStreamReader.ReadToEnd());
-                        }
-                    }
-                    else
-                    {
-                        outputStream.Position = 0;
-                        using (var streamReader = new StreamReader(outputStream, encoding, false, bufferSize, true))
-                        {
-                            string line;
-                            while ((line = streamReader.ReadLine()) != null)
-                            {
-                                processOutput(line);
-                            }
-                        }
-                    }
+                    processOutput(line);
                 }
             }
         }

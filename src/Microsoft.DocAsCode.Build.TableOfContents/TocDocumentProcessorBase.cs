@@ -77,10 +77,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private TocItemViewModel ConvertFromObject(object model)
         {
-            using (var jr = new IgnoreStrongTypeObjectJsonReader(model))
-            {
-                return JsonUtility.DefaultSerializer.Value.Deserialize<TocItemViewModel>(jr);
-            }
+            using var jr = new IgnoreStrongTypeObjectJsonReader(model);
+            return JsonUtility.DefaultSerializer.Value.Deserialize<TocItemViewModel>(jr);
         }
 
         private object ConvertToObject(TocItemViewModel model)

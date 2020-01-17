@@ -490,7 +490,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Logger.Log(LogLevel.Verbose, $"Successfully generated metadata {cacheOutputFolder} for {projectMetadata.Name}");
 
             // Save to cache
-            projectLevelCache.SaveToCache(key.Key, key.Files, triggeredTime, cacheOutputFolder, new List<string>() { file }, key.Options);
+            projectLevelCache.SaveToCache(key.Key, key.Files, triggeredTime, cacheOutputFolder, new List<string> { file }, key.Options);
 
             return Tuple.Create(projectMetadata, rebuildProject);
         }
@@ -708,11 +708,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             projectMetadata = null;
             try
             {
-                using (StreamReader reader = new StreamReader(metadataFileName))
-                {
-                    projectMetadata = YamlUtility.Deserialize<MetadataItem>(reader);
-                    return true;
-                }
+                using StreamReader reader = new StreamReader(metadataFileName);
+                projectMetadata = YamlUtility.Deserialize<MetadataItem>(reader);
+                return true;
             }
             catch (Exception e)
             {

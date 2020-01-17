@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static MetadataItem ShrinkToSimpleToc(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem()
+            MetadataItem shrinkedItem = new MetadataItem
             {
                 Name = item.Name,
                 DisplayNames = item.DisplayNames,
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem()
+            MetadataItem shrinkedItem = new MetadataItem
             {
                 Name = item.Name,
                 DisplayNames = item.DisplayNames,

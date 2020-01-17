@@ -273,7 +273,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);
 
-                var topicHref = new List<string>()
+                var topicHref = new List<string>
                 {
                     model.Items[0].Items[0].Items[0].TopicHref,
                     model.Items[0].Items[1].TopicHref,
@@ -299,10 +299,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 TemplateManager = _templateManager
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            builder.Build(parameters);
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()

@@ -416,7 +416,7 @@ We should support that.</p>
             var source = @"# Article 2
 > [!VIDEO https://microsoft.com:8080?query=value+A#bookmark]
 ";
-            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+            var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://microsoft.com:8080/?query=value+A#bookmark"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
             TestUtility.VerifyMarkup(source, expected);
@@ -429,7 +429,7 @@ We should support that.</p>
             var source = @"# Article 2
 > [!VIDEO https://channel9.msdn.com]
 ";
-            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+            var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
             TestUtility.VerifyMarkup(source, expected);
@@ -442,7 +442,7 @@ We should support that.</p>
             var source = @"# Article 2
 > [!VIDEO https://channel9.msdn.com?query=value+A]
 ";
-            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+            var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?query=value+A&nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
             TestUtility.VerifyMarkup(source, expected);
@@ -455,7 +455,7 @@ We should support that.</p>
             var source = @"# Article 2
 > [!VIDEO https://youtube.com/foo]
 ";
-            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+            var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://www.youtube-nocookie.com/foo"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
             TestUtility.VerifyMarkup(source, expected);

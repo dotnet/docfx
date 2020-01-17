@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public IEnumerable<DependencyType> GetDependencyTypesToRegister() => new[]
         {
-            new DependencyType()
+            new DependencyType
             {
                 Name = DependencyTypeName.Children,
                 Phase = BuildPhase.Link,
@@ -82,10 +82,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return;
             }
 
-            using (var reader = new StreamReader(stream))
-            {
-                _lastContextInfo = JsonUtility.Deserialize<IEnumerable<SourceInfo>>(reader);
-            }
+            using var reader = new StreamReader(stream);
+            _lastContextInfo = JsonUtility.Deserialize<IEnumerable<SourceInfo>>(reader);
         }
 
         public void SaveContext(Stream stream)
@@ -94,10 +92,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 return;
             }
-            using (var writer = new StreamWriter(stream))
-            {
-                JsonUtility.Serialize(writer, _items.Values);
-            }
+
+            using var writer = new StreamWriter(stream);
+            JsonUtility.Serialize(writer, _items.Values);
         }
 
         #endregion

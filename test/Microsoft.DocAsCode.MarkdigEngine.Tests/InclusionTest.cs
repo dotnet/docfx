@@ -475,7 +475,7 @@ markdown token1.md content end.";
             var marked = service.Markup("place", "holder");
             var dependency = marked.Dependency;
 
-            Assert.Equal($@"<p>1markdown root.md main content start.</p>
+            Assert.Equal(@"<p>1markdown root.md main content start.</p>
 <p>1markdown a.md main content start.</p>
 <p>1markdown token1.md content start.</p>
 <p><strong>1markdown token2.md main content</strong></p>

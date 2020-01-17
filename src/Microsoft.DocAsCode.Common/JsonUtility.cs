@@ -33,37 +33,29 @@ namespace Microsoft.DocAsCode.Common
 
         public static string Serialize(object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
-            using (StringWriter writer = new StringWriter())
-            {
-                Serialize(writer, graph, formatting, serializer);
-                return writer.ToString();
-            }
+            using StringWriter writer = new StringWriter();
+            Serialize(writer, graph, formatting, serializer);
+            return writer.ToString();
         }
 
         public static void Serialize(string path, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
-            using (var stream = EnvironmentContext.FileAbstractLayer.Create(path))
-            using (StreamWriter writer = new StreamWriter(stream))
-            {
-                Serialize(writer, graph, formatting, serializer);
-            }
+            using var stream = EnvironmentContext.FileAbstractLayer.Create(path);
+            using StreamWriter writer = new StreamWriter(stream);
+            Serialize(writer, graph, formatting, serializer);
         }
 
         public static T Deserialize<T>(string path, JsonSerializer serializer = null)
         {
-            using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(path))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                return Deserialize<T>(reader, serializer);
-            }
+            using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(path);
+            using StreamReader reader = new StreamReader(stream);
+            return Deserialize<T>(reader, serializer);
         }
 
         public static T Deserialize<T>(TextReader reader, JsonSerializer serializer = null)
         {
-            using (JsonReader json = new JsonTextReader(reader))
-            {
-                return (serializer ?? DefaultSerializer.Value).Deserialize<T>(json);
-            }
+            using JsonReader json = new JsonTextReader(reader);
+            return (serializer ?? DefaultSerializer.Value).Deserialize<T>(json);
         }
 
         public static string ToJsonString(this object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)

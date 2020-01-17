@@ -192,11 +192,9 @@ namespace Microsoft.DocAsCode.YamlSerialization
             object result = null;
             if (!parser.Accept<DocumentEnd>() && !parser.Accept<StreamEnd>())
             {
-                using (var state = new SerializerState())
-                {
-                    result = deserializer.DeserializeValue(parser, type, state, deserializer);
-                    state.OnDeserialization();
-                }
+                using var state = new SerializerState();
+                result = deserializer.DeserializeValue(parser, type, state, deserializer);
+                state.OnDeserialization();
             }
 
             if (hasDocumentStart)

@@ -108,8 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentNullException(nameof(document));
             }
 
-            var filePath = document.GetData("filePath") as string;
-            if (filePath == null)
+            if (!(document.GetData("filePath") is string filePath))
             {
                 throw new ArgumentNullException("file path can't be found in AST.");
             }
@@ -117,8 +116,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var pipeline = CreateMarkdownPipeline(isInline, enableValidation: false);
 
             using (InclusionContext.PushFile((RelativePath)filePath))
-            using (var writer = new StringWriter())
             {
+                using var writer = new StringWriter();
                 var renderer = new HtmlRenderer(writer);
                 pipeline.Setup(renderer);
                 renderer.Render(document);
@@ -137,8 +136,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             object enableSourceInfoObj = null;
             _parameters?.Extensions?.TryGetValue("EnableSourceInfo", out enableSourceInfoObj);
 
-            var enabled = enableSourceInfoObj as bool?;
-            var enableSourceInfo = enabled == null || enabled.Value;
+            var enableSourceInfo = !(enableSourceInfoObj is bool enabled) || enabled;
 
             var builder = new MarkdownPipelineBuilder();
 

@@ -127,7 +127,7 @@ namespace Example
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
-                Source = new SourceDetail()
+                Source = new SourceDetail
                 {
                     Path = Path.Combine(inputFolder, "Source.cs"),
                 }
@@ -284,7 +284,7 @@ This is an example using source reference.
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
-                Source = new SourceDetail()
+                Source = new SourceDetail
                 {
                     Path = Path.Combine(inputFolder, "Source.cs"),
                 }

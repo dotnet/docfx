@@ -16,8 +16,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers
         {
             if (currentType == typeof(string) || currentType == typeof(object))
             {
-                var scalar = nodeEvent as Scalar;
-                if (scalar != null && scalar.IsPlainImplicit)
+                if (nodeEvent is Scalar scalar && scalar.IsPlainImplicit)
                 {
                     if (Regexes.BooleanLike.IsMatch(scalar.Value))
                     {

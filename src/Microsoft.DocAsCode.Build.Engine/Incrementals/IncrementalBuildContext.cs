@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var lastBuildStartTime = lb?.BuildStartTime;
             var buildInfoIncrementalStatus = GetBuildInfoIncrementalStatus(cb, lb, parameters.ForceRebuild);
             var lbv = lb?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName);
-            var cbv = new BuildVersionInfo()
+            var cbv = new BuildVersionInfo
             {
                 BaseDir = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir)),
                 VersionName = parameters.VersionName,
@@ -563,10 +563,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     continue;
                 }
-                using (var stream = File.OpenRead(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
-                {
-                    step.LoadContext(stream);
-                }
+
+                using var stream = File.OpenRead(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile));
+                step.LoadContext(stream);
             }
         }
 
@@ -593,10 +592,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     continue;
                 }
-                using (var stream = File.Create(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
-                {
-                    step.SaveContext(stream);
-                }
+
+                using var stream = File.Create(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile));
+                step.SaveContext(stream);
             }
         }
 

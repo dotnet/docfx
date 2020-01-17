@@ -250,10 +250,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 TemplateManager = _templateManager
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(enableTagLevel), ImmutableArray<string>.Empty, null))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(enableTagLevel), ImmutableArray<string>.Empty, null);
+            builder.Build(parameters);
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies(bool enableTagLevel)
