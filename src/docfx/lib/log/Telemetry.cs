@@ -17,10 +17,14 @@ namespace Microsoft.Docs.Build
     {
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
 
-        private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"));
-        private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildLog", "Code", "Level", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"));
-        private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"));
-        private static readonly Metric s_buildItemCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Count", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"));
+        // Set value per dimension limit to int.MaxValue
+        // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
+        private static readonly MetricConfiguration s_metricConfiguration = new MetricConfiguration(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
+
+        private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildLog", "Code", "Level", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_buildItemCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Count", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
