@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
+            options.NoFetch = true;
 
             using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
@@ -41,11 +42,11 @@ namespace Microsoft.Docs.Build
                 var locale = LocalizationUtility.GetLocale(repository);
 
                 var configLoader = new ConfigLoader(repository, errorLog);
-                (errors, config) = configLoader.Load(docsetPath, locale, options, noFetch: true);
+                (errors, config) = configLoader.Load(docsetPath, locale, options);
                 if (errorLog.Write(errors))
                     return false;
 
-                using var packageResolver = new PackageResolver(docsetPath, config, noFetch: true);
+                using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
                 var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
                 var repositoryProvider = new RepositoryProvider(docsetPath, repository, config, packageResolver, localizationProvider);
                 var input = new Input(docsetPath, repositoryProvider, localizationProvider);
@@ -100,7 +101,7 @@ namespace Microsoft.Docs.Build
             RepositoryProvider repositoryProvider,
             LocalizationProvider localizationProvider)
         {
-            using var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider);
+            using var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider, options.FetchOptions);
             context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 
             using (Progress.Start("Building files"))

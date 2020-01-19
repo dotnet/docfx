@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [SuppressMessage("Layout", "MEN002", Justification = "Suppress MEN002 for Errors.cs")]
@@ -378,7 +380,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error BookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out string matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
+            => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out var matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
         // Behavior: ✔️ Message: ❌
         public static Error NullArrayValue(SourceInfo source, string name)
@@ -625,7 +627,7 @@ namespace Microsoft.Docs.Build
 
         private static string Join<T>(IEnumerable<T> source)
         {
-            var formatSource = source.Select(item => item.ToString()).OrderBy(_ => _, StringComparer.Ordinal).Select(_ => $"'{_}'");
+            var formatSource = source.Select(item => $"'{item}'").OrderBy(_ => _, StringComparer.Ordinal);
             return $"{string.Join(", ", formatSource.Take(5))}{(formatSource.Count() > 5 ? "..." : "")}";
         }
 
@@ -641,7 +643,7 @@ namespace Microsoft.Docs.Build
         /// <returns>
         ///     if a match is found, return true and assign it to <paramref name="bestMatch"/>, otherwise return false.
         /// </returns>
-        private static bool FindBestMatch(string target, IEnumerable<string> candidates, out string bestMatch, int threshold = 5)
+        private static bool FindBestMatch(string target, IEnumerable<string> candidates, [NotNullWhen(true)] out string? bestMatch, int threshold = 5)
         {
             bestMatch = candidates != null ?
                     (from candidate in candidates
@@ -650,6 +652,7 @@ namespace Microsoft.Docs.Build
                      orderby levanshteinDistance, candidate
                      select candidate).FirstOrDefault()
                     : null;
+
             return !string.IsNullOrEmpty(bestMatch);
         }
     }

@@ -396,7 +396,7 @@ inputs:
 outputs:
   .errors.log: |
     ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs. Remove it from your file metadata.","docs/a.md",2,1]
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/a.md [redirection]'"]
+    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md [redirection]', 'docs/a.md'"]
 ---
 # Ignore redirection rules in .openpublishing.redirections.json if it doesn't belong to current docset
 repos:

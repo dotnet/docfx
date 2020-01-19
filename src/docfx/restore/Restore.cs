@@ -58,8 +58,8 @@ namespace Microsoft.Docs.Build
 
                     // download dependencies to disk
                     Parallel.Invoke(
-                        () => RestoreFiles(docsetPath, config, errorLog).GetAwaiter().GetResult(),
-                        () => RestorePackages(docsetPath, config, locale, repository));
+                        () => RestoreFiles(docsetPath, config, errorLog, options.FetchOptions).GetAwaiter().GetResult(),
+                        () => RestorePackages(docsetPath, config, locale, repository, options.FetchOptions));
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
@@ -75,16 +75,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task RestoreFiles(string docsetPath, Config config, ErrorLog errorLog)
+        private static async Task RestoreFiles(string docsetPath, Config config, ErrorLog errorLog, FetchOptions fetchOptions)
         {
             var credentialProvider = config.GetCredentialProvider();
-            var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider));
+            var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), fetchOptions);
             await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository)
+        private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository, FetchOptions fetchOptions)
         {
-            using var packageResolver = new PackageResolver(docsetPath, config);
+            using var packageResolver = new PackageResolver(docsetPath, config, fetchOptions);
             ParallelUtility.ForEach(
                 GetPackages(config, locale, repository).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags),

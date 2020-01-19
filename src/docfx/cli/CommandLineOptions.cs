@@ -12,10 +12,16 @@ namespace Microsoft.Docs.Build
         public bool Verbose;
         public bool DryRun;
         public bool Stdin;
+        public bool UseCache;
+        public bool NoFetch;
         public string Template;
         public int Port;
 
         public JObject StdinConfig;
+
+        public FetchOptions FetchOptions => NoFetch
+            ? FetchOptions.NoFetch
+            : (UseCache ? FetchOptions.UseCache : FetchOptions.None);
 
         public JObject ToJObject()
         {
