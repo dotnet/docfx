@@ -414,10 +414,7 @@ inputs:
       "properties": {
         "metadata": {
           "properties": {
-            "href": {
-              "type": "string",
-              "contentType": "Href"
-            }
+            "href": { "contentType": "Href" }
           }
         }
       }

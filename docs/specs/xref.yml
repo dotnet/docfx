@@ -249,7 +249,6 @@ outputs:
 # Resolve xref with non-existing display property, display name
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -265,6 +264,15 @@ inputs:
     Link to @a?displayProperty=fullName
     Link to @a??displayProperty=fullName
     Link to <xref:a?displayProperty=notExisting>
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "fullName": { "type": "string" },
+        "name": { "type": "string" }
+      },
+      "xrefProperties": ["name", "fullName", "description"]
+    }
 outputs:
   docs/c.json: | 
     {
@@ -297,7 +305,6 @@ repos:
   https://docs.com/define-duplciate-uid#master:
     - files:
         docfx.yml: |
-          template: {APP_BASE_PATH}data/template
           hostName: docs.com
           basePath: /base_path
         docs/a.yml: |
@@ -309,6 +316,12 @@ repos:
             "uid": "a"
           }
         docs/c.md: Link to @a
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "properties": {
+              "uid": { "contentType": "uid" }
+            }
+          }
 outputs:
   base_path/docs/a.json:
   base_path/docs/b.json: 
@@ -324,7 +337,6 @@ repos:
   https://docs.com/test-xref-sdp#live:
     - files:
         docfx.yml: |
-          template: {APP_BASE_PATH}data/template
         docs/a.json: |
           {
             "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -337,6 +349,17 @@ repos:
           {
             "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
             "xref": "a"
+          }
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "properties": {
+              "uid": { "contentType": "uid" },
+              "xref": { "contentType": "Xref" },
+              "name": { "type": "string" },
+              "fullName": { "type": "string" },
+              "description": { "type": "string" }
+            },
+            "xrefProperties": ["name", "fullName", "description"]
           }
 outputs:
   docs/a.json:
@@ -368,7 +391,6 @@ outputs:
 # Define uid with error
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -382,6 +404,14 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "xref": "a"
     }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "xref": { "contentType": "Xref" }
+      },
+      "xrefProperties": ["name", "fullName", "description"]
+    }
 outputs:
   docs/b.json: | 
     {"xref": null}
@@ -394,7 +424,6 @@ outputs:
 # support multiple uids in the same array in one SDP
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestData
     uid: a
@@ -413,6 +442,18 @@ inputs:
       - uid: a.c
         description: description for a.c
   docs/b.md: Link to @a.b
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "description": { "type": "string" },
+        "data": { "$ref": "#" },
+        "array": {
+          "items": { "$ref": "#" }
+        }
+      },
+      "xrefProperties":["description"]
+    }
 outputs:
   docs/a.json:
   docs/b.json: |
@@ -448,7 +489,6 @@ outputs:
 # uid conflict in one SDP
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -463,6 +503,14 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "xref": "a"
     }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "data": { "$ref": "#" },
+        "uid": { "contentType": "uid" },
+        "xref": { "contentType": "Xref" }
+      }
+    }
 outputs:
   docs/a.json:
   docs/b.json: |
@@ -473,7 +521,6 @@ outputs:
 # uid conflict in non-root level and another SDP
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -488,6 +535,13 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "b"
     }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "data": { "$ref": "#" },
+        "uid": { "contentType": "uid" }
+      }
+    }
 outputs:
   docs/a.json:
   docs/b.json:
@@ -497,12 +551,19 @@ outputs:
 # Xref property field which supports markdown content
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "a",
       "summary": "    Hello `docfx`!"
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "summary": { "contentType": "Markdown" },
+        "uid": { "contentType": "uid" }
+      },
+      "xrefProperties": ["summary"]
     }
 outputs:
   docs/a.json:
@@ -512,12 +573,19 @@ outputs:
 # Xref property field which supports inline markdown content
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "uid": "a",
       "inlineDescription": "    Hello `docfx`!"
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "inlineDescription": { "contentType": "InlineMarkdown" },
+        "uid": { "contentType": "uid" }
+      },
+      "xrefProperties": [ "inlineDescription" ]
     }
 outputs:
   docs/a.json:
@@ -527,7 +595,6 @@ outputs:
 # Xref property field with dependecy
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -536,6 +603,14 @@ inputs:
     }
   docs/b.md: |
     Hello `docfx`!
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "inlineDescription": { "contentType": "InlineMarkdown" },
+        "uid": { "contentType": "uid" }
+      },
+      "xrefProperties": ["inlineDescription"]
+    }
 outputs:
   docs/a.json:
   docs/b.json:
@@ -676,18 +751,10 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-          "uid": {
-            "type": "string",
-            "contentType": "uid"
-          },
-          "xref": {
-              "type": "string",
-              "contentType": "Xref"
-          }
+          "uid": { "contentType": "uid" },
+          "xref": { "contentType": "Xref" }
       },
-      "xrefProperties": [
-          "xref"
-      ]
+      "xrefProperties": ["xref"]
     }
 outputs:
   .errors.log: |
@@ -711,18 +778,10 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-          "uid": {
-            "type": "string",
-            "contentType": "uid"
-          },
-          "xref": {
-              "type": "string",
-              "contentType": "Xref"
-          }
+          "uid": { "contentType": "uid" },
+          "xref": { "contentType": "Xref" }
       },
-      "xrefProperties": [
-          "xref"
-      ]
+      "xrefProperties": ["xref"]
     }
 outputs:
   .errors.log: |
@@ -748,22 +807,11 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-          "uid": {
-            "type": "string",
-            "contentType": "uid"
-          },
-          "xref": {
-              "type": "string",
-              "contentType": "Xref"
-          },
-          "anotherXref": {
-              "type": "string",
-              "contentType": "Xref"
-          }
+          "uid": { "contentType": "uid" },
+          "xref": { "contentType": "Xref" },
+          "anotherXref": { "contentType": "Xref" }
       },
-      "xrefProperties": [
-          "xref"
-      ]
+      "xrefProperties": ["xref"]
     }
 outputs:
   docs/c.json:
@@ -774,7 +822,6 @@ outputs:
 # display property of non-plain text content type will be ignored
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -790,6 +837,16 @@ inputs:
       "uid": "b",
       "inlineDescription": "description for b",
       "summary": "Link to @a",
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "summary": { "contentType": "Markdown" },
+        "inlineDescription": { "contentType": "InlineMarkdown" },
+        "uid": { "contentType": "uid" },
+        "name": { "type": "string" }
+      },
+      "xrefProperties": ["name", "summary", "inlineDescription"]
     }
 outputs:
   docs/a.json: |
@@ -816,10 +873,10 @@ outputs:
 # input yml file is not object
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime:TestData
     1
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
   .errors.log: |
     ["error","unexpected-type","Expected type 'Object' but got 'Integer'","docs/a.yml",1,1]
@@ -870,7 +927,6 @@ repos:
   https://docs.com/test-multiple-uid-different-xref-property#live:
     - files:
         docfx.yml: |
-          template: {APP_BASE_PATH}data/template
         docs/a.yml: |
           #YamlMime:TestData
           uid: a
@@ -902,6 +958,28 @@ repos:
           Link to @children.b?displayProperty=b
           Link to @children.b?displayProperty=non-exist-property
           Link to @children.c?displayProperty=child.c
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "definitions": {
+              "testChild": {
+                "properties": {
+                  "a": { "type": "string" },
+                  "child.c": { "type": "string" },
+                  "uid": { "contentType": "uid" }
+                },
+                "xrefProperties":["a", "child.c"]
+              }
+            },
+            "properties": {
+              "description": { "type": "string" },
+              "uid": { "contentType": "uid" },
+              "child": { "$ref": "#/definitions/testChild" },
+              "children": {
+                "items": { "$ref": "#/definitions/testChild" }
+              }
+            },
+            "xrefProperties":["description"]
+          }
 outputs:
   docs/a.json:
   docs/b.json: |
@@ -981,7 +1059,6 @@ repos:
   https://docs.com/test-non-leaf-xref#live:
     - files:
         docfx.yml: |
-          template: {APP_BASE_PATH}data/template
         docs/a.yml: |
           #YamlMime:TestData
           uid: a
@@ -1002,6 +1079,29 @@ repos:
               list:
                 - "2.0"
                 - "3.0"
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "definitions": {
+              "testChild": {
+                "properties": {
+                  "uid": { "contentType": "uid" },
+                  "list": { "items": { "type": "string" }
+                  }
+                },
+                "xrefProperties": ["list"]
+              }
+            },
+            "properties": {
+              "uid": { "contentType": "uid" },
+              "child": { "$ref": "#/definitions/testChild" },
+              "children": { 
+                "items": { "$ref": "#/definitions/testChild" }
+              },
+              "list": { "items": { "type": "string" }
+              }
+            },
+            "xrefProperties":["list"]
+          }
 outputs:
   docs/a.json:
   .xrefmap.json: |
@@ -1105,21 +1205,11 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-        "uid": {
-          "type": "string"
-        },
         "children": {
-          "type": "array",
           "items":{
             "properties": {
-              "uid": {
-                "type": "string",
-                "contentType": "uid"
-              },
-              "xref": {
-                "type": "string",
-                "contentType": "xref"
-              }
+              "uid": { "contentType": "uid" },
+              "xref": { "contentType": "xref" }
             } 
           }
         }
