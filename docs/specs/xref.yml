@@ -754,18 +754,10 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-          "uid": {
-            "type": "string",
-            "contentType": "uid"
-          },
-          "xref": {
-              "type": "string",
-              "contentType": "Xref"
-          }
+          "uid": { "contentType": "uid" },
+          "xref": { "contentType": "Xref" }
       },
-      "xrefProperties": [
-          "xref"
-      ]
+      "xrefProperties": ["xref"]
     }
 outputs:
   .errors.log: |
@@ -789,18 +781,10 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-          "uid": {
-            "type": "string",
-            "contentType": "uid"
-          },
-          "xref": {
-              "type": "string",
-              "contentType": "Xref"
-          }
+          "uid": { "contentType": "uid" },
+          "xref": { "contentType": "Xref" }
       },
-      "xrefProperties": [
-          "xref"
-      ]
+      "xrefProperties": ["xref"]
     }
 outputs:
   .errors.log: |
@@ -826,22 +810,11 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-          "uid": {
-            "type": "string",
-            "contentType": "uid"
-          },
-          "xref": {
-              "type": "string",
-              "contentType": "Xref"
-          },
-          "anotherXref": {
-              "type": "string",
-              "contentType": "Xref"
-          }
+          "uid": { "contentType": "uid" },
+          "xref": { "contentType": "Xref" },
+          "anotherXref": { "contentType": "Xref" }
       },
-      "xrefProperties": [
-          "xref"
-      ]
+      "xrefProperties": ["xref"]
     }
 outputs:
   docs/c.json:
@@ -870,14 +843,11 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "type": "object",
-      "additionalProperties": false,
       "properties": {
         "summary": { "contentType": "Markdown" },
         "inlineDescription": { "contentType": "InlineMarkdown" },
         "uid": { "contentType": "uid" },
-        "name": { "type": "string" },
-        "$schema": { "type": "string" }
+        "name": { "type": "string" }
       },
       "xrefProperties": ["name", "summary", "inlineDescription"]
     }
@@ -1130,8 +1100,7 @@ repos:
               "children": { 
                 "items": { "$ref": "#/definitions/testChild" }
               },
-              "list": {
-                "items": { "type": "string" }
+              "list": { "items": { "type": "string" }
               }
             },
             "xrefProperties":["list"]
@@ -1239,21 +1208,11 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-        "uid": {
-          "type": "string"
-        },
         "children": {
-          "type": "array",
           "items":{
             "properties": {
-              "uid": {
-                "type": "string",
-                "contentType": "uid"
-              },
-              "xref": {
-                "type": "string",
-                "contentType": "xref"
-              }
+              "uid": { "contentType": "uid" },
+              "xref": { "contentType": "xref" }
             } 
           }
         }
