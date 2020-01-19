@@ -4,6 +4,8 @@
 using System;
 using System.Diagnostics;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -29,7 +31,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the commit id if this file is owned by a git repository and is not the latest version.
         /// </summary>
-        public string Commit { get; }
+        public string? Commit { get; }
 
         /// <summary>
         /// Indicate if the file is from git commit history.
@@ -72,9 +74,9 @@ namespace Microsoft.Docs.Build
             return Path;
         }
 
-        public static bool operator ==(FilePath a, FilePath b) => Equals(a, b);
+        public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
 
-        public static bool operator !=(FilePath a, FilePath b) => !Equals(a, b);
+        public static bool operator !=(FilePath? a, FilePath? b) => !Equals(a, b);
 
         public override string ToString()
         {
@@ -102,7 +104,7 @@ namespace Microsoft.Docs.Build
             return tags.Length > 0 ? $"{Path} {tags}" : $"{Path}";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as FilePath);
         }
@@ -112,9 +114,9 @@ namespace Microsoft.Docs.Build
             return HashCode.Combine(Path, DependencyName, Origin, Commit);
         }
 
-        public bool Equals(FilePath other)
+        public bool Equals(FilePath? other)
         {
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }

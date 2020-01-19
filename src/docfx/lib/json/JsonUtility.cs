@@ -35,6 +35,16 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
+        private static readonly JsonSerializer s_serializerCheckingAddional = JsonSerializer.Create(new JsonSerializerSettings
+        {
+            CheckAdditionalContent = true,
+            NullValueHandling = NullValueHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters = s_jsonConverters,
+            ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
+        });
+
         private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -108,14 +118,14 @@ namespace Microsoft.Docs.Build
         public static T Deserialize<T>(string json, FilePath file) where T : class, new()
         {
             using var reader = new StringReader(json);
-            return Deserialize<T>(reader, file);
+            return Deserialize<T>(reader, file, true);
         }
 
         /// <summary>
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader json, FilePath file) where T : class, new()
+        public static T Deserialize<T>(TextReader json, FilePath file, bool checkAdditionalContent = true) where T : class, new()
         {
             using var reader = new JsonTextReader(json);
             try
@@ -124,11 +134,10 @@ namespace Microsoft.Docs.Build
 
                 t_status.Value.Push(status);
 
-                var result = s_serializer.Deserialize<T>(reader) ?? new T();
-
-                // workaround for invalid ending json
-                reader.Read();
-                return result;
+                return (checkAdditionalContent
+                    ? s_serializerCheckingAddional.Deserialize<T>(reader)
+                    : s_serializer.Deserialize<T>(reader))
+                    ?? new T();
             }
             catch (JsonReaderException ex)
             {

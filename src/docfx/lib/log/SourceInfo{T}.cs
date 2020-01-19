@@ -3,15 +3,17 @@
 
 using System.Runtime.CompilerServices;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal readonly struct SourceInfo<T> : ISourceInfo
     {
         public readonly T Value;
 
-        public readonly SourceInfo Source;
+        public readonly SourceInfo? Source;
 
-        public override string ToString() => Value?.ToString();
+        public override string? ToString() => Value?.ToString();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SourceInfo<T> Or(SourceInfo<T> other)
@@ -32,14 +34,14 @@ namespace Microsoft.Docs.Build
         public static implicit operator T(SourceInfo<T>? value) => value != null ? value.Value : default;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator SourceInfo(in SourceInfo<T> value) => value.Source;
+        public static implicit operator SourceInfo?(in SourceInfo<T> value) => value.Source;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator SourceInfo(in SourceInfo<T>? value) => value?.Source;
+        public static implicit operator SourceInfo?(in SourceInfo<T>? value) => value?.Source;
 
-        object ISourceInfo.GetValue() => Value;
+        object? ISourceInfo.GetValue() => Value;
 
-        public SourceInfo(T value, in SourceInfo source = null)
+        public SourceInfo(T value, in SourceInfo? source = null)
         {
             Source = source;
             Value = value;

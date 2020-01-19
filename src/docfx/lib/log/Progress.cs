@@ -6,6 +6,8 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class Progress
@@ -15,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public static IDisposable Start(string name)
         {
-            var scope = new LogScope { Name = name, Stopwatch = Stopwatch.StartNew() };
+            var scope = new LogScope(name, Stopwatch.StartNew());
 
             t_scope.Value = (t_scope.Value ?? ImmutableStack<LogScope>.Empty).Push(scope);
 
@@ -66,13 +68,21 @@ namespace Microsoft.Docs.Build
 
         private class LogScope : IDisposable
         {
-            public string Name;
+            public readonly string Name;
+            public readonly Stopwatch Stopwatch;
+
             public long LastElapsedMs;
-            public Stopwatch Stopwatch;
+
+            public LogScope(string name, Stopwatch stopwatch)
+            {
+                Name = name;
+                Stopwatch = stopwatch;
+            }
 
             public void Dispose()
             {
-                t_scope.Value = t_scope.Value.Pop(out _);
+                var value = t_scope.Value ?? throw new InvalidOperationException();
+                t_scope.Value = value.Pop(out _);
 
                 var elapsedMs = Stopwatch.ElapsedMilliseconds;
                 if (Log.Verbose || elapsedMs > ProgressDelayMs)

@@ -6,7 +6,7 @@ namespace Microsoft.Docs.Build
     internal enum FetchOptions
     {
         /// <summary>
-        /// Default restore option: Only fetch latest content if it does not exist or read from disk cache.
+        /// Default restore option: Always fetch the latest content, without reading from disk cache.
         /// </summary>
         None = 0,
 
@@ -16,8 +16,8 @@ namespace Microsoft.Docs.Build
         NoFetch = 0b0001,
 
         /// <summary>
-        /// Always fetch the latest content, without reading from disk cache.
+        /// Only fetch latest content if it does not exist or read from disk cache.
         /// </summary>
-        NoCache = 0b0010,
+        UseCache = 0b0010,
     }
 }
