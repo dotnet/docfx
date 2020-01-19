@@ -48,11 +48,10 @@ namespace Microsoft.Docs.Build
             var redirectionChain = new HashSet<FilePath>();
             while (_renameHistory.TryGetValue(file, out var renamedFrom))
             {
-                if (redirectionChain.Contains(file))
+                if (!redirectionChain.Add(file))
                 {
                     return file;
                 }
-                redirectionChain.Add(file);
                 file = renamedFrom;
             }
             return file;
