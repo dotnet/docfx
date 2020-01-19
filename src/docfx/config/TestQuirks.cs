@@ -9,9 +9,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class TestQuirks
     {
-        public static Func<string>? GetCachePath;
-        public static Func<string>? GetStatePath;
+        public static Func<string>? CachePath;
+        public static Func<string>? StatePath;
         public static Func<string, string>? GitRemoteProxy;
+        public static Func<bool>? RestoreUseCache;
         public static bool? Verbose;
     }
 }

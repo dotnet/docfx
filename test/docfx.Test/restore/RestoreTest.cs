@@ -22,7 +22,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'url': 'https://github.com/dotnet/docfx', 'path': 'a-path'}", PackageType.Git, "https://github.com/dotnet/docfx", "master", null)]
         [InlineData("{'url': 'https://github.com/dotnet/docfx#unused', 'branch': 'used'}", PackageType.Git, "https://github.com/dotnet/docfx#unused", "used", null)]
         [InlineData("{'url': 'crr/local-path'}", PackageType.Git, "crr/local-path", "master", null)]
-        [InlineData("{'path': 'crr/local-path'}", PackageType.Folder, null, null, "crr/local-path")]
+        [InlineData("{'path': 'crr/local-path'}", PackageType.Folder, "", "master", "crr/local-path")]
+        [InlineData("{}", PackageType.None, "", "master", null)]
         public static void PackageUrlTest(
             string json,
             PackageType expectedPackageType,

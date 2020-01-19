@@ -1,9 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -16,16 +19,16 @@ namespace Microsoft.Docs.Build
     /// The commit-ish can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class PackagePath
+    internal class PackagePath : IEquatable<PackagePath>
     {
         [JsonIgnore]
         public PackageType Type { get; private set; }
 
-        public string Path { get; private set; }
+        public PathString? Path { get; private set; }
 
-        public string Url { get; private set; }
+        public string Url { get; private set; } = "";
 
-        public string Branch { get; private set; }
+        public string Branch { get; private set; } = "master";
 
         public PackagePath()
         {
@@ -41,34 +44,50 @@ namespace Microsoft.Docs.Build
             else
             {
                 Type = PackageType.Folder;
-                Path = value;
+                Path = new PathString(value);
             }
         }
 
-        public PackagePath(string remote, string branch)
+        public PackagePath(string remote, string? branch)
         {
             Debug.Assert(remote != null);
             Debug.Assert(branch != null);
 
             Type = PackageType.Git;
             Url = remote;
-            Branch = branch;
+            Branch = branch ?? "master";
         }
 
-        public override string ToString()
+        public override string? ToString() => Type switch
         {
-            switch (Type)
-            {
-                case PackageType.Folder:
-                    return Path;
+            PackageType.Folder => Path,
+            PackageType.Git => $"{Url}#{Branch}",
+            _ => $"{Url}, (type: {Type.ToString()})",
+        };
 
-                case PackageType.Git:
-                    return $"{Url}#{Branch}";
-
-                default:
-                    return $"{Url}, (type: {Type.ToString()})";
-            }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Type, Url, Branch, Path);
         }
+
+        public bool Equals(PackagePath? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return Type == other.Type &&
+                   Url == other.Url &&
+                   Branch.Equals(other.Branch) &&
+                   Path.Equals(other.Path);
+        }
+
+        public override bool Equals(object? obj) => obj is PackagePath path && Equals(path);
+
+        public static bool operator ==(PackagePath? a, PackagePath? b) => Equals(a, b);
+
+        public static bool operator !=(PackagePath? a, PackagePath? b) => !Equals(a, b);
 
         private static (string remote, string refspec) SplitGitUrl(string remoteUrl)
         {
@@ -85,15 +104,14 @@ namespace Microsoft.Docs.Build
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            if (Url != null)
+            if (!string.IsNullOrEmpty(Url))
             {
                 Type = PackageType.Git;
-                Branch = Branch ?? "master";
 
-                // Explicitly set path to null here,
+                // Explicitly reset path here,
                 // we might want to represent a subfolder inside a repository by setting both url and path,
                 // but for now it is not supported.
-                Path = null;
+                Path = default;
             }
             else if (Path != null)
             {

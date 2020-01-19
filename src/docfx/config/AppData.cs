@@ -16,9 +16,9 @@ namespace Microsoft.Docs.Build
 
         public static string MutexRoot => Path.Combine(s_root, "mutex");
 
-        public static string CacheRoot => TestQuirks.GetCachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
+        public static string CacheRoot => TestQuirks.CachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
 
-        public static string StateRoot => TestQuirks.GetStatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
+        public static string StateRoot => TestQuirks.StatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
@@ -29,12 +29,6 @@ namespace Microsoft.Docs.Build
         public static string GetFileDownloadDir(string url)
         {
             return Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url));
-        }
-
-        public static string GetDependencyLockFile(string docsetPath, string locale)
-        {
-            return PathUtility.NormalizeFile(
-                    Path.Combine(s_root, "lock", PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
         }
 
         public static string GetCommitCachePath(string remote)

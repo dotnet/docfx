@@ -21,13 +21,15 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
 
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
+        private static readonly AsyncLocal<bool> t_restoreUseCache = new AsyncLocal<bool>();
         private static readonly AsyncLocal<string> t_cachePath = new AsyncLocal<string>();
         private static readonly AsyncLocal<string> t_statePath = new AsyncLocal<string>();
 
         static DocfxTest()
         {
-            TestQuirks.GetCachePath = () => t_cachePath.Value;
-            TestQuirks.GetStatePath = () => t_statePath.Value;
+            TestQuirks.RestoreUseCache = () => t_restoreUseCache.Value;
+            TestQuirks.CachePath = () => t_cachePath.Value;
+            TestQuirks.StatePath = () => t_statePath.Value;
 
             TestQuirks.GitRemoteProxy = remote =>
             {
@@ -48,6 +50,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
+                t_restoreUseCache.Value = true;
                 t_repos.Value = repos;
                 t_cachePath.Value = cachePath;
                 t_statePath.Value = statePath;
@@ -63,6 +66,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
+                t_restoreUseCache.Value = false;
                 t_repos.Value = null;
                 t_cachePath.Value = null;
                 t_statePath.Value = null;
@@ -170,11 +174,11 @@ namespace Microsoft.Docs.Build
 
                 if (spec.Restore)
                 {
-                    await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).Concat(new[] { "--use-cache" }).ToArray());
+                    await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
                 }
                 if (spec.Build)
                 {
-                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).ToArray());
+                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).Concat(new[] { "--no-restore" }).ToArray());
                 }
             }
 

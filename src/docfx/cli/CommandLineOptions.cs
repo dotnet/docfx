@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
         public bool DryRun;
         public bool Stdin;
         public bool UseCache;
-        public bool NoFetch;
+        public bool NoRestore;
         public string Template;
         public int Port;
 
         public JObject StdinConfig;
 
-        public FetchOptions FetchOptions => NoFetch
+        public FetchOptions FetchOptions => NoRestore
             ? FetchOptions.NoFetch
             : (UseCache ? FetchOptions.UseCache : FetchOptions.None);
 
