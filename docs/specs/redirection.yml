@@ -508,4 +508,4 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md', 'a.md [redirection]'"]
+    ["error","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"]
