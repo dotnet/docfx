@@ -126,28 +126,26 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void BuildArticle(HostService hostService, int maxParallelism)
         {
-            using (var aggregatedPerformanceScope = new AggregatedPerformanceScope())
-            {
-                hostService.Models.RunAll(
-                    m =>
+            using var aggregatedPerformanceScope = new AggregatedPerformanceScope();
+            hostService.Models.RunAll(
+                m =>
+                {
+                    using (new LoggerFileScope(m.LocalPathFromRoot))
                     {
-                        using (new LoggerFileScope(m.LocalPathFromRoot))
-                        {
-                            Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
-                            BuildPhaseUtility.RunBuildSteps(
-                                hostService.Processor.BuildSteps,
-                                buildStep =>
+                        Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
+                        BuildPhaseUtility.RunBuildSteps(
+                            hostService.Processor.BuildSteps,
+                            buildStep =>
+                            {
+                                Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
+                                using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic, aggregatedPerformanceScope))
                                 {
-                                    Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
-                                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic, aggregatedPerformanceScope))
-                                    {
-                                        buildStep.Build(m, hostService);
-                                    }
-                                });
-                        }
-                    },
-                    maxParallelism);
-            }
+                                    buildStep.Build(m, hostService);
+                                }
+                            });
+                    }
+                },
+                maxParallelism);
         }
 
         #endregion

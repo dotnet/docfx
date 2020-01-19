@@ -58,10 +58,8 @@ namespace Microsoft.DocAsCode.Common
                 return;
             }
 
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                fileList.ForEach(s => writer.WriteLine(s));
-            }
+            using StreamWriter writer = new StreamWriter(filePath);
+            fileList.ForEach(s => writer.WriteLine(s));
         }
 
         public const string ListFileExtension = ".list";
@@ -77,12 +75,10 @@ namespace Microsoft.DocAsCode.Common
 
             if (Path.GetExtension(filePath) == ListFileExtension)
             {
-                using (StreamReader reader = new StreamReader(filePath))
+                using StreamReader reader = new StreamReader(filePath);
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
-                    {
-                        fileList.Add(reader.ReadLine());
-                    }
+                    fileList.Add(reader.ReadLine());
                 }
             }
 

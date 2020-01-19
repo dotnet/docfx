@@ -78,16 +78,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private void ValidateObject(object obj, JSchema schema, SchemaValidationEventHandler validationEventHandler)
         {
             var jsonReader = obj is JObject jo ? jo.CreateReader() : new IgnoreStrongTypeObjectJsonReader(obj);
-            using (var reader = new JSchemaValidatingReader(jsonReader))
+            using var reader = new JSchemaValidatingReader(jsonReader);
+            reader.Schema = schema;
+            if (validationEventHandler != null)
             {
-                reader.Schema = schema;
-                if (validationEventHandler != null)
-                {
-                    reader.ValidationEventHandler += validationEventHandler;
-                }
-                while (reader.Read())
-                {
-                }
+                reader.ValidationEventHandler += validationEventHandler;
+            }
+            while (reader.Read())
+            {
             }
         }
     }

@@ -112,8 +112,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             {
                 List<ReferenceViewModel> vms = null;
                 using (var entryStream = _zip.GetEntry(entry).Open())
-                using (var reader = new StreamReader(entryStream))
                 {
+                    using var reader = new StreamReader(entryStream);
                     try
                     {
                         vms = YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
@@ -123,6 +123,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                         // Ignore non-yaml entries
                     }
                 }
+
                 if (vms != null)
                 {
                     yield return new PackageEntry(_packageFile, entry, vms);

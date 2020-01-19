@@ -53,12 +53,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (action == string.Empty)
             {
-                logError($"Form action must be specified.");
+                logError("Form action must be specified.");
                 return false;
             }
             if (submitText == string.Empty)
             {
-                logError($"Submit text must be specified.");
+                logError("Submit text must be specified.");
                 return false;
             }
 

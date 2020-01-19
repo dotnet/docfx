@@ -708,11 +708,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             projectMetadata = null;
             try
             {
-                using (StreamReader reader = new StreamReader(metadataFileName))
-                {
-                    projectMetadata = YamlUtility.Deserialize<MetadataItem>(reader);
-                    return true;
-                }
+                using StreamReader reader = new StreamReader(metadataFileName);
+                projectMetadata = YamlUtility.Deserialize<MetadataItem>(reader);
+                return true;
             }
             catch (Exception e)
             {

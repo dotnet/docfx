@@ -468,11 +468,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             foreach (var item in cfn)
             {
-                using (var stream = File.OpenRead(
-                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), item.FilePath)))
-                {
-                    yield return processor.LoadIntermediateModel(stream);
-                }
+                using var stream = File.OpenRead(
+                    Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), item.FilePath));
+                yield return processor.LoadIntermediateModel(stream);
             }
         }
 

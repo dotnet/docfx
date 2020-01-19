@@ -25,28 +25,26 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [Fact]
         public void TestLoaderWhenNoFileExists()
         {
-            using (var listener = new TestListenerScope("NoTemplate"))
-            {
-                var renderers = LoadAllRenderers();
-                Assert.Empty(listener.Items);
-                Assert.Empty(renderers);
+            using var listener = new TestListenerScope("NoTemplate");
+            var renderers = LoadAllRenderers();
+            Assert.Empty(listener.Items);
+            Assert.Empty(renderers);
 
-                var file1 = CreateFile("a.js", string.Empty, _inputFolder);
-                renderers = LoadAllRenderers();
-                Assert.Empty(listener.Items);
-                Assert.Empty(renderers);
+            var file1 = CreateFile("a.js", string.Empty, _inputFolder);
+            renderers = LoadAllRenderers();
+            Assert.Empty(listener.Items);
+            Assert.Empty(renderers);
 
-                // only allows file under root folder
-                var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
-                renderers = LoadAllRenderers();
-                Assert.Empty(listener.Items);
-                Assert.Empty(renderers);
+            // only allows file under root folder
+            var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
+            renderers = LoadAllRenderers();
+            Assert.Empty(listener.Items);
+            Assert.Empty(renderers);
 
-                var file3 = CreateFile("a.tmpl.js", string.Empty, _inputFolder);
-                renderers = LoadAllRenderers();
-                Assert.Empty(listener.Items);
-                Assert.Empty(renderers);
-            }
+            var file3 = CreateFile("a.tmpl.js", string.Empty, _inputFolder);
+            renderers = LoadAllRenderers();
+            Assert.Empty(listener.Items);
+            Assert.Empty(renderers);
         }
 
         [Fact]
@@ -54,21 +52,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             var file1 = CreateFile("a.tmpl", "{{name}}", _inputFolder);
 
-            using (var listener = new TestListenerScope("TestLoaderWithValidInput"))
-            {
-                var renderers = LoadAllRenderers();
+            using var listener = new TestListenerScope("TestLoaderWithValidInput");
+            var renderers = LoadAllRenderers();
 
-                Assert.Empty(listener.Items);
+            Assert.Empty(listener.Items);
 
-                Assert.Single(renderers);
-                var renderer = renderers[0];
-                Assert.NotNull(renderer);
+            Assert.Single(renderers);
+            var renderer = renderers[0];
+            Assert.NotNull(renderer);
 
-                var model = new { name = "model" };
+            var model = new { name = "model" };
 
-                var output = renderer.Render(model);
-                Assert.Equal("model", output);
-            }
+            var output = renderer.Render(model);
+            Assert.Equal("model", output);
         }
 
         [Fact]
@@ -77,19 +73,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var path = "a.tmpl";
             var file1 = CreateFile(path, "{{name}}", _inputFolder);
 
-            using (var listener = new TestListenerScope("TestLoaderWithValidInput"))
-            {
-                var renderer = Load(path);
+            using var listener = new TestListenerScope("TestLoaderWithValidInput");
+            var renderer = Load(path);
 
-                Assert.Empty(listener.Items);
+            Assert.Empty(listener.Items);
 
-                Assert.NotNull(renderer);
+            Assert.NotNull(renderer);
 
-                var model = new { name = "model" };
+            var model = new { name = "model" };
 
-                var output = renderer.Render(model);
-                Assert.Equal("model", output);
-            }
+            var output = renderer.Render(model);
+            Assert.Equal("model", output);
         }
 
 

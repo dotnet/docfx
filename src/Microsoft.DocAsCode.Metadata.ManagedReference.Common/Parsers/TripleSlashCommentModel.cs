@@ -832,22 +832,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         private static string GetInnerXml(XPathNavigator node)
         {
-            using (var sw = new StringWriter(CultureInfo.InvariantCulture))
+            using var sw = new StringWriter(CultureInfo.InvariantCulture);
+            using (var tw = new XmlWriterWithGtDecoded(sw))
             {
-                using (var tw = new XmlWriterWithGtDecoded(sw))
+                if (node.MoveToFirstChild())
                 {
-                    if (node.MoveToFirstChild())
+                    do
                     {
-                        do
-                        {
-                            tw.WriteNode(node, true);
-                        } while (node.MoveToNext());
-                        node.MoveToParent();
-                    }
+                        tw.WriteNode(node, true);
+                    } while (node.MoveToNext());
+                    node.MoveToParent();
                 }
-
-                return sw.ToString();
             }
+
+            return sw.ToString();
         }
 
         private sealed class XmlWriterWithGtDecoded : XmlTextWriter

@@ -15,14 +15,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             _rendererPool = ResourcePool.Create(creater, maxParallelism);
 
-            using (var lease = _rendererPool.Rent())
-            {
-                var inner = lease.Resource;
-                Raw = inner.Raw;
-                Dependencies = inner.Dependencies;
-                Path = inner.Path;
-                Name = inner.Name;
-            }
+            using var lease = _rendererPool.Rent();
+            var inner = lease.Resource;
+            Raw = inner.Raw;
+            Dependencies = inner.Dependencies;
+            Path = inner.Path;
+            Name = inner.Name;
         }
 
         public IEnumerable<string> Dependencies { get; }
@@ -40,10 +38,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
 
-            using (var lease = _rendererPool.Rent())
-            {
-                return lease.Resource?.Render(model);
-            }
+            using var lease = _rendererPool.Rent();
+            return lease.Resource?.Render(model);
         }
     }
 }

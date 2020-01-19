@@ -44,10 +44,8 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Serialize(string path, object graph, string comments)
         {
-            using (var writer = EnvironmentContext.FileAbstractLayer.CreateText(path))
-            {
-                Serialize(writer, graph, comments);
-            }
+            using var writer = EnvironmentContext.FileAbstractLayer.CreateText(path);
+            Serialize(writer, graph, comments);
         }
 
         public static T Deserialize<T>(TextReader reader)
@@ -57,10 +55,8 @@ namespace Microsoft.DocAsCode.Common
 
         public static T Deserialize<T>(string path)
         {
-            using (var reader = EnvironmentContext.FileAbstractLayer.OpenReadText(path))
-            {
-                return Deserialize<T>(reader);
-            }
+            using var reader = EnvironmentContext.FileAbstractLayer.OpenReadText(path);
+            return Deserialize<T>(reader);
         }
 
         public static T ConvertTo<T>(object obj)

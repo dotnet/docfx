@@ -50,13 +50,11 @@ namespace Microsoft.DocAsCode.Dfm
                 var value = match["yaml"].GetValue();
                 try
                 {
-                    using (StringReader reader = new StringReader(value))
+                    using StringReader reader = new StringReader(value);
+                    var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
+                    if (result == null)
                     {
-                        var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
-                        if (result == null)
-                        {
-                            return null;
-                        }
+                        return null;
                     }
                 }
                 catch (YamlException invalidYamlHeaderException)
@@ -89,13 +87,11 @@ namespace Microsoft.DocAsCode.Dfm
             var value = match.Groups[1].Value;
             try
             {
-                using (StringReader reader = new StringReader(value))
+                using StringReader reader = new StringReader(value);
+                var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
+                if (result == null)
                 {
-                    var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
-                    if (result == null)
-                    {
-                        return null;
-                    }
+                    return null;
                 }
             }
             catch (YamlException invalidYamlHeaderException)

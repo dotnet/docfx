@@ -76,16 +76,14 @@ namespace Microsoft.DocAsCode.Tests
                 });
             var result = JsonUtility.Serialize(item);
             Assert.Equal("{\"*.md\":1,\"*.m\":true,\"abc\":\"string\",\"/[]\\\\*.cs\":{\"key\":\"2\"},\"*/*.cs\":[\"1\",\"2\"],\"**\":{\"key\":[\"1\",\"2\"]}}", result);
-            using (var reader = new StringReader(result))
+            using var reader = new StringReader(result);
+            var pairs = JsonUtility.Deserialize<FileMetadataPairs>(reader);
+            Assert.Equal(item.Count, pairs.Count);
+            for (int i = 0; i < pairs.Count; i++)
             {
-                var pairs = JsonUtility.Deserialize<FileMetadataPairs>(reader);
-                Assert.Equal(item.Count, pairs.Count);
-                for (int i = 0; i < pairs.Count; i++)
-                {
-                    Assert.Equal(item[i].Glob.Raw, pairs[i].Glob.Raw);
-                    var parsedValue = pairs[i].Value;
-                    Assert.Equal(item[i].Value, parsedValue);
-                }
+                Assert.Equal(item[i].Glob.Raw, pairs[i].Glob.Raw);
+                var parsedValue = pairs[i].Value;
+                Assert.Equal(item[i].Value, parsedValue);
             }
         }
 
@@ -94,11 +92,9 @@ namespace Microsoft.DocAsCode.Tests
         public void TestFileMappingItemCwdInputShouldWork()
         {
             var input = "{\"files\":[\"file1\"],\"cwd\":\"folder1\"}";
-            using (var sr = new StringReader(input))
-            {
-                var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-                Assert.Equal("folder1", result.SourceFolder);
-            }
+            using var sr = new StringReader(input);
+            var result = JsonUtility.Deserialize<FileMappingItem>(sr);
+            Assert.Equal("folder1", result.SourceFolder);
         }
 
         [Fact]
@@ -106,11 +102,9 @@ namespace Microsoft.DocAsCode.Tests
         public void TestFileMappingItemSrcInputShouldWork()
         {
             var input = "{\"files\":[\"file1\"],\"src\":\"folder1\"}";
-            using(var sr = new StringReader(input))
-            {
-                var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-                Assert.Equal("folder1", result.SourceFolder);
-            }
+            using var sr = new StringReader(input);
+            var result = JsonUtility.Deserialize<FileMappingItem>(sr);
+            Assert.Equal("folder1", result.SourceFolder);
         }
 
         [Fact]

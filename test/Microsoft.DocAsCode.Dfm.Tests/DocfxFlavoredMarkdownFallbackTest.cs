@@ -63,7 +63,7 @@ markdown token1.md content end.";
                 var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder_{uniqueFolderName}") } };
                 var dependency = new HashSet<string>();
                 var marked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md", dependency: dependency);
-                Assert.Equal($@"<p>1markdown root.md main content start.</p>
+                Assert.Equal(@"<p>1markdown root.md main content start.</p>
 <p>1markdown a.md main content start.</p>
 <p>1markdown token1.md content start.</p>
 <p><strong>1markdown token2.md main content</strong></p>

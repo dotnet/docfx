@@ -61,10 +61,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             if (MessageInfoFile != null)
             {
-                using (var sr = new StreamReader(Path.Combine(baseDir, MessageInfoFile), UTF8))
-                {
-                    MessageInfo = BuildMessageInfo.Load(sr);
-                }
+                using var sr = new StreamReader(Path.Combine(baseDir, MessageInfoFile), UTF8);
+                MessageInfo = BuildMessageInfo.Load(sr);
             }
             if (ManifestItemsFile != null)
             {
@@ -83,10 +81,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 MessageInfoFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
-            using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile), false, UTF8))
-            {
-                MessageInfo.Save(sw);
-            }
+            using var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile), false, UTF8);
+            MessageInfo.Save(sw);
         }
 
         public void SaveManifest(string baseDir)
