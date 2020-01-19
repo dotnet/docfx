@@ -478,3 +478,34 @@ inputs:
 outputs:
   folder/index.json: |
     { "document_id": "c663555f-8096-38df-325b-181ddc79afd8" }
+---
+# Handle circular redirection with document id
+inputs:
+  docfx.yml:
+  .openpublishing.redirection.json: |
+    {
+      "redirections": [
+        {
+          "source_path": "a.md",
+          "redirect_url": "/a",
+          "redirect_document_id": true
+        },
+        {
+          "source_path": "b.md",
+          "redirect_url": "/b",
+          "redirect_document_id": true
+        }
+      ]
+    }
+  a.md:
+outputs:
+  .publish.json: |
+    {
+      "files": [
+          { "url": "/a", "redirect_url": "/a", "source_path": "a.md" },
+          { "url": "/b", "redirect_url": "/b", "source_path": "b.md" },
+          { "url": "/a", "source_path": "a.md" }
+      ]
+    }
+  .errors.log: |
+    ["error","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md', 'a.md [redirection]'"]

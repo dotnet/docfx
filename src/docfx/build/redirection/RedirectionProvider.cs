@@ -45,8 +45,14 @@ namespace Microsoft.Docs.Build
 
         public FilePath GetOriginalFile(FilePath file)
         {
+            var redirectionChain = new HashSet<FilePath>();
             while (_renameHistory.TryGetValue(file, out var renamedFrom))
             {
+                if (redirectionChain.Contains(file))
+                {
+                    return file;
+                }
+                redirectionChain.Add(file);
                 file = renamedFrom;
             }
             return file;
