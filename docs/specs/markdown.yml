@@ -636,7 +636,7 @@ inputs:
   docfx.yml: |
     output:
       json: false
-  docs/a b .md:
+  docs/a b.. ..md:
 outputs:
   docs/a b/index.html:
 ---
