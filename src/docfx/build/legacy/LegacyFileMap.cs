@@ -32,11 +32,11 @@ namespace Microsoft.Docs.Build
                         }
                         var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(
                             context, docset, fileManifest.Value);
-                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
+                        var assetId = document.ToAssetId(docset);
 
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToBasePath,
-                            legacySiteUrlRelativeToBasePath,
+                            assetId,
                             document.ContentType,
                             fileManifest.Value.ConfigMonikerRange,
                             fileManifest.Value.Monikers);

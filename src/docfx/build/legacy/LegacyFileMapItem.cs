@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public LegacyFileMapItem(
             string legacyOutputFilePathRelativeToBasePath,
-            string legacySiteUrlRelativeToBasePath,
+            string assetId,
             ContentType contentType,
             string version,
             IReadOnlyList<string> monikers)
@@ -44,14 +44,14 @@ namespace Microsoft.Docs.Build
                     Type = "Content";
                     OutputRelativePath = PathUtility.NormalizeFile(
                         LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToBasePath, ".html"));
-                    AssetId = legacySiteUrlRelativeToBasePath;
+                    AssetId = assetId;
                     Version = version;
                     Monikers = monikers;
                     break;
                 case ContentType.Resource:
                     Type = "Resource";
                     OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
-                    AssetId = legacySiteUrlRelativeToBasePath;
+                    AssetId = assetId;
                     Version = version;
                     Monikers = monikers;
                     break;
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
 
         public static LegacyFileMapItem Instance(
             string legacyOutputFilePathRelativeToBasePath,
-            string legacySiteUrlRelativeToBasePath,
+            string assetId,
             ContentType contentType,
             string version,
             IReadOnlyList<string> monikers)
@@ -74,12 +74,7 @@ namespace Microsoft.Docs.Build
             }
 
             return new LegacyFileMapItem(
-                legacyOutputFilePathRelativeToBasePath, legacySiteUrlRelativeToBasePath, contentType, version, monikers);
-        }
-
-        private static string RemoveExtension(string path)
-        {
-            return path.Substring(0, path.LastIndexOf('.'));
+                legacyOutputFilePathRelativeToBasePath, assetId, contentType, version, monikers);
         }
     }
 }

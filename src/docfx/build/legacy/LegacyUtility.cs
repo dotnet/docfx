@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
         }
 
-        public static string ToLegacySiteUrlRelativeToBasePath(this Document doc, Docset docset)
+        public static string ToAssetId(this Document doc, Docset docset)
         {
             var legacySiteUrlRelativeToBasePath = doc.SiteUrl;
             if (legacySiteUrlRelativeToBasePath.StartsWith(docset.Config.BasePath.ToString(), PathUtility.PathComparison))
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(
                 Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison)
                 && doc.ContentType != ContentType.Resource
-                ? $"{legacySiteUrlRelativeToBasePath}/index"
+                ? Path.Combine(legacySiteUrlRelativeToBasePath, "index")
                 : legacySiteUrlRelativeToBasePath);
         }
 
