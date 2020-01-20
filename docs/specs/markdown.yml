@@ -631,6 +631,15 @@ inputs:
 outputs: 
   docs/a/index.html:
 ---
+# Source file name ending with spaces should not crash
+inputs:
+  docfx.yml: |
+    output:
+      json: false
+  docs/a b .md:
+outputs:
+  docs/a b/index.html:
+---
 # Invalid Link
 inputs: 
   docfx.yml:

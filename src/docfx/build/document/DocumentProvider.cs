@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
                         {
                             return Path.ChangeExtension(path, ".html");
                         }
-                        return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path), "index.html").Replace('\\', '/');
+                        return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path).Trim(), "index.html").Replace('\\', '/');
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:
