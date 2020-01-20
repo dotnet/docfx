@@ -118,58 +118,56 @@ namespace Microsoft.Docs.Build
         /// <returns>The normalized path</returns>
         public static string Normalize(string path)
         {
-            path = path.Replace('\\', '/');
-
-            if (path.IndexOf('.') == -1 && !path.Contains("//"))
+            if (IsNormalized(path))
             {
                 return path;
             }
 
-            var parentCount = 0;
-            var rooted = path[0] == '/';
-            var stack = new List<string>();
-            foreach (var segment in path.Split('/'))
-            {
-                if (segment == ".." && stack.Count > 0)
-                    stack.RemoveAt(stack.Count - 1);
-                else if (segment == "..")
-                    parentCount++;
-                else if (segment != "." && !string.IsNullOrEmpty(segment))
-                    stack.Add(segment);
-            }
+            var result = new StringBuilder(path.Length);
+            var stack = new Stack<int>();
+            var start = 0;
 
-            var res = new StringBuilder();
-            if (rooted)
+            for (var i = 0; i <= path.Length; i++)
             {
-                res.Append('/');
-            }
-            else
-            {
-                while (parentCount-- > 0)
+                var ch = i == path.Length ? '\0' : path[i];
+                if (ch == '\0' || ch == '/' || ch == '\\')
                 {
-                    res.Append("../");
-                }
-            }
-
-            var i = 0;
-            foreach (var segment in stack)
-            {
-                if (segment.Length > 0)
-                {
-                    if (i++ > 0)
+                    var segmentLength = i - start;
+                    if (segmentLength == 1 && path[start] == '.')
                     {
-                        res.Append('/');
+                        // single-dot path segment: .
                     }
-                    res.Append(segment);
+                    else if (segmentLength == 2 && path[start] == '.' && path[start + 1] == '.')
+                    {
+                        // double-dot path segment: ..
+                        if (stack.TryPop(out var lastStart))
+                        {
+                            result.Length = lastStart;
+                        }
+                        else
+                        {
+                            result.Append("..");
+                            if (ch != '\0')
+                            {
+                                result.Append('/');
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // path string segment
+                        stack.Push(result.Length);
+                        result.Append(path, start, segmentLength);
+                        if (ch != '\0')
+                        {
+                            result.Append('/');
+                        }
+                    }
+                    start = i + 1;
                 }
             }
 
-            if (path[^1] == '/' && res.Length > 0 && res[res.Length - 1] != '/')
-            {
-                res.Append('/');
-            }
-
-            return res.ToString();
+            return result.ToString();
         }
 
         /// <summary>
@@ -223,6 +221,28 @@ namespace Microsoft.Docs.Build
 
             result.Append(hash);
             return result.ToString();
+        }
+
+        private static bool IsNormalized(string path)
+        {
+            for (var i = 0; i < path.Length; i++)
+            {
+                var ch = path[i];
+                if (ch == '\\')
+                {
+                    return false;
+                }
+                if (ch == '.')
+                {
+                    var nextChar = i == path.Length - 1 ? '\0' : path[i + 1];
+                    if (nextChar == '\0' || nextChar == '/' ||
+                        nextChar == '\\' || nextChar == '.')
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         // For azure blob url, url without sas token should identify if the content has changed
