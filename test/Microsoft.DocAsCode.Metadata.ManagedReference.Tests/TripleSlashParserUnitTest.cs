@@ -44,7 +44,7 @@ namespace Example
             string input = @"
 <member name='T:TestClass1.Partial1'>
     <summary>
-        Parital classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies, Test <see langword='null'/>
+        Partial classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies, Test <see langword='null'/>
 
         ```
         Classes in assemblies are by definition complete.
@@ -134,11 +134,11 @@ namespace Example
             };
 
             var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
-            Assert.False(commentModel.IsInheritDoc, nameof(commentModel.IsInheritDoc));
+            Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
             var summary = commentModel.Summary;
             Assert.Equal(@"
-Parital classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
+Partial classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
 
 ```
 Classes in assemblies are by definition complete.
@@ -242,7 +242,25 @@ This is an example using source reference.
             };
 
             var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
-            Assert.True(commentModel.IsInheritDoc);
+            Assert.True(commentModel.InheritDoc != null, nameof(commentModel.InheritDoc));
+        }
+
+        [Trait("Related", "TripleSlashComments")]
+        [Fact]
+        public void InheritDocWithCref()
+        {
+            const string input = @"
+<member name=""M:ClassLibrary1.MyClass.DoThing"">
+    <inheritdoc cref=""M:ClassLibrary1.MyClass.DoThing""/>
+</member>";
+            var context = new TripleSlashCommentParserContext
+            {
+                AddReferenceDelegate = null,
+                PreserveRawInlineComments = false,
+            };
+
+            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            Assert.Equal("ClassLibrary1.MyClass.DoThing", commentModel.InheritDoc);
         }
 
         [Trait("Related", "TripleSlashComments")]

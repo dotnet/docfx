@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 item.Sees = commentModel.Sees;
                 item.SeeAlsos = commentModel.SeeAlsos;
                 item.Examples = commentModel.Examples;
-                item.IsInheritDoc = commentModel.IsInheritDoc;
+                item.InheritDoc = commentModel.InheritDoc;
                 item.CommentModel = commentModel;
             }
         }
