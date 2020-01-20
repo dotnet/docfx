@@ -3,6 +3,8 @@
 
 using System;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class SourceInfo : IEquatable<SourceInfo>, IComparable<SourceInfo>
@@ -34,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         // A special storage for source info of the JObject property key
         // if this is a JObject property value.
-        internal SourceInfo KeySourceInfo { get; set; }
+        internal SourceInfo? KeySourceInfo { get; set; }
 
         public SourceInfo(FilePath file, int line, int column)
             : this(file, line, column, line, column)
@@ -49,12 +51,12 @@ namespace Microsoft.Docs.Build
             EndColumn = endColumn;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as SourceInfo);
         }
 
-        public bool Equals(SourceInfo other)
+        public bool Equals(SourceInfo? other)
         {
             return other != null &&
                    File.Equals(other.File) &&

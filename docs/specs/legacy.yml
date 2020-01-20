@@ -216,7 +216,6 @@ outputs:
 # Resolve link for landing page
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/index.yml: |
     ### YamlMime:YamlDocument
     title: REST API Documentation
@@ -297,9 +296,9 @@ outputs:
 legacy: true
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   docs/a.yml: |
     #YamlMime: ContextObject
+  _themes/ContentTemplate/schemas/ContextObject.schema.json: "{}"
 outputs:
   docs/a.json:
   .manifest.json: |
@@ -323,7 +322,6 @@ outputs:
 legacy: true
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': 'netcore-2.0'
@@ -388,7 +386,6 @@ os: windows
 legacy: true # only legacy has toc dependency for orphan file
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
       'docs/v2/**': 'netcore-2.0'

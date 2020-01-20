@@ -119,7 +119,6 @@ outputs:
 # Handle encoding in xref resolving
 inputs:
   docfx.yml: |
-    template: {APP_BASE_PATH}data/template
   a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -135,6 +134,14 @@ inputs:
     Link to @a&b?displayProperty=description
     Link to @a&c
     Link to <xref:a%2A>
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "description": { "type": "string" }
+      },
+      "xrefProperties": ["name", "fullName", "description"]
+    }
 outputs:
   a.json:
   html-xref.json: |

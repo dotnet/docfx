@@ -13,11 +13,6 @@ namespace Microsoft.Docs.Build
         public readonly string DefaultLocale = DefaultLocaleStr;
 
         /// <summary>
-        /// The mapping between source files and localized files
-        /// </summary>
-        public readonly LocalizationMapping Mapping;
-
-        /// <summary>
         /// Show bilingual for localization pages
         /// </summary>
         public readonly bool Bilingual;

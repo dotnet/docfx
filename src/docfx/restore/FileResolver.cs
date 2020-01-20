@@ -22,13 +22,13 @@ namespace Microsoft.Docs.Build
         private readonly string _docsetPath;
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly OpsConfigAdapter _opsConfigAdapter;
-        private readonly bool _noFetch;
+        private readonly FetchOptions _fetchOptions;
 
-        public FileResolver(string docsetPath, Action<HttpRequestMessage> credentialProvider = null, OpsConfigAdapter opsConfigAdapter = null, bool noFetch = false)
+        public FileResolver(string docsetPath, Action<HttpRequestMessage> credentialProvider = null, OpsConfigAdapter opsConfigAdapter = null, FetchOptions fetchOptions = default)
         {
             _docsetPath = docsetPath;
             _opsConfigAdapter = opsConfigAdapter;
-            _noFetch = noFetch;
+            _fetchOptions = fetchOptions;
             _credentialProvider = credentialProvider;
         }
 
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(SourceInfo<string> file)
         {
-            if (!_noFetch)
+            if (_fetchOptions != FetchOptions.NoFetch)
             {
                 Download(file).GetAwaiter().GetResult();
             }
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (_noFetch)
+            if (_fetchOptions == FetchOptions.NoFetch)
             {
                 throw Errors.NeedRestore(file).ToException();
             }
@@ -83,6 +83,11 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
+                if (_fetchOptions == FetchOptions.UseCache && File.Exists(filePath))
+                {
+                    return;
+                }
+
                 var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
                 if (!string.IsNullOrEmpty(etagContent))
                 {
