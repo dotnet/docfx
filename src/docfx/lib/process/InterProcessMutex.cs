@@ -6,6 +6,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal struct InterProcessMutex : IDisposable
@@ -17,12 +19,12 @@ namespace Microsoft.Docs.Build
         public static InterProcessMutex Create(string mutexName)
         {
             // avoid nested mutex with same mutex name
-            t_mutexRecursionStack.Value = t_mutexRecursionStack.Value ?? ImmutableStack<string>.Empty;
-            if (t_mutexRecursionStack.Value.Contains(mutexName))
+            var stack = t_mutexRecursionStack.Value ??= ImmutableStack<string>.Empty;
+            if (stack.Contains(mutexName))
             {
                 throw new ApplicationException($"Nested mutex detected, mutex name: {mutexName}");
             }
-            t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Push(mutexName);
+            t_mutexRecursionStack.Value = stack.Push(mutexName);
 
             var mutex = new Mutex(initiallyOwned: false, $"Global\\ipm-{HashUtility.GetMd5Hash(mutexName)}");
 
@@ -44,7 +46,8 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            t_mutexRecursionStack.Value = t_mutexRecursionStack.Value.Pop();
+            var stack = t_mutexRecursionStack.Value ?? throw new InvalidOperationException();
+            t_mutexRecursionStack.Value = stack.Pop();
             _mutex.ReleaseMutex();
             _mutex.Dispose();
         }

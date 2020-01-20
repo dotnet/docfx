@@ -5,6 +5,8 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class SourceInfoJsonConverter : JsonConverter
@@ -14,9 +16,9 @@ namespace Microsoft.Docs.Build
             return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(SourceInfo<>);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            SourceInfo source = null;
+            SourceInfo? source = null;
 
             switch (reader)
             {
@@ -45,9 +47,12 @@ namespace Microsoft.Docs.Build
             return Activator.CreateInstance(objectType, value, source);
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((ISourceInfo)value).GetValue());
+            if (value is ISourceInfo sourceInfo)
+            {
+                serializer.Serialize(writer, sourceInfo.GetValue());
+            }
         }
     }
 }

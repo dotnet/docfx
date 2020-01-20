@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -18,7 +20,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
+        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string[]? secrets = null)
         {
             var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
 
@@ -39,7 +41,7 @@ namespace Microsoft.Docs.Build
                 // Redirect stderr to stdout
                 Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
 
-                var result = stdout ? process.StandardOutput.ReadToEnd() : null;
+                var result = stdout ? process.StandardOutput.ReadToEnd() : "";
 
                 process.WaitForExit();
 
@@ -51,7 +53,7 @@ namespace Microsoft.Docs.Build
                 return result;
             }
 
-            string HideSecrets(string arg, string secret)
+            static string HideSecrets(string arg, string secret)
             {
                 return arg.Replace(secret, secret.Length > 5 ? secret.Substring(0, 5) + "***" : "***");
             }

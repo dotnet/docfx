@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class ParallelUtility
@@ -21,7 +23,7 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int> progress = null, int? maxDegreeOfParallelism = null)
+        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int>? progress = null, int? maxDegreeOfParallelism = null)
         {
             Debug.Assert(maxDegreeOfParallelism == null || maxDegreeOfParallelism.Value > 0);
 
@@ -42,7 +44,7 @@ namespace Microsoft.Docs.Build
                 });
         }
 
-        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int> progress = null)
+        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int>? progress = null)
         {
             var done = 0;
             var total = 0;
@@ -69,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
             catch (WrapException we)
             {
-                ExceptionDispatchInfo.Capture(we.InnerException).Throw();
+                ExceptionDispatchInfo.Capture(we.CapturedException).Throw();
             }
 
             async Task Run(T item)
@@ -107,8 +109,9 @@ namespace Microsoft.Docs.Build
 
         private class WrapException : Exception
         {
-            public WrapException(Exception innerException)
-                : base("", innerException) { }
+            public Exception CapturedException { get; }
+
+            public WrapException(Exception capturedException) => CapturedException = capturedException;
         }
     }
 }

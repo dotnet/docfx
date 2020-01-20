@@ -3,10 +3,13 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -78,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeUrl(string targetUrl, string sourceQuery, string sourceFragment = null)
+        public static string MergeUrl(string targetUrl, string sourceQuery, string? sourceFragment = null)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
@@ -115,7 +118,7 @@ namespace Microsoft.Docs.Build
                 throw new ArgumentException("", nameof(relativeToUrl));
             }
 
-            if (url == null || !url.StartsWith('/'))
+            if (!url.StartsWith('/'))
             {
                 return url;
             }
@@ -230,12 +233,14 @@ namespace Microsoft.Docs.Build
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
-        public static bool TryParseGitHubUrl(string remoteUrl, out string owner, out string name)
+        public static bool TryParseGitHubUrl(
+            string remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
         {
             owner = name = default;
-
             if (string.IsNullOrEmpty(remoteUrl))
+            {
                 return false;
+            }
 
             var match = s_gitHubUrlRegex.Match(remoteUrl);
             if (!match.Success)
@@ -249,7 +254,8 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public static bool TryParseAzureReposUrl(string remoteUrl, out string project, out string repo)
+        public static bool TryParseAzureReposUrl(
+            string remoteUrl, [NotNullWhen(true)] out string? project, [NotNullWhen(true)] out string? repo)
         {
             project = repo = default;
 
