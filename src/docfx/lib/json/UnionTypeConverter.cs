@@ -5,6 +5,8 @@ using System;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -14,21 +16,21 @@ namespace Microsoft.Docs.Build
     {
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => throw new InvalidOperationException();
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new InvalidOperationException();
 
         public override bool CanConvert(Type objectType) => typeof(ITuple).IsAssignableFrom(objectType);
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var args = ReadJsonCore(reader, objectType, serializer);
 
             return Activator.CreateInstance(objectType, args);
         }
 
-        private static object[] ReadJsonCore(JsonReader reader, Type objectType, JsonSerializer serializer)
+        private static object?[] ReadJsonCore(JsonReader reader, Type objectType, JsonSerializer serializer)
         {
             var genericTypes = objectType.GetGenericArguments();
-            var args = new object[genericTypes.Length];
+            var args = new object?[genericTypes.Length];
 
             // Trying to find an exact match first
             for (var i = 0; i < genericTypes.Length; i++)
@@ -53,24 +55,15 @@ namespace Microsoft.Docs.Build
             return args;
         }
 
-        private static bool TypeExactlyMatches(JsonToken tokenType, Type objectType)
+        private static bool TypeExactlyMatches(JsonToken tokenType, Type objectType) => tokenType switch
         {
-            switch (tokenType)
-            {
-                case JsonToken.StartArray:
-                    return objectType.IsArray;
-                case JsonToken.String:
-                    return objectType == typeof(string);
-                case JsonToken.Boolean:
-                    return objectType == typeof(bool);
-                case JsonToken.Integer:
-                    return objectType == typeof(int);
-                case JsonToken.Float:
-                    return objectType == typeof(float);
-                default:
-                    return false;
-            }
-        }
+            JsonToken.StartArray => objectType.IsArray,
+            JsonToken.String => objectType == typeof(string),
+            JsonToken.Boolean => objectType == typeof(bool),
+            JsonToken.Integer => objectType == typeof(int),
+            JsonToken.Float => objectType == typeof(float),
+            _ => false,
+        };
 
         private static bool TypeNeverMatches(JsonToken tokenType, Type objectType)
         {

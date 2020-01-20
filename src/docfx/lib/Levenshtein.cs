@@ -5,6 +5,8 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class Levenshtein
@@ -33,8 +35,8 @@ namespace Microsoft.Docs.Build
             // for all i and j, matrix[i,j] will hold the Levenshtein distance between
             // the first i characters of source and the first j characters of target
             // note that matrix has (src + 1) * (target + 1) values
-            int srcLength = src.Length;
-            int targetLength = target.Length;
+            var srcLength = src.Length;
+            var targetLength = target.Length;
 
             if (srcLength == 0)
             {
@@ -45,34 +47,34 @@ namespace Microsoft.Docs.Build
                 return srcLength;
             }
 
-            int[] matrix = ArrayPool<int>.Shared.Rent((srcLength + 1) * (targetLength + 1));
+            var matrix = ArrayPool<int>.Shared.Rent((srcLength + 1) * (targetLength + 1));
             matrix[0] = 0;
 
             // source prefixes can be transformed into empty string by
             // dropping all characters
-            for (int i = 1; i <= srcLength; i++)
+            for (var i = 1; i <= srcLength; i++)
             {
                 matrix[i] = i;
             }
 
             // target prefixes can be reached from empty source prefix
             // by inserting every character
-            for (int j = 1; j <= targetLength; j++)
+            for (var j = 1; j <= targetLength; j++)
             {
                 matrix[j * (srcLength + 1)] = j;
             }
-            for (int j = 1; j <= targetLength; j++)
+            for (var j = 1; j <= targetLength; j++)
             {
-                for (int i = 1; i <= srcLength; i++)
+                for (var i = 1; i <= srcLength; i++)
                 {
-                    int cost = comparer.Equals(src[i - 1], target[j - 1]) ? 0 : 1;
+                    var cost = comparer.Equals(src[i - 1], target[j - 1]) ? 0 : 1;
                     matrix[(j * (srcLength + 1)) + i] = Math.Min(
                         matrix[(j * (srcLength + 1)) + i - 1] + 1, Math.Min(
                         matrix[((j - 1) * (srcLength + 1)) + i] + 1,
                         matrix[((j - 1) * (srcLength + 1)) + i - 1] + cost));
                 }
             }
-            int distance = matrix[((srcLength + 1) * (targetLength + 1)) - 1];
+            var distance = matrix[((srcLength + 1) * (targetLength + 1)) - 1];
 
             ArrayPool<int>.Shared.Return(matrix);
 

@@ -4,6 +4,8 @@
 using System;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class OneOrManyConverter : JsonConverter
@@ -12,16 +14,19 @@ namespace Microsoft.Docs.Build
 
         public override bool CanConvert(Type objectType) => objectType.IsArray;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => throw new InvalidOperationException();
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new InvalidOperationException();
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType != JsonToken.StartArray)
             {
                 var elementType = objectType.GetElementType();
-                var result = Array.CreateInstance(elementType, 1);
-                result.SetValue(serializer.Deserialize(reader, elementType), 0);
-                return result;
+                if (elementType != null)
+                {
+                    var result = Array.CreateInstance(elementType, 1);
+                    result.SetValue(serializer.Deserialize(reader, elementType), 0);
+                    return result;
+                }
             }
             return serializer.Deserialize(reader, objectType);
         }

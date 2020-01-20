@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class StringUtility
@@ -23,15 +25,20 @@ namespace Microsoft.Docs.Build
                     var name = ToCamelCase(wordSeparator, objects[i]);
                     if (i == objects.Length - 1)
                     {
-                        if (current.ContainsKey(name))
+                        if (current.TryGetValue(name, out var currentToken))
                         {
-                            if (current[name] is JArray arr)
+                            switch (currentToken)
                             {
-                                arr.Add(value);
-                            }
-                            else
-                            {
-                                current[name] = new JArray(current[name], value);
+                                case null:
+                                    break;
+
+                                case JArray arr:
+                                    arr.Add(value);
+                                    break;
+
+                                default:
+                                    current[name] = new JArray(currentToken, value);
+                                    break;
                             }
                         }
                         else

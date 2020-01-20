@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class JsonContractResolver : DefaultContractResolver
@@ -51,7 +53,8 @@ namespace Microsoft.Docs.Build
 
                 property.ShouldSerialize = target =>
                 {
-                    if (IsEmptyArray(property.ValueProvider.GetValue(target)))
+                    var value = property.ValueProvider?.GetValue(target);
+                    if (value != null && IsEmptyArray(value))
                     {
                         return false;
                     }
@@ -68,7 +71,7 @@ namespace Microsoft.Docs.Build
 
         private static void HandleSourceInfo(JsonProperty property)
         {
-            if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
+            if (property.PropertyType != null && property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
             {
                 // Allow source info propagation for null values
                 property.NullValueHandling = NullValueHandling.Include;
@@ -78,12 +81,13 @@ namespace Microsoft.Docs.Build
 
                 property.ShouldSerialize = target =>
                 {
-                    var sourceInfoValue = property.ValueProvider.GetValue(target);
-                    var value = ((ISourceInfo)sourceInfoValue).GetValue();
-
-                    if (value is null || IsEmptyArray(value))
+                    if (property.ValueProvider?.GetValue(target) is ISourceInfo sourceInfoValue)
                     {
-                        return false;
+                        var value = sourceInfoValue.GetValue();
+                        if (value is null || IsEmptyArray(value))
+                        {
+                            return false;
+                        }
                     }
 
                     return originalShouldSerialize?.Invoke(target) ?? true;

@@ -5,6 +5,8 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class JTokenJsonConverter : JsonConverter
@@ -14,7 +16,7 @@ namespace Microsoft.Docs.Build
             return typeof(JToken).IsAssignableFrom(objectType);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             if (reader is JTokenReader tokenReader)
             {
@@ -25,9 +27,12 @@ namespace Microsoft.Docs.Build
             return JToken.ReadFrom(reader);
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            ((JToken)value).WriteTo(writer);
+            if (value is JToken token)
+            {
+                token.WriteTo(writer);
+            }
         }
     }
 }
