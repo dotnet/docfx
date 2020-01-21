@@ -27,6 +27,7 @@ For a detailed description about DFM, please refer to [DFM](../spec/docfx_flavor
 * **[Chocolatey](https://chocolatey.org/packages/docfx)**: `choco install docfx -y`.
 * **[Homebrew](https://formulae.brew.sh/formula/docfx)** (owned by community): `brew install docfx`.
 * **GitHub**: download and unzip `docfx.zip` from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
+* **NuGet**: `nuget install docfx.console`. `docfx.exe` is under folder *docfx.console/tools/*.
 
 *Step2.* Create a sample project
 ```
