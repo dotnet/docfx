@@ -26,10 +26,10 @@ namespace Microsoft.Docs.Build
 
         static DocfxTest()
         {
-            AppData.GetCachePath = () => t_cachePath.Value;
-            AppData.GetStatePath = () => t_statePath.Value;
+            TestQuirks.GetCachePath = () => t_cachePath.Value;
+            TestQuirks.GetStatePath = () => t_statePath.Value;
 
-            GitUtility.GitRemoteProxy = remote =>
+            TestQuirks.GitRemoteProxy = remote =>
             {
                 var mockedRepos = t_repos.Value;
                 if (mockedRepos != null && mockedRepos.TryGetValue(remote, out var mockedLocation))

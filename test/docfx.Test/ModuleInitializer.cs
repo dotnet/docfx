@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT__JSON", "true");
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT__COPY_RESOURCES", "true");
 
-            Log.ForceVerbose = true;
+            TestQuirks.Verbose = true;
             TestUtility.MakeDebugAssertThrowException();
         }
     }
