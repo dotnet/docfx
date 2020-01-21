@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public PackageType Type { get; private set; }
 
-        public PathString? Path { get; private set; }
+        public string Path { get; private set; } = "";
 
         public string Url { get; private set; } = "";
 
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             else
             {
                 Type = PackageType.Folder;
-                Path = new PathString(value);
+                Path = value;
             }
         }
 
@@ -111,9 +111,9 @@ namespace Microsoft.Docs.Build
                 // Explicitly reset path here,
                 // we might want to represent a subfolder inside a repository by setting both url and path,
                 // but for now it is not supported.
-                Path = default;
+                Path = "";
             }
-            else if (Path != null)
+            else if (Path.Length > 0)
             {
                 Type = PackageType.Folder;
             }
