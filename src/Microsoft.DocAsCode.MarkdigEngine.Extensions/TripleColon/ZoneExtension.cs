@@ -8,8 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 	using Markdig.Syntax;
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text.RegularExpressions;
+    using System.Text.RegularExpressions;
 
 	public class ZoneExtension : ITripleColonExtensionInfo
     {
@@ -59,12 +58,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (target == string.Empty && pivot == string.Empty)
             {
-                logError($"Either target or privot must be specified.");
+                logError("Either target or privot must be specified.");
                 return false;
             }
             if (target == "pdf" && pivot != string.Empty)
             {
-                logError($"Pivot not permitted on pdf target.");
+                logError("Pivot not permitted on pdf target.");
                 return false;
             }
 

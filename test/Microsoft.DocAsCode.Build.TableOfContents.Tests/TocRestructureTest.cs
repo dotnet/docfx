@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
-    using System.IO;
-
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
@@ -242,7 +240,7 @@ root
                 ActionType = actionType,
                 Key = uid,
                 TypeOfKey = TreeItemKeyType.TopicUid,
-                RestructuredItems = childrenUids?.Select(s => GetTreeItem(s)).ToImmutableList(),
+                RestructuredItems = childrenUids?.Select(GetTreeItem).ToImmutableList(),
             };
         }
 
@@ -300,7 +298,7 @@ root
         {
             return layout.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
                 .SelectMany(s => s.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                .Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => GetLineInfo(s));
+                .Where(s => !string.IsNullOrWhiteSpace(s)).Select(GetLineInfo);
         }
 
         private LineInfo GetLineInfo(string line)

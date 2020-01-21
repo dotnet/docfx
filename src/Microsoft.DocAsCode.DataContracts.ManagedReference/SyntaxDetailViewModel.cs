@@ -31,8 +31,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Contents.TryGetValue("csharp", out result);
+                Contents.TryGetValue("csharp", out var result);
                 return result;
             }
             set
@@ -54,8 +53,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Contents.TryGetValue("vb", out result);
+                Contents.TryGetValue("vb", out var result);
                 return result;
             }
             set

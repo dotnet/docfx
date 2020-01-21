@@ -35,12 +35,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 throw new InvalidSchemaException($"Schema {_jSchema.SchemaVersion} is not supported. Current supported schemas are: {SupportedMetaSchemaUri.OriginalString}.");
             }
-            using (var stream = typeof(DocumentSchema).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDriven.schemas.v1._0.schema.json"))
-            using (var sr = new StreamReader(stream))
-            {
-                var metaSchema = JSchema.Parse(sr.ReadToEnd());
-                _validateService.Validate(_schemaObject, metaSchema);
-            }
+
+            using var stream = typeof(DocumentSchema).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDriven.schemas.v1._0.schema.json");
+            using var sr = new StreamReader(stream);
+            var metaSchema = JSchema.Parse(sr.ReadToEnd());
+            _validateService.Validate(_schemaObject, metaSchema);
         }
 
         private static bool ValidateSchemaUrl(Uri uri)

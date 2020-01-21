@@ -12,10 +12,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Trait("Related", "DfmMarkdown")]
         public void MarkdigWithDefaultFAL()
         {
-            var source = $"[!INCLUDE [title](~/token1573.md)]";
+            var source = "[!INCLUDE [title](~/token1573.md)]";
             var expected = @"<p><strong>token content</strong></p>";
 
-            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>()
+            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { "token1573.md", "**token content**"}
             });
@@ -542,7 +542,8 @@ baz</li>
                 {"includes/blockIncludeFile.md", blockIncludeFile },
                 {"includes/testtoken.md", testtoken },
                 {"code/code.cs", code }
-            });
+            },
+            errors: new[] { "code-snippet-deprecated", "code-snippet-deprecated", "code-snippet-deprecated", "code-snippet-deprecated" });
         }
     }
 }

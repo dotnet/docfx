@@ -15,11 +15,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             reader.Read();
             while (reader.ReadToNextSibling(name))
             {
-                using (var result = reader.ReadSubtree())
-                {
-                    result.Read();
-                    yield return result;
-                }
+                using var result = reader.ReadSubtree();
+                result.Read();
+                yield return result;
             }
         }
 

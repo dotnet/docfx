@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                         { SyntaxLanguage.CSharp, "N1" },
                         { SyntaxLanguage.VB, "N1" },
                     },
-                    DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>()
+                    DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
                     {
                         { SyntaxLanguage.CSharp, "N1" },
                         { SyntaxLanguage.VB, "N1" },
@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                                 { SyntaxLanguage.CSharp, "C1" },
                                 { SyntaxLanguage.VB, "C1" },
                             },
-                            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>()
+                            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
                             {
                                 { SyntaxLanguage.CSharp, "N1.C1" },
                                 { SyntaxLanguage.VB, "N1.C1" },
@@ -390,13 +390,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             var vm = model.Items[0].ToPageViewModel();
             Assert.NotNull(vm);
             Assert.NotNull(vm.Items);
-            Assert.Equal(1, vm.Items.Count);
+            Assert.Single(vm.Items);
             Assert.NotNull(vm.Items[0].Children);
-            Assert.Equal(1, vm.Items[0].Children.Count);
+            Assert.Single(vm.Items[0].Children);
             Assert.Equal("N1.C1", vm.Items[0].Children[0]);
 
             Assert.NotNull(vm.References);
-            Assert.Equal(1, vm.References.Count);
+            Assert.Single(vm.References);
 
             var reference = vm.References.Find(x => x.Uid == "N1.C1");
             Assert.NotNull(reference);
@@ -437,7 +437,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
             var inheritedMembers = vm.Items[0].InheritedMembers;
             Assert.NotNull(inheritedMembers);
-            Assert.Equal(1, inheritedMembers.Count);
+            Assert.Single(inheritedMembers);
             Assert.Equal(new[] { "System.Object.GetHashCode" }, inheritedMembers.ToList());
 
             Assert.NotNull(vm.References);

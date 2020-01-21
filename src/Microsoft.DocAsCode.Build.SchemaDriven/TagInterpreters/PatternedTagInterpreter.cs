@@ -32,8 +32,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         private void Validate(string tagName, object value, IProcessContext context, string path)
         {
-            var val = value as string;
-            if (val == null)
+            if (!(value is string val))
             {
                 Logger.LogWarning($"Tag {tagName} can not be tagged to {path} as type of the value is {value.GetType()}.", code: WarningCodes.Build.InvalidTaggedPropertyType);
                 return;

@@ -8,8 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Collections.Immutable;
-    using System.Text;
-
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
@@ -92,59 +90,57 @@ namespace Microsoft.DocAsCode.Build.Engine
                 PhaseProcessor phaseProcessor = null;
                 try
                 {
-                    using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
-                        ?? new TemplateProcessor(new EmptyResourceReader(), context, 16))
+                    using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+                                                  ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
+                    using (new LoggerPhaseScope("Prepare", LogLevel.Verbose))
                     {
-                        using (new LoggerPhaseScope("Prepare", LogLevel.Verbose))
+                        if (MarkdownService == null)
                         {
-                            if (MarkdownService == null)
+                            using (new LoggerPhaseScope("CreateMarkdownService", LogLevel.Verbose))
                             {
-                                using (new LoggerPhaseScope("CreateMarkdownService", LogLevel.Verbose))
-                                {
-                                    MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
-                                    context.MarkdownService = MarkdownService;
-                                }
+                                MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
+                                context.MarkdownService = MarkdownService;
                             }
-                            Prepare(
-                                parameters,
-                                context,
-                                templateProcessor,
-                                (MarkdownService as IHasIncrementalContext)?.GetIncrementalContextHash(),
-                                out hostServiceCreator,
-                                out phaseProcessor);
                         }
-                        using (new LoggerPhaseScope("Load", LogLevel.Verbose))
-                        {
-                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator);
-                        }
+                        Prepare(
+                            parameters,
+                            context,
+                            templateProcessor,
+                            (MarkdownService as IHasIncrementalContext)?.GetIncrementalContextHash(),
+                            out hostServiceCreator,
+                            out phaseProcessor);
+                    }
+                    using (new LoggerPhaseScope("Load", LogLevel.Verbose))
+                    {
+                        hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator);
+                    }
 
-                        BuildCore(phaseProcessor, hostServices, context);
+                    BuildCore(phaseProcessor, hostServices, context);
 
-                        var manifest = new Manifest(context.ManifestItems.Where(m => m.OutputFiles?.Count > 0))
-                        {
-                            Homepages = GetHomepages(context),
-                            XRefMap = ExportXRefMap(parameters, context),
-                            SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
-                            IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
-                            VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
+                    var manifest = new Manifest(context.ManifestItems.Where(m => m.OutputFiles?.Count > 0))
+                    {
+                        Homepages = GetHomepages(context),
+                        XRefMap = ExportXRefMap(parameters, context),
+                        SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
+                        IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
+                        VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
                             new Dictionary<string, VersionInfo>() :
                             new Dictionary<string, VersionInfo>
-                                {
-                                    {
-                                        context.VersionName,
-                                        new VersionInfo {VersionFolder = context.VersionFolder}
-                                    }
-                                }
-                        };
-                        manifest.Groups = new List<ManifestGroupInfo>
-                        {
-                            new ManifestGroupInfo(parameters.GroupInfo)
                             {
-                                XRefmap = (string)manifest.XRefMap
+                                {
+                                    context.VersionName,
+                                    new VersionInfo {VersionFolder = context.VersionFolder}
+                                }
                             }
-                        };
-                        return manifest;
-                    }
+                    };
+                    manifest.Groups = new List<ManifestGroupInfo>
+                    {
+                        new ManifestGroupInfo(parameters.GroupInfo)
+                        {
+                            XRefmap = (string)manifest.XRefMap
+                        }
+                    };
+                    return manifest;
                 }
                 finally
                 {

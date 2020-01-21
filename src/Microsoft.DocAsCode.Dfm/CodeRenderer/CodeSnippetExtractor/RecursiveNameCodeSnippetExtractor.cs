@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Text.RegularExpressions;
 
     /// <summary>
-    /// Recursive name extrator works for snippet name only exists in start line representation
+    /// Recursive name extractor works for snippet name only exists in start line representation
     /// E.g., C# region representation only has snippet name in start line representation
     /// </summary>
     public class RecursiveNameCodeSnippetExtractor : CodeSnippetRegexExtractor

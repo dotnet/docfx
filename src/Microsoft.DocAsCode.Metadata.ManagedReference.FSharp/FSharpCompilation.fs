@@ -674,7 +674,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 md.Sees <- cm.Sees
                 md.SeeAlsos <- cm.SeeAlsos
                 md.Examples <- cm.Examples
-                md.IsInheritDoc <- cm.IsInheritDoc
+                md.InheritDoc <- cm.InheritDoc
                 if not (isNull md.Syntax) then
                     if not (isNull md.Syntax.Parameters) then
                         for pmd in md.Syntax.Parameters do

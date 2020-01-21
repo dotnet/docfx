@@ -77,8 +77,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var assembly = Assembly.GetExecutingAssembly();
             var defaultConfigPath = $"{assembly.GetName().Name}.Filters.defaultfilterconfig.yml";
             using (var stream = assembly.GetManifestResourceStream(defaultConfigPath))
-            using (var reader = new StreamReader(stream))
             {
+                using var reader = new StreamReader(stream);
                 defaultRule = YamlUtility.Deserialize<ConfigFilterRule>(reader);
             }
 

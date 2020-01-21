@@ -27,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     {
         private string _outputFolder;
         private string _inputFolder;
-        private string _templateFolder;
         private readonly FileCreator _fileCreator;
         private ApplyTemplateSettings _applyTemplateSettings;
 
@@ -37,7 +36,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         {
             _outputFolder = GetRandomFolder();
             _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
             _applyTemplateSettings.RawModelExportSettings.Export = true;
             _fileCreator = new FileCreator(_inputFolder);
@@ -313,7 +311,7 @@ items:
             Assert.NotNull(model.Metadata["metadata"]);
 
             var meta = (JObject)model.Metadata["metadata"];
-            Assert.Equal(1, meta.Count);
+            Assert.Single(meta);
             Assert.Equal("content", meta["meta"]);
 
             var expectedModel = new TocItemViewModel
@@ -352,7 +350,7 @@ items:
 - name: NotExistTopic
   href: a/b/c.md
 ", FileType.YamlToc, "sub1/sub2");
-            var sub1sub3tocmd = _fileCreator.CreateFile($@"
+            var sub1sub3tocmd = _fileCreator.CreateFile(@"
 #[Not-existed-md](sub2/notexist.md)
 ", FileType.MarkdownToc, "sub1/sub3");
             var sub1tocmd = _fileCreator.CreateFile($@"
@@ -551,11 +549,11 @@ items:
         [Fact]
         public void ProcessTocWithCircularReferenceShouldFail()
         {
-            var referencedToc = _fileCreator.CreateFile($@"
+            var referencedToc = _fileCreator.CreateFile(@"
 - name: Topic
   href: TOC.md
 ", FileType.YamlToc, "sub1");
-            var subToc = _fileCreator.CreateFile($@"
+            var subToc = _fileCreator.CreateFile(@"
 #Topic
 ##[ReferencedToc](Toc.yml)
 ", FileType.MarkdownToc, "sub1");
@@ -737,7 +735,7 @@ items:
             const string fileFolderEncoded = "sub1%28%29";
             var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileFolder);
             var toc1 = _fileCreator.CreateFile($"#[Topic]({Path.Combine(fileFolderEncoded, Path.GetFileName(file))})", FileType.MarkdownToc);
-            var toc2 = _fileCreator.CreateFile($"# a nearer toc", FileType.MarkdownToc, fileFolder);
+            var toc2 = _fileCreator.CreateFile("# a nearer toc", FileType.MarkdownToc, fileFolder);
             var files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file, toc1, toc2 });
 
@@ -755,7 +753,7 @@ items:
         [Fact]
         public void ProcessYamlTocWithTocHrefAndHomepageShouldFail()
         {
-            var content = $@"
+            var content = @"
 - name: Topic1
   tocHref: /Topic1/
   href: /Topic1/index.html
@@ -956,10 +954,8 @@ items:
                 }.ToImmutableDictionary(),
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
-            {
-                builder.Build(parameters);
-            }
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            builder.Build(parameters);
         }
 
         private IEnumerable<Assembly> LoadAssemblies()
@@ -970,19 +966,15 @@ items:
 
         private static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual, bool noMetadata = true)
         {
-            using (var swForExpected = new StringWriter())
+            using var swForExpected = new StringWriter();
+            YamlUtility.Serialize(swForExpected, expected);
+            using var swForActual = new StringWriter();
+            if (noMetadata)
             {
-                YamlUtility.Serialize(swForExpected, expected);
-                using (var swForActual = new StringWriter())
-                {
-                    if (noMetadata)
-                    {
-                        actual.Metadata.Clear();
-                    }
-                    YamlUtility.Serialize(swForActual, actual);
-                    Assert.Equal(swForExpected.ToString(), swForActual.ToString());
-                }
+                actual.Metadata.Clear();
             }
+            YamlUtility.Serialize(swForActual, actual);
+            Assert.Equal(swForExpected.ToString(), swForActual.ToString());
         }
 
         #endregion

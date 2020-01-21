@@ -17,15 +17,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private readonly bool IsEndLineContainsTagName;
         public const string TagNamePlaceHolder = "{tagname}";
 
-        private readonly MarkdownContext _context;
-
         public CodeSnippetExtrator(string startLineTemplate, string endLineTemplate, MarkdownContext context, bool isEndLineContainsTagName = true)
         {
             this.StartLineTemplate = startLineTemplate;
             this.EndLineTemplate = endLineTemplate;
             this.IsEndLineContainsTagName = isEndLineContainsTagName;
-
-            _context = context;
         }
 
         public Dictionary<string, CodeRange> GetAllTags(string[] lines, ref HashSet<int> tagLines)
@@ -37,9 +33,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 var line = lines[index];
 
-                string tagName;
-
-                if(MatchTag(line, EndLineTemplate, out tagName, IsEndLineContainsTagName))
+                if(MatchTag(line, EndLineTemplate, out var tagName, IsEndLineContainsTagName))
                 {
                     tagLines.Add(index);
                     if (!IsEndLineContainsTagName)

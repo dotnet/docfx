@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static MetadataItem ShrinkToSimpleToc(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem()
+            MetadataItem shrinkedItem = new MetadataItem
             {
                 Name = item.Name,
                 DisplayNames = item.DisplayNames,
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(this MetadataItem item)
         {
-            MetadataItem shrinkedItem = new MetadataItem()
+            MetadataItem shrinkedItem = new MetadataItem
             {
                 Name = item.Name,
                 DisplayNames = item.DisplayNames,
@@ -414,7 +414,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return getName(list[0]);
             }
-            return string.Concat(list.ConvertAll(item => getName(item)).ToArray());
+            return string.Concat(list.ConvertAll(getName).ToArray());
         }
 
         private static List<SpecViewModel> GetSpec(ReferenceItem reference, SyntaxLanguage language)

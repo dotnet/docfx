@@ -24,8 +24,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public void Initialize(IMarkdownRewriteEngine rewriteEngine)
         {
-            var tengine = rewriteEngine as TEngine;
-            if (tengine != null)
+            if (rewriteEngine is TEngine tengine)
             {
                 Initializer(tengine);
             }
@@ -33,9 +32,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)
         {
-            var tengine = engine as TEngine;
-            var ttoken = token as TToken;
-            if (tengine != null && ttoken != null)
+            if (engine is TEngine tengine && token is TToken ttoken)
             {
                 return RewriteFunc(tengine, ttoken);
             }

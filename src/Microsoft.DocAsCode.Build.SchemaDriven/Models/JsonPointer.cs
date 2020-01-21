@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 val = GetChild(val, part);
                 if (val == null)
                 {
-                    throw new InvalidJsonPointerException($"Unable to set value to null parent");
+                    throw new InvalidJsonPointerException("Unable to set value to null parent");
                 }
             }
 

@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.SubCommands
         private const string DefaultOutputFolder = "_exported_templates";
 
         private readonly string[] _templates;
-        private readonly TemplateCommandOptions _options;
         private readonly System.Reflection.Assembly _assembly;
 
         private readonly TemplateCommandType _commandType;
@@ -33,7 +32,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public TemplateCommand(TemplateCommandOptions options)
         {
-            _options = options;
             if (options.Commands == null || options.Commands.Count == 0 || !Enum.TryParse(options.Commands[0], true, out _commandType))
             {
                 throw new InvalidOptionException("Neither 'list' nor 'export' is found. You must specify a command type.");

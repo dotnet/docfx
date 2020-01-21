@@ -62,17 +62,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             lock (_locker)
             {
-                using (var stream = GetResourceStreamCore(name))
-                {
-                    return GetString(stream);
-                }
+                using var stream = GetResourceStreamCore(name);
+                return GetString(stream);
             }
         }
 
         private Stream GetResourceStreamCore(string name)
         {
             // zip entry is case sensitive
-            // incase relative path is combined by backslash \
+            // in case relative path is combined by backslash \
             return _zipped.GetEntry(StringExtension.ToNormalizedPath(name.Trim()))?.Open();
         }
 

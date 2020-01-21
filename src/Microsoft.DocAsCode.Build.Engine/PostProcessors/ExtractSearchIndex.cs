@@ -64,10 +64,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     try
                     {
-                        using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(filePath))
-                        {
-                            html.Load(stream, Encoding.UTF8);
-                        }
+                        using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(filePath);
+                        html.Load(stream, Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {
@@ -83,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             JsonUtility.Serialize(indexDataFilePath, indexData, Formatting.Indented);
 
-            // add index.json to mainfest as resource file
+            // add index.json to manifest as resource file
             var manifestItem = new ManifestItem
             {
                 DocumentType = "Resource",

@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public IDictionary<string, FileAttributeItem> Attributes { get; set; } = new OSPlatformSensitiveDictionary<FileAttributeItem>();
 
         /// <summary>
-        /// deserialized manifestitems
+        /// deserialized <see cref="ManifestItem"/>
         /// </summary>
         [JsonIgnore]
         public IEnumerable<ManifestItem> Manifest { get; set; }

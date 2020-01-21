@@ -176,8 +176,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 throw new ArgumentOutOfRangeException(nameof(maxOccur), "Should be greater than or equals minOccur.");
             }
-            var repeatable = matcher as IRepeatable;
-            if (repeatable != null)
+
+            if (matcher is IRepeatable repeatable)
             {
                 return repeatable.Repeat(minOccur, maxOccur);
             }

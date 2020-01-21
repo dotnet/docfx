@@ -192,8 +192,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void ResolveExternalXRefSpec()
         {
             Task.WaitAll(
-                Task.Run(() => ResolveExternalXRefSpecForSpecs()),
-                Task.Run(() => ResolveExternalXRefSpecForNoneSpecsAsync()));
+                Task.Run(ResolveExternalXRefSpecForSpecs),
+                Task.Run(ResolveExternalXRefSpecForNoneSpecsAsync));
         }
 
         private void ResolveExternalXRefSpecForSpecs()
@@ -288,22 +288,20 @@ namespace Microsoft.DocAsCode.Build.Engine
             try
             {
                 var data = await client.GetStreamAsync(url);
-                using (var sr = new StreamReader(data))
+                using var sr = new StreamReader(data);
+                var xsList = JsonUtility.Deserialize<List<Dictionary<string, object>>>(sr);
+                return xsList.ConvertAll(item =>
                 {
-                    var xsList = JsonUtility.Deserialize<List<Dictionary<string, object>>>(sr);
-                    return xsList.ConvertAll(item =>
+                    var spec = new XRefSpec();
+                    foreach (var pair in item)
                     {
-                        var spec = new XRefSpec();
-                        foreach (var pair in item)
+                        if (pair.Value is string s)
                         {
-                            if (pair.Value is string s)
-                            {
-                                spec[pair.Key] = s;
-                            }
+                            spec[pair.Key] = s;
                         }
-                        return spec;
-                    });
-                }
+                    }
+                    return spec;
+                });
             }
             catch (HttpRequestException e)
             {
@@ -348,16 +346,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private List<XRefMap> LoadXRefMaps()
         {
-            using (var client = new HttpClient())
-            {
-                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
-                var mapTasks = (from url in _xrefMapUrls
-                                select LoadXRefMap(url, client)).ToArray();
-                Task.WaitAll(mapTasks);
-                return (from t in mapTasks
-                        where t.Result != null
-                        select t.Result).ToList();
-            }
+            using var client = new HttpClient();
+            Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
+            var mapTasks = (from url in _xrefMapUrls
+                select LoadXRefMap(url, client)).ToArray();
+            Task.WaitAll(mapTasks);
+            return (from t in mapTasks
+                where t.Result != null
+                select t.Result).ToList();
         }
 
         private async Task<XRefMap> LoadXRefMap(string url, HttpClient client)
@@ -371,14 +367,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Logger.LogWarning($"Ignore invalid url: {url}");
                     return null;
                 }
-                using (var stream = await client.GetStreamAsync(uri))
-                using (var sr = new StreamReader(stream))
-                {
-                    var map = YamlUtility.Deserialize<XRefMap>(sr);
-                    map.UpdateHref(uri);
-                    Logger.LogVerbose($"Xref map ({url}) downloaded.");
-                    return map;
-                }
+
+                using var stream = await client.GetStreamAsync(uri);
+                using var sr = new StreamReader(stream);
+                var map = YamlUtility.Deserialize<XRefMap>(sr);
+                map.UpdateHref(uri);
+                Logger.LogVerbose($"Xref map ({url}) downloaded.");
+                return map;
             }
             catch (Exception ex)
             {

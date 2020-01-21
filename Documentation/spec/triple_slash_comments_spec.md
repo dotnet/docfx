@@ -44,7 +44,7 @@ Custom tags
 -------
 ### inheritdoc
 `docfx` supports a subset of the [inheritdoc functionality available in Sandcastle](https://ewsoftware.github.io/XMLCommentsGuide/html/86453FFB-B978-4A2A-9EB5-70E118CA8073.htm). Specifically, it implements most of the "Top-Level Inheritance Rules". It does not implement:
-* Support for the `cref` or `select` attributes.
+* Support for the `select` attribute.
 * Automatic inheritance of documentation for explicit interface implementations.
 * Support for inline `inheritdoc` tags (i.e., an `inheritdoc` tag inside of an `example` tag).
 

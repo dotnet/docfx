@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
             }
 
-            throw new NotSupportedException($"Unable to parse DfmFencesBlockPathQueryOptionParameters");
+            throw new NotSupportedException("Unable to parse DfmFencesBlockPathQueryOptionParameters");
         }
 
         public static IDfmFencesBlockPathQueryOptionCreator[] GetDefaultOptionCreaters(CodeLanguageExtractorsBuilder builder = null)

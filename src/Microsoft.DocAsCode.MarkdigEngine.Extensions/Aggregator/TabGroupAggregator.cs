@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-    using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -83,17 +82,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static string GetMd5String(string content)
         {
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            using (var writer = new StreamWriter(ms, Encoding.Unicode, 0x100, true))
             {
-                using (var writer = new StreamWriter(ms, Encoding.Unicode, 0x100, true))
-                {
-                    writer.Write(content);
-                }
-                using (var md5 = MD5.Create())
-                {
-                    return Convert.ToBase64String(md5.ComputeHash(ms.ToArray()));
-                }
+                writer.Write(content);
             }
+
+            using var md5 = MD5.Create();
+            return Convert.ToBase64String(md5.ComputeHash(ms.ToArray()));
         }
 
         private static TabItemBlock CreateTabItem(

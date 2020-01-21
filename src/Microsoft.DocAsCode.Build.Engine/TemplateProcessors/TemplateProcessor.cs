@@ -110,10 +110,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 try
                 {
-                    using (var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey))
-                    {
-                        ProcessSingleDependency(stream, outputDirectory, resourceInfo.ResourceKey);
-                    }
+                    using var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey);
+                    ProcessSingleDependency(stream, outputDirectory, resourceInfo.ResourceKey);
                 }
                 catch (Exception e)
                 {

@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Linq;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.Common;
 
     internal class RoslynFilterData
     {

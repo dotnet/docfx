@@ -5,22 +5,21 @@
 [![Github All Releases](https://img.shields.io/github/downloads/dotnet/docfx/total.svg?maxAge=600)](https://github.com/dotnet/docfx/releases/latest)
 [![Twitter Follow](https://img.shields.io/twitter/follow/docfxmsft.svg?style=social&label=Follow)](https://twitter.com/docfxmsft)
 
-## What is it
+## What's it
 
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
 
 ## What's next
 
-Check out the road map of DocFX [here](Roadmap.md).
+Check out the road map of DocFX [here](Roadmap.md). For more information on DocFX v3, please visit the [v3 working branch](https://github.com/dotnet/docfx/tree/v3).
 
-> **NOTE:**
-> For more information on DocFX v3, please visit the [v3 working branch](https://github.com/dotnet/docfx/tree/v3).
+## Quick Start
 
-## How to use
-
-- Option 1: install DocFX through [chocolatey package](https://chocolatey.org/packages/docfx): `choco install docfx -y`.
-- Option 2: install DocFX through nuget package: `nuget install docfx.console`, `docfx.exe` is under folder *docfx.console/tools/*.
-- Option 3: play DocFX inside Visual Studio: create a **Class Library (.NET Framework)** project, **Manage Nuget Packages** to install `docfx.console` nuget package on the project, **Build** to create the generated website under folder `_site`.
+```
+choco install docfx
+docfx init -q
+docfx docfx_project\docfx.json --serve
+```
 
 For more information, please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
@@ -59,7 +58,7 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 | master | dev
 | - | -
-| [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-v2-master-release?branchName=master)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1503&branchName=master) | [![Build Status](https://mseng.visualstudio.com/VSChina/_apis/build/status/docfx/v2/docfx-nightly-build)](https://mseng.visualstudio.com/VSChina/_build/latest?definitionId=7829)
+| [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-v2-master-release?branchName=master)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1503&branchName=master) | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-v2-dev-release?branchName=dev)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1743&branchName=dev)
 
 ### Packages
 

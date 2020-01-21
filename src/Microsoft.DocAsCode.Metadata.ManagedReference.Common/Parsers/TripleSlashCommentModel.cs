@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public Dictionary<string, string> TypeParameters { get; private set; }
 
-        public bool IsInheritDoc { get; private set; }
+        public string InheritDoc { get; private set; }
 
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         {
@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Examples = GetExamples(nav, context);
             Parameters = GetParameters(nav, context);
             TypeParameters = GetTypeParameters(nav, context);
-            IsInheritDoc = GetIsInheritDoc(nav, context);
+            InheritDoc = GetInheritDoc(nav, context);
         }
 
         public static TripleSlashCommentModel CreateModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
@@ -290,22 +290,48 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetMultipleExampleNodes(nav, "/member/example").ToList();
         }
 
-        private bool GetIsInheritDoc(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private string GetInheritDoc(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             var node = nav.SelectSingleNode("/member/inheritdoc");
             if (node == null)
             {
-                return false;
+                return null;
             }
+
             if (node.HasAttributes)
             {
-                //The Sandcastle implementation of <inheritdoc /> supports two attributes: 'cref' and 'select'.
-                //These attributes allow changing the source of the inherited doc and controlling what is inherited.
-                //Until these attributes are supported, ignoring inheritdoc elements with attributes, so as not to misinterpret them.
-                Logger.LogWarning("Attributes on <inheritdoc /> elements are not supported; inheritdoc element will be ignored.");
-                return false;
+                // The Sandcastle implementation of <inheritdoc /> supports two attributes: 'cref' and 'select'.
+                // These attributes allow changing the source of the inherited doc and controlling what is inherited.
+                // Only cref is supported currently
+                var cRef = node.GetAttribute("cref", node.NamespaceURI);
+                if (!string.IsNullOrEmpty(cRef))
+                {
+                    // Strict check is needed as value could be an invalid href,
+                    // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
+                    var match = CommentIdRegex.Match(cRef);
+                    if (match.Success)
+                    {
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+
+                        if (type == "Overload")
+                        {
+                            id += '*';
+                        }
+
+                        context.AddReferenceDelegate?.Invoke(id, cRef);
+                        return id;
+                    }
+                }
+                else
+                {
+                    Logger.LogWarning("Unsupported attribute on <inheritdoc />; inheritdoc element will be ignored.");
+                    return null;
+                }
             }
-            return true;
+
+            // Default inheritdoc (no explicit reference)
+            return string.Empty;
         }
 
         private void ResolveCodeSource(XDocument doc, ITripleSlashCommentParserContext context)
@@ -806,22 +832,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         private static string GetInnerXml(XPathNavigator node)
         {
-            using (var sw = new StringWriter(CultureInfo.InvariantCulture))
+            using var sw = new StringWriter(CultureInfo.InvariantCulture);
+            using (var tw = new XmlWriterWithGtDecoded(sw))
             {
-                using (var tw = new XmlWriterWithGtDecoded(sw))
+                if (node.MoveToFirstChild())
                 {
-                    if (node.MoveToFirstChild())
+                    do
                     {
-                        do
-                        {
-                            tw.WriteNode(node, true);
-                        } while (node.MoveToNext());
-                        node.MoveToParent();
-                    }
+                        tw.WriteNode(node, true);
+                    } while (node.MoveToNext());
+                    node.MoveToParent();
                 }
-
-                return sw.ToString();
             }
+
+            return sw.ToString();
         }
 
         private sealed class XmlWriterWithGtDecoded : XmlTextWriter

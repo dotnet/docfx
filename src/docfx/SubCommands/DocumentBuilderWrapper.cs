@@ -120,8 +120,7 @@ namespace Microsoft.DocAsCode.SubCommands
             // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
             if (metadata != null && metadata.TryGetValue("_enableSearch", out object value))
             {
-                var isSearchable = value as bool?;
-                if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
+                if (value is bool isSearchable && isSearchable && !postProcessorNames.Contains("ExtractSearchIndex"))
                 {
                     postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
                 }
@@ -138,7 +137,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 changeList = ChangeList.Parse(config.ChangesFile, config.BaseDirectory);
             }
 
-            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory))
+            using var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory);
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
                 var parameters = ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory);
@@ -344,7 +343,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     var p = parameters.Clone();
                     if (!string.IsNullOrEmpty(pair.Key))
                     {
-                        p.GroupInfo = new GroupInfo()
+                        p.GroupInfo = new GroupInfo
                         {
                             Name = pair.Key,
                         };

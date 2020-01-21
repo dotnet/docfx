@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             var repoInfo = GitUtility.TryGetFileDetail(filePath);
             if (repoInfo != null)
             {
-                swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
+                swagger.Metadata["source"] = new SourceDetail { Remote = repoInfo };
             }
 
             swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
@@ -210,17 +210,15 @@ namespace Microsoft.DocAsCode.Build.RestApi
         {
             try
             {
-                using (var streamReader = EnvironmentContext.FileAbstractLayer.OpenReadText(filePath))
-                using (JsonReader reader = new JsonTextReader(streamReader))
+                using var streamReader = EnvironmentContext.FileAbstractLayer.OpenReadText(filePath);
+                using JsonReader reader = new JsonTextReader(streamReader);
+                var jObject = JObject.Load(reader);
+                if (jObject.TryGetValue("swagger", out JToken swaggerValue))
                 {
-                    var jObject = JObject.Load(reader);
-                    if (jObject.TryGetValue("swagger", out JToken swaggerValue))
+                    var swaggerString = (string)swaggerValue;
+                    if (swaggerString != null && swaggerString.Equals("2.0"))
                     {
-                        var swaggerString = (string)swaggerValue;
-                        if (swaggerString != null && swaggerString.Equals("2.0"))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }

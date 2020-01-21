@@ -21,9 +21,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 s => s.IsInvalid ? null : s.Items,
                 (current, parent) =>
                 {
-                    if (current.IsInheritDoc)
+                    if (current.InheritDoc != null)
                     {
                         InheritDoc(current, context);
+                        current.InheritDoc = null;
                     }
                     return true;
                 });
@@ -31,8 +32,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void InheritDoc(MetadataItem dest, ResolverContext context)
         {
-            dest.IsInheritDoc = false;
-
             switch (dest.Type)
             {
                 case MemberType.Constructor:
@@ -126,9 +125,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void Copy(MetadataItem dest, string srcName, ResolverContext context)
         {
-            if (string.IsNullOrEmpty(srcName) || !context.Members.TryGetValue(srcName, out MetadataItem src))
+            MetadataItem src = null;
+
+            // An explicit <inheritdoc/> (i.e. cref) overrides the default behavior
+            if (!string.IsNullOrEmpty(dest.InheritDoc) && context.Members.TryGetValue(dest.InheritDoc, out src))
             {
+                srcName = dest.InheritDoc;
+            }
+
+            if (string.IsNullOrEmpty(srcName))
                 return;
+
+            if (src == null && !context.Members.TryGetValue(srcName, out src))
+            {
+                // Try to resolve any templated references before giving up
+                if (!context.References.TryGetValue(srcName, out var referenceItem) || !context.Members.TryGetValue(referenceItem.Definition, out src))
+                    return;
             }
 
             Copy(dest, src, context);
@@ -136,12 +148,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void Copy(MetadataItem dest, MetadataItem src, ResolverContext context)
         {
-            if (src.IsInheritDoc)
+            if (src.InheritDoc != null)
             {
                 InheritDoc(src, context);
+                src.InheritDoc = null;
             }
 
             dest.CopyInheritedData(src);
+            dest.InheritDoc = null;
         }
     }
 }

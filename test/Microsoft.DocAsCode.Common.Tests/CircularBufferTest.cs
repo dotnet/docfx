@@ -65,24 +65,20 @@ namespace Microsoft.DocAsCode.Common.Tests
             var cs = new CircularStream();
             Task.Run(() =>
             {
-                using (var writer = cs.CreateWriterView())
-                using (var sw = new StreamWriter(writer))
-                {
-                    for (int i = 0; i < LineCount; i++)
-                    {
-                        sw.WriteLine($"Line {i}: test!");
-                    }
-                }
-            });
-            using (var reader = cs.CreateReaderView())
-            using (var sr = new StreamReader(reader))
-            {
+                using var writer = cs.CreateWriterView();
+                using var sw = new StreamWriter(writer);
                 for (int i = 0; i < LineCount; i++)
                 {
-                    Assert.Equal($"Line {i}: test!", sr.ReadLine());
+                    sw.WriteLine($"Line {i}: test!");
                 }
-                Assert.Equal(string.Empty, sr.ReadToEnd());
+            });
+            using var reader = cs.CreateReaderView();
+            using var sr = new StreamReader(reader);
+            for (int i = 0; i < LineCount; i++)
+            {
+                Assert.Equal($"Line {i}: test!", sr.ReadLine());
             }
+            Assert.Equal(string.Empty, sr.ReadToEnd());
         }
 
         [Fact]
@@ -93,10 +89,8 @@ namespace Microsoft.DocAsCode.Common.Tests
             var cs = new CircularStream();
             var task = Task.Run(() =>
             {
-                using (var stream = cs.CreateReaderView())
-                {
-                    return SHA1.Create().ComputeHash(stream);
-                }
+                using var stream = cs.CreateReaderView();
+                return SHA1.Create().ComputeHash(stream);
             });
             byte[] expected;
             using (var ds = new CompositeStream(ms, cs.CreateWriterView()))

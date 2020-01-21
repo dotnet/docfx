@@ -10,13 +10,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using HtmlAgilityPack;
-
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdigEngine;
-    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(typeof(IHostService))]
@@ -430,7 +426,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 File.Copy(
                                     Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), item.FilePath),
                                     Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
-                                items.Add(new ModelManifestItem() { SourceFilePath = item.SourceFilePath, FilePath = fileName });
+                                items.Add(new ModelManifestItem { SourceFilePath = item.SourceFilePath, FilePath = fileName });
                             }
                         }
                     }
@@ -447,7 +443,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 processor.SaveIntermediateModel(model, stream);
                             }
-                            items.Add(new ModelManifestItem() { SourceFilePath = model.FileAndType.File, FilePath = fileName });
+                            items.Add(new ModelManifestItem { SourceFilePath = model.FileAndType.File, FilePath = fileName });
                         }
                     }
                     lock (cmm)
@@ -472,11 +468,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             foreach (var item in cfn)
             {
-                using (var stream = File.OpenRead(
-                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), item.FilePath)))
-                {
-                    yield return processor.LoadIntermediateModel(stream);
-                }
+                using var stream = File.OpenRead(
+                    Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), item.FilePath));
+                yield return processor.LoadIntermediateModel(stream);
             }
         }
 
@@ -557,8 +551,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<UidDefinition>> e)
         {
-            var m = sender as FileModel;
-            if (m == null)
+            if (!(sender is FileModel m))
             {
                 return;
             }
@@ -590,8 +583,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void HandleFileOrBaseDirChanged(object sender, EventArgs e)
         {
-            var m = sender as FileModel;
-            if (m == null)
+            if (!(sender is FileModel m))
             {
                 return;
             }

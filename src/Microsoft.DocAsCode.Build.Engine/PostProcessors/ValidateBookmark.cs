@@ -171,19 +171,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 name,
                 stream =>
                 {
-                    using (var sr = new StreamReader(stream))
-                    {
-                        return JsonUtility.Deserialize<OSPlatformSensitiveDictionary<T>>(sr);
-                    }
+                    using var sr = new StreamReader(stream);
+                    return JsonUtility.Deserialize<OSPlatformSensitiveDictionary<T>>(sr);
                 });
         }
 
         private static void Serialize(Stream stream, object obj)
         {
-            using (var sw = new StreamWriter(stream))
-            {
-                JsonUtility.Serialize(sw, obj);
-            }
+            using var sw = new StreamWriter(stream);
+            JsonUtility.Serialize(sw, obj);
         }
 
         private class LinkItem

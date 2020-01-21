@@ -264,8 +264,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return dictionary;
             }
 
-            var objectModel = ConvertToObjectHelper.ConvertStrongTypeToObject(model) as IDictionary<string, object>;
-            if (objectModel == null)
+            if (!(ConvertToObjectHelper.ConvertStrongTypeToObject(model) is IDictionary<string, object> objectModel))
             {
                 throw new ArgumentException("Only object model is supported for template transformation.");
             }
@@ -299,8 +298,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             Task<byte[]> hashTask;
             unresolvedXRefs = new List<XRefDetails>();
             using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithMd5Hash(out hashTask))
-            using (var sw = new StreamWriter(stream))
             {
+                using var sw = new StreamWriter(stream);
                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
                 {
                     TransformHtml(context, result, manifestItem.SourceRelativePath, destFilePath, sw, out unresolvedXRefs);
@@ -310,6 +309,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sw.Write(result);
                 }
             }
+
             var ofi = new OutputFileInfo
             {
                 RelativePath = destFilePath,

@@ -36,11 +36,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override string ToString()
         {
-            using(StringWriter writer = new StringWriter())
-            {
-                JsonUtility.Serialize(writer, this);
-                return writer.ToString();
-            }
+            using StringWriter writer = new StringWriter();
+            JsonUtility.Serialize(writer, this);
+            return writer.ToString();
         }
     }
 }

@@ -32,16 +32,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var content = obj.Lines.ToString();
             try
             {
-                using (StringReader reader = new StringReader(content))
+                using StringReader reader = new StringReader(content);
+                var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
+                if (result != null)
                 {
-                    var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
-                    if (result != null)
-                    {
-                        renderer.Write("<yamlheader").Write($" start=\"{obj.Line + 1}\" end=\"{obj.Line + obj.Lines.Count + 2}\"");
-                        renderer.WriteAttributes(obj).Write(">");
-                        renderer.Write(WebUtility.HtmlEncode(obj.Lines.ToString()));
-                        renderer.Write("</yamlheader>");
-                    }
+                    renderer.Write("<yamlheader").Write($" start=\"{obj.Line + 1}\" end=\"{obj.Line + obj.Lines.Count + 2}\"");
+                    renderer.WriteAttributes(obj).Write(">");
+                    renderer.Write(WebUtility.HtmlEncode(obj.Lines.ToString()));
+                    renderer.Write("</yamlheader>");
                 }
             }
             catch (Exception ex)

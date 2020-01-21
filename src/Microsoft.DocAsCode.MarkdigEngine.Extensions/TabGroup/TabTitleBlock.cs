@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
 
     public class TabTitleBlock : LeafBlock
     {

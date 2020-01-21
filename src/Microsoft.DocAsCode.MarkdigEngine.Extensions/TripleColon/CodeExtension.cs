@@ -10,9 +10,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Net;
-    using System.Security.Cryptography;
-    using System.Text;
     using System.Text.RegularExpressions;
 
     public class CodeExtension : ITripleColonExtensionInfo
@@ -79,7 +76,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (string.IsNullOrEmpty(source))
             {
-                logError($"source is a required attribute. Please ensure you have specified a source attribute");
+                logError("source is a required attribute. Please ensure you have specified a source attribute");
                 return false;
             }
 
@@ -133,12 +130,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var fileExtension = Path.GetExtension(source);
             if(fileExtension == null)
             {
-                logError($"Language is not set, and your source has no file type. Cannot infer language.");
+                logError("Language is not set, and your source has no file type. Cannot infer language.");
             }
             var language = HtmlCodeSnippetRenderer.LanguageAlias.Where(oo => oo.Value.Contains(fileExtension) || oo.Value.Contains($".{fileExtension}")).FirstOrDefault();
             if(string.IsNullOrEmpty(language.Key))
             {
-                logError($"Language is not set, and we could not infer language from the file type.");
+                logError("Language is not set, and we could not infer language from the file type.");
             }
             return language.Key;
         }
@@ -147,7 +144,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             if(!string.IsNullOrEmpty(range) && !string.IsNullOrEmpty(id))
             {
-                logError($"You must set only either Range or Id, but not both.");
+                logError("You must set only either Range or Id, but not both.");
             }
             
             var codeSections = new List<string>();
@@ -226,12 +223,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                             end--;
                         } else
                         {
-                            logError($"Your ranges must be numbers.");
+                            logError("Your ranges must be numbers.");
                             return null;
                         }
                         if(beg > codeLines.Length || end > codeLines.Length)
                         {
-                            logError($"Your range is greater than the number of lines in the document.");
+                            logError("Your range is greater than the number of lines in the document.");
                             return null;
                         }
                         var section = string.Empty;
@@ -251,7 +248,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         }
                         else
                         {
-                            logError($"Your ranges must be numbers.");
+                            logError("Your ranges must be numbers.");
                             return null;
                         }
                         var end = codeLines.Length;
@@ -271,7 +268,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                     else
                     {
-                        logError($"Your ranges must be numbers.");
+                        logError("Your ranges must be numbers.");
                         return null;
                     }
                 }

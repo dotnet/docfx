@@ -281,10 +281,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             lock (_archive)
             {
                 var entry = _archive.GetEntry(name);
-                using (var sr = new StreamReader(entry.Open()))
-                {
-                    return YamlUtility.Deserialize<XRefMap>(sr);
-                }
+                using var sr = new StreamReader(entry.Open());
+                return YamlUtility.Deserialize<XRefMap>(sr);
             }
         }
 
@@ -295,10 +293,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var entry = _archive.GetEntry(name);
                 entry.Delete();
                 entry = _archive.CreateEntry(name);
-                using (var sw = new StreamWriter(entry.Open()))
-                {
-                    YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
-                }
+                using var sw = new StreamWriter(entry.Open());
+                YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
             }
         }
 

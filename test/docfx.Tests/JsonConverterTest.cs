@@ -76,16 +76,14 @@ namespace Microsoft.DocAsCode.Tests
                 });
             var result = JsonUtility.Serialize(item);
             Assert.Equal("{\"*.md\":1,\"*.m\":true,\"abc\":\"string\",\"/[]\\\\*.cs\":{\"key\":\"2\"},\"*/*.cs\":[\"1\",\"2\"],\"**\":{\"key\":[\"1\",\"2\"]}}", result);
-            using (var reader = new StringReader(result))
+            using var reader = new StringReader(result);
+            var pairs = JsonUtility.Deserialize<FileMetadataPairs>(reader);
+            Assert.Equal(item.Count, pairs.Count);
+            for (int i = 0; i < pairs.Count; i++)
             {
-                var pairs = JsonUtility.Deserialize<FileMetadataPairs>(reader);
-                Assert.Equal(item.Count, pairs.Count);
-                for (int i = 0; i < pairs.Count; i++)
-                {
-                    Assert.Equal(item[i].Glob.Raw, pairs[i].Glob.Raw);
-                    var parsedValue = pairs[i].Value;
-                    Assert.Equal(item[i].Value, parsedValue);
-                }
+                Assert.Equal(item[i].Glob.Raw, pairs[i].Glob.Raw);
+                var parsedValue = pairs[i].Value;
+                Assert.Equal(item[i].Value, parsedValue);
             }
         }
 
@@ -94,11 +92,9 @@ namespace Microsoft.DocAsCode.Tests
         public void TestFileMappingItemCwdInputShouldWork()
         {
             var input = "{\"files\":[\"file1\"],\"cwd\":\"folder1\"}";
-            using (var sr = new StringReader(input))
-            {
-                var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-                Assert.Equal("folder1", result.SourceFolder);
-            }
+            using var sr = new StringReader(input);
+            var result = JsonUtility.Deserialize<FileMappingItem>(sr);
+            Assert.Equal("folder1", result.SourceFolder);
         }
 
         [Fact]
@@ -106,11 +102,9 @@ namespace Microsoft.DocAsCode.Tests
         public void TestFileMappingItemSrcInputShouldWork()
         {
             var input = "{\"files\":[\"file1\"],\"src\":\"folder1\"}";
-            using(var sr = new StringReader(input))
-            {
-                var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-                Assert.Equal("folder1", result.SourceFolder);
-            }
+            using var sr = new StringReader(input);
+            var result = JsonUtility.Deserialize<FileMappingItem>(sr);
+            Assert.Equal("folder1", result.SourceFolder);
         }
 
         [Fact]
@@ -153,15 +147,14 @@ namespace Microsoft.DocAsCode.Tests
 
         private static object ConvertJObjectToObject(object raw)
         {
-            var jValue = raw as JValue;
-            if (jValue != null) { return jValue.Value; }
-            var jArray = raw as JArray;
-            if (jArray != null)
+            if (raw is JValue jValue) { return jValue.Value; }
+
+            if (raw is JArray jArray)
             {
-                return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
+                return jArray.Select(ConvertJObjectToObject).ToArray();
             }
-            var jObject = raw as JObject;
-            if (jObject != null)
+
+            if (raw is JObject jObject)
             {
                 return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
             }
@@ -185,8 +178,7 @@ namespace Microsoft.DocAsCode.Tests
                 && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
             {
                 Predicate<object> newShouldSerialize = obj => {
-                    var collection = property.ValueProvider.GetValue(obj) as ICollection;
-                    return collection == null || collection.Count != 0;
+                    return !(property.ValueProvider.GetValue(obj) is ICollection collection) || collection.Count != 0;
                 };
                 Predicate<object> oldShouldSerialize = property.ShouldSerialize;
                 property.ShouldSerialize = oldShouldSerialize != null

@@ -23,23 +23,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             template = masterRegex.Replace(template, string.Empty);
             if (masterPageResourceName != null)
             {
-                using (var stream = reader.GetResourceStream(masterPageResourceName))
+                using var stream = reader.GetResourceStream(masterPageResourceName);
+                if (stream != null)
                 {
-                    if (stream != null)
+                    using var sr = new StreamReader(stream);
+                    var master = sr.ReadToEnd();
+                    if (bodyRegex.IsMatch(master))
                     {
-                        using (var sr = new StreamReader(stream))
-                        {
-                            var master = sr.ReadToEnd();
-                            if (bodyRegex.IsMatch(master))
-                            {
-                                return bodyRegex.Replace(master, template);
-                            }
-                            else
-                            {
-                                Logger.LogInfo($"Master page {masterPageResourceName} does not contain {{{{!body}}}} element, content in current template {path} is ignored.");
-                                return master;
-                            }
-                        }
+                        return bodyRegex.Replace(master, template);
+                    }
+                    else
+                    {
+                        Logger.LogInfo($"Master page {masterPageResourceName} does not contain {{{{!body}}}} element, content in current template {path} is ignored.");
+                        return master;
                     }
                 }
             }

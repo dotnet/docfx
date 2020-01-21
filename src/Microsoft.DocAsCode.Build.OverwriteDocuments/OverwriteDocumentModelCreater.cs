@@ -44,19 +44,17 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 return new Dictionary<object, object>();
             }
 
-            using (var reader = new StringReader(yamlCodeBlock))
+            using var reader = new StringReader(yamlCodeBlock);
+            try
             {
-                try
-                {
-                    return YamlUtility.Deserialize<Dictionary<object, object>>(reader);
-                }
-                catch (Exception ex)
-                {
-                    throw new MarkdownFragmentsException(
-                        $"Encountered an invalid YAML code block: {ex.Message}",
-                        yamlCodeBlockSource.Line,
-                        ex);
-                }
+                return YamlUtility.Deserialize<Dictionary<object, object>>(reader);
+            }
+            catch (Exception ex)
+            {
+                throw new MarkdownFragmentsException(
+                    $"Encountered an invalid YAML code block: {ex.Message}",
+                    yamlCodeBlockSource.Line,
+                    ex);
             }
         }
 
@@ -114,8 +112,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
                 else
                 {
-                    var listObject = childObject as List<object>;
-                    if (listObject != null)
+                    if (childObject is List<object> listObject)
                     {
                         object value;
                         var goodItems = (from item in listObject

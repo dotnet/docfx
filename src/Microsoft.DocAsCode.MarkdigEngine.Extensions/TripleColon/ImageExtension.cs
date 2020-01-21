@@ -8,12 +8,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Net;
-    using System.Net.Mime;
     using System.Security.Cryptography;
     using System.Text;
-    using System.Text.RegularExpressions;
 
     public class ImageExtension : ITripleColonExtensionInfo
     {
@@ -67,11 +63,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (string.IsNullOrEmpty(src))
             {
-                logError($"source is a required attribute. Please ensure you have specified a source attribute.");
+                logError("source is a required attribute. Please ensure you have specified a source attribute.");
             }
             if (string.IsNullOrEmpty(alt) && type != "icon")
             {
-                logError($"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
+                logError("alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
             }
             if ((string.IsNullOrEmpty(alt) && type != "icon") || string.IsNullOrEmpty(src))
             {
@@ -99,7 +95,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     if(type == "complex" && obj.Count == 0)
                     {
-                        logError($"If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
+                        logError("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
                     }
                     var htmlId = GetHtmlId(obj.Line, obj.Column);
@@ -121,13 +117,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static string GetHtmlId(int line, int column)
         {
-            using (var md5 = MD5.Create())
-            {
-                var id = $"{InclusionContext.File}-{line}-{column}";
-                var fileBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(id));
+            using var md5 = MD5.Create();
+            var id = $"{InclusionContext.File}-{line}-{column}";
+            var fileBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(id));
 
-                return new Guid(fileBytes).ToString("N").Substring(0, 5);
-            }
+            return new Guid(fileBytes).ToString("N").Substring(0, 5);
         }
 
         public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)

@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-moniker-range", $"MonikerRange have some invalid chars in the starting.", null, line: processor.LineIndex);
+                _context.LogWarning("invalid-moniker-range", "MonikerRange have some invalid chars in the starting.", null, line: processor.LineIndex);
             }
 
             var monikerRange = new MonikerRangeBlock(this)
@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!c.IsZero())
             {
-                _context.LogWarning("invalid-moniker-range", $"MonikerRange have some invalid chars in the ending.", block);
+                _context.LogWarning("invalid-moniker-range", "MonikerRange have some invalid chars in the ending.", block);
             }
 
             block.UpdateSpanEnd(slice.End);

@@ -30,20 +30,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName))
             using (new LoggerFileScope(outputFile))
             {
-                Logger.LogInfo($"Creating xref archive file...");
+                Logger.LogInfo("Creating xref archive file...");
                 try
                 {
-                    using (var xa = XRefArchive.Open(outputFile, XRefArchiveMode.Create))
-                    {
-                        await DownloadCoreAsync(uri, xa, true);
-                    }
+                    using var xa = XRefArchive.Open(outputFile, XRefArchiveMode.Create);
+                    await DownloadCoreAsync(uri, xa, true);
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError($"Unable to create archive: {ex.Message}");
                     return false;
                 }
-                Logger.LogInfo($"Xref archive file created.");
+                Logger.LogInfo("Xref archive file created.");
                 return true;
             }
         }
@@ -52,8 +50,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             IXRefContainer container;
             container = await _downloader.DownloadAsync(uri);
-            var map = container as XRefMap;
-            if (map == null)
+            if (!(container is XRefMap map))
             {
                 // not support download an xref archive, or reference to an xref archive
                 return null;

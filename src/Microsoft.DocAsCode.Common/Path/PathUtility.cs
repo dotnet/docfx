@@ -58,10 +58,8 @@ namespace Microsoft.DocAsCode.Common
                 return;
             }
 
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                fileList.ForEach(s => writer.WriteLine(s));
-            }
+            using StreamWriter writer = new StreamWriter(filePath);
+            fileList.ForEach(s => writer.WriteLine(s));
         }
 
         public const string ListFileExtension = ".list";
@@ -77,12 +75,10 @@ namespace Microsoft.DocAsCode.Common
 
             if (Path.GetExtension(filePath) == ListFileExtension)
             {
-                using (StreamReader reader = new StreamReader(filePath))
+                using StreamReader reader = new StreamReader(filePath);
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
-                    {
-                        fileList.Add(reader.ReadLine());
-                    }
+                    fileList.Add(reader.ReadLine());
                 }
             }
 
@@ -178,7 +174,7 @@ namespace Microsoft.DocAsCode.Common
 
                     if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(file, destinationPath))
                     {
-                        messageHandler?.Invoke(string.Format("Copying file from '{0}' to '{1}'", file, destinationPath));
+                        messageHandler?.Invoke($"Copying file from '{file}' to '{destinationPath}'");
                         var targetDirectory = Path.GetDirectoryName(destinationPath);
                         if (!string.IsNullOrEmpty(targetDirectory))
                         {
@@ -190,7 +186,7 @@ namespace Microsoft.DocAsCode.Common
                     }
                     else
                     {
-                        messageHandler?.Invoke(string.Format("{0} is already latest.", destinationPath));
+                        messageHandler?.Invoke($"{destinationPath} is already latest.");
                     }
                 }
                 catch (Exception e)

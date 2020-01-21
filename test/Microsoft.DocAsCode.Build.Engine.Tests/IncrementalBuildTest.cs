@@ -23,7 +23,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Build.SchemaDriven;
     using System.Composition;
-    using System.Collections;
 
     [Trait("Owner", "xuzho")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -188,7 +187,7 @@ tagRules : [
                     Assert.True(Directory.Exists(intermediateFolder));
                     Assert.True(File.Exists(Path.Combine(intermediateFolder, "build.info")));
                     var subFolders = Directory.GetDirectories(intermediateFolder, "*");
-                    Assert.Equal(1, subFolders.Length);
+                    Assert.Single(subFolders);
                     cacheFolderName = Path.GetFileName(subFolders[0]);
                 }
                 {
@@ -239,7 +238,7 @@ tagRules : [
                     Assert.True(Directory.Exists(intermediateFolder));
                     Assert.True(File.Exists(Path.Combine(intermediateFolder, BuildInfo.FileName)));
                     var subFolders = Directory.GetDirectories(intermediateFolder, "*");
-                    Assert.Equal(1, subFolders.Length);
+                    Assert.Single(subFolders);
                     Assert.Equal(cacheFolderName, Path.GetFileName(subFolders[0]));
                 }
                 {
@@ -411,7 +410,7 @@ tagRules : [
                     Assert.True(Directory.Exists(intermediateFolder2));
                     Assert.True(File.Exists(Path.Combine(intermediateFolder2, BuildInfo.FileName)));
                     var subFolders = Directory.GetDirectories(intermediateFolder2, "*");
-                    Assert.Equal(1, subFolders.Length);
+                    Assert.Single(subFolders);
                     Assert.Equal(cacheFolderName, Path.GetFileName(subFolders[0]));
                 }
 
@@ -436,7 +435,7 @@ tagRules : [
                     Assert.True(Directory.Exists(intermediateFolder2));
                     Assert.True(File.Exists(Path.Combine(intermediateFolder2, BuildInfo.FileName)));
                     var subFolders = Directory.GetDirectories(intermediateFolder2, "*");
-                    Assert.Equal(1, subFolders.Length);
+                    Assert.Single(subFolders);
                     Assert.NotEqual(cacheFolderName, Path.GetFileName(subFolders[0]));
                 }
 
@@ -1422,7 +1421,7 @@ tagRules : [
                     var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(1, xrefMap.References.Count);
+                    Assert.Single(xrefMap.References);
                 }
                 {
                     // compare with force build
@@ -1549,7 +1548,7 @@ tagRules : [
                     var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(1, xrefMap.References.Count);
+                    Assert.Single(xrefMap.References);
                 }
                 {
                     // compare with force build
@@ -5617,27 +5616,25 @@ tagRules : [
             bool cleanupCacheHistory = false,
             FileMetadata fileMetadata = null)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder, cleanupCacheHistory: cleanupCacheHistory))
+            using var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder, cleanupCacheHistory: cleanupCacheHistory);
+            if (applyTemplateSettings == null)
             {
-                if (applyTemplateSettings == null)
-                {
-                    applyTemplateSettings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                }
-                var parameters = new DocumentBuildParameters
-                {
-                    Files = files,
-                    OutputBaseDir = Path.Combine(Directory.GetCurrentDirectory(), outputFolder),
-                    ApplyTemplateSettings = applyTemplateSettings,
-                    Metadata = metadata?.ToImmutableDictionary(),
-                    TemplateManager = new TemplateManager(null, null, new List<string> { templateFolder }, null, null),
-                    TemplateDir = templateFolder,
-                    Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
-                    ForcePostProcess = false,
-                    ForceRebuild = forceRebuild,
-                    FileMetadata = fileMetadata,
-                };
-                builder.Build(parameters);
+                applyTemplateSettings = new ApplyTemplateSettings(inputFolder, outputFolder);
             }
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = Path.Combine(Directory.GetCurrentDirectory(), outputFolder),
+                ApplyTemplateSettings = applyTemplateSettings,
+                Metadata = metadata?.ToImmutableDictionary(),
+                TemplateManager = new TemplateManager(null, null, new List<string> { templateFolder }, null, null),
+                TemplateDir = templateFolder,
+                Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
+                ForcePostProcess = false,
+                ForceRebuild = forceRebuild,
+                FileMetadata = fileMetadata,
+            };
+            builder.Build(parameters);
         }
 
         private void BuildDocumentWithVersion(
@@ -5654,33 +5651,31 @@ tagRules : [
             bool forceRebuild = false,
             bool cleanupCacheHistory = false)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder, cleanupCacheHistory: cleanupCacheHistory))
+            using var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder, cleanupCacheHistory: cleanupCacheHistory);
+            var outputDir = Path.Combine(Directory.GetCurrentDirectory(), outputFolder);
+            if (applyTemplateSettings == null)
             {
-                var outputDir = Path.Combine(Directory.GetCurrentDirectory(), outputFolder);
-                if (applyTemplateSettings == null)
-                {
-                    applyTemplateSettings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                }
-                var parametersList = new List<DocumentBuildParameters>();
-                foreach (var pair in files)
-                {
-                    parametersList.Add(new DocumentBuildParameters
-                    {
-                        Files = pair.Value,
-                        OutputBaseDir = outputDir,
-                        ApplyTemplateSettings = applyTemplateSettings,
-                        Metadata = metadata?.ToImmutableDictionary(),
-                        TemplateManager = new TemplateManager(null, null, new List<string> { templateFolder }, null, null),
-                        TemplateDir = templateFolder,
-                        Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
-                        ForcePostProcess = false,
-                        ForceRebuild = forceRebuild,
-                        VersionName = pair.Key,
-                        VersionDir = pair.Key,
-                    });
-                }
-                builder.Build(parametersList, outputDir);
+                applyTemplateSettings = new ApplyTemplateSettings(inputFolder, outputFolder);
             }
+            var parametersList = new List<DocumentBuildParameters>();
+            foreach (var pair in files)
+            {
+                parametersList.Add(new DocumentBuildParameters
+                {
+                    Files = pair.Value,
+                    OutputBaseDir = outputDir,
+                    ApplyTemplateSettings = applyTemplateSettings,
+                    Metadata = metadata?.ToImmutableDictionary(),
+                    TemplateManager = new TemplateManager(null, null, new List<string> { templateFolder }, null, null),
+                    TemplateDir = templateFolder,
+                    Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
+                    ForcePostProcess = false,
+                    ForceRebuild = forceRebuild,
+                    VersionName = pair.Key,
+                    VersionDir = pair.Key,
+                });
+            }
+            builder.Build(parametersList, outputDir);
         }
 
         private IEnumerable<Assembly> LoadAssemblies(bool enableSplit = false)

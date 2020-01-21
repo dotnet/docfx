@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void ResolveReference()
         {
-            WriteDependency(() => ResolveReferenceCore());
+            WriteDependency(ResolveReferenceCore);
         }
 
         public bool HasDependencyReportedBy(string reportedBy)
@@ -194,7 +194,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             return _indexOnFrom.Keys;
         });
@@ -203,7 +203,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             return _indexOnReportedBy.Keys;
         });
@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             return _indexOnTo.Keys;
         });
@@ -346,7 +346,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private void ResolveReferenceCore()
         {
-            ReadReference(() => ResolveReferenceCoreNoLock());
+            ReadReference(ResolveReferenceCoreNoLock);
             _isResolved = true;
         }
 
@@ -439,7 +439,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             if (!_indexOnReportedBy.TryGetValue(reportedBy, out HashSet<DependencyItem> indice))
             {
@@ -452,7 +452,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             if (!_indexOnFrom.TryGetValue(from, out HashSet<DependencyItem> indice))
             {
@@ -465,7 +465,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             if (!_indexOnTo.TryGetValue(to, out HashSet<DependencyItem> indice))
             {
@@ -533,7 +533,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             return new HashSet<string>(from item in _dependencyItems
                                        where CanReadDependency(item)
@@ -553,7 +553,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             return _indexOnReportedBy.ContainsKey(reportedBy);
         }
@@ -562,7 +562,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             return _indexOnFrom.ContainsKey(from);
         }
@@ -571,7 +571,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!_isResolved)
             {
-                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+                throw new InvalidOperationException("Dependency graph isn't resolved, cannot call the method.");
             }
             JsonUtility.Serialize(writer, Tuple.Create(_dependencyItems, _types, _referenceItems));
         }
@@ -616,7 +616,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (!_types.ContainsKey(dependency.Type))
             {
                 // When the processor contains no files other than overwrites, this processor will not even loaded,
-                // As a result, the dependency types inside this processer will not be registered
+                // As a result, the dependency types inside this processor will not be registered
                 // This is a common case from now on so there is no need to log warning
                 // Logger.LogWarning($"dependency type {dependency.Type} isn't registered yet.");
                 return false;
