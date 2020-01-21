@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Docset _fallbackDocset;
         private readonly GitHubAccessor _githubAccessor;
+        private readonly LocalizationProvider _localization;
 
         // TODO: support CRR and multiple repositories
         private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
@@ -23,10 +24,11 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
 
         public ContributionProvider(
-            Config config, Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
+            Config config, LocalizationProvider localization, Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
         {
             _input = input;
             _config = config;
+            _localization = localization;
             _githubAccessor = githubAccessor;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
@@ -47,7 +49,7 @@ namespace Microsoft.Docs.Build
             var contributionInfo = new ContributionInfo
             {
                 UpdateAt = updatedDateTime.ToString(
-                    document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    _localization.Locale == "en-us" ? "M/d/yyyy" : _localization.Culture.DateTimeFormat.ShortDatePattern),
                 UpdatedAtDateTime = updatedDateTime,
             };
 
@@ -134,7 +136,7 @@ namespace Microsoft.Docs.Build
 
             var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
             var originalContentGitUrl = contentBranchUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo, document.Docset.Locale) : originalContentGitUrl;
+            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo, _localization.Locale) : originalContentGitUrl;
 
             return (
                 contentGitUrl,

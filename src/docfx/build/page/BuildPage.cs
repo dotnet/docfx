@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                 Url = file.SiteUrl,
                 Path = outputPath,
                 SourcePath = file.FilePath.Path,
-                Locale = file.Docset.Locale,
+                Locale = context.LocalizationProvider.Locale,
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
                 ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
-            systemMetadata.Locale = file.Docset.Locale;
+            systemMetadata.Locale = context.LocalizationProvider.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
             systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath.RelativePath) + "/";
@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
 
             var pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = CreateHtmlContent(file, htmlDom),
+                Conceptual = CreateHtmlContent(context, htmlDom),
                 WordCount = HtmlUtility.CountWord(htmlDom),
                 RawTitle = rawTitle,
                 Title = userMetadata.Title ?? title,
@@ -301,7 +301,7 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = CreateHtmlContent(file, htmlDom),
+                    Conceptual = CreateHtmlContent(context, htmlDom),
                     ExtensionData = pageModel,
                 });
             }
@@ -353,9 +353,11 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static string CreateHtmlContent(Document file, HtmlNode html)
+        private static string CreateHtmlContent(Context context, HtmlNode html)
         {
-            return LocalizationUtility.AddLeftToRightMarker(file.Docset.Culture, HtmlUtility.AddLinkType(html, file.Docset.Locale).WriteTo());
+            return LocalizationUtility.AddLeftToRightMarker(
+                context.LocalizationProvider.Culture,
+                HtmlUtility.AddLinkType(html, context.LocalizationProvider.Locale).WriteTo());
         }
 
         private static void ValidateBookmarks(Context context, Document file, HtmlNode html)
@@ -378,7 +380,7 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);
-            return CreateHtmlContent(file, htmlDom);
+            return CreateHtmlContent(context, htmlDom);
         }
     }
 }

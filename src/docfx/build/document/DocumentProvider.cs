@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Docset _fallbackDocset;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
+        private readonly LocalizationProvider _localization;
         private readonly TemplateEngine _templateEngine;
 
         private readonly string _depotName;
@@ -26,13 +27,14 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, Docset docset, Docset fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
+            Config config, LocalizationProvider localization, Docset docset, Docset fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
         {
             _config = config;
             _docset = docset;
+            _localization = localization;
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
-            _dependencyDocsets = LoadDependencies(docset, repositoryProvider);
+            _dependencyDocsets = LoadDependencies(repositoryProvider);
             _input = input;
             _templateEngine = templateEngine;
 
@@ -155,7 +157,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Dictionary<string, Docset> LoadDependencies(Docset docset, RepositoryProvider repositoryProvider)
+        private Dictionary<string, Docset> LoadDependencies(RepositoryProvider repositoryProvider)
         {
             var result = new Dictionary<string, Docset>(_config.Dependencies.Count, PathUtility.PathComparer);
 
@@ -164,7 +166,7 @@ namespace Microsoft.Docs.Build
                 var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
                 if (!string.IsNullOrEmpty(entry))
                 {
-                    result.TryAdd(name, new Docset(entry, docset.Locale, _config, repository));
+                    result.TryAdd(name, new Docset(entry, repository));
                 }
             }
 
@@ -186,7 +188,7 @@ namespace Microsoft.Docs.Build
             }
 
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath.RelativePath, sitePath), contentType, mime, _config.Output.Json, isPage);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, mime, isPage);
 
             return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
@@ -257,7 +259,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, string mime, bool isPage)
+        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string mime, bool isPage)
         {
             if (isExperimental)
             {
@@ -265,7 +267,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.Output.Json, isPage);
             }
 
-            return $"https://{_config.HostName}/{docset.Locale}{siteUrl}";
+            return $"https://{_config.HostName}/{_localization.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {

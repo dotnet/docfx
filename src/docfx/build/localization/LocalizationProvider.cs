@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -18,12 +19,22 @@ namespace Microsoft.Docs.Build
         private string _englishDocsetPath;
         private Repository _englishRepository;
 
+        /// <summary>
+        /// Gets the lower-case culture name computed from <see cref="CommandLineOptions.Locale" or <see cref="Config.DefaultLocale"/>/>
+        /// </summary>
+        public string Locale { get; }
+
+        public CultureInfo Culture { get; }
+
         public bool IsLocalizationBuild { get; }
 
         public bool EnableSideBySide { get; }
 
         public LocalizationProvider(PackageResolver packageResolver, Config config, string locale, string docsetPath, Repository repository)
         {
+            Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
+            Culture = CreateCultureInfo(Locale);
+
             _packageResolver = packageResolver;
             _config = config;
             _localizationDocsetPath = docsetPath;
@@ -85,6 +96,18 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
+
+        private CultureInfo CreateCultureInfo(string locale)
+        {
+            try
+            {
+                return new CultureInfo(locale);
+            }
+            catch (CultureNotFoundException)
+            {
+                throw Errors.LocaleInvalid(locale).ToException();
+            }
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     internal static class LegacyFileMap
     {
         public static void Convert(
-            Docset docset,
             Context context,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap,
             Dictionary<Document, PublishItem> fileManifests)
@@ -46,18 +45,18 @@ namespace Microsoft.Docs.Build
                     });
 
                 var fileMapItems = listBuilder.ToList();
-                Convert(docset, context, fileMapItems);
+                Convert(context, fileMapItems);
                 LegacyAggregatedFileMap.Convert(context, fileMapItems, dependencyMap);
             }
         }
 
-        public static void Convert(Docset docset, Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
+        public static void Convert(Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
         {
             context.Output.WriteJson(
                 new
                 {
                     host = $"https://{context.Config.HostName}",
-                    locale = docset.Locale,
+                    locale = context.LocalizationProvider.Locale,
                     base_path = context.Config.BasePath.Original,
                     source_base_path = ".",
                     version_info = new { },
