@@ -8,7 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal class ContentValidationContext : IValidationContext
     {
-        private const string ValidationApiBaseUrl = "https://docs.microsoft.com";
         private const int ValidationRequestTimeoutInSeconds = 10;
         private const int ValidationMaxTries = 4;
         private const int ValidationRetryDelaySeconds = 3;
@@ -37,7 +36,7 @@ namespace Microsoft.Docs.Build
             MarkdownRulesFilePath = markdownValidationRulesPath;
             RepositoryUrl = EnvironmentVariable.RepositoryUrl;
             Branch = EnvironmentVariable.RepositoryBranch;
-            ApiBase = ValidationApiBaseUrl;
+            ApiBase = OpsConfigAdapter.ValidationServiceEndpoint;
             RequestTimeout = TimeSpan.FromSeconds(ValidationRequestTimeoutInSeconds);
             MaxTries = ValidationMaxTries;
             RetryDelaySeconds = ValidationRetryDelaySeconds;

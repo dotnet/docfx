@@ -20,16 +20,16 @@ namespace Microsoft.Docs.Build
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
 
+        public static readonly string ValidationServiceEndpoint = s_isProduction
+            ? "https://docs.microsoft.com"
+            : "https://ppe.docs.microsoft.com";
+
         private static readonly string s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
         private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
 
         private static readonly string s_buildServiceEndpoint = s_isProduction
             ? "https://op-build-prod.azurewebsites.net"
             : "https://op-build-sandbox2.azurewebsites.net";
-
-        private static readonly string s_validationServiceEndpoint = s_isProduction
-            ? "https://docs.microsoft.com/api/metadata"
-            : "https://ppe.docs.microsoft.com/api/metadata";
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
             {
                 var headers = GetValidationServiceHeaders(url);
 
-                return await Fetch($"{s_validationServiceEndpoint}/rules/content", headers);
+                return await Fetch($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
             }
             catch (Exception ex)
             {
@@ -178,8 +178,8 @@ namespace Microsoft.Docs.Build
             try
             {
                 var headers = GetValidationServiceHeaders(url);
-                var rules = Fetch($"{s_validationServiceEndpoint}/rules", headers);
-                var allowlists = Fetch($"{s_validationServiceEndpoint}/allowlists", headers);
+                var rules = Fetch($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
+                var allowlists = Fetch($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
 
                 return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
             }
