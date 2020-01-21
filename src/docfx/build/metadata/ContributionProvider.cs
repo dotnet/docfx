@@ -23,15 +23,15 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
 
         public ContributionProvider(
-            Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
+            Config config, Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
         {
             _input = input;
-            _config = docset.Config;
+            _config = config;
             _githubAccessor = githubAccessor;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
             _commitBuildTimeProvider = docset.Repository != null && _config.UpdateTimeAsCommitBuildTime
-                ? new CommitBuildTimeProvider(docset.Config, docset.Repository) : null;
+                ? new CommitBuildTimeProvider(config, docset.Repository) : null;
         }
 
         public async Task<(List<Error> errors, ContributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)

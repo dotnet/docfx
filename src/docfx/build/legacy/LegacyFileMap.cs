@@ -30,9 +30,8 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(
-                            context, docset, fileManifest.Value);
-                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
+                        var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
+                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
 
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToBasePath,
@@ -48,7 +47,7 @@ namespace Microsoft.Docs.Build
 
                 var fileMapItems = listBuilder.ToList();
                 Convert(docset, context, fileMapItems);
-                LegacyAggregatedFileMap.Convert(docset, context, fileMapItems, dependencyMap);
+                LegacyAggregatedFileMap.Convert(context, fileMapItems, dependencyMap);
             }
         }
 
@@ -57,9 +56,9 @@ namespace Microsoft.Docs.Build
             context.Output.WriteJson(
                 new
                 {
-                    host = $"https://{docset.Config.HostName}",
+                    host = $"https://{context.Config.HostName}",
                     locale = docset.Locale,
-                    base_path = docset.Config.BasePath.Original,
+                    base_path = context.Config.BasePath.Original,
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,
@@ -77,7 +76,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.Config.BasePath.RelativePath, "filemap.json"));
+                Path.Combine(context.Config.BasePath.RelativePath, "filemap.json"));
         }
     }
 }

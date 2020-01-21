@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             var copy = true;
             var publishPath = outputPath;
 
-            if (!file.Docset.Config.Output.CopyResources &&
+            if (!context.Config.Output.CopyResources &&
                 context.Input.TryGetPhysicalPath(file.FilePath, out var physicalPath))
             {
                 copy = false;

@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(output, publishItem.Path);
                 }
 
-                if (file.Docset.Legacy && file.IsPage)
+                if (context.Config.Legacy && file.IsPage)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadata, metadataPath);
@@ -108,13 +108,13 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (file.Docset.Config.Output.Json && !file.Docset.Legacy)
+            if (context.Config.Output.Json && !context.Config.Legacy)
             {
                 return (errors, outputModel, SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(outputModel), file);
-            if (file.Docset.Config.Output.Json)
+            if (context.Config.Output.Json)
             {
                 return (errors, templateModel, SortProperties(templateMetadata));
             }
@@ -169,12 +169,12 @@ namespace Microsoft.Docs.Build
             systemMetadata.Locale = file.Docset.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
-            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{file.Docset.Config.HostName}", systemMetadata.Locale, file.Docset.Config.BasePath.RelativePath) + "/";
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath.RelativePath) + "/";
 
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
             systemMetadata.EnableLocSxs = context.LocalizationProvider.EnableSideBySide;
-            systemMetadata.SiteName = file.Docset.Config.SiteName;
+            systemMetadata.SiteName = context.Config.SiteName;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
                 = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
@@ -185,13 +185,13 @@ namespace Microsoft.Docs.Build
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-            systemMetadata.SearchProduct = file.Docset.Config.Product;
-            systemMetadata.SearchDocsetName = file.Docset.Config.Name;
+            systemMetadata.SearchProduct = context.Config.Product;
+            systemMetadata.SearchDocsetName = context.Config.Name;
 
-            if (file.Docset.Config.Output.Pdf)
+            if (context.Config.Output.Pdf)
             {
                 systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
-                    $"https://{file.Docset.Config.HostName}", "pdfstore", systemMetadata.Locale, $"{file.Docset.Config.Product}.{file.Docset.Config.Name}", "{branchName}");
+                    $"https://{context.Config.HostName}", "pdfstore", systemMetadata.Locale, $"{context.Config.Product}.{context.Config.Name}", "{branchName}");
             }
 
             return (errors, systemMetadata);
@@ -291,7 +291,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(schemaTransformError);
             var pageModel = (JObject)transformedToken;
 
-            if (file.Docset.Legacy && TemplateEngine.IsLandingData(file.Mime))
+            if (context.Config.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);

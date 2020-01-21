@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -13,7 +11,6 @@ namespace Microsoft.Docs.Build
     internal static class LegacyAggregatedFileMap
     {
         public static void Convert(
-            Docset docset,
             Context context,
             IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap)
@@ -40,7 +37,7 @@ namespace Microsoft.Docs.Build
                                         })
                                     : new List<DependencyItem>(),
                     aggregated_monikers = fileMapItem.Monikers,
-                    docset_names = new[] { docset.Config.Name },
+                    docset_names = new[] { context.Config.Name },
                     has_non_moniker_url = fileMapItem.Monikers.Count == 0,
                     type = fileMapItem.Type,
                 };
@@ -55,9 +52,9 @@ namespace Microsoft.Docs.Build
                         .OrderBy(item => item.path).ToDictionary(item => item.path, item => item.item),
                     docset_infos = new Dictionary<string, object>
                     {
-                        [docset.Config.Name] = new
+                        [context.Config.Name] = new
                         {
-                            docset_name = docset.Config.Name,
+                            docset_name = context.Config.Name,
                             docset_path_to_root = string.Empty,
                         },
                     },
