@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Config config, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver, FetchOptions fetchOptions)
+        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
         {
             var credentialProvider = config.GetCredentialProvider();
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             Config = config;
             ErrorLog = errorLog;
             PackageResolver = packageResolver;
-            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), fetchOptions);
+            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions);
             Input = input;
             LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input, Config.DryRun);

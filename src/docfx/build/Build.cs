@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
     {
         public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
         {
+            options.UseCache = true;
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
@@ -29,7 +30,6 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
-            options.NoFetch = true;
 
             using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
             LocalizationProvider localizationProvider,
             PackageResolver packageResolver)
         {
-            using var context = new Context(outputPath, errorLog, config, docset, fallbackDocset, input, repositoryProvider, localizationProvider, packageResolver, options.FetchOptions);
+            using var context = new Context(outputPath, errorLog, options, config, docset, fallbackDocset, input, repositoryProvider, localizationProvider, packageResolver);
             context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 
             using (Progress.Start("Building files"))

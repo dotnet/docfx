@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -11,19 +10,15 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_root = GetAppDataRoot();
 
-        // For testing purpose
-        internal static Func<string> GetCachePath;
-        internal static Func<string> GetStatePath;
-
         public static string GitRoot => Path.Combine(s_root, "git6");
 
         public static string DownloadsRoot => Path.Combine(s_root, "downloads2");
 
         public static string MutexRoot => Path.Combine(s_root, "mutex");
 
-        public static string CacheRoot => GetCachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
+        public static string CacheRoot => TestQuirks.CachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
 
-        public static string StateRoot => GetStatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
+        public static string StateRoot => TestQuirks.StatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
 
         public static string GlobalConfigPath => GetGlobalConfigPath();
 
@@ -34,12 +29,6 @@ namespace Microsoft.Docs.Build
         public static string GetFileDownloadDir(string url)
         {
             return Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url));
-        }
-
-        public static string GetDependencyLockFile(string docsetPath, string locale)
-        {
-            return PathUtility.NormalizeFile(
-                    Path.Combine(s_root, "lock", PathUtility.UrlToShortName(docsetPath), locale ?? "", ".lock.json"));
         }
 
         public static string GetCommitCachePath(string remote)

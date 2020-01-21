@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        internal static Func<string, string> GitRemoteProxy;
-
         /// <summary>
         /// Find git repo directory
         /// </summary>
@@ -111,10 +109,7 @@ namespace Microsoft.Docs.Build
         public static void Fetch(Config config, string path, string url, string refspecs, string options = null)
         {
             // Allow test to proxy remotes to local folder
-            if (GitRemoteProxy != null)
-            {
-                url = GitRemoteProxy(url);
-            }
+            url = TestQuirks.GitRemoteProxy?.Invoke(url) ?? url;
 
             var (http, secrets) = GetGitCommandLineConfig(url, config);
 
