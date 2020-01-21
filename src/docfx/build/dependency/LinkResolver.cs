@@ -8,8 +8,8 @@ namespace Microsoft.Docs.Build
 {
     internal class LinkResolver
     {
+        private readonly Config _config;
         private readonly Input _input;
-        private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
 
         public LinkResolver(
-            Docset docset,
+            Config config,
             Docset fallbackDocset,
             Input input,
             BuildScope buildScope,
@@ -37,8 +37,8 @@ namespace Microsoft.Docs.Build
             TemplateEngine templateEngine,
             FileLinkMapBuilder fileLinkMapBuilder)
         {
+            _config = config;
             _input = input;
-            _docset = docset;
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from dependent docsets
-            foreach (var (dependencyName, _) in _docset.Config.Dependencies)
+            foreach (var (dependencyName, _) in _config.Dependencies)
             {
                 if (pathToDocset.StartsWithPath(dependencyName, out var remainingPath))
                 {

@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class XrefResolver
     {
+        private readonly Config _config;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
@@ -19,20 +20,21 @@ namespace Microsoft.Docs.Build
 
         public XrefResolver(
             Context context,
-            Docset docset,
+            Config config,
             FileResolver fileResolver,
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder)
         {
+            _config = config;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
                 () => InternalXrefMapBuilder.Build(context));
 
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefMapLoader.Load(docset, fileResolver));
+                () => ExternalXrefMapLoader.Load(config, fileResolver));
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
-            _xrefHostName = string.IsNullOrEmpty(context.Config.XrefHostName) ? docset.Config.HostName : context.Config.XrefHostName;
+            _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
         public (Error error, string href, string display, Document declaringFile) ResolveXref(
@@ -73,7 +75,7 @@ namespace Microsoft.Docs.Build
             }
 
             var resolvedHref = UrlUtility.MergeUrl(
-                RemoveSharingHost(xrefSpec.Href, hrefRelativeTo.Docset.Config.HostName),
+                RemoveSharingHost(xrefSpec.Href, _config.HostName),
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment);
 
@@ -108,7 +110,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (basePath is null)
                     {
-                        basePath = xref.DeclaringFile.Docset.Config.BasePath.Original;
+                        basePath = _config.BasePath.Original;
                     }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL

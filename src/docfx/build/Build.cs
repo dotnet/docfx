@@ -55,8 +55,8 @@ namespace Microsoft.Docs.Build
                 var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
 
                 // run build based on docsets
-                outputPath ??= Path.Combine(docsetPath, docset.Config.Output.Path);
-                await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
+                outputPath ??= Path.Combine(docsetPath, config.Output.Path);
+                await Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -92,6 +92,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task Run(
+            Config config,
             Docset docset,
             Docset fallbackDocset,
             CommandLineOptions options,
@@ -99,9 +100,10 @@ namespace Microsoft.Docs.Build
             string outputPath,
             Input input,
             RepositoryProvider repositoryProvider,
-            LocalizationProvider localizationProvider)
+            LocalizationProvider localizationProvider,
+            PackageResolver packageResolver)
         {
-            using var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider, options.FetchOptions);
+            using var context = new Context(outputPath, errorLog, config, docset, fallbackDocset, input, repositoryProvider, localizationProvider, packageResolver, options.FetchOptions);
             context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 
             using (Progress.Start("Building files"))
@@ -129,7 +131,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Legacy)
                 {
-                    if (docset.Config.Output.Json)
+                    if (context.Config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
                         Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);

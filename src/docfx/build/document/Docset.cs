@@ -3,10 +3,8 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,11 +19,6 @@ namespace Microsoft.Docs.Build
         public string DocsetPath { get; }
 
         /// <summary>
-        /// Gets the config associated with this docset, loaded from `docfx.yml/docfx.json`.
-        /// </summary>
-        public Config Config { get; }
-
-        /// <summary>
         /// Gets the culture computed from <see cref="Locale"/>/>.
         /// </summary>
         public CultureInfo Culture { get; }
@@ -36,11 +29,6 @@ namespace Microsoft.Docs.Build
         public string Locale { get; }
 
         /// <summary>
-        /// Gets a value indicating whether enable legacy output.
-        /// </summary>
-        public bool Legacy => Config.Legacy;
-
-        /// <summary>
         /// Gets the root repository of docset
         /// </summary>
         public Repository Repository { get; }
@@ -49,11 +37,9 @@ namespace Microsoft.Docs.Build
 
         public Docset(string docsetPath, string locale, Config config, Repository repository)
         {
-            Config = config;
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
             Culture = CreateCultureInfo(Locale);
-
             Repository = repository;
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();

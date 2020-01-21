@@ -14,11 +14,11 @@ namespace Microsoft.Docs.Build
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Docset docset, FileResolver fileResolver)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver)
         {
             var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
-            foreach (var url in docset.Config.Xref)
+            foreach (var url in config.Xref)
             {
                 using var stream = fileResolver.ReadStream(url);
                 var path = new FilePath(url);

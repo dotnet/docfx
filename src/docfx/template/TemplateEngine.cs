@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,7 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
-        private const string DefaultTemplateDir = "_themes";
         private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
 
         private readonly string _templateDir;
@@ -25,10 +23,15 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
 
-        private TemplateEngine(string templateDir)
+        public TemplateEngine(string docsetPath, Config config, string locale, PackageResolver packageResolver)
         {
-            _templateDir = templateDir;
-            _contentTemplateDir = Path.Combine(templateDir, "ContentTemplate");
+            _templateDir = config.Template.Type switch
+            {
+                PackageType.None => Path.Combine(docsetPath, "_themes"),
+                _ => packageResolver.ResolvePackage(LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale), PackageFetchOptions.DepthOne),
+            };
+
+            _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");
             var schemaDir = Path.Combine(_contentTemplateDir, "schemas");
 
             _global = LoadGlobalTokens();
@@ -139,19 +142,6 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        public static TemplateEngine Create(Docset docset, RepositoryProvider repositoryProvider)
-        {
-            Debug.Assert(docset != null);
-
-            if (docset.Config.Template.Type == PackageType.None)
-            {
-                return new TemplateEngine(Path.Combine(docset.DocsetPath, DefaultTemplateDir));
-            }
-
-            var (templateEntry, _) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Template);
-            return new TemplateEngine(templateEntry);
-        }
-
         private JObject LoadGlobalTokens()
         {
             var path = Path.Combine(_contentTemplateDir, "token.json");
@@ -161,11 +151,12 @@ namespace Microsoft.Docs.Build
         private static IReadOnlyDictionary<string, Lazy<TemplateSchema>>
             LoadSchemas(string schemaDir, string contentTemplateDir)
         {
-            var schemas = Directory.Exists(schemaDir) ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
-                                                         let fileName = Path.GetFileName(k)
-                                                         select fileName.Substring(0, fileName.Length - ".schema.json".Length))
-                                                         .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
-                                                         : new Dictionary<string, Lazy<TemplateSchema>>();
+            var schemas = Directory.Exists(schemaDir)
+                ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
+                   let fileName = Path.GetFileName(k)
+                   select fileName.Substring(0, fileName.Length - ".schema.json".Length))
+                   .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
+                : new Dictionary<string, Lazy<TemplateSchema>>();
 
             schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));
             return schemas;

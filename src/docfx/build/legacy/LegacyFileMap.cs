@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     internal static class LegacyFileMap
     {
         public static void Convert(
-            Docset docset,
             Context context,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap,
             Dictionary<Document, PublishItem> fileManifests)
@@ -30,9 +29,8 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(
-                            context, docset, fileManifest.Value);
-                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
+                        var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
+                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
 
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToBasePath,
@@ -47,19 +45,19 @@ namespace Microsoft.Docs.Build
                     });
 
                 var fileMapItems = listBuilder.ToList();
-                Convert(docset, context, fileMapItems);
-                LegacyAggregatedFileMap.Convert(docset, context, fileMapItems, dependencyMap);
+                Convert(context, fileMapItems);
+                LegacyAggregatedFileMap.Convert(context, fileMapItems, dependencyMap);
             }
         }
 
-        public static void Convert(Docset docset, Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
+        public static void Convert(Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
         {
             context.Output.WriteJson(
                 new
                 {
-                    host = $"https://{docset.Config.HostName}",
-                    locale = docset.Locale,
-                    base_path = docset.Config.BasePath.Original,
+                    host = $"https://{context.Config.HostName}",
+                    locale = context.LocalizationProvider.IsLocalizationBuild,
+                    base_path = context.Config.BasePath.Original,
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,
@@ -77,7 +75,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(docset.Config.BasePath.RelativePath, "filemap.json"));
+                Path.Combine(context.Config.BasePath.RelativePath, "filemap.json"));
         }
     }
 }

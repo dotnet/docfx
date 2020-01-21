@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class DocumentProvider
     {
+        private readonly Config _config;
         private readonly Docset _docset;
         private readonly Docset _fallbackDocset;
         private readonly Input _input;
@@ -25,8 +26,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Docset docset, Docset fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
+            Config config, Docset docset, Docset fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
         {
+            _config = config;
             _docset = docset;
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
@@ -34,11 +36,10 @@ namespace Microsoft.Docs.Build
             _input = input;
             _templateEngine = templateEngine;
 
-            var config = _docset.Config;
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
 
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
-            _configReferences = config.Extend.Concat(docset.Config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
+            _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
             _documentIdRules = documentIdConfig.Reverse().Select(item => (item.Key, item.Value)).ToArray();
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
@@ -81,9 +82,9 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
 
-            var outputPath = UrlUtility.Combine(_docset.Config.BasePath.RelativePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
+            var outputPath = UrlUtility.Combine(_config.BasePath.RelativePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
 
-            return _docset.Config.Legacy && file.IsPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
+            return _config.Legacy && file.IsPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
 
         public (string documentId, string versionIndependentId) GetDocumentId(FilePath path)
@@ -154,17 +155,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Dictionary<string, Docset> LoadDependencies(Docset docset, RepositoryProvider repositoryProvider)
+        private Dictionary<string, Docset> LoadDependencies(Docset docset, RepositoryProvider repositoryProvider)
         {
-            var config = docset.Config;
-            var result = new Dictionary<string, Docset>(config.Dependencies.Count, PathUtility.PathComparer);
+            var result = new Dictionary<string, Docset>(_config.Dependencies.Count, PathUtility.PathComparer);
 
-            foreach (var (name, dependency) in config.Dependencies)
+            foreach (var (name, dependency) in _config.Dependencies)
             {
                 var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
                 if (!string.IsNullOrEmpty(entry))
                 {
-                    result.TryAdd(name, new Docset(entry, docset.Locale, config, repository));
+                    result.TryAdd(name, new Docset(entry, docset.Locale, _config, repository));
                 }
             }
 
@@ -179,13 +179,13 @@ namespace Microsoft.Docs.Build
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path);
-            var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, docset.Config.Output.Json, docset.Config.Output.UglifyUrl, isPage);
-            if (docset.Config.Output.LowerCaseUrl)
+            var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, _config.Output.Json, _config.Output.UglifyUrl, isPage);
+            if (_config.Output.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
             }
 
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(docset.Config.BasePath.RelativePath, sitePath), contentType, mime, docset.Config.Output.Json, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath.RelativePath, sitePath), contentType, mime, _config.Output.Json, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, docset, isExperimental, contentType, mime, isPage);
 
             return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
@@ -257,16 +257,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, string mime, bool isPage)
+        private string GetCanonicalUrl(string siteUrl, string sitePath, Docset docset, bool isExperimental, ContentType contentType, string mime, bool isPage)
         {
-            var config = docset.Config;
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, config.Output.Json, isPage);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.Output.Json, isPage);
             }
 
-            return $"https://{docset.Config.HostName}/{docset.Locale}{siteUrl}";
+            return $"https://{_config.HostName}/{docset.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {
