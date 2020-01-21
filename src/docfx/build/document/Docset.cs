@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Globalization;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -19,27 +18,15 @@ namespace Microsoft.Docs.Build
         public string DocsetPath { get; }
 
         /// <summary>
-        /// Gets the culture computed from <see cref="Locale"/>/>.
-        /// </summary>
-        public CultureInfo Culture { get; }
-
-        /// <summary>
-        /// Gets the lower-case culture name computed from <see cref="CommandLineOptions.Locale" or <see cref="Config.DefaultLocale"/>/>
-        /// </summary>
-        public string Locale { get; }
-
-        /// <summary>
         /// Gets the root repository of docset
         /// </summary>
         public Repository Repository { get; }
 
         private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
 
-        public Docset(string docsetPath, string locale, Config config, Repository repository)
+        public Docset(string docsetPath, Repository repository)
         {
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
-            Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
-            Culture = CreateCultureInfo(Locale);
             Repository = repository;
 
             _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
@@ -101,18 +88,6 @@ namespace Microsoft.Docs.Build
                 return !string.IsNullOrEmpty(parent)
                     ? _repositories.GetOrAdd(parent, k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
                     : null;
-            }
-        }
-
-        private CultureInfo CreateCultureInfo(string locale)
-        {
-            try
-            {
-                return new CultureInfo(locale);
-            }
-            catch (CultureNotFoundException)
-            {
-                throw Errors.LocaleInvalid(locale).ToException();
             }
         }
     }
