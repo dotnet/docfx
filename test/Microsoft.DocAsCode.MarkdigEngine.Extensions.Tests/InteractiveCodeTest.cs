@@ -19,8 +19,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 files: new Dictionary<string, string>
                 {
                     { "InteractiveCode/sample.code", "hello world!" }
-                },
-                errors: new[] { "code-snippet-deprecated" });
+                });
         }
 
         [Fact]
