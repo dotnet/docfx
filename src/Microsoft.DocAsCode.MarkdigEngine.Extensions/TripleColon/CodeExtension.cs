@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, obj);
                 if (string.IsNullOrEmpty(code))
                 {
-                    logError($"The code snippet \"{source}\" could not be found.");
+                    logError($"The code snippet \"{currentSource}\" could not be found.");
                     return false;
                 }
                 var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
