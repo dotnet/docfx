@@ -45,9 +45,6 @@ namespace Microsoft.Docs.Build
                 IsLocalizationBuild = true;
             }
 
-            _localizationDocsetPath = docsetPath;
-            _localizationRepository = repository;
-
             EnableSideBySide = repository != null &&
                 LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
                 contributionBranch != repository.Branch;

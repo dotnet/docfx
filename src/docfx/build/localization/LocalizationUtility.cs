@@ -57,8 +57,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetLocale(Repository repository)
         {
-            return TryRemoveLocale(repository?.Branch, out _, out var branchLocale)
-                ? branchLocale : TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
+            return TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
                 ? remoteLocale : default;
         }
 
