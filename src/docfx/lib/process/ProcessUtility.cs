@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
 
             static string HideSecrets(string arg, string secret)
             {
-                return arg.Replace(secret, secret.Length > 5 ? secret.Substring(0, 5) + "***" : "***");
+                return arg.Replace(secret, secret.Length > 5 ? "***" + secret.Substring(secret.Length - 5) : "***");
             }
         }
 
