@@ -668,3 +668,21 @@ outputs:
       "gitcommit": "https://github.com/testowner/crr-content/blob/44e7dd472e06b95898986635feccbcefde3c42f0/b.md",
       "updated_at": "2018-10-30 12:00 AM"
     }
+---
+# Gracefull handle corrupted global cache files
+repos:
+  https://github.com/cache/crash:
+    - files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+inputs:
+  docfx.yml:
+cache:
+  github-users.json: '{'
+outputs:
+  docs/index.json: |
+    {
+      "_op_gitContributorInformation": { "author": undefined }
+    }
