@@ -27,7 +27,7 @@ locale: zh-cn
 repos:
   https://docs.com/restore2#master:
     - files:
-        docfx.yml:
+        docfx.yml: |
           dependencies:
             restore-child: https://docs.com/restore-child2#child
   https://docs.com/restore2.zh-cn#master-sxs:
