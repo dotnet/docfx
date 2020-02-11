@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
         [JsonConverter(typeof(UnionTypeConverter))]
-        public (JsonSchema? schema, JsonSchema[] schemas) Items { get; set; }
+        public (JsonSchema? schema, JsonSchema[]? schemas) Items { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to additional items of an array.
