@@ -228,24 +228,21 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Href:
                     var (error, link, _) = context.LinkResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
-                    content = new SourceInfo<string>(link, content);
-                    break;
+                    return (errors, link);
 
                 case JsonSchemaContentType.Markdown:
                     var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun).WriteTo(), content);
-                    break;
+                    return (errors, HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun).WriteTo());
 
                 case JsonSchemaContentType.InlineMarkdown:
                     var (inlineMarkupErrors, inlineHtml) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(inlineHtml).PostMarkup(context.Config.DryRun).WriteTo(), content);
-                    break;
+                    return (errors, HtmlUtility.LoadHtml(inlineHtml).PostMarkup(context.Config.DryRun).WriteTo());
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
@@ -257,8 +254,7 @@ namespace Microsoft.Docs.Build
                         return htmlLink;
                     });
 
-                    content = new SourceInfo<string>(htmlWithLinks, content);
-                    break;
+                    return (errors, htmlWithLinks);
 
                 case JsonSchemaContentType.Xref:
                     // the content here must be an UID, not href
@@ -272,12 +268,9 @@ namespace Microsoft.Docs.Build
                         return (errors, specObj);
                     }
 
-                    content = new SourceInfo<string>("", content);
-                    break;
+                    return (errors, JValue.CreateNull());
             }
 
-            value = new JValue(content.Value);
-            JsonUtility.SetSourceInfo(value, content);
             return (errors, value);
         }
     }
