@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             _templateDir = config.Template.Type switch
             {
                 PackageType.None => Path.Combine(docsetPath, "_themes"),
-                _ => packageResolver.ResolvePackage(LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale), PackageFetchOptions.DepthOne),
+                _ => packageResolver.ResolvePackage(LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.DefaultLocale), PackageFetchOptions.DepthOne),
             };
 
             _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");

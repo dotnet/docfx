@@ -20,6 +20,11 @@ namespace Microsoft.Docs.Build
         };
 
         /// <summary>
+        /// Gets the default locale of this docset.
+        /// </summary>
+        public string DefaultLocale { get; private set; } = "en-us";
+
+        /// <summary>
         /// Gets the default site name
         /// </summary>
         public readonly string SiteName = "Docs";
@@ -150,11 +155,6 @@ namespace Microsoft.Docs.Build
         public readonly SourceInfo<string>[] Xref = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
-        /// The configurations for localization build
-        /// </summary>
-        public readonly LocalizationConfig Localization = new LocalizationConfig();
-
-        /// <summary>
         /// Gets the moniker range mapping
         /// </summary>
         public readonly Dictionary<string, SourceInfo<string>> MonikerRange = new Dictionary<string, SourceInfo<string>>();
@@ -216,6 +216,8 @@ namespace Microsoft.Docs.Build
                 HostName = HostName.ToLowerInvariant();
                 BasePath = new BasePath(BasePath.Original.ToLowerInvariant());
             }
+
+            DefaultLocale = DefaultLocale.ToLowerInvariant();
         }
     }
 }

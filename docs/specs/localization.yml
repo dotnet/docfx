@@ -27,9 +27,7 @@ locale: zh-cn
 repos:
   https://docs.com/restore2#master:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
           dependencies:
             restore-child: https://docs.com/restore-child2#child
   https://docs.com/restore2.zh-cn#master-sxs:
@@ -110,9 +108,7 @@ locale: zh-cn
 repos: 
   https://github.com/c/contribution4#master:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
   https://github.com/c/contribution4.zh-cn#master-sxs:
     - files:
         docfx.yml:
@@ -169,9 +165,7 @@ repos:
   https://docs.com/resource-fallback3#master:
     - files:
         docs/b.png:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
   https://docs.com/resource-fallback3.zh-cn#master-sxs:
     - files:
         docfx.yml:
@@ -305,9 +299,7 @@ repos:
         docs/b.md: |
           [link to a](a.md)
         docs/a.md: a
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
   https://github.com/ss/c.zh-cn#master-sxs:
     - files:
         docfx.yml:
@@ -332,9 +324,7 @@ repos:
   https://github.com/bilingual/a:
     - files:
         docs/a.md: a
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
   https://github.com/bilingual/a.zh-cn#master-sxs:
     - files:
         docfx.yml:
@@ -527,8 +517,6 @@ repos:
         docfx.yml: |
           dependencies:
             child1: https://github.com/locconfig2/d#live
-          localization:
-            bilingual: true
         docs/a.md:
   https://github.com/locconfig2/c.zh-cn#master-sxs:
     - files:
@@ -590,9 +578,7 @@ locale: zh-cn
 repos:
   https://docascode.visualstudio.com/repo/_git/b#live:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
         docs/b.md: |
           [link in a](a.md)
   https://docascode.visualstudio.com/repo/_git/b.zh-cn#live-sxs:
@@ -658,9 +644,7 @@ locale: zh-cn
 repos:
   https://docs.com/branch-fallback2#test:
     - files:
-        docfx.yml: |
-          localization:
-            bilingual: true
+        docfx.yml:
         docs/b.md: |
           test
   https://docs.com/branch-fallback2#master:

@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public LocalizationProvider(PackageResolver packageResolver, Config config, string locale, string docsetPath, Repository repository)
         {
-            Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.Localization.DefaultLocale;
+            Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.DefaultLocale;
             Culture = CreateCultureInfo(Locale);
 
             _packageResolver = packageResolver;
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             _localizationDocsetPath = docsetPath;
             _localizationRepository = repository;
 
-            if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.Localization.DefaultLocale))
+            if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.DefaultLocale))
             {
                 IsLocalizationBuild = true;
             }
