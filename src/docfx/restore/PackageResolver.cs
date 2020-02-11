@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
         private void DownloadGitRepositoryCore(string cwd, string url, string committish, bool depthOne)
         {
             var fetchOption = "--update-head-ok --prune --force";
-            var depthOneOption = $"--depth {(depthOne && _config.GitShallowFetch ? "1" : "99999999")}";
+            var depthOneOption = $"--depth {(depthOne ? "1" : "99999999")}";
 
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
