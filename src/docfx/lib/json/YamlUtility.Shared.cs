@@ -9,20 +9,22 @@ using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal partial class YamlUtility
     {
         internal static JToken ToJToken(
-            string input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
+            string input, Action<Scalar>? onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken>? onConvert = null)
         {
             return ToJToken(new StringReader(input), onKeyDuplicate, onConvert);
         }
 
         internal static JToken ToJToken(
-            TextReader input, Action<Scalar> onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken> onConvert = null)
+            TextReader input, Action<Scalar>? onKeyDuplicate = null, Func<JToken, ParsingEvent, JToken>? onConvert = null)
         {
-            JToken result = null;
+            JToken? result = null;
 
             onKeyDuplicate = onKeyDuplicate ?? (_ => { });
             onConvert = onConvert ?? ((token, _) => token);
@@ -36,7 +38,7 @@ namespace Microsoft.Docs.Build
                 parser.Consume<DocumentEnd>();
             }
 
-            return result;
+            return result ?? JValue.CreateNull();
         }
 
         private static JToken ToJToken(
@@ -72,12 +74,12 @@ namespace Microsoft.Docs.Build
                         }
 
                         obj[key.Value] = value;
-                        onConvert(obj.Property(key.Value), key);
+                        onConvert(obj.Property(key.Value)!, key);
                     }
                     return onConvert(obj, map);
 
                 default:
-                    throw new NotSupportedException($"Yaml node '{parser.Current.GetType().Name}' is not supported");
+                    throw new NotSupportedException($"Yaml node '{parser.Current?.GetType().Name}' is not supported");
             }
         }
 

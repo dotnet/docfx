@@ -10,13 +10,15 @@ using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static partial class YamlUtility
     {
         public const string YamlMimePrefix = "YamlMime:";
 
-        public static string ReadMime(TextReader reader)
+        public static string? ReadMime(TextReader reader)
         {
             var mime = ReadMime(reader.ReadLine() ?? "");
             if (string.Compare(mime, "YamlDocument", StringComparison.OrdinalIgnoreCase) == 0)
@@ -29,7 +31,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get yaml mime type
         /// </summary>
-        public static string ReadMime(string yaml)
+        public static string? ReadMime(string yaml)
         {
             var header = ReadHeader(yaml);
             if (header is null || !header.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
@@ -42,7 +44,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the content of the first comment line
         /// </summary>
-        public static string ReadHeader(string yaml)
+        public static string? ReadHeader(string yaml)
         {
             if (!yaml.StartsWith("#"))
             {
@@ -91,9 +93,9 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private static string ReadDocumentType(TextReader reader)
+        private static string? ReadDocumentType(TextReader reader)
         {
-            string line;
+            string? line;
             while ((line = reader.ReadLine()) != null)
             {
                 if (line.StartsWith("documentType:"))
