@@ -9,9 +9,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
-    internal class JsonDiskCache<TError, TKey, TValue> where TValue : ICacheObject<TKey>
+    internal class JsonDiskCache<TError, TKey, TValue>
+        where TError : class
+        where TKey : notnull
+        where TValue : class, ICacheObject<TKey>
     {
         private static int s_randomSeed = Environment.TickCount;
         private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
@@ -20,15 +25,15 @@ namespace Microsoft.Docs.Build
         private readonly double _expirationInSeconds;
 
         private readonly ConcurrentDictionary<TKey, TValue> _cache;
-        private readonly ConcurrentDictionary<TKey, Lazy<Task<TError>>> _backgroundUpdates;
+        private readonly ConcurrentDictionary<TKey, Lazy<Task<TError?>>> _backgroundUpdates;
 
         private volatile bool _needUpdate;
 
-        public JsonDiskCache(string cachePath, TimeSpan expiration, IEqualityComparer<TKey> comparer = null)
+        public JsonDiskCache(string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null)
         {
             comparer = comparer ?? EqualityComparer<TKey>.Default;
             _cache = new ConcurrentDictionary<TKey, TValue>(comparer);
-            _backgroundUpdates = new ConcurrentDictionary<TKey, Lazy<Task<TError>>>(comparer);
+            _backgroundUpdates = new ConcurrentDictionary<TKey, Lazy<Task<TError?>>>(comparer);
 
             _expirationInSeconds = expiration.TotalSeconds;
             _cachePath = Path.GetFullPath(cachePath);
@@ -42,10 +47,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var cacheKey in item.GetKeys())
                     {
-                        if (cacheKey != null)
-                        {
-                            _cache.TryAdd(cacheKey, item);
-                        }
+                        _cache.TryAdd(cacheKey, item);
                     }
                 }
             }
@@ -60,16 +62,16 @@ namespace Microsoft.Docs.Build
         /// Don't throw exception in <paramref name="valueFactory"/> because of the async update,
         /// the exception may be re-thrown in <see cref="Save"/> method.
         /// </summary>
-        public Task<(TError error, TValue value)> GetOrAdd(TKey key, Func<TKey, Task<(TError, TValue)>> valueFactory)
+        public Task<(TError? error, TValue? value)> GetOrAdd(TKey key, Func<TKey, Task<(TError?, TValue?)>> valueFactory)
         {
             return GetOrAdd(key, async aKey =>
             {
                 var (error, value) = await valueFactory(aKey);
-                return (error, new[] { value });
+                return (error, value is null ? Array.Empty<TValue>() : new[] { value });
             });
         }
 
-        public async Task<(TError error, TValue value)> GetOrAdd(TKey key, Func<TKey, Task<(TError, IEnumerable<TValue>)>> valueFactory)
+        public async Task<(TError? error, TValue? value)> GetOrAdd(TKey key, Func<TKey, Task<(TError?, IEnumerable<TValue>)>> valueFactory)
         {
             if (_cache.TryGetValue(key, out var value))
             {
@@ -102,14 +104,14 @@ namespace Microsoft.Docs.Build
             return result.Where(error => error != null).ToArray();
         }
 
-        private Task<TError> Update(TKey key, Func<TKey, Task<(TError, IEnumerable<TValue>)>> valueFactory)
+        private Task<TError?> Update(TKey key, Func<TKey, Task<(TError?, IEnumerable<TValue>)>> valueFactory)
         {
             return _backgroundUpdates.GetOrAdd(key, UpdateDelegate(key, valueFactory)).Value;
         }
 
-        private Lazy<Task<TError>> UpdateDelegate(TKey key, Func<TKey, Task<(TError, IEnumerable<TValue>)>> valueFactory)
+        private Lazy<Task<TError?>> UpdateDelegate(TKey key, Func<TKey, Task<(TError?, IEnumerable<TValue>)>> valueFactory)
         {
-            return new Lazy<Task<TError>>(async () =>
+            return new Lazy<Task<TError?>>(async () =>
             {
                 var (error, values) = await valueFactory(key);
                 if (values != null)
@@ -122,10 +124,7 @@ namespace Microsoft.Docs.Build
 
                             foreach (var cacheKey in value.GetKeys())
                             {
-                                if (cacheKey != null)
-                                {
-                                    _cache[cacheKey] = value;
-                                }
+                                _cache[cacheKey] = value;
                             }
                             _needUpdate = true;
                         }
@@ -137,7 +136,7 @@ namespace Microsoft.Docs.Build
 
         private static DateTime GetRandomUpdatedAt()
         {
-            return DateTime.UtcNow.AddMilliseconds(1000.0 * t_random.Value.NextDouble());
+            return DateTime.UtcNow.AddMilliseconds(1000.0 * t_random.Value!.NextDouble());
         }
 
         private bool HasExpired(TValue value)

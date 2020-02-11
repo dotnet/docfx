@@ -3,6 +3,8 @@
 
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class CollectionUtility
@@ -15,7 +17,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> range)
+        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> range) where TKey : notnull
         {
             foreach (var (key, value) in range)
             {

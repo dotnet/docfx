@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(JsonSchemaConverter))]
@@ -33,13 +35,13 @@ namespace Microsoft.Docs.Build
         /// Json schema ref pointer
         /// </summary>
         [JsonProperty("$ref")]
-        public string Ref { get; set; }
+        public string? Ref { get; set; }
 
         /// <summary>
         /// Type of the current value.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public JsonSchemaType[] Type { get; set; }
+        public JsonSchemaType[]? Type { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to each property if the currnet value is object.
@@ -57,12 +59,12 @@ namespace Microsoft.Docs.Build
         ///     - boolean: allow/disallow additional properties
         ///     - object: the schema for the additional properties
         /// </summary>
-        public JsonSchema AdditionalProperties { get; set; }
+        public JsonSchema? AdditionalProperties { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to property names.
         /// </summary>
-        public JsonSchema PropertyNames { get; set; }
+        public JsonSchema? PropertyNames { get; set; }
 
         /// <summary>
         /// The maximum property count that an array can hold.
@@ -78,17 +80,17 @@ namespace Microsoft.Docs.Build
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
         [JsonConverter(typeof(UnionTypeConverter))]
-        public (JsonSchema schema, JsonSchema[] schemas) Items { get; set; }
+        public (JsonSchema? schema, JsonSchema[] schemas) Items { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to additional items of an array.
         /// </summary>
-        public JsonSchema AdditionalItems { get; set; }
+        public JsonSchema? AdditionalItems { get; set; }
 
         /// <summary>
         /// Whether an array contains this element.
         /// </summary>
-        public JsonSchema Contains { get; set; }
+        public JsonSchema? Contains { get; set; }
 
         /// <summary>
         /// Whether each item in array must be unique.
@@ -109,12 +111,12 @@ namespace Microsoft.Docs.Build
         /// Current value must be this constant.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Include)]
-        public JToken Const { get; set; }
+        public JToken? Const { get; set; }
 
         /// <summary>
         /// An array of valid values for the current value.
         /// </summary>
-        public JToken[] Enum { get; set; }
+        public JToken[]? Enum { get; set; }
 
         /// <summary>
         /// The string format for the current value.
@@ -159,7 +161,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The regular expression applied to strings
         /// </summary>
-        public string Pattern { get; set; }
+        public string? Pattern { get; set; }
 
         /// <summary>
         /// Properties that are required to be present.
@@ -179,7 +181,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
         /// </summary>
-        public string HtmlMetaName { get; set; }
+        public string? HtmlMetaName { get; set; }
 
         /// <summary>
         /// Properties that are hidden in output HTML <meta> tag. Does not have effect in sub schemas.
@@ -225,7 +227,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to validate date format
         /// </summary>
-        public string DateFormat { get; set; }
+        public string? DateFormat { get; set; }
 
         /// <summary>
         /// Properties that are used to set maximum time range
@@ -240,17 +242,17 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to indicate the deprecated field
         /// </summary>
-        public string ReplacedBy { get; set; }
+        public string? ReplacedBy { get; set; }
 
         /// <summary>
         /// Properties that are used to indicate the value relationship between two fields
         /// </summary>
-        public EnumDependenciesSchema EnumDependencies { get; set; }
+        public EnumDependenciesSchema? EnumDependencies { get; set; }
 
         /// <summary>
         /// Properties that are used to validate microsoft alias
         /// </summary>
-        public MicrosoftAliasSchema MicrosoftAlias { get; set; }
+        public MicrosoftAliasSchema? MicrosoftAlias { get; set; }
 
         // JSON schema metadata validation error extensions
         //-------------------------------------------

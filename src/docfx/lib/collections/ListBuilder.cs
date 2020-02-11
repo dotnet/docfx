@@ -3,9 +3,11 @@
 
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace System.Collections.Concurrent
 {
-    internal class ListBuilder<T>
+    internal class ListBuilder<T> where T : notnull
     {
         private readonly List<T> _array = new List<T>();
 

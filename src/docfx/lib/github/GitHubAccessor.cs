@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,18 +18,20 @@ using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor : IDisposable
     {
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient? _httpClient;
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
         private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
 
-        private volatile Error _fatalError;
+        private volatile Error? _fatalError;
 
         public GitHubAccessor(Config config)
         {
@@ -43,7 +46,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<(Error, GitHubUser)> GetUserByLogin(SourceInfo<string> login)
+        public async Task<(Error?, GitHubUser?)> GetUserByLogin(SourceInfo<string> login)
         {
             var (error, user) = await _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
             if (user != null && !user.IsValid())
@@ -54,7 +57,7 @@ namespace Microsoft.Docs.Build
             return (error, user);
         }
 
-        public async Task<(Error, GitHubUser)> GetUserByEmail(string email, string owner, string name, string commit)
+        public async Task<(Error?, GitHubUser?)> GetUserByEmail(string email, string owner, string name, string commit)
         {
             var (error, user) = await _userCache.GetOrAdd(email, _ => GetUserByEmailCore(email, owner, name, commit));
             return (error, user != null && user.IsValid() ? user : null);
@@ -71,7 +74,7 @@ namespace Microsoft.Docs.Build
             _syncRoot.Dispose();
         }
 
-        private async Task<(Error, GitHubUser)> GetUserByLoginCore(string login)
+        private async Task<(Error?, GitHubUser?)> GetUserByLoginCore(string login)
         {
             if (_fatalError != null || _httpClient is null)
             {
@@ -106,7 +109,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private async Task<(Error, IEnumerable<GitHubUser>)> GetUserByEmailCore(string email, string owner, string name, string commit)
+        private async Task<(Error?, IEnumerable<GitHubUser>)> GetUserByEmailCore(string email, string owner, string name, string commit)
         {
             if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(commit))
             {
@@ -140,7 +143,7 @@ namespace Microsoft.Docs.Build
 
             if (error != null)
             {
-                return (error, null);
+                return (error, Array.Empty<GitHubUser>());
             }
 
             var githubUsers = new List<GitHubUser>();
@@ -156,7 +159,7 @@ namespace Microsoft.Docs.Build
                             Id = node.author.user?.databaseId,
                             Login = node.author.user?.login,
                             Name = string.IsNullOrEmpty(node.author.user?.name) ? node.author.user?.login : node.author.user?.name,
-                            Emails = new[] { node.author.user?.email, node.author.email }
+                            Emails = new[] { node.author.user?.email!, node.author.email }
                                 .Where(str => !string.IsNullOrEmpty(str)).Distinct().ToArray(),
                         });
                     }
@@ -166,7 +169,8 @@ namespace Microsoft.Docs.Build
             return (null, githubUsers);
         }
 
-        private async Task<(Error error, string errorCode, T data)> Query<T>(string api, string query, object variables, T dataType)
+        private async Task<(Error? error, string? errorCode, T? data)> Query<T>(string api, string query, object variables, T dataType)
+            where T : class
         {
             Debug.Assert(dataType != null);
 
@@ -174,11 +178,12 @@ namespace Microsoft.Docs.Build
             {
                 using var request = new StringContent(JsonUtility.Serialize(new { query, variables }), Encoding.UTF8, "application/json");
                 using var response = await HttpPolicyExtensions
-.HandleTransientHttpError()
-.Or<OperationCanceledException>()
-.Or<IOException>()
-.RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying: {api}"))
-.ExecuteAsync(() => SendRequest(api, request));
+                    .HandleTransientHttpError()
+                    .Or<OperationCanceledException>()
+                    .Or<IOException>()
+                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying: {api}"))
+                    .ExecuteAsync(() => SendRequest(api, request));
+
                 if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
                 {
                     Log.Write(await response.Content.ReadAsStringAsync());
@@ -225,7 +230,7 @@ namespace Microsoft.Docs.Build
             {
                 using (PerfScope.Start($"Calling GitHub API: {api}"))
                 {
-                    return await _httpClient.PostAsync(s_url, request);
+                    return await _httpClient!.PostAsync(s_url, request);
                 }
             }
             finally

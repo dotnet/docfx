@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaValidator
@@ -15,9 +17,9 @@ namespace Microsoft.Docs.Build
         private readonly bool _forceError;
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
-        private readonly MicrosoftGraphAccessor _microsoftGraphAccessor;
+        private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
 
-        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor microsoftGraphAccessor = null, bool forceError = false)
+        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor? microsoftGraphAccessor = null, bool forceError = false)
         {
             _schema = schema;
             _forceError = forceError;
@@ -156,7 +158,7 @@ namespace Microsoft.Docs.Build
             ValidateDependencies(schema, name, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
-            ValidateEnumDependencies(schema.EnumDependencies, string.Empty, string.Empty, null, null, map, errors);
+            ValidateEnumDependencies(schema.EnumDependencies, "", "", null, null, map, errors);
             ValidateProperties(schema, name, map, errors);
         }
 
@@ -170,6 +172,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in map)
             {
+                if (value is null)
+                {
+                    continue;
+                }
+
                 if (schema.PropertyNames != null)
                 {
                     var propertyName = new JValue(key);
@@ -342,8 +349,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool IsStrictHaveValue(JToken value) =>
-            value != null && value.Type != JTokenType.Null && (value.Type != JTokenType.String || !string.IsNullOrWhiteSpace((string)value));
+        private bool IsStrictHaveValue(JToken value)
+        {
+            return value switch
+            {
+                JObject _ => true,
+                JArray _ => true,
+                JValue v when v.Value is null => false,
+                JValue v when v.Value is string str => !string.IsNullOrWhiteSpace(str),
+                JValue _ => true,
+                _ => false,
+            };
+        }
 
         private bool IsStrictContain(JObject map, string key) =>
             map.TryGetValue(key, out var value) && IsStrictHaveValue(value);
@@ -442,7 +459,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateEnumDependencies(EnumDependenciesSchema enumDependencies, string dependentFieldNameWithIndex, string dependentFieldName, JToken dependentFieldRawValue, JToken dependentFieldValue, JObject map, List<(string name, Error)> errors)
+        private void ValidateEnumDependencies(
+            EnumDependenciesSchema? enumDependencies,
+            string dependentFieldNameWithIndex,
+            string dependentFieldName,
+            JToken? dependentFieldRawValue,
+            JToken? dependentFieldValue,
+            JObject map,
+            List<(string name, Error)> errors)
         {
             if (enumDependencies == null)
             {
@@ -455,6 +479,10 @@ namespace Microsoft.Docs.Build
                 if (map.TryGetValue(fieldName, out var fieldRawValue))
                 {
                     var fieldValue = fieldRawValue is JArray array ? (fieldIndex < array.Count ? array[fieldIndex] : null) : fieldRawValue;
+                    if (fieldValue is null)
+                    {
+                        continue;
+                    }
 
                     if (!IsStrictHaveValue(fieldValue))
                     {
@@ -480,7 +508,7 @@ namespace Microsoft.Docs.Build
                                 JsonUtility.GetSourceInfo(fieldValue),
                                 fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
                                 fieldValue,
-                                dependentFieldRawValue.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                                dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
                                 dependentFieldValue)));
                         }
                     }

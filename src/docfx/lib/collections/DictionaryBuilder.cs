@@ -3,9 +3,11 @@
 
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace System.Collections.Concurrent
 {
-    internal class DictionaryBuilder<TKey, TValue>
+    internal class DictionaryBuilder<TKey, TValue> where TKey : notnull
     {
         private readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
 

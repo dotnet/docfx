@@ -523,7 +523,7 @@ namespace Microsoft.Docs.Build
         /// The value of paired attribute is invalid.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error InvalidPairedAttribute(SourceInfo source, string name, object value, string dependentFieldName, object dependentFieldValue)
+        public static Error InvalidPairedAttribute(SourceInfo source, string name, object value, string dependentFieldName, object? dependentFieldValue)
             => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
 
         /// <summary>

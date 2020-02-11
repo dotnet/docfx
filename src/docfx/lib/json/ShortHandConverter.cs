@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                     return null;
 
                 case JsonToken.StartObject:
-                    var result = Activator.CreateInstance(objectType) ?? throw new InvalidOperationException();
+                    var result = Activator.CreateInstance(objectType)!;
                     serializer.Populate(reader, result);
                     return result;
 
