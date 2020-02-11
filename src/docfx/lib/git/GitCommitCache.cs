@@ -18,14 +18,14 @@ namespace Microsoft.Docs.Build
         // Commit history LRU cache per file (or empty for whole repo). Key is the file path relative to repository root.
         // Value is a dictionary of git commit history for a particular commit hash and file blob hash.
         // Only the last N = MaxCommitCacheCountPerFile commit histories are cached for a file, they are selected by least recently used order (lruOrder).
-        private readonly ConcurrentDictionary<string, FileCommitCache> _commitCache = new ConcurrentDictionary<string, FileCommitCache>();
+        private readonly ConcurrentDictionary<string, FileCommitCache> _commitCache;
 
         private bool _cacheUpdated;
 
         public GitCommitCache(string cacheFilePath)
         {
             _cacheFilePath = cacheFilePath;
-            Load();
+            _commitCache = Load();
         }
 
         public FileCommitCache ForFile(string file)
@@ -64,13 +64,15 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private void Load()
+        private ConcurrentDictionary<string, FileCommitCache> Load()
         {
             Telemetry.TrackCacheTotalCount(TelemetryName.GitCommitCache);
+
+            var commitCache = new ConcurrentDictionary<string, FileCommitCache>();
             if (!File.Exists(_cacheFilePath))
             {
                 Telemetry.TrackCacheMissCount(TelemetryName.GitCommitCache);
-                return;
+                return commitCache;
             }
 
             Log.Write($"Using git commit history cache file: '{_cacheFilePath}'");
@@ -81,7 +83,7 @@ namespace Microsoft.Docs.Build
                 for (var i = 0; i < count; i++)
                 {
                     var file = reader.ReadString();
-                    var cache = _commitCache.GetOrAdd(file, _ => new FileCommitCache(this));
+                    var cache = commitCache.GetOrAdd(file, _ => new FileCommitCache(this));
 
                     lock (cache)
                     {
@@ -89,6 +91,8 @@ namespace Microsoft.Docs.Build
                     }
                 }
             });
+
+            return commitCache;
         }
 
         public class FileCommitCache

@@ -63,11 +63,23 @@ namespace Microsoft.Docs.Build
         /// Reads the content of a file.
         /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
-        public static string ReadFile(string path)
+        public static T ReadJsonFile<T>(string path) where T : class, new()
         {
+            var content = "";
             using (InterProcessMutex.Create(path))
             {
-                return File.ReadAllText(path);
+                content = File.ReadAllText(path);
+            }
+
+            try
+            {
+                return JsonUtility.Deserialize<T>(content, new FilePath(path));
+            }
+            catch (Exception ex)
+            {
+                Log.Important($"Ignore data file due to a problem reading '{path}'.", ConsoleColor.Yellow);
+                Log.Write(ex);
+                return new T();
             }
         }
 
@@ -76,7 +88,15 @@ namespace Microsoft.Docs.Build
             using (InterProcessMutex.Create(path))
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
             {
-                read(fs);
+                try
+                {
+                    read(fs);
+                }
+                catch (Exception ex)
+                {
+                    Log.Important($"Ignore data file due to a problem reading '{path}'.", ConsoleColor.Yellow);
+                    Log.Write(ex);
+                }
             }
         }
 
