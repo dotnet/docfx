@@ -5,6 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
