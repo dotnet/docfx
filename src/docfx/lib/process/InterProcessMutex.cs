@@ -46,8 +46,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            var stack = t_mutexRecursionStack.Value ?? throw new InvalidOperationException();
-            t_mutexRecursionStack.Value = stack.Pop();
+            t_mutexRecursionStack.Value = t_mutexRecursionStack.Value!.Pop();
             _mutex.ReleaseMutex();
             _mutex.Dispose();
         }

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAuthenticationProvider : IAuthenticationProvider, IDisposable
@@ -18,7 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly IConfidentialClientApplication _cca;
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        private AuthenticationResult _authenticationResult;
+        private AuthenticationResult? _authenticationResult;
 
         public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientSecret)
         {

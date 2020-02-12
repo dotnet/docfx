@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
-    internal interface ICacheObject<TKey>
+    internal interface ICacheObject<TKey> where TKey : notnull
     {
         DateTime? UpdatedAt { get; set; }
 

@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class ReferenceEqualsComparer : IEqualityComparer, IEqualityComparer<object>
@@ -14,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         private ReferenceEqualsComparer() { }
 
-        public new bool Equals(object x, object y)
+        public new bool Equals(object? x, object? y)
         {
             return ReferenceEquals(x, y);
         }

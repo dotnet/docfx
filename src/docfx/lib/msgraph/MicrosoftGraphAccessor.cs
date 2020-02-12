@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using Polly;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor : IDisposable
     {
-        private readonly IGraphServiceClient _msGraphClient;
-        private readonly MicrosoftGraphAuthenticationProvider _microsoftGraphAuthenticationProvider;
+        private readonly IGraphServiceClient? _msGraphClient;
+        private readonly MicrosoftGraphAuthenticationProvider? _microsoftGraphAuthenticationProvider;
         private readonly JsonDiskCache<Error, string, MicrosoftGraphUser> _aliasCache;
 
         public MicrosoftGraphAccessor(Config config)
@@ -33,7 +35,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<Error> ValidateMicrosoftAlias(SourceInfo<string> alias, string name = null)
+        public async Task<Error?> ValidateMicrosoftAlias(SourceInfo<string> alias, string name)
         {
             if (_msGraphClient is null)
             {
@@ -56,7 +58,7 @@ namespace Microsoft.Docs.Build
             _microsoftGraphAuthenticationProvider?.Dispose();
         }
 
-        private async Task<(Error, MicrosoftGraphUser)> GetMicrosoftGraphUserCore(string alias)
+        private async Task<(Error?, MicrosoftGraphUser?)> GetMicrosoftGraphUserCore(string alias)
         {
             if (string.IsNullOrWhiteSpace(alias))
             {
@@ -74,7 +76,7 @@ namespace Microsoft.Docs.Build
                 var users = await Policy
                     .Handle<ServiceException>()
                     .RetryAsync(3)
-                    .ExecuteAsync(() => _msGraphClient.Users.Request(options).GetAsync());
+                    .ExecuteAsync(() => _msGraphClient!.Users.Request(options).GetAsync());
 
                 return (null, users != null && users.Count > 0 ? new MicrosoftGraphUser { Alias = alias } : null);
             }

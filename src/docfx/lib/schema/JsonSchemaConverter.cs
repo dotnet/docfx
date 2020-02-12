@@ -4,6 +4,8 @@
 using System;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaConverter : JsonConverter
@@ -12,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public override bool CanWrite => false;
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Boolean)
             {
@@ -24,6 +26,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => throw new NotSupportedException();
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new NotSupportedException();
     }
 }

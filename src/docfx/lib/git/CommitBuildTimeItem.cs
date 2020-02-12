@@ -5,12 +5,14 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class CommitBuildTimeItem
     {
-        public string Sha { get; set; }
+        public string Sha { get; set; } = "";
 
         public DateTime BuiltAt { get; set; }
     }

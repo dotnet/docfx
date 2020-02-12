@@ -4,18 +4,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace System.Collections.Concurrent
 {
-    internal class ConcurrentHashSet<T> : IEnumerable<T>
+    internal class ConcurrentHashSet<T> : IEnumerable<T> where T : notnull
     {
-        private readonly ConcurrentDictionary<T, object> _dictionary;
+        private readonly ConcurrentDictionary<T, object?> _dictionary;
 
-        public ConcurrentHashSet() => _dictionary = new ConcurrentDictionary<T, object>();
+        public ConcurrentHashSet() => _dictionary = new ConcurrentDictionary<T, object?>();
 
         public ConcurrentHashSet(IEnumerable<T> source)
-            => _dictionary = new ConcurrentDictionary<T, object>(source.Select(item => new KeyValuePair<T, object>(item, default)));
+            => _dictionary = new ConcurrentDictionary<T, object?>(source.Select(item => new KeyValuePair<T, object?>(item, default)));
 
-        public ConcurrentHashSet(IEqualityComparer<T> comparer) => _dictionary = new ConcurrentDictionary<T, object>(comparer);
+        public ConcurrentHashSet(IEqualityComparer<T> comparer) => _dictionary = new ConcurrentDictionary<T, object?>(comparer);
 
         public bool TryAdd(T value) => _dictionary.TryAdd(value, null);
 

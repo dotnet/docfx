@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaDefinition
@@ -27,9 +29,7 @@ namespace Microsoft.Docs.Build
 
         private JsonSchema GetDefinitionCore(JsonSchema schema, HashSet<string> recursions)
         {
-            if (schema != null &&
-                !string.IsNullOrEmpty(schema.Ref) &&
-                recursions.Add(schema.Ref))
+            if (!string.IsNullOrEmpty(schema.Ref) && recursions.Add(schema.Ref))
             {
                 if (_definitions.TryGetValue(schema.Ref, out var resolvedSchema))
                 {
