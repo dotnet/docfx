@@ -139,6 +139,8 @@ jobs:
         params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch live-sxs --locale zh-cn --timeout 30
       office-dev-O365API:
         params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
+      dynamics-crm-notinTOC_1.he-il:
+        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
       mc-docs-pr:
         params: https://github.com/opse2epr/mc-docs-pr --timeout 70
       ATADocs-pr:
