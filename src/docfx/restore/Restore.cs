@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                var theme = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+                var theme = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.DefaultLocale);
                 yield return (theme, PackageFetchOptions.DepthOne);
             }
 
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 yield break;
             }

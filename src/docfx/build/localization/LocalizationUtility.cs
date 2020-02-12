@@ -11,12 +11,16 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocalizationUtility
     {
-        private static readonly HashSet<string> s_locales = new HashSet<string>(CultureInfo.GetCultures(CultureTypes.AllCultures).Except(CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }), StringComparer.OrdinalIgnoreCase);
+        private static readonly HashSet<string> s_locales = new HashSet<string>(
+            CultureInfo.GetCultures(CultureTypes.AllCultures).Except(
+                CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(
+                    new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }),
+            StringComparer.OrdinalIgnoreCase);
+
         private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
         private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
-        public static bool IsValidLocale(string locale)
-            => s_locales.Contains(locale);
+        public static bool IsValidLocale(string locale) => s_locales.Contains(locale);
 
         public static string AddLeftToRightMarker(CultureInfo culture, string text)
         {
@@ -118,8 +122,7 @@ namespace Microsoft.Docs.Build
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 locale = match.Groups[1].Value.Substring(1).ToLowerInvariant();
-                nameWithoutLocale = name.Substring(0, name.Length - match.Groups[1].Value.Length);
-
+                nameWithoutLocale = name.Substring(0, name.Length - match.Groups[1].Value.Length).ToLowerInvariant();
                 return true;
             }
 

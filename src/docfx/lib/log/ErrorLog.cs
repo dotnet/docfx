@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             {
                 if (level == ErrorLevel.Error)
                 {
-                    return Write(Errors.FallbackError(config.Localization.DefaultLocale));
+                    return Write(Errors.FallbackError(config.DefaultLocale));
                 }
                 return false;
             }

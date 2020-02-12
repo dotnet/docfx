@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
 
             if (_fallbackDocset != null)
             {
-                (repo, branch) = LocalizationUtility.GetLocalizedRepo(false, repo, branch, locale, _config.Localization.DefaultLocale);
+                (repo, branch) = LocalizationUtility.GetLocalizedRepo(false, repo, branch, locale, _config.DefaultLocale);
             }
 
             var (gitUrlTemplate, _) = GetContentGitUrlTemplate(repo, pathToRepo);

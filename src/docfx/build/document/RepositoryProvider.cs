@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
         private (string path, Repository) GetTemplateRepository()
         {
-            var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.Localization.DefaultLocale);
+            var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.DefaultLocale);
 
             var templatePath = _packageResolver.ResolvePackage(theme, PackageFetchOptions.DepthOne);
 

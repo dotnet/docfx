@@ -383,8 +383,7 @@ outputs:
 os: windows
 inputs:
   docfx.yml: |
-    localization:
-      defaultLocale: wrong/wrong
+    defaultLocale: wrong/wrong
 outputs:
   .errors.log: |
     ["error","locale-invalid","Invalid locale: 'wrong/wrong'."]
