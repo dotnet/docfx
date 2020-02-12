@@ -36,7 +36,10 @@ namespace Microsoft.Docs.Build
             if (_config.UpdateTimeAsCommitBuildTime)
             {
                 _commitBuildTimeProviders = new ConcurrentDictionary<Repository, CommitBuildTimeProvider>();
-                _commitBuildTimeProviders[docset.Repository] = new CommitBuildTimeProvider(config, docset.Repository);
+                if (docset.Repository != null)
+                {
+                    _commitBuildTimeProviders[docset.Repository] = new CommitBuildTimeProvider(config, docset.Repository);
+                }
             }
         }
 
@@ -110,7 +113,7 @@ namespace Microsoft.Docs.Build
         {
             if (fileCommits.Length > 0)
             {
-                if (_commitBuildTimeProviders != null)
+                if (_commitBuildTimeProviders != null && repository != null)
                 {
                     if (!_commitBuildTimeProviders.TryGetValue(repository, out var commitBuildTimeProvider))
                     {
