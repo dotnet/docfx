@@ -115,12 +115,9 @@ namespace Microsoft.Docs.Build
             {
                 if (_commitBuildTimeProviders != null && repository != null)
                 {
-                    if (!_commitBuildTimeProviders.TryGetValue(repository, out var commitBuildTimeProvider))
-                    {
-                        commitBuildTimeProvider = new CommitBuildTimeProvider(_config, repository);
-                        _commitBuildTimeProviders.TryAdd(repository, commitBuildTimeProvider);
-                    }
-                    return commitBuildTimeProvider.GetCommitBuildTime(fileCommits[0].Sha);
+                    return _commitBuildTimeProviders
+                        .GetOrAdd(repository, new CommitBuildTimeProvider(_config, repository))
+                        .GetCommitBuildTime(fileCommits[0].Sha);
                 }
                 else
                 {
