@@ -123,7 +123,7 @@ jobs:
   strategy:
     matrix:
       DevSandbox:
-        params: https://github.com/OPS-E2E-PPE/DevSandbox --timeout 20
+        params: https://github.com/OPS-E2E-PPE/DevSandbox --timeout 30
       docs-help-pr:
         params: >
           https://github.com/OPS-E2E-PPE/docs-help-pr --build-type PullRequest
