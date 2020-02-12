@@ -6,8 +6,8 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 
 - [x] Basic markdown and table of contents _(done)_
 - [x] Basic schema driven documents _(done)_
-- [x] Localization _(testing)_
-- [x] Versioning _(testing)_
+- [x] Localization _(done)_
+- [x] Versioning _(done)_
 
 ### Phase 2: Docs Integration
 - [x] Migration tooling for <https://docs.microsoft.com> _(done)_
@@ -22,8 +22,8 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 
 ### Phase 4: Local Authoring Experience
 
-- [ ] Local build _(started)_
-- [ ] vscode integration _(started)_
+- [x] Local build _(done)_
+- [ ] vscode integration _(in progress)_
 - [ ] Local preview
 
 ### Phase 4: Future
