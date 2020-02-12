@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
 
             var commitBuildTime = exists
-                ? JsonUtility.Deserialize<CommitBuildTime>(ProcessUtility.ReadFile(_commitBuildTimePath), new FilePath(_commitBuildTimePath))
+                ? ProcessUtility.ReadJsonFile<CommitBuildTime>(_commitBuildTimePath)
                 : new CommitBuildTime();
 
             _buildTimeByCommit = commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);
