@@ -518,9 +518,9 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
-            public FilePath? FilePath { get; set; }
+            public FilePath? FilePath;
 
-            public JTokenReader? Reader { get; set; }
+            public JTokenReader? Reader;
 
             public readonly List<Error> Errors = new List<Error>();
         }
