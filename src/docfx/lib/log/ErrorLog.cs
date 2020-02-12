@@ -8,13 +8,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal sealed class ErrorLog : IDisposable
     {
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
-        private readonly Func<Config> _config;
+        private readonly Func<Config?> _config;
 
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
         private readonly Lazy<TextWriter> _output;
@@ -31,7 +33,7 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public ErrorLog(string docsetPath, string outputPath, Func<Config> config, bool legacy = false)
+        public ErrorLog(string docsetPath, string outputPath, Func<Config?> config, bool legacy = false)
         {
             _config = config;
             _legacy = legacy;
@@ -193,7 +195,7 @@ namespace Microsoft.Docs.Build
             PrintError(error, level);
         }
 
-        private int GetMaxCount(Config config, ErrorLevel level)
+        private int GetMaxCount(Config? config, ErrorLevel level)
         {
             if (config == null)
             {
@@ -213,7 +215,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool ExceedMaxErrors(Config config, ErrorLevel level)
+        private bool ExceedMaxErrors(Config? config, ErrorLevel level)
         {
             if (config == null)
             {
@@ -233,7 +235,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool IncrementExceedMaxErrors(Config config, ErrorLevel level)
+        private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level)
         {
             if (config == null)
             {
