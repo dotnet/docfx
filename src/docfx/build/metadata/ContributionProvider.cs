@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             if (_config.UpdateTimeAsCommitBuildTime)
             {
-                _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+                _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>();
                 if (docset.Repository != null)
                 {
                     _commitBuildTimeProviders[docset.Repository.Path] = new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(config, docset.Repository));
