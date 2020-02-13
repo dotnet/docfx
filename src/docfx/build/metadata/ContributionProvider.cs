@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly GitHubAccessor _githubAccessor;
         private readonly LocalizationProvider _localization;
 
-        private readonly ConcurrentDictionary<Repository, CommitBuildTimeProvider> _commitBuildTimeProviders = null;
+        private readonly ConcurrentDictionary<Repository, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = null;
 
         private readonly GitCommitProvider _gitCommitProvider;
 
@@ -35,10 +35,10 @@ namespace Microsoft.Docs.Build
 
             if (_config.UpdateTimeAsCommitBuildTime)
             {
-                _commitBuildTimeProviders = new ConcurrentDictionary<Repository, CommitBuildTimeProvider>();
+                _commitBuildTimeProviders = new ConcurrentDictionary<Repository, Lazy<CommitBuildTimeProvider>>();
                 if (docset.Repository != null)
                 {
-                    _commitBuildTimeProviders[docset.Repository] = new CommitBuildTimeProvider(config, docset.Repository);
+                    _commitBuildTimeProviders[docset.Repository] = new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(config, docset.Repository));
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                 if (_commitBuildTimeProviders != null && repository != null)
                 {
                     return _commitBuildTimeProviders
-                        .GetOrAdd(repository, new CommitBuildTimeProvider(_config, repository))
+                        .GetOrAdd(repository, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
                         .GetCommitBuildTime(fileCommits[0].Sha);
                 }
                 else
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (_, commitBuildTimeProvider) in _commitBuildTimeProviders)
                 {
-                    commitBuildTimeProvider.Save();
+                    commitBuildTimeProvider.Value.Save();
                 }
             }
         }
