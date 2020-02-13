@@ -643,7 +643,7 @@ repos:
         b.md: |
           Alice creates this.
 state:
-  history\build_history_95ac9e0f-677b-d6a6-13b5-a7a3118624ab_cd6b8f09-2146-73d3-cade-4e832627b4f6.json: |
+  history/build_history_95ac9e0f-677b-d6a6-13b5-a7a3118624ab_cd6b8f09-2146-73d3-cade-4e832627b4f6.json: |
     { "commits":[
           {"sha":"44e7dd472e06b95898986635feccbcefde3c42f0","built_at":"2020-02-12T00:00:00Z"},
           {"sha":"821cee8a13e124826fe160d619fb9f4d09e9f884","built_at":"2020-02-11T00:00:00Z"},
