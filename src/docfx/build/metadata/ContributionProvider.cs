@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly GitHubAccessor _githubAccessor;
         private readonly LocalizationProvider _localization;
 
-        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = null;
+        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders;
 
         private readonly GitCommitProvider _gitCommitProvider;
 
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             if (_config.UpdateTimeAsCommitBuildTime)
             {
-                _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>();
+                _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
                 if (docset.Repository != null)
                 {
                     _commitBuildTimeProviders[docset.Repository.Path] = new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(config, docset.Repository));
