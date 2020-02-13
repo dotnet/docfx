@@ -34,14 +34,8 @@ namespace Microsoft.Docs.Build
             _buildTimeByCommit = commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);
         }
 
-        public bool TryGetCommitBuildTime(string commitId, out DateTime time)
-        {
-            if (!_buildTimeByCommit.TryGetValue(commitId, out time))
-            {
-                time = _buildTime;
-            }
-            return true;
-        }
+        public DateTime GetCommitBuildTime(string commitId)
+            => _buildTimeByCommit.TryGetValue(commitId, out var time) ? time : _buildTime;
 
         public void Save()
         {

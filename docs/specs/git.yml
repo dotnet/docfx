@@ -610,6 +610,7 @@ repos:
   https://docs.com/crrcontent/a:
     - files:
         docfx.yml: |
+          updateTimeAsCommitBuildTime: true
           contribution:
             repositoryUrl: https://github.com/contrib-owner/contrib-repo
             repositoryBranch: contrib-branch
@@ -641,6 +642,14 @@ repos:
       files:
         b.md: |
           Alice creates this.
+state:
+  history/build_history_95ac9e0f-677b-d6a6-13b5-a7a3118624ab_cd6b8f09-2146-73d3-cade-4e832627b4f6.json: |
+    { "commits":[
+          {"sha":"44e7dd472e06b95898986635feccbcefde3c42f0","built_at":"2020-02-12T00:00:00Z"},
+          {"sha":"821cee8a13e124826fe160d619fb9f4d09e9f884","built_at":"2020-02-11T00:00:00Z"},
+          {"sha":"cd13c15380474902b64f8dd114c2c3969d218580","built_at":"2020-02-10T00:00:00Z"}
+      ]
+    }
 cache:
   github-users.json: |
       { "items": [
@@ -666,7 +675,7 @@ outputs:
       "original_content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
       "original_content_git_url_template": "https://github.com/testowner/crr-content/blob/test/b.md",
       "gitcommit": "https://github.com/testowner/crr-content/blob/44e7dd472e06b95898986635feccbcefde3c42f0/b.md",
-      "updated_at": "2018-10-30 12:00 AM"
+      "updated_at": "2020-02-12 12:00 AM"
     }
 ---
 # Gracefull handle corrupted global cache files
