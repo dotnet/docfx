@@ -470,6 +470,7 @@ repos:
       b/docfx.yml: |
         globalMetadata:
           open_to_public_contributors: false
+      b/.openpublishing.publish.config.json: '{'
       b/b.md:
       c/docfx.yml:
       c/c.md:
