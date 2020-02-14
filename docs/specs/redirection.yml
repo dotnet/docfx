@@ -455,6 +455,7 @@ repos:
       ce/docfx.yml: |
         name: customer-engagement-ppe
         product: MSDN
+      ce/.openpublishing.redirection.json: '{'
       ce/redirections.yml: |
         renames:
           admin/integrate-with-microsoft-teams.md: '../basics/teams-integration'
