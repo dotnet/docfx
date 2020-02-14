@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
         /// Defined same redirection entry in both <see cref="Config.Redirections"/> and <see cref="Config.RedirectionsWithoutId"/>.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error RedirectionConflict(SourceInfo source, string path)
+        public static Error RedirectionConflict(SourceInfo? source, string path)
             => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{path}' appears twice or more in the redirection mappings", source);
 
         /// <summary>

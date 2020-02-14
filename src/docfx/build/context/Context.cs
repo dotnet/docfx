@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repositoryProvider, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output);

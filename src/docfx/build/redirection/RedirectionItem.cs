@@ -4,6 +4,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
@@ -11,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public PathString SourcePath { get; set; }
 
-        public SourceInfo<string> RedirectUrl { get; set; }
+        public SourceInfo<string> RedirectUrl { get; set; } = new SourceInfo<string>("");
 
         public bool RedirectDocumentId { get; set; }
     }
