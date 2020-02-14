@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options?.StdinConfig, options?.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository);
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
             var globalConfig = File.Exists(AppData.GlobalConfigPath)
                 ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
                 : null;
