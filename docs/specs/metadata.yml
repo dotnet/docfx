@@ -348,6 +348,18 @@ outputs:
     { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
 ---
 # Generate _op_pdfUrlPrefixTemplate when need_generate_pdf_url_template in .openpublishing.publish.config.json is true
+repos:
+  https://docs.com/ops/need_generate_pdf_url_template:
+  - files:
+      .openpublishing.publish.config.json: |
+        { "need_generate_pdf_url_template": true }
+      docfx.yml:
+      a.md:
+outputs:
+  a.json: |
+    { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
+---
+# Ignore OPS config if it is not a git repo
 inputs:
   .openpublishing.publish.config.json: |
     { "need_generate_pdf_url_template": true }
@@ -355,4 +367,4 @@ inputs:
   a.md:
 outputs:
   a.json: |
-    { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
+    { "_op_pdfUrlPrefixTemplate": undefined }
