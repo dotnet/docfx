@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
 
                     // resolve file
                     var lookupFallbackCommits = inclusion || _documentProvider.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
+                    var file = TryResolveRelativePath(referencingFile.Docset.DocsetPath, referencingFile.FilePath, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -183,7 +183,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile.Docset.DocsetPath, referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
                         }
 
                         // Do not report error for landing page
@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Document TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
+        private Document TryResolveRelativePath(string docsetPath, FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
             PathString pathToDocset;
@@ -218,6 +218,12 @@ namespace Microsoft.Docs.Build
                 // Path relative to referencing file
                 var baseDirectory = Path.GetDirectoryName(referencingFile.GetPathToOrigin());
                 pathToDocset = new PathString(Path.Combine(baseDirectory, relativePath));
+
+                // the relative path could be outside docset
+                if (pathToDocset.Value.StartsWith("."))
+                {
+                    pathToDocset = new PathString(Path.GetRelativePath(docsetPath, Path.Combine(docsetPath, pathToDocset.Value)));
+                }
             }
 
             // use the actual file name case

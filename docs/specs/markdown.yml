@@ -651,3 +651,31 @@ outputs:
   docs/b.json:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'b.md/'.","docs/a.md",1,1]
+---
+# resource inclusion with relative path outside docset
+inputs:
+  docsets.yml: |
+    docsets: new-hope/new-hope/*
+  new-hope/new-hope/docfx.yml: |
+    output:
+      copyResources: false
+  new-hope/new-hope/specs/unify-version/unify-version.md: |
+    ![ready-for-review](../../../new-hope/specs/gauntlet/media/ready-for-review.png)
+  new-hope/new-hope/specs/international-content/docs-vscode-validation.md: |
+    ![ready-for-review](../gauntlet/media/ready-for-review.png)
+  new-hope/new-hope/specs/gauntlet/media/ready-for-review.png:
+outputs:
+  new-hope/new-hope/specs/unify-version/unify-version.json:
+  new-hope/new-hope/specs/international-content/docs-vscode-validation.json:
+---
+# Link to a file within docset using relative path outside docset
+inputs:
+  docsets.yml: |
+    docsets: docs/docs/*
+  docs/docs/docfx.yml:
+  docs/docs/a.md: |
+    [b](../docs/b.md)
+  docs/docs/b.md:
+outputs:
+  docs/docs/a.json:
+  docs/docs/b.json:
