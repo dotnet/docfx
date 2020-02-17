@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Polly;
 using Polly.Extensions.Http;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class FileResolver
@@ -20,11 +22,11 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
-        private readonly Action<HttpRequestMessage> _credentialProvider;
-        private readonly OpsConfigAdapter _opsConfigAdapter;
+        private readonly Action<HttpRequestMessage>? _credentialProvider;
+        private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
 
-        public FileResolver(string docsetPath, Action<HttpRequestMessage> credentialProvider = null, OpsConfigAdapter opsConfigAdapter = null, FetchOptions fetchOptions = default)
+        public FileResolver(string docsetPath, Action<HttpRequestMessage>? credentialProvider = null, OpsConfigAdapter? opsConfigAdapter = null, FetchOptions fetchOptions = default)
         {
             _docsetPath = docsetPath;
             _opsConfigAdapter = opsConfigAdapter;
@@ -130,8 +132,8 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
         }
 
-        private async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(
-            string url, EntityTagHeaderValue existingEtag)
+        private async Task<(string? filename, EntityTagHeaderValue? etag)> DownloadToTempFile(
+            string url, EntityTagHeaderValue? existingEtag)
         {
             try
             {
@@ -163,7 +165,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
+        private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue? etag = null)
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."

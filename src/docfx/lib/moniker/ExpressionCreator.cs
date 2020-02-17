@@ -36,12 +36,7 @@ namespace Microsoft.Docs.Build
                 var result = GetComparatorSet();
                 while (Accept(SymbolType.Or, out _))
                 {
-                    result = new LogicExpression
-                    {
-                        Left = result,
-                        OperatorType = LogicOperatorType.Or,
-                        Right = GetComparatorSet(),
-                    };
+                    result = new LogicExpression(result, LogicOperatorType.Or, GetComparatorSet());
                 }
                 return result;
             }
@@ -53,12 +48,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (result != null)
                     {
-                        result = new LogicExpression
-                        {
-                            Left = result,
-                            OperatorType = LogicOperatorType.And,
-                            Right = comparator,
-                        };
+                        result = new LogicExpression(result, LogicOperatorType.And, comparator);
                     }
                     else
                     {

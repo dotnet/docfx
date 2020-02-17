@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
         /// In markdown-format toc, defined an empty node(# ) with no content.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MissingTocHead(SourceInfo source)
+        public static Error MissingTocHead(SourceInfo? source)
             => new Error(ErrorLevel.Warning, "missing-toc-head", $"The toc head name is missing", source);
 
         /// <summary>
@@ -166,14 +166,14 @@ namespace Microsoft.Docs.Build
         ///   - The toc syntax '# @b abc' is invalid, multiple inlines in one heading block is not allowed
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidTocSyntax(SourceInfo source)
+        public static Error InvalidTocSyntax(SourceInfo? source)
             => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax is invalid, each line must be a valid markdown [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) with a single link, xref link or literal text", source);
 
         /// <summary>
         /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidTocLevel(SourceInfo source, int from, int to)
+        public static Error InvalidTocLevel(SourceInfo? source, int from, int to)
             => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", source);
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
         /// Syntax error in yaml file(not duplicate key).
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error YamlSyntaxError(SourceInfo source, string message)
+        public static Error YamlSyntaxError(SourceInfo? source, string message)
             => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
         /// Used duplicate yaml key in markdown yml header or schema document(yml).
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error YamlDuplicateKey(SourceInfo source, string key)
+        public static Error YamlDuplicateKey(SourceInfo? source, string key)
             => new Error(ErrorLevel.Suggestion, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace Microsoft.Docs.Build
         ///   - unclosed ([{
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error JsonSyntaxError(SourceInfo source, string message)
+        public static Error JsonSyntaxError(SourceInfo? source, string message)
             => new Error(ErrorLevel.Error, "json-syntax-error", message, source);
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
         /// ]]>
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MergeConflict(SourceInfo source)
+        public static Error MergeConflict(SourceInfo? source)
             => new Error(ErrorLevel.Suggestion, "merge-conflict", "File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
 
         /// <summary>
@@ -344,13 +344,13 @@ namespace Microsoft.Docs.Build
         /// Used docfx output model property which are not defined in input model.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error AttributeReserved(SourceInfo source, string name)
+        public static Error AttributeReserved(SourceInfo? source, string name)
             => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs. Remove it from your file metadata.", source);
 
         /// <summary>
         /// Metadata value must be scalar or arrays of scalars.
         /// </summary>
-        public static Error InvalidMetadataType(SourceInfo source, string name)
+        public static Error InvalidMetadataType(SourceInfo? source, string name)
             => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source);
 
         /// <summary>
@@ -379,151 +379,151 @@ namespace Microsoft.Docs.Build
         /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error BookmarkNotFound(SourceInfo source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+        public static Error BookmarkNotFound(SourceInfo? source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
             => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(FindBestMatch(bookmark, candidateBookmarks, out var matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
 
         // Behavior: ✔️ Message: ❌
-        public static Error NullArrayValue(SourceInfo source, string name)
+        public static Error NullArrayValue(SourceInfo? source, string name)
             => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", source);
 
         /// <summary>
         /// Defined extra field(s) in input model in schema document(json, yml).
         /// </summary>
         /// Behavior: ❌ Message: ❌
-        public static Error UnknownField(SourceInfo source, string propName, string typeName)
+        public static Error UnknownField(SourceInfo? source, string propName, string typeName)
             => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", source);
 
         /// <summary>
         /// Schema document with violate content type/value against predefined models(not syntax error).
         /// </summary>
         /// Behavior: ❌ Message: ❌
-        public static Error ViolateSchema(SourceInfo source, string message)
+        public static Error ViolateSchema(SourceInfo? source, string message)
             => new Error(ErrorLevel.Error, "violate-schema", message, source);
 
         /// <summary>
         /// The input value type does not match expected value type.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error UnexpectedType(SourceInfo source, object expectedType, object actualType)
+        public static Error UnexpectedType(SourceInfo? source, object expectedType, object actualType)
             => new Error(ErrorLevel.Warning, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'", source);
 
         /// <summary>
         /// The input value is not defined in a valid value list.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error InvalidValue(SourceInfo source, string name, object value)
+        public static Error InvalidValue(SourceInfo? source, string name, object value)
             => new Error(ErrorLevel.Warning, "invalid-value", $"Invalid value for '{name}': '{value}'", source);
 
         /// <summary>
         /// The string type's value doesn't match given format.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error FormatInvalid(SourceInfo source, string value, object type)
+        public static Error FormatInvalid(SourceInfo? source, string value, object type)
             => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source);
 
         /// <summary>
         /// Array length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayLengthInvalid(SourceInfo source, string propName, string criteria)
+        public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
             => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source);
 
         /// <summary>
         /// Array items not unique.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayNotUnique(SourceInfo source, string propName)
+        public static Error ArrayNotUnique(SourceInfo? source, string propName)
             => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique", source);
 
         /// <summary>
         /// Array items not unique.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error ArrayContainsFailed(SourceInfo source, string propName)
+        public static Error ArrayContainsFailed(SourceInfo? source, string propName)
             => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema", source);
 
         /// <summary>
         /// Error when JSON boolean schema failed.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error BooleanSchemaFailed(SourceInfo source, string propName)
+        public static Error BooleanSchemaFailed(SourceInfo? source, string propName)
             => new Error(ErrorLevel.Warning, "boolean-schema-failed", $"Boolean schema validation failed for '{propName}'", source);
 
         /// <summary>
         /// Object property count not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error PropertyCountInvalid(SourceInfo source, string propName, string criteria)
+        public static Error PropertyCountInvalid(SourceInfo? source, string propName, string criteria)
             => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}", source);
 
         /// <summary>
         /// String length not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error StringLengthInvalid(SourceInfo source, string propName, string criteria)
+        public static Error StringLengthInvalid(SourceInfo? source, string propName, string criteria)
             => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source);
 
         /// <summary>
         /// Number not within min and max.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error NumberInvalid(SourceInfo source, double value, string criteria)
+        public static Error NumberInvalid(SourceInfo? source, double value, string criteria)
             => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}", source);
 
         /// <summary>
         /// A required attribute is missing.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error MissingAttribute(SourceInfo source, string name)
+        public static Error MissingAttribute(SourceInfo? source, string name)
             => new Error(ErrorLevel.Warning, "missing-attribute", $"Missing required attribute: '{name}'", source);
 
         /// <summary>
         /// An attribute lacks the required dependency.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error MissingPairedAttribute(SourceInfo source, string name, string otherKey)
+        public static Error MissingPairedAttribute(SourceInfo? source, string name, string otherKey)
             => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source);
 
         /// <summary>
         /// Attributes do not meet the requirements of either logic.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error MissingEitherAttribute(SourceInfo source, IEnumerable<object> attributes)
+        public static Error MissingEitherAttribute(SourceInfo? source, IEnumerable<object> attributes)
             => new Error(ErrorLevel.Warning, "missing-either-attribute", $"One of the following attributes is required: {Join(attributes)}", source);
 
         /// <summary>
         /// Attributes do not meet the requirements of precludes logic.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error PrecludedAttributes(SourceInfo source, IEnumerable<object> attributes)
+        public static Error PrecludedAttributes(SourceInfo? source, IEnumerable<object> attributes)
             => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {Join(attributes)}", source);
 
         /// <summary>
         /// An attribute does't conform to date format.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error DateFormatInvalid(SourceInfo source, string name, string value)
+        public static Error DateFormatInvalid(SourceInfo? source, string name, string value)
             => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid date format for '{name}': '{value}'.", source);
 
         /// <summary>
         /// Date out of range.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error DateOutOfRange(SourceInfo source, string name, string value)
+        public static Error DateOutOfRange(SourceInfo? source, string name, string value)
             => new Error(ErrorLevel.Warning, "date-out-of-range", $"Value out of range for '{name}': '{value}'", source);
 
         /// <summary>
         /// An attribute is deprecated.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error AttributeDeprecated(SourceInfo source, string name, string replacedBy)
+        public static Error AttributeDeprecated(SourceInfo? source, string name, string replacedBy)
             => new Error(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source);
 
         /// <summary>
         /// The value of paired attribute is invalid.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error InvalidPairedAttribute(SourceInfo source, string name, object value, string dependentFieldName, object? dependentFieldValue)
+        public static Error InvalidPairedAttribute(SourceInfo? source, string name, object value, string dependentFieldName, object? dependentFieldValue)
             => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source);
 
         /// <summary>
@@ -563,7 +563,7 @@ namespace Microsoft.Docs.Build
         ///   - both files with no monikers defined same uid
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
-        public static Error UidConflict(string uid, SourceInfo source)
+        public static Error UidConflict(string uid, SourceInfo? source)
             => new Error(ErrorLevel.Warning, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file", source);
 
         public static Error UidConflict(string uid, IEnumerable<FilePath> conflicts)

@@ -4,14 +4,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
     internal class PackageResolver : IDisposable
     {
-        internal static Func<string, string> GitRemoteProxy;
-
         private readonly string _docsetPath;
         private readonly Config _config;
         private readonly FetchOptions _fetchOptions;
@@ -26,7 +27,7 @@ namespace Microsoft.Docs.Build
             _fetchOptions = fetchOptions;
         }
 
-        public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, out string path)
+        public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, [NotNullWhen(true)] out string? path)
         {
             try
             {

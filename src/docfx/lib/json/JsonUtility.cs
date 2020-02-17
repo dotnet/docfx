@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -11,6 +12,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -66,7 +69,7 @@ namespace Microsoft.Docs.Build
 
         internal static JsonSerializer Serializer => s_serializer;
 
-        internal static Status State => t_status.Value.TryPeek(out var result) ? result : null;
+        internal static Status? State => t_status.Value!.TryPeek(out var result) ? result : null;
 
         static JsonUtility()
         {
@@ -76,7 +79,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fast pass to read MIME from $schema attribute.
         /// </summary>
-        public static SourceInfo<string> ReadMime(TextReader reader, FilePath file)
+        public static SourceInfo<string?> ReadMime(TextReader reader, FilePath file)
         {
             var schema = ReadSchema(reader, file);
             if (schema.Value is null)
@@ -84,12 +87,15 @@ namespace Microsoft.Docs.Build
 
             // TODO: be more strict
             var mime = schema.Value.Split('/').LastOrDefault();
-            return new SourceInfo<string>(mime != null ? Path.GetFileNameWithoutExtension(schema) : null, schema.Source);
+            return new SourceInfo<string?>(mime != null ? Path.GetFileNameWithoutExtension(schema) : null, schema.Source);
         }
 
         public static IEnumerable<string> GetPropertyNames(Type type)
         {
-            return ((JsonObjectContract)s_serializer.ContractResolver.ResolveContract(type)).Properties.Select(prop => prop.PropertyName);
+            return
+                from prop in ((JsonObjectContract)s_serializer.ContractResolver.ResolveContract(type)).Properties
+                where !string.IsNullOrEmpty(prop.PropertyName)
+                select prop.PropertyName;
         }
 
         /// <summary>
@@ -132,7 +138,7 @@ namespace Microsoft.Docs.Build
             {
                 var status = new Status { FilePath = file };
 
-                t_status.Value.Push(status);
+                t_status.Value!.Push(status);
 
                 return (checkAdditionalContent
                     ? s_serializerCheckingAddional.Deserialize<T>(reader)
@@ -149,7 +155,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_status.Value.Pop();
+                t_status.Value!.Pop();
             }
         }
 
@@ -170,22 +176,19 @@ namespace Microsoft.Docs.Build
             return (errors, obj as T ?? new T());
         }
 
-        public static (List<Error> errors, object value) ToObject(JToken token, Type type)
+        public static (List<Error> errors, object? value) ToObject(JToken token, Type type)
         {
             try
             {
-                var errors = new List<Error>();
-                var status = new Status { Errors = errors, Reader = new JTokenReader(token) };
-
-                t_status.Value.Push(status);
+                var status = new Status { Reader = new JTokenReader(token) };
+                t_status.Value!.Push(status);
 
                 var value = s_schemaValidationSerializer.Deserialize(status.Reader, type);
-
-                return (errors, value);
+                return (status.Errors, value);
             }
             finally
             {
-                t_status.Value.Pop();
+                t_status.Value!.Pop();
             }
         }
 
@@ -227,7 +230,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Merge(JObject container, JObject overwrite, string[] unionProperties = null)
+        public static void Merge(JObject container, JObject overwrite, string[]? unionProperties = null)
         {
             if (overwrite is null)
                 return;
@@ -250,7 +253,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static JToken DeepClone(JToken token)
+        public static JToken DeepClone(JToken? token)
         {
             if (token is JValue v)
             {
@@ -299,7 +302,7 @@ namespace Microsoft.Docs.Build
             // treat null JToken as empty JObject since it is from user input
             return (errors, IsNullOrUndefined(root) ? new JObject() : root);
 
-            void RemoveNullsCore(JToken token, string name)
+            void RemoveNullsCore(JToken token, string? name)
             {
                 if (token is JArray array)
                 {
@@ -328,7 +331,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static bool TryGetValue<T>(this JObject obj, string key, out T value) where T : JToken
+        public static bool TryGetValue<T>(this JObject obj, string key, [NotNullWhen(true)] out T? value) where T : JToken
         {
             value = null;
             if (obj is null || string.IsNullOrEmpty(key))
@@ -345,7 +348,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static SourceInfo GetSourceInfo(JToken token)
+        public static SourceInfo? GetSourceInfo(this JToken token)
         {
             var result = token.Annotation<SourceInfo>();
 
@@ -359,7 +362,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static JToken SetSourceInfo(JToken token, SourceInfo source)
+        public static JToken SetSourceInfo(JToken token, SourceInfo? source)
         {
             token.RemoveAnnotations<SourceInfo>();
             if (source != null)
@@ -369,7 +372,7 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
-        public static SourceInfo GetKeySourceInfo(JToken token)
+        public static SourceInfo? GetKeySourceInfo(JToken token)
         {
             return token.Annotation<SourceInfo>()?.KeySourceInfo;
         }
@@ -402,7 +405,7 @@ namespace Microsoft.Docs.Build
         /// $schema must be the first attribute in the root object.
         /// Assume input is a valid JSON. Bad input will be processed through Json.NET
         /// </summary>
-        private static SourceInfo<string> ReadSchema(TextReader reader, FilePath file)
+        private static SourceInfo<string?> ReadSchema(TextReader reader, FilePath file)
         {
             try
             {
@@ -414,11 +417,11 @@ namespace Microsoft.Docs.Build
                         if (json.Read() && json.Value is string schema)
                         {
                             var lineInfo = (IJsonLineInfo)json;
-                            return new SourceInfo<string>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
+                            return new SourceInfo<string?>(schema, new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition));
                         }
                     }
                 }
-                return new SourceInfo<string>(null, new SourceInfo(file, 1, 1));
+                return new SourceInfo<string?>(null, new SourceInfo(file, 1, 1));
             }
             catch (JsonReaderException)
             {
@@ -426,7 +429,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool IsNullOrUndefined(this JToken token)
+        private static bool IsNullOrUndefined([NotNullWhen(false)] this JToken? token)
         {
             return
                 (token is null) ||
@@ -434,7 +437,7 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static JToken SetSourceInfo(JToken token, FilePath file, JProperty property = null)
+        private static JToken SetSourceInfo(JToken token, FilePath file, JProperty? property = null)
         {
             var lineInfo = (IJsonLineInfo)token;
             var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition);
@@ -469,15 +472,15 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
-        private static void HandleError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+        private static void HandleError(object? sender, Newtonsoft.Json.Serialization.ErrorEventArgs? args)
         {
             // only log an error once
-            if (args.CurrentObject == args.ErrorContext.OriginalObject)
+            if (args?.CurrentObject == args?.ErrorContext.OriginalObject)
             {
-                if (args.ErrorContext.Error is JsonReaderException || args.ErrorContext.Error is JsonSerializationException)
+                if (args?.ErrorContext.Error is JsonReaderException || args?.ErrorContext.Error is JsonSerializationException)
                 {
-                    var state = t_status.Value.Peek();
-                    state.Errors.Add(Errors.ViolateSchema(GetSourceInfo(state.Reader.CurrentToken), ParseException(args.ErrorContext.Error).message));
+                    var state = t_status.Value!.Peek();
+                    state.Errors.Add(Errors.ViolateSchema(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -515,11 +518,11 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
-            public FilePath FilePath { get; set; }
+            public readonly List<Error> Errors = new List<Error>();
 
-            public JTokenReader Reader { get; set; }
+            public FilePath? FilePath;
 
-            public List<Error> Errors { get; set; }
+            public JTokenReader? Reader;
         }
     }
 }

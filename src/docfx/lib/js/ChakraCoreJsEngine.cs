@@ -11,6 +11,8 @@ using System.Threading;
 using ChakraHost.Hosting;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -31,16 +33,16 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Stack<string>> t_dirnames = new ThreadLocal<Stack<string>>(() => new Stack<string>());
 
-        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>>();
+        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>?> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>?>();
 
         private static int s_currentSourceContext;
 
         private readonly ConcurrentDictionary<JavaScriptContext, JavaScriptValue> _globals = new ConcurrentDictionary<JavaScriptContext, JavaScriptValue>();
 
         private readonly string _scriptDir;
-        private readonly JObject _global;
+        private readonly JObject? _global;
 
-        public ChakraCoreJsEngine(string scriptDir, JObject global = null)
+        public ChakraCoreJsEngine(string scriptDir, JObject? global = null)
         {
             _scriptDir = scriptDir;
             _global = global;
@@ -137,7 +139,7 @@ namespace Microsoft.Docs.Build
 
         private static JavaScriptValue Run(string scriptPath)
         {
-            var modules = t_modules.Value;
+            var modules = t_modules.Value!;
             if (modules.TryGetValue(scriptPath, out var module))
             {
                 return module;
@@ -149,9 +151,9 @@ namespace Microsoft.Docs.Build
             // add `process` to input to get the correct file path while running script inside docs-ui
             var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}
 }})";
-            var dirname = Path.GetDirectoryName(scriptPath);
+            var dirname = Path.GetDirectoryName(scriptPath) ?? "";
 
-            t_dirnames.Value.Push(dirname);
+            t_dirnames.Value!.Push(dirname);
 
             try
             {
@@ -186,7 +188,7 @@ namespace Microsoft.Docs.Build
                 return JavaScriptValue.CreateObject();
             }
 
-            var dirname = t_dirnames.Value.Peek();
+            var dirname = t_dirnames.Value!.Peek();
             var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
 
             return Run(scriptPath);
@@ -209,8 +211,11 @@ namespace Microsoft.Docs.Build
                     var resultObj = JavaScriptValue.CreateObject();
                     foreach (var (name, value) in obj)
                     {
-                        resultObj.SetProperty(
-                            JavaScriptPropertyId.FromString(name), ToJavaScriptValue(value), useStrictRules: true);
+                        if (value != null)
+                        {
+                            resultObj.SetProperty(
+                                JavaScriptPropertyId.FromString(name), ToJavaScriptValue(value), useStrictRules: true);
+                        }
                     }
                     return resultObj;
 

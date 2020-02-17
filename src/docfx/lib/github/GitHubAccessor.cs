@@ -99,12 +99,14 @@ namespace Microsoft.Docs.Build
                 return (null, new GitHubUser { Login = login });
             }
 
+            var emails = from email in new[] { data.user.email } where !string.IsNullOrEmpty(email) select email;
+
             return (null, new GitHubUser
             {
                 Id = data.user.databaseId,
                 Login = data.user.login,
                 Name = string.IsNullOrEmpty(data.user.name) ? data.user.login : data.user.name,
-                Emails = new[] { data.user.email }.Where(email => !string.IsNullOrEmpty(email)).ToArray(),
+                Emails = emails.ToArray(),
             });
         }
 
