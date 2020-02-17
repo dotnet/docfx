@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal sealed class ContributionConfig
@@ -11,12 +13,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Specify the repository url for contribution
         /// </summary>
-        public readonly string RepositoryUrl;
+        public readonly string? RepositoryUrl;
 
         /// <summary>
         /// Specify the repository branch for contribution
         /// </summary>
-        public readonly string RepositoryBranch;
+        public readonly string? RepositoryBranch;
 
         /// <summary>
         /// The excluded contributors which you don't want to show

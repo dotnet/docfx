@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>

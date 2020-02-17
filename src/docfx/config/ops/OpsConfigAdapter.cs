@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
@@ -24,7 +26,7 @@ namespace Microsoft.Docs.Build
             ? "https://docs.microsoft.com"
             : "https://ppe.docs.microsoft.com";
 
-        private static readonly string s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
+        private static readonly string? s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
         private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
 
         private static readonly string s_buildServiceEndpoint = s_isProduction
@@ -49,7 +51,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public async Task<HttpResponseMessage> InterceptHttpRequest(HttpRequestMessage request)
+        public async Task<HttpResponseMessage?> InterceptHttpRequest(HttpRequestMessage request)
         {
             foreach (var (baseUrl, rule) in _apis)
             {
@@ -77,12 +79,7 @@ namespace Microsoft.Docs.Build
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
-            if (docsetInfo is null)
-            {
-                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
-            }
-
+            var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
                 new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
@@ -141,15 +138,8 @@ namespace Microsoft.Docs.Build
         private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
         {
             var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
-            var response = await Fetch(url, nullOn404: true);
-            if (response is null)
-            {
-                return Array.Empty<string>();
-            }
-            else
-            {
-                return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
-            }
+            var response = await Fetch(url, value404: "{}");
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
@@ -202,7 +192,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
+        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
@@ -223,9 +213,9 @@ namespace Microsoft.Docs.Build
                     _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                 }
 
-                if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
+                if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    return null;
+                    return value404;
                 }
                 return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
             }
