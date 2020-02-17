@@ -15,10 +15,10 @@ namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader
     {
-        private readonly Repository _repository;
+        private readonly Repository? _repository;
         private readonly ErrorLog _errorLog;
 
-        public ConfigLoader(Repository repository, ErrorLog errorLog)
+        public ConfigLoader(Repository? repository, ErrorLog errorLog)
         {
             _repository = repository;
             _errorLog = errorLog;
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
         }
 
         private JObject DownloadExtendConfig(
-            List<Error> errors, string locale, PreloadConfig config, string? xrefEndpoint, string[]? xrefQueryTags, Repository repository, FileResolver fileResolver)
+            List<Error> errors, string locale, PreloadConfig config, string? xrefEndpoint, string[]? xrefQueryTags, Repository? repository, FileResolver fileResolver)
         {
             var result = new JObject();
             var extendQuery =

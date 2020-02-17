@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
             Merge(Array.Empty<string>(), container, overwrites);
         }
 
-        public static void Merge(string[] unionProperties, JObject container, params JObject[] overwrites)
+        public static void Merge(string[] unionProperties, JObject container, params JObject?[] overwrites)
         {
             if (overwrites == null)
                 return;
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Merge(JObject container, JObject overwrite, string[]? unionProperties = null)
+        public static void Merge(JObject container, JObject? overwrite, string[]? unionProperties = null)
         {
             if (overwrite is null)
                 return;
