@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             return ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
         }
 
-        private static (string xrefEndpoint, string[] xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
+        private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags ?? Array.Empty<string>(), result);
+            return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
         private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string branch, string buildSourceFolder)

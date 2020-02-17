@@ -4,11 +4,13 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal struct GroupConfig
     {
-        public readonly SourceInfo<string> MonikerRange;
+        public readonly SourceInfo<string?> MonikerRange;
     }
 }
