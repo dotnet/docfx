@@ -27,6 +27,11 @@ namespace Microsoft.DocAsCode.Common
         private static readonly string[] EncodedInvalidPartChars = Array.ConvertAll(InvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
         private static readonly char[] UnsafeInvalidPartChars = { '/' };
         private static readonly string[] EncodedUnsafeInvalidPartChars = Array.ConvertAll(UnsafeInvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
+        private static readonly Dictionary<string, string> SpecialCharactersNeedToDecode = new Dictionary<string, string>
+        {
+            ["%28"] = "(",
+            ["%29"] = ")"
+        };
 
         private readonly bool _isFromWorkingFolder;
         private readonly int _parentDirectoryCount;
@@ -233,7 +238,7 @@ namespace Microsoft.DocAsCode.Common
             var parts = new string[_parts.Length];
             for (int i = 0; i < parts.Length; i++)
             {
-                parts[i] = Uri.EscapeDataString(_parts[i]);
+                parts[i] = DecodeSpecialCharacters(Uri.EscapeDataString(_parts[i]));
             }
             return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
         }
@@ -506,6 +511,15 @@ namespace Microsoft.DocAsCode.Common
             }
 
             return parts;
+        }
+
+        private static string DecodeSpecialCharacters(string url)
+        {
+            foreach (var specialCharacterNeedToDecode in SpecialCharactersNeedToDecode)
+            {
+                url = url.Replace(specialCharacterNeedToDecode.Key, specialCharacterNeedToDecode.Value);
+            }
+            return url;
         }
 
         #endregion
