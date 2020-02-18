@@ -70,8 +70,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master", "zh-cn")]
         public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch, string expectedLocale)
         {
-            LocalizationUtility.TryGetFallbackRepository(
-                Repository.Create(Directory.GetCurrentDirectory(), branch, remote), out var sourceRemote, out var sourceBranch, out var locale);
+            LocalizationUtility.TryGetFallbackRepository(remote, branch, out var sourceRemote, out var sourceBranch, out var locale);
 
             Assert.Equal(expectedSourceRemote, sourceRemote);
             Assert.Equal(expectedSourceBranch, sourceBranch);

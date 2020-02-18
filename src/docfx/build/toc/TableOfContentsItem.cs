@@ -6,23 +6,25 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsItem
     {
-        public SourceInfo<string> Name { get; set; }
+        public SourceInfo<string?> Name { get; set; }
 
-        public string DisplayName { get; set; }
+        public string? DisplayName { get; set; }
 
-        public SourceInfo<string> Href { get; set; }
+        public SourceInfo<string?> Href { get; set; }
 
-        public SourceInfo<string> TopicHref { get; set; }
+        public SourceInfo<string?> TopicHref { get; set; }
 
-        public SourceInfo<string> TocHref { get; set; }
+        public SourceInfo<string?> TocHref { get; set; }
 
-        public string Homepage { get; set; }
+        public string? Homepage { get; set; }
 
-        public SourceInfo<string> Uid { get; set; }
+        public SourceInfo<string?> Uid { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Expanded { get; set; }
@@ -35,10 +37,10 @@ namespace Microsoft.Docs.Build
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; set; }
+        public JObject ExtensionData { get; set; } = new JObject();
 
         [JsonIgnore]
-        public Document Document { get; set; }
+        public Document? Document { get; set; }
 
         public TableOfContentsItem(TableOfContentsItem item)
         {

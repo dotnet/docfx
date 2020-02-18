@@ -5,6 +5,8 @@ using Markdig;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Validations.DocFx.Adapter;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class ContentValidationExtension

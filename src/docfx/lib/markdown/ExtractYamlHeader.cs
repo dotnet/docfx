@@ -6,11 +6,13 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class ExtractYamlHeader
     {
-        public static (List<Error> errors, JObject metadata) Extract(TextReader reader, Document file)
+        public static (List<Error> errors, JObject metadata) Extract(TextReader reader, FilePath file)
         {
             var builder = new StringBuilder("\n");
             var errors = new List<Error>();
@@ -27,7 +29,7 @@ namespace Microsoft.Docs.Build
                 {
                     try
                     {
-                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file?.FilePath);
+                        var (yamlErrors, yamlHeaderObj) = YamlUtility.Parse(builder.ToString(), file);
                         errors.AddRange(yamlErrors);
 
                         if (yamlHeaderObj is JObject obj)
@@ -35,7 +37,7 @@ namespace Microsoft.Docs.Build
                             return (errors, obj);
                         }
 
-                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file?.FilePath));
+                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
                     }
                     catch (DocfxException ex) when (ex.Error.Code == "yaml-syntax-error")
                     {

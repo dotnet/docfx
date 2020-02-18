@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             PackageResolver packageResolver,
             string docsetSourceFolder)
         {
-            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
+            if (LocalizationUtility.TryGetFallbackRepository(repository?.Remote, repository?.Branch, out var fallbackRemote, out var fallbackBranch, out _))
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
