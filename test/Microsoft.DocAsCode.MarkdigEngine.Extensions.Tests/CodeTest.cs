@@ -389,6 +389,10 @@ int main()
         //}
 
         [Theory]
+        [InlineData(@":::code source=""source.cs"" range=""9"" language=""csharp"":::", @"<pre>
+<code class=""lang-csharp"">namespace TableSnippets
+</code></pre>
+")]
         [InlineData(@":::code source=""source.cs"" range=""11 - 33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// &lt;summary&gt;
 /// Interaction logic for Window1.xaml
