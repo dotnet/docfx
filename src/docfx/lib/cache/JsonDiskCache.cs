@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
 
             if (_needUpdate)
             {
-                var content = JsonUtility.Serialize(new { items = _cache.Values.Distinct() });
+                var content = JsonUtility.Serialize(new { items = _cache.Values.Distinct().Where(value => !HasExpired(value)) });
 
                 Directory.CreateDirectory(Path.GetDirectoryName(_cachePath));
                 ProcessUtility.WriteFile(_cachePath, content);
