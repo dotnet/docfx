@@ -32,14 +32,10 @@ namespace Microsoft.Docs.Build
                 key => new Lazy<string>(() =>
                 {
                     var fileName = Path.Combine(_templateDir, templateFileName);
-                    if (!File.Exists(fileName))
-                    {
-                        return JsonUtility.Serialize(model);
-                    }
-                    return File.ReadAllText(fileName);
+                    return File.Exists(fileName) ? File.ReadAllText(fileName).Replace("\r", "") : null;
                 })).Value;
 
-            return _renderer.Render(template, model);
+            return template == null ? JsonUtility.Serialize(model) : _renderer.Render(template, model);
         }
 
         private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings)
