@@ -27,16 +27,6 @@ namespace Microsoft.Docs.Build
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
 
-        public static string ValidationServiceEndpoint
-        {
-            get
-            {
-                return s_isProduction
-                    ? "https://docs.microsoft.com"
-                    : "https://ppe.docs.microsoft.com";
-            }
-        }
-
         private static readonly string? s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
         private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
 
