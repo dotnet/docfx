@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
         private readonly MarkdownContext _context;
+        private static Regex tagRegex = new Regex(@"<\s*.*\s*?>|#region|#endregion");
 
         public CodeExtension(MarkdownContext context)
         {
@@ -157,8 +158,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             else if (!string.IsNullOrEmpty(id))
             {
                 var codeLines = code.Split('\n');
-                var beg = Array.FindIndex(codeLines, line => line.Replace(" ", "").IndexOf($"<{id}>", StringComparison.OrdinalIgnoreCase) > -1) + 2;
-                var end = Array.FindIndex(codeLines, line => line.Replace(" ", "").IndexOf($"</{id}>", StringComparison.OrdinalIgnoreCase) > -1);
+                var beg = Array.FindIndex(codeLines, line => line.Replace(" ", "").IndexOfTag(id) > -1) + 2;
+                var end = Array.FindIndex(codeLines, beg, line => line.Replace(" ", "").IndexOfTag(id, true) > -1);
                 codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError);
             }
             else
@@ -240,7 +241,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         var section = string.Empty;
                         for (var i = beg; i <= end; i++)
                         {
-                            section += codeLines[i] + "\n";
+                            if(!tagRegex.IsMatch(codeLines[i]))
+                            {
+                                section += codeLines[i] + "\n";
+                            }
                         }
                         codeSections.Add(section);
                     }
@@ -260,7 +264,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         var end = codeLines.Length;
                         for (var i = beg; i < end; i++)
                         {
-                            section += codeLines[i] + "\n";
+                            if (!tagRegex.IsMatch(codeLines[i]))
+                            {
+                                section += codeLines[i] + "\n";
+                            }
                         }
                         codeSections.Add(section);
                     }
@@ -286,6 +293,30 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             return true;
+        }
+    }
+
+    public static class MyExtensions
+    {
+        public static int IndexOfTag(this string codeLine, string id, bool isEnd = false)
+        {
+
+            if(!isEnd)
+            {
+                return codeLine.IndexOf(id, StringComparison.OrdinalIgnoreCase);
+            } else
+            {
+                var index = codeLine.IndexOf(id, StringComparison.OrdinalIgnoreCase);
+                var endRegionIndex = codeLine.IndexOf("endRegion", StringComparison.OrdinalIgnoreCase);
+
+                if(endRegionIndex > -1)
+                {
+                    return endRegionIndex;
+                } else
+                {
+                    return index;
+                }
+            }
         }
     }
 }

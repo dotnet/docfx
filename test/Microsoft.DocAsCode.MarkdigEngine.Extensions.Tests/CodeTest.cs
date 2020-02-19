@@ -216,6 +216,74 @@ namespace TableSnippets
         }
     }
 }";
+        static public string contentCharpRegion = @"using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace TagHelpersBuiltIn
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            #region snippet_AllowAreas
+            services.AddMvc()
+                    .AddRazorPagesOptions(options => options.AllowAreas = true);
+            #endregion
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(""/Error"");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
+
+            #region snippet_UseMvc
+            app.UseMvc(routes =>
+            {
+                // need route and attribute on controller: [Area(""Blogs"")]
+                routes.MapRoute(name: ""mvcAreaRoute"",
+                                template: ""{area:exists}/{controller=Home}/{action=Index}"");
+
+                // default route for non-areas
+                routes.MapRoute(
+                    name: ""default"",
+                    template: ""{controller=Home}/{action=Index}/{id?}"");
+            });
+            #endregion
+        }
+    }
+}";
         static public string contentVB = @"''<Snippet1>
 Class ADSetupInformation
 
@@ -258,7 +326,23 @@ Class AppDomain1
         Console.WriteLine(""child domain: "" + domain.FriendlyName)
     End Sub
 End Class
-'</snippet2>";
+'</snippet2>
+
+'<snippet3>
+Imports System.Reflection
+
+Class AppDomain2
+    Public Shared Sub Main()
+'<snippet_Inner>
+        Console.WriteLine(""Creating new AppDomain."")
+        Dim domain As AppDomain = AppDomain.CreateDomain(""MyDomain"")
+'</snippet_Inner>
+        Console.WriteLine(""Host domain: "" + AppDomain.CurrentDomain.FriendlyName)
+        Console.WriteLine(""child domain: "" + domain.FriendlyName)
+    End Sub
+End Class
+'</snippet3>
+";
         static public string contentCPP = @"//<Snippet1>
 using namespace System;
 
@@ -383,20 +467,13 @@ int main()
 // </snippet2>";
 
 
-        //private static MarkupResult SimpleMarkup(string source)
-        //{
-        //    return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-        //}
-
         [Theory]
         [InlineData(@":::code source=""source.cs"" range=""9"" language=""csharp"":::", @"<pre>
 <code class=""lang-csharp"">namespace TableSnippets
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" range=""11 - 33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// &lt;summary&gt;
-/// Interaction logic for Window1.xaml
-/// &lt;/summary&gt;
+<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// Interaction logic for Window1.xaml
 
 public partial class Window1 : Window
 {
@@ -419,11 +496,10 @@ public partial class Window1 : Window
     void TableColumnsProperty()
     ...
    tbl.Columns.Add(new TableColumn());
-// &lt;/Snippet_Table_Columns_Add&gt;
 
 // Insert a new first column.
-// &lt;Snippet_Table_Columns_Insert&gt;
 </code></pre>
+
 ")]
         [InlineData(@":::code source=""source.cs"" range=""1-2"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">using System;
@@ -592,6 +668,34 @@ Application base of MyDomain:
  */
 </code></pre>
 ")]
+        [InlineData(@":::code source=""source2.cs"" id=""snippet_UseMvc"":::
+", @"<pre>
+<code class=""lang-csharp"">app.UseMvc(routes =&gt;
+{
+    // need route and attribute on controller: [Area(&quot;Blogs&quot;)]
+    routes.MapRoute(name: &quot;mvcAreaRoute&quot;,
+                    template: &quot;{area:exists}/{controller=Home}/{action=Index}&quot;);
+
+    // default route for non-areas
+    routes.MapRoute(
+        name: &quot;default&quot;,
+        template: &quot;{controller=Home}/{action=Index}/{id?}&quot;);
+});
+</code></pre>")]
+        [InlineData(@":::code source=""source.vb"" id=""snippet3"":::
+", @"<pre>
+<code class=""lang-vb"">Imports System.Reflection
+
+Class AppDomain2
+    Public Shared Sub Main()
+        Console.WriteLine(&quot;Creating new AppDomain.&quot;)
+        Dim domain As AppDomain = AppDomain.CreateDomain(&quot;MyDomain&quot;)
+        Console.WriteLine(&quot;Host domain: &quot; + AppDomain.CurrentDomain.FriendlyName)
+        Console.WriteLine(&quot;child domain: &quot; + domain.FriendlyName)
+    End Sub
+End Class
+</code></pre>
+")]
         public void CodeTestBlockGeneral(string source, string expected)
         {
             var filename = string.Empty;
@@ -601,6 +705,11 @@ Application base of MyDomain:
             {
                 filename = "source.cs";
                 content = contentCSharp;
+            }
+            if (source.Contains("source2.cs"))
+            {
+                filename = "source2.cs";
+                content = contentCharpRegion;
             }
             else if (source.Contains("source.vb"))
             {
