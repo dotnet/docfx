@@ -17,6 +17,11 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
+        public static string ValidationServiceEndpoint =>
+            s_isProduction
+            ? "https://docs.microsoft.com"
+            : "https://ppe.docs.microsoft.com";
+
         public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
@@ -24,11 +29,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly string? s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
         private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
-
-        public static readonly string ValidationServiceEndpoint = s_isProduction
-            ? "https://docs.microsoft.com"
-            : "https://ppe.docs.microsoft.com";
-            
         private static readonly string s_buildServiceEndpoint = s_isProduction
             ? "https://op-build-prod.azurewebsites.net"
             : "https://op-build-sandbox2.azurewebsites.net";
