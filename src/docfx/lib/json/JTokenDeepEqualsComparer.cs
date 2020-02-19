@@ -4,11 +4,13 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class JTokenDeepEqualsComparer : IEqualityComparer<JToken>
     {
-        public bool Equals(JToken a, JToken b)
+        public bool Equals(JToken? a, JToken? b)
         {
             switch (a)
             {
@@ -55,22 +57,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public int GetHashCode(JToken token)
+        public int GetHashCode(JToken token) => token switch
         {
-            switch (token)
-            {
-                case JValue value when value.Value != null:
-                    return value.Value.GetHashCode();
-
-                case JArray array:
-                    return array.Count;
-
-                case JObject obj:
-                    return obj.Count;
-
-                default:
-                    return 0;
-            }
-        }
+            JValue value when value.Value != null => value.Value.GetHashCode(),
+            JArray array => array.Count,
+            JObject obj => obj.Count,
+            _ => 0,
+        };
     }
 }

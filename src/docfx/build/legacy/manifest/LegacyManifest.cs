@@ -25,9 +25,8 @@ namespace Microsoft.Docs.Build
                 Parallel.ForEach(fileManifests, fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        var legacyOutputPathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(
-                            context, docset, fileManifest.Value);
-                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(docset);
+                        var legacyOutputPathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
+                        var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
 
                         var output = new LegacyManifestOutput
                         {
@@ -49,7 +48,7 @@ namespace Microsoft.Docs.Build
                                 RelativePath = legacyOutputPathRelativeToBasePath,
                                 IsRawPage = false,
                             };
-                            if (!docset.Config.Output.CopyResources)
+                            if (!context.Config.Output.CopyResources)
                             {
                                 resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.GetPathToOrigin()));
                             }
@@ -128,7 +127,7 @@ namespace Microsoft.Docs.Build
                     version_info = new { },
                     items_to_publish = itemsToPublish,
                 },
-                Path.Combine(docset.Config.BasePath.RelativePath, ".manifest.json"));
+                Path.Combine(context.Config.BasePath.RelativePath, ".manifest.json"));
             }
         }
 

@@ -7,12 +7,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
+            options.UseCache = TestQuirks.RestoreUseCache?.Invoke() ?? options.UseCache;
+
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
@@ -34,7 +38,7 @@ namespace Microsoft.Docs.Build
         private static bool RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
         {
             List<Error> errors;
-            Config config = null;
+            Config? config = null;
 
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
@@ -82,7 +86,7 @@ namespace Microsoft.Docs.Build
             await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository, FetchOptions fetchOptions)
+        private static void RestorePackages(string docsetPath, Config config, string locale, Repository? repository, FetchOptions fetchOptions)
         {
             using var packageResolver = new PackageResolver(docsetPath, config, fetchOptions);
             ParallelUtility.ForEach(
@@ -94,7 +98,7 @@ namespace Microsoft.Docs.Build
             EnsureLocalizationContributionBranch(config, repository);
         }
 
-        private static void EnsureLocalizationContributionBranch(Config config, Repository repository)
+        private static void EnsureLocalizationContributionBranch(Config config, Repository? repository)
         {
             // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
             // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
@@ -113,7 +117,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(
-            Config config, string locale, Repository repository)
+            Config config, string locale, Repository? repository)
         {
             foreach (var (_, package) in config.Dependencies)
             {
@@ -122,7 +126,7 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                var theme = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.Localization.DefaultLocale);
+                var theme = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.DefaultLocale);
                 yield return (theme, PackageFetchOptions.DepthOne);
             }
 
@@ -136,14 +140,14 @@ namespace Microsoft.Docs.Build
         /// Get source repository or localized repository
         /// </summary>
         private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetLocalizationPackages(
-            Config config, string locale, Repository repository)
+            Config config, string locale, Repository? repository)
         {
             if (string.IsNullOrEmpty(locale))
             {
                 yield break;
             }
 
-            if (string.Equals(locale, config.Localization.DefaultLocale, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 yield break;
             }

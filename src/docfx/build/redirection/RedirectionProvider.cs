@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class RedirectionProvider
@@ -21,14 +23,14 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
-            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, DocumentProvider documentProvider, MonikerProvider monikerProvider)
+            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, RepositoryProvider repositoryProvider, DocumentProvider documentProvider, MonikerProvider monikerProvider)
         {
             _errorLog = errorLog;
             _buildScope = buildScope;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
 
-            var redirections = LoadRedirectionModel(docsetPath);
+            var redirections = LoadRedirectionModel(docsetPath, repositoryProvider.GetRepository(FileOrigin.Default));
             _redirectUrls = GetRedirectUrls(redirections, hostName);
             _renameHistory = GetRenameHistory(redirections, _redirectUrls);
         }
@@ -93,7 +95,7 @@ namespace Microsoft.Docs.Build
                     {
                         case LinkType.RelativePath:
                             var siteUrl = _documentProvider.GetDocument(filePath).SiteUrl;
-                            absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), absoluteRedirectUrl));
+                            absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl) ?? "", absoluteRedirectUrl));
                             break;
                         case LinkType.AbsolutePath:
                             break;
@@ -115,9 +117,9 @@ namespace Microsoft.Docs.Build
             return redirectUrls;
         }
 
-        private static RedirectionItem[] LoadRedirectionModel(string docsetPath)
+        private static RedirectionItem[] LoadRedirectionModel(string docsetPath, Repository? repository)
         {
-            foreach (var fullPath in ProbeRedirectionFiles(docsetPath))
+            foreach (var fullPath in ProbeRedirectionFiles(docsetPath, repository))
             {
                 if (File.Exists(fullPath))
                 {
@@ -137,7 +139,7 @@ namespace Microsoft.Docs.Build
                         pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value, RedirectDocumentId = true });
 
                     // Rebase source_path based on redirection definition file path
-                    var basedir = Path.GetDirectoryName(fullPath);
+                    var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
                     return (
                         from item in redirections.Concat(renames)
@@ -155,18 +157,15 @@ namespace Microsoft.Docs.Build
             return Array.Empty<RedirectionItem>();
         }
 
-        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath)
+        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath, Repository? repository)
         {
             yield return Path.Combine(docsetPath, "redirections.yml");
             yield return Path.Combine(docsetPath, "redirections.json");
 
-            var directory = docsetPath;
-            do
+            if (repository != null)
             {
-                yield return Path.Combine(directory, ".openpublishing.redirection.json");
-                directory = Path.GetDirectoryName(directory);
+                yield return Path.Combine(repository.Path, ".openpublishing.redirection.json");
             }
-            while (!string.IsNullOrEmpty(directory));
         }
 
         private IReadOnlyDictionary<FilePath, FilePath> GetRenameHistory(

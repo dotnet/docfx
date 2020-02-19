@@ -3,11 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -197,7 +200,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get title and raw title, remove title node if all previous nodes are invisible
         /// </summary>
-        public static bool TryExtractTitle(HtmlNode node, out string title, out string rawTitle)
+        public static bool TryExtractTitle(HtmlNode node, [NotNullWhen(true)] out string? title, [NotNullWhen(true)] out string? rawTitle)
         {
             var existVisibleNode = false;
 
@@ -227,7 +230,7 @@ namespace Microsoft.Docs.Build
 
             return false;
 
-            bool IsInvisibleNode(HtmlNode n)
+            static bool IsInvisibleNode(HtmlNode n)
             {
                 return n.NodeType == HtmlNodeType.Comment ||
                     (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
@@ -240,7 +243,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in metadata)
             {
-                if (value is JObject || htmlMetaHidden.Contains(key))
+                if (value is null || value is JObject || htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }
@@ -375,8 +378,7 @@ namespace Microsoft.Docs.Build
             var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
             if (pos >= 1)
             {
-                var urlLocale = href.Substring(1, pos - 1);
-                if (LocalizationUtility.IsValidLocale(urlLocale))
+                if (LocalizationUtility.IsValidLocale(href[1..pos]))
                 {
                     return href;
                 }

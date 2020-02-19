@@ -81,8 +81,7 @@ namespace Microsoft.Docs.Build
 
             public void Dispose()
             {
-                var value = t_scope.Value ?? throw new InvalidOperationException();
-                t_scope.Value = value.Pop(out _);
+                t_scope.Value = t_scope.Value!.Pop(out _);
 
                 var elapsedMs = Stopwatch.ElapsedMilliseconds;
                 if (Log.Verbose || elapsedMs > ProgressDelayMs)

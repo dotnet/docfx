@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public bool Equals(PathString other) => PathUtility.PathComparer.Equals(Value, other.Value);
 
-        public override bool Equals(object? obj) => obj is PathString && Equals((PathString)obj);
+        public override bool Equals(object? obj) => obj is PathString value && Equals(value);
 
         public override int GetHashCode() => PathUtility.PathComparer.GetHashCode(Value);
 

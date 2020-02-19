@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -18,7 +20,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string cwd = null, bool stdout = true, string[] secrets = null)
+        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string[]? secrets = null)
         {
             var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
 
@@ -39,7 +41,7 @@ namespace Microsoft.Docs.Build
                 // Redirect stderr to stdout
                 Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
 
-                var result = stdout ? process.StandardOutput.ReadToEnd() : null;
+                var result = stdout ? process.StandardOutput.ReadToEnd() : "";
 
                 process.WaitForExit();
 
@@ -51,9 +53,9 @@ namespace Microsoft.Docs.Build
                 return result;
             }
 
-            string HideSecrets(string arg, string secret)
+            static string HideSecrets(string arg, string secret)
             {
-                return arg.Replace(secret, secret.Length > 5 ? secret.Substring(0, 5) + "***" : "***");
+                return arg.Replace(secret, secret.Length > 5 ? "***" + secret.Substring(secret.Length - 5) : "***");
             }
         }
 
@@ -61,11 +63,23 @@ namespace Microsoft.Docs.Build
         /// Reads the content of a file.
         /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
         /// </summary>
-        public static string ReadFile(string path)
+        public static T ReadJsonFile<T>(string path) where T : class, new()
         {
+            var content = "";
             using (InterProcessMutex.Create(path))
             {
-                return File.ReadAllText(path);
+                content = File.ReadAllText(path);
+            }
+
+            try
+            {
+                return JsonUtility.Deserialize<T>(content, new FilePath(path));
+            }
+            catch (Exception ex)
+            {
+                Log.Important($"Ignore data file due to a problem reading '{path}'.", ConsoleColor.Yellow);
+                Log.Write(ex);
+                return new T();
             }
         }
 
@@ -74,7 +88,15 @@ namespace Microsoft.Docs.Build
             using (InterProcessMutex.Create(path))
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
             {
-                read(fs);
+                try
+                {
+                    read(fs);
+                }
+                catch (Exception ex)
+                {
+                    Log.Important($"Ignore data file due to a problem reading '{path}'.", ConsoleColor.Yellow);
+                    Log.Write(ex);
+                }
             }
         }
 

@@ -7,6 +7,8 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class Config : PreloadConfig
@@ -18,6 +20,11 @@ namespace Microsoft.Docs.Build
             "_localization/**",     // Localization file when using folder convention
             "_themes/**",           // Default template location
         };
+
+        /// <summary>
+        /// Gets the default locale of this docset.
+        /// </summary>
+        public string DefaultLocale { get; private set; } = "en-us";
 
         /// <summary>
         /// Gets the default site name
@@ -150,11 +157,6 @@ namespace Microsoft.Docs.Build
         public readonly SourceInfo<string>[] Xref = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
-        /// The configurations for localization build
-        /// </summary>
-        public readonly LocalizationConfig Localization = new LocalizationConfig();
-
-        /// <summary>
         /// Gets the moniker range mapping
         /// </summary>
         public readonly Dictionary<string, SourceInfo<string>> MonikerRange = new Dictionary<string, SourceInfo<string>>();
@@ -192,12 +194,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool UpdateCommitBuildTime = true;
 
-        /// <summary>
-        /// When fetching git dependencies, docfx uses --depth 1 as much as it can to improve performance.
-        /// In certain extreme cases this may degrade performance, this option gives the ability to toggle the behavior.
-        /// </summary>
-        public readonly bool GitShallowFetch = true;
-
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)
@@ -222,6 +218,8 @@ namespace Microsoft.Docs.Build
                 HostName = HostName.ToLowerInvariant();
                 BasePath = new BasePath(BasePath.Original.ToLowerInvariant());
             }
+
+            DefaultLocale = DefaultLocale.ToLowerInvariant();
         }
     }
 }

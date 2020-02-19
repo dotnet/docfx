@@ -6,6 +6,8 @@ using System.Collections.Concurrent;
 using System.Linq;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -21,9 +23,9 @@ namespace Microsoft.Docs.Build
 
         public override bool CanConvert(Type objectType) => GetShortHandType(objectType) != null;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => throw new InvalidOperationException();
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new InvalidOperationException();
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             switch (reader.TokenType)
             {
@@ -32,12 +34,12 @@ namespace Microsoft.Docs.Build
                     return null;
 
                 case JsonToken.StartObject:
-                    var result = Activator.CreateInstance(objectType);
+                    var result = Activator.CreateInstance(objectType)!;
                     serializer.Populate(reader, result);
                     return result;
 
                 default:
-                    var shortHandType = GetShortHandType(objectType) ?? throw new InvalidOperationException();
+                    var shortHandType = GetShortHandType(objectType);
                     var arg = serializer.Deserialize(reader, shortHandType);
                     return Activator.CreateInstance(objectType, arg);
             }
@@ -57,7 +59,7 @@ namespace Microsoft.Docs.Build
                 where parameters.Length == 1
                 select parameters[0].ParameterType).ToArray();
 
-            return constructors.Length == 1 ? constructors[0] : null;
+            return constructors.Length == 1 ? constructors[0] : throw new InvalidOperationException();
         }
     }
 }

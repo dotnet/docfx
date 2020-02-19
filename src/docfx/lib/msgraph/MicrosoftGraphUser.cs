@@ -6,18 +6,23 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class MicrosoftGraphUser : ICacheObject<string>
     {
-        public string Alias { get; set; }
+        public string? Alias { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
         public IEnumerable<string> GetKeys()
         {
-            yield return Alias;
+            if (Alias != null)
+            {
+                yield return Alias;
+            }
         }
     }
 }

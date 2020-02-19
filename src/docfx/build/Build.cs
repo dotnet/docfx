@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
     {
         public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
         {
+            options.UseCache = true;
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
@@ -29,7 +30,6 @@ namespace Microsoft.Docs.Build
         {
             List<Error> errors;
             Config config = null;
-            options.NoFetch = true;
 
             using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
@@ -52,11 +52,11 @@ namespace Microsoft.Docs.Build
                 var input = new Input(docsetPath, repositoryProvider, localizationProvider);
 
                 // get docsets(build docset, fallback docset and dependency docsets)
-                var (docset, fallbackDocset) = GetDocsetWithFallback(locale, config, localizationProvider);
+                var (docset, fallbackDocset) = GetDocsetWithFallback(localizationProvider);
 
                 // run build based on docsets
-                outputPath ??= Path.Combine(docsetPath, docset.Config.Output.Path);
-                await Run(docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider);
+                outputPath ??= Path.Combine(docsetPath, config.Output.Path);
+                await Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -73,18 +73,16 @@ namespace Microsoft.Docs.Build
         }
 
         private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
-            string locale,
-            Config config,
             LocalizationProvider localizationProvider)
         {
             var (currentDocsetPath, currentRepo) = localizationProvider.GetBuildRepositoryWithDocsetEntry();
-            var currentDocset = new Docset(currentDocsetPath, locale, config, currentRepo);
+            var currentDocset = new Docset(currentDocsetPath, currentRepo);
             if (localizationProvider.IsLocalizationBuild)
             {
                 var (fallbackDocsetPath, fallbackRepo) = localizationProvider.GetFallbackRepositoryWithDocsetEntry();
                 if (fallbackRepo != null)
                 {
-                    return (currentDocset, new Docset(fallbackDocsetPath, locale, config, fallbackRepo));
+                    return (currentDocset, new Docset(fallbackDocsetPath, fallbackRepo));
                 }
             }
 
@@ -92,6 +90,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static async Task Run(
+            Config config,
             Docset docset,
             Docset fallbackDocset,
             CommandLineOptions options,
@@ -99,9 +98,10 @@ namespace Microsoft.Docs.Build
             string outputPath,
             Input input,
             RepositoryProvider repositoryProvider,
-            LocalizationProvider localizationProvider)
+            LocalizationProvider localizationProvider,
+            PackageResolver packageResolver)
         {
-            using var context = new Context(outputPath, errorLog, docset, fallbackDocset, input, repositoryProvider, localizationProvider, options.FetchOptions);
+            using var context = new Context(outputPath, errorLog, options, config, docset, fallbackDocset, input, repositoryProvider, localizationProvider, packageResolver);
             context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 
             using (Progress.Start("Building files"))
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Legacy)
                 {
-                    if (docset.Config.Output.Json)
+                    if (context.Config.Output.Json)
                     {
                         // TODO: decouple files and dependencies from legacy.
                         Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);

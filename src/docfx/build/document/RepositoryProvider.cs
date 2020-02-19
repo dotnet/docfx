@@ -46,8 +46,7 @@ namespace Microsoft.Docs.Build
             {
                 case FileOrigin.Redirection:
                 case FileOrigin.Default:
-                    return _localizationProvider.IsLocalizationBuild
-                        ? _localizationProvider.GetBuildRepositoryWithDocsetEntry() : (_docsetPath, _repository);
+                    return (_docsetPath, _repository);
 
                 case FileOrigin.Fallback:
                     return _localizationProvider.GetFallbackRepositoryWithDocsetEntry();
@@ -76,7 +75,7 @@ namespace Microsoft.Docs.Build
 
         private (string path, Repository) GetTemplateRepository()
         {
-            var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.Localization.DefaultLocale);
+            var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.DefaultLocale);
 
             var templatePath = _packageResolver.ResolvePackage(theme, PackageFetchOptions.DepthOne);
 

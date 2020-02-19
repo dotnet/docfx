@@ -20,24 +20,24 @@ namespace Microsoft.Docs.Build
             {
                 Url = file.SiteUrl,
                 SourcePath = file.FilePath.Path,
-                Locale = file.Docset.Locale,
+                Locale = context.LocalizationProvider.Locale,
                 RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath),
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
                 ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
             };
 
-            if (file.Docset.Legacy)
+            if (context.Config.Legacy)
             {
                 publishItem.Path = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
             }
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && file.Docset.Legacy && !context.Config.DryRun)
+            if (context.PublishModelBuilder.TryAdd(file, publishItem) && context.Config.Legacy && !context.Config.DryRun)
             {
                 var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new
                 {
-                    locale = file.Docset.Locale,
+                    locale = context.LocalizationProvider.Locale,
                     monikers,
                     redirect_url = publishItem.RedirectUrl,
                     is_dynamic_rendering = true,

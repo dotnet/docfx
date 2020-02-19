@@ -9,14 +9,16 @@ using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader
     {
-        private readonly Repository _repository;
+        private readonly Repository? _repository;
         private readonly ErrorLog _errorLog;
 
-        public ConfigLoader(Repository repository, ErrorLog errorLog)
+        public ConfigLoader(Repository? repository, ErrorLog errorLog)
         {
             _repository = repository;
             _errorLog = errorLog;
@@ -61,11 +63,11 @@ namespace Microsoft.Docs.Build
             // Load configs available locally
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
-            JsonUtility.Merge(unionProperties, cliConfig, options?.StdinConfig, options?.ToJObject());
+            JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
-            var globalConfig = File.Exists(AppData.GlobalConfigPath)
-                ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository);
+            var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
+                ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
                 : null;
 
             // Preload
@@ -114,7 +116,7 @@ namespace Microsoft.Docs.Build
         }
 
         private JObject DownloadExtendConfig(
-            List<Error> errors, string locale, PreloadConfig config, string xrefEndpoint, string[] xrefQueryTags, Repository repository, FileResolver fileResolver)
+            List<Error> errors, string locale, PreloadConfig config, string? xrefEndpoint, string[]? xrefQueryTags, Repository? repository, FileResolver fileResolver)
         {
             var result = new JObject();
             var extendQuery =
@@ -141,14 +143,19 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static Func<string, bool> FindDocsetsGlob(string workingDirectory)
+        private static Func<string, bool>? FindDocsetsGlob(string workingDirectory)
         {
             var opsConfig = OpsConfigLoader.LoadOpsConfig(workingDirectory);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>
                 {
-                    var sourceFolder = new PathString(Path.GetDirectoryName(docsetFolder));
+                    var docsetDirectoryName = Path.GetDirectoryName(docsetFolder);
+                    if (docsetDirectoryName is null)
+                    {
+                        return false;
+                    }
+                    var sourceFolder = new PathString(docsetDirectoryName);
                     return opsConfig.DocsetsToPublish.Any(docset => docset.BuildSourceFolder.FolderEquals(sourceFolder));
                 };
             }
@@ -174,7 +181,8 @@ namespace Microsoft.Docs.Build
                         let key = entry.Key.ToString()
                         where key.StartsWith("DOCFX_")
                         let configKey = key.Substring("DOCFX_".Length)
-                        let values = entry.Value.ToString().Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        where values != null
                         from value in values
                         select (configKey, value);
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,22 +17,30 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Docset _fallbackDocset;
         private readonly GitHubAccessor _githubAccessor;
+        private readonly LocalizationProvider _localization;
 
-        // TODO: support CRR and multiple repositories
-        private readonly CommitBuildTimeProvider _commitBuildTimeProvider;
+        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders;
 
         private readonly GitCommitProvider _gitCommitProvider;
 
         public ContributionProvider(
-            Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
+            Config config, LocalizationProvider localization, Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
         {
             _input = input;
-            _config = docset.Config;
+            _config = config;
+            _localization = localization;
             _githubAccessor = githubAccessor;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
-            _commitBuildTimeProvider = docset.Repository != null && _config.UpdateTimeAsCommitBuildTime
-                ? new CommitBuildTimeProvider(docset.Config, docset.Repository) : null;
+
+            if (_config.UpdateTimeAsCommitBuildTime)
+            {
+                _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+                if (docset.Repository != null)
+                {
+                    _commitBuildTimeProviders[docset.Repository.Path] = new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(config, docset.Repository));
+                }
+            }
         }
 
         public async Task<(List<Error> errors, ContributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
@@ -43,11 +52,11 @@ namespace Microsoft.Docs.Build
                 return (errors, null);
             }
 
-            var updatedDateTime = GetUpdatedAt(document, commits);
+            var updatedDateTime = GetUpdatedAt(document, repo, commits);
             var contributionInfo = new ContributionInfo
             {
                 UpdateAt = updatedDateTime.ToString(
-                    document.Docset.Locale == "en-us" ? "M/d/yyyy" : document.Docset.Culture.DateTimeFormat.ShortDatePattern),
+                    _localization.Locale == "en-us" ? "M/d/yyyy" : _localization.Culture.DateTimeFormat.ShortDatePattern),
                 UpdatedAtDateTime = updatedDateTime,
             };
 
@@ -100,14 +109,20 @@ namespace Microsoft.Docs.Build
             return (errors, contributionInfo);
         }
 
-        public DateTime GetUpdatedAt(Document document, GitCommit[] fileCommits)
+        public DateTime GetUpdatedAt(Document document, Repository repository, GitCommit[] fileCommits)
         {
             if (fileCommits.Length > 0)
             {
-                return _commitBuildTimeProvider != null
-                    && _commitBuildTimeProvider.TryGetCommitBuildTime(fileCommits[0].Sha, out var timeFromHistory)
-                    ? timeFromHistory
-                    : fileCommits[0].Time.UtcDateTime;
+                if (_commitBuildTimeProviders != null && repository != null)
+                {
+                    return _commitBuildTimeProviders
+                        .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
+                        .GetCommitBuildTime(fileCommits[0].Sha);
+                }
+                else
+                {
+                    return fileCommits[0].Time.UtcDateTime;
+                }
             }
 
             return _input.TryGetPhysicalPath(document.FilePath, out var physicalPath)
@@ -134,7 +149,7 @@ namespace Microsoft.Docs.Build
 
             var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
             var originalContentGitUrl = contentBranchUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo, document.Docset.Locale) : originalContentGitUrl;
+            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo, _localization.Locale) : originalContentGitUrl;
 
             return (
                 contentGitUrl,
@@ -145,9 +160,12 @@ namespace Microsoft.Docs.Build
 
         public void Save()
         {
-            if (_commitBuildTimeProvider != null)
+            if (_commitBuildTimeProviders != null)
             {
-                _commitBuildTimeProvider.Save();
+                foreach (var (_, commitBuildTimeProvider) in _commitBuildTimeProviders)
+                {
+                    commitBuildTimeProvider.Value.Save();
+                }
             }
         }
 
@@ -170,7 +188,7 @@ namespace Microsoft.Docs.Build
 
             if (_fallbackDocset != null)
             {
-                (repo, branch) = LocalizationUtility.GetLocalizedRepo(false, repo, branch, locale, _config.Localization.DefaultLocale);
+                (repo, branch) = LocalizationUtility.GetLocalizedRepo(false, repo, branch, locale, _config.DefaultLocale);
             }
 
             var (gitUrlTemplate, _) = GetContentGitUrlTemplate(repo, pathToRepo);

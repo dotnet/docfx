@@ -3,6 +3,8 @@
 
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal sealed class HttpConfig

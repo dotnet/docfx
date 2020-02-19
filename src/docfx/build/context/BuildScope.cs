@@ -6,6 +6,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class BuildScope
@@ -19,8 +21,8 @@ namespace Microsoft.Docs.Build
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<PathString> _fileNames = new HashSet<PathString>();
 
-        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> _fileMappings
-                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig)>();
+        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
+                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)>();
 
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
@@ -74,7 +76,7 @@ namespace Microsoft.Docs.Build
             return MapPath(path).mapping != null;
         }
 
-        public (PathString path, FileMappingConfig mapping) MapPath(PathString path)
+        public (PathString path, FileMappingConfig? mapping) MapPath(PathString path)
         {
             return _fileMappings.GetOrAdd(path, _ =>
             {

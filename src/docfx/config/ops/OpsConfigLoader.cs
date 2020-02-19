@@ -6,11 +6,13 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static OpsConfig LoadOpsConfig(string workingDirectory)
+        public static OpsConfig? LoadOpsConfig(string workingDirectory)
         {
             var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
             if (!File.Exists(fullPath))
@@ -22,29 +24,24 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
         }
 
-        public static (string xrefEndpoint, string[] xrefQueryTags, JObject config) LoadDocfxConfig(string docsetPath, string branch)
+        public static (string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(string docsetPath, Repository? repository)
         {
-            var directory = docsetPath;
-
-            do
+            if (repository is null)
             {
-                var opsConfig = LoadOpsConfig(directory);
-                if (opsConfig is null)
-                {
-                    directory = Path.GetDirectoryName(directory);
-                    continue;
-                }
-
-                var buildSourceFolder = new PathString(Path.GetRelativePath(directory, docsetPath));
-
-                return ToDocfxConfig(branch, opsConfig, buildSourceFolder);
+                return default;
             }
-            while (!string.IsNullOrEmpty(directory));
 
-            return default;
+            var opsConfig = LoadOpsConfig(repository.Path);
+            if (opsConfig is null)
+            {
+                return default;
+            }
+
+            var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
+            return ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
         }
 
-        private static (string xrefEndpoint, string[] xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
+        private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);

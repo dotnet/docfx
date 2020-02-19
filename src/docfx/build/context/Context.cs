@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
     {
         public readonly Config Config;
         public readonly FileResolver FileResolver;
+        public readonly PackageResolver PackageResolver;
         public readonly ErrorLog ErrorLog;
         public readonly Output Output;
         public readonly Input Input;
@@ -40,37 +41,38 @@ namespace Microsoft.Docs.Build
 
         private readonly Lazy<TableOfContentsMap> _tocMap;
 
-        public Context(string outputPath, ErrorLog errorLog, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, FetchOptions fetchOptions)
+        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
         {
-            var credentialProvider = docset.Config.GetCredentialProvider();
+            var credentialProvider = config.GetCredentialProvider();
 
             DependencyMapBuilder = new DependencyMapBuilder();
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<FilePath>();
 
-            Config = docset.Config;
+            Config = config;
             ErrorLog = errorLog;
-            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), fetchOptions);
+            PackageResolver = packageResolver;
+            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions);
             Input = input;
             LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input, Config.DryRun);
-            TemplateEngine = TemplateEngine.Create(docset, repositoryProvider);
+            TemplateEngine = new TemplateEngine(docset.DocsetPath, config, localizationProvider.Locale, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
             BuildScope = new BuildScope(Config, Input, fallbackDocset);
-            DocumentProvider = new DocumentProvider(docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
+            DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repositoryProvider, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            ContributionProvider = new ContributionProvider(Input, docset, fallbackDocset, GitHubAccessor, GitCommitProvider);
+            ContributionProvider = new ContributionProvider(config, localizationProvider, Input, docset, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
-            XrefResolver = new XrefResolver(this, docset, FileResolver, DependencyMapBuilder, FileLinkMapBuilder);
+            XrefResolver = new XrefResolver(this, config, FileResolver, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
-                docset,
+                config,
                 fallbackDocset,
                 Input,
                 BuildScope,

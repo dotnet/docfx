@@ -5,6 +5,8 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class SourceInfoJsonConverter : JsonConverter
@@ -14,18 +16,22 @@ namespace Microsoft.Docs.Build
             return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(SourceInfo<>);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            SourceInfo source = null;
+            SourceInfo? source = null;
 
             switch (reader)
             {
                 case JTokenReader tokenReader:
-                    source = JsonUtility.GetSourceInfo(tokenReader.CurrentToken);
+                    source = tokenReader.CurrentToken?.GetSourceInfo();
                     break;
 
                 case JsonTextReader textReader:
-                    source = new SourceInfo(JsonUtility.State.FilePath, textReader.LineNumber, textReader.LinePosition);
+                    var filePath = JsonUtility.State?.FilePath;
+                    if (filePath != null)
+                    {
+                        source = new SourceInfo(filePath, textReader.LineNumber, textReader.LinePosition);
+                    }
                     break;
             }
 
@@ -45,9 +51,12 @@ namespace Microsoft.Docs.Build
             return Activator.CreateInstance(objectType, value, source);
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((ISourceInfo)value).GetValue());
+            if (value is ISourceInfo sourceInfo)
+            {
+                serializer.Serialize(writer, sourceInfo.GetValue());
+            }
         }
     }
 }

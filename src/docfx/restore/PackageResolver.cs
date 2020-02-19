@@ -2,19 +2,22 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
     internal class PackageResolver : IDisposable
     {
-        internal static Func<string, string> GitRemoteProxy;
-
         private readonly string _docsetPath;
         private readonly Config _config;
         private readonly FetchOptions _fetchOptions;
 
+        private readonly ConcurrentDictionary<PackagePath, Lazy<string>> _packagePath = new ConcurrentDictionary<PackagePath, Lazy<string>>();
         private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
 
         public PackageResolver(string docsetPath, Config config, FetchOptions fetchOptions = default)
@@ -24,7 +27,7 @@ namespace Microsoft.Docs.Build
             _fetchOptions = fetchOptions;
         }
 
-        public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, out string path)
+        public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, [NotNullWhen(true)] out string? path)
         {
             try
             {
@@ -39,6 +42,39 @@ namespace Microsoft.Docs.Build
         }
 
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
+        {
+            return _packagePath.GetOrAdd(package, key => new Lazy<string>(() => ResolvePackageCore(key, options))).Value;
+        }
+
+        public void DownloadPackage(PackagePath path, PackageFetchOptions options)
+        {
+            try
+            {
+                switch (path.Type)
+                {
+                    case PackageType.Git:
+                        DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
+                        break;
+                }
+            }
+            catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
+            {
+                Log.Write($"Ignore optional package download failure '{path}': {ex}");
+            }
+        }
+
+        public void Dispose()
+        {
+            lock (_gitReaderLocks)
+            {
+                foreach (var item in _gitReaderLocks.Values)
+                {
+                    item.Dispose();
+                }
+            }
+        }
+
+        private string ResolvePackageCore(PackagePath package, PackageFetchOptions options)
         {
             if (_fetchOptions != FetchOptions.NoFetch)
             {
@@ -68,37 +104,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void DownloadPackage(PackagePath path, PackageFetchOptions options)
-        {
-            try
-            {
-                using (PerfScope.Start($"Downloading '{path}'"))
-                {
-                    switch (path.Type)
-                    {
-                        case PackageType.Git:
-                            DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
-            {
-                Log.Write($"Ignore optional package download failure '{path}': {ex}");
-            }
-        }
-
-        public void Dispose()
-        {
-            lock (_gitReaderLocks)
-            {
-                foreach (var item in _gitReaderLocks.Values)
-                {
-                    item.Dispose();
-                }
-            }
-        }
-
         private void DownloadGitRepository(string url, string committish, bool depthOne)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
@@ -114,7 +119,10 @@ namespace Microsoft.Docs.Build
                     }
                     File.Delete(gitDocfxHead);
                 }
-                DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
+                using (PerfScope.Start($"Downloading '{url}#{committish}'"))
+                {
+                    DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
+                }
                 File.WriteAllText(gitDocfxHead, committish);
             }
         }
@@ -122,7 +130,7 @@ namespace Microsoft.Docs.Build
         private void DownloadGitRepositoryCore(string cwd, string url, string committish, bool depthOne)
         {
             var fetchOption = "--update-head-ok --prune --force";
-            var depthOneOption = $"--depth {(depthOne && _config.GitShallowFetch ? "1" : "99999999")}";
+            var depthOneOption = $"--depth {(depthOne ? "1" : "99999999")}";
 
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);

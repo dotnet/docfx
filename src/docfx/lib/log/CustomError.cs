@@ -3,6 +3,8 @@
 
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(ShortHandConverter))]
@@ -10,9 +12,9 @@ namespace Microsoft.Docs.Build
     {
         public ErrorLevel? Severity { get; set; }
 
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
-        public string AdditionalMessage { get; set; }
+        public string? AdditionalMessage { get; set; }
 
         public CustomError() { }
 

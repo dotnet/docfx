@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
@@ -13,9 +15,9 @@ namespace Microsoft.Docs.Build
     {
         public int? Id { get; set; }
 
-        public string Login { get; set; }
+        public string? Login { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public string[] Emails { get; set; } = Array.Empty<string>();
 
@@ -25,10 +27,15 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<string> GetKeys()
         {
-            yield return Login;
+            if (Login != null)
+            {
+                yield return Login;
+            }
 
             foreach (var email in Emails)
+            {
                 yield return email;
+            }
         }
 
         public Contributor ToContributor()

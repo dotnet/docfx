@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
-    internal class WorkQueue<T>
+    internal class WorkQueue<T> where T : notnull
     {
         private static readonly int s_maxParallelism = Math.Max(8, Environment.ProcessorCount * 2);
 
@@ -28,7 +30,7 @@ namespace Microsoft.Docs.Build
         // When an exception occurs, store it here,
         // then wait until all jobs to complete before Drain returns.
         // This ensures _run callback is never executed once Drain returns.
-        private volatile Exception _exception;
+        private volatile Exception? _exception;
 
         // Limit parallelism so we don't starve the thread pool.
         private int _parallelism;
@@ -61,7 +63,7 @@ namespace Microsoft.Docs.Build
             Interlocked.Increment(ref _remainingCount);
         }
 
-        public Task Drain(Func<T, Task> run, Action<int, int> progress = null)
+        public Task Drain(Func<T, Task> run, Action<int, int>? progress = null)
         {
             if (Interlocked.Exchange(ref _drained, 1) == 1)
             {
@@ -128,7 +130,7 @@ namespace Microsoft.Docs.Build
                     TaskScheduler.Default);
             }
 
-            void OnComplete(Exception exception = null)
+            void OnComplete(Exception? exception = null)
             {
                 Interlocked.Decrement(ref _parallelism);
 

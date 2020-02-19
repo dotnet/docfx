@@ -10,6 +10,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaTransformer
@@ -91,24 +93,25 @@ namespace Microsoft.Docs.Build
                             xrefProperties[key] = new Lazy<JToken>(
                                 () =>
                                 {
-                                    if (t_recursionDetector.Value.Contains((uid, file)))
+                                    var recursionDetector = t_recursionDetector.Value!;
+                                    if (recursionDetector.Contains((uid, file)))
                                     {
-                                        var referenceMap = t_recursionDetector.Value.Select(x => $"{x.uid} ({x.declaringFile})").Reverse().ToList();
+                                        var referenceMap = recursionDetector.Select(x => $"{x.uid} ({x.declaringFile})").Reverse().ToList();
                                         referenceMap.Add($"{uid} ({file})");
                                         throw Errors.CircularReference(referenceMap, file).ToException();
                                     }
 
                                     try
                                     {
-                                        t_recursionDetector.Value.Push((uid, file));
+                                        recursionDetector.Push((uid, file));
                                         var (transformErrors, transformedToken) = TransformToken(file, context, propertySchema, value);
                                         context.ErrorLog.Write(transformErrors);
                                         return transformedToken;
                                     }
                                     finally
                                     {
-                                        Debug.Assert(t_recursionDetector.Value.Count > 0);
-                                        t_recursionDetector.Value.Pop();
+                                        Debug.Assert(recursionDetector.Count > 0);
+                                        recursionDetector.Pop();
                                     }
                                 }, LazyThreadSafetyMode.PublicationOnly);
                             return true;
@@ -132,11 +135,11 @@ namespace Microsoft.Docs.Build
                 string GetBookmarkFromUid(string uid)
                     => Regex.Replace(uid, @"\W", "_");
 
-                void TraverseObjectXref(JObject obj, Func<JsonSchema, string, JToken, bool> action = null)
+                void TraverseObjectXref(JObject obj, Func<JsonSchema, string, JToken, bool>? action = null)
                 {
                     foreach (var (key, value) in obj)
                     {
-                        if (schema.Properties.TryGetValue(key, out var propertySchema))
+                        if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
                             if (action?.Invoke(propertySchema, key, value) ?? false)
                                 continue;
@@ -164,6 +167,11 @@ namespace Microsoft.Docs.Build
                 {
                     // transform array and object is not supported yet
                     case JArray array:
+                        if (schema.Items.schema is null)
+                        {
+                            return (errors, array);
+                        }
+
                         var newArray = new JArray();
                         foreach (var item in array)
                         {
@@ -178,7 +186,11 @@ namespace Microsoft.Docs.Build
                         var newObject = new JObject();
                         foreach (var (key, value) in obj)
                         {
-                            if (schema.Properties.TryGetValue(key, out var propertySchema))
+                            if (value is null)
+                            {
+                                continue;
+                            }
+                            else if (schema.Properties.TryGetValue(key, out var propertySchema))
                             {
                                 var (propertyErrors, transformedValue) = TransformToken(file, context, propertySchema, value);
                                 errors.AddRange(propertyErrors);
@@ -216,24 +228,21 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Href:
                     var (error, link, _) = context.LinkResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
-                    content = new SourceInfo<string>(link, content);
-                    break;
+                    return (errors, link);
 
                 case JsonSchemaContentType.Markdown:
                     var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun).WriteTo(), content);
-                    break;
+                    return (errors, HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun).WriteTo());
 
                 case JsonSchemaContentType.InlineMarkdown:
                     var (inlineMarkupErrors, inlineHtml) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    content = new SourceInfo<string>(HtmlUtility.LoadHtml(inlineHtml).PostMarkup(context.Config.DryRun).WriteTo(), content);
-                    break;
+                    return (errors, HtmlUtility.LoadHtml(inlineHtml).PostMarkup(context.Config.DryRun).WriteTo());
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
@@ -245,8 +254,7 @@ namespace Microsoft.Docs.Build
                         return htmlLink;
                     });
 
-                    content = new SourceInfo<string>(htmlWithLinks, content);
-                    break;
+                    return (errors, htmlWithLinks);
 
                 case JsonSchemaContentType.Xref:
                     // the content here must be an UID, not href
@@ -260,12 +268,9 @@ namespace Microsoft.Docs.Build
                         return (errors, specObj);
                     }
 
-                    content = new SourceInfo<string>(null, content);
-                    break;
+                    return (errors, JValue.CreateNull());
             }
 
-            value = new JValue(content.Value);
-            JsonUtility.SetSourceInfo(value, content);
             return (errors, value);
         }
     }

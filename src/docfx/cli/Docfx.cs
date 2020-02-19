@@ -110,13 +110,13 @@ namespace Microsoft.Docs.Build
                     // Restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
-                    syntax.DefineOption("use-cache", ref options.UseCache, "Only fetch latest content if it does not exist or read from disk cache.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-                    syntax.DefineOption("dry-run", ref options.DryRun, "Don't produce artifacts, just show validation result.");
+                    syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
+                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before building.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Watch command
