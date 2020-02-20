@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Common
         private static readonly string[] EncodedInvalidPartChars = Array.ConvertAll(InvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
         private static readonly char[] UnsafeInvalidPartChars = { '/' };
         private static readonly string[] EncodedUnsafeInvalidPartChars = Array.ConvertAll(UnsafeInvalidPartChars, ch => Uri.EscapeDataString(ch.ToString()));
-        private static readonly Dictionary<string, string> SpecialCharactersNeedToDecode = new Dictionary<string, string>
+        private static readonly IDictionary<string, string> SpecialCharactersNeedToDecode = new Dictionary<string, string>
         {
             ["%28"] = "(",
             ["%29"] = ")"
@@ -515,11 +515,12 @@ namespace Microsoft.DocAsCode.Common
 
         private static string DecodeSpecialCharacters(string url)
         {
+            var sb = new StringBuilder(url);
             foreach (var specialCharacterNeedToDecode in SpecialCharactersNeedToDecode)
             {
-                url = url.Replace(specialCharacterNeedToDecode.Key, specialCharacterNeedToDecode.Value);
+                sb = sb.Replace(specialCharacterNeedToDecode.Key, specialCharacterNeedToDecode.Value);
             }
-            return url;
+            return sb.ToString();
         }
 
         #endregion
