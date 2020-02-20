@@ -158,8 +158,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             else if (!string.IsNullOrEmpty(id))
             {
                 var codeLines = code.Split('\n');
-                var beg = Array.FindIndex(codeLines, line => line.Replace(" ", "").IndexOfTag(id) > -1) + 2;
-                var end = Array.FindIndex(codeLines, beg, line => line.Replace(" ", "").IndexOfTag(id, true) > -1);
+                var beg = codeLines.FindIndexOfTag(id);
+                var end = codeLines.FindIndexOfTag(id, true);
                 codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError);
             }
             else
@@ -296,25 +296,40 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         }
     }
 
-    public static class MyExtensions
+    public static class CodeTagExtentions
     {
-        public static int IndexOfTag(this string codeLine, string id, bool isEnd = false)
+        public static int FindIndexOfTag(this string[] codeLines, string id, bool isEnd = false)
         {
-
-            if(!isEnd)
+            if (!isEnd)
             {
-                return codeLine.IndexOf(id, StringComparison.OrdinalIgnoreCase);
+                return Array.FindIndex(codeLines, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1) + 2;
             } else
             {
-                var index = codeLine.IndexOf(id, StringComparison.OrdinalIgnoreCase);
-                var endRegionIndex = codeLine.IndexOf("endRegion", StringComparison.OrdinalIgnoreCase);
+                var startTagIndex = Array.FindIndex(codeLines, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1) + 2;
+                var endTagIndex = Array.FindIndex(codeLines, startTagIndex, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1);
 
-                if(endRegionIndex > -1)
+                if(endTagIndex == -1) //search for region then
                 {
-                    return endRegionIndex;
+                    var endRegionIndex1 = Array.FindIndex(codeLines, startTagIndex, line => line.IndexOf("endRegion", StringComparison.OrdinalIgnoreCase) > -1) + 1;
+                    var endRegionIndex2 = Array.FindIndex(codeLines, endRegionIndex1, line => line.IndexOf("endRegion", StringComparison.OrdinalIgnoreCase) > -1) + 1;
+                    var region2Index = Array.FindIndex(codeLines, startTagIndex, line => line.IndexOf("#region", StringComparison.OrdinalIgnoreCase) > -1);
+
+                    if(endRegionIndex2 == -1)
+                    {
+                        return endRegionIndex1;
+                    } else
+                    {
+                        if(region2Index > -1 && endRegionIndex1 > region2Index)
+                        {
+                            return endRegionIndex2;
+                        } else
+                        {
+                            return endRegionIndex1;
+                        }
+                    }
                 } else
                 {
-                    return index;
+                    return endTagIndex;
                 }
             }
         }

@@ -276,8 +276,10 @@ namespace TagHelpersBuiltIn
                                 template: ""{area:exists}/{controller=Home}/{action=Index}"");
 
                 // default route for non-areas
+#region inner
                 routes.MapRoute(
                     name: ""default"",
+#endregion
                     template: ""{controller=Home}/{action=Index}/{id?}"");
             });
             #endregion
@@ -682,6 +684,12 @@ Application base of MyDomain:
         template: &quot;{controller=Home}/{action=Index}/{id?}&quot;);
 });
 </code></pre>")]
+        [InlineData(@":::code source=""source2.cs"" id=""snippet_AllowAreas"":::
+", @"<pre>
+<code class=""lang-csharp"">services.AddMvc()
+        .AddRazorPagesOptions(options =&gt; options.AllowAreas = true);
+</code></pre>
+")]
         [InlineData(@":::code source=""source.vb"" id=""snippet3"":::
 ", @"<pre>
 <code class=""lang-vb"">Imports System.Reflection
