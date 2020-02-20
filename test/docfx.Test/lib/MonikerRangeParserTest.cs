@@ -73,6 +73,9 @@ namespace Microsoft.Docs.Build
             "netcore-1.0 || dotnet-3.0",
              "netcore-1.0 dotnet-3.0")]
         [InlineData(
+            "Netcore-1.0",
+             "netcore-1.0")]
+        [InlineData(
             "dotnet-3.0 || netcore-1.0",
              "netcore-1.0 dotnet-3.0")]
         [InlineData(
