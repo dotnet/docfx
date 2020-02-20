@@ -21,6 +21,8 @@ namespace Microsoft.Docs.Build
 
             var (loadErrors, sourceModel) = await Load(context, file);
             errors.AddRange(loadErrors);
+            if (errors.Any(e => e.Level == ErrorLevel.Error))
+                return errors;
 
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
