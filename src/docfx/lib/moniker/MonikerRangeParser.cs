@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, string[]> _cache = new ConcurrentDictionary<string, string[]>();
+        private readonly ConcurrentDictionary<string, string[]> _cache = new ConcurrentDictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(EvaluatorWithMonikersVisitor monikersEvaluator)
