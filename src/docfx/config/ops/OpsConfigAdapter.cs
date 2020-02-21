@@ -17,22 +17,24 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
-        public static string ValidationServiceEndpoint =>
-            s_isProduction
-            ? "https://docs.microsoft.com"
-            : "https://ppe.docs.microsoft.com";
+        public static string ValidationServiceEndpoint => GetValue(
+            production: "https://docs.microsoft.com",
+            sandbox: "https://ppe.docs.microsoft.com",
+            @internal: "https://ppe.docs.microsoft.com",
+            perf: "https://ppe.docs.microsoft.com");
 
         public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
 
-        private static readonly string? s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
-        private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
+        private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
 
-        private static readonly string s_buildServiceEndpoint = s_isProduction
-            ? "https://op-build-prod.azurewebsites.net"
-            : "https://op-build-sandbox2.azurewebsites.net";
+        private static readonly string s_buildServiceEndpoint = GetValue(
+            production: "https://op-build-prod.azurewebsites.net",
+            sandbox: "https://op-build-sandbox2.azurewebsites.net",
+            @internal: "https://op-build-internal.azurewebsites.net",
+            perf: "https://op-build-internal.azurewebsites.net");
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -126,14 +128,17 @@ namespace Microsoft.Docs.Build
 
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            var isProduction = s_isProduction;
-            if (!string.IsNullOrEmpty(xrefEndpoint))
+            var environment = s_docsEnvironment;
+            if (!string.IsNullOrEmpty(xrefEndpoint) && string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
-                isProduction = string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+                environment = DocsEnvironment.Production;
             }
-            return isProduction
-                    ? "https://op-build-prod.azurewebsites.net"
-                    : "https://op-build-sandbox2.azurewebsites.net";
+            return GetValue(
+                    production: "https://op-build-prod.azurewebsites.net",
+                    sandbox: "https://op-build-sandbox2.azurewebsites.net",
+                    @internal: "https://op-build-sandbox2.azurewebsites.net",
+                    perf: "https://op-build-sandbox2.azurewebsites.net",
+                    environment);
         }
 
         private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
@@ -227,24 +232,83 @@ namespace Microsoft.Docs.Build
             switch (siteName)
             {
                 case "DocsAzureCN":
-                    return s_isProduction ? "docs.azure.cn" : "ppe.docs.azure.cn";
+                    return GetValue(
+                        production: "docs.azure.cn",
+                        sandbox: "ppe.docs.azure.cn",
+                        @internal: "ppe.docs.azure.cn",
+                        perf: "ppe.docs.azure.cn");
                 case "dev.microsoft.com":
-                    return s_isProduction ? "developer.microsoft.com" : "devmsft-sandbox.azurewebsites.net";
+                    return GetValue(
+                        production: "developer.microsoft.com",
+                        sandbox: "devmsft-sandbox.azurewebsites.net",
+                        @internal: "devmsft-sandbox.azurewebsites.net",
+                        perf: "devmsft-sandbox.azurewebsites.net");
                 case "rd.microsoft.com":
-                    return "rd.microsoft.com";
+                    return GetValue(
+                        production: "rd.microsoft.com",
+                        sandbox: string.Empty,
+                        @internal: string.Empty,
+                        perf: string.Empty);
                 default:
-                    return s_isProduction ? "docs.microsoft.com" : "ppe.docs.microsoft.com";
+                    return GetValue(
+                        production: "docs.microsoft.com",
+                        sandbox: "ppe.docs.microsoft.com",
+                        @internal: "ppe.docs.microsoft.com",
+                        perf: "ppe.docs.microsoft.com");
             }
         }
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return !IsLive(branch) && s_isProduction ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+            return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Production ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)
         {
             return branch == "live" || branch == "live-sxs";
+        }
+
+        private static DocsEnvironment GetDocsEnvironment()
+        {
+            var docsEnvironment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
+
+            if ("PROD".Equals(docsEnvironment, StringComparison.OrdinalIgnoreCase))
+            {
+                return DocsEnvironment.Production;
+            }
+            else if ("PPE".Equals(docsEnvironment, StringComparison.OrdinalIgnoreCase))
+            {
+                return DocsEnvironment.Sandbox;
+            }
+            else if ("INTERNAL".Equals(docsEnvironment, StringComparison.OrdinalIgnoreCase))
+            {
+                return DocsEnvironment.Internal;
+            }
+            else if ("PERF".Equals(docsEnvironment, StringComparison.OrdinalIgnoreCase))
+            {
+                return DocsEnvironment.Perf;
+            }
+            else
+            {
+                return DocsEnvironment.Sandbox;
+            }
+        }
+
+        private static T GetValue<T>(T production, T sandbox, T @internal, T perf, DocsEnvironment? environment = null)
+        {
+            switch (environment ?? s_docsEnvironment)
+            {
+                case DocsEnvironment.Production:
+                    return production;
+                case DocsEnvironment.Sandbox:
+                    return sandbox;
+                case DocsEnvironment.Internal:
+                    return @internal;
+                case DocsEnvironment.Perf:
+                    return perf;
+                default:
+                    throw new NotSupportedException();
+            }
         }
     }
 }
