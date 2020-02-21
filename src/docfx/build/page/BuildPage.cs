@@ -112,13 +112,13 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (context.Config.Output.Json && !context.Config.Legacy)
+            if (context.Config.OutputJson && !context.Config.Legacy)
             {
                 return (errors, outputModel, SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(outputModel), file);
-            if (context.Config.Output.Json)
+            if (context.Config.OutputJson)
             {
                 return (errors, templateModel, SortProperties(templateMetadata));
             }
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchProduct = context.Config.Product;
             systemMetadata.SearchDocsetName = context.Config.Name;
 
-            if (context.Config.Output.Pdf)
+            if (context.Config.OutputPdf)
             {
                 systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
                     $"https://{context.Config.HostName}", "pdfstore", systemMetadata.Locale, $"{context.Config.Product}.{context.Config.Name}", "{branchName}");

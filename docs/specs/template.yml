@@ -117,8 +117,7 @@ outputs:
 # Apply template in none-legacy mode and produce html page when output is not json
 inputs:
   docfx.yml: |
-    output:
-      json: false
+    outputJson: false
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -155,9 +154,8 @@ outputs:
 # Apply template in none-legacy mode and produce html page when output is not json with ugly-url
 inputs:
   docfx.yml: |
-    output:
-      json: false
-      uglifyUrl: true
+    outputJson: false
+    uglifyUrl: true
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -177,8 +175,7 @@ outputs:
 # Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
 inputs:
   docfx.yml: |
-    output:
-      json: false
+    outputJson: false
   _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
   a.yml: |
     #YamlMime:TestData

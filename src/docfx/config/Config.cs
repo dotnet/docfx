@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default product name
         /// </summary>
-        public readonly string Product = string.Empty;
+        public readonly string Product = "";
 
         /// <summary>
         /// Gets the file glob patterns included by the docset.
@@ -66,9 +66,54 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<string, GroupConfig> Groups = new Dictionary<string, GroupConfig>();
 
         /// <summary>
-        /// Gets the output config.
+        /// Gets the build output directory. Could be absolute or relative.
         /// </summary>
-        public readonly OutputConfig Output = new OutputConfig();
+        public readonly string OutputPath = "_site";
+
+        /// <summary>
+        /// Gets whether to output JSON model.
+        /// </summary>
+        public readonly bool OutputJson = false;
+
+        /// <summary>
+        /// For backward compatibility.
+        /// Gets whether to generate `_op_pdfUrlPrefixTemplate` property in legacy metadata conversion.
+        /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
+        /// </summary>
+        public readonly bool OutputPdf = false;
+
+        /// <summary>
+        /// Gets whether to use ugly url or pretty url when <see cref="Json"/> is set to false.
+        ///  - Pretty url:      a.md --> a/index.html
+        ///  - Ugly url:        a.md --> a.html
+        /// </summary>
+        public readonly bool UglifyUrl = false;
+
+        /// <summary>
+        /// Gets whether to lowercase all URLs and output file path.
+        /// </summary>
+        public readonly bool LowerCaseUrl = true;
+
+        /// <summary>
+        /// Gets whether resources are copied to output.
+        /// </summary>
+        public readonly bool CopyResources = false;
+
+        /// <summary>
+        /// Gets the maximum errors to output.
+        /// </summary>
+        public readonly int MaxErrors = 1000;
+
+        /// <summary>
+        /// Gets the maximum warnings to output.
+        /// </summary>
+        public readonly int MaxWarnings = 1000;
+
+        /// <summary>
+        /// Gets the maximum suggestions to output.
+        /// There are may be too many suggestion messages so increase the limit.
+        /// </summary>
+        public readonly int MaxSuggestions = 10000;
 
         /// <summary>
         /// Gets the global metadata added to each document.
@@ -78,7 +123,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the {Schema}://{HostName}
         /// </summary>
-        public string HostName { get; private set; } = string.Empty;
+        public string HostName { get; private set; } = "";
 
         /// <summary>
         /// Gets the site base path.
@@ -88,7 +133,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets host name used for generating .xrefmap.json
         /// </summary>
-        public string XrefHostName { get; private set; } = string.Empty;
+        public string XrefHostName { get; private set; } = "";
 
         /// <summary>
         /// Gets whether we are running in legacy mode
@@ -113,9 +158,19 @@ namespace Microsoft.Docs.Build
         public readonly Dictionary<PathString, PathString> Routes = new Dictionary<PathString, PathString>();
 
         /// <summary>
-        /// Gets the configuration about contribution scenario.
+        /// Specify the repository url for contribution
         /// </summary>
-        public readonly ContributionConfig Contribution = new ContributionConfig();
+        public readonly string? EditRepositoryUrl;
+
+        /// <summary>
+        /// Specify the repository branch for contribution
+        /// </summary>
+        public readonly string? EditRepositoryBranch;
+
+        /// <summary>
+        /// The excluded contributors which you don't want to show
+        /// </summary>
+        public readonly HashSet<string> ExcludeContributors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the map from dependency name to git url
@@ -133,16 +188,6 @@ namespace Microsoft.Docs.Build
         /// Gets allow custom error code, severity and message.
         /// </summary>
         public readonly Dictionary<string, CustomError> CustomErrors = new Dictionary<string, CustomError>();
-
-        /// <summary>
-        /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
-        /// </summary>
-        public readonly GitHubConfig GitHub = new GitHubConfig();
-
-        /// <summary>
-        /// Gets the configurations related to Microsoft Graph.
-        /// </summary>
-        public readonly MicrosoftGraphConfig MicrosoftGraph = new MicrosoftGraphConfig();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
@@ -165,12 +210,12 @@ namespace Microsoft.Docs.Build
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>(string.Empty);
+        public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
-        public readonly SourceInfo<string> MarkdownValidationRules = new SourceInfo<string>(string.Empty);
+        public readonly SourceInfo<string> MarkdownValidationRules = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the metadata JSON schema file path.
@@ -194,6 +239,42 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public readonly bool UpdateCommitBuildTime = true;
 
+        /// <summary>
+        /// Token that can be used to access the GitHub API.
+        /// </summary>
+        public readonly string GithubToken = "";
+
+        /// <summary>
+        /// Determines how long at most a user remains valid in cache.
+        /// </summary>
+        public readonly int GithubUserCacheExpirationInHours = 30 * 24;
+
+        /// <summary>
+        /// Determines whether to resolve git commit user and GitHub user.
+        /// We only resolve github user when an <see cref="GithubToken"/> is provided.
+        /// </summary>
+        public readonly bool ResolveGithubUsers = true;
+
+        /// <summary>
+        /// Determines how long at most an alias remains valid in cache.
+        /// </summary>
+        public readonly int MicrosoftGraphCacheExpirationInHours = 30 * 24;
+
+        /// <summary>
+        /// Tenant id that can be used to access the Microsoft Graph API.
+        /// </summary>
+        public readonly string MicrosoftGraphTenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+
+        /// <summary>
+        /// Client id that can be used to access the Microsoft Graph API.
+        /// </summary>
+        public readonly string MicrosoftGraphClientId = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
+
+        /// <summary>
+        /// Client secret that can be used to access the Microsoft Graph API.
+        /// </summary>
+        public readonly string MicrosoftGraphClientSecret = "";
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)
@@ -213,7 +294,7 @@ namespace Microsoft.Docs.Build
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            if (Output.LowerCaseUrl)
+            if (LowerCaseUrl)
             {
                 HostName = HostName.ToLowerInvariant();
                 BasePath = new BasePath(BasePath.Original.ToLowerInvariant());

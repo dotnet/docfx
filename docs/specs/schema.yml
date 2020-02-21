@@ -433,8 +433,7 @@ outputs:
 # metadata need to be transformed for SDP
 inputs:
   docfx.yml: |
-    output:
-      json: false
+    outputJson: false
   a.yml: |
     #YamlMime:TestPage
     key: value

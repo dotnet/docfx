@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, model.Metadata.Monikers);
             var monikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers);
 
-            if (context.Config.Output.Pdf)
+            if (context.Config.OutputPdf)
             {
                 model.Metadata.PdfAbsolutePath = "/" +
                     UrlUtility.Combine(context.Config.BasePath.RelativePath, "opbuildpdf", monikerGroup ?? string.Empty, LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));

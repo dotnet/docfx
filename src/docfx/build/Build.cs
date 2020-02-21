@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 var (docset, fallbackDocset) = GetDocsetWithFallback(localizationProvider);
 
                 // run build based on docsets
-                outputPath ??= Path.Combine(docsetPath, config.Output.Path);
+                outputPath ??= Path.Combine(docsetPath, config.OutputPath);
                 await Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Legacy)
                 {
-                    if (context.Config.Output.Json)
+                    if (context.Config.OutputJson)
                     {
                         // TODO: decouple files and dependencies from legacy.
                         Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);

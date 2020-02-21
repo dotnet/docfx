@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                         return TextWriter.Null;
                     }
 
-                    outputPath = Path.Combine(docsetPath, conf.Output.Path);
+                    outputPath = Path.Combine(docsetPath, conf.OutputPath);
                 }
 
                 // add default build log file output path
@@ -205,11 +205,11 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return config.Output.MaxErrors;
+                    return config.MaxErrors;
                 case ErrorLevel.Warning:
-                    return config.Output.MaxWarnings;
+                    return config.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return config.Output.MaxSuggestions;
+                    return config.MaxSuggestions;
                 default:
                     return int.MaxValue;
             }
@@ -225,11 +225,11 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return Volatile.Read(ref _errorCount) >= config.Output.MaxErrors;
+                    return Volatile.Read(ref _errorCount) >= config.MaxErrors;
                 case ErrorLevel.Warning:
-                    return Volatile.Read(ref _warningCount) >= config.Output.MaxWarnings;
+                    return Volatile.Read(ref _warningCount) >= config.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return Volatile.Read(ref _suggestionCount) >= config.Output.MaxSuggestions;
+                    return Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions;
                 default:
                     return false;
             }
@@ -245,11 +245,11 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return Interlocked.Increment(ref _errorCount) > config.Output.MaxErrors;
+                    return Interlocked.Increment(ref _errorCount) > config.MaxErrors;
                 case ErrorLevel.Warning:
-                    return Interlocked.Increment(ref _warningCount) > config.Output.MaxWarnings;
+                    return Interlocked.Increment(ref _warningCount) > config.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return Interlocked.Increment(ref _suggestionCount) > config.Output.MaxSuggestions;
+                    return Interlocked.Increment(ref _suggestionCount) > config.MaxSuggestions;
                 default:
                     return false;
             }

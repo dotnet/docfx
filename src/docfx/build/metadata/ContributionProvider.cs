@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 UpdatedAtDateTime = updatedDateTime,
             };
 
-            if (!_config.GitHub.ResolveUsers)
+            if (!_config.ResolveGithubUsers)
             {
                 return (errors, contributionInfo);
             }
@@ -74,12 +74,12 @@ namespace Microsoft.Docs.Build
 
             var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
                 ? _config.GlobalMetadata.ContributorsToExclude
-                : _config.Contribution.ExcludeContributors;
+                : _config.ExcludeContributors;
 
             // Resolve contributors from commits
             if (!UrlUtility.TryParseGitHubUrl(repo.Remote, out var repoOwner, out var repoName))
             {
-                UrlUtility.TryParseGitHubUrl(_config.Contribution.RepositoryUrl, out repoOwner, out repoName);
+                UrlUtility.TryParseGitHubUrl(_config.EditRepositoryUrl, out repoOwner, out repoName);
             }
 
             var contributors = new List<Contributor>();
@@ -171,14 +171,14 @@ namespace Microsoft.Docs.Build
 
         private string GetContentGitUrl(string repo, string branch, string pathToRepo, string locale)
         {
-            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryUrl))
+            if (!string.IsNullOrEmpty(_config.EditRepositoryUrl))
             {
-                repo = _config.Contribution.RepositoryUrl;
+                repo = _config.EditRepositoryUrl;
             }
 
-            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryBranch))
+            if (!string.IsNullOrEmpty(_config.EditRepositoryBranch))
             {
-                branch = _config.Contribution.RepositoryBranch;
+                branch = _config.EditRepositoryBranch;
             }
 
             if (LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
