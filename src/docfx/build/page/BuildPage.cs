@@ -21,22 +21,9 @@ namespace Microsoft.Docs.Build
 
             var (loadErrors, sourceModel) = await Load(context, file);
             errors.AddRange(loadErrors);
-            if (errors.Any(e => e.Level == ErrorLevel.Error))
-                return errors;
 
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
-
-            var (outputErrors, output, metadata) = file.IsPage
-                ? await CreatePageOutput(context, file, sourceModel)
-                : CreateDataOutput(context, file, sourceModel);
-            errors.AddRange(outputErrors);
-
-            if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
-            {
-                // custom 404 page is not supported
-                errors.Add(Errors.Custom404Page(file));
-            }
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
@@ -49,10 +36,25 @@ namespace Microsoft.Docs.Build
                 Monikers = monikers,
                 MonikerGroup = MonikerUtility.GetGroup(monikers),
                 ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-                ExtensionData = metadata,
             };
+            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file, publishItem);
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && !context.Config.DryRun)
+            if (errors.Any(e => e.Level == ErrorLevel.Error))
+                return errors;
+
+            var (outputErrors, output, metadata) = file.IsPage
+                ? await CreatePageOutput(context, file, sourceModel)
+                : CreateDataOutput(context, file, sourceModel);
+            errors.AddRange(outputErrors);
+            publishItem.ExtensionData = metadata;
+
+            if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
+            {
+                // custom 404 page is not supported
+                errors.Add(Errors.Custom404Page(file));
+            }
+
+            if (shouldWriteOutput && !context.Config.DryRun)
             {
                 if (output is string str)
                 {
