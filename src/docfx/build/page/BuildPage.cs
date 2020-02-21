@@ -131,11 +131,11 @@ namespace Microsoft.Docs.Build
                 if (!(jToken is JObject jObject))
                     return jToken;
 
-                var properties = new List<JProperty>();
+                var properties = new SortedList<string, JProperty>();
                 foreach (var property in jObject.Properties())
-                    properties.Add(new JProperty(property.Name, SortProperties(property.Value)));
+                    properties.Add(property.Name, new JProperty(property.Name, SortProperties(property.Value)));
 
-                return new JObject(properties.OrderBy(p => p.Name));
+                return new JObject(properties.Values);
             }
         }
 
