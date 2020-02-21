@@ -457,3 +457,5 @@ inputs:
 outputs:
   .errors.log: |
     ["error","missing-attribute","Missing required attribute: 'authors'","a.yml",2,1]
+  .publish.json: |
+    {"files":[{"url":"/a/","path":"a/index.html","source_path":"a.yml","has_error":true}]}
