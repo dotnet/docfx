@@ -32,8 +32,8 @@ namespace Microsoft.Docs.Build
                 {
                     return ExpressionCreator.Create(value)
                         .Accept(_monikersEvaluator)
-                        .Select(x => x.MonikerName)
-                        .OrderBy(_ => _, StringComparer.OrdinalIgnoreCase)
+                        .Select(x => x.MonikerName.ToLowerInvariant())
+                        .OrderBy(_ => _)
                         .ToArray();
                 }
                 catch (MonikerRangeException ex)

@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                 },
                 new Moniker
                 {
-                    MonikerName = "dotnet-1.0",
+                    MonikerName = "DOTNET-1.0",
                     ProductName = ".NET Framework",
                 },
                 new Moniker
