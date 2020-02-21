@@ -4,6 +4,8 @@
 using System.IO;
 using Xunit;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     public class ExtractYamlHeaderTest
@@ -56,7 +58,7 @@ this: is a frontmatter
         public void TestExtract(string content, string expectedMetadata)
         {
             using var reader = new StringReader(content);
-            var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
+            var (errors, metadata) = ExtractYamlHeader.Extract(reader, new FilePath(""));
             Assert.Empty(errors);
             Assert.Equal(expectedMetadata.Replace('\'', '"'), JsonUtility.Serialize(metadata));
         }
@@ -74,7 +76,7 @@ hello
         public void TestNotJObject(string content, string expectedErrorCode, string expectedErrorMessage)
         {
             using var reader = new StringReader(content);
-            var (errors, metadata) = ExtractYamlHeader.Extract(reader, null);
+            var (errors, metadata) = ExtractYamlHeader.Extract(reader, new FilePath(""));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(expectedErrorCode, error.Code);

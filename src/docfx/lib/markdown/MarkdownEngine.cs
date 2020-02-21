@@ -10,6 +10,8 @@ using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class MarkdownEngine
@@ -60,9 +62,9 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var status = new Status { Errors = new List<Error>() };
+                var status = new Status();
 
-                t_status.Value.Push(status);
+                t_status.Value!.Push(status);
 
                 var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
 
@@ -70,7 +72,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_status.Value.Pop();
+                t_status.Value!.Pop();
             }
         }
 
@@ -80,12 +82,9 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var status = new Status
-                    {
-                        Errors = new List<Error>(),
-                    };
+                    var status = new Status();
 
-                    t_status.Value.Push(status);
+                    t_status.Value!.Push(status);
 
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
 
@@ -93,7 +92,7 @@ namespace Microsoft.Docs.Build
                 }
                 finally
                 {
-                    t_status.Value.Pop();
+                    t_status.Value!.Pop();
                 }
             }
         }
@@ -155,22 +154,22 @@ namespace Microsoft.Docs.Build
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.ToSourceInfo(line)));
         }
 
         private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.ToSourceInfo(line)));
         }
 
         private static void LogSuggestion(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
         }
 
         private (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
-            var status = t_status.Value.Peek();
+            var status = t_status.Value!.Peek();
             var (error, content, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
             status.Errors.AddIfNotNull(error);
             return (content, file);
@@ -178,7 +177,7 @@ namespace Microsoft.Docs.Build
 
         private string GetLink(SourceInfo<string> href)
         {
-            var status = t_status.Value.Peek();
+            var status = t_status.Value!.Peek();
             var (error, link, file) = _linkResolver.ResolveLink(
                 href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
@@ -188,7 +187,7 @@ namespace Microsoft.Docs.Build
 
         private (string href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
         {
-            var status = t_status.Value.Peek();
+            var status = t_status.Value!.Peek();
             var (error, link, display, _) = _xrefResolver.ResolveXref(
                 href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
@@ -201,15 +200,15 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyList<string> GetMonikerRange(SourceInfo<string> monikerRange)
         {
-            var status = t_status.Value.Peek();
+            var status = t_status.Value!.Peek();
             var (error, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);
             status.Errors.AddIfNotNull(error);
             return monikers;
         }
 
-        private sealed class Status
+        private class Status
         {
-            public List<Error> Errors;
+            public List<Error> Errors = new List<Error>();
         }
     }
 }

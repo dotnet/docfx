@@ -12,6 +12,8 @@ using System.Runtime.InteropServices;
 
 using static Microsoft.Docs.Build.LibGit2;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -24,7 +26,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="path">The git repo entry point</param>
         /// <returns>The git repo root path. null if the repo root is not found</returns>
-        public static string FindRepo(string path)
+        public static string? FindRepo(string? path)
         {
             var repo = path;
             while (!string.IsNullOrEmpty(repo))
@@ -57,7 +59,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Retrieve git repo information.
         /// </summary>
-        public static unsafe (string remote, string branch, string commit) GetRepoInfo(string repoPath)
+        public static unsafe (string? remote, string? branch, string? commit) GetRepoInfo(string repoPath)
         {
             var (remote, branch, commit) = default((string, string, string));
 
@@ -98,7 +100,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// checkout existing git repository to specificed committish
         /// </summary>
-        public static void Checkout(string path, string committish, string options = null)
+        public static void Checkout(string path, string committish, string? options = null)
         {
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
         }
@@ -106,7 +108,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Fetch a git repository's updates
         /// </summary>
-        public static void Fetch(Config config, string path, string url, string refspecs, string options = null)
+        public static void Fetch(Config config, string path, string url, string refspecs, string? options = null)
         {
             // Allow test to proxy remotes to local folder
             url = TestQuirks.GitRemoteProxy?.Invoke(url) ?? url;
@@ -126,7 +128,7 @@ namespace Microsoft.Docs.Build
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public static unsafe byte[] ReadBytes(string repoPath, string filePath, string committish)
+        public static unsafe byte[]? ReadBytes(string repoPath, string filePath, string committish)
         {
             if (git_repository_open(out var repo, repoPath) != 0)
             {
@@ -171,12 +173,12 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[] secrets = null)
+        private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[]? secrets = null)
         {
             Execute(cwd, commandLineArgs, stdout: false, secrets);
         }
 
-        private static string Execute(string cwd, string commandLineArgs, bool stdout = true, string[] secrets = null)
+        private static string Execute(string cwd, string commandLineArgs, bool stdout = true, string[]? secrets = null)
         {
             if (!Directory.Exists(cwd))
             {

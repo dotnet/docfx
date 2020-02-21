@@ -3,6 +3,8 @@
 
 using System;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -13,21 +15,29 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets or sets the git commmit author name
         /// </summary>
-        public string AuthorName { get; set; }
+        public string AuthorName { get; }
 
         /// <summary>
         /// Gets or sets the git commit author email
         /// </summary>
-        public string AuthorEmail { get; set; }
+        public string AuthorEmail { get; }
 
         /// <summary>
         /// Gets or sets the git commit sha
         /// </summary>
-        public string Sha { get; set; }
+        public string Sha { get; }
 
         /// <summary>
         /// Gets or sets the git commit time
         /// </summary>
-        public DateTimeOffset Time { get; set; }
+        public DateTimeOffset Time { get; }
+
+        public GitCommit(string authorName, string authorEmail, string sha, DateTimeOffset time)
+        {
+            AuthorName = authorName;
+            AuthorEmail = authorEmail;
+            Sha = sha;
+            Time = time;
+        }
     }
 }

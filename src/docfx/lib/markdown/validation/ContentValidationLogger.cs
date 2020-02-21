@@ -5,6 +5,8 @@ using Apex.Validation.Shared;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class ContentValidationLogger : IValidationLogger
@@ -16,7 +18,7 @@ namespace Microsoft.Docs.Build
             _markdownContext = markdownContext;
         }
 
-        public void LogInfo(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
+        public void LogInfo(string code, string message, MarkdownObject? origin = null, string? filePath = null, int? line = null)
         {
             if (!string.IsNullOrEmpty(code))
             {
@@ -24,7 +26,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void LogSuggestion(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
+        public void LogSuggestion(string code, string message, MarkdownObject? origin = null, string? filePath = null, int? line = null)
         {
             if (!string.IsNullOrEmpty(code))
             {
@@ -32,7 +34,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void LogWarning(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
+        public void LogWarning(string code, string message, MarkdownObject? origin = null, string? filePath = null, int? line = null)
         {
             if (!string.IsNullOrEmpty(code))
             {
@@ -40,7 +42,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void LogError(string code, string message, MarkdownObject origin = null, string filePath = null, int? line = null)
+        public void LogError(string code, string message, MarkdownObject? origin = null, string? filePath = null, int? line = null)
         {
             if (!string.IsNullOrEmpty(code))
             {
