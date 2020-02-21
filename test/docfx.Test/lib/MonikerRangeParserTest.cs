@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                 },
                 new Moniker
                 {
-                    MonikerName = "dotnet-1.0",
+                    MonikerName = "DOTNET-1.0",
                     ProductName = ".NET Framework",
                 },
                 new Moniker
@@ -72,6 +72,9 @@ namespace Microsoft.Docs.Build
         [InlineData(
             "netcore-1.0 || dotnet-3.0",
              "netcore-1.0 dotnet-3.0")]
+        [InlineData(
+            "Netcore-1.0",
+             "netcore-1.0")]
         [InlineData(
             "dotnet-3.0 || netcore-1.0",
              "netcore-1.0 dotnet-3.0")]
