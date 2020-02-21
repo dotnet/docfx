@@ -140,7 +140,8 @@ namespace Microsoft.Docs.Build
         {
             var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
             var response = await Fetch(url, value404: "{}");
-            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links
+                ?? Array.Empty<string>();
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
