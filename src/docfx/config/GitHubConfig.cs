@@ -10,17 +10,17 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Token that can be used to access the GitHub API.
         /// </summary>
-        public readonly string AuthToken = string.Empty;
+        public string AuthToken { get; } = string.Empty;
 
         /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
-        public readonly int UserCacheExpirationInHours = 30 * 24;
+        public int UserCacheExpirationInHours { get; } = 30 * 24;
 
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
         /// We only resolve github user when an <see cref="AuthToken"/> is provided.
         /// </summary>
-        public readonly bool ResolveUsers = true;
+        public bool ResolveUsers { get; } = true;
     }
 }

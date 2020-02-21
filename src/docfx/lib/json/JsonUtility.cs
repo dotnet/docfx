@@ -518,11 +518,11 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
-            public readonly List<Error> Errors = new List<Error>();
+            public List<Error> Errors { get; } = new List<Error>();
 
-            public FilePath? FilePath;
+            public FilePath? FilePath { get; set; }
 
-            public JTokenReader? Reader;
+            public JTokenReader? Reader { get; set; }
         }
     }
 }

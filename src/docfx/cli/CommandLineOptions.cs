@@ -7,17 +7,25 @@ namespace Microsoft.Docs.Build
 {
     internal class CommandLineOptions
     {
-        public string Output;
-        public bool Legacy;
-        public bool Verbose;
-        public bool DryRun;
-        public bool Stdin;
-        public bool UseCache;
-        public bool NoRestore;
-        public string Template;
-        public int Port;
+        public string Output { get; set; }
 
-        public JObject StdinConfig;
+        public bool Legacy { get; set; }
+
+        public bool Verbose { get; set; }
+
+        public bool DryRun { get; set; }
+
+        public bool Stdin { get; set; }
+
+        public bool NoRestore { get; set; }
+
+        public string Template { get; set; }
+
+        public int Port { get; set; }
+
+        public bool UseCache { get; set; }
+
+        public JObject StdinConfig { get; set; }
 
         public FetchOptions FetchOptions => NoRestore
             ? FetchOptions.NoFetch

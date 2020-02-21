@@ -12,14 +12,14 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsDependencyConfig
     {
-        public readonly string PathToRoot = "";
+        public string PathToRoot { get; } = "";
 
-        public readonly string Url = "";
+        public string Url { get; } = "";
 
-        public readonly string Branch = "master";
+        public string Branch { get; } = "master";
 
-        public readonly Dictionary<string, string> BranchMapping = new Dictionary<string, string>();
+        public Dictionary<string, string> BranchMapping { get; } = new Dictionary<string, string>();
 
-        public readonly bool IncludeInBuild;
+        public bool IncludeInBuild { get; }
     }
 }

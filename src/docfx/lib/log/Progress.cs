@@ -68,10 +68,11 @@ namespace Microsoft.Docs.Build
 
         private class LogScope : IDisposable
         {
-            public readonly string Name;
-            public readonly Stopwatch Stopwatch;
+            public string Name { get; }
 
-            public long LastElapsedMs;
+            public Stopwatch Stopwatch { get; }
+
+            public long LastElapsedMs { get; set; }
 
             public LogScope(string name, Stopwatch stopwatch)
             {
