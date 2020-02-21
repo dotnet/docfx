@@ -66,8 +66,7 @@ namespace Microsoft.Docs.Build
             }
 
             var tocMap = builder.Build();
-            var result = tocMap.FindTocRelativePath(document);
-            Assert.Equal(expectedTocPath, result);
+            Assert.Equal(expectedTocPath, tocMap.FindTocRelativePath(document));
 
             // test orphan case
             builder = new TableOfContentsMapBuilder();
