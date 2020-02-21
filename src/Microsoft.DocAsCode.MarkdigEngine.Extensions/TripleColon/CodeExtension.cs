@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
         private readonly MarkdownContext _context;
-        private static Regex tagRegex = new Regex(@"<\s*.*\s*?>|#region|#endregion");
+        private static Regex tagRegex = new Regex(@"(?:<!--|--|//|'|rem|%|;|#)\s*<\s*.*\s*?>|#region|#endregion");
 
         public CodeExtension(MarkdownContext context)
         {
@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var codeLines = code.Split('\n');
                 var beg = codeLines.FindIndexOfTag(id);
                 var end = codeLines.FindIndexOfTag(id, true);
-                codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError);
+                codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError, false);
             }
             else
             {
@@ -211,7 +211,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return dedentedSections;
         }
 
-        private static List<string> GetCodeSectionsFromRange(string range, string[] codeLines, List<string> codeSections, Action<string> logError)
+        private static List<string> GetCodeSectionsFromRange(string range, string[] codeLines, List<string> codeSections, Action<string> logError, bool shouldKeepSnippetTags = true)
         {
             var ranges = range.Split(',');
             foreach (var codeRange in ranges)
@@ -241,7 +241,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         var section = string.Empty;
                         for (var i = beg; i <= end; i++)
                         {
-                            if(!tagRegex.IsMatch(codeLines[i]))
+                            if(shouldKeepSnippetTags || !tagRegex.IsMatch(codeLines[i]))
                             {
                                 section += codeLines[i] + "\n";
                             }
@@ -264,7 +264,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         var end = codeLines.Length;
                         for (var i = beg; i < end; i++)
                         {
-                            if (!tagRegex.IsMatch(codeLines[i]))
+                            if (shouldKeepSnippetTags || !tagRegex.IsMatch(codeLines[i]))
                             {
                                 section += codeLines[i] + "\n";
                             }
