@@ -8,6 +8,7 @@ pr:
 - v3
 variables:
   dotnetVersion: 3.1.100
+  runCodesignValidationInjection: false
 
 jobs:
 
