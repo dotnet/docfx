@@ -231,7 +231,9 @@ jobs:
     artifact: integration-test
 
   # Run integration tests
-  - powershell: '& ([scriptblock]::Create("$(Pipeline.Workspace)/integration-test/integration-test -- $(params)"))'
+  - powershell: |
+      Write-Host $env:BUILD_SOURCESDIRECTORY
+      & ([scriptblock]::Create("$(Pipeline.Workspace)/integration-test/integration-test -- $(params)"))
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
