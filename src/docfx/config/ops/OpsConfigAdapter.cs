@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
             DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
             DocsEnvironment.Perf => "https://op-build-internal.azurewebsites.net",
-            _ => "https://op-build-prod.azurewebsites.net",
+            _ => throw new NotSupportedException(),
         };
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
@@ -289,7 +289,7 @@ namespace Microsoft.Docs.Build
         {
             return Enum.TryParse(Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
                 ? docsEnvironment
-                : DocsEnvironment.PPE;
+                : DocsEnvironment.Prod;
         }
     }
 }
