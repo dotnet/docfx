@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         Production,
         Sandbox,
-        @Internal,
+        Internal,
         Perf,
     }
 }
