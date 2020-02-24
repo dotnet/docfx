@@ -19,10 +19,10 @@ namespace Microsoft.Docs.Build
     {
         public static string ValidationServiceEndpoint => s_docsEnvironment switch
         {
-            DocsEnvironment.Prod => "docs.microsoft.com",
-            DocsEnvironment.PPE => "ppe.docs.microsoft.com",
-            DocsEnvironment.Internal => "ppe.docs.microsoft.com",
-            DocsEnvironment.Perf => "ppe.docs.microsoft.com",
+            DocsEnvironment.Prod => "https://docs.microsoft.com",
+            DocsEnvironment.PPE => "https://ppe.docs.microsoft.com",
+            DocsEnvironment.Internal => "https://ppe.docs.microsoft.com",
+            DocsEnvironment.Perf => "https://ppe.docs.microsoft.com",
             _ => throw new NotSupportedException()
         };
 
