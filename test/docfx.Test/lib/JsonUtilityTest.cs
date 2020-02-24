@@ -120,19 +120,6 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestClassWithReadOnlyField()
-        {
-            var json = @"
-{
-    ""b"": ""test""
-}";
-            var (errors, value) = DeserializeWithValidation<ClassWithReadOnlyField>(json);
-            Assert.Empty(errors);
-            Assert.NotNull(value);
-            Assert.Equal("test", value.B);
-        }
-
-        [Fact]
         public void TestClassWithMoreMembersBySerializeThenDeserialize()
         {
             var sw = new StringWriter();
@@ -544,11 +531,6 @@ namespace Microsoft.Docs.Build
             public bool H { get; set; }
 
             public List<BasicClass> Items { get; set; }
-        }
-
-        internal sealed class ClassWithReadOnlyField
-        {
-            public readonly string B = "";
         }
 
         internal sealed class ClassWithMoreMembers : BasicClass
