@@ -26,12 +26,12 @@ namespace Microsoft.Docs.Build
         /// The addresses can be absolute url or relative path
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string>[] Extend { get; } = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[] Extend { get; private set; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Gets the authorization keys for required resources access
         /// </summary>
-        public Dictionary<string, HttpConfig> Http { get; } = new Dictionary<string, HttpConfig>();
+        public Dictionary<string, HttpConfig> Http { get; private set; } = new Dictionary<string, HttpConfig>();
 
         public Action<HttpRequestMessage> GetCredentialProvider()
         {

@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
     internal class GlobalMetadata
     {
         // For v2 backward compatibility
-        public HashSet<string> ContributorsToExclude { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> ContributorsToExclude { get; private set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         // For v2 backward compatibility
         [JsonProperty("_op_documentIdPathDepotMapping")]
-        public Dictionary<PathString, DocumentIdConfig> DocumentIdDepotMapping { get; set; }
+        public Dictionary<PathString, DocumentIdConfig> DocumentIdDepotMapping { get; private set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; set; } = new JObject();
+        public JObject ExtensionData { get; private set; } = new JObject();
     }
 }

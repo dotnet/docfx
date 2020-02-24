@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the build output directory. Could be absolute or relative.
         /// </summary>
-        public string Path { get; } = "_site";
+        public string Path { get; private set; } = "_site";
 
         /// <summary>
         /// Gets whether to output JSON model.

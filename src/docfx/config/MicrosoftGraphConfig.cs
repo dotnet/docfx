@@ -10,21 +10,21 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines how long at most an alias remains valid in cache.
         /// </summary>
-        public int MicrosoftGraphCacheExpirationInHours { get; } = 30 * 24;
+        public int MicrosoftGraphCacheExpirationInHours { get; private set; } = 30 * 24;
 
         /// <summary>
         /// Tenant id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphTenantId { get; } = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+        public string MicrosoftGraphTenantId { get; private set; } = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 
         /// <summary>
         /// Client id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphClientId { get; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
+        public string MicrosoftGraphClientId { get; private set; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
 
         /// <summary>
         /// Client secret that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphClientSecret { get; } = string.Empty;
+        public string MicrosoftGraphClientSecret { get; private set; } = string.Empty;
     }
 }

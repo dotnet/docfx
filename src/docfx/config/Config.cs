@@ -13,8 +13,9 @@ namespace Microsoft.Docs.Build
 {
     internal class Config : PreloadConfig
     {
-        public static readonly string[] DefaultInclude = new[] { "**/*.{md,yml,json}" };
-        public static readonly string[] DefaultExclude = new[]
+        public static string[] DefaultInclude => new[] { "**/*.{md,yml,json}" };
+
+        public static string[] DefaultExclude => new[]
         {
             "_site/**",             // Default output location
             "_localization/**",     // Localization file when using folder convention
