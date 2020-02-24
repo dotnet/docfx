@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets moniker range group configuration for v2 backward compatibility.
         /// </summary>
-        public Dictionary<string, GroupConfig> Groups { get; private set; } = new Dictionary<string, GroupConfig>();
+        public Dictionary<string, GroupConfig> Groups { get; } = new Dictionary<string, GroupConfig>();
 
         /// <summary>
         /// Gets the output config.
@@ -105,13 +105,13 @@ namespace Microsoft.Docs.Build
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; private set; } = new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
+        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } = new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
 
         /// <summary>
         /// Gets a map from source folder path and output URL path.
         /// We rely on a Dictionary behavior that the enumeration order is the same as insertion order if there is no other mutations.
         /// </summary>
-        public Dictionary<PathString, PathString> Routes { get; private set; } = new Dictionary<PathString, PathString>();
+        public Dictionary<PathString, PathString> Routes { get; } = new Dictionary<PathString, PathString>();
 
         /// <summary>
         /// Gets the configuration about contribution scenario.
@@ -123,17 +123,17 @@ namespace Microsoft.Docs.Build
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public Dictionary<PathString, DependencyConfig> Dependencies { get; private set; } = new Dictionary<PathString, DependencyConfig>();
+        public Dictionary<PathString, DependencyConfig> Dependencies { get; } = new Dictionary<PathString, DependencyConfig>();
 
         /// <summary>
         /// Gets the document id configuration section
         /// </summary>
-        public Dictionary<PathString, DocumentIdConfig> DocumentId { get; private set; } = new Dictionary<PathString, DocumentIdConfig>();
+        public Dictionary<PathString, DocumentIdConfig> DocumentId { get; } = new Dictionary<PathString, DocumentIdConfig>();
 
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, CustomError> CustomErrors { get; private set; } = new Dictionary<string, CustomError>();
+        public Dictionary<string, CustomError> CustomErrors { get; } = new Dictionary<string, CustomError>();
 
         /// <summary>
         /// Gets the configurations related to GitHub APIs, usually related to resolve contributors.
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the moniker range mapping
         /// </summary>
-        public Dictionary<string, SourceInfo<string>> MonikerRange { get; private set; } = new Dictionary<string, SourceInfo<string>>();
+        public Dictionary<string, SourceInfo<string>> MonikerRange { get; } = new Dictionary<string, SourceInfo<string>>();
 
         /// <summary>
         /// Get the definition of monikers
