@@ -10,11 +10,11 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(ShortHandConverter))]
     internal class CustomError
     {
-        public ErrorLevel? Severity { get; set; }
+        public ErrorLevel? Severity { get; private set; }
 
-        public string? Code { get; set; }
+        public string? Code { get; private set; }
 
-        public string? AdditionalMessage { get; set; }
+        public string? AdditionalMessage { get; private set; }
 
         public CustomError() { }
 

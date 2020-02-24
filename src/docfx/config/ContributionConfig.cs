@@ -13,16 +13,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Specify the repository url for contribution
         /// </summary>
-        public readonly string? RepositoryUrl;
+        public string? RepositoryUrl { get; private set; }
 
         /// <summary>
         /// Specify the repository branch for contribution
         /// </summary>
-        public readonly string? RepositoryBranch;
+        public string? RepositoryBranch { get; private set; }
 
         /// <summary>
         /// The excluded contributors which you don't want to show
         /// </summary>
-        public readonly HashSet<string> ExcludeContributors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> ExcludeContributors { get; private set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 }

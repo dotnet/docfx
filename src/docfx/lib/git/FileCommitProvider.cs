@@ -314,15 +314,15 @@ namespace Microsoft.Docs.Build
 
         private class Commit
         {
-            public readonly git_oid Sha;
+            public git_oid Sha { get; }
 
-            public readonly git_oid Tree;
+            public git_oid Tree { get; }
 
-            public readonly GitCommit GitCommit;
+            public GitCommit GitCommit { get; }
 
-            public readonly Commit[] Parents;
+            public Commit[] Parents { get; }
 
-            public git_oid[] ParentShas;
+            public git_oid[] ParentShas { get; set; }
 
             public Commit(git_oid sha, git_oid[] parentShas, git_oid tree, GitCommit gitCommit)
             {

@@ -219,16 +219,6 @@ d: true
         }
 
         [Fact]
-        public void TestClassWithReadOnlyField()
-        {
-            var yaml = $"b: test";
-            var (errors, value) = DeserializeWithValidation<ClassWithReadOnlyField>(yaml);
-            Assert.Empty(errors);
-            Assert.NotNull(value);
-            Assert.Equal("test", value.B);
-        }
-
-        [Fact]
         public void TestClassWithMoreMembers()
         {
             var yaml = @"b: 1
@@ -332,11 +322,6 @@ items:
             public string C { get; set; }
 
             public bool D { get; set; }
-        }
-
-        public sealed class ClassWithReadOnlyField
-        {
-            public readonly string B;
         }
 
         public sealed class ClassWithMoreMembers : BasicClass
