@@ -114,29 +114,17 @@ namespace Microsoft.Docs.Build
 
             if (context.Config.Output.Json && !context.Config.Legacy)
             {
-                return (errors, outputModel, (JObject)SortProperties(outputMetadata));
+                return (errors, outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = CreateTemplateModel(context, (JObject)SortProperties(outputModel), file);
+            var (templateModel, templateMetadata) = CreateTemplateModel(context, JsonUtility.SortProperties(outputModel), file);
             if (context.Config.Output.Json)
             {
-                return (errors, templateModel, (JObject)SortProperties(templateMetadata));
+                return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (errors, html, (JObject)SortProperties(templateMetadata));
-
-            JToken SortProperties(JToken jToken)
-            {
-                if (!(jToken is JObject jObject))
-                    return jToken;
-
-                var properties = new SortedList<string, JProperty>();
-                foreach (var property in jObject.Properties())
-                    properties.Add(property.Name, new JProperty(property.Name, SortProperties(property.Value)));
-
-                return new JObject(properties.Values);
-            }
+            return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }
 
         private static (List<Error> errors, object output, JObject metadata)
