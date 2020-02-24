@@ -16,7 +16,7 @@ jobs:
 - job: LinuxBuild
   pool:
     vmImage: 'ubuntu-16.04'
-  condition: false #eq(variables['Build.Reason'], 'PullRequest')
+  condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
@@ -35,7 +35,7 @@ jobs:
 - job: MacBuild
   pool:
     vmImage: 'macOS-10.13'
-  condition: false #eq(variables['Build.Reason'], 'PullRequest')
+  condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
@@ -53,7 +53,6 @@ jobs:
 
 # Test and deploy on windows
 - job: WindowsBuild
-  condition: false
   pool:
     vmImage: 'vs2017-win2016'
   steps:
@@ -118,7 +117,8 @@ jobs:
 
 # Build integration test
 - job: BuildIntegrationTest
-  #dependsOn: WindowsBuild
+  dependsOn: WindowsBuild
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
 
@@ -188,7 +188,6 @@ jobs:
 # Integration test
 - job: RunIntegrationTest
   dependsOn: BuildIntegrationTest
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
   strategy:
