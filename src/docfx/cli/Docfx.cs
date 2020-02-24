@@ -144,7 +144,7 @@ namespace Microsoft.Docs.Build
 
                 void SetCommonOptions(ArgumentSyntax syntax)
                 {
-                    var template = "";
+                    string template = null;
                     var verbose = false;
                     var stdin = false;
                     var legacy = false;
