@@ -29,12 +29,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default site name
         /// </summary>
-        public string SiteName { get; } = "Docs";
+        public string SiteName { get; private set; } = "Docs";
 
         /// <summary>
         /// Gets the default product name
         /// </summary>
-        public string Product { get; } = string.Empty;
+        public string Product { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets the file glob patterns included by the docset.

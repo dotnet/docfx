@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default docset name
         /// </summary>
-        public SourceInfo<string> Name { get; } = new SourceInfo<string>("");
+        public SourceInfo<string> Name { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
         /// The extend file addresses
