@@ -182,7 +182,7 @@ jobs:
   # Publish integration-test binary
   - publish: ./drop/integration-test/bin
     displayName: Publish integration-test binary
-    artifact: integration-test.zip
+    artifact: integration-test
 
 
 # Integration test
@@ -228,16 +228,10 @@ jobs:
   # Download integration-test binary
   - download: current
     displayName: Download integration-test binary
-    artifact: integration-test.zip
+    artifact: integration-test
 
   # Run integration tests
-  - powershell: |
-      $integartionTestDir = .temp/integration-test/bin
-      Remove-Item $integartionTestDir -Force -Recurse -ErrorAction Ignore
-      New-Item -Path $integartionTestDir -ItemType "directory" -ErrorAction SilentlyContinue
-      
-      Expand-Archive "$(Pipeline.Workspace)/integration-test.zip" $integartionTestDir
-      & ([scriptblock]::Create("$integartionTestDir/docfx -- $(params)"))
+  - powershell: '& ([scriptblock]::Create("$(Pipeline.Workspace)/integration-test/integration-test -- $(params)"))'
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
