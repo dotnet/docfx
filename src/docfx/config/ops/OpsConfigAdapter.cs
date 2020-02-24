@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
             DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
             DocsEnvironment.Perf => "https://op-build-internal.azurewebsites.net",
-            _ => "https://op-build-sandbox2.azurewebsites.net",
+            _ => "https://op-build-prod.azurewebsites.net",
         };
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
