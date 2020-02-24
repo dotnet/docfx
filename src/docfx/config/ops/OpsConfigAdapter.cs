@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
     {
         public static string ValidationServiceEndpoint => s_docsEnvironment switch
         {
-            DocsEnvironment.Production => "docs.microsoft.com",
-            DocsEnvironment.Sandbox => "ppe.docs.microsoft.com",
+            DocsEnvironment.Prod => "docs.microsoft.com",
+            DocsEnvironment.PPE => "ppe.docs.microsoft.com",
             DocsEnvironment.Internal => "ppe.docs.microsoft.com",
             DocsEnvironment.Perf => "ppe.docs.microsoft.com",
             _ => throw new NotSupportedException()
@@ -35,8 +35,8 @@ namespace Microsoft.Docs.Build
 
         private static readonly string s_buildServiceEndpoint = s_docsEnvironment switch
         {
-            DocsEnvironment.Production => "https://op-build-prod.azurewebsites.net",
-            DocsEnvironment.Sandbox => "https://op-build-sandbox2.azurewebsites.net",
+            DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
+            DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
             DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
             DocsEnvironment.Perf => "https://op-build-internal.azurewebsites.net",
             _ => throw new NotSupportedException()
@@ -137,12 +137,12 @@ namespace Microsoft.Docs.Build
             var environment = s_docsEnvironment;
             if (!string.IsNullOrEmpty(xrefEndpoint) && string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
-                environment = DocsEnvironment.Production;
+                environment = DocsEnvironment.Prod;
             }
             return environment switch
             {
-                    DocsEnvironment.Production => "https://op-build-prod.azurewebsites.net",
-                    DocsEnvironment.Sandbox => "https://op-build-sandbox2.azurewebsites.net",
+                    DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
+                    DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
                     DocsEnvironment.Internal => "https://op-build-sandbox2.azurewebsites.net",
                     DocsEnvironment.Perf => "https://op-build-sandbox2.azurewebsites.net",
                     _ => throw new NotSupportedException()
@@ -242,8 +242,8 @@ namespace Microsoft.Docs.Build
                 case "DocsAzureCN":
                     return s_docsEnvironment switch
                     {
-                        DocsEnvironment.Production => "docs.azure.cn",
-                        DocsEnvironment.Sandbox => "ppe.docs.azure.cn",
+                        DocsEnvironment.Prod => "docs.azure.cn",
+                        DocsEnvironment.PPE => "ppe.docs.azure.cn",
                         DocsEnvironment.Internal => "ppe.docs.azure.cn",
                         DocsEnvironment.Perf => "ppe.docs.azure.cn",
                         _ => throw new NotSupportedException()
@@ -251,8 +251,8 @@ namespace Microsoft.Docs.Build
                 case "dev.microsoft.com":
                     return s_docsEnvironment switch
                     {
-                        DocsEnvironment.Production => "developer.microsoft.com",
-                        DocsEnvironment.Sandbox => "devmsft-sandbox.azurewebsites.net",
+                        DocsEnvironment.Prod => "developer.microsoft.com",
+                        DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
                         DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
                         DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
                         _ => throw new NotSupportedException()
@@ -260,14 +260,14 @@ namespace Microsoft.Docs.Build
                 case "rd.microsoft.com":
                     return s_docsEnvironment switch
                     {
-                        DocsEnvironment.Production => "rd.microsoft.com",
+                        DocsEnvironment.Prod => "rd.microsoft.com",
                         _ => throw new NotSupportedException()
                     };
                 default:
                     return s_docsEnvironment switch
                     {
-                        DocsEnvironment.Production => "docs.microsoft.com",
-                        DocsEnvironment.Sandbox => "ppe.docs.microsoft.com",
+                        DocsEnvironment.Prod => "docs.microsoft.com",
+                        DocsEnvironment.PPE => "ppe.docs.microsoft.com",
                         DocsEnvironment.Internal => "ppe.docs.microsoft.com",
                         DocsEnvironment.Perf => "ppe.docs.microsoft.com",
                         _ => throw new NotSupportedException()
@@ -277,7 +277,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Production ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+            return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)
@@ -289,7 +289,7 @@ namespace Microsoft.Docs.Build
         {
             return Enum.TryParse(Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
                 ? docsEnvironment
-                : DocsEnvironment.Sandbox;
+                : DocsEnvironment.PPE;
         }
     }
 }

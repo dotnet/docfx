@@ -7,8 +7,8 @@ namespace Microsoft.Docs.Build
 {
     public enum DocsEnvironment
     {
-        Production,
-        Sandbox,
+        Prod,
+        PPE,
         Internal,
         Perf,
     }
