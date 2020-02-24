@@ -107,32 +107,22 @@ namespace Microsoft.Docs.Build
                     // Handle parse errors by us
                     syntax.HandleErrors = false;
 
-                    var output = "";
-
                     // Restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                    syntax.DefineOption("o|output", ref output, "Output directory in which to place restore log.");
-                    options.Output = output;
-                    SetCommonOptions(syntax);
+                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Build command
-                    var dryRun = false;
-                    var noRestore = false;
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
-                    syntax.DefineOption("o|output", ref output, "Output directory in which to place built artifacts.");
-                    syntax.DefineOption("dry-run", ref dryRun, "Do not produce build artifact and only produce validation result.");
-                    syntax.DefineOption("no-restore", ref noRestore, "Do not restore dependencies before building.");
-                    options.Output = output;
-                    options.DryRun = dryRun;
-                    options.NoRestore = noRestore;
-                    SetCommonOptions(syntax);
+                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+                    syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
+                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before building.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Watch command
-                    var port = 0;
                     syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
-                    syntax.DefineOption("port", ref port, "The port of the launched website.");
-                    options.Port = port;
-                    SetCommonOptions(syntax);
+                    syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 
                 if (options.Stdin)
@@ -141,19 +131,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 return (command, workingDirectory, options);
-
-                void SetCommonOptions(ArgumentSyntax syntax)
-                {
-                    string template = null;
-                    var verbose = false;
-                    var stdin = false;
-                    var legacy = false;
-                    DefineCommonOptions(syntax, ref workingDirectory, ref template, ref verbose, ref stdin, ref legacy);
-                    options.Template = template;
-                    options.Verbose = verbose;
-                    options.Stdin = stdin;
-                    options.Legacy = legacy;
-                }
             }
             catch (ArgumentSyntaxException ex)
             {
@@ -162,18 +139,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void DefineCommonOptions(
-            ArgumentSyntax syntax,
-            ref string workingDirectory,
-            ref string template,
-            ref bool verbose,
-            ref bool stdin,
-            ref bool legacy)
+        private static void DefineCommonOptions(ArgumentSyntax syntax, ref string workingDirectory, CommandLineOptions options)
         {
-            syntax.DefineOption("template", ref template, "The directory or git repository that contains website template.");
-            syntax.DefineOption("v|verbose", ref verbose, "Enable diagnostics console output.");
-            syntax.DefineOption("stdin", ref stdin, "Enable additional config in JSON one liner using standard input.");
-            syntax.DefineOption("legacy", ref legacy, "Enable legacy output for backward compatibility.");
+            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
+            syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+            syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
+            syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
             syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
         }
 

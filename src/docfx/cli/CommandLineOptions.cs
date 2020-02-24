@@ -1,31 +1,25 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1401:FieldsMustBePrivate", Justification = "<Skipping>")]
     internal class CommandLineOptions
     {
-        public string Output { get; set; }
+        public string Output;
+        public bool Legacy;
+        public bool Verbose;
+        public bool DryRun;
+        public bool Stdin;
+        public bool UseCache;
+        public bool NoRestore;
+        public string Template;
+        public int Port;
 
-        public bool Legacy { get; set; }
-
-        public bool Verbose { get; set; }
-
-        public bool DryRun { get; set; }
-
-        public bool Stdin { get; set; }
-
-        public bool NoRestore { get; set; }
-
-        public string Template { get; set; }
-
-        public int Port { get; set; }
-
-        public bool UseCache { get; set; }
-
-        public JObject StdinConfig { get; set; }
+        public JObject StdinConfig;
 
         public FetchOptions FetchOptions => NoRestore
             ? FetchOptions.NoFetch
