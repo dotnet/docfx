@@ -114,19 +114,17 @@ namespace Microsoft.Docs.Build
 
             if (context.Config.Output.Json && !context.Config.Legacy)
             {
-                return (errors, outputModel, SortProperties(outputMetadata));
+                return (errors, outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(outputModel), file);
+            var (templateModel, templateMetadata) = CreateTemplateModel(context, JsonUtility.SortProperties(outputModel), file);
             if (context.Config.Output.Json)
             {
-                return (errors, templateModel, SortProperties(templateMetadata));
+                return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (errors, html, SortProperties(templateMetadata));
-
-            JObject SortProperties(JObject obj) => new JObject(obj.Properties().OrderBy(p => p.Name));
+            return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }
 
         private static (List<Error> errors, object output, JObject metadata)

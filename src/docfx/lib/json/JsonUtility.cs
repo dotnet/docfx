@@ -387,6 +387,15 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
+        public static JObject SortProperties(JObject obj)
+        {
+            var properties = new SortedList<string, JProperty>();
+            foreach (var property in obj.Properties())
+                properties.Add(property.Name, !(property.Value is JObject childObj) ? property : new JProperty(property.Name, SortProperties(childObj)));
+
+            return new JObject(properties.Values);
+        }
+
         internal static void SkipToken(JsonReader reader)
         {
             var currentDepth = reader.Depth;
