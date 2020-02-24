@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.Sandbox => "ppe.docs.microsoft.com",
             DocsEnvironment.Internal => "ppe.docs.microsoft.com",
             DocsEnvironment.Perf => "ppe.docs.microsoft.com",
-            _ => string.Empty
+            _ => throw new NotSupportedException()
         };
 
         public const string BuildConfigApi = "https://ops/buildconfig/";
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.Sandbox => "https://op-build-sandbox2.azurewebsites.net",
             DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
             DocsEnvironment.Perf => "https://op-build-internal.azurewebsites.net",
-            _ => string.Empty
+            _ => throw new NotSupportedException()
         };
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Sandbox => "https://op-build-sandbox2.azurewebsites.net",
                     DocsEnvironment.Internal => "https://op-build-sandbox2.azurewebsites.net",
                     DocsEnvironment.Perf => "https://op-build-sandbox2.azurewebsites.net",
-                    _ => string.Empty
+                    _ => throw new NotSupportedException()
             };
         }
 
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
                         DocsEnvironment.Sandbox => "ppe.docs.azure.cn",
                         DocsEnvironment.Internal => "ppe.docs.azure.cn",
                         DocsEnvironment.Perf => "ppe.docs.azure.cn",
-                        _ => string.Empty
+                        _ => throw new NotSupportedException()
                     };
                 case "dev.microsoft.com":
                     return s_docsEnvironment switch
@@ -255,13 +255,13 @@ namespace Microsoft.Docs.Build
                         DocsEnvironment.Sandbox => "devmsft-sandbox.azurewebsites.net",
                         DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
                         DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
-                        _ => string.Empty
+                        _ => throw new NotSupportedException()
                     };
                 case "rd.microsoft.com":
                     return s_docsEnvironment switch
                     {
                         DocsEnvironment.Production => "rd.microsoft.com",
-                        _ => string.Empty
+                        _ => throw new NotSupportedException()
                     };
                 default:
                     return s_docsEnvironment switch
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
                         DocsEnvironment.Sandbox => "ppe.docs.microsoft.com",
                         DocsEnvironment.Internal => "ppe.docs.microsoft.com",
                         DocsEnvironment.Perf => "ppe.docs.microsoft.com",
-                        _ => string.Empty
+                        _ => throw new NotSupportedException()
                     };
             }
         }
