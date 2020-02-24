@@ -9,36 +9,36 @@ namespace Microsoft.Docs.Build
 {
     public class DocfxTestSpec
     {
-        public string OS { get; set; }
+        public string OS { get; private set; }
 
-        public string Cwd { get; set; }
+        public string Cwd { get; private set; }
 
-        public bool Restore { get; set; } = true;
+        public bool Restore { get; private set; } = true;
 
-        public bool Build { get; set; } = true;
+        public bool Build { get; private set; } = true;
 
-        public bool NoDryRun { get; set; }
+        public bool NoDryRun { get; private set; }
 
-        public bool Watch { get; set; }
+        public bool Watch { get; private set; }
 
-        public bool Legacy { get; set; }
+        public bool Legacy { get; private set; }
 
-        public bool Temp { get; set; }
+        public bool Temp { get; private set; }
 
-        public string Locale { get; set; }
+        public string Locale { get; private set; }
 
-        public string[] Environments { get; set; } = Array.Empty<string>();
+        public string[] Environments { get; private set; } = Array.Empty<string>();
 
-        public Dictionary<string, TestGitCommit[]> Repos { get; set; } = new Dictionary<string, TestGitCommit[]>();
+        public Dictionary<string, TestGitCommit[]> Repos { get; private set; } = new Dictionary<string, TestGitCommit[]>();
 
-        public Dictionary<string, string> Inputs { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Inputs { get; private set; } = new Dictionary<string, string>();
 
-        public Dictionary<string, string> Cache { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Cache { get; private set; } = new Dictionary<string, string>();
 
-        public Dictionary<string, string> State { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> State { get; private set; } = new Dictionary<string, string>();
 
-        public Dictionary<string, string> Outputs { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Outputs { get; private set; } = new Dictionary<string, string>();
 
-        public Dictionary<string, JToken> Http { get; set; } = new Dictionary<string, JToken>();
+        public Dictionary<string, JToken> Http { get; private set; } = new Dictionary<string, JToken>();
     }
 }
