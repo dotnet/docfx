@@ -40,25 +40,25 @@ namespace Microsoft.Docs.Build
         /// Gets the file glob patterns included by the docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Files { get; } = DefaultInclude;
+        public string[] Files { get; private set; } = DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Exclude { get; } = Array.Empty<string>();
+        public string[] Exclude { get; private set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets content build scope config for v2 backward compatibility.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public FileMappingConfig[] Content { get; } = Array.Empty<FileMappingConfig>();
+        public FileMappingConfig[] Content { get; private set; } = Array.Empty<FileMappingConfig>();
 
         /// <summary>
         /// Gets resource build scope config for v2 backward compatibility.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public FileMappingConfig[] Resource { get; } = Array.Empty<FileMappingConfig>();
+        public FileMappingConfig[] Resource { get; private set; } = Array.Empty<FileMappingConfig>();
 
         /// <summary>
         /// Gets moniker range group configuration for v2 backward compatibility.

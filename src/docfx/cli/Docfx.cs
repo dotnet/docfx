@@ -108,14 +108,12 @@ namespace Microsoft.Docs.Build
                     syntax.HandleErrors = false;
 
                     var output = "";
-                    var template = "";
-                    var verbose = false;
-                    var stdin = false;
-                    var legacy = false;
 
                     // Restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                     syntax.DefineOption("o|output", ref output, "Output directory in which to place restore log.");
+                    options.Output = output;
+                    SetCommonOptions(syntax);
 
                     // Build command
                     var dryRun = false;
@@ -127,19 +125,14 @@ namespace Microsoft.Docs.Build
                     options.Output = output;
                     options.DryRun = dryRun;
                     options.NoRestore = noRestore;
+                    SetCommonOptions(syntax);
 
                     // Watch command
                     var port = 0;
                     syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
                     syntax.DefineOption("port", ref port, "The port of the launched website.");
                     options.Port = port;
-
-                    DefineCommonOptions(syntax, ref workingDirectory, ref template, ref verbose, ref stdin, ref legacy);
-                    options.Output = output;
-                    options.Template = template;
-                    options.Verbose = verbose;
-                    options.Stdin = stdin;
-                    options.Legacy = legacy;
+                    SetCommonOptions(syntax);
                 });
 
                 if (options.Stdin)
@@ -148,6 +141,19 @@ namespace Microsoft.Docs.Build
                 }
 
                 return (command, workingDirectory, options);
+
+                void SetCommonOptions(ArgumentSyntax syntax)
+                {
+                    var template = "";
+                    var verbose = false;
+                    var stdin = false;
+                    var legacy = false;
+                    DefineCommonOptions(syntax, ref workingDirectory, ref template, ref verbose, ref stdin, ref legacy);
+                    options.Template = template;
+                    options.Verbose = verbose;
+                    options.Stdin = stdin;
+                    options.Legacy = legacy;
+                }
             }
             catch (ArgumentSyntaxException ex)
             {
