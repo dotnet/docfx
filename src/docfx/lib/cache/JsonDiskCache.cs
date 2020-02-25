@@ -44,10 +44,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var item in cacheFile.Items)
                 {
-                    foreach (var cacheKey in item.GetKeys())
-                    {
-                        _cache.TryAdd(cacheKey, item);
-                    }
+                    UpdateCache(item);
                 }
             }
         }
@@ -120,17 +117,24 @@ namespace Microsoft.Docs.Build
                         if (value != null)
                         {
                             value.UpdatedAt = GetRandomUpdatedAt();
-
-                            foreach (var cacheKey in value.GetKeys())
-                            {
-                                _cache[cacheKey] = value;
-                            }
+                            UpdateCache(value);
                             _needUpdate = true;
                         }
                     }
                 }
                 return error;
             });
+        }
+
+        private void UpdateCache(TValue item)
+        {
+            foreach (var cacheKey in item.GetKeys())
+            {
+                if (!_cache.TryGetValue(cacheKey, out var existingValue) || HasExpired(existingValue))
+                {
+                    _cache[cacheKey] = item;
+                }
+            }
         }
 
         private static DateTime GetRandomUpdatedAt()
