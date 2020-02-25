@@ -142,7 +142,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (!context.References.TryGetValue(srcName, out var referenceItem) || referenceItem.Definition == null ||
                     !context.Members.TryGetValue(referenceItem.Definition, out src))
                 {
-                    Logger.LogWarning($"Could not resolve base documentation for '{dest.Name}'");
+                    Logger.LogWarning($"Could not resolve base documentation for '{dest.Name}'",
+                                      file: dest.Source.Path,
+                                      line: dest.Source.StartLine != 0 ? dest.Source.StartLine.ToString() : null);
                     return;
                 }
                     
