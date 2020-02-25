@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var cacheKey in value.GetKeys())
             {
-                _cache[cacheKey] = _resolveConflict != null && _cache.TryGetValue(cacheKey, out var existingValue)
+                _cache[cacheKey] = _resolveConflict != null && _cache.TryGetValue(cacheKey, out var existingValue) && !HasExpired(existingValue)
                    ? _resolveConflict(value, existingValue)
                    : value;
             }
