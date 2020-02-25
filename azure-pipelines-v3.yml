@@ -145,6 +145,7 @@ jobs:
           }
       }
 
+      $ErrorActionPreference = "SilentlyContinue"
       # Sometimes when docfx needs to make a breaking change, name the branch breaking/<downstream_branch>,
       # where <downstream_branch> is the branch name of corresponding changes in Docs.Build, this allows
       # integration test to run against both changes
@@ -164,7 +165,7 @@ jobs:
       try {
           # Update Docs.Build to latest
           pushd ../Docs.Build
-          exec "git $auth fetch origin +refs/heads/$docsBuildBranch:refs/remotes/origin/$docsBuildBranch --depth 1"
+          exec "git $auth fetch origin +refs/heads/$($docsBuildBranch):refs/remotes/origin/$docsBuildBranch --depth 1"
           exec "git checkout --force origin/$docsBuildBranch"
           exec "git clean -xdff"
       } finally {
