@@ -54,7 +54,7 @@ jobs:
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-latest'
   steps:
 
   # Install .NET Core sdk
@@ -115,50 +115,25 @@ jobs:
       storage: opsbuildk8sprod
       containerName: docfx-bin
 
-# Integration test
-- job: IntegrationTest
+# Build integration test
+- job: BuildIntegrationTest
   dependsOn: WindowsBuild
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
-  strategy:
-    matrix:
-      DevSandbox:
-        params: https://github.com/OPS-E2E-PPE/DevSandbox --branch v3-integration-test --timeout 30
-      docs-help-pr:
-        params: >
-          https://github.com/OPS-E2E-PPE/docs-help-pr --build-type PullRequest --branch v3-integration-test
-          --pull-request-url https://github.com/yufeih/docs-help-pr --pull-request-branch patch-1
-          --timeout 30
-      azure-docs-pr:
-        params: https://github.com/OPS-E2E-PPE/azure-docs-pr --branch v3-integration-test --timeout 150
-      Dynamics-365-Operations:
-        params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --timeout 65
-      SCCMDocs-pr:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr --branch live --timeout 30
-      SCCMDocs-pr.zh-cn:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch live-sxs --locale zh-cn --timeout 30
-      office-dev-O365API:
-        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
-      dynamics-crm-notinTOC_1.he-il:
-        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
-      mc-docs-pr:
-        params: https://github.com/opse2epr/mc-docs-pr --timeout 70
-      ATADocs-pr:
-        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
 
   steps:
-  # Checkout
-  - checkout: self
-    clean: true
-    path: docfx
-
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
+
+  # Checkout
+  - checkout: self
+    clean: true
+    path: docfx
 
   # Checkout Docs.Build
   - powershell: |
@@ -195,15 +170,72 @@ jobs:
           popd
       }
 
+      $integartionTestDir = './drop/integration-test'
+      Remove-Item $integartionTestDir -Force -Recurse -ErrorAction Ignore
+      dotnet build ../Docs.Build/test/integration-test -c Release -r win7-x64 -o $integartionTestDir/bin
+      Remove-Item $integartionTestDir/bin/ConfigMigration -Force -Recurse -ErrorAction Ignore
     displayName: Checkout Docs.Build
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
 
+  # Publish integration-test binary
+  - publish: ./drop/integration-test/bin
+    displayName: Publish integration-test binary
+    artifact: integration-test
+
+
+# Integration test
+- job: RunIntegrationTest
+  dependsOn: BuildIntegrationTest
+  pool:
+    name: DocFX
+  strategy:
+    matrix:
+      DevSandbox:
+        params: https://github.com/OPS-E2E-PPE/DevSandbox --branch v3-integration-test --timeout 30
+      docs-help-pr:
+        params: >
+          https://github.com/OPS-E2E-PPE/docs-help-pr --build-type PullRequest --branch v3-integration-test
+          --pull-request-url https://github.com/yufeih/docs-help-pr --pull-request-branch patch-1
+          --timeout 30
+      azure-docs-pr:
+        params: https://github.com/OPS-E2E-PPE/azure-docs-pr --branch v3-integration-test --timeout 150
+      Dynamics-365-Operations:
+        params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --timeout 65
+      SCCMDocs-pr:
+        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr --branch live --timeout 30
+      SCCMDocs-pr.zh-cn:
+        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch live-sxs --locale zh-cn --timeout 30
+      office-dev-O365API:
+        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
+      dynamics-crm-notinTOC_1.he-il:
+        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
+      mc-docs-pr:
+        params: https://github.com/opse2epr/mc-docs-pr --timeout 70
+      ATADocs-pr:
+        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
+
+  steps:
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
+    inputs:
+      packageType: sdk
+      version: $(dotnetVersion)
+  
+  # Checkout
+  - checkout: self
+    clean: false
+    path: docfx
+
+  # Download integration-test binary
+  - download: current
+    displayName: Download integration-test binary
+    artifact: integration-test
+
   # Run integration tests
-  - powershell: |
-      dotnet build ../Docs.Build/test/integration-test -c Release # a workaround for json file copy issue
-      dotnet run -p ../Docs.Build/test/integration-test -c Release -- $(params)
+  - powershell: '& "$(Pipeline.Workspace)/integration-test/integration-test" $(params)'
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
