@@ -139,7 +139,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (src == null && !context.Members.TryGetValue(srcName, out src))
             {
                 // Try to resolve any templated references before giving up
-                if (!context.References.TryGetValue(srcName, out var referenceItem) || !context.Members.TryGetValue(referenceItem.Definition, out src))
+                if (!context.References.TryGetValue(srcName, out var referenceItem) || referenceItem.Definition == null || !context.Members.TryGetValue(referenceItem.Definition, out src))
                     return;
             }
 
