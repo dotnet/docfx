@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
             if (docset.base_path != "/")
             {
-                xrefQueryTags.Add(docset.base_path);
+                xrefQueryTags.Add($"/{docset.base_path.TrimStart('/')}");
             }
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
