@@ -235,7 +235,7 @@ jobs:
     artifact: integration-test
 
   # Run integration tests
-  - powershell: '& "$(Pipeline.Workspace)/integration-test/integration-test" "$(params)"'
+  - powershell: '& "$(Pipeline.Workspace)/integration-test/integration-test" $(params)'
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
