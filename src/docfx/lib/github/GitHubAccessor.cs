@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         public GitHubAccessor(Config config)
         {
             _userCache = new JsonDiskCache<Error, string, GitHubUser>(
-                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GithubUserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase);
+                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GithubUserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase, ResolveGitHubUserConflict);
 
             if (!string.IsNullOrEmpty(config.GithubToken))
             {
@@ -238,6 +238,18 @@ namespace Microsoft.Docs.Build
             {
                 _syncRoot.Release();
             }
+        }
+
+        private static GitHubUser ResolveGitHubUserConflict(GitHubUser a, GitHubUser b)
+        {
+            // Pick the user with a valid Id
+            if (a.Id is null)
+                return b;
+            if (b.Id is null)
+                return a;
+
+            // otherwise pick a random one
+            return a;
         }
     }
 }
