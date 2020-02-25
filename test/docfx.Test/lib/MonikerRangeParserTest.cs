@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                     Order = 3
                 },
                 new Moniker
-                 {
+                {
                     MonikerName = "netcore-2.0",
                     ProductName = ".NET Core",
                     Order = 2
