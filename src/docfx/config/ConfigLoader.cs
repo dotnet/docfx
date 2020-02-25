@@ -177,16 +177,15 @@ namespace Microsoft.Docs.Build
 
         private static JObject LoadEnvironmentVariables()
         {
-            var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
-                        let key = entry.Key.ToString()
-                        where key.StartsWith("DOCFX_")
-                        let configKey = key.Substring("DOCFX_".Length)
-                        let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                        where values != null
-                        from value in values
-                        select (configKey, value);
-
-            return StringUtility.ExpandVariables("__", "_", items);
+            return new JObject(
+                from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                let key = entry.Key.ToString()
+                where key.StartsWith("DOCFX_")
+                let configKey = StringUtility.ToCamelCase('_', key.Substring("DOCFX_".Length))
+                let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                where values != null
+                let configValue = values.Length == 1 ? (object)values[0] : values
+                select new JProperty(configKey, configValue));
         }
     }
 }
