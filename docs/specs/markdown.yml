@@ -625,8 +625,7 @@ outputs:
 # Liquid template file missing should not crash
 inputs: 
   docfx.yml: |
-    output:
-      json: false
+    outputJson: false
   docs/a.md: Hello `docfx`! 
 outputs: 
   docs/a/index.html:
@@ -634,8 +633,7 @@ outputs:
 # Source file name ending with spaces should not crash
 inputs:
   docfx.yml: |
-    output:
-      json: false
+    outputJson: false
   docs/a b.. ..md:
 outputs:
   docs/a b/index.html:
@@ -657,8 +655,7 @@ inputs:
   docsets.yml: |
     docsets: new-hope/new-hope/*
   new-hope/new-hope/docfx.yml: |
-    output:
-      copyResources: false
+    copyResources: false
   new-hope/new-hope/specs/unify-version/unify-version.md: |
     ![ready-for-review](../../../new-hope/specs/gauntlet/media/ready-for-review.png)
   new-hope/new-hope/specs/international-content/docs-vscode-validation.md: |

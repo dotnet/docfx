@@ -20,16 +20,16 @@ namespace Microsoft.Docs.Build
         public MicrosoftGraphAccessor(Config config)
         {
             _aliasCache = new JsonDiskCache<Error, string, MicrosoftGraphUser>(
-                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraph.MicrosoftGraphCacheExpirationInHours));
+                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraphCacheExpirationInHours));
 
-            if (!string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphTenantId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientSecret))
+            if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret))
             {
                 _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(
-                    config.MicrosoftGraph.MicrosoftGraphTenantId,
-                    config.MicrosoftGraph.MicrosoftGraphClientId,
-                    config.MicrosoftGraph.MicrosoftGraphClientSecret);
+                    config.MicrosoftGraphTenantId,
+                    config.MicrosoftGraphClientId,
+                    config.MicrosoftGraphClientSecret);
 
                 _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
             }

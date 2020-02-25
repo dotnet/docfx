@@ -38,8 +38,7 @@ outputs:
 inputs:
   docfx.yml: |
     files: '**'
-    output:
-      copyResources: false
+    copyResources: false
   a.png:
 outputs:
   .publish.json: |

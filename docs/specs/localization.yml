@@ -54,13 +54,11 @@ repos:
   https://docfx.com/edit-url1#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
+          editRepositoryUrl: https://github.com/dotnet/docfx
   https://docfx.com/edit-url1.zh-cn#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
+          editRepositoryUrl: https://github.com/dotnet/docfx
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -72,13 +70,11 @@ repos:
   https://docfx.com/edit-url3#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.en-us
+          editRepositoryUrl: https://github.com/dotnet/docfx.en-us
   https://docfx.com/edit-url3.zh-cn#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.en-us
+          editRepositoryUrl: https://github.com/dotnet/docfx.en-us
         docs/a.md:
 outputs:
   docs/a.json: |

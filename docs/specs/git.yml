@@ -138,10 +138,9 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      excludeContributors:
-        - AlIcE
-        - BoB
+    excludeContributors:
+      - AlIcE
+      - BoB
 cache:
   github-users.json: |
       { "items": [
@@ -171,9 +170,8 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      excludeContributors:
-        - Alice
+    excludeContributors:
+      - Alice
 cache:
   github-users.json: |
       { "items": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
@@ -236,9 +234,8 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      excludeContributors:
-        - ChArLiE
+    excludeContributors:
+      - ChArLiE
 cache:
   github-users.json: |
       { "items": [
@@ -304,9 +301,8 @@ repos:
         docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/contrib-owner/contrib-repo
-      repositoryBranch: contrib-branch
+    editRepositoryUrl: https://github.com/contrib-owner/contrib-repo
+    editRepositoryBranch: contrib-branch
 outputs:
   docs/index.json: |
     {
@@ -416,8 +412,7 @@ repos:
         docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/testowner/testrepo
+    editRepositoryUrl: https://github.com/testowner/testrepo
 outputs:
   docs/index.json: |
     {
@@ -434,8 +429,7 @@ repos:
         docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/contrib-owner/contrib-repo
+    editRepositoryUrl: https://github.com/contrib-owner/contrib-repo
 outputs:
   docs/index.json: |
     {
@@ -451,8 +445,7 @@ repos:
         docs/index.md:
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/docascode/a
+    editRepositoryUrl: https://github.com/docascode/a
 outputs:
   docs/index.json: |
     {
@@ -485,10 +478,8 @@ repos:
           Osmond creates this, without email
 inputs:
   docfx.yml: |
-    gitHub:
-      authToken: {DOCS_GITHUB_TOKEN}
-    contribution:
-      repositoryUrl: https://github.com/docascode/contribution-test
+    githubToken: {DOCS_GITHUB_TOKEN}
+    editRepositoryUrl: https://github.com/docascode/contribution-test
 cache:
   github-users.json: |
       { "items": [
@@ -538,8 +529,7 @@ repos:
           Osmond creates this, without email
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
+    editRepositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
 cache:
   github-users.json: |
       { "items": [
@@ -585,8 +575,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
-      resolveUsers: false
+    resolveGithubUsers: false
 cache:
   github-users.json: |
       { "items": [
@@ -611,9 +600,8 @@ repos:
     - files:
         docfx.yml: |
           updateTimeAsCommitBuildTime: true
-          contribution:
-            repositoryUrl: https://github.com/contrib-owner/contrib-repo
-            repositoryBranch: contrib-branch
+          editRepositoryUrl: https://github.com/contrib-owner/contrib-repo
+          editRepositoryBranch: contrib-branch
           files:
             - "docs/**/*"
             - "crrb/**/*"

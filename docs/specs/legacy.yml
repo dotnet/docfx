@@ -309,8 +309,7 @@ legacy: true
 inputs:
   docfx.yml: |
     files: a.png
-    output:
-      copyResources: false
+    copyResources: false
   a.png:
 outputs:
   .publish.json: |

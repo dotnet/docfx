@@ -15,7 +15,7 @@ jobs:
 # Test pull requests on linux and mac
 - job: LinuxBuild
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-latest'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
@@ -34,7 +34,7 @@ jobs:
 
 - job: MacBuild
   pool:
-    vmImage: 'macOS-10.13'
+    vmImage: 'macOS-latest'
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
@@ -116,8 +116,7 @@ jobs:
       containerName: docfx-bin
 
 # Build integration test
-- job: BuildIntegrationTest
-  dependsOn: WindowsBuild
+- job: IntegrationTestBuild
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
@@ -186,8 +185,8 @@ jobs:
 
 
 # Integration test
-- job: RunIntegrationTest
-  dependsOn: BuildIntegrationTest
+- job: IntegrationTest
+  dependsOn: IntegrationTestBuild
   pool:
     name: DocFX
   strategy:
