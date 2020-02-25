@@ -248,8 +248,8 @@ namespace Microsoft.Docs.Build
             if (b.Id is null)
                 return a;
 
-            // otherwise pick the one with more emails
-            return a.Emails.Length >= b.Emails.Length ? a : b;
+            // otherwise pick a random one
+            return a;
         }
     }
 }
