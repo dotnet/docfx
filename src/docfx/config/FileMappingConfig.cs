@@ -14,27 +14,27 @@ namespace Microsoft.Docs.Build
         /// Gets the file glob patterns included by the group.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Files = Config.DefaultInclude;
+        public string[] Files { get; private set; } = Config.DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from the group.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Exclude = Array.Empty<string>();
+        public string[] Exclude { get; private set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets the root folder.
         /// </summary>
-        public readonly PathString Src;
+        public PathString Src { get; private set; }
 
         /// <summary>
         /// Gets the destination folder if copy/transform is used.
         /// </summary>
-        public readonly PathString Dest;
+        public PathString Dest { get; private set; }
 
         /// <summary>
         /// Gets the group name for v2 backward compact
         /// </summary>
-        public readonly string Group = "";
+        public string Group { get; private set; } = "";
     }
 }

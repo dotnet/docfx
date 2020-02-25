@@ -13,8 +13,9 @@ namespace Microsoft.Docs.Build
 {
     internal class Config : PreloadConfig
     {
-        public static readonly string[] DefaultInclude = new[] { "**/*.{md,yml,json}" };
-        public static readonly string[] DefaultExclude = new[]
+        public static string[] DefaultInclude => new[] { "**/*.{md,yml,json}" };
+
+        public static string[] DefaultExclude => new[]
         {
             "_site/**",             // Default output location
             "_localization/**",     // Localization file when using folder convention
@@ -29,96 +30,96 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default site name
         /// </summary>
-        public readonly string SiteName = "Docs";
+        public string SiteName { get; private set; } = "Docs";
 
         /// <summary>
         /// Gets the default product name
         /// </summary>
-        public readonly string Product = "";
+        public string Product { get; private set; } = "";
 
         /// <summary>
         /// Gets the file glob patterns included by the docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Files = DefaultInclude;
+        public string[] Files { get; private set; } = DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly string[] Exclude = Array.Empty<string>();
+        public string[] Exclude { get; private set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets content build scope config for v2 backward compatibility.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly FileMappingConfig[] Content = Array.Empty<FileMappingConfig>();
+        public FileMappingConfig[] Content { get; private set; } = Array.Empty<FileMappingConfig>();
 
         /// <summary>
         /// Gets resource build scope config for v2 backward compatibility.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly FileMappingConfig[] Resource = Array.Empty<FileMappingConfig>();
+        public FileMappingConfig[] Resource { get; private set; } = Array.Empty<FileMappingConfig>();
 
         /// <summary>
         /// Gets moniker range group configuration for v2 backward compatibility.
         /// </summary>
-        public readonly Dictionary<string, GroupConfig> Groups = new Dictionary<string, GroupConfig>();
+        public Dictionary<string, GroupConfig> Groups { get; } = new Dictionary<string, GroupConfig>();
 
         /// <summary>
         /// Gets the build output directory. Could be absolute or relative.
         /// </summary>
-        public readonly string OutputPath = "_site";
+        public string OutputPath { get; private set; } = "_site";
 
         /// <summary>
         /// Gets whether to output JSON model.
         /// </summary>
-        public readonly bool OutputJson = false;
+        public bool OutputJson { get; private set; } = false;
 
         /// <summary>
         /// For backward compatibility.
         /// Gets whether to generate `_op_pdfUrlPrefixTemplate` property in legacy metadata conversion.
         /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
         /// </summary>
-        public readonly bool OutputPdf = false;
+        public bool OutputPdf { get; private set; } = false;
 
         /// <summary>
         /// Gets whether to use ugly url or pretty url when <see cref="Json"/> is set to false.
         ///  - Pretty url:      a.md --> a/index.html
         ///  - Ugly url:        a.md --> a.html
         /// </summary>
-        public readonly bool UglifyUrl = false;
+        public bool UglifyUrl { get; private set; } = false;
 
         /// <summary>
         /// Gets whether to lowercase all URLs and output file path.
         /// </summary>
-        public readonly bool LowerCaseUrl = true;
+        public bool LowerCaseUrl { get; private set; } = true;
 
         /// <summary>
         /// Gets whether resources are copied to output.
         /// </summary>
-        public readonly bool CopyResources = false;
+        public bool CopyResources { get; private set; } = false;
 
         /// <summary>
         /// Gets the maximum errors to output.
         /// </summary>
-        public readonly int MaxErrors = 1000;
+        public int MaxErrors { get; private set; } = 1000;
 
         /// <summary>
         /// Gets the maximum warnings to output.
         /// </summary>
-        public readonly int MaxWarnings = 1000;
+        public int MaxWarnings { get; private set; } = 1000;
 
         /// <summary>
         /// Gets the maximum suggestions to output.
         /// There are may be too many suggestion messages so increase the limit.
         /// </summary>
-        public readonly int MaxSuggestions = 10000;
+        public int MaxSuggestions { get; private set; } = 10000;
 
         /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
-        public readonly GlobalMetadata GlobalMetadata = new GlobalMetadata();
+        public GlobalMetadata GlobalMetadata { get; private set; } = new GlobalMetadata();
 
         /// <summary>
         /// Gets the {Schema}://{HostName}
@@ -138,142 +139,142 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets whether we are running in legacy mode
         /// </summary>
-        public readonly bool Legacy;
+        public bool Legacy { get; private set; }
 
         /// <summary>
         /// Gets whether we are running in dry run mode
         /// </summary>
-        public readonly bool DryRun;
+        public bool DryRun { get; private set; }
 
         /// <summary>
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public readonly Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata = new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
+        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } = new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
 
         /// <summary>
         /// Gets a map from source folder path and output URL path.
         /// We rely on a Dictionary behavior that the enumeration order is the same as insertion order if there is no other mutations.
         /// </summary>
-        public readonly Dictionary<PathString, PathString> Routes = new Dictionary<PathString, PathString>();
+        public Dictionary<PathString, PathString> Routes { get; } = new Dictionary<PathString, PathString>();
 
         /// <summary>
         /// Specify the repository url for contribution
         /// </summary>
-        public readonly string? EditRepositoryUrl;
+        public string? EditRepositoryUrl { get; private set; }
 
         /// <summary>
         /// Specify the repository branch for contribution
         /// </summary>
-        public readonly string? EditRepositoryBranch;
+        public string? EditRepositoryBranch { get; private set; }
 
         /// <summary>
         /// The excluded contributors which you don't want to show
         /// </summary>
-        public readonly HashSet<string> ExcludeContributors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> ExcludeContributors { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the map from dependency name to git url
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public readonly Dictionary<PathString, DependencyConfig> Dependencies = new Dictionary<PathString, DependencyConfig>();
+        public Dictionary<PathString, DependencyConfig> Dependencies { get; } = new Dictionary<PathString, DependencyConfig>();
 
         /// <summary>
         /// Gets the document id configuration section
         /// </summary>
-        public readonly Dictionary<PathString, DocumentIdConfig> DocumentId = new Dictionary<PathString, DocumentIdConfig>();
+        public Dictionary<PathString, DocumentIdConfig> DocumentId { get; } = new Dictionary<PathString, DocumentIdConfig>();
 
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public readonly Dictionary<string, CustomError> CustomErrors = new Dictionary<string, CustomError>();
+        public Dictionary<string, CustomError> CustomErrors { get; } = new Dictionary<string, CustomError>();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
         /// </summary>
-        public readonly bool WarningsAsErrors;
+        public bool WarningsAsErrors { get; private set; }
 
         /// <summary>
         /// The addresses of xref map files, used for resolving xref.
         /// They should be absolute url or relative path
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly SourceInfo<string>[] Xref = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[] Xref { get; private set; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Gets the moniker range mapping
         /// </summary>
-        public readonly Dictionary<string, SourceInfo<string>> MonikerRange = new Dictionary<string, SourceInfo<string>>();
+        public Dictionary<string, SourceInfo<string>> MonikerRange { get; } = new Dictionary<string, SourceInfo<string>>();
 
         /// <summary>
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public readonly SourceInfo<string> MonikerDefinition = new SourceInfo<string>("");
+        public SourceInfo<string> MonikerDefinition { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
-        public readonly SourceInfo<string> MarkdownValidationRules = new SourceInfo<string>("");
+        public SourceInfo<string> MarkdownValidationRules { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly SourceInfo<string>[] MetadataSchema = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[] MetadataSchema { get; private set; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public readonly PackagePath Template = new PackagePath();
+        public PackagePath Template { get; private set; } = new PackagePath();
 
         /// <summary>
         /// When enabled, updated_at for each document will be the last build time
         /// for the latest commit that touches that document.
         /// </summary>
-        public readonly bool UpdateTimeAsCommitBuildTime = false;
+        public bool UpdateTimeAsCommitBuildTime { get; private set; } = false;
 
         /// <summary>
         /// When enabled, update the state of commit build time for this build.
         /// </summary>
-        public readonly bool UpdateCommitBuildTime = true;
+        public bool UpdateCommitBuildTime { get; private set; } = true;
 
         /// <summary>
         /// Token that can be used to access the GitHub API.
         /// </summary>
-        public readonly string GithubToken = "";
+        public string GithubToken { get; private set; } = "";
 
         /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
-        public readonly int GithubUserCacheExpirationInHours = 30 * 24;
+        public int GithubUserCacheExpirationInHours { get; private set; } = 30 * 24;
 
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
         /// We only resolve github user when an <see cref="GithubToken"/> is provided.
         /// </summary>
-        public readonly bool ResolveGithubUsers = true;
+        public bool ResolveGithubUsers { get; private set; } = true;
 
         /// <summary>
         /// Determines how long at most an alias remains valid in cache.
         /// </summary>
-        public readonly int MicrosoftGraphCacheExpirationInHours = 30 * 24;
+        public int MicrosoftGraphCacheExpirationInHours { get; private set; } = 30 * 24;
 
         /// <summary>
         /// Tenant id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public readonly string MicrosoftGraphTenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+        public string MicrosoftGraphTenantId { get; private set; } = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 
         /// <summary>
         /// Client id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public readonly string MicrosoftGraphClientId = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
+        public string MicrosoftGraphClientId { get; private set; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
 
         /// <summary>
         /// Client secret that can be used to access the Microsoft Graph API.
         /// </summary>
-        public readonly string MicrosoftGraphClientSecret = "";
+        public string MicrosoftGraphClientSecret { get; private set; } = "";
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

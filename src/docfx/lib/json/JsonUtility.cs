@@ -387,6 +387,15 @@ namespace Microsoft.Docs.Build
             return token;
         }
 
+        public static JObject SortProperties(JObject obj)
+        {
+            var properties = new SortedList<string, JProperty>();
+            foreach (var property in obj.Properties())
+                properties.Add(property.Name, !(property.Value is JObject childObj) ? property : new JProperty(property.Name, SortProperties(childObj)));
+
+            return new JObject(properties.Values);
+        }
+
         internal static void SkipToken(JsonReader reader)
         {
             var currentDepth = reader.Depth;
@@ -518,11 +527,11 @@ namespace Microsoft.Docs.Build
 
         internal class Status
         {
-            public readonly List<Error> Errors = new List<Error>();
+            public List<Error> Errors { get; } = new List<Error>();
 
-            public FilePath? FilePath;
+            public FilePath? FilePath { get; set; }
 
-            public JTokenReader? Reader;
+            public JTokenReader? Reader { get; set; }
         }
     }
 }

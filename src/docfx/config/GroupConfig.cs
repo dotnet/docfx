@@ -11,6 +11,6 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal struct GroupConfig
     {
-        public readonly SourceInfo<string?> MonikerRange;
+        public SourceInfo<string?> MonikerRange { get; private set; }
     }
 }

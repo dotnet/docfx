@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
 
         private class Status
         {
-            public List<Error> Errors = new List<Error>();
+            public List<Error> Errors { get; } = new List<Error>();
         }
     }
 }
