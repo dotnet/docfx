@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
             if (docset.base_path != "/")
             {
-                xrefQueryTags.Add($"/{docset.base_path.TrimStart('/')}");
+                xrefQueryTags.Add(docset.base_path);
             }
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
 
         private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
         {
-            var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
+            var url = $"{xrefMapApiEndpoint}/v1/xrefmap/{tag.TrimStart('/')}{xrefMapQueryParams}";
             var response = await Fetch(url, value404: "{}");
             return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links
                 ?? Array.Empty<string>();
