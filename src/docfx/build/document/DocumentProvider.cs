@@ -181,13 +181,13 @@ namespace Microsoft.Docs.Build
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path);
-            var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, _config.Output.Json, _config.Output.UglifyUrl, isPage);
-            if (_config.Output.LowerCaseUrl)
+            var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, _config.OutputJson, _config.UglifyUrl, isPage);
+            if (_config.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
             }
 
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath.RelativePath, sitePath), contentType, mime, _config.Output.Json, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath.RelativePath, sitePath), contentType, mime, _config.OutputJson, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, mime, isPage);
 
             return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.Output.Json, isPage);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.OutputJson, isPage);
             }
 
             return $"https://{_config.HostName}/{_localization.Locale}{siteUrl}";

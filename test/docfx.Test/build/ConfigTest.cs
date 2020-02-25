@@ -155,19 +155,13 @@ namespace Microsoft.Docs.Build
             => Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
 
         [Theory]
-        [InlineData("", "{}")]
-        [InlineData("a", "{'a':'value'}")]
-        [InlineData("a, a", "{'a':['value','value']}")]
-        [InlineData("A_B", "{'aB':'value'}")]
-        [InlineData("a, b", "{'a':'value','b':'value'}")]
-        [InlineData("OUTPUT_PATH", "{'outputPath':'value'}")]
-        [InlineData("OUTPUT__PATH", "{'output':{'path':'value'}}")]
-        [InlineData("OUTPUT__PATH,output__path", "{'output':{'path':['value','value']}}")]
-        [InlineData("OUTPUT,output__path", "{'output':{'path':'value'}}")]
-        public static void ExpandVariablesTest(string keys, string expectedJObject)
+        [InlineData("", "")]
+        [InlineData("a", "a")]
+        [InlineData("OUTPUT_PATH", "outputPath")]
+        [InlineData("OUTPUT_PATH_NAME", "outputPathName")]
+        public static void ToCamelCaseTest(string name, string camelCaseName)
         {
-            var items = keys.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(key => (key, "value"));
-            Assert.Equal(expectedJObject, StringUtility.ExpandVariables("__", "_", items).ToString(Formatting.None).Replace('"', '\''));
+            Assert.Equal(camelCaseName, StringUtility.ToCamelCase('_', name));
         }
 
         [Theory]

@@ -78,8 +78,7 @@ outputs:
 # Preserve URL casing when lowerCaseUrl is false
 inputs:
   docfx.yml: |
-    output:
-      lowerCaseUrl: false
+    lowerCaseUrl: false
   docs/A.md: '[](B.md)'
   docs/B.md:
 outputs:

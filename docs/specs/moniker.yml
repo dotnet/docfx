@@ -925,8 +925,7 @@ inputs:
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
-    output:
-      pdf: true
+    outputPdf: true
   docs/v1/a.md: |
     ---
     monikerRange: netcore-1.0 || netcore-1.1

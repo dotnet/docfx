@@ -405,8 +405,7 @@ outputs:
 inputs:
   docfx.yml: |
     files: '**'
-    output:
-      copyResources: false
+    copyResources: false
     routes:
       docs/: .
   a.png:

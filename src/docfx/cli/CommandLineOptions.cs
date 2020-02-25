@@ -27,22 +27,20 @@ namespace Microsoft.Docs.Build
 
         public JObject ToJObject()
         {
-            var output = new JObject();
-            if (Output != null)
-                output["path"] = Output;
-
-            if (Legacy)
-            {
-                output["json"] = true;
-                output["copyResources"] = false;
-            }
-
             var config = new JObject
             {
-                ["output"] = output,
                 ["legacy"] = Legacy,
                 ["dryRun"] = DryRun,
             };
+
+            if (Output != null)
+                config["outputPath"] = Output;
+
+            if (Legacy)
+            {
+                config["outputJson"] = true;
+                config["copyResources"] = false;
+            }
 
             if (Template != null)
                 config["template"] = Template;
