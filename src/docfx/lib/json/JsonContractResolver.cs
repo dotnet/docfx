@@ -33,11 +33,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!property.Writable)
                 {
-                    if (member is FieldInfo f && f.IsPublic && !f.IsStatic)
-                    {
-                        property.Writable = true;
-                    }
-                    else if (member is PropertyInfo p && p.CanWrite)
+                    if (member is PropertyInfo p && p.CanWrite)
                     {
                         property.Writable = true;
                     }

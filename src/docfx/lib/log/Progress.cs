@@ -34,7 +34,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(t_scope.Value != null);
 
             var scope = t_scope.Value.Peek();
-            Debug.Assert(scope != null);
 
             // Only write progress if it takes longer than 2 seconds
             var elapsedMs = scope.Stopwatch.ElapsedMilliseconds;
@@ -66,9 +65,10 @@ namespace Microsoft.Docs.Build
             return Math.Round(value.TotalMilliseconds, digits: 2) + "ms";
         }
 
-        private class LogScope : IDisposable
+        private struct LogScope : IDisposable
         {
             public readonly string Name;
+
             public readonly Stopwatch Stopwatch;
 
             public long LastElapsedMs;
@@ -77,6 +77,7 @@ namespace Microsoft.Docs.Build
             {
                 Name = name;
                 Stopwatch = stopwatch;
+                LastElapsedMs = 0;
             }
 
             public void Dispose()

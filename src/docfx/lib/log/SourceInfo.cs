@@ -12,27 +12,27 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Path to the source file.
         /// </summary>
-        public readonly FilePath File;
+        public FilePath File { get; }
 
         /// <summary>
         /// A one based start line value.
         /// </summary>
-        public readonly int Line;
+        public int Line { get; }
 
         /// <summary>
         /// A one based start column value.
         /// </summary>
-        public readonly int Column;
+        public int Column { get; }
 
         /// <summary>
         /// A one based end line value.
         /// </summary>
-        public readonly int EndLine;
+        public int EndLine { get; }
 
         /// <summary>
         /// A one based end column value.
         /// </summary>
-        public readonly int EndColumn;
+        public int EndColumn { get; }
 
         // A special storage for source info of the JObject property key
         // if this is a JObject property value.
