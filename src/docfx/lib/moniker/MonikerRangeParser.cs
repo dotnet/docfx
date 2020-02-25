@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     return ExpressionCreator.Create(value)
                         .Accept(_monikersEvaluator)
                         .Select(x => x.MonikerName.ToLowerInvariant())
-                        .OrderBy(_ => _, StringComparer.OrdinalIgnoreCase)
+                        .OrderBy(_ => _, StringComparer.Ordinal)
                         .ToArray();
                 }
                 catch (MonikerRangeException ex)
