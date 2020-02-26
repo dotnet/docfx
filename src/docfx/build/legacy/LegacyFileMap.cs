@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 {
                     host = $"https://{context.Config.HostName}",
                     locale = context.LocalizationProvider.Locale,
-                    base_path = context.Config.BasePath.Original,
+                    base_path = context.Config.BasePath.OutputValue,
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                         },
                         item => item.fileMapItem),
                 },
-                Path.Combine(context.Config.BasePath.RelativePath, "filemap.json"));
+                Path.Combine(context.Config.BasePath, "filemap.json"));
         }
     }
 }

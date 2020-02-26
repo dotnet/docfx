@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the site base path.
         /// </summary>
-        public BasePath BasePath { get; private set; } = new BasePath("/");
+        public BasePath BasePath { get; private set; }
 
         /// <summary>
         /// Gets host name used for generating .xrefmap.json
@@ -298,7 +298,7 @@ namespace Microsoft.Docs.Build
             if (LowerCaseUrl)
             {
                 HostName = HostName.ToLowerInvariant();
-                BasePath = new BasePath(BasePath.Original.ToLowerInvariant());
+                BasePath = new BasePath(BasePath.Value.ToLowerInvariant());
             }
 
             DefaultLocale = DefaultLocale.ToLowerInvariant();

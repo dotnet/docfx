@@ -11,22 +11,26 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(BasePathJsonConverter))]
     internal readonly struct BasePath
     {
-        private readonly string? _original;
+        private readonly string? _value;
 
-        private readonly string? _relativePath;
+        /// <summary>
+        /// It is either an empty string, or a path without leading or trailing /
+        /// </summary>
+        public string Value => _value ?? "";
 
-        public string Original => _original ?? "/";
-
-        // It is either an empty string, or a path without leading /
-        public string RelativePath => _relativePath ?? "";
+        /// <summary>
+        /// Gets or a path starting with `/` for output.
+        /// </summary>
+        public string OutputValue => $"/{_value}";
 
         public BasePath(string value)
         {
-            _original = value;
-            _relativePath = value.StartsWith('/') ? value.TrimStart('/') : value;
+            _value = value.Trim('/').Replace('\\', '/');
         }
 
-        public override string? ToString() => _original;
+        public override string ToString() => Value;
+
+        public static implicit operator string(BasePath value) => value.Value;
 
         private class BasePathJsonConverter : JsonConverter
         {

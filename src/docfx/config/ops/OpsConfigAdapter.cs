@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
-                new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
+                new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "" } });
 
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
             if (docset.base_path != "/")
             {
-                xrefQueryTags.Add($"/{docset.base_path.TrimStart('/')}");
+                xrefQueryTags.Add(docset.base_path.OutputValue);
             }
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                 product = docset.product_name,
                 siteName = docset.site_name,
                 hostName = GetHostName(docset.site_name),
-                basePath = docset.base_path,
+                basePath = docset.base_path.Value,
                 xrefHostName = GetXrefHostName(docset.site_name, branch),
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",

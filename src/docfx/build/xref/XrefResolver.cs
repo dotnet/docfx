@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (basePath is null)
                     {
-                        basePath = _config.BasePath.Original;
+                        basePath = _config.BasePath.OutputValue;
                     }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL

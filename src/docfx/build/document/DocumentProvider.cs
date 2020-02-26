@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
 
-            var outputPath = UrlUtility.Combine(_config.BasePath.RelativePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
+            var outputPath = UrlUtility.Combine(_config.BasePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
 
             return _config.Legacy && file.IsPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
                 sitePath = sitePath.ToLowerInvariant();
             }
 
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath.RelativePath, sitePath), contentType, mime, _config.OutputJson, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, mime, _config.OutputJson, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, mime, isPage);
 
             return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);

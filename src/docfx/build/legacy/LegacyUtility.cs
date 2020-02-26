@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
                 outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath, manifestItem.Monikers);
             }
             var legacyOutputFilePathRelativeToBasePath = Path.GetRelativePath(
-                string.IsNullOrEmpty(context.Config.BasePath.RelativePath) ? "." : context.Config.BasePath.RelativePath, outputPath);
+                string.IsNullOrEmpty(context.Config.BasePath) ? "." : context.Config.BasePath, outputPath);
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
         }
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             {
                 legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath.Substring(1);
                 legacySiteUrlRelativeToBasePath = Path.GetRelativePath(
-                    string.IsNullOrEmpty(context.Config.BasePath.RelativePath) ? "." : context.Config.BasePath.RelativePath,
+                    string.IsNullOrEmpty(context.Config.BasePath) ? "." : context.Config.BasePath,
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 
