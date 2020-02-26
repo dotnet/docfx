@@ -14,7 +14,11 @@ namespace Microsoft.Docs.Build
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, Docset fallbackDocset, Context context)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(
+            Config config,
+            FileResolver fileResolver,
+            Docset fallbackDocset,
+            Input input)
         {
             var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
@@ -27,9 +31,9 @@ namespace Microsoft.Docs.Build
                 catch (DocfxException ex) when (ex.Error.Code == "file-not-found")
                 {
                     FilePath path;
-                    if (fallbackDocset != null && context.Input.Exists(path = new FilePath(url, FileOrigin.Fallback)))
+                    if (fallbackDocset != null && input.Exists(path = new FilePath(url, FileOrigin.Fallback)))
                     {
-                        using var stream = context.Input.ReadStream(path);
+                        using var stream = input.ReadStream(path);
                         var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
                         foreach (var spec in xrefMap.References)
                         {

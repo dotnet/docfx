@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 () => InternalXrefMapBuilder.Build(context));
 
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver, fallbackDocset, context));
+                () => ExternalXrefMapLoader.Load(config, fileResolver, fallbackDocset, context.Input));
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
