@@ -90,7 +90,9 @@ namespace TableSnippets
             // Add rowgroups...
             // <Snippet_Table_RowGroups_Add>
             Table tbl = new Table();
+            // <Snippet_inner>
             int rowGroupsToAdd = 4;
+            // </Snippet_inner>
             for (int x = 0; x < rowGroupsToAdd; x++)
                 tbl.RowGroups.Add(new TableRowGroup());
             // </Snippet_Table_RowGroups_Add>
@@ -216,6 +218,280 @@ namespace TableSnippets
         }
     }
 }";
+        static public string contentCharpRegion = @"using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace TagHelpersBuiltIn
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            #region snippet_AllowAreas
+            services.AddMvc()
+                    .AddRazorPagesOptions(options => options.AllowAreas = true);
+            #endregion
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(""/Error"");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
+
+            #region snippet_UseMvc
+            app.UseMvc(routes =>
+            {
+                // need route and attribute on controller: [Area(""Blogs"")]
+                routes.MapRoute(name: ""mvcAreaRoute"",
+                                template: ""{area:exists}/{controller=Home}/{action=Index}"");
+
+                // default route for non-areas
+#region inner
+                routes.MapRoute(
+                    name: ""default"",
+#endregion
+                    template: ""{controller=Home}/{action=Index}/{id?}"");
+            });
+            #endregion
+        }
+    }
+}";
+        static public string contentASPNet = @"@{
+    ViewData[""Title""] = ""Anchor Tag Helper"";
+}
+
+<table class=""table table-hover"">
+    <caption>Anchor Tag Helper attribute examples</caption>
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Markup</th>
+            <th>Result</th>
+        </tr>
+    </thead>
+<!-- <snippet_BigSnippet> -->
+    <tbody>
+        <tr>
+            <td>asp-action</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-controller=""""Speaker"""" asp-action=""""Evaluations"""">Speaker Evaluations</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspAction> -->
+                <a asp-controller=""Speaker""
+                   asp-action=""Evaluations"">Speaker Evaluations</a>
+                <!-- </snippet_AspAction> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-all-route-data</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-route=""""speakerevalscurrent"""" asp-all-route-data=""""parms"""">Speaker Evaluations</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspAllRouteData> -->
+                @{
+                var parms = new Dictionary<string, string>
+                            {
+                                { ""speakerId"", ""11"" },
+                                { ""currentYear"", ""true"" }
+                            };
+                }
+
+                <a asp-route=""speakerevalscurrent""
+                   asp-all-route-data=""parms"">Speaker Evaluations</a>
+                <!-- </snippet_AspAllRouteData> -->
+            </td>
+        </tr>
+        <tr>
+            <td rowspan=""2"">asp-area</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-area=""""Blogs"""" asp-controller=""""Home"""" asp-action=""""AboutBlog"""">About Blog</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspArea> -->
+                <a asp-area=""Blogs""
+                   asp-controller=""Home""
+                   asp-action=""AboutBlog"">About Blog</a>
+                <!-- </snippet_AspArea> -->
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-area=""""Sessions"""" asp-page=""""/Index"""">View Sessions</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspAreaRazorPages> -->
+                <a asp-area=""Sessions""
+                   asp-page=""/Index"">View Sessions</a>
+                <!-- </snippet_AspAreaRazorPages> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-controller</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-controller=""""Speaker"""" asp-action=""""Index"""">All Speakers</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspController> -->
+                <a asp-controller=""Speaker""
+                   asp-action=""Index"">All Speakers</a>
+                <!-- </snippet_AspController> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-fragment</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-controller=""""Speaker"""" asp-action=""""Evaluations"""" asp-fragment=""""SpeakerEvaluations"""">Speaker Evaluations</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspFragment> -->
+                <a asp-controller=""Speaker""
+                   asp-action=""Evaluations""
+                   asp-fragment=""SpeakerEvaluations"">Speaker Evaluations</a>
+                <!-- </snippet_AspFragment> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-host</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-protocol=""""https"""" asp-host=""""microsoft.com"""" asp-controller=""""Home"""" asp-action=""""About"""">About</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspHost> -->
+                <a asp-protocol=""https""
+                   asp-host=""microsoft.com""
+                   asp-controller=""Home""
+                   asp-action=""About"">About</a>
+                <!-- </snippet_AspHost> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-page <span class=""badge"">RP</span></td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-page=""""/Attendee"""">All Attendees</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspPage> -->
+                <a asp-page=""/Attendee"">All Attendees</a>
+                <!-- </snippet_AspPage> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-page-handler <span class=""badge"">RP</span></td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-page=""""/Attendee"""" asp-page-handler=""""Profile"""" asp-route-attendeeid=""""12"""">Attendee Profile</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspPageHandler> -->
+                <a asp-page=""/Attendee""
+                   asp-page-handler=""Profile""
+                   asp-route-attendeeid=""12"">Attendee Profile</a>
+                <!-- </snippet_AspPageHandler> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-protocol</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-protocol=""""https"""" asp-controller=""""Home"""" asp-action=""""About"""">About</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspProtocol> -->
+                <a asp-protocol=""https""
+                   asp-controller=""Home""
+                   asp-action=""About"">About</a>
+                <!-- </snippet_AspProtocol> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-route</td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-route=""""speakerevals"""">Speaker Evaluations</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspRoute> -->
+                <a asp-route=""speakerevals"">Speaker Evaluations</a>
+                <!-- </snippet_AspRoute> -->
+            </td>
+        </tr>
+        <tr>
+            <td>asp-route-<em>{value}</em></td>
+            <td>
+                <code>
+                    @Html.Raw(Html.Encode(@""<a asp-page=""""/Attendee"""" asp-route-attendeeid=""""10"""">View Attendee</a>""))
+                </code>
+            </td>
+            <td>
+                <!-- <snippet_AspPageAspRouteId> -->
+                <a asp-page=""/Attendee""
+                   asp-route-attendeeid=""10"">View Attendee</a>
+                <!-- </snippet_AspPageAspRouteId> -->
+            </td>
+        </tr>
+    </tbody>
+<!-- </snippet_BigSnippet> -->
+    <tfoot>
+        <tr>
+            <td colspan=""3"">
+                <span class=""badge"">RP</span> Supported in Razor Pages only
+            </td>
+        </tr>
+    </tfoot>
+</table>";
         static public string contentVB = @"''<Snippet1>
 Class ADSetupInformation
 
@@ -258,7 +534,23 @@ Class AppDomain1
         Console.WriteLine(""child domain: "" + domain.FriendlyName)
     End Sub
 End Class
-'</snippet2>";
+'</snippet2>
+
+'<snippet3>
+Imports System.Reflection
+
+Class AppDomain2
+    Public Shared Sub Main()
+'<snippet_Inner>
+        Console.WriteLine(""Creating new AppDomain."")
+        Dim domain As AppDomain = AppDomain.CreateDomain(""MyDomain"")
+'</snippet_Inner>
+        Console.WriteLine(""Host domain: "" + AppDomain.CurrentDomain.FriendlyName)
+        Console.WriteLine(""child domain: "" + domain.FriendlyName)
+    End Sub
+End Class
+'</snippet3>
+";
         static public string contentCPP = @"//<Snippet1>
 using namespace System;
 
@@ -381,12 +673,55 @@ int main()
     AppDomain4::Main();
 }
 // </snippet2>";
+        static public string contentSQL = @"-- <everything>
+--<students>
+SELECT * FROM Students
+WHERE Grade = 12
+AND Major = 'Math'
+--</students>
 
+--<teachers>
+SELECT * FROM Teachers
+WHERE Grade = 12
+AND Class = 'Math'
+--</teachers>
+--</everything>";
+        static public string contentPython = @"#<everything>
+#<first>
+from flask import Flask
+app = Flask(__name__)
+#</first>
 
-        //private static MarkupResult SimpleMarkup(string source)
-        //{
-        //    return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-        //}
+#<second>
+@app.route(""/"")
+def hello():
+    return ""Hello World!""
+#</second>
+#</everything>
+";
+        static public string contentBatch = @"REM <snippet>
+:Label1
+	:Label2
+:: Comment line 3
+REM </snippet>
+	:: Comment line 4
+IF EXIST C:\AUTOEXEC.BAT REM AUTOEXEC.BAT exists";
+        static public string contentErlang = @"-module(hello_world).
+-compile(export_all).
+
+% <snippet>
+hello() ->
+    io:format(""hello world~n"").
+% </snippet>";
+        static public string contentLisp = @";<everything>
+USER(64): (member 'b '(perhaps today is a good day to die)) ; test fails
+NIL
+;<inner>
+USER(65): (member 'a '(perhaps today is a good day to die)) ; returns non-NIL
+'(a good day to die)
+; </inner>
+;</everything>";
+
 
         [Theory]
         [InlineData(@":::code source=""source.cs"" range=""9"" language=""csharp"":::", @"<pre>
@@ -439,6 +774,8 @@ using System.Windows;
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">using System;
 using System.Windows;
     ...
+           TableCell cellx = new TableCell(parx);
+           // &lt;/Snippet_TableCell_Const1&gt;
        }
    }
 }
@@ -592,6 +929,250 @@ Application base of MyDomain:
  */
 </code></pre>
 ")]
+        [InlineData(@":::code source=""source2.cs"" id=""snippet_UseMvc"":::
+", @"<pre>
+<code class=""lang-csharp"">app.UseMvc(routes =&gt;
+{
+    // need route and attribute on controller: [Area(&quot;Blogs&quot;)]
+    routes.MapRoute(name: &quot;mvcAreaRoute&quot;,
+                    template: &quot;{area:exists}/{controller=Home}/{action=Index}&quot;);
+
+    // default route for non-areas
+    routes.MapRoute(
+        name: &quot;default&quot;,
+        template: &quot;{controller=Home}/{action=Index}/{id?}&quot;);
+});
+</code></pre>")]
+        [InlineData(@":::code source=""source2.cs"" id=""snippet_AllowAreas"":::
+", @"<pre>
+<code class=""lang-csharp"">services.AddMvc()
+        .AddRazorPagesOptions(options =&gt; options.AllowAreas = true);
+</code></pre>
+")]
+        [InlineData(@":::code source=""source.vb"" id=""snippet3"":::
+", @"<pre>
+<code class=""lang-vb"">Imports System.Reflection
+
+Class AppDomain2
+    Public Shared Sub Main()
+        Console.WriteLine(&quot;Creating new AppDomain.&quot;)
+        Dim domain As AppDomain = AppDomain.CreateDomain(&quot;MyDomain&quot;)
+        Console.WriteLine(&quot;Host domain: &quot; + AppDomain.CurrentDomain.FriendlyName)
+        Console.WriteLine(&quot;child domain: &quot; + domain.FriendlyName)
+    End Sub
+End Class
+</code></pre>
+")]
+        [InlineData(@":::code source=""asp.cshtml"" id=""snippet_BigSnippet"":::
+", @"<pre>
+<code class=""lang-cshtml"">&lt;tbody&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-action&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-controller=&quot;Speaker&quot;
+              asp-action=&quot;Evaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-all-route-data&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevalscurrent&quot;&quot; asp-all-route-data=&quot;&quot;parms&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           @{
+           var parms = new Dictionary&lt;string, string&gt;
+                       {
+                           { &quot;speakerId&quot;, &quot;11&quot; },
+                           { &quot;currentYear&quot;, &quot;true&quot; }
+                       };
+           }
+
+           &lt;a asp-route=&quot;speakerevalscurrent&quot;
+              asp-all-route-data=&quot;parms&quot;&gt;Speaker Evaluations&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td rowspan=&quot;2&quot;&gt;asp-area&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Blogs&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;AboutBlog&quot;&quot;&gt;About Blog&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-area=&quot;Blogs&quot;
+              asp-controller=&quot;Home&quot;
+              asp-action=&quot;AboutBlog&quot;&gt;About Blog&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Sessions&quot;&quot; asp-page=&quot;&quot;/Index&quot;&quot;&gt;View Sessions&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-area=&quot;Sessions&quot;
+              asp-page=&quot;/Index&quot;&gt;View Sessions&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-controller&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Index&quot;&quot;&gt;All Speakers&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-controller=&quot;Speaker&quot;
+              asp-action=&quot;Index&quot;&gt;All Speakers&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-fragment&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot; asp-fragment=&quot;&quot;SpeakerEvaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-controller=&quot;Speaker&quot;
+              asp-action=&quot;Evaluations&quot;
+              asp-fragment=&quot;SpeakerEvaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-host&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-host=&quot;&quot;microsoft.com&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-protocol=&quot;https&quot;
+              asp-host=&quot;microsoft.com&quot;
+              asp-controller=&quot;Home&quot;
+              asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-page &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot;&gt;All Attendees&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-page=&quot;/Attendee&quot;&gt;All Attendees&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-page-handler &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-page-handler=&quot;&quot;Profile&quot;&quot; asp-route-attendeeid=&quot;&quot;12&quot;&quot;&gt;Attendee Profile&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-page=&quot;/Attendee&quot;
+              asp-page-handler=&quot;Profile&quot;
+              asp-route-attendeeid=&quot;12&quot;&gt;Attendee Profile&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-protocol&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-protocol=&quot;https&quot;
+              asp-controller=&quot;Home&quot;
+              asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-route&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevals&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-route=&quot;speakerevals&quot;&gt;Speaker Evaluations&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+       &lt;td&gt;asp-route-&lt;em&gt;{value}&lt;/em&gt;&lt;/td&gt;
+       &lt;td&gt;
+           &lt;code&gt;
+               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-route-attendeeid=&quot;&quot;10&quot;&quot;&gt;View Attendee&lt;/a&gt;&quot;))
+           &lt;/code&gt;
+       &lt;/td&gt;
+       &lt;td&gt;
+           &lt;a asp-page=&quot;/Attendee&quot;
+              asp-route-attendeeid=&quot;10&quot;&gt;View Attendee&lt;/a&gt;
+       &lt;/td&gt;
+   &lt;/tr&gt;
+&lt;/tbody&gt;
+</code></pre>
+")]
+        [InlineData(@":::code source=""source.sql"" id=""teachers"":::
+", @"<pre>
+<code class=""lang-sql"">SELECT * FROM Teachers
+WHERE Grade = 12
+AND Class = &#39;Math&#39;
+</code></pre>
+")]
+        [InlineData(@":::code source=""source.sql"" id=""everything"":::
+", @"<pre>
+<code class=""lang-sql"">SELECT * FROM Students
+WHERE Grade = 12
+AND Major = &#39;Math&#39;
+
+SELECT * FROM Teachers
+WHERE Grade = 12
+AND Class = &#39;Math&#39;
+</code></pre>
+")]
+        [InlineData(@":::code source=""source.py"" id=""everything"":::
+", @"<pre>
+<code class=""lang-python"">from flask import Flask
+app = Flask(__name__)
+
+@app.route(&quot;/&quot;)
+def hello():
+    return &quot;Hello World!&quot;
+</code></pre>
+")]
+        [InlineData(@":::code source=""source.bat"" id=""snippet"":::
+", @"<pre>
+<code class=""lang-batchfile"">:Label1
+:Label2
+:: Comment line 3
+</code></pre>
+")]
+        [InlineData(@":::code source=""source.erl"" id=""snippet"":::
+", @"<pre>
+<code class=""lang-erlang"">hello() -&gt;
+    io:format(&quot;hello world~n&quot;).
+</code></pre>
+")]
+        [InlineData(@":::code source=""source.lsp"" id=""everything"":::
+", @"<pre>
+<code class=""lang-lisp"">USER(64): (member &#39;b &#39;(perhaps today is a good day to die)) ; test fails
+NIL
+USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns non-NIL
+&#39;(a good day to die)
+</code></pre>
+")]
         public void CodeTestBlockGeneral(string source, string expected)
         {
             var filename = string.Empty;
@@ -602,6 +1183,16 @@ Application base of MyDomain:
                 filename = "source.cs";
                 content = contentCSharp;
             }
+            else if (source.Contains("source2.cs"))
+            {
+                filename = "source2.cs";
+                content = contentCharpRegion;
+            }
+            else if (source.Contains("asp.cshtml"))
+            {
+                filename = "asp.cshtml";
+                content = contentASPNet;
+            }
             else if (source.Contains("source.vb"))
             {
                 filename = "source.vb";
@@ -611,6 +1202,31 @@ Application base of MyDomain:
             {
                 filename = "source.cpp";
                 content = contentCPP;
+            }
+            else if (source.Contains("source.sql"))
+            {
+                filename = "source.sql";
+                content = contentSQL;
+            }
+            else if (source.Contains("source.py"))
+            {
+                filename = "source.py";
+                content = contentPython;
+            }
+            else if (source.Contains("source.bat"))
+            {
+                filename = "source.bat";
+                content = contentBatch;
+            }
+            else if (source.Contains("source.erl"))
+            {
+                filename = "source.erl";
+                content = contentErlang;
+            }
+            else if (source.Contains("source.lsp"))
+            {
+                filename = "source.lsp";
+                content = contentLisp;
             }
 
             // act
