@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, obj);
                 if (string.IsNullOrEmpty(code))
                 {
-                    logError($"The code snippet \"{source}\" could not be found.");
+                    logError($"The code snippet \"{currentSource}\" could not be found.");
                     return false;
                 }
                 var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
@@ -185,19 +185,25 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             foreach (var section in sections)
             {
                 var codeLines = section.Split('\n');
-                var length = codeLines.Where(oo => !string.IsNullOrWhiteSpace(oo))
-                                      .Min(oo =>
+                var length = 0;
+
+                if (codeLines.Any(oo => !string.IsNullOrWhiteSpace(oo)))
                 {
-                    var matches = indentRegex.Matches(oo);
-                    if (matches.Count > 0)
+                    length = codeLines.Where(oo => !string.IsNullOrWhiteSpace(oo))
+                                          .Min(oo =>
                     {
-                        var match = matches[0];
-                        return match.Value.Length;
-                    } else
-                    {
-                        return 0;
-                    }
-                });
+                        var matches = indentRegex.Matches(oo);
+                        if (matches.Count > 0)
+                        {
+                            var match = matches[0];
+                            return match.Value.Length;
+                        } else
+                        {
+                            return 0;
+                        }
+                    });
+                }
+
                 var normalizedLines = (length == 0 ? codeLines : codeLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, length), string.Empty))).ToArray();
                 dedentedSections.Add(string.Join("\n", normalizedLines));
             }
@@ -264,7 +270,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var beg = 0;
                     if (int.TryParse(codeRange, out beg))
                     {
-                        codeSections.Add(codeLines[beg--]);
+                        codeSections.Add(codeLines[beg-1]);
                     }
                     else
                     {

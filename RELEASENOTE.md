@@ -1,9 +1,16 @@
-Version Notes (Current Version: v2.49)
+Version Notes (Current Version: v2.50)
 =======================================
 
-v2.49(Pre-release)
+v2.50(Pre-release)
 -----------
-1. Add `cref` attribute support (#1306) for inheritdoc and fix copying from templated sources (#1516).
+
+v2.49
+-----------
+1. Add `cref` attribute support (#1306) for inheritdoc and fix copying from templated sources (#1516). Thanks @amirebrahimi.
+2. Bug fix:
+    1. Fix TOC filter returning unrelated results (#5401). Thanks @zwfars
+    2. Fix duplicate error when TOC is invalid (#5464).
+    3. Fix several code extension bugs (#5510 #5527).
 
 v2.48.1
 -----------

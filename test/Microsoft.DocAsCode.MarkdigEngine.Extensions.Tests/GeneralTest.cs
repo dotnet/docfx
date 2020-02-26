@@ -542,8 +542,7 @@ baz</li>
                 {"includes/blockIncludeFile.md", blockIncludeFile },
                 {"includes/testtoken.md", testtoken },
                 {"code/code.cs", code }
-            },
-            errors: new[] { "code-snippet-deprecated", "code-snippet-deprecated", "code-snippet-deprecated", "code-snippet-deprecated" });
+            });
         }
     }
 }

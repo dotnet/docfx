@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException("Base directory can not be null");
             }
-            var indexData = new Dictionary<string, SearchIndexItem>();
+            var indexData = new SortedDictionary<string, SearchIndexItem>();
             var indexDataFilePath = Path.Combine(outputFolder, IndexFileName);
             var htmlFiles = (from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                              from output in item.OutputFiles
