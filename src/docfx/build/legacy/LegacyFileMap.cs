@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 {
                     host = $"https://{context.Config.HostName}",
                     locale = context.LocalizationProvider.Locale,
-                    base_path = context.Config.BasePath.OutputValue,
+                    base_path = context.Config.BasePath.ValueWithLeadingSlash,
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,

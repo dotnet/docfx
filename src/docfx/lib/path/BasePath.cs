@@ -21,11 +21,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets or a path starting with `/` for output.
         /// </summary>
-        public string OutputValue => $"/{_value}";
+        public string ValueWithLeadingSlash => $"/{_value}";
 
         public BasePath(string value)
         {
-            _value = value.Trim('/').Replace('\\', '/');
+            _value = value.Trim().Trim('/').Replace('\\', '/');
         }
 
         public override string ToString() => Value;
