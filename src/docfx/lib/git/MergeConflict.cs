@@ -3,6 +3,8 @@
 
 using System;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class MergeConflict
@@ -15,7 +17,7 @@ namespace Microsoft.Docs.Build
             OutgoingText,
         }
 
-        public static Error CheckMergeConflictMarker(string content, FilePath file)
+        public static Error? CheckMergeConflictMarker(string content, FilePath file)
         {
             var state = State.Text;
             var nextCharIsNewLine = true;

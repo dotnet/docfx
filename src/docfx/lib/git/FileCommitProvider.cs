@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 using static Microsoft.Docs.Build.LibGit2;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal sealed class FileCommitProvider : IDisposable
@@ -27,8 +29,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
 
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
-        private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>> _trees
-                   = new ConcurrentDictionary<long, Dictionary<int, git_oid>>();
+        private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>?> _trees
+                   = new ConcurrentDictionary<long, Dictionary<int, git_oid>?>();
 
         private int _nextStringId;
         private IntPtr _repo;
@@ -45,7 +47,7 @@ namespace Microsoft.Docs.Build
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
         }
 
-        public GitCommit[] GetCommitHistory(string file, string committish = null)
+        public GitCommit[] GetCommitHistory(string file, string? committish = null)
         {
             Debug.Assert(!file.Contains('\\'));
 
@@ -57,7 +59,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private GitCommit[] GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string committish = null)
+        private GitCommit[] GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string? committish = null)
         {
             const int MaxParentBlob = 32;
 
@@ -184,7 +186,7 @@ namespace Microsoft.Docs.Build
             Dispose();
         }
 
-        private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string committish = null)
+        private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string? committish = null)
         {
             if (string.IsNullOrEmpty(committish))
             {
@@ -235,19 +237,13 @@ namespace Microsoft.Docs.Build
                     parents[i] = *git_commit_parent_id(commit, i);
                 }
 
-                var item = new Commit
-                {
-                    Sha = commitId,
-                    ParentShas = parents,
-                    Tree = *git_commit_tree_id(commit),
-                    GitCommit = new GitCommit
-                    {
-                        AuthorName = Marshal.PtrToStringUTF8(author->name),
-                        AuthorEmail = Marshal.PtrToStringUTF8(author->email),
-                        Sha = commitId.ToString(),
-                        Time = new git_time { time = git_commit_time(commit), offset = git_commit_time_offset(commit) }.ToDateTimeOffset(),
-                    },
-                };
+                var gitCommit = new GitCommit(
+                    Marshal.PtrToStringUTF8(author->name) ?? "",
+                    Marshal.PtrToStringUTF8(author->email) ?? "",
+                    commitId.ToString(),
+                    new git_time { time = git_commit_time(commit), offset = git_commit_time_offset(commit) }.ToDateTimeOffset());
+
+                var item = new Commit(commitId, parents, *git_commit_tree_id(commit), gitCommit);
                 commitsBySha.Add(commitId.a, item);
                 commits.Add(item);
                 git_object_free(commit);
@@ -257,12 +253,11 @@ namespace Microsoft.Docs.Build
             // build parent indices
             Parallel.ForEach(commits, commit =>
             {
-                commit.Parents = new Commit[commit.ParentShas.Length];
                 for (var i = 0; i < commit.ParentShas.Length; i++)
                 {
                     commit.Parents[i] = commitsBySha[commit.ParentShas[i].a];
                 }
-                commit.ParentShas = null;
+                commit.ParentShas = Array.Empty<git_oid>();
             });
 
             if (committish.Equals(_repository.Commit))
@@ -289,7 +284,7 @@ namespace Microsoft.Docs.Build
             return blob.a;
         }
 
-        private unsafe Dictionary<int, git_oid> LoadTree(git_oid treeId)
+        private unsafe Dictionary<int, git_oid>? LoadTree(git_oid treeId)
         {
             if (git_object_lookup(out var tree, _repo, &treeId, 2 /* GIT_OBJ_TREE */) != 0)
             {
@@ -302,7 +297,7 @@ namespace Microsoft.Docs.Build
             for (var p = IntPtr.Zero; p != n; p = p + 1)
             {
                 var entry = git_tree_entry_byindex(tree, p);
-                var name = Marshal.PtrToStringUTF8(git_tree_entry_name(entry));
+                var name = Marshal.PtrToStringUTF8(git_tree_entry_name(entry)) ?? "";
 
                 blobs[GetStringId(name)] = *git_tree_entry_id(entry);
             }
@@ -319,15 +314,24 @@ namespace Microsoft.Docs.Build
 
         private class Commit
         {
-            public git_oid Sha;
+            public git_oid Sha { get; }
 
-            public git_oid Tree;
+            public git_oid Tree { get; }
 
-            public git_oid[] ParentShas;
+            public GitCommit GitCommit { get; }
 
-            public Commit[] Parents;
+            public Commit[] Parents { get; }
 
-            public GitCommit GitCommit;
+            public git_oid[] ParentShas { get; set; }
+
+            public Commit(git_oid sha, git_oid[] parentShas, git_oid tree, GitCommit gitCommit)
+            {
+                Sha = sha;
+                ParentShas = parentShas;
+                Parents = new Commit[parentShas.Length];
+                Tree = tree;
+                GitCommit = gitCommit;
+            }
         }
     }
 }

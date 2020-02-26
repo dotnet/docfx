@@ -340,8 +340,7 @@ outputs:
 # Generate _op_pdfUrlPrefixTemplate when pdf is true
 inputs:
   docfx.yml: |
-    output:
-      pdf: true
+    outputPdf: true
   a.md:
 outputs:
   a.json: |

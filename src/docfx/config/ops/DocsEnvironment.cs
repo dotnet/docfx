@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-
 #nullable enable
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class HttpConfig
+    public enum DocsEnvironment
     {
-        public Dictionary<string, string> Headers { get; private set; } = new Dictionary<string, string>();
+        Prod,
+        PPE,
+        Internal,
+        Perf,
     }
 }

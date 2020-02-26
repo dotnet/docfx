@@ -35,13 +35,13 @@ namespace Microsoft.Docs.Build
         public GitHubAccessor(Config config)
         {
             _userCache = new JsonDiskCache<Error, string, GitHubUser>(
-                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GitHub.UserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase);
+                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GithubUserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase, ResolveGitHubUserConflict);
 
-            if (!string.IsNullOrEmpty(config.GitHub.AuthToken))
+            if (!string.IsNullOrEmpty(config.GithubToken))
             {
                 _httpClient = new HttpClient();
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GitHub.AuthToken);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GithubToken);
             }
         }
 
@@ -238,6 +238,18 @@ namespace Microsoft.Docs.Build
             {
                 _syncRoot.Release();
             }
+        }
+
+        private static GitHubUser ResolveGitHubUserConflict(GitHubUser a, GitHubUser b)
+        {
+            // Pick the user with a valid Id
+            if (a.Id is null)
+                return b;
+            if (b.Id is null)
+                return a;
+
+            // otherwise pick a random one
+            return a;
         }
     }
 }

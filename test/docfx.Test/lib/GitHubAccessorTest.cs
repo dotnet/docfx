@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     public class GitHubAccessorTest
     {
         private readonly static string s_token = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
-        private readonly static Config s_config = JsonUtility.Deserialize<Config>($@"{{'github': {{ 'authToken': '{s_token}' }} }}".Replace('\'', '\"'), null);
+        private readonly static Config s_config = JsonUtility.Deserialize<Config>($@"{{'githubToken': '{s_token}'}}".Replace('\'', '\"'), null);
         private readonly static GitHubAccessor s_github = new GitHubAccessor(s_config);
 
         [Theory]

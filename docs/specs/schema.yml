@@ -429,3 +429,32 @@ outputs:
   b.json:
   c.json: |
     {"metadata": {"href": "b"}}
+---
+# metadata need to be transformed for SDP
+inputs:
+  docfx.yml: |
+    outputJson: false
+  a.yml: |
+    #YamlMime:TestPage
+    key: value
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "required": ["authors"],
+      "properties": {
+        "authors": {
+          "type": "array"
+        }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.js: |
+    exports.transform = function (model) {
+      // should throw here
+      var authorCount = model.authors.length;
+      return model;
+    }
+outputs:
+  .errors.log: |
+    ["error","missing-attribute","Missing required attribute: 'authors'","a.yml",2,1]
+  .publish.json: |
+    {"files":[{"url":"/a/","path":"a/index.html","source_path":"a.yml","has_error":true}]}

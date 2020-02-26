@@ -23,15 +23,16 @@ namespace Microsoft.Docs.Build
 
         private readonly string _cachePath;
         private readonly double _expirationInSeconds;
-
+        private readonly Func<TValue, TValue, TValue>? _resolveConflict;
         private readonly ConcurrentDictionary<TKey, TValue> _cache;
         private readonly ConcurrentDictionary<TKey, Lazy<Task<TError?>>> _backgroundUpdates;
 
         private volatile bool _needUpdate;
 
-        public JsonDiskCache(string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null)
+        public JsonDiskCache(string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null, Func<TValue, TValue, TValue>? resolveConflict = null)
         {
             comparer = comparer ?? EqualityComparer<TKey>.Default;
+            _resolveConflict = resolveConflict;
             _cache = new ConcurrentDictionary<TKey, TValue>(comparer);
             _backgroundUpdates = new ConcurrentDictionary<TKey, Lazy<Task<TError?>>>(comparer);
 
@@ -44,10 +45,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var item in cacheFile.Items)
                 {
-                    foreach (var cacheKey in item.GetKeys())
-                    {
-                        _cache.TryAdd(cacheKey, item);
-                    }
+                    UpdateCache(item);
                 }
             }
         }
@@ -120,17 +118,23 @@ namespace Microsoft.Docs.Build
                         if (value != null)
                         {
                             value.UpdatedAt = GetRandomUpdatedAt();
-
-                            foreach (var cacheKey in value.GetKeys())
-                            {
-                                _cache[cacheKey] = value;
-                            }
+                            UpdateCache(value);
                             _needUpdate = true;
                         }
                     }
                 }
                 return error;
             });
+        }
+
+        private void UpdateCache(TValue value)
+        {
+            foreach (var cacheKey in value.GetKeys())
+            {
+                _cache[cacheKey] = _resolveConflict != null && _cache.TryGetValue(cacheKey, out var existingValue) && !HasExpired(existingValue)
+                   ? _resolveConflict(value, existingValue)
+                   : value;
+            }
         }
 
         private static DateTime GetRandomUpdatedAt()

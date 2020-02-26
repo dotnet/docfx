@@ -45,18 +45,35 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetFallbackRepository(Repository repository, out string fallbackRemote, out string fallbackBranch, out string locale)
+        public static bool TryGetFallbackRepository(string remote, string branch, out string fallbackRemote, out string fallbackBranch, out string locale)
         {
             fallbackRemote = null;
             fallbackBranch = null;
             locale = null;
 
-            if (repository is null || string.IsNullOrEmpty(repository.Remote))
+            if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
             {
                 return false;
             }
 
-            return TryGetFallbackRepository(repository.Remote, repository.Branch, out fallbackRemote, out fallbackBranch, out locale);
+            if (TryRemoveLocale(remote, out fallbackRemote, out locale))
+            {
+                fallbackBranch = branch;
+                if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
+                {
+                    fallbackBranch = branchWithoutLocale;
+                    locale = branchLocale;
+                }
+
+                if (TryGetContributionBranch(fallbackBranch, out var contributionBranch))
+                {
+                    fallbackBranch = contributionBranch;
+                }
+
+                return true;
+            }
+
+            return locale != null;
         }
 
         public static string GetLocale(Repository repository)
@@ -127,37 +144,6 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
-        }
-
-        private static bool TryGetFallbackRepository(string remote, string branch, out string fallbackRemote, out string fallbackBranch, out string locale)
-        {
-            fallbackRemote = null;
-            fallbackBranch = null;
-            locale = null;
-
-            if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
-            {
-                return false;
-            }
-
-            if (TryRemoveLocale(remote, out fallbackRemote, out locale))
-            {
-                fallbackBranch = branch;
-                if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
-                {
-                    fallbackBranch = branchWithoutLocale;
-                    locale = branchLocale;
-                }
-
-                if (TryGetContributionBranch(fallbackBranch, out var contributionBranch))
-                {
-                    fallbackBranch = contributionBranch;
-                }
-
-                return true;
-            }
-
-            return locale != null;
         }
 
         private static string GetBilingualBranch(string branch)

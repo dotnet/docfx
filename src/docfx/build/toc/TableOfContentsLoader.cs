@@ -63,31 +63,29 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(Document file, string content = null)
+        private (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(FilePath file, string content = null)
         {
-            var filePath = file.FilePath;
-
-            if (filePath.EndsWith(".yml"))
+            if (file.EndsWith(".yml"))
             {
-                var (errors, tocToken) = content is null ? _input.ReadYaml(file.FilePath) : YamlUtility.Parse(content, file.FilePath);
+                var (errors, tocToken) = content is null ? _input.ReadYaml(file) : YamlUtility.Parse(content, file);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
-            else if (filePath.EndsWith(".json"))
+            else if (file.EndsWith(".json"))
             {
-                var (errors, tocToken) = content is null ? _input.ReadJson(file.FilePath) : JsonUtility.Parse(content, file.FilePath);
+                var (errors, tocToken) = content is null ? _input.ReadJson(file) : JsonUtility.Parse(content, file);
                 var (loadErrors, toc) = LoadTocModel(tocToken);
                 errors.AddRange(loadErrors);
                 return (errors, toc);
             }
-            else if (filePath.EndsWith(".md"))
+            else if (file.EndsWith(".md"))
             {
-                content = content ?? _input.ReadString(file.FilePath);
-                return MarkdownTocMarkup.Parse(_markdownEngine, content, file);
+                content = content ?? _input.ReadString(file);
+                return TableOfContentsMarkup.Parse(_markdownEngine, content, file);
             }
 
-            throw new NotSupportedException($"{filePath} is an unknown TOC file");
+            throw new NotSupportedException($"'{file}' is an unknown TOC file");
         }
 
         private static (List<Error>, TableOfContentsModel) LoadTocModel(JToken tocToken)
@@ -124,7 +122,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.CircularReference(dependencyChain, file).ToException();
             }
 
-            var (errors, model) = LoadTocModel(file, content);
+            var (errors, model) = LoadTocModel(file.FilePath, content);
 
             if (model.Items.Count > 0)
             {

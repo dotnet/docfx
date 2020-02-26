@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                 },
                 new Moniker
                 {
-                    MonikerName = "dotnet-1.0",
+                    MonikerName = "DOTNET-1.0",
                     ProductName = ".NET Framework",
                 },
                 new Moniker
@@ -45,6 +45,17 @@ namespace Microsoft.Docs.Build
                     MonikerName = "netcore-2.0",
                     ProductName = ".NET Core",
                     Order = 2
+                },
+                new Moniker
+                {
+                    MonikerName = "azuresqldb-current",
+                    ProductName = "sql",
+                    Order = 2
+                },
+                new Moniker
+                {
+                    MonikerName = "azure-sqldw-latest",
+                    ProductName = "sql"
                 },
             }
         };
@@ -73,6 +84,9 @@ namespace Microsoft.Docs.Build
             "netcore-1.0 || dotnet-3.0",
              "netcore-1.0 dotnet-3.0")]
         [InlineData(
+            "Netcore-1.0",
+             "netcore-1.0")]
+        [InlineData(
             "dotnet-3.0 || netcore-1.0",
              "netcore-1.0 dotnet-3.0")]
         [InlineData(
@@ -93,6 +107,9 @@ namespace Microsoft.Docs.Build
         [InlineData(
             ">= netcore-2.0 > dotnet-2.0",
             "")]
+        [InlineData(
+            "azuresqldb-current || azure-sqldw-latest",
+            "azure-sqldw-latest azuresqldb-current")]
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
             var result = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString)).ToList();
