@@ -1246,3 +1246,52 @@ outputs:
           }
        ]
     }
+---
+# xrefmap fallback
+repos:
+  https://docs.com/xrefmapfallback.zh-cn#master:
+    - files:
+        docfx.yml: |
+          xref: 1.xrefmap.json
+        docs/a.md: Link to @System.String?displayProperty=fullName
+  https://docs.com/xrefmapfallback#master:
+    - files:
+        docfx.yml: |
+          xref: 1.xrefmap.json
+        1.xrefmap.json: |
+          {
+            "references":[{
+                "uid": "System.String",
+                "name": "String",
+                "fullName": "System.String",
+                "href": "https://docs.microsoft.com/dotnet/api/system.string",
+                "nameWithType": "System.String"
+            }]
+          }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a></p>\n"}
+---
+# xrefmap not found with fallback docset
+repos:
+  https://docs.com/xrefmapnotfound.zh-cn#master:
+    - files:
+        docfx.yml: |
+          xref: 1.xrefmap.json
+        docs/a.md: Link to @System.String?displayProperty=fullName
+  https://docs.com/xrefmapnotfound#master:
+    - files:
+        docfx.yml: |
+          xref: 1.xrefmap.json
+outputs:
+  .errors.log: |
+    ["error","file-not-found","Invalid file link: '1.xrefmap.json'.","docfx.yml",1,7]
+---
+# xrefmap not found without fallback docset
+inputs:
+  docfx.yml: |
+    xref: 1.xrefmap.json
+  docs/a.md: Link to @System.String?displayProperty=fullName
+outputs:
+  .errors.log: |
+    ["error","file-not-found","Invalid file link: '1.xrefmap.json'.","docfx.yml",1,7]

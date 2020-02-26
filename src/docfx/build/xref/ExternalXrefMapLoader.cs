@@ -14,11 +14,38 @@ namespace Microsoft.Docs.Build
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, Docset fallbackDocset, Context context)
         {
             var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
             foreach (var url in config.Xref)
+            {
+                try
+                {
+                    LoadXref(url);
+                }
+                catch (DocfxException ex) when (ex.Error.Code == "file-not-found")
+                {
+                    FilePath path;
+                    if (fallbackDocset != null && context.Input.Exists(path = new FilePath(url, FileOrigin.Fallback)))
+                    {
+                        using var stream = context.Input.ReadStream(path);
+                        var xrefMap = JsonUtility.Deserialize<XrefMapModel>(new StreamReader(stream), path);
+                        foreach (var spec in xrefMap.References)
+                        {
+                            result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                        }
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return result;
+
+            void LoadXref(SourceInfo<string> url)
             {
                 using var stream = fileResolver.ReadStream(url);
                 var path = new FilePath(url);
@@ -52,8 +79,6 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-
-            return result;
         }
 
         public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath)

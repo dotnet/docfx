@@ -17,20 +17,23 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly string _xrefHostName;
+        private readonly Docset _fallbackDocset;
 
         public XrefResolver(
             Context context,
             Config config,
             FileResolver fileResolver,
             DependencyMapBuilder dependencyMapBuilder,
-            FileLinkMapBuilder fileLinkMapBuilder)
+            FileLinkMapBuilder fileLinkMapBuilder,
+            Docset fallbackDocset)
         {
             _config = config;
+            _fallbackDocset = fallbackDocset;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
                 () => InternalXrefMapBuilder.Build(context));
 
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver));
+                () => ExternalXrefMapLoader.Load(config, fileResolver, fallbackDocset, context));
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
