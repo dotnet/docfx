@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             if (context.Config.OutputPdf)
             {
                 model.Metadata.PdfAbsolutePath = "/" +
-                    UrlUtility.Combine(context.Config.BasePath.RelativePath, "opbuildpdf", monikerGroup ?? string.Empty, LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
+                    UrlUtility.Combine(context.Config.BasePath, "opbuildpdf", monikerGroup ?? string.Empty, LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
             // TODO: Add experimental and experiment_id to publish item
