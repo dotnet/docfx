@@ -46,7 +46,7 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 #### Prerequisites
 
-1. [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
+1. [Visual Studio 2019](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
 2. [Node.js](https://nodejs.org)
 
 #### Steps
