@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
             DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
-            DocsEnvironment.Perf => "https://op-build-internal.azurewebsites.net",
+            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
             _ => throw new NotSupportedException(),
         };
 
