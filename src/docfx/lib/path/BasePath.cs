@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public BasePath(string value)
         {
-            _value = value.Trim().Trim('/').Replace('\\', '/');
+            _value = value.Replace('\\', '/').TrimStart('/');
         }
 
         public override string ToString() => Value;
