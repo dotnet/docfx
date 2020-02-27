@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
@@ -17,9 +19,9 @@ namespace Microsoft.Docs.Build
 
         // For v2 backward compatibility
         [JsonProperty("_op_documentIdPathDepotMapping")]
-        public Dictionary<PathString, DocumentIdConfig> DocumentIdDepotMapping { get; private set; }
+        public Dictionary<PathString, DocumentIdConfig>? DocumentIdDepotMapping { get; private set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; private set; } = new JObject();
+        public JObject ExtensionData { get; } = new JObject();
     }
 }

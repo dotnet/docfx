@@ -1,7 +1,7 @@
 # Build with --legacy
 legacy: true
 repos:
-  https://docs.com/legacy:
+  https://github.com/legacy/test:
   - author: Charlie
     email: charlie@contoso.com
     files:
@@ -67,11 +67,15 @@ outputs:
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
         <meta name=\"author\" content=\"charlie\" />
+        <meta name=\"content_git_url\" content=\"https://github.com/legacy/test/blob/master/c.md\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/ed16b07c7e69f6ef393855bb424635c0d41a67f2/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
+        <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/master/c.md\" />
+        <meta name=\"original_content_git_url_template\" content=\"{repo}/blob/{branch}/c.md\" />
         <meta name=\"rawTitle\" content=\"\" />
         <meta name=\"search.ms_docsetname\" content=\"\" />
         <meta name=\"search.ms_product\" content=\"\" />

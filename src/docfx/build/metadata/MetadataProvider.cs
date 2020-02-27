@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class MetadataProvider
@@ -38,8 +40,7 @@ namespace Microsoft.Docs.Build
 
             MetadataSchemas = Array.ConvertAll(
                 config.MetadataSchema,
-                schema => JsonUtility.Deserialize<JsonSchema>(
-                    fileResolver.ReadString(schema), schema.Source?.File));
+                schema => JsonUtility.Deserialize<JsonSchema>(fileResolver.ReadString(schema), schema.Source?.File));
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
@@ -53,9 +54,12 @@ namespace Microsoft.Docs.Build
 
             HtmlMetaHidden = MetadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
 
-            HtmlMetaNames = MetadataSchemas.SelectMany(
-                schema => schema.Properties.Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName)))
-                    .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
+            HtmlMetaNames = new Dictionary<string, string>(
+                from schema in MetadataSchemas
+                from property in schema.Properties
+                let htmlMetaName = property.Value.HtmlMetaName
+                where !string.IsNullOrEmpty(htmlMetaName)
+                select new KeyValuePair<string, string>(property.Key, htmlMetaName));
 
             _hasMonikerRangeFileMetadata = config.FileMetadata.ContainsKey("monikerRange");
 
@@ -119,6 +123,10 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in result)
             {
+                if (value is null)
+                {
+                    continue;
+                }
                 if (_reservedMetadata.Contains(key))
                 {
                     errors.Add(Errors.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
