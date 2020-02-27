@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                     return File.OpenRead(localFilePath);
                 }
                 else if (_fallbackDocset != null && _input != null
-                    && _input.Exists(fallbackFilePath = new FilePath(Path.Combine(_fallbackDocset.DocsetPath, file))) == true)
+                    && _input.Exists(fallbackFilePath = new FilePath(Path.Combine(_fallbackDocset.DocsetPath, file))))
                 {
                     return _input.ReadStream(fallbackFilePath);
                 }
