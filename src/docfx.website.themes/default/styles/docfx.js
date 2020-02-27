@@ -1172,7 +1172,7 @@ $(function () {
 
     $(window).on('hashchange', scrollToCurrent);
 
-    $(window).load(function () {
+    $(window).on('load', function () {
         // scroll to the anchor if present, offset by the header
         scrollToCurrent();
     });
