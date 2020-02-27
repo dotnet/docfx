@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                     var (error, githubUser) = await _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     var contributor = githubUser?.ToContributor();
-                    if (contributor != null && !excludes.Contains(contributor.Name) && !contributors.Contains(contributor))
+                    if (contributor != null && !excludes.Contains(contributor.Name))
                     {
                         contributors.Add(contributor);
                     }
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             }
 
             contributionInfo.Author = author;
-            contributionInfo.Contributors = contributors.ToArray();
+            contributionInfo.Contributors = contributors.Distinct().ToArray();
 
             return (errors, contributionInfo);
         }
