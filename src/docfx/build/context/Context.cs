@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             Config = config;
             ErrorLog = errorLog;
             PackageResolver = packageResolver;
-            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions);
+            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions, fallbackDocset);
             Input = input;
             LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input, Config.DryRun);
