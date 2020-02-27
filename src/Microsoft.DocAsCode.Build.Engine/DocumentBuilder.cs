@@ -480,15 +480,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (assemblyList?.Count > 0)
             {
                 var builder = new StringBuilder();
-                foreach (var item in
+                foreach (var assembly in
                     from assembly in assemblyList
-                    select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString() + "-" + assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version.ToString()
-                    into item
-                    orderby item
-                    select item)
+                    orderby assembly.FullName
+                    select assembly)
                 {
-                    builder.AppendLine(item);
-                    Logger.LogVerbose($"New assembly info added: '{item}'");
+                    var hashPart = assembly.FullName;
+                    builder.AppendLine(hashPart);
+                    var fileVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+                    Logger.LogVerbose($"New assembly info added: '{hashPart}'. Detailed file version: '{fileVersion}'");
                 }
                 result = builder.ToString().GetMd5String();
             }
