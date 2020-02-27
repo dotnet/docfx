@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             Config = config;
             ErrorLog = errorLog;
             PackageResolver = packageResolver;
-            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions);
+            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions, fallbackDocset, input);
             Input = input;
             LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input, Config.DryRun);
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
             ContributionProvider = new ContributionProvider(config, localizationProvider, Input, docset, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
-            XrefResolver = new XrefResolver(this, config, FileResolver, DependencyMapBuilder, FileLinkMapBuilder, fallbackDocset);
+            XrefResolver = new XrefResolver(this, config, FileResolver, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
                 config,
