@@ -40,6 +40,7 @@ namespace Microsoft.Docs.Build
 
         public FilePath(string path, FileOrigin origin = FileOrigin.Default)
         {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
             Debug.Assert(origin != FileOrigin.Dependency);
 
             Path = new PathString(path);

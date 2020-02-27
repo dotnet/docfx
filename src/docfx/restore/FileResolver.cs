@@ -26,22 +26,19 @@ namespace Microsoft.Docs.Build
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
         private readonly Docset? _fallbackDocset;
-        private readonly Input? _input;
 
         public FileResolver(
             string docsetPath,
             Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default,
-            Docset? fallbackDocset = null,
-            Input? input = null)
+            Docset? fallbackDocset = null)
         {
             _docsetPath = docsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
             _credentialProvider = credentialProvider;
             _fallbackDocset = fallbackDocset;
-            _input = input;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -60,15 +57,14 @@ namespace Microsoft.Docs.Build
             if (!UrlUtility.IsHttp(file))
             {
                 var localFilePath = Path.Combine(_docsetPath, file);
-                FilePath fallbackFilePath;
                 if (File.Exists(localFilePath))
                 {
                     return File.OpenRead(localFilePath);
                 }
-                else if (_fallbackDocset != null && _input != null
-                    && _input.Exists(fallbackFilePath = new FilePath(Path.Combine(_fallbackDocset.DocsetPath, file))))
+                else if (_fallbackDocset != null
+                    && File.Exists(localFilePath = Path.Combine(_fallbackDocset.DocsetPath, file)))
                 {
-                    return _input.ReadStream(fallbackFilePath);
+                    return File.OpenRead(localFilePath);
                 }
 
                 throw Errors.FileNotFound(file).ToException();
