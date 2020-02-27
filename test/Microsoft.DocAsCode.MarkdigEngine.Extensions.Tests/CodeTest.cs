@@ -752,7 +752,7 @@ public partial class Window1 : Window
     }
 
     void TableColumnsProperty()
-    ...
+
    tbl.Columns.Add(new TableColumn());
 // &lt;/Snippet_Table_Columns_Add&gt;
 
@@ -773,7 +773,7 @@ using System.Windows;
         [InlineData(@":::code source=""source.cs"" range=""1-2,205-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">using System;
 using System.Windows;
-    ...
+
            TableCell cellx = new TableCell(parx);
            // &lt;/Snippet_TableCell_Const1&gt;
        }
@@ -1246,6 +1246,7 @@ USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns no
         [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::")]
+        [InlineData(@":::code source=""source.missing"" range=""1-3"" interactive=""try-dotnet"" language=""azurecli"":::")]
         public void CodeTestBlockGeneralCSharp_Error(string source)
         {
             // arrange
@@ -1270,6 +1271,10 @@ USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns no
             {
                 filename = "source.crazy";
                 content = contentCrazy;
+            } else
+            {
+                filename = "source.missing";
+                content = string.Empty;
             }
 
             // act

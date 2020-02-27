@@ -173,7 +173,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             codeSections = Dedent(codeSections);
-            var source = string.Join("    ...\n", codeSections.ToArray());
+            var source = string.Join("\n", codeSections.ToArray());
             source = ExtensionsHelper.Escape(source);
             return source;
         }
