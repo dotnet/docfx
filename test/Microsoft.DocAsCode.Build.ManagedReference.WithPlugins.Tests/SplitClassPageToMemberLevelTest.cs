@@ -279,9 +279,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                     model.Items[0].Items[1].TopicHref,
                     model.Items[0].Items[2].TopicHref
                 };
-                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.firewallRules%28Method%29.html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
-                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.FirewallRules%28Interface%29.html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
-                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.firewallRules%28Interface%29_1.html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
+                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.firewallRules(Method).html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
+                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.FirewallRules(Interface).html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
+                Assert.Contains("../com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.html", topicHref, FilePathComparer.OSPlatformSensitiveStringComparer);
             }
         }
 

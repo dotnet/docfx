@@ -139,8 +139,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (src == null && !context.Members.TryGetValue(srcName, out src))
             {
                 // Try to resolve any templated references before giving up
-                if (!context.References.TryGetValue(srcName, out var referenceItem) || !context.Members.TryGetValue(referenceItem.Definition, out src))
+                if (!context.References.TryGetValue(srcName, out var referenceItem) || referenceItem.Definition == null ||
+                    !context.Members.TryGetValue(referenceItem.Definition, out src))
+                {
+                    Logger.LogWarning($"Could not resolve base documentation for '{dest.Name}'",
+                                      file: dest.Source.Path,
+                                      line: dest.Source.StartLine != 0 ? dest.Source.StartLine.ToString() : null);
                     return;
+                }
+                    
             }
 
             Copy(dest, src, context);

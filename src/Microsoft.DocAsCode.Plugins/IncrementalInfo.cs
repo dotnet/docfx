@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Plugins
     public class IncrementalInfo
     {
         private readonly object _syncRoot = new object();
-        private readonly Dictionary<string, IncrementalStatus> _processors = new Dictionary<string, IncrementalStatus>();
+        private readonly SortedDictionary<string, IncrementalStatus> _processors = new SortedDictionary<string, IncrementalStatus>();
 
         [JsonProperty("status")]
         public IncrementalStatus Status { get; } = new IncrementalStatus();
