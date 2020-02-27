@@ -6,6 +6,8 @@ using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class LiquidFilter
@@ -24,7 +26,7 @@ namespace Microsoft.Docs.Build
             {
                 if (input.Contains(key))
                 {
-                    input = input.Replace(key, value.ToString());
+                    input = input.Replace(key, value?.ToString());
                 }
             }
 
@@ -71,11 +73,14 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
-                foreach (HtmlNodeNavigator attribute in attributes)
+                foreach (var attribute in attributes)
                 {
-                    var original = attribute.Value;
-                    var appended = AppendQueryStringCore(original, queryKey, queryValue);
-                    attribute.CurrentNode.SetAttributeValue(attribute.LocalName, appended);
+                    if (attribute is HtmlNodeNavigator nagivator)
+                    {
+                        var original = nagivator.Value;
+                        var appended = AppendQueryStringCore(original, queryKey, queryValue);
+                        nagivator.CurrentNode.SetAttributeValue(nagivator.LocalName, appended);
+                    }
                 }
             }
 
@@ -122,7 +127,7 @@ namespace Microsoft.Docs.Build
         private static string AppendQueryStringCore(string original, string queryKey, string queryValue)
         {
             string originalWithoutBookmark = original;
-            string bookmark = null;
+            string? bookmark = null;
             var bookmarkIndex = original.IndexOf('#');
             if (bookmarkIndex >= 0)
             {

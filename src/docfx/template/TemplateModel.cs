@@ -3,16 +3,18 @@
 
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class TemplateModel
     {
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
-        public JObject RawMetadata { get; set; }
+        public JObject? RawMetadata { get; set; }
 
-        public string PageMetadata { get; set; }
+        public string? PageMetadata { get; set; }
 
-        public string ThemesRelativePathToOutputRoot { get; set; }
+        public string? ThemesRelativePathToOutputRoot { get; set; }
     }
 }

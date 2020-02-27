@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             return builder.Build();
         }
 
-        private string GetToken(string key)
+        private string? GetToken(string key)
         {
             return _templateEngine.GetToken(key);
         }

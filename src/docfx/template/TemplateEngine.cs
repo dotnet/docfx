@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
@@ -61,7 +63,7 @@ namespace Microsoft.Docs.Build
 
         public string RunLiquid(Document file, TemplateModel model)
         {
-            var layout = model.RawMetadata.Value<string>("layout") ?? "";
+            var layout = model.RawMetadata?.Value<string>("layout") ?? "";
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
 
             var liquidModel = new JObject
@@ -137,7 +139,7 @@ namespace Microsoft.Docs.Build
             return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
         }
 
-        public string GetToken(string key)
+        public string? GetToken(string key)
         {
             return _global[key]?.ToString();
         }

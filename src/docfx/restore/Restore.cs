@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             return hasError ? 1 : 0;
         }
 
-        private static bool RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config? config = null;
