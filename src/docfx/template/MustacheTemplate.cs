@@ -52,12 +52,12 @@ namespace Microsoft.Docs.Build
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
                            .SetSectionBlacklistTypes(sectionBlacklist);
 
-            object GetJObjectValue(object value, string key, bool ignoreCase)
+            object? GetJObjectValue(object value, string key, bool ignoreCase)
             {
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
-                return (childToken is JValue scalar ? scalar.Value : childToken) ?? JValue.CreateNull();
+                return childToken is JValue scalar ? scalar.Value ?? JValue.CreateNull() : childToken;
             }
         }
 
