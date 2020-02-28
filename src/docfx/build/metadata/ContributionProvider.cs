@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
 
             if (author != null)
             {
-                contributors.Remove(author);
+                contributors.RemoveAll(item => item.Equals(author));
             }
 
             contributionInfo.Author = author;
