@@ -9,8 +9,8 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal struct GroupConfig
+    internal class GroupConfig
     {
-        public SourceInfo<string?> MonikerRange { get; private set; }
+        public SourceInfo<string> MonikerRange { get; private set; } = new SourceInfo<string>("");
     }
 }

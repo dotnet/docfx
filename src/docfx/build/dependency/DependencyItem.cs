@@ -1,39 +1,32 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
+#nullable enable
+
+using System;
 
 namespace Microsoft.Docs.Build
 {
     internal class DependencyItem
     {
-        public Document From { get; private set; }
+        public Document From { get; }
 
-        public Document To { get; private set; }
+        public Document To { get; }
 
-        public DependencyType Type { get; private set; }
+        public DependencyType Type { get; }
 
         public DependencyItem(Document from, Document to, DependencyType type)
         {
-            Debug.Assert(from != null);
-            Debug.Assert(to != null);
-
             From = from;
             To = to;
             Type = type;
         }
 
-        public override int GetHashCode()
-        {
-            return To.GetHashCode() + From.GetHashCode() + Type.GetHashCode();
-        }
+        public override int GetHashCode() => HashCode.Combine(To, From, Type);
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as DependencyItem);
-        }
+        public override bool Equals(object? obj) => Equals(obj as DependencyItem);
 
-        public bool Equals(DependencyItem other)
+        public bool Equals(DependencyItem? other)
         {
             if (other is null)
             {

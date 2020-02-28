@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class DependencyMap : ReadOnlyDictionary<Document, HashSet<DependencyItem>>
@@ -25,7 +27,7 @@ namespace Microsoft.Docs.Build
                     d => d.Key.FilePath.Path,
                     d => (from v in d.Value
                           orderby v.To.FilePath.Path, v.Type
-                          select new DependencyManifestItem { Source = v.To.FilePath.Path, Type = v.Type }).ToArray());
+                          select new DependencyManifestItem(v.To.FilePath.Path, v.Type)).ToArray());
 
             return new { dependencies };
         }
