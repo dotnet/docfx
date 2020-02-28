@@ -4,6 +4,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class BookmarkValidator

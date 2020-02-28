@@ -4,22 +4,24 @@
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1401:FieldsMustBePrivate", Justification = "<Skipping>")]
     internal class CommandLineOptions
     {
-        public string Output;
+        public string? Output;
         public bool Legacy;
         public bool Verbose;
         public bool DryRun;
         public bool Stdin;
         public bool UseCache;
         public bool NoRestore;
-        public string Template;
+        public string? Template;
         public int Port;
 
-        public JObject StdinConfig;
+        public JObject? StdinConfig;
 
         public FetchOptions FetchOptions => NoRestore
             ? FetchOptions.NoFetch
