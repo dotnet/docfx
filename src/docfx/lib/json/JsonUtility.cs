@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json, FilePath file) where T : class, new()
+        public static T Deserialize<T>(string json, FilePath? file) where T : class, new()
         {
             using var reader = new StringReader(json);
             return Deserialize<T>(reader, file, true);
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader json, FilePath file, bool checkAdditionalContent = true) where T : class, new()
+        public static T Deserialize<T>(TextReader json, FilePath? file, bool checkAdditionalContent = true) where T : class, new()
         {
             using var reader = new JsonTextReader(json);
             try
@@ -377,7 +377,7 @@ namespace Microsoft.Docs.Build
             return token.Annotation<SourceInfo>()?.KeySourceInfo;
         }
 
-        public static JToken SetKeySourceInfo(JToken token, SourceInfo source)
+        public static JToken SetKeySourceInfo(JToken token, SourceInfo? source)
         {
             var sourceInfo = token.Annotation<SourceInfo>();
             if (sourceInfo != null)
@@ -495,11 +495,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Error ToError(Exception ex, FilePath file)
+        private static Error ToError(Exception ex, FilePath? file)
         {
             var (message, line, column) = ParseException(ex);
 
-            return Errors.JsonSyntaxError(new SourceInfo(file, line, column), message);
+            return Errors.JsonSyntaxError(file is null ? null : new SourceInfo(file, line, column), message);
         }
 
         private static (string message, int line, int column) ParseException(Exception ex)

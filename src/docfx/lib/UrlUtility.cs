@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool TryParseGitHubUrl(
-            string remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
+            string? remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
         {
             owner = name = default;
             if (string.IsNullOrEmpty(remoteUrl))

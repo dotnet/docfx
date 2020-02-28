@@ -529,7 +529,7 @@ repos:
           Osmond creates this, without email
 inputs:
   docfx.yml: |
-    editRepositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
+    editRepositoryUrl: https://github.com/a/b
 cache:
   github-users.json: |
       { "items": [
@@ -550,6 +550,30 @@ outputs:
         ]
       },
       "updated_at": "2018-10-30 12:00 AM"
+    }
+---
+# Do not resolve contributors if repo and editRepositoryUrl are not GitHub repository
+repos:
+  https://docascode.visualstudio.com/contribution1/_git/a:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md:
+inputs:
+  docfx.yml: |
+    editRepositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
+cache:
+  github-users.json: |
+      {
+        "items": [{"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}]
+      }
+outputs:
+  docs/index.json: |
+    {
+      "_op_gitContributorInformation": {
+        "author": undefined,
+        "contributors": undefined
+      }
     }
 ---
 # Author and contributors will not be resolved when `github.resolveUsers` == false
