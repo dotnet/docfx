@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static LinkType GetLinkType(string link)
+        public static LinkType GetLinkType(string? link)
         {
             if (string.IsNullOrEmpty(link))
             {

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsModel
@@ -14,6 +16,6 @@ namespace Microsoft.Docs.Build
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 
         [JsonExtensionData(WriteData = false)]
-        public JObject ExtensionData { get; set; }
+        public JObject ExtensionData { get; } = new JObject();
     }
 }
