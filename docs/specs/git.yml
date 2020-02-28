@@ -17,12 +17,17 @@ repos:
           ---
           author: charlie
           ---
-          Alice creates this. Bob updates this. Charlie becomes author.
+          Alice creates this. Charlie updates this. Bob updates this. Charlie becomes author.
     - author: Bob 
       email: bob@contoso.com
       files:
         docs/index.md: |
-          Alice creates this. Bob updates this.
+          Alice creates this. Charlie updates this. Bob updates this.
+    - author: Charlie 
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Charlie updates this.
     - author: Alice 
       email: alice@contoso.com
       files:
