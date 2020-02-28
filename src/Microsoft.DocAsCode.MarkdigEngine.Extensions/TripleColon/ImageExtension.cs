@@ -32,6 +32,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var alt = string.Empty;
             var type = string.Empty;
             var loc_scope = string.Empty;
+            var border = true;
+            var lightbox = string.Empty;
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -50,8 +52,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     case "source":
                         src = value;
                         break;
+                    case "border":
+                        if(!bool.TryParse(value, out border))
+                        {
+                            border = true;
+                        }
+                        break;
+                    case "lightbox":
+                        lightbox = value;
+                        break;
                     default:
-                        logError($"Unexpected attribute \"{name}\".");
+                        logError($"Unexpected attribute \"{name}\". Image is invalid per the schema.");
                         return false;
                 }
             }
@@ -87,6 +98,24 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             RenderDelegate = (renderer, obj) =>
             {
+                var currentLightbox = string.Empty;
+                var currentBorderStr = string.Empty;
+                var currentBorder = true;
+                obj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
+                obj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
+                if(!bool.TryParse(currentBorderStr, out currentBorder))
+                {
+                    currentBorder = true;
+                }
+
+                if (!string.IsNullOrEmpty(currentLightbox))
+                {
+                    renderer.WriteLine($"<a href=\"{currentLightbox}#lightbox\" data-linktype=\"relative-path\">");
+                }
+                if(currentBorder)
+                {
+                    renderer.WriteLine("<div class=\"mx-imgBorder\"><p>");
+                }
                 //if obj.Count == 0, this signifies that there is no long description for the image.
                 if(obj.Count == 0)
                 {
@@ -104,7 +133,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.WriteChildren(obj);
                     renderer.WriteLine("</div>");
                 }
-                
+
+                if (currentBorder)
+                {
+                    renderer.WriteLine("</p></div>");
+                }
+                if (!string.IsNullOrEmpty(currentLightbox))
+                {
+                    renderer.WriteLine($"</a>");
+                }
+
                 return true;
             };
 
