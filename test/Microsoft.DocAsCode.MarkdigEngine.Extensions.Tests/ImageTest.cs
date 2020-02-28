@@ -10,8 +10,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Fact]
         public void ImageTestBlockGeneral()
         {
-            var source = @":::image type=""content"" source=""example.jpg"" alt-text=""example"":::";
-            var expected = @"<img src=""example.jpg"" alt=""example"">";
+            var source = @":::image type=""content"" source=""example.jpg"" alt-text=""example"":::
+
+:::image type=""content"" source=""example.jpg"" alt-text=""example"" border=""false"":::
+
+:::image type=""content"" source=""example.jpg"" alt-text=""example"" lightbox=""example-expanded.jpg"":::
+
+:::image type=""content"" source=""example.jpg"" alt-text=""example"" lightbox=""example-expanded.jpg"" border=""false"":::
+";
+            var expected = @"<div class=""mx-imgBorder""><p>
+<img src=""example.jpg"" alt=""example"">
+</p></div>
+<img src=""example.jpg"" alt=""example"">
+<a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
+<div class=""mx-imgBorder""><p>
+<img src=""example.jpg"" alt=""example"">
+</p></div>
+</a>
+<a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
+<img src=""example.jpg"" alt=""example"">
+</a>
+";
 
             TestUtility.VerifyMarkup(source, expected);
         }
@@ -27,14 +46,42 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image-end:::
 
 :::image source=""example.jpg"" alt-text=""example"" loc-scope=""azure"":::
+
+:::image type=""complex"" source=""example.jpg"" alt-text=""example"" loc-scope=""azure"" lightbox=""example-expanded.jpg""::: 
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+:::image-end:::
+
+:::image type=""complex"" source=""example.jpg"" alt-text=""example"" loc-scope=""azure"" lightbox=""example-expanded.jpg"" border=""false""::: 
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+:::image-end:::
 ";
 
-            var expected = @"<img src=""example.svg"" role=""presentation"">
+            var expected = @"<div class=""mx-imgBorder""><p>
+<img src=""example.svg"" role=""presentation"">
+</p></div>
+<div class=""mx-imgBorder""><p>
 <img src=""example.jpg"" alt=""example"" aria-describedby=""42570"">
 <div id=""42570"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
+</p></div>
+<div class=""mx-imgBorder""><p>
 <img src=""example.jpg"" alt=""example"">
+</p></div>
+<a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
+<div class=""mx-imgBorder""><p>
+<img src=""example.jpg"" alt=""example"" aria-describedby=""8ce94"">
+<div id=""8ce94"" class=""visually-hidden"">
+<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+</div>
+</p></div>
+</a>
+<a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
+<img src=""example.jpg"" alt=""example"" aria-describedby=""9e4c4"">
+<div id=""9e4c4"" class=""visually-hidden"">
+<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+</div>
+</a>
 ";
 
             TestUtility.VerifyMarkup(source, expected);
@@ -71,7 +118,10 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         {
             var source = @":::image type=""icon"" source=""example.svg"":::";
 
-            var expected = @"<img src=""example.svg"" role=""presentation"">";
+            var expected = @"<div class=""mx-imgBorder""><p>
+<img src=""example.svg"" role=""presentation"">
+</p></div>
+";
 
             TestUtility.VerifyMarkup(source, expected);
         }
