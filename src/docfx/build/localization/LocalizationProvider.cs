@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public bool EnableSideBySide { get; }
 
-        public LocalizationProvider(PackageResolver packageResolver, Config config, string locale, string docsetPath, Repository? repository)
+        public LocalizationProvider(PackageResolver packageResolver, Config config, string? locale, string docsetPath, Repository? repository)
         {
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.DefaultLocale;
             Culture = CreateCultureInfo(Locale);

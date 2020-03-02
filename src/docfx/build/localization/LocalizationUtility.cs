@@ -81,10 +81,10 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static string GetLocale(Repository? repository)
+        public static string? GetLocale(Repository? repository)
         {
             return TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
-                ? remoteLocale : "en-us";
+                ? remoteLocale : null;
         }
 
         public static bool TryGetContributionBranch(string branch, [NotNullWhen(true)] out string? contributionBranch)
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static PackagePath GetLocalizedTheme(PackagePath theme, string locale, string defaultLocale)
+        public static PackagePath GetLocalizedTheme(PackagePath theme, string? locale, string defaultLocale)
         {
             switch (theme.Type)
             {
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
         }
 
-        private static string GetLocalizationName(string name, string locale, string defaultLocale)
+        private static string GetLocalizationName(string name, string? locale, string defaultLocale)
         {
             if (string.Equals(locale, defaultLocale))
             {

@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _docsetPath;
         private readonly Repository? _repository;
-        private readonly string _locale;
+        private readonly string? _locale;
         private readonly PackageResolver? _packageResolver;
         private readonly Config? _config;
         private readonly LocalizationProvider? _localizationProvider;
