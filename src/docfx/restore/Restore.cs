@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetFallbackRepository(repository.Remote, repository.Branch, out var fallbackRemote, out var fallbackBranch, out _))
+            if (LocalizationUtility.TryGetFallbackRepository(repository.Remote, repository.Branch, out var fallbackRemote, out var fallbackBranch))
             {
                 // fallback to master
                 yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);

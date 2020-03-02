@@ -3,9 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -45,24 +48,26 @@ namespace Microsoft.Docs.Build
             return (newRemote, newBranch);
         }
 
-        public static bool TryGetFallbackRepository(string remote, string branch, out string fallbackRemote, out string fallbackBranch, out string locale)
+        public static bool TryGetFallbackRepository(
+            string? remote,
+            string? branch,
+            [NotNullWhen(true)] out string? fallbackRemote,
+            [NotNullWhen(true)] out string? fallbackBranch)
         {
             fallbackRemote = null;
             fallbackBranch = null;
-            locale = null;
 
             if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
             {
                 return false;
             }
 
-            if (TryRemoveLocale(remote, out fallbackRemote, out locale))
+            if (TryRemoveLocale(remote, out fallbackRemote, out _))
             {
                 fallbackBranch = branch;
-                if (TryRemoveLocale(branch, out var branchWithoutLocale, out var branchLocale))
+                if (TryRemoveLocale(branch, out var branchWithoutLocale, out _))
                 {
                     fallbackBranch = branchWithoutLocale;
-                    locale = branchLocale;
                 }
 
                 if (TryGetContributionBranch(fallbackBranch, out var contributionBranch))
@@ -73,16 +78,16 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            return locale != null;
+            return false;
         }
 
-        public static string GetLocale(Repository repository)
+        public static string GetLocale(Repository? repository)
         {
             return TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
-                ? remoteLocale : default;
+                ? remoteLocale : "en-us";
         }
 
-        public static bool TryGetContributionBranch(string branch, out string contributionBranch)
+        public static bool TryGetContributionBranch(string branch, [NotNullWhen(true)] out string? contributionBranch)
         {
             contributionBranch = null;
             if (string.IsNullOrEmpty(branch))
@@ -126,7 +131,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool TryRemoveLocale(string name, out string nameWithoutLocale, out string locale)
+        private static bool TryRemoveLocale(string? name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
         {
             nameWithoutLocale = null;
             locale = null;

@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
-        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
+        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
         {
             var credentialProvider = config.GetCredentialProvider();
 

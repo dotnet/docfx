@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<FilePath> Files { get; }
 
-        public BuildScope(Config config, Input input, Docset fallbackDocset)
+        public BuildScope(Config config, Input input, Docset? fallbackDocset)
         {
             _config = config;
             _globs = CreateGlobs(config);
@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        private static (HashSet<PathString> fileNames, HashSet<FilePath> files) ListFiles(Config config, Input input, Docset fallbackDocset)
+        private static (HashSet<PathString> fileNames, HashSet<FilePath> files) ListFiles(Config config, Input input, Docset? fallbackDocset)
         {
             var files = new HashSet<FilePath>();
             var fileNames = new HashSet<PathString>();

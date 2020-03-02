@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class RepositoryProvider
     {
         private readonly string _docsetPath;
-        private readonly Repository _repository;
+        private readonly Repository? _repository;
         private readonly string _locale;
         private readonly PackageResolver? _packageResolver;
         private readonly Config? _config;
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public RepositoryProvider(
             string docsetPath,
-            Repository repository,
+            Repository? repository,
             Config? config = null,
             PackageResolver? packageResolver = null,
             LocalizationProvider? localizationProvider = null)
