@@ -141,14 +141,14 @@ namespace Microsoft.Docs.Build
         /// rather than relative path or another toc file.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidTopicHref(SourceInfo<string> source)
+        public static Error InvalidTopicHref(SourceInfo<string?> source)
             => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{source}' can only reference to a local file or absolute path", source);
 
         /// <summary>
         /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error InvalidTocHref(SourceInfo<string> source)
+        public static Error InvalidTocHref(SourceInfo<string?> source)
             => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path", source);
 
         /// <summary>

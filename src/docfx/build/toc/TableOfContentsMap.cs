@@ -3,8 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -33,7 +36,7 @@ namespace Microsoft.Docs.Build
             _tocReferences = tocReferences ?? throw new ArgumentNullException(nameof(tocReferences));
         }
 
-        public bool TryGetTocReferences(Document toc, out List<Document> tocs)
+        public bool TryGetTocReferences(Document toc, [NotNullWhen(true)] out List<Document>? tocs)
         {
             return _tocReferences.TryGetValue(toc, out tocs);
         }
@@ -50,7 +53,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="file">Document</param>
         /// <returns>The toc relative path</returns>
-        public string FindTocRelativePath(Document file)
+        public string? FindTocRelativePath(Document file)
         {
             var nearestToc = GetNearestToc(file);
 
@@ -64,7 +67,7 @@ namespace Microsoft.Docs.Build
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
         /// when the file is not referenced, return only toc in the same or higher folder level.
         /// </summary>
-        public Document GetNearestToc(Document file)
+        public Document? GetNearestToc(Document file)
         {
             var hasReferencedTocs = false;
             var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
@@ -119,7 +122,7 @@ namespace Microsoft.Docs.Build
             GetRelativeDirectoryInfo(string pathA, string pathB)
         {
             var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)));
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
             if (string.IsNullOrEmpty(relativePath))
             {
                 return default;
