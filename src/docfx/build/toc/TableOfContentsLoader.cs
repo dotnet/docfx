@@ -373,7 +373,7 @@ namespace Microsoft.Docs.Build
             var topicHrefType = GetHrefType(topicHref);
             Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
 
-            var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref, filePath, rootPath);
+            var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath);
             errors.AddIfNotNull(error);
 
             if (resolvedFile != null)
