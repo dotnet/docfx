@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly Config _config;
-        private readonly Docset _fallbackDocset;
+        private readonly Docset? _fallbackDocset;
         private readonly GitHubAccessor _githubAccessor;
         private readonly LocalizationProvider _localization;
 
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         private readonly GitCommitProvider _gitCommitProvider;
 
         public ContributionProvider(
-            Config config, LocalizationProvider localization, Input input, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
+            Config config, LocalizationProvider localization, Input input, Docset? fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
         {
             _input = input;
             _config = config;

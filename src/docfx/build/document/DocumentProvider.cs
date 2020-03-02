@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class DocumentProvider
@@ -193,7 +195,7 @@ namespace Microsoft.Docs.Build
             return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
 
-        private static string FilePathToSitePath(string path, ContentType contentType, string mime, bool json, bool uglifyUrl, bool isPage)
+        private static string FilePathToSitePath(string path, ContentType contentType, string? mime, bool json, bool uglifyUrl, bool isPage)
         {
             switch (contentType)
             {
@@ -203,7 +205,7 @@ namespace Microsoft.Docs.Build
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
                             var extension = json ? ".json" : ".html";
-                            return Path.Combine(Path.GetDirectoryName(path), "index" + extension).Replace('\\', '/');
+                            return Path.Combine(Path.GetDirectoryName(path) ?? "", "index" + extension).Replace('\\', '/');
                         }
                         if (json)
                         {
@@ -214,7 +216,7 @@ namespace Microsoft.Docs.Build
                             return Path.ChangeExtension(path, ".html");
                         }
                         var fileName = Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.');
-                        return Path.Combine(Path.GetDirectoryName(path), fileName, "index.html").Replace('\\', '/');
+                        return Path.Combine(Path.GetDirectoryName(path) ?? "", fileName, "index.html").Replace('\\', '/');
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:
@@ -224,13 +226,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, string mime, bool json, bool isPage)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, string? mime, bool json, bool isPage)
         {
             var url = PathToRelativeUrl(path, contentType, mime, json, isPage);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, string mime, bool json, bool isPage)
+        private static string PathToRelativeUrl(string path, ContentType contentType, string? mime, bool json, bool isPage)
         {
             var url = path.Replace('\\', '/');
 
@@ -259,7 +261,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string mime, bool isPage)
+        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string? mime, bool isPage)
         {
             if (isExperimental)
             {
@@ -295,9 +297,9 @@ namespace Microsoft.Docs.Build
             return path;
         }
 
-        private static SourceInfo<string> ReadMimeFromFile(Input input, FilePath filePath)
+        private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath)
         {
-            SourceInfo<string> mime = default;
+            SourceInfo<string?> mime = default;
 
             if (filePath.EndsWith(".json"))
             {
@@ -317,7 +319,7 @@ namespace Microsoft.Docs.Build
                 if (input.Exists(filePath))
                 {
                     using var reader = input.ReadText(filePath);
-                    mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
+                    mime = new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
                 }
             }
 

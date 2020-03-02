@@ -49,9 +49,9 @@ namespace Microsoft.Docs.Build
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
         }
 
-        public bool IsPage(string mime)
+        public bool IsPage(string? mime)
         {
-            return mime == null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
+            return mime is null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
         }
 
         public TemplateSchema GetSchema(SourceInfo<string> schemaName)
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static bool IsLandingData(string mime)
+        public static bool IsLandingData(string? mime)
         {
             return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
         }
