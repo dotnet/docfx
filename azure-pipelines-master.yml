@@ -1,6 +1,13 @@
 pool:
   name: Hosted Windows 2019 with VS2019
+
 steps:
+
+- task: NuGetAuthenticate@0
+  displayName: 'NuGet login'
+  inputs:
+    nuGetServiceConnections: 'AzureDevOps.Artifacts.docs-build-v2-prod'
+
 - task: NodeTool@0
   displayName: 'Use Node 8.x'
   inputs:

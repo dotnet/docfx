@@ -96,6 +96,16 @@ gulp.task("publish:myget-dev", () => {
     return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["devUrl"]);
 });
 
+gulp.task("publish:azdevops-dev", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
+    Guard.argumentNotNullOrEmpty(config.azdevops.exe, "config.myget.exe", "Can't find nuget command in configuration.");
+    Guard.argumentNotNullOrEmpty(config.azdevops.devUrl, "config.myget.devUrl", "Can't find myget url for docfx dev feed in configuration.");
+
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
+    return Myget.publishToMygetAsync(artifactsFolder, config.azdevops["exe"], "AzureArtifacts", config.azdevops["devUrl"]);
+});
+
 gulp.task("publish:myget-test", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.exe, "config.myget.exe", "Can't find nuget command in configuration.");
@@ -120,6 +130,18 @@ gulp.task("publish:myget-master", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
     return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["masterUrl"], releaseNotePath);
+});
+
+gulp.task("publish:azdevops-master", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
+    Guard.argumentNotNullOrEmpty(config.azdevops.exe, "config.myget.exe", "Can't find nuget command in configuration.");
+    Guard.argumentNotNullOrEmpty(config.azdevops.masterUrl, "config.myget.masterUrl", "Can't find myget url for docfx master feed in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
+
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
+    return Myget.publishToMygetAsync(artifactsFolder, config.azdevops["exe"], "AzureArtifacts", config.azdevops["masterUrl"], releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {
@@ -211,9 +233,9 @@ gulp.task("syncBranchCore", () => {
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
-gulp.task("dev:release", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
+gulp.task("dev:release", gulp.series("clean", "build", "e2eTest", "publish:myget-dev", "publish:azdevops-dev"));
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
-gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
+gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:azdevops-master", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
 
 gulp.task("default", gulp.series("dev"));
