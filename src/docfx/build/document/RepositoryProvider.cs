@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Concurrent;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class RepositoryProvider
@@ -11,20 +13,20 @@ namespace Microsoft.Docs.Build
         private readonly string _docsetPath;
         private readonly Repository _repository;
         private readonly string _locale;
-        private readonly PackageResolver _packageResolver;
-        private readonly Config _config;
-        private readonly LocalizationProvider _localizationProvider;
+        private readonly PackageResolver? _packageResolver;
+        private readonly Config? _config;
+        private readonly LocalizationProvider? _localizationProvider;
 
-        private readonly Lazy<(string path, Repository)> _templateRepository;
-        private readonly ConcurrentDictionary<PathString, Lazy<(string docset, Repository repository)>> _dependencyRepositories
-                   = new ConcurrentDictionary<PathString, Lazy<(string docset, Repository repository)>>();
+        private readonly Lazy<(string path, Repository?)> _templateRepository;
+        private readonly ConcurrentDictionary<PathString, Lazy<(string docset, Repository? repository)>> _dependencyRepositories
+                   = new ConcurrentDictionary<PathString, Lazy<(string docset, Repository? repository)>>();
 
         public RepositoryProvider(
             string docsetPath,
             Repository repository,
-            Config config = null,
-            PackageResolver packageResolver = null,
-            LocalizationProvider localizationProvider = null)
+            Config? config = null,
+            PackageResolver? packageResolver = null,
+            LocalizationProvider? localizationProvider = null)
         {
             _docsetPath = docsetPath;
             _repository = repository;
@@ -32,15 +34,15 @@ namespace Microsoft.Docs.Build
             _locale = LocalizationUtility.GetLocale(repository);
             _config = config;
             _localizationProvider = localizationProvider;
-            _templateRepository = new Lazy<(string, Repository)>(GetTemplateRepository);
+            _templateRepository = new Lazy<(string, Repository?)>(GetTemplateRepository);
         }
 
-        public Repository GetRepository(FileOrigin origin, PathString? dependencyName = null)
+        public Repository? GetRepository(FileOrigin origin, PathString? dependencyName = null)
         {
             return GetRepositoryWithDocsetEntry(origin, dependencyName).repository;
         }
 
-        public (string docsetPath, Repository repository) GetRepositoryWithDocsetEntry(FileOrigin origin, PathString? dependencyName = null)
+        public (string docsetPath, Repository? repository) GetRepositoryWithDocsetEntry(FileOrigin origin, PathString? dependencyName = null)
         {
             switch (origin)
             {
@@ -48,14 +50,14 @@ namespace Microsoft.Docs.Build
                 case FileOrigin.Default:
                     return (_docsetPath, _repository);
 
-                case FileOrigin.Fallback:
+                case FileOrigin.Fallback when _localizationProvider != null:
                     return _localizationProvider.GetFallbackRepositoryWithDocsetEntry();
 
                 case FileOrigin.Template when _config != null && _packageResolver != null:
                     return _templateRepository.Value;
 
                 case FileOrigin.Dependency when _config != null && _packageResolver != null && dependencyName != null:
-                    return _dependencyRepositories.GetOrAdd(dependencyName.Value, _ => new Lazy<(string docset, Repository repository)>(() =>
+                    return _dependencyRepositories.GetOrAdd(dependencyName.Value, _ => new Lazy<(string docset, Repository? repository)>(() =>
                     {
                         var dependency = _config.Dependencies[dependencyName.Value];
                         var dependencyPath = _packageResolver.ResolvePackage(dependency, dependency.PackageFetchOptions);
@@ -73,8 +75,13 @@ namespace Microsoft.Docs.Build
             throw new InvalidOperationException();
         }
 
-        private (string path, Repository) GetTemplateRepository()
+        private (string path, Repository?) GetTemplateRepository()
         {
+            if (_config is null || _packageResolver is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.DefaultLocale);
 
             var templatePath = _packageResolver.ResolvePackage(theme, PackageFetchOptions.DepthOne);

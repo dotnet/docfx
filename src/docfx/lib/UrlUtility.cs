@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeUrl(string targetUrl, string sourceQuery, string? sourceFragment = null)
+        public static string MergeUrl(string targetUrl, string? sourceQuery = null, string? sourceFragment = null)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             return targetPath + query + fragment;
         }
 
-        public static DependencyType FragmentToDependencyType(string fragment)
+        public static DependencyType FragmentToDependencyType(string? fragment)
         {
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }

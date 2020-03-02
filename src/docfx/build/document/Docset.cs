@@ -5,6 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -20,16 +22,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the root repository of docset
         /// </summary>
-        public Repository Repository { get; }
+        public Repository? Repository { get; }
 
-        private readonly ConcurrentDictionary<string, Lazy<Repository>> _repositories;
+        private readonly ConcurrentDictionary<string, Lazy<Repository?>> _repositories;
 
-        public Docset(string docsetPath, Repository repository)
+        public Docset(string docsetPath, Repository? repository)
         {
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
             Repository = repository;
 
-            _repositories = new ConcurrentDictionary<string, Lazy<Repository>>();
+            _repositories = new ConcurrentDictionary<string, Lazy<Repository?>>();
         }
 
         public int CompareTo(Docset other)
@@ -42,14 +44,14 @@ namespace Microsoft.Docs.Build
             return PathUtility.PathComparer.GetHashCode(DocsetPath);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as Docset);
         }
 
-        public bool Equals(Docset other)
+        public bool Equals(Docset? other)
         {
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }
@@ -57,22 +59,22 @@ namespace Microsoft.Docs.Build
             return PathUtility.PathComparer.Equals(DocsetPath, other.DocsetPath);
         }
 
-        public static bool operator ==(Docset obj1, Docset obj2)
+        public static bool operator ==(Docset? obj1, Docset? obj2)
         {
             return Equals(obj1, obj2);
         }
 
-        public static bool operator !=(Docset obj1, Docset obj2)
+        public static bool operator !=(Docset? obj1, Docset? obj2)
         {
             return !Equals(obj1, obj2);
         }
 
         // todo: use repository provider instead
-        public Repository GetRepository(string filePath)
+        public Repository? GetRepository(string filePath)
         {
             return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
 
-            Repository GetRepositoryInternal(string fullPath)
+            Repository? GetRepositoryInternal(string fullPath)
             {
                 if (GitUtility.IsRepo(fullPath))
                 {
@@ -86,7 +88,7 @@ namespace Microsoft.Docs.Build
 
                 var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath) ?? "");
                 return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(parent, k => new Lazy<Repository>(() => GetRepositoryInternal(k))).Value
+                    ? _repositories.GetOrAdd(parent, k => new Lazy<Repository?>(() => GetRepositoryInternal(k))).Value
                     : null;
             }
         }
