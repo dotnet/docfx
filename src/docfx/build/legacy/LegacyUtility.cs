@@ -4,6 +4,8 @@
 using System.IO;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
@@ -11,7 +13,7 @@ namespace Microsoft.Docs.Build
         public static string ToLegacyOutputPathRelativeToBasePath(this Document doc, Context context, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
-            if (doc.ContentType == ContentType.Resource && !context.Config.CopyResources)
+            if (outputPath is null || (doc.ContentType == ContentType.Resource && !context.Config.CopyResources))
             {
                 outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath, manifestItem.Monikers);
             }
@@ -39,7 +41,7 @@ namespace Microsoft.Docs.Build
                 : legacySiteUrlRelativeToBasePath);
         }
 
-        public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
+        public static string ChangeExtension(string filePath, string extension, string[]? acceptableExtension = null)
         {
             acceptableExtension ??= new string[] { ".raw.page.json", ".mta.json" };
             if (!acceptableExtension.Any(ext =>

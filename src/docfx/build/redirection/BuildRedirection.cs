@@ -18,23 +18,17 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
-            var publishItem = new PublishItem
-            {
-                Url = file.SiteUrl,
-                SourcePath = file.FilePath.Path,
-                Locale = context.LocalizationProvider.Locale,
-                RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath),
-                Monikers = monikers,
-                MonikerGroup = MonikerUtility.GetGroup(monikers),
-                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-            };
+            var publishItem = new PublishItem(
+                file.SiteUrl,
+                context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath, monikers) : null,
+                file.FilePath.Path,
+                context.LocalizationProvider.Locale,
+                monikers,
+                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.Config.Legacy)
-            {
-                publishItem.Path = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
-            }
+            publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && context.Config.Legacy && !context.Config.DryRun)
+            if (context.PublishModelBuilder.TryAdd(file, publishItem) && publishItem.Path != null && !context.Config.DryRun)
             {
                 var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new
