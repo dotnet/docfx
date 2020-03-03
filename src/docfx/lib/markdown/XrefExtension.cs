@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseXref(
             this MarkdownPipelineBuilder builder,
-            Func<SourceInfo<string>, bool, (string href, string display)> resolveXref)
+            Func<SourceInfo<string>, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {

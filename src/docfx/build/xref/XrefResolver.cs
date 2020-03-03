@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
-        public (Error? error, string href, string display, Document? declaringFile) ResolveXref(
+        public (Error? error, string? href, string display, Document? declaringFile) ResolveXref(
             SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), hrefRelativeTo);
             if (xrefError != null || xrefSpec is null)
             {
-                return (xrefError, "", "", null);
+                return (xrefError, null, "", null);
             }
 
             var name = xrefSpec.GetXrefPropertyValueAsString("name");
