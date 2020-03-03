@@ -99,8 +99,8 @@ gulp.task("publish:azdevops-dev", () => {
     Guard.argumentNotNullOrEmpty(config.azdevops.devUrl, "config.azdevops.devUrl", "Can't find myget url for docfx dev feed in configuration.");
 
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-
-    return Myget.publishToMygetAsync(artifactsFolder, "nuget.exe", "AzureArtifacts", config.azdevops["devUrl"]);
+    await Common.execAsync(process.env.NUGETEXE, ["sources", "add", "-name", "docs-build-v2-ppe", "-source", config.azdevops["devUrl"], "-username", "anything", "-password", process.env.AZDEVOPSPAT]);
+    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["devUrl"]);
 });
 
 gulp.task("publish:myget-test", () => {
