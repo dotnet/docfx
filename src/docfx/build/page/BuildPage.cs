@@ -27,16 +27,14 @@ namespace Microsoft.Docs.Build
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
-            var publishItem = new PublishItem
-            {
-                Url = file.SiteUrl,
-                Path = outputPath,
-                SourcePath = file.FilePath.Path,
-                Locale = context.LocalizationProvider.Locale,
-                Monikers = monikers,
-                MonikerGroup = MonikerUtility.GetGroup(monikers),
-                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-            };
+            var publishItem = new PublishItem(
+                file.SiteUrl,
+                outputPath,
+                file.FilePath.Path,
+                context.LocalizationProvider.Locale,
+                monikers,
+                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
+
             var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file, publishItem);
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))

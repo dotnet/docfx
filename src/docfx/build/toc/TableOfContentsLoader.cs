@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
                         var (error, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
                         errors.AddIfNotNull(error);
 
-                        if (referenceFileMonikers.Count == 0)
+                        if (referenceFileMonikers.Length == 0)
                         {
                             return Array.Empty<string>();
                         }
