@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly Input _input;
-        private readonly Docset _fallbackDocset;
+        private readonly Docset? _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
         private readonly WorkQueue<FilePath> _buildQueue;
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         public LinkResolver(
             Config config,
-            Docset fallbackDocset,
+            Docset? fallbackDocset,
             Input input,
             BuildScope buildScope,
             WorkQueue<FilePath> buildQueue,
