@@ -4,6 +4,8 @@
 using System.IO;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
@@ -39,7 +41,7 @@ namespace Microsoft.Docs.Build
                 : legacySiteUrlRelativeToBasePath);
         }
 
-        public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
+        public static string ChangeExtension(string filePath, string extension, string[]? acceptableExtension = null)
         {
             acceptableExtension ??= new string[] { ".raw.page.json", ".mta.json" };
             if (!acceptableExtension.Any(ext =>
