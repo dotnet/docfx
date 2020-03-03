@@ -4,31 +4,33 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class LegacyManifestItem
     {
         // published url relative to site base path
-        public string AssetId { get; set; }
+        public string? AssetId { get; set; }
 
         // rource path relative to source repo root
-        public string Original { get; set; }
+        public string? Original { get; set; }
 
         // source path relative to source base path
-        public string SourceRelativePath { get; set; }
+        public string? SourceRelativePath { get; set; }
 
-        public string OriginalType { get; set; }
+        public string? OriginalType { get; set; }
 
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
-        public LegacyManifestOutput Output { get; set; }
+        public LegacyManifestOutput? Output { get; set; }
 
         // tell ops to use plugin for normalization
         public bool SkipNormalization { get; set; }
 
         public bool SkipSchemaCheck { get; set; }
 
-        public string Group { get; set; }
+        public string? Group { get; set; }
     }
 }
