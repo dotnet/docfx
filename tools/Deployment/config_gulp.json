@@ -17,13 +17,11 @@
     "docfxJson": "../../Documentation/docfx.json"
   },
   "myget": {
-    "exe": "C:/nuget.exe",
     "testUrl": "https://www.myget.org/F/docfx-test/api/v2/package",
     "devUrl": "https://www.myget.org/F/docfx-dev/api/v2/package",
     "masterUrl": "https://www.myget.org/F/docfx/api/v2/package"
   },
   "azdevops": {
-    "exe": "C:/nuget.exe",
     "devUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-ppe/nuget/v3/index.json",
     "masterUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-prod/nuget/v3/index.json"
   },
