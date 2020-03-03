@@ -22,8 +22,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string>> _monikerRangeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string>>();
 
-        private readonly ConcurrentDictionary<FilePath, (Error?, IReadOnlyList<string>)> _monikerCache
-                   = new ConcurrentDictionary<FilePath, (Error?, IReadOnlyList<string>)>();
+        private readonly ConcurrentDictionary<FilePath, (Error?, string[])> _monikerCache
+                   = new ConcurrentDictionary<FilePath, (Error?, string[])>();
 
         public MonikerComparer Comparer { get; }
 
@@ -57,18 +57,18 @@ namespace Microsoft.Docs.Build
             return _monikerRangeCache.GetOrAdd(file, GetConfigMonikerRangeCore);
         }
 
-        public (Error? error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
+        public (Error? error, string[] monikers) GetFileLevelMonikers(FilePath file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 
-        public (Error? error, IReadOnlyList<string> monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
+        public (Error? error, string[] monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
         {
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (fileLevelMonikers.Count == 0)
+            if (fileLevelMonikers.Length == 0)
             {
                 return (Errors.MonikerRangeUndefined(rangeString), Array.Empty<string>());
             }
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             return (null, monikers);
         }
 
-        private (Error? error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(FilePath file)
+        private (Error? error, string[] monikers) GetFileLevelMonikersCore(FilePath file)
         {
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 

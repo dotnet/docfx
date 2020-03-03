@@ -200,9 +200,9 @@ namespace Microsoft.Docs.Build
                 }
 
                 List<FilePath> candidates;
-                if (redirectionSourceMonikers.Count == 0)
+                if (redirectionSourceMonikers.Length == 0)
                 {
-                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList();
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0).ToList();
                 }
                 else
                 {

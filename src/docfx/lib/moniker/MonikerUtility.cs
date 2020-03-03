@@ -12,9 +12,9 @@ namespace Microsoft.Docs.Build
     {
         private static readonly ConcurrentDictionary<string, string> _groupCache = new ConcurrentDictionary<string, string>();
 
-        public static string? GetGroup(IReadOnlyList<string> monikers)
+        public static string? GetGroup(string[] monikers)
         {
-            if (monikers.Count == 0)
+            if (monikers.Length == 0)
             {
                 return null;
             }

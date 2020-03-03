@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        public string GetOutputPath(FilePath path, IReadOnlyList<string> monikers)
+        public string GetOutputPath(FilePath path, string[] monikers)
         {
             var file = GetDocument(path);
 
