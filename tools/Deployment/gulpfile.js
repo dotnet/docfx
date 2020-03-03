@@ -100,7 +100,7 @@ gulp.task("publish:azdevops-dev", () => {
 
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
-    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "AzureArtifacts", config.azdevops["devUrl"]);
+    return Myget.publishToMygetAsync(artifactsFolder, "nuget.exe", "AzureArtifacts", config.azdevops["devUrl"]);
 });
 
 gulp.task("publish:myget-test", () => {
