@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
             }
 
             var name = xrefSpec.GetXrefPropertyValueAsString("name");
-            var displayPropertyValue = xrefSpec.GetXrefPropertyValueAsString(displayProperty);
+            var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
 
             // fallback order:
             // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid

@@ -23,6 +23,8 @@ namespace Microsoft.Docs.Build
 
         public string? CanonicalUrl { get; set; }
 
+        public string? RedirectUrl { get; set; }
+
         public string? DocumentId { get; set; }
 
         public string? DocumentVersionIndependentId { get; set; }

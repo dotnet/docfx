@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                     else if (node is LinkInline link)
                     {
                         var href = new SourceInfo<string>(link.Url, link.ToSourceInfo());
-                        link.Url = getLink(href) ?? link.Url;
+                        link.Url = getLink(href);
                     }
                     else if (node is HtmlBlock block)
                     {
