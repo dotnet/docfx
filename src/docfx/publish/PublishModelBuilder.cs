@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
 
             var publishItems = (
                 from item in _publishItems.Values
-                orderby item.Locale, item.Path, item.RedirectUrl, item.MonikerGroup
+                orderby item.Locale, item.Path, item.Url, item.RedirectUrl, item.MonikerGroup
                 select item).ToArray();
 
             var monikerGroups = new Dictionary<string, string[]>(
