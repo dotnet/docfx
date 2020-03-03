@@ -4,15 +4,13 @@ pool:
 
 steps:
 
-- task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: '*'
-    checkLatest: true
-
 - task: NodeTool@0
   displayName: 'Use Node 8.x'
   inputs:
     versionSpec: 8.x
+
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.3.0'
 
 - task: CmdLine@1
   displayName: 'npm install'
