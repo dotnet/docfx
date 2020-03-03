@@ -29,7 +29,7 @@ export class Myget {
 
         let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
         let promises = packages.map(p => {
-            return Common.execAsync(mygetCommand, ["push", p, mygetKey, "-Source", mygetUrl]);
+            return Common.execAsync(mygetCommand, ["push", p, "-ApiKey", mygetKey, "-Source", mygetUrl]);
         });
 
         await Promise.all(promises);
