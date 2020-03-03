@@ -58,11 +58,11 @@ namespace Microsoft.Docs.Build
             {
                 if (output is string str)
                 {
-                    context.Output.WriteText(str, publishItem.Path);
+                    context.Output.WriteText(str, outputPath);
                 }
                 else
                 {
-                    context.Output.WriteJson(output, publishItem.Path);
+                    context.Output.WriteJson(output, outputPath);
                 }
 
                 if (context.Config.Legacy && file.IsPage)
