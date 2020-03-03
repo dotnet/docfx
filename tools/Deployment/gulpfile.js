@@ -7,7 +7,6 @@ let fs = require("fs");
 let path = require("path");
 
 let del = require("del");
-let glob = require("glob");
 let gulp = require("gulp");
 let nconf = require("nconf");
 let format = require("string-format");
@@ -33,10 +32,10 @@ let config = {
     "myget": nconf.get("myget"),
     "git": nconf.get("git"),
     "choco": nconf.get("choco"),
-    "sync": nconf.get("sync")
+    "sync": nconf.get("sync"),
+    "azdevops": nconf.get("azdevops"),
 };
 
-config.myget.exe = process.env.NUGETEXE || config.myget.exe;
 Guard.argumentNotNull(config.docfx, "config.docfx", "Can't find docfx configuration.");
 Guard.argumentNotNull(config.myget, "config.docfx", "Can't find myget configuration.");
 Guard.argumentNotNull(config.git, "config.docfx", "Can't find git configuration.");
@@ -86,31 +85,40 @@ gulp.task("e2eTest", gulp.series("e2eTest:restoreSeed", "e2eTest:buildSeed"));
 
 gulp.task("publish:myget-dev", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
-    Guard.argumentNotNullOrEmpty(config.myget.exe, "config.myget.exe", "Can't find nuget command in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.devUrl, "config.myget.devUrl", "Can't find myget url for docfx dev feed in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.MGAPIKEY, "process.env.MGAPIKEY", "Can't find myget key in Environment Variables.");
 
     let mygetToken = process.env.MGAPIKEY;
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
-    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["devUrl"]);
+    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, mygetToken, config.myget["devUrl"]);
+});
+
+gulp.task("publish:azdevops-dev-login", () => {
+    return Common.execAsync(process.env.NUGETEXE, ["sources", "add", "-name", "docs-build-v2-ppe", "-source", config.azdevops["devUrl"], "-username", "anything", "-password", process.env.AZDEVOPSPAT]);
+})
+
+gulp.task("publish:azdevops-dev", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
+    Guard.argumentNotNullOrEmpty(config.azdevops.devUrl, "config.azdevops.devUrl", "Can't find myget url for docfx dev feed in configuration.");
+
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["devUrl"]);
 });
 
 gulp.task("publish:myget-test", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
-    Guard.argumentNotNullOrEmpty(config.myget.exe, "config.myget.exe", "Can't find nuget command in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.testUrl, "config.myget.testUrl", "Can't find myget url for docfx test feed in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.MGAPIKEY, "process.env.MGAPIKEY", "Can't find myget key in Environment Variables.");
 
     let mygetToken = process.env.MGAPIKEY;
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
-    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["testUrl"]);
+    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, mygetToken, config.myget["testUrl"]);
 });
 
 gulp.task("publish:myget-master", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
-    Guard.argumentNotNullOrEmpty(config.myget.exe, "config.myget.exe", "Can't find nuget command in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.masterUrl, "config.myget.masterUrl", "Can't find myget url for docfx master feed in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.MGAPIKEY, "process.env.MGAPIKEY", "Can't find myget key in Environment Variables.");
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
@@ -119,7 +127,22 @@ gulp.task("publish:myget-master", () => {
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
-    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["masterUrl"], releaseNotePath);
+    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, mygetToken, config.myget["masterUrl"], releaseNotePath);
+});
+
+gulp.task("publish:azdevops-master-login", () => {
+    return Common.execAsync(process.env.NUGETEXE, ["sources", "add", "-name", "docs-build-v2-prod", "-source", config.azdevops["masterUrl"], "-username", "anything", "-password", process.env.AZDEVOPSPAT]);
+})
+
+gulp.task("publish:azdevops-master", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
+    Guard.argumentNotNullOrEmpty(config.azdevops.masterUrl, "config.azdevops.masterUrl", "Can't find myget url for docfx master feed in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
+
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
+    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["masterUrl"], releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {
@@ -211,9 +234,9 @@ gulp.task("syncBranchCore", () => {
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
-gulp.task("dev:release", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
+gulp.task("dev:release", gulp.series("clean", "build", "e2eTest", "publish:myget-dev", "publish:azdevops-dev-login", "publish:azdevops-dev"));
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
-gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
+gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:azdevops-master-login", "publish:azdevops-master", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
 
 gulp.task("default", gulp.series("dev"));
