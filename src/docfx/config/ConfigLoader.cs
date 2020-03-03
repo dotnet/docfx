@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
         }
 
-        public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
+        public static (string docsetPath, string? outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
         {
             var glob = FindDocsetsGlob(workingDirectory);
             if (glob is null)

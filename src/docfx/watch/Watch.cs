@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class Watch

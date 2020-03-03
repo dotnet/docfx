@@ -5,6 +5,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class Document : IEquatable<Document>, IComparable<Document>
@@ -23,7 +25,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the MIME type specifed in YAML header or JSON $schema.
         /// </summary>
-        public SourceInfo<string> Mime { get; }
+        public SourceInfo<string?> Mime { get; }
 
         /// <summary>
         /// Gets the source file path relative to docset folder that is:
@@ -88,7 +90,7 @@ namespace Microsoft.Docs.Build
             string siteUrl,
             string canonicalUrl,
             ContentType contentType,
-            SourceInfo<string> mime,
+            SourceInfo<string?> mime,
             bool isExperimental,
             bool isPage = true)
         {
@@ -126,11 +128,11 @@ namespace Microsoft.Docs.Build
                 ContentType);
         }
 
-        public static bool operator ==(Document a, Document b) => Equals(a, b);
+        public static bool operator ==(Document? a, Document? b) => Equals(a, b);
 
-        public static bool operator !=(Document a, Document b) => !Equals(a, b);
+        public static bool operator !=(Document? a, Document? b) => !Equals(a, b);
 
-        public bool Equals(Document other)
+        public bool Equals(Document? other)
         {
             if (other is null)
             {
@@ -142,7 +144,7 @@ namespace Microsoft.Docs.Build
                    ContentType == other.ContentType;
         }
 
-        public override bool Equals(object obj) => Equals(obj as Document);
+        public override bool Equals(object? obj) => Equals(obj as Document);
 
         public override string ToString() => FilePath.ToString();
     }

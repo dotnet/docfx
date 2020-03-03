@@ -3,8 +3,9 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
@@ -15,10 +16,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new ConcurrentHashSet<DependencyItem>();
 
-        public void AddDependencyItem(Document from, Document to, DependencyType type)
+        public void AddDependencyItem(Document from, Document? to, DependencyType type)
         {
-            Debug.Assert(from != null);
-
             if (to is null)
             {
                 return;

@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             return GetCommitHistory(Path.Combine(docset.DocsetPath, filePath), repo);
         }
 
-        public (Repository? repo, string? pathToRepo, GitCommit[] commits) GetCommitHistory(string fullPath, Repository repo, string? committish = null)
+        public (Repository? repo, string? pathToRepo, GitCommit[] commits) GetCommitHistory(string fullPath, Repository? repo, string? committish = null)
         {
             if (repo is null)
                 return (null, null, Array.Empty<GitCommit>());

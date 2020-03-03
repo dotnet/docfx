@@ -6,17 +6,19 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class ContributionInfo
     {
-        public string UpdateAt { get; set; }
+        public string? UpdateAt { get; set; }
 
         public DateTime UpdatedAtDateTime { get; set; }
 
-        public Contributor[] Contributors { get; set; }
+        public Contributor[]? Contributors { get; set; }
 
-        public Contributor Author { get; set; }
+        public Contributor? Author { get; set; }
     }
 }

@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input, FilePath file) where T : class, new()
+        public static T Deserialize<T>(string input, FilePath? file) where T : class, new()
         {
             using var reader = new StringReader(input);
             return Deserialize<T>(reader, file);
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader input, FilePath file) where T : class, new()
+        public static T Deserialize<T>(TextReader input, FilePath? file) where T : class, new()
         {
             var (_, token) = ParseAsJToken(input, file);
             return token?.ToObject<T>(JsonUtility.Serializer) ?? new T();
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(string input, FilePath file)
+        public static (List<Error>, JToken) Parse(string input, FilePath? file)
         {
             return Parse(new StringReader(input), file);
         }
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(TextReader input, FilePath file)
+        public static (List<Error>, JToken) Parse(TextReader input, FilePath? file)
         {
             var (errors, token) = ParseAsJToken(input, file);
             var (nullErrors, result) = token.RemoveNulls();
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static (List<Error>, JToken) ParseAsJToken(TextReader input, FilePath file)
+        private static (List<Error>, JToken) ParseAsJToken(TextReader input, FilePath? file)
         {
             try
             {
@@ -132,16 +132,16 @@ namespace Microsoft.Docs.Build
             }
             catch (YamlException ex)
             {
-                var source = new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var source = file is null ? null : new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
                 var message = Regex.Replace(ex.Message, "^\\(.*?\\) - \\(.*?\\):\\s*", "");
 
                 throw Errors.YamlSyntaxError(source, message).ToException(ex);
             }
         }
 
-        private static SourceInfo ToSourceInfo(ParsingEvent node, FilePath file)
+        private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file)
         {
-            return new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column);
+            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column);
         }
     }
 }

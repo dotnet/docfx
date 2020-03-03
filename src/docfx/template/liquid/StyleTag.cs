@@ -4,6 +4,8 @@
 using System.IO;
 using DotLiquid;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class StyleTag : Tag

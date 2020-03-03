@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             return builder.Build();
         }
 
-        private string GetToken(string key)
+        private string? GetToken(string key)
         {
             return _templateEngine.GetToken(key);
         }
@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
         }
 
-        private (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
+        private (string content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
             var (error, content, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);

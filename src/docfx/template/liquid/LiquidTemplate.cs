@@ -11,11 +11,13 @@ using DotLiquid;
 using DotLiquid.FileSystems;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class LiquidTemplate
     {
-        private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
+        private readonly ConcurrentDictionary<string, Lazy<Template?>> _templates = new ConcurrentDictionary<string, Lazy<Template?>>();
         private readonly IncludeFileSystem _fileSystem;
         private readonly string _templateDir;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
@@ -39,7 +41,7 @@ namespace Microsoft.Docs.Build
         {
             var template = _templates.GetOrAdd(
                 templateName,
-                new Lazy<Template>(() =>
+                new Lazy<Template?>(() =>
                 {
                     var fileName = $"{templateName}.html.liquid";
                     if (!File.Exists(Path.Combine(_templateDir, fileName)))
@@ -104,7 +106,7 @@ namespace Microsoft.Docs.Build
             return template;
         }
 
-        private static object ToLiquidObject(JToken token)
+        private static object? ToLiquidObject(JToken token)
         {
             if (token is null)
                 return null;

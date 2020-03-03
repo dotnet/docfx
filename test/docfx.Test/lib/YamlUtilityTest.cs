@@ -287,7 +287,7 @@ items:
  - name: 1", 3, 2)]
         public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
         {
-            var (errors, value) = YamlUtility.Parse(yaml, null);
+            var (errors, value) = YamlUtility.Parse(yaml, new FilePath("file"));
             Assert.Empty(errors);
 
             // Get the first JValue of the first JProperty if any

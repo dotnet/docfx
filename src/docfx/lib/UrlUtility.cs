@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeUrl(string targetUrl, string sourceQuery, string? sourceFragment = null)
+        public static string MergeUrl(string targetUrl, string? sourceQuery = null, string? sourceFragment = null)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             return targetPath + query + fragment;
         }
 
-        public static DependencyType FragmentToDependencyType(string fragment)
+        public static DependencyType FragmentToDependencyType(string? fragment)
         {
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static LinkType GetLinkType(string link)
+        public static LinkType GetLinkType(string? link)
         {
             if (string.IsNullOrEmpty(link))
             {
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool TryParseGitHubUrl(
-            string remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
+            string? remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
         {
             owner = name = default;
             if (string.IsNullOrEmpty(remoteUrl))

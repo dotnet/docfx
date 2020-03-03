@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     public static class Docfx
@@ -206,7 +208,8 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
             {
                 return string.Concat(
                     from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
-                    where entry.Key.ToString().StartsWith("DOCFX_")
+                    let key = entry.Key.ToString()
+                    where key != null && key.StartsWith("DOCFX_")
                     select $"{entry.Key}: `{entry.Value}`\n");
             }
             catch (Exception ex)
@@ -215,7 +218,7 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
             }
         }
 
-        private static string GetDocfxVersion()
+        private static string? GetDocfxVersion()
         {
             try
             {

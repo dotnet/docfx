@@ -6,6 +6,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class MonikerProvider
@@ -20,8 +22,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string>> _monikerRangeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string>>();
 
-        private readonly ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)> _monikerCache
-                   = new ConcurrentDictionary<FilePath, (Error, IReadOnlyList<string>)>();
+        private readonly ConcurrentDictionary<FilePath, (Error?, IReadOnlyList<string>)> _monikerCache
+                   = new ConcurrentDictionary<FilePath, (Error?, IReadOnlyList<string>)>();
 
         public MonikerComparer Comparer { get; }
 
@@ -55,12 +57,12 @@ namespace Microsoft.Docs.Build
             return _monikerRangeCache.GetOrAdd(file, GetConfigMonikerRangeCore);
         }
 
-        public (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
+        public (Error? error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 
-        public (Error error, IReadOnlyList<string> monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
+        public (Error? error, IReadOnlyList<string> monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
         {
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
@@ -82,7 +84,7 @@ namespace Microsoft.Docs.Build
             return (null, monikers);
         }
 
-        private (Error error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(FilePath file)
+        private (Error? error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(FilePath file)
         {
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 

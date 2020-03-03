@@ -135,6 +135,10 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
 
+            // Remove git lock files if previous build was killed during git operation
+            DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));
+            DeleteIfExist(Path.Combine(cwd, ".git/shallow.lock"));
+
             try
             {
                 GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
@@ -175,6 +179,14 @@ namespace Microsoft.Docs.Build
                 {
                     _gitReaderLocks.Add(gitPath, InterProcessReaderWriterLock.CreateReaderLock(gitPath));
                 }
+            }
+        }
+
+        private static void DeleteIfExist(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
             }
         }
     }

@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.Locale = context.LocalizationProvider.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
-            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath.RelativePath) + "/";
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
@@ -317,7 +317,7 @@ namespace Microsoft.Docs.Build
 
             if (context.Config.DryRun)
             {
-                return (new TemplateModel(), new JObject());
+                return (null, new JObject());
             }
 
             // Hosting layers treats empty content as 404, so generate an empty <div></div>
@@ -344,13 +344,7 @@ namespace Microsoft.Docs.Build
                 metadata, context.MetadataProvider.HtmlMetaHidden, context.MetadataProvider.HtmlMetaNames);
 
             // content for *.raw.page.json
-            var model = new TemplateModel
-            {
-                Content = content,
-                RawMetadata = templateMetadata,
-                PageMetadata = pageMetadata,
-                ThemesRelativePathToOutputRoot = "_themes/",
-            };
+            var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
 
             return (model, metadata);
         }

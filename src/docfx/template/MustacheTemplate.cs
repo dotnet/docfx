@@ -10,13 +10,15 @@ using Stubble.Core.Builders;
 using Stubble.Core.Interfaces;
 using Stubble.Core.Settings;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class MustacheTemplate
     {
         private readonly string _templateDir;
         private readonly IStubbleRenderer _renderer;
-        private readonly ConcurrentDictionary<string, Lazy<string>> _templates = new ConcurrentDictionary<string, Lazy<string>>();
+        private readonly ConcurrentDictionary<string, Lazy<string?>> _templates = new ConcurrentDictionary<string, Lazy<string?>>();
 
         public MustacheTemplate(string templateDir)
         {
@@ -29,7 +31,7 @@ namespace Microsoft.Docs.Build
         {
             var template = _templates.GetOrAdd(
                 templateFileName,
-                key => new Lazy<string>(() =>
+                key => new Lazy<string?>(() =>
                 {
                     var fileName = Path.Combine(_templateDir, templateFileName);
                     return File.Exists(fileName) ? File.ReadAllText(fileName).Replace("\r", "") : null;
@@ -50,7 +52,7 @@ namespace Microsoft.Docs.Build
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
                            .SetSectionBlacklistTypes(sectionBlacklist);
 
-            object GetJObjectValue(object value, string key, bool ignoreCase)
+            object? GetJObjectValue(object value, string key, bool ignoreCase)
             {
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);

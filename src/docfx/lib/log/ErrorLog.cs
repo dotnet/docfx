@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public ErrorLog(string docsetPath, string outputPath, Func<Config?> config, bool legacy = false)
+        public ErrorLog(string docsetPath, string? outputPath, Func<Config?> config, bool legacy = false)
         {
             _config = config;
             _legacy = legacy;
