@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class Build
@@ -26,10 +28,10 @@ namespace Microsoft.Docs.Build
             return result.All(x => x) ? 0 : 1;
         }
 
-        private static async Task<bool> BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static async Task<bool> BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
             List<Error> errors;
-            Config config = null;
+            Config? config = null;
 
             using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
@@ -49,10 +51,11 @@ namespace Microsoft.Docs.Build
                 using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
                 var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
                 var repositoryProvider = new RepositoryProvider(docsetPath, repository, config, packageResolver, localizationProvider);
-                var input = new Input(docsetPath, repositoryProvider, localizationProvider);
+                var input = new Input(docsetPath, repositoryProvider);
 
                 // get docsets(build docset, fallback docset and dependency docsets)
-                var (docset, fallbackDocset) = GetDocsetWithFallback(localizationProvider);
+                var docset = new Docset(docsetPath, repository);
+                var fallbackDocset = localizationProvider.GetFallbackDocset();
 
                 // run build based on docsets
                 outputPath ??= Path.Combine(docsetPath, config.OutputPath);
@@ -72,27 +75,10 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
-            LocalizationProvider localizationProvider)
-        {
-            var (currentDocsetPath, currentRepo) = localizationProvider.GetBuildRepositoryWithDocsetEntry();
-            var currentDocset = new Docset(currentDocsetPath, currentRepo);
-            if (localizationProvider.IsLocalizationBuild)
-            {
-                var (fallbackDocsetPath, fallbackRepo) = localizationProvider.GetFallbackRepositoryWithDocsetEntry();
-                if (fallbackRepo != null)
-                {
-                    return (currentDocset, new Docset(fallbackDocsetPath, fallbackRepo));
-                }
-            }
-
-            return (currentDocset, default);
-        }
-
         private static async Task Run(
             Config config,
             Docset docset,
-            Docset fallbackDocset,
+            Docset? fallbackDocset,
             CommandLineOptions options,
             ErrorLog errorLog,
             string outputPath,
