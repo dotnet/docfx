@@ -33,7 +33,8 @@ let config = {
     "myget": nconf.get("myget"),
     "git": nconf.get("git"),
     "choco": nconf.get("choco"),
-    "sync": nconf.get("sync")
+    "sync": nconf.get("sync"),
+    "azdevops": nconf.get("azdevops"),
 };
 
 config.myget.exe = process.env.NUGETEXE || config.myget.exe;
