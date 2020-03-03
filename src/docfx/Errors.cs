@@ -547,7 +547,7 @@ namespace Microsoft.Docs.Build
         ///   - defined a an unknown schema type(other than conceptual, contextObject, landingData)
         /// </summary>
         /// Behavior: ❌ Message: ✔️
-        public static Error SchemaNotFound(SourceInfo<string> source)
+        public static Error SchemaNotFound(SourceInfo<string?> source)
             => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{source}'", source);
 
         /// <summary>
@@ -575,7 +575,7 @@ namespace Microsoft.Docs.Build
         ///   - Same uid defined in multiple .md files with different versions have different titles.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string> conflicts)
+        public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
         {
             return new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {Join(conflicts)}");
         }

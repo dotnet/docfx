@@ -14,9 +14,9 @@ namespace Microsoft.Docs.Build
     {
         public string? Title { get; private set; }
 
-        public SourceInfo<string?> Author { get; private set; }
+        public SourceInfo<string> Author { get; private set; } = new SourceInfo<string>("");
 
-        public SourceInfo<string?> BreadcrumbPath { get; private set; }
+        public SourceInfo<string> BreadcrumbPath { get; private set; } = new SourceInfo<string>("");
 
         [JsonProperty("monikerRange")]
         public SourceInfo<string> MonikerRange { get; private set; } = new SourceInfo<string>("");

@@ -7,6 +7,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class XrefResolver
@@ -37,12 +39,12 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
-        public (Error error, string href, string display, Document declaringFile) ResolveXref(
+        public (Error? error, string href, string display, Document? declaringFile) ResolveXref(
             SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
-            string moniker = null;
-            string text = null;
+            string? moniker = null;
+            string? text = null;
             var queries = new NameValueCollection();
             if (!string.IsNullOrEmpty(query))
             {
@@ -57,9 +59,9 @@ namespace Microsoft.Docs.Build
 
             // need to url decode uid from input content
             var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), hrefRelativeTo);
-            if (xrefError != null)
+            if (xrefError != null || xrefSpec is null)
             {
-                return (xrefError, null, null, null);
+                return (xrefError, "", "", null);
             }
 
             var name = xrefSpec.GetXrefPropertyValueAsString("name");
@@ -82,7 +84,7 @@ namespace Microsoft.Docs.Build
             // NOTE: this should also be relative to root file
             _fileLinkMapBuilder.AddFileLink(inclusionRoot ?? hrefRelativeTo, resolvedHref);
 
-            if (xrefSpec?.DeclaringFile != null)
+            if (xrefSpec?.DeclaringFile != null && inclusionRoot != null)
             {
                 resolvedHref = UrlUtility.GetRelativeUrl(inclusionRoot.SiteUrl, resolvedHref);
             }
@@ -90,7 +92,7 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error, ExternalXrefSpec) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        public (Error?, ExternalXrefSpec?) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
             return (error, xrefSpec?.ToExternalXrefSpec());
@@ -98,8 +100,8 @@ namespace Microsoft.Docs.Build
 
         public XrefMapModel ToXrefMapModel()
         {
-            string repositoryBranch = null;
-            string basePath = null;
+            string? repositoryBranch = null;
+            string? basePath = null;
             var references = _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
@@ -159,7 +161,7 @@ namespace Microsoft.Docs.Build
             return url;
         }
 
-        private (Error, IXrefSpec) Resolve(SourceInfo<string> uid, Document referencingFile)
+        private (Error?, IXrefSpec?) Resolve(SourceInfo<string> uid, Document referencingFile)
         {
             var unescapedUid = Uri.UnescapeDataString(uid);
             var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referencingFile) ?? ResolveExternalXrefSpec(unescapedUid);
@@ -170,12 +172,12 @@ namespace Microsoft.Docs.Build
             return (null, xrefSpec);
         }
 
-        private IXrefSpec ResolveExternalXrefSpec(string uid)
+        private IXrefSpec? ResolveExternalXrefSpec(string uid)
         {
             return _externalXrefMap.Value.TryGetValue(uid, out var result) ? result.Value : null;
         }
 
-        private IXrefSpec ResolveInternalXrefSpec(string uid, Document declaringFile)
+        private IXrefSpec? ResolveInternalXrefSpec(string uid, Document declaringFile)
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {

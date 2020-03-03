@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class InternalXrefMapBuilder
@@ -50,11 +52,10 @@ namespace Microsoft.Docs.Build
                 {
                     var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                     errors.AddRange(fileMetaErrors);
-
-                    if (!string.IsNullOrEmpty(fileMetadata.Uid))
+                    var (error, spec) = LoadMarkdown(context, fileMetadata, file);
+                    errors.AddIfNotNull(error);
+                    if (spec != null)
                     {
-                        var (error, spec, _) = LoadMarkdown(context, fileMetadata, file);
-                        errors.AddIfNotNull(error);
                         xrefs.Add(spec);
                     }
                 }
@@ -87,19 +88,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, UserMetadata metadata, Document file)
+        private static (Error? error, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
         {
-            var xref = new InternalXrefSpec
+            if (string.IsNullOrEmpty(metadata.Uid))
             {
-                Uid = metadata.Uid,
-                Href = file.SiteUrl,
-                DeclaringFile = file,
-            };
+                return default;
+            }
+
+            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
-            return (error, xref, file);
+            return (error, xref);
         }
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)

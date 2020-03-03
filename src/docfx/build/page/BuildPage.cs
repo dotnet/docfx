@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
@@ -92,7 +94,7 @@ namespace Microsoft.Docs.Build
             // so we need to run the full template for SDP even in --dry-run mode.
             if (context.Config.DryRun && string.IsNullOrEmpty(file.Mime))
             {
-                return (errors, null, new JObject());
+                return (errors, new JObject(), new JObject());
             }
 
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
@@ -132,10 +134,10 @@ namespace Microsoft.Docs.Build
         {
             if (context.Config.DryRun)
             {
-                return (new List<Error>(), null, new JObject());
+                return (new List<Error>(), new JObject(), new JObject());
             }
 
-            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
+            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
         private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
@@ -147,7 +149,7 @@ namespace Microsoft.Docs.Build
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveLink(
                     inputMetadata.BreadcrumbPath,
-                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File),
+                    inputMetadata.BreadcrumbPath.Source is null ? file : context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File),
                     file);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
@@ -317,7 +319,7 @@ namespace Microsoft.Docs.Build
 
             if (context.Config.DryRun)
             {
-                return (null, new JObject());
+                return (new TemplateModel("", new JObject(), "", ""), new JObject());
             }
 
             // Hosting layers treats empty content as 404, so generate an empty <div></div>

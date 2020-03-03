@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly Lazy<TestServer> s_server = new Lazy<TestServer>(StartServer);
 
-        public static async Task<string> Render(string template, object model)
+        public static async Task<string> Render(string? template, object model)
         {
             var httpContext = await s_server.Value.SendAsync(context =>
             {

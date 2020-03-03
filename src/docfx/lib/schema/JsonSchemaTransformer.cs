@@ -120,13 +120,8 @@ namespace Microsoft.Docs.Build
                         return false;
                     });
 
-                    var xref = new InternalXrefSpec
-                    {
-                        Uid = uid,
-                        Source = JsonUtility.GetSourceInfo(obj),
-                        Href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", $"#{GetBookmarkFromUid(uid)}"),
-                        DeclaringFile = file,
-                    };
+                    var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", $"#{GetBookmarkFromUid(uid)}");
+                    var xref = new InternalXrefSpec(uid, href, file);
                     xref.ExtensionData.AddRange(xrefProperties);
                     xref.PropertyContentTypeMapping.AddRange(contentTypeProperties);
                     return xref;
