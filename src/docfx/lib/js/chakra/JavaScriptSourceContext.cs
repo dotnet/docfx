@@ -2,6 +2,8 @@ namespace ChakraHost.Hosting
 {
     using System;
 
+#nullable enable
+
     /// <summary>
     ///     A cookie that identifies a script for debugging purposes.
     /// </summary>
@@ -162,7 +164,7 @@ namespace ChakraHost.Hosting
         /// </summary>
         /// <param name="obj">The other source context to compare.</param>
         /// <returns>Whether the two source contexts are the same.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
             {

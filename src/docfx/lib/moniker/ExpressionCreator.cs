@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class ExpressionCreator
@@ -43,8 +45,8 @@ namespace Microsoft.Docs.Build
 
             IExpression GetComparatorSet()
             {
-                IExpression result = null;
-                while (TryGetComparator(out var comparator))
+                IExpression? result = null;
+                while (TryGetComparator(out var comparator) && comparator != null)
                 {
                     if (result != null)
                     {
@@ -62,7 +64,7 @@ namespace Microsoft.Docs.Build
                 return result;
             }
 
-            bool TryGetComparator(out IExpression comparator)
+            bool TryGetComparator(out IExpression? comparator)
             {
                 var foundOperator = Accept(SymbolType.Operator, out string @operator);
                 if (!foundOperator)

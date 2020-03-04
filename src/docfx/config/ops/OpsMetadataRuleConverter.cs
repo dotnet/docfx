@@ -7,6 +7,8 @@ using System.Linq;
 using Docs.MetadataService.Models;
 using Newtonsoft.Json;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal static class OpsMetadataRuleConverter
@@ -35,8 +37,12 @@ namespace Microsoft.Docs.Build
             foreach (var (attribute, attributeRules) in rules)
             {
                 // Only validate conceptual files for now
-                var rulesInfo = attributeRules.Rules.Select(ruleInfo => ruleInfo.ToObject<OpsMetadataRule>() as OpsMetadataRule)
-                    .Where(ruleInfo => ruleInfo.ContentTypes.Contains("conceptual")).ToDictionary(ruleInfo => ruleInfo.Type);
+                var rulesInfo = new Dictionary<string, OpsMetadataRule>(
+                    from rule in attributeRules.Rules
+                    let ruleInfo = (OpsMetadataRule)rule.ToObject<OpsMetadataRule>()
+                    let type = ruleInfo.Type
+                    where ruleInfo.ContentTypes.Contains("conceptual") && type != null
+                    select new KeyValuePair<string, OpsMetadataRule>(type, ruleInfo));
 
                 var property = new
                 {
@@ -137,15 +143,15 @@ namespace Microsoft.Docs.Build
             return attributeAdditionalErrorsErrors.Count != 0;
         }
 
-        private static bool TryGetAllowlist(string parentName, string listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema> allowList)
+        private static bool TryGetAllowlist(string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)
         {
-            allowList = new Dictionary<string, EnumDependenciesSchema>();
+            allowList = new Dictionary<string, EnumDependenciesSchema?>();
 
             if (!string.IsNullOrEmpty(listId) && allowlists.TryGetValue(listId, out var mainAllowlist))
             {
                 if (string.IsNullOrEmpty(mainAllowlist.DependentAttribute))
                 {
-                    allowList = mainAllowlist.Values.Keys.ToDictionary(validValue => validValue, validValue => (EnumDependenciesSchema)null);
+                    allowList = mainAllowlist.Values.Keys.ToDictionary(validValue => validValue, validValue => (EnumDependenciesSchema?)null);
                     return true;
                 }
 
@@ -168,7 +174,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static object GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Allowlists allowlists)
+        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Allowlists allowlists)
         {
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
@@ -180,7 +186,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static string GetReplacedBy(Dictionary<string, OpsMetadataRule> rulesInfo)
+        private static string? GetReplacedBy(Dictionary<string, OpsMetadataRule> rulesInfo)
         {
             if (rulesInfo.TryGetValue("Deprecated", out var deprecatedRuleInfo))
             {
@@ -210,7 +216,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static string GetDateFormat(Dictionary<string, OpsMetadataRule> rulesInfo)
+        private static string? GetDateFormat(Dictionary<string, OpsMetadataRule> rulesInfo)
         {
             if (rulesInfo.TryGetValue("Date", out var dateRuleInfo))
             {
@@ -220,7 +226,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static List<string> GetType(Dictionary<string, OpsMetadataRule> rulesInfo)
+        private static List<string>? GetType(Dictionary<string, OpsMetadataRule> rulesInfo)
         {
             if (rulesInfo.TryGetValue("Kind", out var kindRuleInfo) && kindRuleInfo.MultipleValues.HasValue)
             {
@@ -230,7 +236,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static List<string> GetEnum(Dictionary<string, OpsMetadataRule> rulesInfo)
+        private static List<string>? GetEnum(Dictionary<string, OpsMetadataRule> rulesInfo)
         {
             if (rulesInfo.TryGetValue("Kind", out var kindRuleInfo) && kindRuleInfo.MultipleValues.HasValue && kindRuleInfo.MultipleValues.Value)
             {
@@ -245,6 +251,6 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private class EnumDependenciesSchema : Dictionary<string, Dictionary<string, EnumDependenciesSchema>> { }
+        private class EnumDependenciesSchema : Dictionary<string, Dictionary<string, EnumDependenciesSchema?>> { }
     }
 }
