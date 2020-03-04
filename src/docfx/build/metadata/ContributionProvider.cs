@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                     var (error, githubUser) = await _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     var contributor = githubUser?.ToContributor();
-                    if (contributor != null && !excludes.Contains(contributor.Name))
+                    if (!string.IsNullOrEmpty(contributor?.Name) && !excludes.Contains(contributor.Name))
                     {
                         contributors.Add(contributor);
                     }
