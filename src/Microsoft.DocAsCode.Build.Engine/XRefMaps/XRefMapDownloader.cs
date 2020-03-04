@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
     using System.Threading;
@@ -15,8 +16,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private readonly SemaphoreSlim _semaphore;
         private readonly string _baseFolder;
+        private readonly IReadOnlyList<string> _fallbackFolders;
 
-        public XRefMapDownloader(string baseFolder = null, int maxParallelism = 0x10)
+        public XRefMapDownloader(string baseFolder = null, IReadOnlyList<string> fallbackFolders = null, int maxParallelism = 0x10)
         {
             _semaphore = new SemaphoreSlim(maxParallelism);
             if (baseFolder == null)
@@ -27,6 +29,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 _baseFolder = Path.Combine(Directory.GetCurrentDirectory(), baseFolder);
             }
+            _fallbackFolders = fallbackFolders ?? new List<string>();
         }
 
         /// <summary>
@@ -52,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     else
                     {
-                        return ReadLocalFile(Path.Combine(_baseFolder, uri.OriginalString));
+                        return ReadLocalFileWithFallback(uri);
                     }
                 }
                 finally
@@ -60,6 +63,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _semaphore.Release();
                 }
             });
+        }
+
+        private IXRefContainer ReadLocalFileWithFallback(Uri uri)
+        {
+            var localFilePath = Path.Combine(_baseFolder, uri.OriginalString);
+            if (File.Exists(localFilePath))
+            {
+                return ReadLocalFile(localFilePath);
+            }
+
+            foreach (var fallbackFolder in _fallbackFolders)
+            {
+                var fallbackFilePath = Path.Combine(fallbackFolder, uri.OriginalString);
+                if (File.Exists(fallbackFilePath))
+                {
+                    return ReadLocalFile(fallbackFilePath);
+                }
+            }
+            throw new FileNotFoundException($"Cannot find xref map file in {(_fallbackFolders.Count > 0 ? "fallback folders: " + string.Join(",", _fallbackFolders) : "local: " + localFilePath)}", uri.OriginalString);
         }
 
         /// <remarks>
