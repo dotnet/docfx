@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             }
             catch (CultureNotFoundException)
             {
-                throw Errors.LocaleInvalid(locale).ToException();
+                throw Errors.Config.LocaleInvalid(locale).ToException();
             }
         }
     }

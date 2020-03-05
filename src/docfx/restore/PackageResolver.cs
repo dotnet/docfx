@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
 
                     if (!File.Exists(gitDocfxHead))
                     {
-                        throw Errors.NeedRestore($"{package.Url}#{package.Branch}").ToException();
+                        throw Errors.System.NeedRestore($"{package.Url}#{package.Branch}").ToException();
                     }
                     return gitPath;
 
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
                     var dir = Path.Combine(_docsetPath, package.Path);
                     if (!Directory.Exists(dir))
                     {
-                        throw Errors.DirectoryNotFound(new SourceInfo<string>(package.Path)).ToException();
+                        throw Errors.Config.DirectoryNotFound(new SourceInfo<string>(package.Path)).ToException();
                     }
                     return dir;
             }
@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (InvalidOperationException ex)
                 {
-                    throw Errors.GitCloneFailed(url, committish).ToException(ex);
+                    throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                 }
             }
 
@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
             }
             catch (InvalidOperationException ex)
             {
-                throw Errors.CommittishNotFound(url, committish).ToException(ex);
+                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
             }
         }
 

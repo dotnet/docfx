@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (InvalidOperationException ex)
                 {
-                    throw Errors.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                    throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
                 }
             }
         }

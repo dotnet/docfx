@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
                 var errors = new List<Error>();
                 var result = ToJToken(
                     input,
-                    onKeyDuplicate: key => errors.Add(Errors.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
+                    onKeyDuplicate: key => errors.Add(Errors.Yaml.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
                     onConvert: (token, node) =>
                     {
                         if (token is JProperty property)
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 var source = file is null ? null : new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
                 var message = Regex.Replace(ex.Message, "^\\(.*?\\) - \\(.*?\\):\\s*", "");
 
-                throw Errors.YamlSyntaxError(source, message).ToException(ex);
+                throw Errors.Yaml.YamlSyntaxError(source, message).ToException(ex);
             }
         }
 

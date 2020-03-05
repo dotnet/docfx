@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             {
                 var dependencyChain = recursionDetector.Reverse().ToList();
                 dependencyChain.Add(file);
-                throw Errors.CircularReference(dependencyChain, file).ToException();
+                throw Errors.Link.CircularReference(dependencyChain, file).ToException();
             }
 
             var (errors, model) = LoadTocModel(file.FilePath, content);
@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
                 // todo: how to do required validation in strong model
                 if (string.IsNullOrEmpty(newItem.Name))
                 {
-                    errors.Add(Errors.MissingTocHead(newItem.Name));
+                    errors.Add(Errors.TableOfContents.MissingTocHead(newItem.Name));
                 }
             }
 
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.AddIfNotNull(Errors.InvalidTocHref(tocInputModel.TocHref));
+                    errors.AddIfNotNull(Errors.TableOfContents.InvalidTocHref(tocInputModel.TocHref));
                 }
             }
 
@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
                 var topicHrefType = GetHrefType(tocInputModel.TopicHref);
                 if (IsIncludeHref(topicHrefType))
                 {
-                    errors.Add(Errors.InvalidTopicHref(tocInputModel.TopicHref));
+                    errors.Add(Errors.TableOfContents.InvalidTopicHref(tocInputModel.TopicHref));
                 }
                 else
                 {

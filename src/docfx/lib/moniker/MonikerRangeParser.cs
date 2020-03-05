@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (MonikerRangeException ex)
                 {
-                    throw Errors.MonikerRangeInvalid(rangeString, ex).ToException();
+                    throw Errors.Versioning.MonikerRangeInvalid(rangeString, ex).ToException();
                 }
             });
         }

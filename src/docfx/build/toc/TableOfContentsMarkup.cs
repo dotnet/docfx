@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: file)));
+                        errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.ToSourceInfo(file: file)));
                         break;
                 }
             }
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
 
                 if (parent.node is null || currentLevel != parent.level + 1)
                 {
-                    errors.Add(Errors.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
+                    errors.Add(Errors.TableOfContents.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
             if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
             {
-                errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: filePath)));
+                errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.ToSourceInfo(file: filePath)));
                 return null;
             }
 
@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add(Errors.InvalidTocSyntax(inline.ToSourceInfo(file: filePath)));
+                    errors.Add(Errors.TableOfContents.InvalidTocSyntax(inline.ToSourceInfo(file: filePath)));
                     return default;
                 }
             }

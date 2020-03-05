@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
             var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referencingFile) ?? ResolveExternalXrefSpec(unescapedUid);
             if (xrefSpec is null)
             {
-                return (Errors.XrefNotFound(uid), null);
+                return (Errors.Xref.XrefNotFound(uid), null);
             }
             return (null, xrefSpec);
         }

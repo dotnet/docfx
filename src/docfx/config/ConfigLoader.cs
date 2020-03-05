@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
             {
-                throw Errors.ConfigNotFound(docsetPath).ToException();
+                throw Errors.Config.ConfigNotFound(docsetPath).ToException();
             }
 
             var errors = new List<Error>();
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                 return obj;
             }
 
-            throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
+            throw Errors.JsonSchema.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
         private JObject DownloadExtendConfig(
