@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
                 // custom 404 page is not supported
-                errors.Add(Errors.Custom404Page(file));
+                errors.Add(Errors.Content.Custom404Page(file));
             }
 
             if (shouldWriteOutput && !context.Config.DryRun)
@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
-                errors.Add(Errors.HeadingNotFound(file));
+                errors.Add(Errors.Heading.HeadingNotFound(file));
             }
 
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
 
             if (!(token is JObject obj))
             {
-                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
+                throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema

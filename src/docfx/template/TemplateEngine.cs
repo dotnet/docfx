@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         {
             return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate)
                ? schemaTemplate.Value
-               : throw Errors.SchemaNotFound(schemaName).ToException();
+               : throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
         }
 
         public string RunLiquid(Document file, TemplateModel model)
