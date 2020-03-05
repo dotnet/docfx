@@ -50,11 +50,17 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                switch (path.Type)
+                if (path.Type == PackageType.Git)
                 {
-                    case PackageType.Git:
-                        DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
-                        break;
+                    var repoPath = DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
+
+                    // ensure contribution branch for CRR included in build
+                    // empty repo path means hit cache
+                    if ((path as DependencyConfig)?.IncludeInBuild == true && !string.IsNullOrEmpty(repoPath))
+                    {
+                        var crrRepository = Repository.Create(repoPath, path.Branch, path.Url);
+                        LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
+                    }
                 }
             }
             catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
@@ -104,7 +110,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void DownloadGitRepository(string url, string committish, bool depthOne)
+        private string DownloadGitRepository(string url, string committish, bool depthOne)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
@@ -115,7 +121,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_fetchOptions == FetchOptions.UseCache)
                     {
-                        return;
+                        return "";
                     }
                     File.Delete(gitDocfxHead);
                 }
@@ -124,6 +130,7 @@ namespace Microsoft.Docs.Build
                     DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
                 }
                 File.WriteAllText(gitDocfxHead, committish);
+                return gitPath;
             }
         }
 

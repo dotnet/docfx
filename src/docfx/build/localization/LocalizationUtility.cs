@@ -95,18 +95,9 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (TryRemoveLocale(branch, out var branchWithoutLocale, out var locale))
-            {
-                branch = branchWithoutLocale;
-            }
-
             if (branch.EndsWith("-sxs"))
             {
                 contributionBranch = branch.Substring(0, branch.Length - 4);
-                if (!string.IsNullOrEmpty(locale))
-                {
-                    contributionBranch += $".{locale}";
-                }
                 return true;
             }
 
@@ -128,6 +119,24 @@ namespace Microsoft.Docs.Build
 
                 default:
                     return theme;
+            }
+        }
+
+        public static void EnsureLocalizationContributionBranch(Config config, Repository? repository)
+        {
+            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
+            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
+            // here to generate the correct contributor list.
+            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            {
+                try
+                {
+                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Errors.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                }
             }
         }
 
