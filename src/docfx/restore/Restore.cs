@@ -91,7 +91,18 @@ namespace Microsoft.Docs.Build
             using var packageResolver = new PackageResolver(docsetPath, config, fetchOptions);
             ParallelUtility.ForEach(
                 GetPackages(config, locale, repository).Distinct(),
-                item => packageResolver.DownloadPackage(item.package, item.flags),
+                item =>
+                {
+                    var (repoPath, repoBranch, repoUrl) = packageResolver.DownloadPackage(item.package, item.flags);
+
+                    // ensure contribution branch for CRR included in build
+                    // empty repoBranch means hit cache
+                    if ((item.package as DependencyConfig)?.IncludeInBuild == true & string.IsNullOrEmpty(repoBranch))
+                    {
+                        var crrRepository = Repository.Create(repoPath, repoBranch, repoUrl);
+                        EnsureLocalizationContributionBranch(config, crrRepository);
+                    }
+                },
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
 

@@ -712,3 +712,39 @@ outputs:
     {
       "_op_gitContributorInformation": { "author": undefined }
     }
+---
+# Localization with CRR build
+repos:
+  https://docs.com/crrcontent/a#live-sxs:
+    - files:
+        docfx.yml: |
+          files:
+            - "docs/**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              url: https://github.com/testowner/crr-content
+              branch: live-sxs
+              includeInBuild: true
+        docs/a.md:
+  https://docs.com/crrcontent/a#live:
+    - files:
+        docfx.yml: |
+          files:
+            - "docs/**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              url: https://github.com/testowner/crr-content
+              branch: live-sxs
+              includeInBuild: true
+        docs/a.md:
+  https://github.com/testowner/crr-content#live-sxs:
+    - files:
+        b.md:
+  https://github.com/testowner/crr-content#live:
+    - files:
+        b.md:
+outputs:
+  docs/a.json:
+  crrb/b.json:

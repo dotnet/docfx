@@ -46,20 +46,21 @@ namespace Microsoft.Docs.Build
             return _packagePath.GetOrAdd(package, key => new Lazy<string>(() => ResolvePackageCore(key, options))).Value;
         }
 
-        public void DownloadPackage(PackagePath path, PackageFetchOptions options)
+        public (string repoPath, string repoBranch, string repoUrl) DownloadPackage(PackagePath path, PackageFetchOptions options)
         {
             try
             {
-                switch (path.Type)
+                if (path.Type == PackageType.Git)
                 {
-                    case PackageType.Git:
-                        DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
-                        break;
+                    var repoPath = DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
+                    return (repoPath, path.Branch, path.Url);
                 }
+                return default;
             }
             catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
             {
                 Log.Write($"Ignore optional package download failure '{path}': {ex}");
+                return default;
             }
         }
 
@@ -104,7 +105,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void DownloadGitRepository(string url, string committish, bool depthOne)
+        private string DownloadGitRepository(string url, string committish, bool depthOne)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
@@ -115,7 +116,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_fetchOptions == FetchOptions.UseCache)
                     {
-                        return;
+                        return "";
                     }
                     File.Delete(gitDocfxHead);
                 }
@@ -124,6 +125,7 @@ namespace Microsoft.Docs.Build
                     DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
                 }
                 File.WriteAllText(gitDocfxHead, committish);
+                return gitPath;
             }
         }
 

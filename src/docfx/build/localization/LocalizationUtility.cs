@@ -95,18 +95,9 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (TryRemoveLocale(branch, out var branchWithoutLocale, out var locale))
-            {
-                branch = branchWithoutLocale;
-            }
-
             if (branch.EndsWith("-sxs"))
             {
                 contributionBranch = branch.Substring(0, branch.Length - 4);
-                if (!string.IsNullOrEmpty(locale))
-                {
-                    contributionBranch += $".{locale}";
-                }
                 return true;
             }
 
