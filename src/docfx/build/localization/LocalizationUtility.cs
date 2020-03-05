@@ -122,6 +122,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void EnsureLocalizationContributionBranch(Config config, Repository? repository)
+        {
+            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
+            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
+            // here to generate the correct contributor list.
+            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            {
+                try
+                {
+                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Errors.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                }
+            }
+        }
+
         private static bool TryRemoveLocale(string? name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
         {
             nameWithoutLocale = null;

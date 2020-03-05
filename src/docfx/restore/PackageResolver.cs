@@ -46,21 +46,28 @@ namespace Microsoft.Docs.Build
             return _packagePath.GetOrAdd(package, key => new Lazy<string>(() => ResolvePackageCore(key, options))).Value;
         }
 
-        public (string repoPath, string repoBranch, string repoUrl) DownloadPackage(PackagePath path, PackageFetchOptions options)
+        public void DownloadPackage(PackagePath path, PackageFetchOptions options, Config? config = null)
         {
             try
             {
                 if (path.Type == PackageType.Git)
                 {
                     var repoPath = DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
-                    return (repoPath, path.Branch, path.Url);
+                    if (config is null)
+                        return;
+
+                    // ensure contribution branch for CRR included in build
+                    // empty repoBranch means hit cache
+                    if ((path as DependencyConfig)?.IncludeInBuild == true && !string.IsNullOrEmpty(path.Branch))
+                    {
+                        var crrRepository = Repository.Create(repoPath, path.Branch, path.Url);
+                        LocalizationUtility.EnsureLocalizationContributionBranch(config, crrRepository);
+                    }
                 }
-                return default;
             }
             catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
             {
                 Log.Write($"Ignore optional package download failure '{path}': {ex}");
-                return default;
             }
         }
 

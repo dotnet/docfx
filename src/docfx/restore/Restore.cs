@@ -93,38 +93,12 @@ namespace Microsoft.Docs.Build
                 GetPackages(config, locale, repository).Distinct(),
                 item =>
                 {
-                    var (repoPath, repoBranch, repoUrl) = packageResolver.DownloadPackage(item.package, item.flags);
-
-                    // ensure contribution branch for CRR included in build
-                    // empty repoBranch means hit cache
-                    if ((item.package as DependencyConfig)?.IncludeInBuild == true & !string.IsNullOrEmpty(repoBranch))
-                    {
-                        var crrRepository = Repository.Create(repoPath, repoBranch, repoUrl);
-                        EnsureLocalizationContributionBranch(config, crrRepository);
-                    }
+                    packageResolver.DownloadPackage(item.package, item.flags, config);
                 },
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
 
-            EnsureLocalizationContributionBranch(config, repository);
-        }
-
-        private static void EnsureLocalizationContributionBranch(Config config, Repository? repository)
-        {
-            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
-            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
-            // here to generate the correct contributor list.
-            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
-            {
-                try
-                {
-                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw Errors.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
-                }
-            }
+            LocalizationUtility.EnsureLocalizationContributionBranch(config, repository);
         }
 
         private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(
