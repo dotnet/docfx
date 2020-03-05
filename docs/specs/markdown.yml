@@ -619,7 +619,7 @@ outputs:
   docs/b.png:
   docs/a.json: |
     { 
-      "conceptual": "<img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\">",
+      "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div><div class=\"mx-imgBorder\"><p><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>"
     }
 ---
 # Liquid template file missing should not crash
