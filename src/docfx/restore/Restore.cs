@@ -91,10 +91,7 @@ namespace Microsoft.Docs.Build
             using var packageResolver = new PackageResolver(docsetPath, config, fetchOptions);
             ParallelUtility.ForEach(
                 GetPackages(config, locale, repository).Distinct(),
-                item =>
-                {
-                    packageResolver.DownloadPackage(item.package, item.flags, config);
-                },
+                item => packageResolver.DownloadPackage(item.package, item.flags),
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
 

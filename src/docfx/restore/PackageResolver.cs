@@ -46,22 +46,20 @@ namespace Microsoft.Docs.Build
             return _packagePath.GetOrAdd(package, key => new Lazy<string>(() => ResolvePackageCore(key, options))).Value;
         }
 
-        public void DownloadPackage(PackagePath path, PackageFetchOptions options, Config? config = null)
+        public void DownloadPackage(PackagePath path, PackageFetchOptions options)
         {
             try
             {
                 if (path.Type == PackageType.Git)
                 {
                     var repoPath = DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
-                    if (config is null)
-                        return;
 
                     // ensure contribution branch for CRR included in build
-                    // empty repoBranch means hit cache
-                    if ((path as DependencyConfig)?.IncludeInBuild == true && !string.IsNullOrEmpty(path.Branch))
+                    // empty repo path means hit cache
+                    if ((path as DependencyConfig)?.IncludeInBuild == true && !string.IsNullOrEmpty(repoPath))
                     {
                         var crrRepository = Repository.Create(repoPath, path.Branch, path.Url);
-                        LocalizationUtility.EnsureLocalizationContributionBranch(config, crrRepository);
+                        LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
                     }
                 }
             }
