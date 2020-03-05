@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
 
                     // ensure contribution branch for CRR included in build
                     // empty repoBranch means hit cache
-                    if ((item.package as DependencyConfig)?.IncludeInBuild == true & string.IsNullOrEmpty(repoBranch))
+                    if ((item.package as DependencyConfig)?.IncludeInBuild == true & !string.IsNullOrEmpty(repoBranch))
                     {
                         var crrRepository = Repository.Create(repoPath, repoBranch, repoUrl);
                         EnsureLocalizationContributionBranch(config, crrRepository);
