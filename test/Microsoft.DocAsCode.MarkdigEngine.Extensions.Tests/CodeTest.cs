@@ -1241,6 +1241,7 @@ USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns no
 
         [Theory]
         [InlineData(@":::code source=""source.cs"" range=""205-250"" language=""azurecli"" interactive=""try-dotnet"":::")]
+        [InlineData(@":::code source=""source.cs"" id=""doesnotexist"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
