@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         // published url relative to site base path
         public string? AssetId { get; set; }
 
-        // rource path relative to source repo root
+        // resource path relative to source repo root
         public string? Original { get; set; }
 
         // source path relative to source base path

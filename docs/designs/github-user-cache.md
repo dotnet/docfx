@@ -18,7 +18,7 @@ Due to performance reasons and [GitHub API rate limit](https://developer.github.
 ## Data Structure
 
 The GitHub user cache is a simple JSON file with a list of all GitHub user profiles.
-Each profile has an random exipry to avoid expiration at the same time.
+Each profile has an random expiry to avoid expiration at the same time.
 A profile can be a valid GitHub user, an email that does not exist or a login that does not exist.
 
 ```json

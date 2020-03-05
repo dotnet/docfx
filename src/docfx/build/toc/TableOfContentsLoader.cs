@@ -132,8 +132,8 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     recursionDetector.Push(file);
-                    var (resolveErros, newItems) = ResolveTocModelItems(model.Items, file, rootPath, referencedFiles, referencedTocs);
-                    errors.AddRange(resolveErros);
+                    var (resolveErrors, newItems) = ResolveTocModelItems(model.Items, file, rootPath, referencedFiles, referencedTocs);
+                    errors.AddRange(resolveErrors);
                     model.Items = newItems;
                 }
                 finally

@@ -28,7 +28,7 @@ There are multiple ways to specify configs, they are listed below, latter rules 
 
 ## Microsoft Docs Interoperability
 
-To build [Microsoft Docs repos](https://github.com/MicrosoftDocs) directly, docfx recognize a special file named `.openpublishing.publish.config.json`. When such file is detected at the root of the repository, `docfx` respect certain values in that file, and consult Microsoft Docs build config service for any additonal configs.
+To build [Microsoft Docs repos](https://github.com/MicrosoftDocs) directly, docfx recognize a special file named `.openpublishing.publish.config.json`. When such file is detected at the root of the repository, `docfx` respect certain values in that file, and consult Microsoft Docs build config service for any additional configs.
 
 ## Examples
 

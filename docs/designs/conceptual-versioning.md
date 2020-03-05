@@ -175,7 +175,7 @@ monikerDefinition: "https://api.docs.com/monikers/"
 
     To better illustrate scenarios, in below sections, we call URL without `{host}` and `{docset-base-path}` as the **SitePath** of the file. In our example, **SitePath** for `articles/v1.0/a.md` and `articles/v2.0/a.md` are the same: `articles/a`.
 
-    If in one round of build, different files with the same **SitePath** are included, if there are two files without `monikerRange` or the intersection of any two files' *moniker list* is not empty, an error throws. For example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is indeterministic.
+    If in one round of build, different files with the same **SitePath** are included, if there are two files without `monikerRange` or the intersection of any two files' *moniker list* is not empty, an error throws. For example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is nondeterministic.
 
 4. `monikerDefinition` is an API, which provide the definition for moniker list, both *file* and *http(s)* URI schemas are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for moniker.
 
@@ -241,12 +241,12 @@ There are several scenarios:
 
 |Reference type                                                                 |Resolve result             |Validation                 |
 |-------------------------------------------------------------------------------|---------------------------|---------------------------|
-|relative link without verison query - `[B](b.md)` |href without query - `<a href="b">` |file existed check, do not check whether monikerRange of target file is same with current file |
-|relative link with verison query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check, do not check whether version exists in target file |
-|absolute link/external link without verison query - `[B](/b.md)` |href without query - `<a href="/b">` |no validation |
-|absolute link/external link with verison query - `[B](/b.md?view=netcore-1.0)` |href with original query - `<a href="/b?view=netcore-1.0">` |no validation |
-|internal/external xref without verison query - `<xref: b>` |href without query - `<a href="b">` |uid existed check, do not check whether monikerRange of uid is same with current file |
-|internal/external xref with verison query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check, and check whether the specific uid version exists |
+|relative link without version query - `[B](b.md)` |href without query - `<a href="b">` |file existed check, do not check whether monikerRange of target file is same with current file |
+|relative link with version query - `[B](b.md?view=netcore-1.0)` |href with original query - `<a href="b?view=netcore-1.0">` |file existed check, do not check whether version exists in target file |
+|absolute link/external link without version query - `[B](/b.md)` |href without query - `<a href="/b">` |no validation |
+|absolute link/external link with version query - `[B](/b.md?view=netcore-1.0)` |href with original query - `<a href="/b?view=netcore-1.0">` |no validation |
+|internal/external xref without version query - `<xref: b>` |href without query - `<a href="b">` |uid existed check, do not check whether monikerRange of uid is same with current file |
+|internal/external xref with version query - `<xref: b?view=netcore-1.0>` |href with original query - `<a href="b?view=netcore-1.0">` |uid existed check, and check whether the specific uid version exists |
 
 #### 2.3 Moniker Definition File
 

@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_serializerCheckingAddional = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_serializerCheckingAdditional = JsonSerializer.Create(new JsonSerializerSettings
         {
             CheckAdditionalContent = true,
             NullValueHandling = NullValueHandling.Ignore,
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
                 t_status.Value!.Push(status);
 
                 return (checkAdditionalContent
-                    ? s_serializerCheckingAddional.Deserialize<T>(reader)
+                    ? s_serializerCheckingAdditional.Deserialize<T>(reader)
                     : s_serializer.Deserialize<T>(reader))
                     ?? new T();
             }

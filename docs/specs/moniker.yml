@@ -1440,7 +1440,7 @@ outputs:
     ["error","moniker-range-invalid","Invalid moniker range: 'netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/a.md",2,15]
     ["error","moniker-range-invalid","Invalid moniker range: '<= netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/b.md",2,1]
 ---
-# Resolving monikerzone in token should base on root file's moniker
+# Resolving moniker zone in token should base on root file's moniker
 inputs:
   docfx.yml: |
     exclude: "**/includes/**"

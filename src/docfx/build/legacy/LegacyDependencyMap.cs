@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(
             Docset docset,
             Context context,
-            List<Document> documemts,
+            List<Document> documents,
             DependencyMap dependencyMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
                 // process toc map
                 Parallel.ForEach(
-                    documemts,
+                    documents,
                     document =>
                     {
                         if (document.ContentType == ContentType.Resource ||

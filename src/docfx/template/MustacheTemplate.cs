@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings)
         {
             // JObject implements IEnumerable, stubble treats IEnumerable as array,
-            // need to put it to section blacklist and overwride the truthy check method.
+            // need to put it to section blacklist and overwrite the truthy check method.
             var sectionBlacklist = RendererSettingsDefaults.DefaultSectionBlacklistTypes();
             sectionBlacklist.Add(typeof(JObject));
 

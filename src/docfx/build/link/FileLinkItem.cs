@@ -21,11 +21,11 @@ namespace Microsoft.Docs.Build
 
         public string TargetUrl { get; }
 
-        public FileLinkItem(Document sourceFile, string sourceUrl, string? soureMonikerGroup, string targetUrl)
+        public FileLinkItem(Document sourceFile, string sourceUrl, string? sourceMonikerGroup, string targetUrl)
         {
             SourceFile = sourceFile;
             SourceUrl = sourceUrl;
-            SourceMonikerGroup = soureMonikerGroup;
+            SourceMonikerGroup = sourceMonikerGroup;
             TargetUrl = targetUrl;
         }
 

@@ -22,7 +22,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
   ```
   > **_Notice_**: Only title will be considered as xref property for `uid` definition in `.md` files
 - Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository. 
-    - The user should define multiple UID of the same value with the same `title` for conceeptual repository. Otherwise, a `xref-property-conflict` warning will be logged and the first UID order by the declaring file will be picked
+    - The user should define multiple UID of the same value with the same `title` for conceptual repository. Otherwise, a `xref-property-conflict` warning will be logged and the first UID order by the declaring file will be picked
         ```yaml
         # v1: 1.0, 2.0, 3.0
         # v2: 4.0, 5.0
@@ -72,7 +72,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
 
     | Cross site | Build Type | build branch | xref definition branch | append branch info | v2 actual behavior | output xrefmap host |
     | --- | --- | --- | --- | --- | --- | --- |
-    | yes | commit | master | master | yes(Jump to external site with `?brnach=master`) | yes(Jump to external site with `?branch=master`) | review.xxx.com |
+    | yes | commit | master | master | yes(Jump to external site with `?branch=master`) | yes(Jump to external site with `?branch=master`) | review.xxx.com |
     | yes | commit | test | master | yes(Jump to external site with `?branch=master`) | yes(append with `?branch=master`) | review.xxx.com |
     | yes | commit | live | live(go-live) | no | no | xxx.com |
     | yes | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | xxx.com |
@@ -91,7 +91,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
     > For the second last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Confirmed with PM, this is not an legitimate concern.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
-        - If the current branch is `master`, then the output site is `review.docs`, but the resovled url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
+        - If the current branch is `master`, then the output site is `review.docs`, but the resolved url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
         ```yaml
           # External UID `a` is defined in `docs`, whose title is `Title from docs`
           inputs:
@@ -127,9 +127,9 @@ Besides using file path to link to another file, DocFX also allows you to give a
                 {"conceptual":"<p>Link to <a href=\"a\">Title from azure-cn</a></p>\n"}
           ```
 - Reference to an external UID with versioning, we only take consideration of 1 version for now and do not output versioning information.
-- Reference to an external UID with multiple versionings (not support for now)
-    - The resolve logic should be smilar to the internal resolving
-- [UID defnition](#define-uid)
+- Reference to an external UID with multiple versioning (not support for now)
+    - The resolve logic should be similar to the internal resolving
+- [UID definition](#define-uid)
 - xref service needs to consume `xrefmap.json` instead of `xrefmap.yml` after the conceptual repository switching to docfx v3.
 - In v2, `xrefservice` can be defined in `docfx.json` then the user can query `uid` universally, which will be removed during the migration to v3 and related tags should be added to `.openpublishing.publish.config.json`.
 

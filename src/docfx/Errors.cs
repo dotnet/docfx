@@ -114,8 +114,8 @@ namespace Microsoft.Docs.Build
         /// - can't find dependent repo in file system
         /// </summary>
         /// Behavior: ❌ Message: ❌
-        public static Error NeedRestore(string dependenyRepoHref)
-            => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependenyRepoHref}', did you forget to run `docfx restore`?");
+        public static Error NeedRestore(string dependencyRepoHref)
+            => new Error(ErrorLevel.Error, "need-restore", $"Cannot find dependency '{dependencyRepoHref}', did you forget to run `docfx restore`?");
 
         /// <summary>
         /// Failed to get a user from neither user cache nor github api by login.
@@ -247,7 +247,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "json-syntax-error", message, source);
 
         /// <summary>
-        /// Link which's resolved to a file out of build scope.
+        /// Link which is resolved to a file out of build scope.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
@@ -376,7 +376,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
 
         /// <summary>
-        /// Defined refrence with by #bookmark fragment within articles, which doesn't exist.
+        /// Defined reference with by #bookmark fragment within articles, which doesn't exist.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error BookmarkNotFound(SourceInfo? source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
@@ -499,7 +499,7 @@ namespace Microsoft.Docs.Build
             => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {Join(attributes)}", source);
 
         /// <summary>
-        /// An attribute does't conform to date format.
+        /// An attribute doesn't conform to date format.
         /// </summary>
         /// Behavior: ✔️ Message: ✔️
         public static Error DateFormatInvalid(SourceInfo? source, string name, string value)
@@ -647,9 +647,9 @@ namespace Microsoft.Docs.Build
         {
             bestMatch = candidates != null ?
                     (from candidate in candidates
-                     let levanshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
-                     where levanshteinDistance <= threshold
-                     orderby levanshteinDistance, candidate
+                     let levenshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
+                     where levenshteinDistance <= threshold
+                     orderby levenshteinDistance, candidate
                      select candidate).FirstOrDefault()
                     : null;
 

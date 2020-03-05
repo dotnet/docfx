@@ -403,7 +403,7 @@ inputs:
   docs/c.md: |
     ## <a name="bookmark"></a> Section 1 title
     [Ref Doc b Bookmark](./b.md#b-has-no-bookmark)
-  # default threshold is 5, if levenstein distance is greater than 5, won't show suggestion bookmark
+  # default threshold is 5, if levenshtein distance is greater than 5, won't show suggestion bookmark
   docs/d.md: |
     [Ref Doc c Bookmark](./c.md#bookmark123456)
 outputs:
