@@ -129,11 +129,11 @@ namespace Microsoft.Docs.Build
                 }
                 if (_reservedMetadata.Contains(key))
                 {
-                    errors.Add(Errors.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
+                    errors.Add(Errors.Metadata.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
                 }
                 else if (!IsValidMetadataType(value))
                 {
-                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
+                    errors.Add(Errors.Metadata.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
                 }
             }
 
@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
                     return (errors, obj);
                 }
 
-                errors.Add(Errors.YamlHeaderNotObject(isArray: metadata is JArray, file));
+                errors.Add(Errors.Yaml.YamlHeaderNotObject(isArray: metadata is JArray, file));
             }
 
             return (errors, new JObject());

@@ -298,7 +298,7 @@ namespace Microsoft.Docs.Build
 
         internal static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
-            // the rerun button on codepen iframes isn't accessibile.
+            // the rerun button on codepen iframes isn't accessible.
             // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
             foreach (var node in html.Descendants("iframe"))
             {

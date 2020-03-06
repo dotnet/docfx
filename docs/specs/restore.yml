@@ -149,7 +149,7 @@ outputs:
   .errors.log: |
     ["error","file-not-found","*","docfx.yml",1,20]
 ---
-# Restore longpath repo
+# Restore long path repo
 inputs:
   docfx.yml: |
     dependencies:

@@ -156,16 +156,16 @@ These are the two design principles we'd like to pursue while designing the new 
 
 2. Treat razor as code instead of resources
 
-    Though liquid/mustache are treated as code in templates, it is treated more like resources in build and hosting: the hosting process loads an arbitrary liquid template from blob storage and execute agaist that template.
+    Though liquid/mustache are treated as code in templates, it is treated more like resources in build and hosting: the hosting process loads an arbitrary liquid template from blob storage and execute against that template.
     
     Razor templates however essentially compiles down to C# and eventually an assembly, it is better for build and hosting to treat razor template as code instead of resources. This may affect how razor templates are deployed and integrated with build and hosting:
     
-    - There is a compliation process that ideally runs during template deployment
+    - There is a compilation process that ideally runs during template deployment
     - Dynamic loading assemblies *may* lead to assembly versioning problems, so hosting *may* need to treat template as a code reference and redeploy on template changes.
 
 ### Strongly Typed Template Contract
 
-When the template engine is switched to razor, it is essential to have a set of strongly typed contract in C# to be consumed by razor templates, for intellisence, compile time checks.
+When the template engine is switched to razor, it is essential to have a set of strongly typed contract in C# to be consumed by razor templates, for intellisense, compile time checks.
 
 #### Strongly Typed SDP Schemas
 

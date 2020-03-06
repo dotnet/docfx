@@ -170,10 +170,10 @@ jobs:
           popd
       }
 
-      $integartionTestDir = './drop/integration-test'
-      Remove-Item $integartionTestDir -Force -Recurse -ErrorAction Ignore
-      dotnet build ../Docs.Build/test/integration-test -c Release -r win7-x64 -o $integartionTestDir/bin
-      Remove-Item $integartionTestDir/bin/ConfigMigration -Force -Recurse -ErrorAction Ignore
+      $integrationTestDir = './drop/integration-test'
+      Remove-Item $integrationTestDir -Force -Recurse -ErrorAction Ignore
+      dotnet build ../Docs.Build/test/integration-test -c Release -r win7-x64 -o $integrationTestDir/bin
+      Remove-Item $integrationTestDir/bin/ConfigMigration -Force -Recurse -ErrorAction Ignore
     displayName: Checkout Docs.Build
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)

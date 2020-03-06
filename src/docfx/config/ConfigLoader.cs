@@ -49,12 +49,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options)
+        public (List<Error> errors, Config config) Load(string docsetPath, string? locale, CommandLineOptions options)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
             {
-                throw Errors.ConfigNotFound(docsetPath).ToException();
+                throw Errors.Config.ConfigNotFound(docsetPath).ToException();
             }
 
             var errors = new List<Error>();
@@ -112,11 +112,11 @@ namespace Microsoft.Docs.Build
                 return obj;
             }
 
-            throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
+            throw Errors.JsonSchema.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
         private JObject DownloadExtendConfig(
-            List<Error> errors, string locale, PreloadConfig config, string? xrefEndpoint, string[]? xrefQueryTags, Repository? repository, FileResolver fileResolver)
+            List<Error> errors, string? locale, PreloadConfig config, string? xrefEndpoint, string[]? xrefQueryTags, Repository? repository, FileResolver fileResolver)
         {
             var result = new JObject();
             var extendQuery =

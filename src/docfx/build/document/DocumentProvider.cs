@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +15,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly Docset _docset;
-        private readonly Docset _fallbackDocset;
+        private readonly Docset? _fallbackDocset;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly LocalizationProvider _localization;
@@ -29,7 +30,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, LocalizationProvider localization, Docset docset, Docset fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
+            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
         {
             _config = config;
             _docset = docset;
@@ -82,7 +83,7 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        public string GetOutputPath(FilePath path, IReadOnlyList<string> monikers)
+        public string GetOutputPath(FilePath path, string[] monikers)
         {
             var file = GetDocument(path);
 
@@ -149,7 +150,7 @@ namespace Microsoft.Docs.Build
             switch (path.Origin)
             {
                 case FileOrigin.Fallback:
-                    return CreateDocument(_fallbackDocset, path);
+                    return CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path);
 
                 case FileOrigin.Dependency:
                     return CreateDocument(_dependencyDocsets[path.DependencyName], path);

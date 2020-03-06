@@ -67,13 +67,13 @@ namespace Microsoft.Docs.Build
                     return File.OpenRead(localFilePath);
                 }
 
-                throw Errors.FileNotFound(file).ToException();
+                throw Errors.Config.FileNotFound(file).ToException();
             }
 
             var filePath = GetRestorePathFromUrl(file);
             if (!File.Exists(filePath))
             {
-                throw Errors.NeedRestore(file).ToException();
+                throw Errors.System.NeedRestore(file).ToException();
             }
 
             return File.OpenRead(filePath);
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
 
             if (_fetchOptions == FetchOptions.NoFetch)
             {
-                throw Errors.NeedRestore(file).ToException();
+                throw Errors.System.NeedRestore(file).ToException();
             }
 
             var filePath = GetRestorePathFromUrl(file);
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
-                throw Errors.DownloadFailed(url).ToException(ex);
+                throw Errors.System.DownloadFailed(url).ToException(ex);
             }
         }
 

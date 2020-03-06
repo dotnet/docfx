@@ -50,7 +50,7 @@ https://docs.microsoft.com/en-us/dotnet/api/system.string.html#Instantiation
 
 > `?` means optional.
 > When a docset is not localized, we will not create the `{locale}` folder.
-> This allows static websites with minimal url when localized and verioning is not needed.
+> This allows static websites with minimal url when localized and versioning is not needed.
 
 ## Content Outputs
 

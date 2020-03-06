@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Compare two toc candidate relative to target file.
-        /// Return negative if x is closer than y, possitive if x is farer than y, 0 if x equals y.
+        /// Return negative if x is closer than y, positive if x is farer than y, 0 if x equals y.
         /// 1. sub nearest(based on file path)
         /// 2. parent nearest(based on file path)
         /// 3. sub-name lexicographical nearest

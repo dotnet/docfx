@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                 if (bookmarks.Contains(bookmark))
                     continue;
 
-                var error = Errors.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks);
+                var error = Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks);
 
                 if (_errorLog.Write(error))
                 {

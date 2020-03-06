@@ -5,19 +5,35 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class PublishModel
     {
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public string Product { get; set; }
+        public string Product { get; }
 
-        public string BasePath { get; set; }
+        public string BasePath { get; }
 
-        public PublishItem[] Files { get; set; }
+        public PublishItem[] Files { get; }
 
-        public IReadOnlyDictionary<string, IReadOnlyList<string>> MonikerGroups { get; set; } = new Dictionary<string, IReadOnlyList<string>>();
+        public IReadOnlyDictionary<string, string[]> MonikerGroups { get; }
+
+        public PublishModel(
+            string name,
+            string product,
+            string basePath,
+            PublishItem[] files,
+            IReadOnlyDictionary<string, string[]> monikerGroups)
+        {
+            Name = name;
+            Product = product;
+            BasePath = basePath;
+            Files = files;
+            MonikerGroups = monikerGroups;
+        }
     }
 }

@@ -1,23 +1,25 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Globalization;
 using System.IO;
+
+#nullable enable
 
 namespace Microsoft.Docs.Build
 {
     internal class LocalizationProvider
     {
-        private readonly PackageResolver _packageResolver;
         private readonly Config _config;
 
         // entry should always be localization repo
         private readonly string _localizationDocsetPath;
-        private readonly Repository _localizationRepository;
+        private readonly Repository? _localizationRepository;
 
         // en-us repo is used for fallback
-        private string _englishDocsetPath;
-        private Repository _englishRepository;
+        private string? _englishDocsetPath;
+        private Repository? _englishRepository;
 
         /// <summary>
         /// Gets the lower-case culture name computed from <see cref="CommandLineOptions.Locale" or <see cref="Config.DefaultLocale"/>/>
@@ -30,12 +32,11 @@ namespace Microsoft.Docs.Build
 
         public bool EnableSideBySide { get; }
 
-        public LocalizationProvider(PackageResolver packageResolver, Config config, string locale, string docsetPath, Repository repository)
+        public LocalizationProvider(PackageResolver packageResolver, Config config, string? locale, string docsetPath, Repository? repository)
         {
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.DefaultLocale;
             Culture = CreateCultureInfo(Locale);
 
-            _packageResolver = packageResolver;
             _config = config;
             _localizationDocsetPath = docsetPath;
             _localizationRepository = repository;
@@ -49,37 +50,29 @@ namespace Microsoft.Docs.Build
                 LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
                 contributionBranch != repository.Branch;
 
-            SetFallbackRepository();
-        }
-
-        public (string docsetPath, Repository repository) GetBuildRepositoryWithDocsetEntry()
-        {
-            return (_localizationDocsetPath, _localizationRepository);
-        }
-
-        public (string fallbackDocsetPath, Repository fallbackRepository) GetFallbackRepositoryWithDocsetEntry()
-        {
-            return (_englishDocsetPath, _englishRepository);
-        }
-
-        private void SetFallbackRepository()
-        {
-            if (_packageResolver is null || _config is null || _localizationRepository is null)
+            if (_localizationRepository != null)
             {
-                return;
+                var docsetSourceFolder = Path.GetRelativePath(_localizationRepository.Path, _localizationDocsetPath);
+                (_englishDocsetPath, _englishRepository) = GetFallbackRepository(_localizationRepository, packageResolver, docsetSourceFolder);
             }
-
-            var docsetSourceFolder = Path.GetRelativePath(_localizationRepository.Path, _localizationDocsetPath);
-
-            (_englishDocsetPath, _englishRepository) = _packageResolver != null ? GetFallbackRepository(_localizationRepository, _packageResolver, docsetSourceFolder) : default;
         }
 
-        private static (string fallbackDocsetPath, Repository fallbackRepo) GetFallbackRepository(
-            Repository repository,
+        public Docset? GetFallbackDocset()
+        {
+            return _englishDocsetPath != null ? new Docset(_englishDocsetPath, _englishRepository) : null;
+        }
+
+        public (string fallbackDocsetPath, Repository? fallbackRepository) GetFallbackRepositoryWithDocsetEntry()
+        {
+            return (_englishDocsetPath ?? throw new InvalidOperationException(), _englishRepository);
+        }
+
+        private static (string fallbackDocsetPath, Repository? fallbackRepo) GetFallbackRepository(
+            Repository? repository,
             PackageResolver packageResolver,
             string docsetSourceFolder)
         {
-            if (LocalizationUtility.TryGetFallbackRepository(repository?.Remote, repository?.Branch, out var fallbackRemote, out var fallbackBranch, out _))
+            if (LocalizationUtility.TryGetFallbackRepository(repository?.Remote, repository?.Branch, out var fallbackRemote, out var fallbackBranch))
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
@@ -103,7 +96,7 @@ namespace Microsoft.Docs.Build
             }
             catch (CultureNotFoundException)
             {
-                throw Errors.LocaleInvalid(locale).ToException();
+                throw Errors.Config.LocaleInvalid(locale).ToException();
             }
         }
     }

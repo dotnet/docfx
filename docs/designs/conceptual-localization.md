@@ -67,7 +67,7 @@ Output:
 
 ### Static rendering
 
-> Static rendering is not considered carefully, it's not in our discussion scope rigt now.
+> Static rendering is not considered carefully, it's not in our discussion scope right now.
 
 For static rendering site, localization content are more like parts of whole site, all fallback need to be supported during build.
 
@@ -85,7 +85,7 @@ Input:(docfx build --locales en-us,zh-cn)
     |   |- a.md(includes token.md and links to b.md and a.png)
 ```
 
-The source docset and loc docsets are built together to consitute one static site, the output includes all localization built pages and also all links' locale should be resolved correctly.
+The source docset and loc docsets are built together to constitute one static site, the output includes all localization built pages and also all links' locale should be resolved correctly.
 
 Output:
 ```text
@@ -128,7 +128,7 @@ Then it brings new problem: the `contributor info` need to be extracted from `ra
 
 So, during docfx build, if the current building content is sxs content, docfx will extract the contributors from corresponding raw content.
 
-### Lookup no-existing source resources(token/codesnippet/image)
+### Lookup no-existing source resources(token/code snippet/image)
 
 All localization content is delayed translated, which means that the content version in loc docsets usually fall behind of source content version for one or two weeks:
 
@@ -193,12 +193,12 @@ Different `folder` example:
 localization(repo):
     live(branch):
         |- zh-cn/
-        |   |- readmd.md
+        |   |- readme.md
         |- de-de/
         |   | - readme.md
     master(branch):
         |- zh-cn/
-        |   |- readmd.md
+        |   |- readme.md
         |- de-de/
         |   | - readme.md
 ```
@@ -232,16 +232,16 @@ For different `branch` option:
   - 😄 performance would be good if we only want to build one locale(only checkout one locale's content)
   - 😄 public contribution workflow maybe easy and permission per branch can be implemented
   - 😭 it brings to many branches to maintains, imagine that we have 64+ locales for one small repo. 
-  - 😭 it may have a little bigger impact to ops backend service because current **'master' and 'live' are hardcoded everywhere**.
+  - 😭 it may have a little bigger impact to ops backend service because current **'master' and 'live' are hard coded everywhere**.
   - 😭 hard to apply localization fix/changes to all locales(just like now, you need a script to pull/add/commit/push 64+ times)
 
 **Answer**: We are going to use `branch` model.
 
 ### Combine all localization content in one repo or multiple repos?
 
-@Curt made a comment that maybe there is a requirement to combine all localization content into multiple repos instead of always one, for example, combine `zh-cn` and `de-de` into localiztaion-1 repo and `ja-jp` and `hu-hu` to localization-2 repo.
+@Curt made a comment that maybe there is a requirement to combine all localization content into multiple repos instead of always one, for example, combine `zh-cn` and `de-de` into localization-1 repo and `ja-jp` and `hu-hu` to localization-2 repo.
 
-I would like firstly need to know whether the requirement is valid or not, the reason why we want to combine all localization content into one repo is to save private repo's count, so we will apply this rules to small localization repositories and leave the big size repository like azure.
+I would like firstly need to know whether the requirement is valid or not, the reason why we want to combine all localization content into one repo is to save private repo count, so we will apply this rules to small localization repositories and leave the big size repository like azure.
 
 And also, if we combine all localization content into multiple repos, there must be **a mappings to be maintained** for LOC PM, are these mapping different per repo?  so I would like to take the simple and easy way, either one locale one repo, or all locales one repo, :)
 

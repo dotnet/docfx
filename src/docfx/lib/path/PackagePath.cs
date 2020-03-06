@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -50,9 +49,6 @@ namespace Microsoft.Docs.Build
 
         public PackagePath(string remote, string? branch)
         {
-            Debug.Assert(remote != null);
-            Debug.Assert(branch != null);
-
             Type = PackageType.Git;
             Url = remote;
             Branch = branch ?? "master";
@@ -91,8 +87,6 @@ namespace Microsoft.Docs.Build
 
         private static (string remote, string refspec) SplitGitUrl(string remoteUrl)
         {
-            Debug.Assert(!string.IsNullOrEmpty(remoteUrl));
-
             var (path, _, fragment) = UrlUtility.SplitUrl(remoteUrl);
 
             path = path.TrimEnd('/', '\\');

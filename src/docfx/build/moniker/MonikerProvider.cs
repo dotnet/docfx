@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 
 #nullable enable
@@ -22,8 +21,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string>> _monikerRangeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string>>();
 
-        private readonly ConcurrentDictionary<FilePath, (Error?, IReadOnlyList<string>)> _monikerCache
-                   = new ConcurrentDictionary<FilePath, (Error?, IReadOnlyList<string>)>();
+        private readonly ConcurrentDictionary<FilePath, (Error?, string[])> _monikerCache
+                   = new ConcurrentDictionary<FilePath, (Error?, string[])>();
 
         public MonikerComparer Comparer { get; }
 
@@ -57,20 +56,20 @@ namespace Microsoft.Docs.Build
             return _monikerRangeCache.GetOrAdd(file, GetConfigMonikerRangeCore);
         }
 
-        public (Error? error, IReadOnlyList<string> monikers) GetFileLevelMonikers(FilePath file)
+        public (Error? error, string[] monikers) GetFileLevelMonikers(FilePath file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 
-        public (Error? error, IReadOnlyList<string> monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
+        public (Error? error, string[] monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
         {
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (fileLevelMonikers.Count == 0)
+            if (fileLevelMonikers.Length == 0)
             {
-                return (Errors.MonikerRangeUndefined(rangeString), Array.Empty<string>());
+                return (Errors.Versioning.MonikerRangeUndefined(rangeString), Array.Empty<string>());
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
@@ -78,13 +77,13 @@ namespace Microsoft.Docs.Build
 
             if (monikers.Length == 0)
             {
-                var error = Errors.MonikeRangeOutOfScope(rangeString, zoneLevelMonikers, fileLevelMonikers);
+                var error = Errors.Versioning.MonikeRangeOutOfScope(rangeString, zoneLevelMonikers, fileLevelMonikers);
                 return (error, monikers);
             }
             return (null, monikers);
         }
 
-        private (Error? error, IReadOnlyList<string> monikers) GetFileLevelMonikersCore(FilePath file)
+        private (Error? error, string[] monikers) GetFileLevelMonikersCore(FilePath file)
         {
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
@@ -97,7 +96,7 @@ namespace Microsoft.Docs.Build
                 // user should not define it in file metadata
                 if (configMonikers.Length == 0)
                 {
-                    return (Errors.MonikerRangeUndefined(metadata.MonikerRange), configMonikers);
+                    return (Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange), configMonikers);
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
@@ -107,7 +106,7 @@ namespace Microsoft.Docs.Build
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Length == 0)
                 {
-                    var error = Errors.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
+                    var error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                     return (error, intersection);
                 }
                 return (null, intersection);

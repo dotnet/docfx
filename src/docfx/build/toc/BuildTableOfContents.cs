@@ -28,16 +28,13 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: Add experimental and experiment_id to publish item
-            var publishItem = new PublishItem
-            {
-                Url = file.SiteUrl,
-                Path = outputPath,
-                SourcePath = file.FilePath.Path,
-                Locale = context.LocalizationProvider.Locale,
-                Monikers = model.Metadata.Monikers,
-                MonikerGroup = monikerGroup,
-                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-            };
+            var publishItem = new PublishItem(
+                file.SiteUrl,
+                outputPath,
+                file.FilePath.Path,
+                context.LocalizationProvider.Locale,
+                model.Metadata.Monikers,
+                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && !context.Config.DryRun)
             {

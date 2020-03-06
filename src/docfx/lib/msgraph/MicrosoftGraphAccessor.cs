@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             var (error, user) = await _aliasCache.GetOrAdd(alias.Value, GetMicrosoftGraphUserCore);
 
-            return error ?? (user is null ? Errors.MsAliasInvalid(alias, name) : null);
+            return error ?? (user is null ? Errors.JsonSchema.MsAliasInvalid(alias, name) : null);
         }
 
         public Task<Error[]> Save()
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception e)
             {
-                return (Errors.MicrosoftGraphApiFailed(e.Message), null);
+                return (Errors.System.MicrosoftGraphApiFailed(e.Message), null);
             }
         }
     }

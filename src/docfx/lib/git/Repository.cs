@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Repository's branch info ashould NOT depend on git, unless you are pretty sure about that
+        /// Repository's branch info should NOT depend on git, unless you are pretty sure about that
         /// Repository's url can also be overwritten
         /// </summary>
         public static Repository? Create(string path, string? branch, string? repoUrl = null)

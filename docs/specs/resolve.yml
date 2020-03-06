@@ -93,7 +93,7 @@ outputs:
     }
   index.json:
 ---
-# Support both / and \ as directory seperator
+# Support both / and \ as directory separator
 inputs:
   docfx.yml:
   docs/dir-a/a.md: Link to [b](..\dir-b/b.md)
@@ -117,7 +117,7 @@ outputs:
     { "conceptual": "<p><a href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
-# Resolve <a> and <img> tags embeded inside markdown
+# Resolve <a> and <img> tags embedded inside markdown
 inputs:
   docfx.yml:
   docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
@@ -200,7 +200,7 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a href=\"a/\">index</a></p>" }
 ---
-# HTML encode special charactors in path
+# HTML encode special characters in path
 inputs:
   docfx.yml:
   docs/a.md: Link to [b](b&/c~.md)
@@ -210,7 +210,7 @@ outputs:
     { "conceptual": "<p>Link to <a href=\"b&amp;/c%7E\">b</a></p>" }
   docs/b&/c~.json:
 ---
-# Files redirected to an aboslute URL
+# Files redirected to an absolute URL
 inputs:
   docfx.yml:
   redirections.yml: |
@@ -398,7 +398,7 @@ outputs:
   docs/.errors.log: |
     ["warning","file-not-found","Invalid file link: '~/docs/b.md'.","a.md",3,9]
 ---
-# Links in <a> or <img> tags startings with ~
+# Links in <a> or <img> tags starting with ~
 inputs:
   docsets.yml:
   docs/docfx.yml:
