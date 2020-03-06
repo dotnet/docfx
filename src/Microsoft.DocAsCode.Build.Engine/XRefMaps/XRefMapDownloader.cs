@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class XRefMapDownloader
     {
         private readonly SemaphoreSlim _semaphore;
-        private readonly string _baseFolder;
         private readonly IReadOnlyList<string> _localFileFolders;
 
         public XRefMapDownloader(string baseFolder = null, IReadOnlyList<string> fallbackFolders = null, int maxParallelism = 0x10)
@@ -23,13 +22,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             _semaphore = new SemaphoreSlim(maxParallelism);
             if (baseFolder == null)
             {
-                _baseFolder = Directory.GetCurrentDirectory();
+                baseFolder = Directory.GetCurrentDirectory();
             }
             else
             {
-                _baseFolder = Path.Combine(Directory.GetCurrentDirectory(), baseFolder);
+                baseFolder = Path.Combine(Directory.GetCurrentDirectory(), baseFolder);
             }
-            var localFileFolders = new List<string>() { _baseFolder };
+            var localFileFolders = new List<string>() { baseFolder };
             if (fallbackFolders != null)
             {
                 localFileFolders.AddRange(fallbackFolders);
