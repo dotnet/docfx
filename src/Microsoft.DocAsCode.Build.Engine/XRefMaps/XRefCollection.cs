@@ -26,9 +26,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableList<Uri> Uris { get; set; }
 
-        public Task<IXRefContainerReader> GetReaderAsync(string baseFolder)
+        public Task<IXRefContainerReader> GetReaderAsync(string baseFolder, IReadOnlyList<string> fallbackFolders = null)
         {
-            var creator = new ReaderCreator(Uris, MaxParallelism, baseFolder);
+            var creator = new ReaderCreator(Uris, MaxParallelism, baseFolder, fallbackFolders);
             return creator.CreateAsync();
         }
 
@@ -39,10 +39,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             private readonly Dictionary<Task<IXRefContainer>, Uri> _processing = new Dictionary<Task<IXRefContainer>, Uri>();
             private readonly XRefMapDownloader _downloader;
 
-            public ReaderCreator(ImmutableList<Uri> uris, int maxParallelism, string baseFolder)
+            public ReaderCreator(ImmutableList<Uri> uris, int maxParallelism, string baseFolder, IReadOnlyList<string> fallbackFolders)
             {
                 _uris = uris;
-                _downloader = new XRefMapDownloader(baseFolder, maxParallelism);
+                _downloader = new XRefMapDownloader(baseFolder, fallbackFolders, maxParallelism);
             }
 
             public async Task<IXRefContainerReader> CreateAsync()

@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -52,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 _reader = new XRefCollection(
                     from u in parameters.XRefMaps
-                    select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(parameters.Files.DefaultBaseDir);
+                    select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(parameters.Files.DefaultBaseDir, GetFallbackFolders(parameters.MarkdownEngineParameters));
             }
             RootTocPath = parameters.RootTocPath;
 
@@ -657,6 +658,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
             return YamlUtility.ConvertTo<XRefSpec>(vm);
+        }
+
+        private static IReadOnlyList<string> GetFallbackFolders(ImmutableDictionary<string, object> markdownEngineParameters)
+        {
+            IReadOnlyList<string> fallbackFolders = null;
+            if (markdownEngineParameters.TryGetValue("fallbackFolders", out object obj))
+            {
+                try
+                {
+                    fallbackFolders = ((IEnumerable)obj).Cast<string>().ToList();
+                }
+                catch
+                {
+                    // Swallow cast exception. 
+                }
+            }
+            return fallbackFolders;
         }
     }
 }
