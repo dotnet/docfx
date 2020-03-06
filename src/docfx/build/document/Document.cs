@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         /// <summary>
         /// Gets the owning docset of this document. A document can only belong to one docset.
-        /// TODO: Split data and behaviorial objects from Document and Docset
+        /// TODO: Split data and behavioral objects from Document and Docset
         /// </summary>
         public Docset Docset { get; }
 
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         public ContentType ContentType { get; }
 
         /// <summary>
-        /// Gets the MIME type specifed in YAML header or JSON $schema.
+        /// Gets the MIME type specified in YAML header or JSON $schema.
         /// </summary>
         public SourceInfo<string?> Mime { get; }
 

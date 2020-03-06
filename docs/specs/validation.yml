@@ -136,7 +136,7 @@ outputs:
     ["warning","missing-attribute","Missing required attribute: 'b'","a.md",2,1]
     ["warning","unexpected-type","Expected type 'Array' but got 'Integer'","a.md",2,6]
 ---
-# Json schema microsoft alias rule: Metu error, when no connection with Graph API
+# Json schema microsoft alias rule: Mute error, when no connection with Graph API
 inputs:
   docfx.yml: |
     metadataSchema:

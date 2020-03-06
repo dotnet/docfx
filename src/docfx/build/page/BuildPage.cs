@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
                 // custom 404 page is not supported
-                errors.Add(Errors.Custom404Page(file));
+                errors.Add(Errors.Content.Custom404Page(file));
             }
 
             if (shouldWriteOutput && !context.Config.DryRun)
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
 
-            // Mandatory metadata are metadata that are required by template to sucessfully ran to completion.
+            // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The current bookmark validation for SDP validates against HTML produced from mustache,
             // so we need to run the full template for SDP even in --dry-run mode.
             if (context.Config.DryRun && string.IsNullOrEmpty(file.Mime))
@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
                 return (errors, systemMetadata);
             }
 
-            // To speed things up for dry runs, ignore metadatas that does not produce errors.
+            // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
             var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
             errors.AddRange(contributorErrors);
@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
-                errors.Add(Errors.HeadingNotFound(file));
+                errors.Add(Errors.Heading.HeadingNotFound(file));
             }
 
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
 
             if (!(token is JObject obj))
             {
-                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
+                throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema

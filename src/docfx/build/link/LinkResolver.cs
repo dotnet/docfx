@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
 
             if (error is null && _buildScope.OutOfScope(file))
             {
-                return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
+                return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
             return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), fragment, linkType, file, false);
@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
                     return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
 
                 case LinkType.WindowsAbsolutePath:
-                    return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath);
+                    return (Errors.Link.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath);
 
                 case LinkType.RelativePath:
                     if (string.IsNullOrEmpty(path))
@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.FileNotFound(
+                        return (Errors.Config.FileNotFound(
                             new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath);
                     }
 

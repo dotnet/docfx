@@ -1,6 +1,6 @@
 # Credential
 
-This document specifies how DocFX accesses private resoruces during restore/build/publish. 
+This document specifies how DocFX accesses private resources during restore/build/publish. 
 
 The credential may be used to:
 - clone a private repository

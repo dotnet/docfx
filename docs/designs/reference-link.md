@@ -222,5 +222,5 @@ DocFX will convert them to output paths with fragment and query string
 When the link is just used for locating a resource for build like including token, codesnippet or nested toc, it dependents on the corresponding syntax:
   - Including a token or nested toc is not supporting fragment and query string.
   - Including a codesnippet is supporting fragment and query string, like `[!code[Main](program.cs?start=5&end=9#testsnippet)]`.
-  - We way have other syntax to use link for localting a resource, you need check the corresponding syntax detailly.
+  - We way have other syntax to use link for locating a resource, you need check the corresponding syntax in detail.
 

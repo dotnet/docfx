@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Length > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclaringFile);
-                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
+                context.ErrorLog.Write(Errors.Xref.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
             }
 
             // uid conflicts with overlapping monikers
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                context.ErrorLog.Write(Errors.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
+                context.ErrorLog.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
             // uid conflicts with different names
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
             if (conflictingNames.Count() > 1)
             {
-                context.ErrorLog.Write(Errors.UidPropertyConflict(uid, "name", conflictingNames));
+                context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, "name", conflictingNames));
             }
 
             return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).First();

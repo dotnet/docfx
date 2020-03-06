@@ -8,11 +8,11 @@ author: yufeih
 
 Incremental build is a way to drastically speed up content build process: only contents that are changed are built and published to live site, contents that remains the same are left as is.
 
-We are dealing with repos with thousands of files and hundards of commits per day, but each commit typically only touches a few files. Enabling incremental build will greatly reduce the workload of our system and improves overall system performance.
+We are dealing with repos with thousands of files and hundreds of commits per day, but each commit typically only touches a few files. Enabling incremental build will greatly reduce the workload of our system and improves overall system performance.
 
 ## Goals and Non Goals
 
-Used to be, our incremental build model is to save a snapshot of a previous build, use git diff to figure out what has changed, and only build files that have changed or potentially be affected by the change. This makes it a bit harder to reason about incremental build and can cause stuble bugs:
+Used to be, our incremental build model is to save a snapshot of a previous build, use git diff to figure out what has changed, and only build files that have changed or potentially be affected by the change. This makes it a bit harder to reason about incremental build and can cause subtle bugs:
 
 - Incremental build and full build are two different modes and can execute two different code path
 - There are non trivial logics to determine what has changed and the impact to build result
@@ -49,7 +49,7 @@ The idea of incremental build is largely borrowed from functional programming pa
 
 > Incrementalize a markdown engine that transforms markdown content to html, with the ability to resolve external include files
 
-In this simplist fictional build process, we have two basic functions `markup` and `resolve`:
+In this simplest fictional build process, we have two basic functions `markup` and `resolve`:
 
 - `markup(path, resolve) -> html`: Takes an file path and a resolve callback, produces the final html.
 
@@ -61,7 +61,7 @@ For all the values, we define `sig` as the signature of a value:
 
 - `sig(html) -> html`: defines html signature as html string itself.
 
-For the resolve function, we can shortcut `sig` as `git_object_id` to efficiantly calculate the signature of a file without having to actually read the content of that file:
+For the resolve function, we can shortcut `sig` as `git_object_id` to efficiently calculate the signature of a file without having to actually read the content of that file:
 
 - `sig(resolve) -> git_object_id(path)`: signature of the resolve function is defined as git object id. If a file is managed by git, `.git/index` contains a mapping of file and git object ids. `git status` leverage `.git/index` to do fast change detection, so retrieving `sig(file)` for all files in a repo is as fast as running `git status`, typically in milliseconds.
 
@@ -130,19 +130,19 @@ After re-evaluation, a new record will be populated to incremental cache and if 
 
 ## Build pipeline
 
-The new build pipeline is modeled as a chained graph of deterministic functions. Each build step is modeled as a function that takes some inputs and produces some outputs, functions are chained, composed together to achieve higher level of functionability.
+The new build pipeline is modeled as a chained graph of deterministic functions. Each build step is modeled as a function that takes some inputs and produces some outputs, functions are chained, composed together to achieve higher level of functionality.
 
 Each function should be deterministic, meaning that for the same set of inputs, it should always produce the same identical set of outputs. It is not allowed to mutate global shared state, nor it is allowed to use random factors like `GUID`, `Random` or `DateTime.Now`
 
-When the build is modeled as such deterministic function graph, it is confident to skip evaluation of a function simply by examing the function input parameters against a previous evaluation and return the cached result.
+When the build is modeled as such deterministic function graph, it is confident to skip evaluation of a function simply by examining the function input parameters against a previous evaluation and return the cached result.
 
 ## Incremental build cache
 
 The purpose of incremental build cache is to store the states of previous function evaluations. This include function names, inputs, outputs and call sequences to callback functions.
 
-The incremental build cache is conceptually a persistent **[trie](https://en.wikipedia.org/wiki/Trie)**. It can be implemented on top of any key value pair storage system that provides efficient lookups. We'd like to start with a local only disk cache, this avoids the need to synchronize incremental build state between machines. In the build backend, if a repo happened to be schedualed on a machine that was previously build, newer builds will benifit from the incremental cache, otherwise it is a clean full build. To maximize the leverage of incremental cache, we may need to introduce some sticky mechanisms to build scheduler to prefer building the same repo on the same machine. 
+The incremental build cache is conceptually a persistent **[trie](https://en.wikipedia.org/wiki/Trie)**. It can be implemented on top of any key value pair storage system that provides efficient lookups. We'd like to start with a local only disk cache, this avoids the need to synchronize incremental build state between machines. In the build backend, if a repo happened to be scheduled on a machine that was previously build, newer builds will benefit from the incremental cache, otherwise it is a clean full build. To maximize the leverage of incremental cache, we may need to introduce some sticky mechanisms to build scheduler to prefer building the same repo on the same machine. 
 
-> This sticky mechanism not only benifits incremental build, but can also improve repo cloning time.
+> This sticky mechanism not only benefits incremental build, but can also improve repo cloning time.
 
 There are two choices for a local disk cache: `leveldb` vs `sqlite`. We'd like to first go with `sqlite` because it has much better cross-platform support and .NET integration.
 
@@ -150,15 +150,15 @@ Space wise, incremental cache only stores intermediate build result and function
 
 ## Versioning
 
-We are making code changes each and everyday, the changes may affect the sematics of a funtion, causing the same inputs to return different outputs, making the incremental cache outdated or wrong. To solve that, the incremental cache is prefixed with a version based on our release versioning. Whenever we have a new release, the incremental cache starts with a newer version and thus all build starts as full build.
+We are making code changes each and everyday, the changes may affect the sematic of a function, causing the same inputs to return different outputs, making the incremental cache outdated or wrong. To solve that, the incremental cache is prefixed with a version based on our release versioning. Whenever we have a new release, the incremental cache starts with a newer version and thus all build starts as full build.
 
-We choose not to use function level versioning because it is very hard to reason about what functions are affected by a given change. Given our full builds are now faster, it is safe to use global verioning.
+We choose not to use function level versioning because it is very hard to reason about what functions are affected by a given change. Given our full builds are now faster, it is safe to use global versioning.
 
-Previous versions of incremental cache is cleared periocially to free up disk space.
+Previous versions of incremental cache is cleared periodically to free up disk space.
 
 ## Incremental build framework
 
-A csharp library will be created to help tuning a function into an incrementalized function. Given the expresiveness of csharp, this may not look like the exact end result:
+A csharp library will be created to help tuning a function into an incrementalized function. Given the expressiveness of csharp, this may not look like the exact end result:
 
 
 ```csharp
@@ -175,7 +175,7 @@ var html = Incrementalize(Markup, "a.md", Incrementalize(Resolve));
 
 ```
 
-We may persue assembly IL level post processing if there is a need.
+We may pursue assembly IL level post processing if there is a need.
 
 ## Components need incremental
 

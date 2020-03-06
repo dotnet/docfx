@@ -28,10 +28,10 @@ namespace Microsoft.Docs.Build
         private static readonly char[] s_queryFragmentLeadingChars = new char[] { '#', '?' };
 
         /// <summary>
-        /// Split href to path, fragement and query
+        /// Split href to path, fragment and query
         /// </summary>
         /// <param name="url">The href</param>
-        /// <returns>The splited path, query and fragment</returns>
+        /// <returns>The splitted path, query and fragment</returns>
         public static (string path, string query, string fragment) SplitUrl(string url)
         {
             var path = "";

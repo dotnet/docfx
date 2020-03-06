@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
             {
-                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
+                throw Errors.Config.DocsetNotProvisioned(name).ToException(isError: false);
             }
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 Log.Write(ex);
-                _errorLog.Write(Errors.ValidationIncomplete());
+                _errorLog.Write(Errors.System.ValidationIncomplete());
                 return "{}";
             }
         }
@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 Log.Write(ex);
-                _errorLog.Write(Errors.ValidationIncomplete());
+                _errorLog.Write(Errors.System.ValidationIncomplete());
                 return "{}";
             }
         }
@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
                 var response = await _http.SendAsync(request);
                 if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                 {
-                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                    _errorLog.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                 }
 
                 if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)

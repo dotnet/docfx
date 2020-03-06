@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
                             return (errors, obj);
                         }
 
-                        errors.Add(Errors.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
+                        errors.Add(Errors.Yaml.YamlHeaderNotObject(isArray: yamlHeaderObj is JArray, file));
                     }
                     catch (DocfxException ex) when (ex.Error.Code == "yaml-syntax-error")
                     {
-                        errors.Add(Errors.YamlHeaderSyntaxError(ex.Error));
+                        errors.Add(Errors.Yaml.YamlHeaderSyntaxError(ex.Error));
                     }
                     break;
                 }

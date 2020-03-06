@@ -1,4 +1,4 @@
-# Tabe of Contents
+# Table of Contents
 
 ## Introduction
 
@@ -111,7 +111,7 @@ It references to the `toc.yml` file under folder `howto`, with the following con
   href: howto2.md
 ```
 
-DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into:
+DocFX processes these `toc.yml` files and expands the below `toc.yml` file into:
 
 ```yaml
 - name: How-to tutorials
@@ -154,7 +154,7 @@ If the *Toc Item* is linking to a folder, ending with `/` explicitly, the link v
 
 ## Local file referenced by TOC
 
-If a *Toc Item* is linking to a local file, we call this local file *In-Toc File*. The link can also contains query string and fragement like `href: examples/overview.md?branch=master#row=4`. It's represented by `_tocRel` in the local file's `metadata`.
+If a *Toc Item* is linking to a local file, we call this local file *In-Toc File*. The link can also contains query string and fragment like `href: examples/overview.md?branch=master#row=4`. It's represented by `_tocRel` in the local file's `metadata`.
 
 ### Not-In-Toc Files
 

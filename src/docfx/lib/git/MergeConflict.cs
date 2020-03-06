@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     state == State.OutgoingText &&
                     string.Compare(content, i, ">>>>>>>", 0, ">>>>>>>".Length, StringComparison.Ordinal) == 0)
                 {
-                    return Errors.MergeConflict(new SourceInfo(file, startLine, 1));
+                    return Errors.Content.MergeConflict(new SourceInfo(file, startLine, 1));
                 }
             }
 

@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_serializerCheckingAddional = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_serializerCheckingAdditional = JsonSerializer.Create(new JsonSerializerSettings
         {
             CheckAdditionalContent = true,
             NullValueHandling = NullValueHandling.Ignore,
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
                 t_status.Value!.Push(status);
 
                 return (checkAdditionalContent
-                    ? s_serializerCheckingAddional.Deserialize<T>(reader)
+                    ? s_serializerCheckingAdditional.Deserialize<T>(reader)
                     : s_serializer.Deserialize<T>(reader))
                     ?? new T();
             }
@@ -295,7 +295,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var (node, name) in nullArrayNodes)
             {
-                errors.Add(Errors.NullArrayValue(GetSourceInfo(node), name));
+                errors.Add(Errors.Json.NullArrayValue(GetSourceInfo(node), name));
                 node.Remove();
             }
 
@@ -489,7 +489,7 @@ namespace Microsoft.Docs.Build
                 if (args?.ErrorContext.Error is JsonReaderException || args?.ErrorContext.Error is JsonSerializationException)
                 {
                     var state = t_status.Value!.Peek();
-                    state.Errors.Add(Errors.ViolateSchema(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
+                    state.Errors.Add(Errors.Json.ViolateSchema(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
                     args.ErrorContext.Handled = true;
                 }
             }
@@ -499,7 +499,7 @@ namespace Microsoft.Docs.Build
         {
             var (message, line, column) = ParseException(ex);
 
-            return Errors.JsonSyntaxError(file is null ? null : new SourceInfo(file, line, column), message);
+            return Errors.Json.JsonSyntaxError(file is null ? null : new SourceInfo(file, line, column), message);
         }
 
         private static (string message, int line, int column) ParseException(Exception ex)

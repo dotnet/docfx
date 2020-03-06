@@ -13,11 +13,11 @@ You can use [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio 
 
 ## Release Process
 
-We continously deploy `v3` branch to [Production MyGet Feed](https://www.myget.org/F/docfx-v3/api/v2). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
+We continuously deploy `v3` branch to [Production MyGet Feed](https://www.myget.org/F/docfx-v3/api/v2). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
 
 Large feature work happens in feature branches. Feature branch name starts with `feature/`.
 
-Pull request validation, continous deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
+Pull request validation, continuos deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
 
 Package version produced from `v3` branch is higher than other branches:
 - `v3`: `3.0.0-beta-{commitDepth}-{commitHash}`
@@ -25,7 +25,7 @@ Package version produced from `v3` branch is higher than other branches:
 
 We currently do not deploy to NuGet until features blocking community adoption are implemented.
 
-In general we perfer **Squash and merge** against `v3` or feature branches. When merging from feature branches to `v3` with a lot of changes, we prefer **Rebase and merge**.
+In general we prefer **Squash and merge** against `v3` or feature branches. When merging from feature branches to `v3` with a lot of changes, we prefer **Rebase and merge**.
 
 ### Definition of Ready to Ship
 
@@ -64,11 +64,11 @@ For proposals or large changes, we use the following process to pickup, review a
 
 Running the review meeting:
 
-1. Go through issues without assignees that is not labled as `future`. Assign a team member if the issue is ready to pickup, otherwise lable it as `future`. If the issue has a due date, assign a milestone. We usually have milestones for the next 2 quarters. Issues with assignees can start at any time based on priority and bandwidth.
+1. Go through issues without assignees that is not labeled as `future`. Assign a team member if the issue is ready to pickup, otherwise label it as `future`. If the issue has a due date, assign a milestone. We usually have milestones for the next 2 quarters. Issues with assignees can start at any time based on priority and bandwidth.
 
 2. Go through issues with the `ready-for-review` label. Remove the `ready-for-review` label to indicate that reviewing is done. Add `approved` label to approve the design so it is ready to accept pull requests.
 
-3. Go through issues with the `needs-disussion` label. Remove the `needs-disussion` label to indicate that disussion is done.
+3. Go through issues with the `needs-discussion` label. Remove the `needs-discussion` label to indicate that discussion is done.
 
 4. Check our issues with `future` label from every month and pick up from there when we have capacity.
 
@@ -106,7 +106,7 @@ All test cases run in parallel, so keep them stateless and thread safe.
 
 ### Immutability and Pure
 
-Whenever possible, write simple functions that takes some inputs and produces some outputs without introducing any side effects. Side effects includes manipulating a shared state, mainpulating the input, accessing or mutating global or static state, reading additional variables from environments or files, writing outputs to files.
+Whenever possible, write simple functions that takes some inputs and produces some outputs without introducing any side effects. Side effects includes manipulating a shared state, manipulating the input, accessing or mutating global or static state, reading additional variables from environments or files, writing outputs to files.
 
 Write complex functions by composing smaller, simpler functions. Write functions that takes the minimum required parameters and dependencies.
 
@@ -122,7 +122,7 @@ When YAML is used, we only support a subset of YAML that is JSON compatible, fea
 
 The following guidelines apply to both input models and output models:
 
-- Flattened structure is prefered over nested structure, because YAML is indention based, nested structure creates a very bad YAML authoring experience.
+- Flattened structure is preferred over nested structure, because YAML is indention based, nested structure creates a very bad YAML authoring experience.
 
 - The default JSON naming convention is *snake_case* for property names and enum values:
 
@@ -160,8 +160,8 @@ Convention | Use case | Example
 `{ClassName}.Load{XXX}`  | Loads the content of a file from disk into a data model, the semantic is equivalent to *de-serialization*, additional logics are placed in other methods.  | `BuildPage.Load`
 `{ClassName}.Transform{XXX}` | Transforms inputs to outputs, **SHOULD NOT** mutate input model, **MAY** take additional callbacks. | `HtmlUtility.TransformLinks`
 `{ClassName}.Update{XXX}`  | Update input model to a new state, **SHOULD** mutate input model, **MAY** take additional callbacks. | `BuildTableOfContent.UpdateMonikers`
-`{ClassName}.Get{XXX}` | Simple stateless method that retrives information from input, **SHOULD NOT** mutable states or have any side effect | `MonikerProvider.GetMonikers`
-`{ClassName}.Resolve{XXX}` | Retrives information from input, **SHOULD NOT** mutable states, but **MAY** have side effects that are invisible to the caller | `DependencyProvider.ResolveLink`
+`{ClassName}.Get{XXX}` | Simple stateless method that retrieves information from input, **SHOULD NOT** mutable states or have any side effect | `MonikerProvider.GetMonikers`
+`{ClassName}.Resolve{XXX}` | Retrieves information from input, **SHOULD NOT** mutable states, but **MAY** have side effects that are invisible to the caller | `DependencyProvider.ResolveLink`
 `{XXX}Map`, `{XXX}Builder` | Builds an **immutable** `{XXX}Map` from a **mutable** `{XXX}Builder` | `DependencyMap`, `DependencyMapBuilder`
 `{XXX}Provider`   | Groups **instance** helper methods for **Get** or **Resolve** | `MonikerProvider`
 `{XXX}Utility`    | Groups **static** helper methods | `GitUtility`

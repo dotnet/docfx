@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                 if (conflictMoniker.Count != 0
                     || (files.Count > 1 && files.Any(file => file.Value.Contains(NonVersion))))
                 {
-                    errors.Add(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
+                    errors.Add(Errors.UrlPath.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
                     {
                         HandleExcludedFile(conflictingFile);
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
                     conflictingFiles.Add(removed);
                 }
 
-                errors.Add(Errors.OutputPathConflict(outputPath, conflictingFiles));
+                errors.Add(Errors.UrlPath.OutputPathConflict(outputPath, conflictingFiles));
 
                 foreach (var conflictingFile in conflictingFiles)
                 {

@@ -19,7 +19,7 @@ outputs:
 ---
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one
-# xref should be unioned from different sources
+# xref should be unironed from different sources
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
@@ -592,7 +592,7 @@ outputs:
   .xrefmap.json: | 
     {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
-# Xref property field with dependecy
+# Xref property field with dependency
 inputs:
   docfx.yml: |
   docs/a.json: |

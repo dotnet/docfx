@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
-                            errors.Add(Errors.UidConflict(uid, JsonUtility.GetSourceInfo(uidValue)));
+                            errors.Add(Errors.Xref.UidConflict(uid, JsonUtility.GetSourceInfo(uidValue)));
                         }
 
                         break;
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                                     {
                                         var referenceMap = recursionDetector.Select(x => $"{x.uid} ({x.declaringFile})").Reverse().ToList();
                                         referenceMap.Add($"{uid} ({file})");
-                                        throw Errors.CircularReference(referenceMap, file).ToException();
+                                        throw Errors.Link.CircularReference(referenceMap, file).ToException();
                                     }
 
                                     try

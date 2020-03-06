@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             {
                 if (level == ErrorLevel.Error)
                 {
-                    return Write(Errors.FallbackError(config.DefaultLocale));
+                    return Write(Errors.Logging.FallbackError(config.DefaultLocale));
                 }
                 return false;
             }
@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(GetMaxCount(config, level), level), level);
+                    WriteCore(Errors.Logging.ExceedMaxErrors(GetMaxCount(config, level), level), level);
                 }
             }
             else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level))

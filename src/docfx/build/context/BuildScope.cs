@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             _globs = CreateGlobs(config);
             _resourceGlobs = CreateResourceGlob(config);
 
-            using (Progress.Start("Globbing files"))
+            using (Progress.Start("Globing files"))
             {
                 var (fileNames, allFiles) = ListFiles(config, input, fallbackDocset);
 

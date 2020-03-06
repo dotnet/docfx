@@ -15,7 +15,7 @@ outputs:
 ---
 # Preserve custom metadata
 # read-only metadata will be kept as user input, no matter they are known by docfx or not, like uid
-# overwritable metadta will be overwritten by docfx when the input is valid, otherwise it's will not be changed
+# overwritable metadata will be overwritten by docfx when the input is valid, otherwise it's will not be changed
 inputs:
   docfx.yml:
   docs/a.md: |
