@@ -3,17 +3,21 @@
 
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal interface IXrefSpec
     {
+        string Uid { get; }
+
         string Href { get; }
 
-        Document DeclaringFile { get; }
+        Document? DeclaringFile { get; }
 
         HashSet<string> Monikers { get; }
 
-        string GetXrefPropertyValueAsString(string propertyName);
+        string? GetXrefPropertyValueAsString(string propertyName);
 
         ExternalXrefSpec ToExternalXrefSpec();
     }

@@ -348,9 +348,9 @@ namespace Microsoft.Docs.Build
             List<Error> errors)
         {
             // process uid first
-            if (!string.IsNullOrEmpty(uid))
+            if (!string.IsNullOrEmpty(uid.Value))
             {
-                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXref(uid, filePath, rootPath);
+                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXref(new SourceInfo<string>(uid.Value, uid), filePath, rootPath);
                 errors.AddIfNotNull(uidError);
 
                 if (declaringFile != null)

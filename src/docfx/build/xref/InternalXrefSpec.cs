@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
-        public SourceInfo Source { get; set; }
-
         public string Uid { get; set; }
 
         public string Href { get; set; }
@@ -23,11 +23,15 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
 
-        public string GetXrefPropertyValueAsString(string propertyName)
+        public InternalXrefSpec(string uid, string href, Document declaringFile)
         {
-            if (propertyName is null)
-                return null;
+            Uid = uid;
+            Href = href;
+            DeclaringFile = declaringFile;
+        }
 
+        public string? GetXrefPropertyValueAsString(string propertyName)
+        {
             // for internal UID, the display property should only be plain text
             var contentType = GetXrefPropertyContentType(propertyName);
             if (contentType == JsonSchemaContentType.None)
@@ -37,7 +41,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public string GetName() => GetXrefPropertyValueAsString("name");
+        public string? GetName() => GetXrefPropertyValueAsString("name");
 
         public ExternalXrefSpec ToExternalXrefSpec()
         {

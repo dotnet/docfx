@@ -3,12 +3,14 @@
 
 using System;
 
+#nullable enable
+
 namespace Microsoft.Docs.Build
 {
     internal class XrefMapModel
     {
         public ExternalXrefSpec[] References { get; set; } = Array.Empty<ExternalXrefSpec>();
 
-        public XrefProperties Properties { get; set; }
+        public XrefProperties? Properties { get; set; }
     }
 }

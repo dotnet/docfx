@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static string TransformXref(string html, Func<string, bool, int, (string href, string display)> transform)
+        public static string TransformXref(string html, Func<string, bool, int, (string? href, string display)> transform)
         {
             // Fast pass it does not have <xref> tag
             if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
