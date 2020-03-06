@@ -160,6 +160,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var codeLines = code.Split('\n');
                 var beg = codeLines.FindIndexOfTag(id);
                 var end = codeLines.FindIndexOfTag(id, true);
+                if(end == 0)
+                {
+                    logError($"Could not find snippet id '{id}'. Make sure your snippet is in your source file.");
+                }
                 codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError, false);
             }
             else
