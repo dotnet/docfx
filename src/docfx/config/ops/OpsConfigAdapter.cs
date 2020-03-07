@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
@@ -77,7 +79,7 @@ namespace Microsoft.Docs.Build
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
+            var docsetInfo = await FetchWithRetry(fetchUrl, nullOn404: true);
             if (docsetInfo is null)
             {
                 throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
@@ -141,7 +143,7 @@ namespace Microsoft.Docs.Build
         private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
         {
             var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
-            var response = await Fetch(url, nullOn404: true);
+            var response = await FetchWithRetry(url, nullOn404: true);
             if (response is null)
             {
                 return Array.Empty<string>();
@@ -154,7 +156,7 @@ namespace Microsoft.Docs.Build
 
         private Task<string> GetMonikerDefinition(Uri url)
         {
-            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
+            return FetchWithRetry($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
@@ -163,7 +165,7 @@ namespace Microsoft.Docs.Build
             {
                 var headers = GetValidationServiceHeaders(url);
 
-                return await Fetch($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
+                return await FetchWithRetry($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
             }
             catch (Exception ex)
             {
@@ -178,8 +180,8 @@ namespace Microsoft.Docs.Build
             try
             {
                 var headers = GetValidationServiceHeaders(url);
-                var rules = Fetch($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
-                var allowlists = Fetch($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+                var rules = FetchWithRetry($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
+                var allowlists = FetchWithRetry($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
 
                 return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
             }
@@ -202,7 +204,20 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
+        private async Task<string> FetchWithRetry(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
+        {
+            using (var response = await HttpPolicyExtensions
+                   .HandleTransientHttpError()
+                   .Or<OperationCanceledException>()
+                   .Or<IOException>()
+                   .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                   .ExecuteAsync(() => Fetch(url, headers)))
+            {
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            }
+        }
+             
+        private async Task<HttpResponseMessage> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
@@ -227,7 +242,7 @@ namespace Microsoft.Docs.Build
                 {
                     return null;
                 }
-                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                return response;
             }
         }
 
