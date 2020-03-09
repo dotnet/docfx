@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
@@ -162,36 +164,18 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
         {
-            try
-            {
-                var headers = GetValidationServiceHeaders(url);
+            var headers = GetValidationServiceHeaders(url);
 
-                return await Fetch($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                _errorLog.Write(Errors.System.ValidationIncomplete());
-                return "{}";
-            }
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
         {
-            try
-            {
-                var headers = GetValidationServiceHeaders(url);
-                var rules = Fetch($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
-                var allowlists = Fetch($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+            var headers = GetValidationServiceHeaders(url);
+            var rules = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
+            var allowlists = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
 
-                return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                _errorLog.Write(Errors.System.ValidationIncomplete());
-                return "{}";
-            }
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
         }
 
         private static Dictionary<string, string> GetValidationServiceHeaders(Uri url)
@@ -203,6 +187,49 @@ namespace Microsoft.Docs.Build
                 { "X-Metadata-RepositoryUrl", queries["repository_url"] },
                 { "X-Metadata-RepositoryBranch", queries["branch"] },
             };
+        }
+
+        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string>? headers = null)
+        {
+            try
+            {
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+                {
+                    using var response = await HttpPolicyExtensions
+                       .HandleTransientHttpError()
+                       .Or<OperationCanceledException>()
+                       .Or<IOException>()
+                       .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                       .ExecuteAsync(async () =>
+                       {
+                           using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                           _credentialProvider?.Invoke(request);
+                           if (headers != null)
+                           {
+                               foreach (var (key, value) in headers)
+                               {
+                                   request.Headers.TryAddWithoutValidation(key, value);
+                               }
+                           }
+                           var response = await _http.SendAsync(request);
+                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                           {
+                               _errorLog.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                           }
+                           return response;
+                       });
+
+                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Getting validation rules failure should not block build proceeding,
+                // catch and log the excpeition without rethrow.
+                Log.Write(ex);
+                _errorLog.Write(Errors.System.ValidationIncomplete());
+                return "{}";
+            }
         }
 
         private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
@@ -221,10 +248,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 var response = await _http.SendAsync(request);
-                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-                {
-                    _errorLog.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                }
 
                 if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
                 {
