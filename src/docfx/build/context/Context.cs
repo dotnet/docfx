@@ -10,38 +10,63 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal sealed class Context : IDisposable
     {
-        public readonly Config Config;
-        public readonly FileResolver FileResolver;
-        public readonly PackageResolver PackageResolver;
-        public readonly ErrorLog ErrorLog;
-        public readonly Output Output;
-        public readonly Input Input;
-        public readonly BuildScope BuildScope;
-        public readonly RedirectionProvider RedirectionProvider;
-        public readonly WorkQueue<FilePath> BuildQueue;
-        public readonly DocumentProvider DocumentProvider;
-        public readonly MetadataProvider MetadataProvider;
-        public readonly MonikerProvider MonikerProvider;
-        public readonly GitCommitProvider GitCommitProvider;
-        public readonly BookmarkValidator BookmarkValidator;
-        public readonly DependencyMapBuilder DependencyMapBuilder;
-        public readonly LinkResolver LinkResolver;
-        public readonly XrefResolver XrefResolver;
-        public readonly GitHubAccessor GitHubAccessor;
-        public readonly MicrosoftGraphAccessor MicrosoftGraphAccessor;
-        public readonly ContributionProvider ContributionProvider;
-        public readonly PublishModelBuilder PublishModelBuilder;
-        public readonly MarkdownEngine MarkdownEngine;
-        public readonly TemplateEngine TemplateEngine;
-        public readonly FileLinkMapBuilder FileLinkMapBuilder;
-        public readonly TableOfContentsLoader TableOfContentsLoader;
-        public readonly LocalizationProvider LocalizationProvider;
+        private readonly Lazy<TableOfContentsMap> _tocMap;
+
+        public Config Config { get; }
+
+        public FileResolver FileResolver { get; }
+
+        public PackageResolver PackageResolver { get; }
+
+        public ErrorLog ErrorLog { get; }
+
+        public Output Output { get; }
+
+        public Input Input { get; }
+
+        public BuildScope BuildScope { get; }
+
+        public RedirectionProvider RedirectionProvider { get; }
+
+        public WorkQueue<FilePath> BuildQueue { get; }
+
+        public DocumentProvider DocumentProvider { get; }
+
+        public MetadataProvider MetadataProvider { get; }
+
+        public MonikerProvider MonikerProvider { get; }
+
+        public GitCommitProvider GitCommitProvider { get; }
+
+        public BookmarkValidator BookmarkValidator { get; }
+
+        public DependencyMapBuilder DependencyMapBuilder { get; }
+
+        public LinkResolver LinkResolver { get; }
+
+        public XrefResolver XrefResolver { get; }
+
+        public GitHubAccessor GitHubAccessor { get; }
+
+        public MicrosoftGraphAccessor MicrosoftGraphAccessor { get; }
+
+        public ContributionProvider ContributionProvider { get; }
+
+        public PublishModelBuilder PublishModelBuilder { get; }
+
+        public MarkdownEngine MarkdownEngine { get; }
+
+        public TemplateEngine TemplateEngine { get; }
+
+        public FileLinkMapBuilder FileLinkMapBuilder { get; }
+
+        public TableOfContentsLoader TableOfContentsLoader { get; }
+
+        public LocalizationProvider LocalizationProvider { get; }
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
-        private readonly Lazy<TableOfContentsMap> _tocMap;
-
-        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
+        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
         {
             var credentialProvider = config.GetCredentialProvider();
 
@@ -52,7 +77,7 @@ namespace Microsoft.Docs.Build
             Config = config;
             ErrorLog = errorLog;
             PackageResolver = packageResolver;
-            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions);
+            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions, fallbackDocset);
             Input = input;
             LocalizationProvider = localizationProvider;
             Output = new Output(outputPath, input, Config.DryRun);
@@ -62,12 +87,12 @@ namespace Microsoft.Docs.Build
             DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repositoryProvider, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
             GitCommitProvider = new GitCommitProvider();
             PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output);
             BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            ContributionProvider = new ContributionProvider(config, localizationProvider, Input, docset, fallbackDocset, GitHubAccessor, GitCommitProvider);
+            ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
             XrefResolver = new XrefResolver(this, config, FileResolver, DependencyMapBuilder, FileLinkMapBuilder);
 

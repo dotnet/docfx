@@ -219,16 +219,6 @@ d: true
         }
 
         [Fact]
-        public void TestClassWithReadOnlyField()
-        {
-            var yaml = $"b: test";
-            var (errors, value) = DeserializeWithValidation<ClassWithReadOnlyField>(yaml);
-            Assert.Empty(errors);
-            Assert.NotNull(value);
-            Assert.Equal("test", value.B);
-        }
-
-        [Fact]
         public void TestClassWithMoreMembers()
         {
             var yaml = @"b: 1
@@ -297,7 +287,7 @@ items:
  - name: 1", 3, 2)]
         public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
         {
-            var (errors, value) = YamlUtility.Parse(yaml, null);
+            var (errors, value) = YamlUtility.Parse(yaml, new FilePath("file"));
             Assert.Empty(errors);
 
             // Get the first JValue of the first JProperty if any
@@ -332,11 +322,6 @@ items:
             public string C { get; set; }
 
             public bool D { get; set; }
-        }
-
-        public sealed class ClassWithReadOnlyField
-        {
-            public readonly string B;
         }
 
         public sealed class ClassWithMoreMembers : BasicClass

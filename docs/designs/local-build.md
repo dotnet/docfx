@@ -28,7 +28,7 @@ These are the config files stored in git repos (`docfx.json`, `.openpublishing.c
 
 #### Environment specific Config
 
-Environment specific configs are global per envionment (local build or server build). They are passed in as environment variables or command line options. E.g., github access token for server build.
+Environment specific configs are global per environment (local build or server build). They are passed in as environment variables or command line options. E.g., github access token for server build.
 
 #### Server Configs
 
@@ -73,7 +73,7 @@ _Example Response:_
 
 ##### Config parameterization
 
-Server side config is different between repos, docsets or locals. `docfx` parameterizes outgoing HTTP requests using HTTP headers:
+Server side config is different between repos, docsets or locals. `docfx` parametrizes outgoing HTTP requests using HTTP headers:
 
 name | example
 ----|----
@@ -84,7 +84,7 @@ name | example
 
 > An alternative is to pass these parameters explicitly use URL parameters, such design may produce tedious config like `https://api.docs.com/config/docfx?name={name}&locale={locale}&repository_url={repository_url}&repository_branch={repository_branch}` and it is hard to version.
 
-> The practise of using `X-` as custom http headers is __deprecated__, thus our headers are prefixed by `Docfx_`.
+> The practice of using `X-` as custom http headers is __deprecated__, thus our headers are prefixed by `Docfx_`.
 
 ##### Config Authentication
 
@@ -96,7 +96,7 @@ The docfx vscode extension provides rich authoring tools when working with docs 
 
 ### Acquisition
 
-The vscode extension is initially a standalone extension, but will be bundled into `docs-authoring-pack` after getting matrured.
+The vscode extension is initially a standalone extension, but will be bundled into `docs-authoring-pack` after getting matured.
 
 Users don't need to install anything particular after installing the vscode extension. This is done by publishing docfx as a self contained, platform specific executable to a well known blob storage location. The vscode extension downloads and unzips latest docfx for the current platform on `extension activation`. This allows the vscode extension to ship independently from docfx and ensure the latest version of docfx is used.
 
@@ -116,7 +116,7 @@ It allows advanced features like intellisense and refactoring.
 
 For local build, switch to LSP also allows us to consolidate all authoring features onto the same pipeline and enables advanced features like error log streaming, progress reporting, on demand authentication and on demand restore.
 
-LSP defines the [standard communication protocol](https://microsoft.github.io/language-server-protocol/specifications/specification-3-14/) using [JSON RPC](https://www.jsonrpc.org/specification), a simple, light-weight JSON based remote procedure call protocol as the base protocol. To integrate LSP with vscode, language servers are lauched as a seperate process and communicate with vscode using standard input and standard output streams.
+LSP defines the [standard communication protocol](https://microsoft.github.io/language-server-protocol/specifications/specification-3-14/) using [JSON RPC](https://www.jsonrpc.org/specification), a simple, light-weight JSON based remote procedure call protocol as the base protocol. To integrate LSP with vscode, language servers are launched as a separate process and communicate with vscode using standard input and standard output streams.
 
 The vscode extension calls `docfx serve --language-server` to start docfx as a local server. The server exposes APIs to interact with language clients, it also implements contracts specified in Language Service Protocols to support publishing diagnostics as typing, providing intellisense as typing...
 

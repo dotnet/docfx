@@ -6,6 +6,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackAsTool>true</PackAsTool>
     <DefineConstants>DOCFX</DefineConstants>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +22,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.0" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.15" />
-    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="2.49.0-b-200122026-gf22836" />
+    <PackageReference Include="Microsoft.DocAsCode.MarkdigEngine.Extensions" Version="*" />
     <PackageReference Include="Microsoft.Graph" Version="1.21.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.7.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
@@ -30,7 +31,7 @@
     <PackageReference Include="Stubble.Core" Version="1.6.3" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-preview2-180503-2" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.11.0" />
-    <PackageReference Include="Validations.DocFx.Adapter" Version="1.2.18-beta004" />
+    <PackageReference Include="Validations.DocFx.Adapter" Version="1.2.19" />
     <PackageReference Include="YamlDotNet" Version="8.0.0" />
   </ItemGroup>
 

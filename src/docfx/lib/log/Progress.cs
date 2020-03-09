@@ -6,8 +6,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class Progress
@@ -34,7 +32,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(t_scope.Value != null);
 
             var scope = t_scope.Value.Peek();
-            Debug.Assert(scope != null);
 
             // Only write progress if it takes longer than 2 seconds
             var elapsedMs = scope.Stopwatch.ElapsedMilliseconds;
@@ -68,10 +65,11 @@ namespace Microsoft.Docs.Build
 
         private class LogScope : IDisposable
         {
-            public readonly string Name;
-            public readonly Stopwatch Stopwatch;
+            public string Name { get; }
 
-            public long LastElapsedMs;
+            public Stopwatch Stopwatch { get; }
+
+            public long LastElapsedMs { get; set; }
 
             public LogScope(string name, Stopwatch stopwatch)
             {

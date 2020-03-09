@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -17,15 +18,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly string _docsetPath;
         private readonly RepositoryProvider _repositoryProvider;
-        private readonly LocalizationProvider _localizationProvider;
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
-        private readonly ConcurrentDictionary<FilePath, byte[]> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]>();
+        private readonly ConcurrentDictionary<FilePath, byte[]?> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]?>();
 
-        public Input(string docsetPath, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider = null)
+        public Input(string docsetPath, RepositoryProvider repositoryProvider)
         {
             _repositoryProvider = repositoryProvider;
-            _localizationProvider = localizationProvider;
             _docsetPath = Path.GetFullPath(docsetPath);
         }
 
@@ -47,6 +46,11 @@ namespace Microsoft.Docs.Build
             }
 
             var repoPath = GitUtility.FindRepo(docsetPath);
+            if (repoPath is null)
+            {
+                return false;
+            }
+
             var pathToRepo = PathUtility.Normalize(Path.GetRelativePath(repoPath, PathUtility.Normalize(Path.Combine(docsetPath, pathToDocset))));
             return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(repoPath, pathToRepo, commit)) != null;
         }
@@ -56,7 +60,7 @@ namespace Microsoft.Docs.Build
         /// Some file path like content from a bare git repo does not exist physically
         /// on disk but we can still read its content.
         /// </summary>
-        public bool TryGetPhysicalPath(FilePath file, out string physicalPath)
+        public bool TryGetPhysicalPath(FilePath file, [NotNullWhen(true)] out string? physicalPath)
         {
             var (basePath, path, commit) = ResolveFilePath(file);
 
@@ -143,15 +147,7 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Default:
-                    if (_localizationProvider?.IsLocalizationBuild == true)
-                    {
-                        var (entry, _) = _localizationProvider.GetBuildRepositoryWithDocsetEntry();
-                        return ListFilesRecursive(Path.GetFullPath(entry));
-                    }
-                    else
-                    {
-                        return ListFilesRecursive(_docsetPath);
-                    }
+                    return ListFilesRecursive(_docsetPath);
 
                 case FileOrigin.Fallback:
                     var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin);
@@ -186,20 +182,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (string docsetPath, string pathToDocset, string commit) ResolveFilePath(FilePath file)
+        private (string basePath, string path, string? commit) ResolveFilePath(FilePath file)
         {
             switch (file.Origin)
             {
                 case FileOrigin.Default:
-                    if (_localizationProvider?.IsLocalizationBuild == true)
-                    {
-                        var (entry, repository) = _localizationProvider.GetBuildRepositoryWithDocsetEntry();
-                        return (entry, file.Path, file.Commit);
-                    }
-                    else
-                    {
-                        return (_docsetPath, file.Path, file.Commit);
-                    }
+                    return (_docsetPath, file.Path, file.Commit);
 
                 case FileOrigin.Dependency:
                     var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin, file.DependencyName);
@@ -211,7 +199,7 @@ namespace Microsoft.Docs.Build
                     return (docsetPath, file.Path, file.Commit);
 
                 default:
-                    return default;
+                    throw new InvalidOperationException();
             }
         }
     }

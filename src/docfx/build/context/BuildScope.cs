@@ -19,21 +19,21 @@ namespace Microsoft.Docs.Build
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<PathString> _fileNames = new HashSet<PathString>();
 
-        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig)> _fileMappings
-                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig)>();
+        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
+                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)>();
 
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
         /// </summary>
         public HashSet<FilePath> Files { get; }
 
-        public BuildScope(Config config, Input input, Docset fallbackDocset)
+        public BuildScope(Config config, Input input, Docset? fallbackDocset)
         {
             _config = config;
             _globs = CreateGlobs(config);
             _resourceGlobs = CreateResourceGlob(config);
 
-            using (Progress.Start("Globbing files"))
+            using (Progress.Start("Globing files"))
             {
                 var (fileNames, allFiles) = ListFiles(config, input, fallbackDocset);
 
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             return MapPath(path).mapping != null;
         }
 
-        public (PathString path, FileMappingConfig mapping) MapPath(PathString path)
+        public (PathString path, FileMappingConfig? mapping) MapPath(PathString path)
         {
             return _fileMappings.GetOrAdd(path, _ =>
             {
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        private static (HashSet<PathString> fileNames, HashSet<FilePath> files) ListFiles(Config config, Input input, Docset fallbackDocset)
+        private static (HashSet<PathString> fileNames, HashSet<FilePath> files) ListFiles(Config config, Input input, Docset? fallbackDocset)
         {
             var files = new HashSet<FilePath>();
             var fileNames = new HashSet<PathString>();

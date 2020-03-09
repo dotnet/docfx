@@ -9,11 +9,11 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefSpec : IXrefSpec
     {
-        public string Uid { get; set; }
+        public string Uid { get; set; } = "";
 
-        public string Href { get; set; }
+        public string Href { get; set; } = "";
 
-        Document IXrefSpec.DeclaringFile => null;
+        Document? IXrefSpec.DeclaringFile => null;
 
         [JsonIgnore]
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
@@ -21,13 +21,11 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
 
-        public string GetName() => GetXrefPropertyValueAsString("name");
-
-        public string GetXrefPropertyValueAsString(string propertyName)
+        public string? GetXrefPropertyValueAsString(string propertyName)
         {
-            if (propertyName != null && ExtensionData.TryGetValue<JValue>(propertyName, out var v))
+            if (ExtensionData.TryGetValue<JValue>(propertyName, out var v))
             {
-                return v.Value is string str ? str : null;
+                return v != null && v.Value is string str ? str : null;
             }
             return null;
         }

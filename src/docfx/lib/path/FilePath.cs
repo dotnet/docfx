@@ -4,8 +4,6 @@
 using System;
 using System.Diagnostics;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>
@@ -46,7 +44,7 @@ namespace Microsoft.Docs.Build
             Origin = origin;
         }
 
-        public FilePath(string path, string commit, FileOrigin origin)
+        public FilePath(string path, string? commit, FileOrigin origin)
         {
             Path = new PathString(path);
             Origin = origin;

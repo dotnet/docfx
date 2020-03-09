@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly Lazy<TestServer> s_server = new Lazy<TestServer>(StartServer);
 
-        public static async Task<string> Render(string template, object model)
+        public static async Task<string> Render(string? template, object model)
         {
             var httpContext = await s_server.Value.SendAsync(context =>
             {
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 throw new InvalidOperationException(message);
             }
 
-            return body;
+            return body.Replace("\r", "");
         }
 
         private static TestServer StartServer()

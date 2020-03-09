@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly Docset _docset;
-        private readonly Docset _fallbackDocset;
+        private readonly Docset? _fallbackDocset;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly LocalizationProvider _localization;
@@ -27,7 +28,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, LocalizationProvider localization, Docset docset, Docset fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
+            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
         {
             _config = config;
             _docset = docset;
@@ -80,11 +81,11 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        public string GetOutputPath(FilePath path, IReadOnlyList<string> monikers)
+        public string GetOutputPath(FilePath path, string[] monikers)
         {
             var file = GetDocument(path);
 
-            var outputPath = UrlUtility.Combine(_config.BasePath.RelativePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
+            var outputPath = UrlUtility.Combine(_config.BasePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
 
             return _config.Legacy && file.IsPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
@@ -147,7 +148,7 @@ namespace Microsoft.Docs.Build
             switch (path.Origin)
             {
                 case FileOrigin.Fallback:
-                    return CreateDocument(_fallbackDocset, path);
+                    return CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path);
 
                 case FileOrigin.Dependency:
                     return CreateDocument(_dependencyDocsets[path.DependencyName], path);
@@ -181,19 +182,19 @@ namespace Microsoft.Docs.Build
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path);
-            var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, _config.Output.Json, _config.Output.UglifyUrl, isPage);
-            if (_config.Output.LowerCaseUrl)
+            var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, _config.OutputJson, _config.UglifyUrl, isPage);
+            if (_config.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
             }
 
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath.RelativePath, sitePath), contentType, mime, _config.Output.Json, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, mime, _config.OutputJson, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, mime, isPage);
 
             return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
 
-        private static string FilePathToSitePath(string path, ContentType contentType, string mime, bool json, bool uglifyUrl, bool isPage)
+        private static string FilePathToSitePath(string path, ContentType contentType, string? mime, bool json, bool uglifyUrl, bool isPage)
         {
             switch (contentType)
             {
@@ -203,7 +204,7 @@ namespace Microsoft.Docs.Build
                         if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                         {
                             var extension = json ? ".json" : ".html";
-                            return Path.Combine(Path.GetDirectoryName(path), "index" + extension).Replace('\\', '/');
+                            return Path.Combine(Path.GetDirectoryName(path) ?? "", "index" + extension).Replace('\\', '/');
                         }
                         if (json)
                         {
@@ -214,7 +215,7 @@ namespace Microsoft.Docs.Build
                             return Path.ChangeExtension(path, ".html");
                         }
                         var fileName = Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.');
-                        return Path.Combine(Path.GetDirectoryName(path), fileName, "index.html").Replace('\\', '/');
+                        return Path.Combine(Path.GetDirectoryName(path) ?? "", fileName, "index.html").Replace('\\', '/');
                     }
                     return Path.ChangeExtension(path, ".json");
                 case ContentType.TableOfContents:
@@ -224,13 +225,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, string mime, bool json, bool isPage)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, string? mime, bool json, bool isPage)
         {
             var url = PathToRelativeUrl(path, contentType, mime, json, isPage);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, string mime, bool json, bool isPage)
+        private static string PathToRelativeUrl(string path, ContentType contentType, string? mime, bool json, bool isPage)
         {
             var url = path.Replace('\\', '/');
 
@@ -259,12 +260,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string mime, bool isPage)
+        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string? mime, bool isPage)
         {
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.Output.Json, isPage);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.OutputJson, isPage);
             }
 
             return $"https://{_config.HostName}/{_localization.Locale}{siteUrl}";
@@ -295,9 +296,9 @@ namespace Microsoft.Docs.Build
             return path;
         }
 
-        private static SourceInfo<string> ReadMimeFromFile(Input input, FilePath filePath)
+        private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath)
         {
-            SourceInfo<string> mime = default;
+            SourceInfo<string?> mime = default;
 
             if (filePath.EndsWith(".json"))
             {
@@ -317,7 +318,7 @@ namespace Microsoft.Docs.Build
                 if (input.Exists(filePath))
                 {
                     using var reader = input.ReadText(filePath);
-                    mime = new SourceInfo<string>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
+                    mime = new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
                 }
             }
 

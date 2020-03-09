@@ -22,7 +22,7 @@
     <!-- SA1316TupleElementNamesShouldUseCorrectCasing -->
     <Rule Id="SA1316" Action="None" />
     <!-- SA1401FieldsMustBePrivate -->
-    <Rule Id="SA1401" Action="None" />
+    <Rule Id="SA1401" Action="Warning" />
     <!-- SA1405DebugAssertMustProvideMessageText -->
     <Rule Id="SA1405" Action="None" />
     <!-- SA1414TupleTypesInSignaturesShouldHaveElementNames -->

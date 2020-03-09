@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(monikerDefinition != null);
 
-            _monikerMap = monikerDefinition.Monikers.ToDictionary(x => x.MonikerName);
+            _monikerMap = monikerDefinition.Monikers.ToDictionary(x => x.MonikerName, StringComparer.OrdinalIgnoreCase);
             _productMoniker = monikerDefinition.Monikers.GroupBy(x => x.ProductName).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Order).ToList());
             MonikerOrder = SetMonikerOrder();
         }

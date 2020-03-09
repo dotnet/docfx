@@ -10,16 +10,16 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsConfig
     {
-        public readonly OpsDocsetConfig[] DocsetsToPublish = Array.Empty<OpsDocsetConfig>();
+        public OpsDocsetConfig[] DocsetsToPublish { get; private set; } = Array.Empty<OpsDocsetConfig>();
 
-        public readonly OpsDependencyConfig[] DependentRepositories = Array.Empty<OpsDependencyConfig>();
+        public OpsDependencyConfig[] DependentRepositories { get; private set; } = Array.Empty<OpsDependencyConfig>();
 
-        public readonly string GitRepositoryBranchOpenToPublicContributors;
+        public string? GitRepositoryBranchOpenToPublicContributors { get; private set; }
 
-        public readonly string GitRepositoryUrlOpenToPublicContributors;
+        public string? GitRepositoryUrlOpenToPublicContributors { get; private set; }
 
-        public readonly bool NeedGeneratePdfUrlTemplate;
+        public bool NeedGeneratePdfUrlTemplate { get; private set; }
 
-        public readonly string XrefEndpoint;
+        public string? XrefEndpoint { get; private set; }
     }
 }

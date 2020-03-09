@@ -13,16 +13,16 @@ namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader
     {
-        private readonly Repository _repository;
+        private readonly Repository? _repository;
         private readonly ErrorLog _errorLog;
 
-        public ConfigLoader(Repository repository, ErrorLog errorLog)
+        public ConfigLoader(Repository? repository, ErrorLog errorLog)
         {
             _repository = repository;
             _errorLog = errorLog;
         }
 
-        public static (string docsetPath, string outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
+        public static (string docsetPath, string? outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
         {
             var glob = FindDocsetsGlob(workingDirectory);
             if (glob is null)
@@ -47,12 +47,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, string locale, CommandLineOptions options)
+        public (List<Error> errors, Config config) Load(string docsetPath, string? locale, CommandLineOptions options)
         {
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
             {
-                throw Errors.ConfigNotFound(docsetPath).ToException();
+                throw Errors.Config.ConfigNotFound(docsetPath).ToException();
             }
 
             var errors = new List<Error>();
@@ -61,11 +61,11 @@ namespace Microsoft.Docs.Build
             // Load configs available locally
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
-            JsonUtility.Merge(unionProperties, cliConfig, options?.StdinConfig, options?.ToJObject());
+            JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository?.Branch ?? "master");
-            var globalConfig = File.Exists(AppData.GlobalConfigPath)
-                ? LoadConfig(errors, AppData.GlobalConfigPath, File.ReadAllText(AppData.GlobalConfigPath))
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository);
+            var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
+                ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
                 : null;
 
             // Preload
@@ -110,11 +110,11 @@ namespace Microsoft.Docs.Build
                 return obj;
             }
 
-            throw Errors.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
+            throw Errors.JsonSchema.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
         private JObject DownloadExtendConfig(
-            List<Error> errors, string locale, PreloadConfig config, string xrefEndpoint, string[] xrefQueryTags, Repository repository, FileResolver fileResolver)
+            List<Error> errors, string? locale, PreloadConfig config, string? xrefEndpoint, string[]? xrefQueryTags, Repository? repository, FileResolver fileResolver)
         {
             var result = new JObject();
             var extendQuery =
@@ -141,14 +141,19 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static Func<string, bool> FindDocsetsGlob(string workingDirectory)
+        private static Func<string, bool>? FindDocsetsGlob(string workingDirectory)
         {
             var opsConfig = OpsConfigLoader.LoadOpsConfig(workingDirectory);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>
                 {
-                    var sourceFolder = new PathString(Path.GetDirectoryName(docsetFolder));
+                    var docsetDirectoryName = Path.GetDirectoryName(docsetFolder);
+                    if (docsetDirectoryName is null)
+                    {
+                        return false;
+                    }
+                    var sourceFolder = new PathString(docsetDirectoryName);
                     return opsConfig.DocsetsToPublish.Any(docset => docset.BuildSourceFolder.FolderEquals(sourceFolder));
                 };
             }
@@ -170,15 +175,15 @@ namespace Microsoft.Docs.Build
 
         private static JObject LoadEnvironmentVariables()
         {
-            var items = from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
-                        let key = entry.Key.ToString()
-                        where key.StartsWith("DOCFX_")
-                        let configKey = key.Substring("DOCFX_".Length)
-                        let values = entry.Value.ToString().Split(';', StringSplitOptions.RemoveEmptyEntries)
-                        from value in values
-                        select (configKey, value);
-
-            return StringUtility.ExpandVariables("__", "_", items);
+            return new JObject(
+                from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                let key = entry.Key.ToString()
+                where key.StartsWith("DOCFX_")
+                let configKey = StringUtility.ToCamelCase('_', key.Substring("DOCFX_".Length))
+                let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                where values != null
+                let configValue = values.Length == 1 ? (object)values[0] : values
+                select new JProperty(configKey, configValue));
         }
     }
 }

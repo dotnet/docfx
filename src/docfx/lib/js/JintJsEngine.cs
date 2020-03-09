@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, ThreadLocal<JsValue>> _scripts
                    = new ConcurrentDictionary<string, ThreadLocal<JsValue>>();
 
-        public JintJsEngine(string scriptDir, JObject global = null)
+        public JintJsEngine(string scriptDir, JObject? global = null)
         {
             _scriptDir = scriptDir;
             _global = ToJsValue(global ?? new JObject());
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         public JToken Run(string scriptPath, string methodName, JToken arg)
         {
             var scriptFullPath = Path.GetFullPath(Path.Combine(_scriptDir, scriptPath));
-            var exports = _scripts.GetOrAdd(scriptFullPath, file => new ThreadLocal<JsValue>(() => Run(file))).Value;
+            var exports = _scripts.GetOrAdd(scriptFullPath, file => new ThreadLocal<JsValue>(() => Run(file))).Value!;
             var method = exports.AsObject().Get(methodName);
 
             var jsArg = ToJsValue(arg);
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 {sourceCode}
 }})
 ";
-                var dirname = Path.GetDirectoryName(fullPath);
+                var dirname = Path.GetDirectoryName(fullPath) ?? "";
                 var require = new ClrFunctionInstance(engine, Require);
 
                 var func = engine.Execute(script, parserOptions).GetCompletionValue();
@@ -116,7 +116,10 @@ namespace Microsoft.Docs.Build
                 var result = MakeObject();
                 foreach (var (key, value) in obj)
                 {
-                    result.Put(key, ToJsValue(value), throwOnError: true);
+                    if (value != null)
+                    {
+                        result.Put(key, ToJsValue(value), throwOnError: true);
+                    }
                 }
                 return result;
             }

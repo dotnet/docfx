@@ -54,13 +54,11 @@ repos:
   https://docfx.com/edit-url1#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
+          editRepositoryUrl: https://github.com/dotnet/docfx
   https://docfx.com/edit-url1.zh-cn#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx
+          editRepositoryUrl: https://github.com/dotnet/docfx
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -72,13 +70,11 @@ repos:
   https://docfx.com/edit-url3#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.en-us
+          editRepositoryUrl: https://github.com/dotnet/docfx.en-us
   https://docfx.com/edit-url3.zh-cn#live:
     - files:
         docfx.yml: |
-          contribution:
-            repositoryUrl: https://github.com/dotnet/docfx.en-us
+          editRepositoryUrl: https://github.com/dotnet/docfx.en-us
         docs/a.md:
 outputs:
   docs/a.json: |
@@ -406,10 +402,10 @@ repos:
         docfx.yml:
         docs/a.md: |
           [link to deleted resource](resource.png)
-          [link to deleted markdown doesnt work](b.md)
+          [link to deleted markdown doesn't work](b.md)
 outputs:
   docs/a.json: |
-    {"conceptual":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesnt work</a></p>\n"}
+    {"conceptual":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesn't work</a></p>\n"}
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'b.md'.","docs/a.md",2,1]
   .dependencymap.json: |

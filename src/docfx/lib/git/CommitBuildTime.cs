@@ -3,8 +3,6 @@
 
 using System.Collections.Generic;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class CommitBuildTime

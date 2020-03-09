@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, string[]> _cache = new ConcurrentDictionary<string, string[]>();
+        private readonly ConcurrentDictionary<string, string[]> _cache = new ConcurrentDictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(EvaluatorWithMonikersVisitor monikersEvaluator)
@@ -30,13 +30,13 @@ namespace Microsoft.Docs.Build
                 {
                     return ExpressionCreator.Create(value)
                         .Accept(_monikersEvaluator)
-                        .Select(x => x.MonikerName)
-                        .OrderBy(_ => _, StringComparer.OrdinalIgnoreCase)
+                        .Select(x => x.MonikerName.ToLowerInvariant())
+                        .OrderBy(_ => _, StringComparer.Ordinal)
                         .ToArray();
                 }
                 catch (MonikerRangeException ex)
                 {
-                    throw Errors.MonikerRangeInvalid(rangeString, ex).ToException();
+                    throw Errors.Versioning.MonikerRangeInvalid(rangeString, ex).ToException();
                 }
             });
         }

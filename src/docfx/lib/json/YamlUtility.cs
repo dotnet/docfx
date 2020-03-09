@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     {
         public const string YamlMimePrefix = "YamlMime:";
 
-        public static string ReadMime(TextReader reader)
+        public static string? ReadMime(TextReader reader)
         {
             var mime = ReadMime(reader.ReadLine() ?? "");
             if (string.Compare(mime, "YamlDocument", StringComparison.OrdinalIgnoreCase) == 0)
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get yaml mime type
         /// </summary>
-        public static string ReadMime(string yaml)
+        public static string? ReadMime(string yaml)
         {
             var header = ReadHeader(yaml);
             if (header is null || !header.StartsWith(YamlMimePrefix, StringComparison.OrdinalIgnoreCase))
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the content of the first comment line
         /// </summary>
-        public static string ReadHeader(string yaml)
+        public static string? ReadHeader(string yaml)
         {
             if (!yaml.StartsWith("#"))
             {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string input, FilePath file) where T : class, new()
+        public static T Deserialize<T>(string input, FilePath? file) where T : class, new()
         {
             using var reader = new StringReader(input);
             return Deserialize<T>(reader, file);
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
         /// De-serialize from yaml string, which is not user input
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader input, FilePath file) where T : class, new()
+        public static T Deserialize<T>(TextReader input, FilePath? file) where T : class, new()
         {
             var (_, token) = ParseAsJToken(input, file);
             return token?.ToObject<T>(JsonUtility.Serializer) ?? new T();
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(string input, FilePath file)
+        public static (List<Error>, JToken) Parse(string input, FilePath? file)
         {
             return Parse(new StringReader(input), file);
         }
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(TextReader input, FilePath file)
+        public static (List<Error>, JToken) Parse(TextReader input, FilePath? file)
         {
             var (errors, token) = ParseAsJToken(input, file);
             var (nullErrors, result) = token.RemoveNulls();
@@ -91,9 +91,9 @@ namespace Microsoft.Docs.Build
             return (errors, result);
         }
 
-        private static string ReadDocumentType(TextReader reader)
+        private static string? ReadDocumentType(TextReader reader)
         {
-            string line;
+            string? line;
             while ((line = reader.ReadLine()) != null)
             {
                 if (line.StartsWith("documentType:"))
@@ -104,14 +104,14 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static (List<Error>, JToken) ParseAsJToken(TextReader input, FilePath file)
+        private static (List<Error>, JToken) ParseAsJToken(TextReader input, FilePath? file)
         {
             try
             {
                 var errors = new List<Error>();
                 var result = ToJToken(
                     input,
-                    onKeyDuplicate: key => errors.Add(Errors.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
+                    onKeyDuplicate: key => errors.Add(Errors.Yaml.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
                     onConvert: (token, node) =>
                     {
                         if (token is JProperty property)
@@ -130,16 +130,16 @@ namespace Microsoft.Docs.Build
             }
             catch (YamlException ex)
             {
-                var source = new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
+                var source = file is null ? null : new SourceInfo(file, ex.Start.Line, ex.Start.Column, ex.End.Line, ex.End.Column);
                 var message = Regex.Replace(ex.Message, "^\\(.*?\\) - \\(.*?\\):\\s*", "");
 
-                throw Errors.YamlSyntaxError(source, message).ToException(ex);
+                throw Errors.Yaml.YamlSyntaxError(source, message).ToException(ex);
             }
         }
 
-        private static SourceInfo ToSourceInfo(ParsingEvent node, FilePath file)
+        private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file)
         {
-            return new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column);
+            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column);
         }
     }
 }

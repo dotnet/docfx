@@ -3,13 +3,11 @@
 
 using System.Collections.Generic;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class CollectionUtility
     {
-        public static void AddIfNotNull<T>(this IList<T> list, T value) where T : class
+        public static void AddIfNotNull<T>(this IList<T> list, T? value) where T : class
         {
             if (!(value is null))
             {

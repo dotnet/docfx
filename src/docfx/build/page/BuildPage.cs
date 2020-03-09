@@ -25,40 +25,42 @@ namespace Microsoft.Docs.Build
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddIfNotNull(monikerError);
 
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
+
+            var publishItem = new PublishItem(
+                file.SiteUrl,
+                outputPath,
+                file.FilePath.Path,
+                context.LocalizationProvider.Locale,
+                monikers,
+                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
+
+            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file, publishItem);
+
+            if (errors.Any(e => e.Level == ErrorLevel.Error))
+                return errors;
+
             var (outputErrors, output, metadata) = file.IsPage
                 ? await CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
+            publishItem.ExtensionData = metadata;
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {
                 // custom 404 page is not supported
-                errors.Add(Errors.Custom404Page(file));
+                errors.Add(Errors.Content.Custom404Page(file));
             }
 
-            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
-
-            var publishItem = new PublishItem
-            {
-                Url = file.SiteUrl,
-                Path = outputPath,
-                SourcePath = file.FilePath.Path,
-                Locale = context.LocalizationProvider.Locale,
-                Monikers = monikers,
-                MonikerGroup = MonikerUtility.GetGroup(monikers),
-                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-                ExtensionData = metadata,
-            };
-
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && !context.Config.DryRun)
+            if (shouldWriteOutput && !context.Config.DryRun)
             {
                 if (output is string str)
                 {
-                    context.Output.WriteText(str, publishItem.Path);
+                    context.Output.WriteText(str, outputPath);
                 }
                 else
                 {
-                    context.Output.WriteJson(output, publishItem.Path);
+                    context.Output.WriteJson(output, outputPath);
                 }
 
                 if (context.Config.Legacy && file.IsPage)
@@ -83,12 +85,12 @@ namespace Microsoft.Docs.Build
             var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
 
-            // Mandatory metadata are metadata that are required by template to sucessfully ran to completion.
+            // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The current bookmark validation for SDP validates against HTML produced from mustache,
             // so we need to run the full template for SDP even in --dry-run mode.
             if (context.Config.DryRun && string.IsNullOrEmpty(file.Mime))
             {
-                return (errors, null, new JObject());
+                return (errors, new JObject(), new JObject());
             }
 
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
@@ -108,21 +110,19 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (context.Config.Output.Json && !context.Config.Legacy)
+            if (context.Config.OutputJson && !context.Config.Legacy)
             {
-                return (errors, outputModel, SortProperties(outputMetadata));
+                return (errors, outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = CreateTemplateModel(context, SortProperties(outputModel), file);
-            if (context.Config.Output.Json)
+            var (templateModel, templateMetadata) = CreateTemplateModel(context, JsonUtility.SortProperties(outputModel), file);
+            if (context.Config.OutputJson)
             {
-                return (errors, templateModel, SortProperties(templateMetadata));
+                return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
             }
 
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (errors, html, SortProperties(templateMetadata));
-
-            JObject SortProperties(JObject obj) => new JObject(obj.Properties().OrderBy(p => p.Name));
+            return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }
 
         private static (List<Error> errors, object output, JObject metadata)
@@ -130,10 +130,10 @@ namespace Microsoft.Docs.Build
         {
             if (context.Config.DryRun)
             {
-                return (new List<Error>(), null, new JObject());
+                return (new List<Error>(), new JObject(), new JObject());
             }
 
-            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), null);
+            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
         private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveLink(
                     inputMetadata.BreadcrumbPath,
-                    context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File),
+                    inputMetadata.BreadcrumbPath.Source is null ? file : context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File),
                     file);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
                 return (errors, systemMetadata);
             }
 
-            // To speed things up for dry runs, ignore metadatas that does not produce errors.
+            // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
             var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
             errors.AddRange(contributorErrors);
@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.Locale = context.LocalizationProvider.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
-            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath.RelativePath) + "/";
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchProduct = context.Config.Product;
             systemMetadata.SearchDocsetName = context.Config.Name;
 
-            if (context.Config.Output.Pdf)
+            if (context.Config.OutputPdf)
             {
                 systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
                     $"https://{context.Config.HostName}", "pdfstore", systemMetadata.Locale, $"{context.Config.Product}.{context.Config.Name}", "{branchName}");
@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
-                errors.Add(Errors.HeadingNotFound(file));
+                errors.Add(Errors.Heading.HeadingNotFound(file));
             }
 
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
 
             if (!(token is JObject obj))
             {
-                throw Errors.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
+                throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema
@@ -315,7 +315,7 @@ namespace Microsoft.Docs.Build
 
             if (context.Config.DryRun)
             {
-                return (new TemplateModel(), new JObject());
+                return (new TemplateModel("", new JObject(), "", ""), new JObject());
             }
 
             // Hosting layers treats empty content as 404, so generate an empty <div></div>
@@ -342,13 +342,7 @@ namespace Microsoft.Docs.Build
                 metadata, context.MetadataProvider.HtmlMetaHidden, context.MetadataProvider.HtmlMetaNames);
 
             // content for *.raw.page.json
-            var model = new TemplateModel
-            {
-                Content = content,
-                RawMetadata = templateMetadata,
-                PageMetadata = pageMetadata,
-                ThemesRelativePathToOutputRoot = "_themes/",
-            };
+            var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
 
             return (model, metadata);
         }

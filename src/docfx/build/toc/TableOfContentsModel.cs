@@ -14,6 +14,6 @@ namespace Microsoft.Docs.Build
         public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
 
         [JsonExtensionData(WriteData = false)]
-        public JObject ExtensionData { get; set; }
+        public JObject ExtensionData { get; } = new JObject();
     }
 }

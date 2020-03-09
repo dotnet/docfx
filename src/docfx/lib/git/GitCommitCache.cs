@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -105,7 +106,7 @@ namespace Microsoft.Docs.Build
 
             internal FileCommitCache(GitCommitCache parent) => _parent = parent;
 
-            public bool TryGetCommits(long sha, long blob, out long[] commits)
+            public bool TryGetCommits(long sha, long blob, [NotNullWhen(true)] out long[]? commits)
             {
                 if (_commits.TryGetValue((sha, blob), out var value))
                 {

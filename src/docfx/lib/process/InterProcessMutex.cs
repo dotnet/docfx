@@ -6,8 +6,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal struct InterProcessMutex : IDisposable

@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         private static readonly Repository s_repository = Repository.Create(s_docsetPath);
         private static readonly RepositoryProvider s_repositoryProvider = new RepositoryProvider(s_docsetPath, s_repository);
         private static readonly Input s_input = new Input(s_docsetPath, s_repositoryProvider);
-        private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'output': { 'json': true } }".Replace('\'', '\"'), null);
+        private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'outputJson': true}".Replace('\'', '\"'), null);
         private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory(), null);
         private static readonly PackageResolver s_packageResolver = new PackageResolver(s_docsetPath, s_config);
         private static readonly TemplateEngine s_templateEngine = new TemplateEngine(s_docsetPath, s_config, "en-us", s_packageResolver);
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
         [InlineData(new[] { "TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "../toc.json", "../toc.json")]
         [InlineData(new[] { "c/b/TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "../toc.json", "../toc.json")]
 
-        // mix level(nearst)
+        // mix level(nearest)
         [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/a.md", "../toc.json", "../toc.json")]
         [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/b/a.md", "toc.json", "toc.json")]
         [InlineData(new[] { "c/b/TOC.md", "c/d/e/TOC.md" }, "c/f/h/a.md", "../../b/toc.json", null)]

@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -57,25 +55,23 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("https://github.com/docs", "master", null, null, null)]
-        [InlineData("", "master", null, null, null)]
-        [InlineData("", null, null, null, null)]
-        [InlineData("https://github.com/docs.zh-cn", "master", "https://github.com/docs", "master", "zh-cn")]
-        [InlineData("https://github.com/docs.zh-CN", "master", "https://github.com/docs", "master", "zh-cn")]
-        [InlineData("https://github.com/docs.bs-Cyrl-BA", "master", "https://github.com/docs", "master", "bs-cyrl-ba")]
-        [InlineData("https://test.visualstudio.com/_git/abc", "master", null, null, null)]
-        [InlineData("https://test.visualstudio.com/_git/abc.zh-cn", "master", "https://test.visualstudio.com/_git/abc", "master", "zh-cn")]
-        [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master", "bs-cyrl-ba")]
-        [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master", "zh-cn")]
-        [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master", "zh-cn")]
-        public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch, string expectedLocale)
+        [InlineData("https://github.com/docs", "master", null, null)]
+        [InlineData("", "master", null, null)]
+        [InlineData("", null, null, null)]
+        [InlineData("https://github.com/docs.zh-cn", "master", "https://github.com/docs", "master")]
+        [InlineData("https://github.com/docs.zh-CN", "master", "https://github.com/docs", "master")]
+        [InlineData("https://github.com/docs.bs-Cyrl-BA", "master", "https://github.com/docs", "master")]
+        [InlineData("https://test.visualstudio.com/_git/abc", "master", null, null)]
+        [InlineData("https://test.visualstudio.com/_git/abc.zh-cn", "master", "https://test.visualstudio.com/_git/abc", "master")]
+        [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master")]
+        [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master")]
+        [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master")]
+        public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch)
         {
-            LocalizationUtility.TryGetFallbackRepository(
-                Repository.Create(Directory.GetCurrentDirectory(), branch, remote), out var sourceRemote, out var sourceBranch, out var locale);
+            LocalizationUtility.TryGetFallbackRepository(remote, branch, out var sourceRemote, out var sourceBranch);
 
             Assert.Equal(expectedSourceRemote, sourceRemote);
             Assert.Equal(expectedSourceBranch, sourceBranch);
-            Assert.Equal(expectedLocale, locale);
         }
 
         [Theory]
@@ -156,19 +152,13 @@ namespace Microsoft.Docs.Build
             => Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
 
         [Theory]
-        [InlineData("", "{}")]
-        [InlineData("a", "{'a':'value'}")]
-        [InlineData("a, a", "{'a':['value','value']}")]
-        [InlineData("A_B", "{'aB':'value'}")]
-        [InlineData("a, b", "{'a':'value','b':'value'}")]
-        [InlineData("OUTPUT_PATH", "{'outputPath':'value'}")]
-        [InlineData("OUTPUT__PATH", "{'output':{'path':'value'}}")]
-        [InlineData("OUTPUT__PATH,output__path", "{'output':{'path':['value','value']}}")]
-        [InlineData("OUTPUT,output__path", "{'output':{'path':'value'}}")]
-        public static void ExpandVariablesTest(string keys, string expectedJObject)
+        [InlineData("", "")]
+        [InlineData("a", "a")]
+        [InlineData("OUTPUT_PATH", "outputPath")]
+        [InlineData("OUTPUT_PATH_NAME", "outputPathName")]
+        public static void ToCamelCaseTest(string name, string camelCaseName)
         {
-            var items = keys.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(key => (key, "value"));
-            Assert.Equal(expectedJObject, StringUtility.ExpandVariables("__", "_", items).ToString(Formatting.None).Replace('"', '\''));
+            Assert.Equal(camelCaseName, StringUtility.ToCamelCase('_', name));
         }
 
         [Theory]

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -61,7 +60,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static LegacyFileMapItem Instance(
+        public static LegacyFileMapItem? Instance(
             string legacyOutputFilePathRelativeToBasePath,
             string legacySiteUrlRelativeToBasePath,
             ContentType contentType,

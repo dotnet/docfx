@@ -50,11 +50,10 @@ namespace Microsoft.Docs.Build
                 {
                     var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                     errors.AddRange(fileMetaErrors);
-
-                    if (!string.IsNullOrEmpty(fileMetadata.Uid))
+                    var (error, spec) = LoadMarkdown(context, fileMetadata, file);
+                    errors.AddIfNotNull(error);
+                    if (spec != null)
                     {
-                        var (error, spec, _) = LoadMarkdown(context, fileMetadata, file);
-                        errors.AddIfNotNull(error);
                         xrefs.Add(spec);
                     }
                 }
@@ -87,19 +86,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error error, InternalXrefSpec spec, Document doc) LoadMarkdown(Context context, UserMetadata metadata, Document file)
+        private static (Error? error, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
         {
-            var xref = new InternalXrefSpec
+            if (string.IsNullOrEmpty(metadata.Uid))
             {
-                Uid = metadata.Uid,
-                Href = file.SiteUrl,
-                DeclaringFile = file,
-            };
+                return default;
+            }
+
+            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
             xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
-            return (error, xref, file);
+            return (error, xref);
         }
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)
@@ -123,7 +122,7 @@ namespace Microsoft.Docs.Build
             if (conflictsWithoutMoniker.Length > 1)
             {
                 var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclaringFile);
-                context.ErrorLog.Write(Errors.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
+                context.ErrorLog.Write(Errors.Xref.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
             }
 
             // uid conflicts with overlapping monikers
@@ -131,7 +130,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                context.ErrorLog.Write(Errors.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
+                context.ErrorLog.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
             // uid conflicts with different names
@@ -139,7 +138,7 @@ namespace Microsoft.Docs.Build
             var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
             if (conflictingNames.Count() > 1)
             {
-                context.ErrorLog.Write(Errors.UidPropertyConflict(uid, "name", conflictingNames));
+                context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, "name", conflictingNames));
             }
 
             return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).First();

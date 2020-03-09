@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
-        private readonly Func<Config> _config;
+        private readonly Func<Config?> _config;
 
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
         private readonly Lazy<TextWriter> _output;
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public ErrorLog(string docsetPath, string outputPath, Func<Config> config, bool legacy = false)
+        public ErrorLog(string docsetPath, string? outputPath, Func<Config?> config, bool legacy = false)
         {
             _config = config;
             _legacy = legacy;
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                         return TextWriter.Null;
                     }
 
-                    outputPath = Path.Combine(docsetPath, conf.Output.Path);
+                    outputPath = Path.Combine(docsetPath, conf.OutputPath);
                 }
 
                 // add default build log file output path
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             {
                 if (level == ErrorLevel.Error)
                 {
-                    return Write(Errors.FallbackError(config.DefaultLocale));
+                    return Write(Errors.Logging.FallbackError(config.DefaultLocale));
                 }
                 return false;
             }
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             {
                 if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
                 {
-                    WriteCore(Errors.ExceedMaxErrors(GetMaxCount(config, level), level), level);
+                    WriteCore(Errors.Logging.ExceedMaxErrors(GetMaxCount(config, level), level), level);
                 }
             }
             else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level))
@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
             PrintError(error, level);
         }
 
-        private int GetMaxCount(Config config, ErrorLevel level)
+        private int GetMaxCount(Config? config, ErrorLevel level)
         {
             if (config == null)
             {
@@ -203,17 +203,17 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return config.Output.MaxErrors;
+                    return config.MaxErrors;
                 case ErrorLevel.Warning:
-                    return config.Output.MaxWarnings;
+                    return config.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return config.Output.MaxSuggestions;
+                    return config.MaxSuggestions;
                 default:
                     return int.MaxValue;
             }
         }
 
-        private bool ExceedMaxErrors(Config config, ErrorLevel level)
+        private bool ExceedMaxErrors(Config? config, ErrorLevel level)
         {
             if (config == null)
             {
@@ -223,17 +223,17 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return Volatile.Read(ref _errorCount) >= config.Output.MaxErrors;
+                    return Volatile.Read(ref _errorCount) >= config.MaxErrors;
                 case ErrorLevel.Warning:
-                    return Volatile.Read(ref _warningCount) >= config.Output.MaxWarnings;
+                    return Volatile.Read(ref _warningCount) >= config.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return Volatile.Read(ref _suggestionCount) >= config.Output.MaxSuggestions;
+                    return Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions;
                 default:
                     return false;
             }
         }
 
-        private bool IncrementExceedMaxErrors(Config config, ErrorLevel level)
+        private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level)
         {
             if (config == null)
             {
@@ -243,11 +243,11 @@ namespace Microsoft.Docs.Build
             switch (level)
             {
                 case ErrorLevel.Error:
-                    return Interlocked.Increment(ref _errorCount) > config.Output.MaxErrors;
+                    return Interlocked.Increment(ref _errorCount) > config.MaxErrors;
                 case ErrorLevel.Warning:
-                    return Interlocked.Increment(ref _warningCount) > config.Output.MaxWarnings;
+                    return Interlocked.Increment(ref _warningCount) > config.MaxWarnings;
                 case ErrorLevel.Suggestion:
-                    return Interlocked.Increment(ref _suggestionCount) > config.Output.MaxSuggestions;
+                    return Interlocked.Increment(ref _suggestionCount) > config.MaxSuggestions;
                 default:
                     return false;
             }

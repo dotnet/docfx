@@ -5,8 +5,6 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class SourceInfoJsonConverter : JsonConverter
@@ -23,11 +21,15 @@ namespace Microsoft.Docs.Build
             switch (reader)
             {
                 case JTokenReader tokenReader:
-                    source = JsonUtility.GetSourceInfo(tokenReader.CurrentToken);
+                    source = tokenReader.CurrentToken?.GetSourceInfo();
                     break;
 
                 case JsonTextReader textReader:
-                    source = new SourceInfo(JsonUtility.State.FilePath, textReader.LineNumber, textReader.LinePosition);
+                    var filePath = JsonUtility.State?.FilePath;
+                    if (filePath != null)
+                    {
+                        source = new SourceInfo(filePath, textReader.LineNumber, textReader.LinePosition);
+                    }
                     break;
             }
 

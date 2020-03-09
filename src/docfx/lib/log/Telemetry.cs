@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         private static string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
 
-        public static void SetRepository(string repo, string branch)
+        public static void SetRepository(string? repo, string? branch)
         {
             s_repo = string.IsNullOrEmpty(repo) ? "<null>" : repo;
             s_branch = string.IsNullOrEmpty(branch) ? "<null>" : branch;

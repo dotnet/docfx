@@ -3,8 +3,6 @@
 
 using System.Collections.Generic;
 
-#nullable enable
-
 namespace System.Collections.Concurrent
 {
     internal class DictionaryBuilder<TKey, TValue> where TKey : notnull

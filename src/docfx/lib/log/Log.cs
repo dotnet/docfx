@@ -5,8 +5,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]

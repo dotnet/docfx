@@ -12,8 +12,8 @@ namespace Microsoft.Docs.Build
         private readonly PublishModelBuilder _publishModelBuilder;
 
         private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
-        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>
-            _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo source)>();
+        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>
+            _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>();
 
         public BookmarkValidator(ErrorLog errorLog, PublishModelBuilder publishModelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             _publishModelBuilder = publishModelBuilder;
         }
 
-        public void AddBookmarkReference(Document file, Document reference, string fragment, bool isSelfBookmark, SourceInfo source)
+        public void AddBookmarkReference(Document file, Document reference, string? fragment, bool isSelfBookmark, SourceInfo? source)
         {
             if (reference.ContentType == ContentType.Page && !string.IsNullOrEmpty(fragment))
             {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 if (bookmarks.Contains(bookmark))
                     continue;
 
-                var error = Errors.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks);
+                var error = Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks);
 
                 if (_errorLog.Write(error))
                 {

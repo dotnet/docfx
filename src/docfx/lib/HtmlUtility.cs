@@ -10,8 +10,6 @@ using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
@@ -146,7 +144,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static string TransformXref(string html, Func<string, bool, int, (string href, string display)> transform)
+        public static string TransformXref(string html, Func<string, bool, int, (string? href, string display)> transform)
         {
             // Fast pass it does not have <xref> tag
             if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
@@ -298,7 +296,7 @@ namespace Microsoft.Docs.Build
 
         internal static HtmlNode RemoveRerunCodepenIframes(this HtmlNode html)
         {
-            // the rerun button on codepen iframes isn't accessibile.
+            // the rerun button on codepen iframes isn't accessible.
             // rather than get acc bugs or ban codepen, we're just hiding the rerun button using their iframe api
             foreach (var node in html.Descendants("iframe"))
             {

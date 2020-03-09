@@ -9,8 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class UrlUtility
@@ -28,10 +26,10 @@ namespace Microsoft.Docs.Build
         private static readonly char[] s_queryFragmentLeadingChars = new char[] { '#', '?' };
 
         /// <summary>
-        /// Split href to path, fragement and query
+        /// Split href to path, fragment and query
         /// </summary>
         /// <param name="url">The href</param>
-        /// <returns>The splited path, query and fragment</returns>
+        /// <returns>The splitted path, query and fragment</returns>
         public static (string path, string query, string fragment) SplitUrl(string url)
         {
             var path = "";
@@ -81,7 +79,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeUrl(string targetUrl, string sourceQuery, string? sourceFragment = null)
+        public static string MergeUrl(string targetUrl, string? sourceQuery = null, string? sourceFragment = null)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
@@ -106,7 +104,7 @@ namespace Microsoft.Docs.Build
             return targetPath + query + fragment;
         }
 
-        public static DependencyType FragmentToDependencyType(string fragment)
+        public static DependencyType FragmentToDependencyType(string? fragment)
         {
             return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
         }
@@ -179,7 +177,7 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static LinkType GetLinkType(string link)
+        public static LinkType GetLinkType(string? link)
         {
             if (string.IsNullOrEmpty(link))
             {
@@ -234,7 +232,7 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool TryParseGitHubUrl(
-            string remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
+            string? remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
         {
             owner = name = default;
             if (string.IsNullOrEmpty(remoteUrl))

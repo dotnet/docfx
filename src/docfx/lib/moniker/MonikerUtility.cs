@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,9 +10,9 @@ namespace Microsoft.Docs.Build
     {
         private static readonly ConcurrentDictionary<string, string> _groupCache = new ConcurrentDictionary<string, string>();
 
-        public static string GetGroup(IReadOnlyList<string> monikers)
+        public static string? GetGroup(string[] monikers)
         {
-            if (monikers == null || monikers.Count == 0)
+            if (monikers.Length == 0)
             {
                 return null;
             }

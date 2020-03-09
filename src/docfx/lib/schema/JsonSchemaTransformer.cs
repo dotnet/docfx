@@ -10,8 +10,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaTransformer
@@ -66,7 +64,7 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
-                            errors.Add(Errors.UidConflict(uid, JsonUtility.GetSourceInfo(uidValue)));
+                            errors.Add(Errors.Xref.UidConflict(uid, JsonUtility.GetSourceInfo(uidValue)));
                         }
 
                         break;
@@ -98,7 +96,7 @@ namespace Microsoft.Docs.Build
                                     {
                                         var referenceMap = recursionDetector.Select(x => $"{x.uid} ({x.declaringFile})").Reverse().ToList();
                                         referenceMap.Add($"{uid} ({file})");
-                                        throw Errors.CircularReference(referenceMap, file).ToException();
+                                        throw Errors.Link.CircularReference(referenceMap, file).ToException();
                                     }
 
                                     try
@@ -120,13 +118,8 @@ namespace Microsoft.Docs.Build
                         return false;
                     });
 
-                    var xref = new InternalXrefSpec
-                    {
-                        Uid = uid,
-                        Source = JsonUtility.GetSourceInfo(obj),
-                        Href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", $"#{GetBookmarkFromUid(uid)}"),
-                        DeclaringFile = file,
-                    };
+                    var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", $"#{GetBookmarkFromUid(uid)}");
+                    var xref = new InternalXrefSpec(uid, href, file);
                     xref.ExtensionData.AddRange(xrefProperties);
                     xref.PropertyContentTypeMapping.AddRange(contentTypeProperties);
                     return xref;

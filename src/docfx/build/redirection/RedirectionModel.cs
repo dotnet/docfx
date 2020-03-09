@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class RedirectionModel
     {
         [JsonConverter(typeof(UnionTypeConverter))]
-        public (Dictionary<PathString, SourceInfo<string>> objectForm, RedirectionItem[] arrayForm) Redirections { get; set; }
+        public (Dictionary<PathString, SourceInfo<string>>? objectForm, RedirectionItem[]? arrayForm) Redirections { get; set; }
 
         public Dictionary<PathString, SourceInfo<string>> Renames { get; } = new Dictionary<PathString, SourceInfo<string>>();
     }

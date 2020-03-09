@@ -38,8 +38,7 @@ namespace Microsoft.Docs.Build
 
             MetadataSchemas = Array.ConvertAll(
                 config.MetadataSchema,
-                schema => JsonUtility.Deserialize<JsonSchema>(
-                    fileResolver.ReadString(schema), schema.Source?.File));
+                schema => JsonUtility.Deserialize<JsonSchema>(fileResolver.ReadString(schema), schema.Source?.File));
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
@@ -53,9 +52,12 @@ namespace Microsoft.Docs.Build
 
             HtmlMetaHidden = MetadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
 
-            HtmlMetaNames = MetadataSchemas.SelectMany(
-                schema => schema.Properties.Where(prop => !string.IsNullOrEmpty(prop.Value.HtmlMetaName)))
-                    .ToDictionary(prop => prop.Key, prop => prop.Value.HtmlMetaName);
+            HtmlMetaNames = new Dictionary<string, string>(
+                from schema in MetadataSchemas
+                from property in schema.Properties
+                let htmlMetaName = property.Value.HtmlMetaName
+                where !string.IsNullOrEmpty(htmlMetaName)
+                select new KeyValuePair<string, string>(property.Key, htmlMetaName));
 
             _hasMonikerRangeFileMetadata = config.FileMetadata.ContainsKey("monikerRange");
 
@@ -107,7 +109,7 @@ namespace Microsoft.Docs.Build
 
             if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
             {
-                var (yamlHeaderErrors, yamlHeader) = LoadYamlHeader(file);
+                var (yamlHeaderErrors, yamlHeader) = LoadYamlHeader(file.FilePath);
                 errors.AddRange(yamlHeaderErrors);
 
                 if (yamlHeader.Count > 0)
@@ -119,13 +121,17 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in result)
             {
+                if (value is null)
+                {
+                    continue;
+                }
                 if (_reservedMetadata.Contains(key))
                 {
-                    errors.Add(Errors.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
+                    errors.Add(Errors.Metadata.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
                 }
                 else if (!IsValidMetadataType(value))
                 {
-                    errors.Add(Errors.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
+                    errors.Add(Errors.Metadata.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
                 }
             }
 
@@ -162,28 +168,28 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private (List<Error> errors, JObject yamlHeader) LoadYamlHeader(Document file)
+        private (List<Error> errors, JObject yamlHeader) LoadYamlHeader(FilePath file)
         {
-            if (file.FilePath.EndsWith(".md"))
+            if (file.EndsWith(".md"))
             {
-                using var reader = _input.ReadText(file.FilePath);
+                using var reader = _input.ReadText(file);
                 return ExtractYamlHeader.Extract(reader, file);
             }
 
-            if (file.FilePath.EndsWith(".yml"))
+            if (file.EndsWith(".yml"))
             {
-                return LoadSchemaDocumentYamlHeader(_input.ReadYaml(file.FilePath), file);
+                return LoadSchemaDocumentYamlHeader(_input.ReadYaml(file), file);
             }
 
-            if (file.FilePath.EndsWith(".json"))
+            if (file.EndsWith(".json"))
             {
-                return LoadSchemaDocumentYamlHeader(_input.ReadJson(file.FilePath), file);
+                return LoadSchemaDocumentYamlHeader(_input.ReadJson(file), file);
             }
 
             return (new List<Error>(), new JObject());
         }
 
-        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentYamlHeader((List<Error>, JToken) document, Document file)
+        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentYamlHeader((List<Error>, JToken) document, FilePath file)
         {
             var (errors, token) = document;
             var metadata = token is JObject tokenObj ? tokenObj["metadata"] : null;
@@ -195,7 +201,7 @@ namespace Microsoft.Docs.Build
                     return (errors, obj);
                 }
 
-                errors.Add(Errors.YamlHeaderNotObject(isArray: metadata is JArray, file.FilePath));
+                errors.Add(Errors.Yaml.YamlHeaderNotObject(isArray: metadata is JArray, file));
             }
 
             return (errors, new JObject());

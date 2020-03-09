@@ -3,16 +3,18 @@
 
 using System;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class TestQuirks
     {
-        public static Func<string>? CachePath;
-        public static Func<string>? StatePath;
-        public static Func<string, string>? GitRemoteProxy;
-        public static Func<bool>? RestoreUseCache;
-        public static bool? Verbose;
+        public static Func<string>? CachePath { get; set; }
+
+        public static Func<string>? StatePath { get; set; }
+
+        public static Func<string, string>? GitRemoteProxy { get; set; }
+
+        public static Func<bool>? RestoreUseCache { get; set; }
+
+        public static bool? Verbose { get; set; }
     }
 }

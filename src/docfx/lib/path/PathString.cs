@@ -7,8 +7,6 @@ using System.Globalization;
 using System.IO;
 using Newtonsoft.Json;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

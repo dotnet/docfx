@@ -11,12 +11,12 @@ namespace Microsoft.Docs.Build
         public static string ToLegacyOutputPathRelativeToBasePath(this Document doc, Context context, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
-            if (doc.ContentType == ContentType.Resource && !context.Config.Output.CopyResources)
+            if (outputPath is null || (doc.ContentType == ContentType.Resource && !context.Config.CopyResources))
             {
                 outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath, manifestItem.Monikers);
             }
             var legacyOutputFilePathRelativeToBasePath = Path.GetRelativePath(
-                string.IsNullOrEmpty(context.Config.BasePath.RelativePath) ? "." : context.Config.BasePath.RelativePath, outputPath);
+                string.IsNullOrEmpty(context.Config.BasePath) ? "." : context.Config.BasePath, outputPath);
 
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
         }
@@ -24,11 +24,11 @@ namespace Microsoft.Docs.Build
         public static string ToLegacySiteUrlRelativeToBasePath(this Document doc, Context context)
         {
             var legacySiteUrlRelativeToBasePath = doc.SiteUrl;
-            if (legacySiteUrlRelativeToBasePath.StartsWith(context.Config.BasePath.ToString(), PathUtility.PathComparison))
+            if (legacySiteUrlRelativeToBasePath.StartsWith(context.Config.BasePath.ValueWithLeadingSlash, PathUtility.PathComparison))
             {
                 legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath.Substring(1);
                 legacySiteUrlRelativeToBasePath = Path.GetRelativePath(
-                    string.IsNullOrEmpty(context.Config.BasePath.RelativePath) ? "." : context.Config.BasePath.RelativePath,
+                    string.IsNullOrEmpty(context.Config.BasePath) ? "." : context.Config.BasePath,
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                 : legacySiteUrlRelativeToBasePath);
         }
 
-        public static string ChangeExtension(string filePath, string extension, string[] acceptableExtension = null)
+        public static string ChangeExtension(string filePath, string extension, string[]? acceptableExtension = null)
         {
             acceptableExtension ??= new string[] { ".raw.page.json", ".mta.json" };
             if (!acceptableExtension.Any(ext =>

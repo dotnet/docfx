@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
-                ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
+                ErrorLog.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
                 return 1;
             }
 
@@ -26,10 +26,10 @@ namespace Microsoft.Docs.Build
             return result.All(x => x) ? 0 : 1;
         }
 
-        private static async Task<bool> BuildDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static async Task<bool> BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
             List<Error> errors;
-            Config config = null;
+            Config? config = null;
 
             using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
@@ -49,13 +49,14 @@ namespace Microsoft.Docs.Build
                 using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
                 var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
                 var repositoryProvider = new RepositoryProvider(docsetPath, repository, config, packageResolver, localizationProvider);
-                var input = new Input(docsetPath, repositoryProvider, localizationProvider);
+                var input = new Input(docsetPath, repositoryProvider);
 
                 // get docsets(build docset, fallback docset and dependency docsets)
-                var (docset, fallbackDocset) = GetDocsetWithFallback(localizationProvider);
+                var docset = new Docset(docsetPath, repository);
+                var fallbackDocset = localizationProvider.GetFallbackDocset();
 
                 // run build based on docsets
-                outputPath ??= Path.Combine(docsetPath, config.Output.Path);
+                outputPath ??= Path.Combine(docsetPath, config.OutputPath);
                 await Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -72,27 +73,10 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static (Docset docset, Docset fallbackDocset) GetDocsetWithFallback(
-            LocalizationProvider localizationProvider)
-        {
-            var (currentDocsetPath, currentRepo) = localizationProvider.GetBuildRepositoryWithDocsetEntry();
-            var currentDocset = new Docset(currentDocsetPath, currentRepo);
-            if (localizationProvider.IsLocalizationBuild)
-            {
-                var (fallbackDocsetPath, fallbackRepo) = localizationProvider.GetFallbackRepositoryWithDocsetEntry();
-                if (fallbackRepo != null)
-                {
-                    return (currentDocset, new Docset(fallbackDocsetPath, fallbackRepo));
-                }
-            }
-
-            return (currentDocset, default);
-        }
-
         private static async Task Run(
             Config config,
             Docset docset,
-            Docset fallbackDocset,
+            Docset? fallbackDocset,
             CommandLineOptions options,
             ErrorLog errorLog,
             string outputPath,
@@ -129,7 +113,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Legacy)
                 {
-                    if (context.Config.Output.Json)
+                    if (context.Config.OutputJson)
                     {
                         // TODO: decouple files and dependencies from legacy.
                         Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);

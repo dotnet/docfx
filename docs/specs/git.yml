@@ -17,12 +17,17 @@ repos:
           ---
           author: charlie
           ---
-          Alice creates this. Bob updates this. Charlie becomes author.
+          Alice creates this. Charlie updates this. Bob updates this. Charlie becomes author.
     - author: Bob 
       email: bob@contoso.com
       files:
         docs/index.md: |
-          Alice creates this. Bob updates this.
+          Alice creates this. Charlie updates this. Bob updates this.
+    - author: Charlie 
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Charlie updates this.
     - author: Alice 
       email: alice@contoso.com
       files:
@@ -138,10 +143,9 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      excludeContributors:
-        - AlIcE
-        - BoB
+    excludeContributors:
+      - AlIcE
+      - BoB
 cache:
   github-users.json: |
       { "items": [
@@ -171,9 +175,8 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      excludeContributors:
-        - Alice
+    excludeContributors:
+      - Alice
 cache:
   github-users.json: |
       { "items": [{"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]}]}
@@ -236,9 +239,8 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      excludeContributors:
-        - ChArLiE
+    excludeContributors:
+      - ChArLiE
 cache:
   github-users.json: |
       { "items": [
@@ -304,9 +306,8 @@ repos:
         docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/contrib-owner/contrib-repo
-      repositoryBranch: contrib-branch
+    editRepositoryUrl: https://github.com/contrib-owner/contrib-repo
+    editRepositoryBranch: contrib-branch
 outputs:
   docs/index.json: |
     {
@@ -334,7 +335,7 @@ outputs:
       "gitcommit": "https://github.com/testowner/test-op-edit-link-repo/blob/65344f739e0bca9b2d0b93615f905d148af0607f/a.md",
     }
 ---
-# Use commit's time as updated_at when `updateTimeAsCommitBuildTime` is false
+# Use commit time as updated_at when `updateTimeAsCommitBuildTime` is false
 repos:
   https://github.com/testowner/testrepo#master-time-from-commit:
     - files:
@@ -416,8 +417,7 @@ repos:
         docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/testowner/testrepo
+    editRepositoryUrl: https://github.com/testowner/testrepo
 outputs:
   docs/index.json: |
     {
@@ -434,8 +434,7 @@ repos:
         docs/index.md: Alice creates this.
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/contrib-owner/contrib-repo
+    editRepositoryUrl: https://github.com/contrib-owner/contrib-repo
 outputs:
   docs/index.json: |
     {
@@ -451,8 +450,7 @@ repos:
         docs/index.md:
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://github.com/docascode/a
+    editRepositoryUrl: https://github.com/docascode/a
 outputs:
   docs/index.json: |
     {
@@ -485,10 +483,8 @@ repos:
           Osmond creates this, without email
 inputs:
   docfx.yml: |
-    gitHub:
-      authToken: {DOCS_GITHUB_TOKEN}
-    contribution:
-      repositoryUrl: https://github.com/docascode/contribution-test
+    githubToken: {DOCS_GITHUB_TOKEN}
+    editRepositoryUrl: https://github.com/docascode/contribution-test
 cache:
   github-users.json: |
       { "items": [
@@ -538,8 +534,7 @@ repos:
           Osmond creates this, without email
 inputs:
   docfx.yml: |
-    contribution:
-      repositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
+    editRepositoryUrl: https://github.com/a/b
 cache:
   github-users.json: |
       { "items": [
@@ -560,6 +555,30 @@ outputs:
         ]
       },
       "updated_at": "2018-10-30 12:00 AM"
+    }
+---
+# Do not resolve contributors if repo and editRepositoryUrl are not GitHub repository
+repos:
+  https://docascode.visualstudio.com/contribution1/_git/a:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md:
+inputs:
+  docfx.yml: |
+    editRepositoryUrl: https://docascode.visualstudio.com/contribution1/_git/a
+cache:
+  github-users.json: |
+      {
+        "items": [{"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}]
+      }
+outputs:
+  docs/index.json: |
+    {
+      "_op_gitContributorInformation": {
+        "author": undefined,
+        "contributors": undefined
+      }
     }
 ---
 # Author and contributors will not be resolved when `github.resolveUsers` == false
@@ -585,8 +604,7 @@ repos:
           Alice creates this.
 inputs:
   docfx.yml: |
-    gitHub:
-      resolveUsers: false
+    resolveGithubUsers: false
 cache:
   github-users.json: |
       { "items": [
@@ -611,9 +629,8 @@ repos:
     - files:
         docfx.yml: |
           updateTimeAsCommitBuildTime: true
-          contribution:
-            repositoryUrl: https://github.com/contrib-owner/contrib-repo
-            repositoryBranch: contrib-branch
+          editRepositoryUrl: https://github.com/contrib-owner/contrib-repo
+          editRepositoryBranch: contrib-branch
           files:
             - "docs/**/*"
             - "crrb/**/*"
@@ -678,7 +695,7 @@ outputs:
       "updated_at": "2020-02-12 12:00 AM"
     }
 ---
-# Gracefull handle corrupted global cache files
+# Gracefully handle corrupted global cache files
 repos:
   https://github.com/cache/crash:
     - files:
@@ -695,3 +712,39 @@ outputs:
     {
       "_op_gitContributorInformation": { "author": undefined }
     }
+---
+# Localization with CRR build
+repos:
+  https://docs.com/crrcontent/a#live-sxs:
+    - files:
+        docfx.yml: |
+          files:
+            - "docs/**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              url: https://github.com/testowner/crr-content
+              branch: live-sxs
+              includeInBuild: true
+        docs/a.md:
+  https://docs.com/crrcontent/a#live:
+    - files:
+        docfx.yml: |
+          files:
+            - "docs/**/*"
+            - "crrb/**/*"
+          dependencies:
+            crrb:
+              url: https://github.com/testowner/crr-content
+              branch: live-sxs
+              includeInBuild: true
+        docs/a.md:
+  https://github.com/testowner/crr-content#live-sxs:
+    - files:
+        b.md:
+  https://github.com/testowner/crr-content#live:
+    - files:
+        b.md:
+outputs:
+  docs/a.json:
+  crrb/b.json:

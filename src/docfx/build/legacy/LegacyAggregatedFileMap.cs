@@ -64,11 +64,11 @@ namespace Microsoft.Docs.Build
         [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
         private class DependencyItem
         {
-            public string FromFilePath { get; set; }
+            public string? FromFilePath { get; set; }
 
-            public string ToFilePath { get; set; }
+            public string? ToFilePath { get; set; }
 
-            public string Version { get; set; }
+            public string? Version { get; set; }
 
             public LegacyDependencyMapType DependencyType { get; set; }
         }

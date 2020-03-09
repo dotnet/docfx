@@ -10,9 +10,9 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class Moniker
     {
-        public string MonikerName { get; set; } = string.Empty;
+        public string MonikerName { get; set; } = "";
 
-        public string ProductName { get; set; } = string.Empty;
+        public string ProductName { get; set; } = "";
 
         public int Order { get; set; } = 0;
 

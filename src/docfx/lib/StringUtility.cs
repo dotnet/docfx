@@ -1,66 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
-using Newtonsoft.Json.Linq;
-
-#nullable enable
 
 namespace Microsoft.Docs.Build
 {
     internal static class StringUtility
     {
-        public static JObject ExpandVariables(string objectSeparator, string wordSeparator, IEnumerable<(string key, string value)> variables)
-        {
-            var result = new JObject();
-
-            foreach (var (key, value) in variables)
-            {
-                var current = result;
-                var objects = key.Split(objectSeparator);
-
-                for (var i = 0; i < objects.Length; i++)
-                {
-                    var name = ToCamelCase(wordSeparator, objects[i]);
-                    if (i == objects.Length - 1)
-                    {
-                        if (current.TryGetValue(name, out var currentToken))
-                        {
-                            switch (currentToken)
-                            {
-                                case null:
-                                    break;
-
-                                case JArray arr:
-                                    arr.Add(value);
-                                    break;
-
-                                default:
-                                    current[name] = new JArray(currentToken, value);
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            current[name] = value;
-                        }
-                    }
-                    else
-                    {
-                        if (!(current[name] is JObject obj))
-                        {
-                            current[name] = obj = new JObject();
-                        }
-                        current = obj;
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private static string ToCamelCase(string wordSeparator, string value)
+        public static string ToCamelCase(char wordSeparator, string value)
         {
             var sb = new StringBuilder();
             var words = value.ToLowerInvariant().Split(wordSeparator);
@@ -75,6 +26,37 @@ namespace Microsoft.Docs.Build
                 }
             }
             return sb.ToString().Trim();
+        }
+
+        public static string Join<T>(IEnumerable<T> source, int take = 5)
+        {
+            var formatSource = source.Select(item => $"'{item}'").OrderBy(_ => _, StringComparer.Ordinal);
+            return $"{string.Join(", ", formatSource.Take(take))}{(formatSource.Count() > 5 ? "..." : "")}";
+        }
+
+        /// <summary>
+        /// Find the string that best matches <paramref name="target"/> from <paramref name="candidates"/>,
+        /// return if a match is found and assigned the found value to  <paramref name="bestMatch"/> accordingly. <para/>
+        /// Returns: false if no match is found, otherwise return true.
+        /// </summary>
+        /// <param name="target">The string to be looked for</param>
+        /// <param name="candidates">Possible strings to look for from</param>
+        /// <param name="bestMatch">If a match is found, this will be assigned</param>
+        /// <param name="threshold">Max levenshtein distance between the candidate and the target, greater values will be filtered</param>
+        /// <returns>
+        ///     if a match is found, return true and assign it to <paramref name="bestMatch"/>, otherwise return false.
+        /// </returns>
+        public static bool FindBestMatch(string target, IEnumerable<string> candidates, [NotNullWhen(true)] out string? bestMatch, int threshold = 5)
+        {
+            bestMatch = candidates != null ?
+                    (from candidate in candidates
+                     let levenshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
+                     where levenshteinDistance <= threshold
+                     orderby levenshteinDistance, candidate
+                     select candidate).FirstOrDefault()
+                    : null;
+
+            return !string.IsNullOrEmpty(bestMatch);
         }
     }
 }

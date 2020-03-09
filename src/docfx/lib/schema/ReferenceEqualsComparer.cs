@@ -5,8 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class ReferenceEqualsComparer : IEqualityComparer, IEqualityComparer<object>

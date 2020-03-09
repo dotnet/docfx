@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using Polly;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor : IDisposable
@@ -20,16 +18,16 @@ namespace Microsoft.Docs.Build
         public MicrosoftGraphAccessor(Config config)
         {
             _aliasCache = new JsonDiskCache<Error, string, MicrosoftGraphUser>(
-                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraph.MicrosoftGraphCacheExpirationInHours));
+                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraphCacheExpirationInHours));
 
-            if (!string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphTenantId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraph.MicrosoftGraphClientSecret))
+            if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret))
             {
                 _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(
-                    config.MicrosoftGraph.MicrosoftGraphTenantId,
-                    config.MicrosoftGraph.MicrosoftGraphClientId,
-                    config.MicrosoftGraph.MicrosoftGraphClientSecret);
+                    config.MicrosoftGraphTenantId,
+                    config.MicrosoftGraphClientId,
+                    config.MicrosoftGraphClientSecret);
 
                 _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
             }
@@ -45,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             var (error, user) = await _aliasCache.GetOrAdd(alias.Value, GetMicrosoftGraphUserCore);
 
-            return error ?? (user is null ? Errors.MsAliasInvalid(alias, name) : null);
+            return error ?? (user is null ? Errors.JsonSchema.MsAliasInvalid(alias, name) : null);
         }
 
         public Task<Error[]> Save()
@@ -82,7 +80,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception e)
             {
-                return (Errors.MicrosoftGraphApiFailed(e.Message), null);
+                return (Errors.System.MicrosoftGraphApiFailed(e.Message), null);
             }
         }
     }

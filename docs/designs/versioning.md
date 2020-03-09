@@ -145,7 +145,7 @@ monikerDefinitionUrl: "https://api.sampledocs.com/monikers/"
     If in one round of build, different files with the same **AssetID** are included:
     1. When the files do not have `monikerRange` option set, an error throws.
     2. When the files have `monikerRange` option set, and *moniker list* for each file are mutually exclusive with others, these files are considered as different versions of the same **AssetID**, this is allowed.
-    3. When the *moniker list* for the files are not mutually exclusive with others, for example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is indeterministic.
+    3. When the *moniker list* for the files are not mutually exclusive with others, for example, `articles/v1.0/a.md` has monikers `v1.0, v2.0` while `articles/v2.0/a.md` has monikers `v2.0, v3.0`, **an error throws** as for version `v2.0`, the result is nondeterministic.
     
 4. `monikerDefinitionUrl` defines the definition for moniker list, both *file* and *http(s)* URI schemes are supported. The moniker definition defines the *moniker name*, *product name*, *order* and other metadata for the *moniker*.
 
@@ -249,7 +249,7 @@ When `contentType` is `markdown`, the value will be interpreted as in Markdown s
 ### 5.2 Build
 
 #### 5.2.1 Evaluating *moniker range expression*
-All the *moniker range expression*s are expanded into *moniker list* ordered by *order* ascendingly and *product name* alphabetically.
+All the *moniker range expression*s are expanded into *moniker list* ordered by *order* ascending and *product name* alphabetically.
 
 #### 5.2.2 Resolve XREF
 1. Cross references and links SHOULD contain moniker information. The context of each `xref` or `link` AST model contains the moniker list it belongs to. For the below example file:
@@ -295,7 +295,7 @@ All the *moniker range expression*s are expanded into *moniker list* ordered by 
     A. Current `xref` has context info for the version list this `xref` belongs to, it searches for the uid reference with the corresponding version list, starting from the latest version.
     
     B. If found: resolve to `uid-url?version=version`
-    We think that when moniker name matches, they'd like to reference to the uid reference with the same moniker. For example, when `dotnet-conceputal` repo refers to `dotnet-api` repo.
+    We think that when moniker name matches, they'd like to reference to the uid reference with the same moniker. For example, when `dotnet-conceptual` repo refers to `dotnet-api` repo.
     
     C. If not found, resolve to `uid-url`, hosting layer helps to redirect to the latest version.
     We think that when moniker name does not match, they'd link to reference to the latest version of the uid reference. For example, when `azure-dotnet` repo refers to `azure-powershell` repo.

@@ -33,13 +33,7 @@ namespace Microsoft.Docs.Build
                 _errorLog.Write(error);
             }
 
-            _links.TryAdd(new FileLinkItem()
-            {
-                SourceFile = file,
-                SourceUrl = file.SiteUrl,
-                SourceMonikerGroup = MonikerUtility.GetGroup(monikers),
-                TargetUrl = targetUrl,
-            });
+            _links.TryAdd(new FileLinkItem(file, file.SiteUrl, MonikerUtility.GetGroup(monikers), targetUrl));
         }
 
         public object Build() =>

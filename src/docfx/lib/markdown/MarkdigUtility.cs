@@ -13,14 +13,18 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static SourceInfo ToSourceInfo(this MarkdownObject obj, int? line = null, Document file = null, int columnOffset = 0)
+        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null, int columnOffset = 0)
         {
+            var path = file ?? (InclusionContext.File as Document)?.FilePath;
+            if (path is null)
+                return default;
+
             // Line info in markdown object is zero based, turn it into one based.
             if (obj != null)
-                return new SourceInfo(file?.FilePath ?? (InclusionContext.File as Document)?.FilePath, obj.Line + 1, obj.Column + columnOffset + 1);
+                return new SourceInfo(path, obj.Line + 1, obj.Column + columnOffset + 1);
 
             if (line != null)
-                return new SourceInfo(file?.FilePath ?? (InclusionContext.File as Document)?.FilePath, line.Value + 1, 0);
+                return new SourceInfo(path, line.Value + 1, 0);
 
             return default;
         }
@@ -62,9 +66,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static MarkdownObject Replace(this MarkdownObject obj, Func<MarkdownObject, MarkdownObject> action)
         {
-            if (obj is null)
-                return null;
-
             obj = action(obj);
 
             if (obj is ContainerBlock block)

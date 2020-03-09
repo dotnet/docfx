@@ -17,19 +17,19 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default docset name
         /// </summary>
-        public readonly SourceInfo<string> Name = new SourceInfo<string>("");
+        public SourceInfo<string> Name { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public readonly SourceInfo<string>[] Extend = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[] Extend { get; private set; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Gets the authorization keys for required resources access
         /// </summary>
-        public readonly Dictionary<string, HttpConfig> Http = new Dictionary<string, HttpConfig>();
+        public Dictionary<string, HttpConfig> Http { get; private set; } = new Dictionary<string, HttpConfig>();
 
         public Action<HttpRequestMessage> GetCredentialProvider()
         {

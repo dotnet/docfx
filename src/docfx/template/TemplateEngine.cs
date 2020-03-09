@@ -47,21 +47,22 @@ namespace Microsoft.Docs.Build
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
         }
 
-        public bool IsPage(string mime)
+        public bool IsPage(string? mime)
         {
-            return mime == null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
+            return mime is null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
         }
 
-        public TemplateSchema GetSchema(SourceInfo<string> schemaName)
+        public TemplateSchema GetSchema(SourceInfo<string?> schemaName)
         {
-            return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate)
+            var name = schemaName.Value;
+            return !string.IsNullOrEmpty(name) && _schemas.TryGetValue(name, out var schemaTemplate)
                ? schemaTemplate.Value
-               : throw Errors.SchemaNotFound(schemaName).ToException();
+               : throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
         }
 
         public string RunLiquid(Document file, TemplateModel model)
         {
-            var layout = model.RawMetadata.Value<string>("layout") ?? "";
+            var layout = model.RawMetadata?.Value<string>("layout") ?? "";
             var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
 
             var liquidModel = new JObject
@@ -132,12 +133,12 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static bool IsLandingData(string mime)
+        public static bool IsLandingData(string? mime)
         {
             return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
         }
 
-        public string GetToken(string key)
+        public string? GetToken(string key)
         {
             return _global[key]?.ToString();
         }

@@ -15,11 +15,11 @@ namespace Microsoft.Docs.Build
 
         public string MarkdownRulesFilePath { get; set; }
 
-        public string MetadataRulesFilePath { get; set; }
+        public string? MetadataRulesFilePath { get; set; }
 
-        public string RepositoryUrl { get; set; }
+        public string? RepositoryUrl { get; set; }
 
-        public string Branch { get; set; }
+        public string? Branch { get; set; }
 
         public string ApiBase { get; set; }
 

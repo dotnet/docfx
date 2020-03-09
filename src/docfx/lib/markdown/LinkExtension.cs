@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Renderers.Html;
@@ -29,7 +28,7 @@ namespace Microsoft.Docs.Build
                     else if (node is LinkInline link)
                     {
                         var href = new SourceInfo<string>(link.Url, link.ToSourceInfo());
-                        link.Url = getLink(href) ?? link.Url;
+                        link.Url = getLink(href);
                     }
                     else if (node is HtmlBlock block)
                     {

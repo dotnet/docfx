@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly Input _input;
-        private readonly Docset _fallbackDocset;
+        private readonly Docset? _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
         private readonly WorkQueue<FilePath> _buildQueue;
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
         public LinkResolver(
             Config config,
-            Docset fallbackDocset,
+            Docset? fallbackDocset,
             Input input,
             BuildScope buildScope,
             WorkQueue<FilePath> buildQueue,
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
-        public (Error error, string content, Document file) ResolveContent(
+        public (Error? error, string content, Document? file) ResolveContent(
             SourceInfo<string> path, Document referencingFile, DependencyType dependencyType = DependencyType.Inclusion)
         {
             var (error, content, child) = TryResolveContent(referencingFile, path);
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             return (error, content, child);
         }
 
-        public (Error error, string link, Document file) ResolveLink(
+        public (Error? error, string link, Document? file) ResolveLink(
             SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
                 var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, inclusionRoot);
 
-                return (uidError, uidHref, declaringFile);
+                return (uidError, uidHref ?? href, declaringFile);
             }
 
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, hrefRelativeTo);
@@ -81,12 +81,18 @@ namespace Microsoft.Docs.Build
             }
 
             inclusionRoot = inclusionRoot ?? hrefRelativeTo;
-            var isSelfBookmark = linkType == LinkType.SelfBookmark || inclusionRoot == file;
-            if (!isCrossReference && (isSelfBookmark || file != null))
+            if (!isCrossReference)
             {
-                _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
-                _bookmarkValidator.AddBookmarkReference(
-                    hrefRelativeTo, isSelfBookmark ? inclusionRoot : file, fragment, isSelfBookmark, href);
+                if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
+                {
+                    _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
+                    _bookmarkValidator.AddBookmarkReference(hrefRelativeTo, inclusionRoot, fragment, true, href);
+                }
+                else if (file != null)
+                {
+                    _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
+                    _bookmarkValidator.AddBookmarkReference(hrefRelativeTo, file, fragment, false, href);
+                }
             }
 
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, link);
@@ -99,7 +105,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        private (Error error, string content, Document file) TryResolveContent(Document referencingFile, SourceInfo<string> href)
+        private (Error? error, string content, Document? file) TryResolveContent(Document referencingFile, SourceInfo<string> href)
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
 
@@ -111,7 +117,7 @@ namespace Microsoft.Docs.Build
             return file != null ? (error, _input.ReadString(file.FilePath), file) : default;
         }
 
-        private (Error error, string href, string fragment, LinkType linkType, Document file, bool isCrossReference) TryResolveAbsoluteLink(
+        private (Error? error, string href, string? fragment, LinkType linkType, Document? file, bool isCrossReference) TryResolveAbsoluteLink(
             SourceInfo<string> href, Document hrefRelativeTo)
         {
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
@@ -136,20 +142,20 @@ namespace Microsoft.Docs.Build
                 return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
 
-            if (file?.FilePath.Origin == FileOrigin.Redirection)
+            if (file.FilePath.Origin == FileOrigin.Redirection)
             {
                 return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), null, linkType, file, false);
             }
 
             if (error is null && _buildScope.OutOfScope(file))
             {
-                return (Errors.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
+                return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
             return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), fragment, linkType, file, false);
         }
 
-        private (Error error, Document file, string query, string fragment, LinkType linkType) TryResolveFile(
+        private (Error? error, Document? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
             Document referencingFile, SourceInfo<string> href, bool inclusion = false)
         {
             href = href.Or("");
@@ -161,7 +167,7 @@ namespace Microsoft.Docs.Build
                     return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
 
                 case LinkType.WindowsAbsolutePath:
-                    return (Errors.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath);
+                    return (Errors.Link.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath);
 
                 case LinkType.RelativePath:
                     if (string.IsNullOrEmpty(path))
@@ -173,7 +179,7 @@ namespace Microsoft.Docs.Build
 
                     // resolve file
                     var lookupFallbackCommits = inclusion || _documentProvider.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
+                    var file = TryResolveRelativePath(referencingFile.Docset.DocsetPath, referencingFile.FilePath, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -183,7 +189,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile.Docset.DocsetPath, referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
                         }
 
                         // Do not report error for landing page
@@ -192,7 +198,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.FileNotFound(
+                        return (Errors.Config.FileNotFound(
                             new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath);
                     }
 
@@ -203,7 +209,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Document TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
+        private Document? TryResolveRelativePath(string docsetPath, FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
             PathString pathToDocset;
@@ -216,8 +222,14 @@ namespace Microsoft.Docs.Build
             else
             {
                 // Path relative to referencing file
-                var baseDirectory = Path.GetDirectoryName(referencingFile.GetPathToOrigin());
+                var baseDirectory = Path.GetDirectoryName(referencingFile.GetPathToOrigin()) ?? "";
                 pathToDocset = new PathString(Path.Combine(baseDirectory, relativePath));
+
+                // the relative path could be outside docset
+                if (pathToDocset.Value.StartsWith("."))
+                {
+                    pathToDocset = new PathString(Path.GetRelativePath(docsetPath, Path.Combine(docsetPath, pathToDocset.Value)));
+                }
             }
 
             // use the actual file name case

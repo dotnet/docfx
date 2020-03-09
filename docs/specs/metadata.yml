@@ -15,7 +15,7 @@ outputs:
 ---
 # Preserve custom metadata
 # read-only metadata will be kept as user input, no matter they are known by docfx or not, like uid
-# overwritable metadta will be overwritten by docfx when the input is valid, otherwise it's will not be changed
+# overwritable metadata will be overwritten by docfx when the input is valid, otherwise it's will not be changed
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -340,14 +340,25 @@ outputs:
 # Generate _op_pdfUrlPrefixTemplate when pdf is true
 inputs:
   docfx.yml: |
-    output:
-      pdf: true
+    outputPdf: true
   a.md:
 outputs:
   a.json: |
     { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
 ---
 # Generate _op_pdfUrlPrefixTemplate when need_generate_pdf_url_template in .openpublishing.publish.config.json is true
+repos:
+  https://docs.com/ops/need_generate_pdf_url_template:
+  - files:
+      .openpublishing.publish.config.json: |
+        { "need_generate_pdf_url_template": true }
+      docfx.yml:
+      a.md:
+outputs:
+  a.json: |
+    { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
+---
+# Ignore OPS config if it is not a git repo
 inputs:
   .openpublishing.publish.config.json: |
     { "need_generate_pdf_url_template": true }
@@ -355,4 +366,4 @@ inputs:
   a.md:
 outputs:
   a.json: |
-    { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
+    { "_op_pdfUrlPrefixTemplate": undefined }

@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,16 +14,16 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly Config _config;
-        private readonly Docset _fallbackDocset;
+        private readonly Docset? _fallbackDocset;
         private readonly GitHubAccessor _githubAccessor;
         private readonly LocalizationProvider _localization;
 
-        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders;
+        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
 
         private readonly GitCommitProvider _gitCommitProvider;
 
         public ContributionProvider(
-            Config config, LocalizationProvider localization, Input input, Docset docset, Docset fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
+            Config config, LocalizationProvider localization, Input input, Docset? fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
         {
             _input = input;
             _config = config;
@@ -32,18 +31,9 @@ namespace Microsoft.Docs.Build
             _githubAccessor = githubAccessor;
             _gitCommitProvider = gitCommitProvider;
             _fallbackDocset = fallbackDocset;
-
-            if (_config.UpdateTimeAsCommitBuildTime)
-            {
-                _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
-                if (docset.Repository != null)
-                {
-                    _commitBuildTimeProviders[docset.Repository.Path] = new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(config, docset.Repository));
-                }
-            }
         }
 
-        public async Task<(List<Error> errors, ContributionInfo)> GetContributionInfo(Document document, SourceInfo<string> authorName)
+        public async Task<(List<Error> errors, ContributionInfo?)> GetContributionInfo(Document document, SourceInfo<string> authorName)
         {
             var errors = new List<Error>();
             var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -60,7 +50,7 @@ namespace Microsoft.Docs.Build
                 UpdatedAtDateTime = updatedDateTime,
             };
 
-            if (!_config.GitHub.ResolveUsers)
+            if (!_config.ResolveGithubUsers)
             {
                 return (errors, contributionInfo);
             }
@@ -74,27 +64,26 @@ namespace Microsoft.Docs.Build
 
             var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
                 ? _config.GlobalMetadata.ContributorsToExclude
-                : _config.Contribution.ExcludeContributors;
+                : _config.ExcludeContributors;
 
             // Resolve contributors from commits
-            if (!UrlUtility.TryParseGitHubUrl(repo.Remote, out var repoOwner, out var repoName))
-            {
-                UrlUtility.TryParseGitHubUrl(_config.Contribution.RepositoryUrl, out repoOwner, out repoName);
-            }
-
             var contributors = new List<Contributor>();
-            foreach (var commit in contributionCommits)
+            if (UrlUtility.TryParseGitHubUrl(_config.EditRepositoryUrl, out var repoOwner, out var repoName) ||
+                UrlUtility.TryParseGitHubUrl(repo.Remote, out repoOwner, out repoName))
             {
-                var (error, githubUser) = await _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
-                errors.AddIfNotNull(error);
-                var contributor = githubUser?.ToContributor();
-                if (contributor != null && !excludes.Contains(contributor.Name))
+                foreach (var commit in contributionCommits)
                 {
-                    contributors.Add(contributor);
+                    var (error, githubUser) = await _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
+                    errors.AddIfNotNull(error);
+                    var contributor = githubUser?.ToContributor();
+                    if (!string.IsNullOrEmpty(contributor?.Name) && !excludes.Contains(contributor.Name))
+                    {
+                        contributors.Add(contributor);
+                    }
                 }
             }
 
-            var author = contributors.LastOrDefault();
+            var author = contributors.Count > 0 ? contributors[^1] : null;
             if (!string.IsNullOrEmpty(authorName))
             {
                 // Remove author from contributors if author name is specified
@@ -103,17 +92,22 @@ namespace Microsoft.Docs.Build
                 author = githubUser?.ToContributor();
             }
 
+            if (author != null)
+            {
+                contributors.RemoveAll(item => item.Equals(author));
+            }
+
             contributionInfo.Author = author;
-            contributionInfo.Contributors = contributors.Except(new[] { author }).Distinct().ToArray();
+            contributionInfo.Contributors = contributors.Distinct().ToArray();
 
             return (errors, contributionInfo);
         }
 
-        public DateTime GetUpdatedAt(Document document, Repository repository, GitCommit[] fileCommits)
+        public DateTime GetUpdatedAt(Document document, Repository? repository, GitCommit[] fileCommits)
         {
             if (fileCommits.Length > 0)
             {
-                if (_commitBuildTimeProviders != null && repository != null)
+                if (_config.UpdateTimeAsCommitBuildTime && repository != null)
                 {
                     return _commitBuildTimeProviders
                         .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
@@ -130,14 +124,12 @@ namespace Microsoft.Docs.Build
                 : default;
         }
 
-        public (string contentGitUrl, string originalContentGitUrl, string originalContentGitUrlTemplate, string gitCommit)
+        public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate, string? gitCommit)
             GetGitUrls(Document document)
         {
-            Debug.Assert(document != null);
-
             var isWhitelisted = document.FilePath.Origin == FileOrigin.Default || document.FilePath.Origin == FileOrigin.Fallback;
             var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
-            if (repo is null)
+            if (repo is null || pathToRepo is null)
                 return default;
 
             var (contentBranchUrlTemplate, contentCommitUrlTemplate) = GetContentGitUrlTemplate(repo.Remote, pathToRepo);
@@ -160,25 +152,22 @@ namespace Microsoft.Docs.Build
 
         public void Save()
         {
-            if (_commitBuildTimeProviders != null)
+            foreach (var (_, commitBuildTimeProvider) in _commitBuildTimeProviders)
             {
-                foreach (var (_, commitBuildTimeProvider) in _commitBuildTimeProviders)
-                {
-                    commitBuildTimeProvider.Value.Save();
-                }
+                commitBuildTimeProvider.Value.Save();
             }
         }
 
-        private string GetContentGitUrl(string repo, string branch, string pathToRepo, string locale)
+        private string? GetContentGitUrl(string repo, string branch, string pathToRepo, string locale)
         {
-            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryUrl))
+            if (!string.IsNullOrEmpty(_config.EditRepositoryUrl))
             {
-                repo = _config.Contribution.RepositoryUrl;
+                repo = _config.EditRepositoryUrl;
             }
 
-            if (!string.IsNullOrEmpty(_config.Contribution.RepositoryBranch))
+            if (!string.IsNullOrEmpty(_config.EditRepositoryBranch))
             {
-                branch = _config.Contribution.RepositoryBranch;
+                branch = _config.EditRepositoryBranch;
             }
 
             if (LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
@@ -196,7 +185,7 @@ namespace Microsoft.Docs.Build
             return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", branch);
         }
 
-        private static (string branchUrlTemplate, string commitUrlTemplate) GetContentGitUrlTemplate(string remote, string pathToRepo)
+        private static (string? branchUrlTemplate, string? commitUrlTemplate) GetContentGitUrlTemplate(string remote, string pathToRepo)
         {
             if (UrlUtility.TryParseGitHubUrl(remote, out _, out _))
             {

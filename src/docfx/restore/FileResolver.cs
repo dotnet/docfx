@@ -20,16 +20,23 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
-        private readonly Action<HttpRequestMessage> _credentialProvider;
-        private readonly OpsConfigAdapter _opsConfigAdapter;
+        private readonly Action<HttpRequestMessage>? _credentialProvider;
+        private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
+        private readonly Docset? _fallbackDocset;
 
-        public FileResolver(string docsetPath, Action<HttpRequestMessage> credentialProvider = null, OpsConfigAdapter opsConfigAdapter = null, FetchOptions fetchOptions = default)
+        public FileResolver(
+            string docsetPath,
+            Action<HttpRequestMessage>? credentialProvider = null,
+            OpsConfigAdapter? opsConfigAdapter = null,
+            FetchOptions fetchOptions = default,
+            Docset? fallbackDocset = null)
         {
             _docsetPath = docsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
             _credentialProvider = credentialProvider;
+            _fallbackDocset = fallbackDocset;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -52,14 +59,19 @@ namespace Microsoft.Docs.Build
                 {
                     return File.OpenRead(localFilePath);
                 }
+                else if (_fallbackDocset != null
+                    && File.Exists(localFilePath = Path.Combine(_fallbackDocset.DocsetPath, file)))
+                {
+                    return File.OpenRead(localFilePath);
+                }
 
-                throw Errors.FileNotFound(file).ToException();
+                throw Errors.Config.FileNotFound(file).ToException();
             }
 
             var filePath = GetRestorePathFromUrl(file);
             if (!File.Exists(filePath))
             {
-                throw Errors.NeedRestore(file).ToException();
+                throw Errors.System.NeedRestore(file).ToException();
             }
 
             return File.OpenRead(filePath);
@@ -74,7 +86,7 @@ namespace Microsoft.Docs.Build
 
             if (_fetchOptions == FetchOptions.NoFetch)
             {
-                throw Errors.NeedRestore(file).ToException();
+                throw Errors.System.NeedRestore(file).ToException();
             }
 
             var filePath = GetRestorePathFromUrl(file);
@@ -130,8 +142,8 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
         }
 
-        private async Task<(string filename, EntityTagHeaderValue etag)> DownloadToTempFile(
-            string url, EntityTagHeaderValue existingEtag)
+        private async Task<(string? filename, EntityTagHeaderValue? etag)> DownloadToTempFile(
+            string url, EntityTagHeaderValue? existingEtag)
         {
             try
             {
@@ -159,11 +171,11 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
-                throw Errors.DownloadFailed(url).ToException(ex);
+                throw Errors.System.DownloadFailed(url).ToException(ex);
             }
         }
 
-        private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue etag = null)
+        private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue? etag = null)
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."

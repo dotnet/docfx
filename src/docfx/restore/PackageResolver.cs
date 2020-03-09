@@ -4,14 +4,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
     internal class PackageResolver : IDisposable
     {
-        internal static Func<string, string> GitRemoteProxy;
-
         private readonly string _docsetPath;
         private readonly Config _config;
         private readonly FetchOptions _fetchOptions;
@@ -26,7 +25,7 @@ namespace Microsoft.Docs.Build
             _fetchOptions = fetchOptions;
         }
 
-        public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, out string path)
+        public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, [NotNullWhen(true)] out string? path)
         {
             try
             {
@@ -49,11 +48,17 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                switch (path.Type)
+                if (path.Type == PackageType.Git)
                 {
-                    case PackageType.Git:
-                        DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
-                        break;
+                    var repoPath = DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
+
+                    // ensure contribution branch for CRR included in build
+                    // empty repo path means hit cache
+                    if ((path as DependencyConfig)?.IncludeInBuild == true && !string.IsNullOrEmpty(repoPath))
+                    {
+                        var crrRepository = Repository.Create(repoPath, path.Branch, path.Url);
+                        LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
+                    }
                 }
             }
             catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
@@ -89,7 +94,7 @@ namespace Microsoft.Docs.Build
 
                     if (!File.Exists(gitDocfxHead))
                     {
-                        throw Errors.NeedRestore($"{package.Url}#{package.Branch}").ToException();
+                        throw Errors.System.NeedRestore($"{package.Url}#{package.Branch}").ToException();
                     }
                     return gitPath;
 
@@ -97,13 +102,13 @@ namespace Microsoft.Docs.Build
                     var dir = Path.Combine(_docsetPath, package.Path);
                     if (!Directory.Exists(dir))
                     {
-                        throw Errors.DirectoryNotFound(new SourceInfo<string>(package.Path)).ToException();
+                        throw Errors.Config.DirectoryNotFound(new SourceInfo<string>(package.Path)).ToException();
                     }
                     return dir;
             }
         }
 
-        private void DownloadGitRepository(string url, string committish, bool depthOne)
+        private string DownloadGitRepository(string url, string committish, bool depthOne)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
@@ -114,7 +119,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_fetchOptions == FetchOptions.UseCache)
                     {
-                        return;
+                        return "";
                     }
                     File.Delete(gitDocfxHead);
                 }
@@ -123,6 +128,7 @@ namespace Microsoft.Docs.Build
                     DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
                 }
                 File.WriteAllText(gitDocfxHead, committish);
+                return gitPath;
             }
         }
 
@@ -133,6 +139,10 @@ namespace Microsoft.Docs.Build
 
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
+
+            // Remove git lock files if previous build was killed during git operation
+            DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));
+            DeleteIfExist(Path.Combine(cwd, ".git/shallow.lock"));
 
             try
             {
@@ -147,7 +157,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (InvalidOperationException ex)
                 {
-                    throw Errors.GitCloneFailed(url, committish).ToException(ex);
+                    throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                 }
             }
 
@@ -157,7 +167,7 @@ namespace Microsoft.Docs.Build
             }
             catch (InvalidOperationException ex)
             {
-                throw Errors.CommittishNotFound(url, committish).ToException(ex);
+                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
             }
         }
 
@@ -174,6 +184,14 @@ namespace Microsoft.Docs.Build
                 {
                     _gitReaderLocks.Add(gitPath, InterProcessReaderWriterLock.CreateReaderLock(gitPath));
                 }
+            }
+        }
+
+        private static void DeleteIfExist(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
             }
         }
     }

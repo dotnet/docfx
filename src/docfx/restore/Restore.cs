@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
-                ErrorLog.PrintError(Errors.ConfigNotFound(workingDirectory));
+                ErrorLog.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
                 return 1;
             }
 
@@ -33,10 +33,10 @@ namespace Microsoft.Docs.Build
             return hasError ? 1 : 0;
         }
 
-        private static bool RestoreDocset(string docsetPath, string outputPath, CommandLineOptions options)
+        private static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
             List<Error> errors;
-            Config config = null;
+            Config? config = null;
 
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(string docsetPath, Config config, string locale, Repository repository, FetchOptions fetchOptions)
+        private static void RestorePackages(string docsetPath, Config config, string? locale, Repository? repository, FetchOptions fetchOptions)
         {
             using var packageResolver = new PackageResolver(docsetPath, config, fetchOptions);
             ParallelUtility.ForEach(
@@ -93,29 +93,11 @@ namespace Microsoft.Docs.Build
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
 
-            EnsureLocalizationContributionBranch(config, repository);
-        }
-
-        private static void EnsureLocalizationContributionBranch(Config config, Repository repository)
-        {
-            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
-            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
-            // here to generate the correct contributor list.
-            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
-            {
-                try
-                {
-                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw Errors.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
-                }
-            }
+            LocalizationUtility.EnsureLocalizationContributionBranch(config, repository);
         }
 
         private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(
-            Config config, string locale, Repository repository)
+            Config config, string? locale, Repository? repository)
         {
             foreach (var (_, package) in config.Dependencies)
             {
@@ -138,7 +120,7 @@ namespace Microsoft.Docs.Build
         /// Get source repository or localized repository
         /// </summary>
         private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetLocalizationPackages(
-            Config config, string locale, Repository repository)
+            Config config, string? locale, Repository? repository)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -155,7 +137,7 @@ namespace Microsoft.Docs.Build
                 yield break;
             }
 
-            if (LocalizationUtility.TryGetFallbackRepository(repository, out var fallbackRemote, out var fallbackBranch, out _))
+            if (LocalizationUtility.TryGetFallbackRepository(repository.Remote, repository.Branch, out var fallbackRemote, out var fallbackBranch))
             {
                 // fallback to master
                 yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);

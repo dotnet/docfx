@@ -16,14 +16,9 @@ namespace Microsoft.Docs.Build
             _monikerOrder = monikerOrder;
         }
 
-        public object Assert { get; private set; }
-
         public int Compare(string x, string y)
         {
-            if (x is null || y is null || !_monikerOrder.ContainsKey(x) || !_monikerOrder.ContainsKey(y))
-            {
-                Debug.Fail("Should not be here");
-            }
+            Debug.Assert(_monikerOrder.ContainsKey(x) && _monikerOrder.ContainsKey(y));
 
             var (productNameX, orderXInProduct) = _monikerOrder[x];
             var (productNameY, orderYInProduct) = _monikerOrder[y];

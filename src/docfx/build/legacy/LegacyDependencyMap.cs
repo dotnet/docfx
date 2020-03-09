@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(
             Docset docset,
             Context context,
-            List<Document> documemts,
+            List<Document> documents,
             DependencyMap dependencyMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
                 // process toc map
                 Parallel.ForEach(
-                    documemts,
+                    documents,
                     document =>
                     {
                         if (document.ContentType == ContentType.Resource ||
@@ -37,13 +37,11 @@ namespace Microsoft.Docs.Build
                         var toc = context.TocMap.GetNearestToc(document);
                         if (toc != null)
                         {
-                            legacyDependencyMap.Add(new LegacyDependencyMapItem
-                            {
-                                From = $"~/{document.FilePath.Path}",
-                                To = $"~/{toc.FilePath.Path}",
-                                Type = LegacyDependencyMapType.Metadata,
-                                Version = context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
-                            });
+                            legacyDependencyMap.Add(new LegacyDependencyMapItem(
+                                $"~/{document.FilePath.Path}",
+                                $"~/{toc.FilePath.Path}",
+                                context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
+                                LegacyDependencyMapType.Metadata));
                         }
                     });
 
@@ -56,13 +54,11 @@ namespace Microsoft.Docs.Build
                             continue;
                         }
 
-                        legacyDependencyMap.Add(new LegacyDependencyMapItem
-                        {
-                            From = $"~/{source.FilePath.Path}",
-                            To = $"~/{dependencyItem.To.FilePath.Path}",
-                            Type = dependencyItem.Type.ToLegacyDependencyMapType(),
-                            Version = context.MonikerProvider.GetConfigMonikerRange(source.FilePath),
-                        });
+                        legacyDependencyMap.Add(new LegacyDependencyMapItem(
+                            $"~/{source.FilePath.Path}",
+                            $"~/{dependencyItem.To.FilePath.Path}",
+                            context.MonikerProvider.GetConfigMonikerRange(source.FilePath),
+                            dependencyItem.Type.ToLegacyDependencyMapType()));
                     }
                 }
 
@@ -86,13 +82,9 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteText(dependencyListText, "full-dependent-list.txt");
                 context.Output.WriteText(dependencyListText, "server-side-dependent-list.txt");
 
-                return sorted.Select(x => new LegacyDependencyMapItem
-                {
-                    From = x.From.Substring(2),
-                    To = x.To.Substring(2),
-                    Type = x.Type,
-                    Version = x.Version,
-                }).GroupBy(x => x.From).ToDictionary(g => g.Key, g => g.ToList());
+                return sorted.Select(x => new LegacyDependencyMapItem(x.From.Substring(2), x.To.Substring(2), x.Version, x.Type))
+                             .GroupBy(x => x.From)
+                             .ToDictionary(g => g.Key, g => g.ToList());
             }
         }
 

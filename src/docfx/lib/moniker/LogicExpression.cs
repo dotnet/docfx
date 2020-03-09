@@ -7,11 +7,18 @@ namespace Microsoft.Docs.Build
 {
     internal class LogicExpression : IExpression
     {
-        public LogicOperatorType OperatorType { get; set; }
+        public LogicOperatorType OperatorType { get; }
 
-        public IExpression Left { get; set; }
+        public IExpression Left { get; }
 
-        public IExpression Right { get; set; }
+        public IExpression Right { get; }
+
+        public LogicExpression(IExpression left, LogicOperatorType operatorType, IExpression right)
+        {
+            Left = left;
+            OperatorType = operatorType;
+            Right = right;
+        }
 
         public IEnumerable<Moniker> Accept(EvaluatorWithMonikersVisitor visitor)
         {

@@ -110,7 +110,7 @@ namespace ChakraHost.Hosting
         /// </summary>
         /// <param name="obj">The other property ID to compare.</param>
         /// <returns>Whether the two property IDs are the same.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
             {

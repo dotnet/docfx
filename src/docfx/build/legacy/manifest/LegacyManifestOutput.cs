@@ -8,15 +8,15 @@ namespace Microsoft.Docs.Build
     internal class LegacyManifestOutput
     {
         [JsonProperty(".mta.json", NullValueHandling = NullValueHandling.Ignore)]
-        public LegacyManifestOutputItem MetadataOutput { get; set; }
+        public LegacyManifestOutputItem? MetadataOutput { get; set; }
 
         [JsonProperty(".raw.page.json", NullValueHandling = NullValueHandling.Ignore)]
-        public LegacyManifestOutputItem PageOutput { get; set; }
+        public LegacyManifestOutputItem? PageOutput { get; set; }
 
         [JsonProperty(".json", NullValueHandling = NullValueHandling.Ignore)]
-        public LegacyManifestOutputItem TocOutput { get; set; }
+        public LegacyManifestOutputItem? TocOutput { get; set; }
 
         [JsonProperty("resource", NullValueHandling = NullValueHandling.Ignore)]
-        public LegacyManifestOutputItem ResourceOutput { get; set; }
+        public LegacyManifestOutputItem? ResourceOutput { get; set; }
     }
 }

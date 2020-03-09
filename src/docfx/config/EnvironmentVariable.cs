@@ -7,21 +7,21 @@ namespace Microsoft.Docs.Build
 {
     public static class EnvironmentVariable
     {
-        public static string GlobalConfigPath => GetValue("DOCFX_GLOBAL_CONFIG_PATH");
+        public static string? GlobalConfigPath => GetValue("DOCFX_GLOBAL_CONFIG_PATH");
 
-        public static string AppDataPath => GetValue("DOCFX_APPDATA_PATH");
+        public static string? AppDataPath => GetValue("DOCFX_APPDATA_PATH");
 
-        public static string CachePath => GetValue("DOCFX_CACHE_PATH");
+        public static string? CachePath => GetValue("DOCFX_CACHE_PATH");
 
-        public static string StatePath => GetValue("DOCFX_STATE_PATH");
+        public static string? StatePath => GetValue("DOCFX_STATE_PATH");
 
-        public static string RepositoryUrl => GetValue("DOCFX_REPOSITORY_URL");
+        public static string? RepositoryUrl => GetValue("DOCFX_REPOSITORY_URL");
 
-        public static string RepositoryBranch => GetValue("DOCFX_REPOSITORY_BRANCH");
+        public static string? RepositoryBranch => GetValue("DOCFX_REPOSITORY_BRANCH");
 
-        public static string CorrelationId => GetValue("DOCFX_CORRELATION_ID");
+        public static string? CorrelationId => GetValue("DOCFX_CORRELATION_ID");
 
-        private static string GetValue(string name)
+        private static string? GetValue(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);
             return string.IsNullOrEmpty(value) ? null : value;

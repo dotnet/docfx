@@ -21,14 +21,14 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
-            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, DocumentProvider documentProvider, MonikerProvider monikerProvider)
+            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, RepositoryProvider repositoryProvider, DocumentProvider documentProvider, MonikerProvider monikerProvider)
         {
             _errorLog = errorLog;
             _buildScope = buildScope;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
 
-            var redirections = LoadRedirectionModel(docsetPath);
+            var redirections = LoadRedirectionModel(docsetPath, repositoryProvider.GetRepository(FileOrigin.Default));
             _redirectUrls = GetRedirectUrls(redirections, hostName);
             _renameHistory = GetRenameHistory(redirections, _redirectUrls);
         }
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
                 if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                 {
-                    _errorLog.Write(Errors.RedirectionIsNullOrEmpty(redirectUrl, path));
+                    _errorLog.Write(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
                     continue;
                 }
 
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 var type = _documentProvider.GetContentType(path);
                 if (type != ContentType.Page)
                 {
-                    _errorLog.Write(Errors.RedirectionInvalid(redirectUrl, path));
+                    _errorLog.Write(Errors.Redirection.RedirectionInvalid(redirectUrl, path));
                     continue;
                 }
 
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                     {
                         case LinkType.RelativePath:
                             var siteUrl = _documentProvider.GetDocument(filePath).SiteUrl;
-                            absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl), absoluteRedirectUrl));
+                            absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl) ?? "", absoluteRedirectUrl));
                             break;
                         case LinkType.AbsolutePath:
                             break;
@@ -101,23 +101,23 @@ namespace Microsoft.Docs.Build
                             absoluteRedirectUrl = RemoveLeadingHostNameLocale(absoluteRedirectUrl, hostName);
                             break;
                         default:
-                            _errorLog.Write(Errors.RedirectionUrlNotFound(path, redirectUrl));
+                            _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));
                             break;
                     }
                 }
 
                 if (!redirectUrls.TryAdd(filePath, absoluteRedirectUrl))
                 {
-                    _errorLog.Write(Errors.RedirectionConflict(redirectUrl, path));
+                    _errorLog.Write(Errors.Redirection.RedirectionConflict(redirectUrl, path));
                 }
             }
 
             return redirectUrls;
         }
 
-        private static RedirectionItem[] LoadRedirectionModel(string docsetPath)
+        private static RedirectionItem[] LoadRedirectionModel(string docsetPath, Repository? repository)
         {
-            foreach (var fullPath in ProbeRedirectionFiles(docsetPath))
+            foreach (var fullPath in ProbeRedirectionFiles(docsetPath, repository))
             {
                 if (File.Exists(fullPath))
                 {
@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
                         pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value, RedirectDocumentId = true });
 
                     // Rebase source_path based on redirection definition file path
-                    var basedir = Path.GetDirectoryName(fullPath);
+                    var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
                     return (
                         from item in redirections.Concat(renames)
@@ -155,18 +155,15 @@ namespace Microsoft.Docs.Build
             return Array.Empty<RedirectionItem>();
         }
 
-        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath)
+        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath, Repository? repository)
         {
             yield return Path.Combine(docsetPath, "redirections.yml");
             yield return Path.Combine(docsetPath, "redirections.json");
 
-            var directory = docsetPath;
-            do
+            if (repository != null)
             {
-                yield return Path.Combine(directory, ".openpublishing.redirection.json");
-                directory = Path.GetDirectoryName(directory);
+                yield return Path.Combine(repository.Path, ".openpublishing.redirection.json");
             }
-            while (!string.IsNullOrEmpty(directory));
         }
 
         private IReadOnlyDictionary<FilePath, FilePath> GetRenameHistory(
@@ -190,7 +187,7 @@ namespace Microsoft.Docs.Build
                 redirectUrl = RemoveTrailingIndex(redirectUrl);
                 if (!publishUrlMap.TryGetValue(redirectUrl, out var docs))
                 {
-                    _errorLog.Write(Errors.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                    _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
                     continue;
                 }
 
@@ -201,9 +198,9 @@ namespace Microsoft.Docs.Build
                 }
 
                 List<FilePath> candidates;
-                if (redirectionSourceMonikers.Count == 0)
+                if (redirectionSourceMonikers.Length == 0)
                 {
-                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList();
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0).ToList();
                 }
                 else
                 {
@@ -214,7 +211,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!renameHistory.TryAdd(candidate, file))
                     {
-                        _errorLog.Write(Errors.RedirectionUrlConflict(item.RedirectUrl));
+                        _errorLog.Write(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
                     }
                 }
             }

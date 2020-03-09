@@ -53,9 +53,9 @@ namespace Microsoft.Docs.Build
             }
 
             var monikers = item.Monikers;
-            if (monikers.Count == 0)
+            if (monikers.Length == 0)
             {
-                monikers = new List<string> { PublishModelBuilder.NonVersion };
+                monikers = new[] { PublishModelBuilder.NonVersion };
             }
             _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, IReadOnlyList<string>>()).TryAdd(file, monikers);
 
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
                 if (conflictMoniker.Count != 0
                     || (files.Count > 1 && files.Any(file => file.Value.Contains(NonVersion))))
                 {
-                    errors.Add(Errors.PublishUrlConflict(siteUrl, files, conflictMoniker));
+                    errors.Add(Errors.UrlPath.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
                     {
                         HandleExcludedFile(conflictingFile);
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
                     conflictingFiles.Add(removed);
                 }
 
-                errors.Add(Errors.OutputPathConflict(outputPath, conflictingFiles));
+                errors.Add(Errors.UrlPath.OutputPathConflict(outputPath, conflictingFiles));
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
@@ -119,23 +119,25 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var model = new PublishModel
-            {
-                Name = _config.Name,
-                Product = _config.Product,
-                BasePath = _config.BasePath.Original,
-                Files = _publishItems.Values
-                    .OrderBy(item => item.Locale)
-                    .ThenBy(item => item.Path)
-                    .ThenBy(item => item.Url)
-                    .ThenBy(item => item.RedirectUrl)
-                    .ThenBy(item => item.MonikerGroup)
-                    .ToArray(),
-                MonikerGroups = new SortedDictionary<string, IReadOnlyList<string>>(_publishItems.Values
-                    .Where(item => !string.IsNullOrEmpty(item.MonikerGroup))
-                    .GroupBy(item => item.MonikerGroup)
-                    .ToDictionary(g => g.Key, g => g.First().Monikers)),
-            };
+            var publishItems = (
+                from item in _publishItems.Values
+                orderby item.Locale, item.Path, item.Url, item.RedirectUrl, item.MonikerGroup
+                select item).ToArray();
+
+            var monikerGroups = new Dictionary<string, string[]>(
+                from item in _publishItems.Values
+                let monikerGroup = item.MonikerGroup
+                where !string.IsNullOrEmpty(monikerGroup)
+                orderby monikerGroup
+                group item by monikerGroup into g
+                select new KeyValuePair<string, string[]>(g.Key, g.First().Monikers));
+
+            var model = new PublishModel(
+                _config.Name,
+                _config.Product,
+                _config.BasePath.ValueWithLeadingSlash,
+                publishItems,
+                monikerGroups);
 
             var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
 
@@ -148,14 +150,14 @@ namespace Microsoft.Docs.Build
             {
                 item.HasError = true;
 
-                if (item.Path != null && IsInsideOutputFolder(item))
+                if (item.Path != null && IsInsideOutputFolder(item.Path))
                     _output.Delete(item.Path, _config.Legacy);
             }
         }
 
-        private bool IsInsideOutputFolder(PublishItem item)
+        private bool IsInsideOutputFolder(string path)
         {
-            var outputFilePath = PathUtility.NormalizeFolder(Path.Combine(_outputPath, item.Path));
+            var outputFilePath = PathUtility.NormalizeFolder(Path.Combine(_outputPath, path));
             return outputFilePath.StartsWith(_outputPath);
         }
     }

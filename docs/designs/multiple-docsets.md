@@ -19,9 +19,9 @@ exclude:
 
 - Just like `docfx.yml`/`docfx.json` pair, `docsets.json` is also a supported format.
 - Just like `docfx.yml`, `docsets.yml` does not have to be at repository root folder.
-- To interop with existing MicrosoftDocs repositories, `docsets.yml` is equivalant to `docsets_to_publish` property in `.openpublishing.publish.config.json`.
+- To interop with existing MicrosoftDocs repositories, `docsets.yml` is equivalent to `docsets_to_publish` property in `.openpublishing.publish.config.json`.
 
-`docsets.yml` is completedly optional for repositories with a single docset.
+`docsets.yml` is completely optional for repositories with a single docset.
 
 The other alternative is to let `docfx` search for all `docfx.yml` files in subdirectories. Current preference is to have this explicit configuration because:
   - It allows explicit control over which docset are included for a build.
@@ -32,7 +32,7 @@ The other alternative is to let `docfx` search for all `docfx.yml` files in subd
 
 `docfx build` and commands alike now recognize `docsets.yml` in addition to `docfx.yml`. When build runs against a folder, it looks for `docsets.yml` first before checking for `docfx.yml`.
 
-Each docset is built seperately as a standalone, self-contained unit. No states are not shared across docsets, e.g., you cannot reference contents in another docset using relative path.
+Each docset is built separately as a standalone, self-contained unit. No states are not shared across docsets, e.g., you cannot reference contents in another docset using relative path.
 
 ## Build Output
 

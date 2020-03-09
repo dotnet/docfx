@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         Resource,
 
         /// <summary>
-        /// Redirected documents specifed in redirection config
+        /// Redirected documents specified in redirection config
         /// </summary>
         Redirection,
     }

@@ -19,7 +19,7 @@ outputs:
 ---
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one
-# xref should be unioned from different sources
+# xref should be unironed from different sources
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
@@ -592,7 +592,7 @@ outputs:
   .xrefmap.json: | 
     {"references":[{"uid":"a","inlineDescription":"Hello <code>docfx</code>!"}]}
 ---
-# Xref property field with dependecy
+# Xref property field with dependency
 inputs:
   docfx.yml: |
   docs/a.json: |
@@ -1246,3 +1246,71 @@ outputs:
           }
        ]
     }
+---
+# xrefmap fallback
+repos:
+  https://docs.com/xrefmapfallback.zh-cn#master:
+    - files:
+        docfx.yml: |
+          xref:
+          - 1.xrefmap.json
+          - xrefmap.yml
+        docs/a.md: |
+          Link to @System.String?displayProperty=fullName
+          Link to @System.String.1?displayProperty=fullName
+  https://docs.com/xrefmapfallback#master:
+    - files:
+        docfx.yml: |
+          xref:
+          - 1.xrefmap.json
+          - xrefmap.yml
+        1.xrefmap.json: |
+          {
+            "references":[{
+                "uid": "System.String",
+                "name": "String",
+                "fullName": "System.String",
+                "href": "https://docs.microsoft.com/dotnet/api/system.string",
+                "nameWithType": "System.String"
+            }]
+          }
+        xrefmap.yml: |
+          references:
+            - uid: System.String.1
+              name: String.1
+              fullName: System.String.1
+              href: https://docs.microsoft.com/dotnet/api/system.string.1
+              nameWithType: System.String.1
+outputs:
+  docs/a.json: |
+    { 
+      "conceptual": 
+      "<p>
+          Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a>
+          Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string.1\">System.String.1</a>
+      </p>"
+    }
+---
+# xrefmap not found with fallback docset
+repos:
+  https://docs.com/xrefmapnotfound.zh-cn#master:
+    - files:
+        docfx.yml: |
+          xref: 1.xrefmap.json
+        docs/a.md: Link to @System.String?displayProperty=fullName
+  https://docs.com/xrefmapnotfound#master:
+    - files:
+        docfx.yml: |
+          xref: 1.xrefmap.json
+outputs:
+  .errors.log: |
+    ["error","file-not-found","Invalid file link: '1.xrefmap.json'.","docfx.yml",1,7]
+---
+# xrefmap not found without fallback docset
+inputs:
+  docfx.yml: |
+    xref: 1.xrefmap.json
+  docs/a.md: Link to @System.String?displayProperty=fullName
+outputs:
+  .errors.log: |
+    ["error","file-not-found","Invalid file link: '1.xrefmap.json'.","docfx.yml",1,7]

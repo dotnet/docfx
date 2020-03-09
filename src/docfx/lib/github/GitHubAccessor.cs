@@ -17,8 +17,6 @@ using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor : IDisposable
@@ -35,13 +33,13 @@ namespace Microsoft.Docs.Build
         public GitHubAccessor(Config config)
         {
             _userCache = new JsonDiskCache<Error, string, GitHubUser>(
-                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GitHub.UserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase);
+                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GithubUserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase, ResolveGitHubUserConflict);
 
-            if (!string.IsNullOrEmpty(config.GitHub.AuthToken))
+            if (!string.IsNullOrEmpty(config.GithubToken))
             {
                 _httpClient = new HttpClient();
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GitHub.AuthToken);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GithubToken);
             }
         }
 
@@ -50,7 +48,7 @@ namespace Microsoft.Docs.Build
             var (error, user) = await _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
             if (user != null && !user.IsValid())
             {
-                return (Errors.AuthorNotFound(login), null);
+                return (Errors.Metadata.AuthorNotFound(login), null);
             }
 
             return (error, user);
@@ -99,12 +97,14 @@ namespace Microsoft.Docs.Build
                 return (null, new GitHubUser { Login = login });
             }
 
+            var emails = from email in new[] { data.user.email } where !string.IsNullOrEmpty(email) select email;
+
             return (null, new GitHubUser
             {
                 Id = data.user.databaseId,
                 Login = data.user.login,
                 Name = string.IsNullOrEmpty(data.user.name) ? data.user.login : data.user.name,
-                Emails = new[] { data.user.email }.Where(email => !string.IsNullOrEmpty(email)).ToArray(),
+                Emails = emails.ToArray(),
             });
         }
 
@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
                 if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
                 {
                     Log.Write(await response.Content.ReadAsStringAsync());
-                    _fatalError = Errors.GitHubApiFailed(response.StatusCode.ToString());
+                    _fatalError = Errors.System.GitHubApiFailed(response.StatusCode.ToString());
                     return (_fatalError, default, default);
                 }
 
@@ -204,11 +204,11 @@ namespace Microsoft.Docs.Build
                         {
                             case "MAX_NODE_LIMIT_EXCEEDED":
                             case "RATE_LIMITED":
-                                _fatalError = Errors.GitHubApiFailed($"[{error.type}] {error.message}");
+                                _fatalError = Errors.System.GitHubApiFailed($"[{error.type}] {error.message}");
                                 return (_fatalError, default, default);
 
                             default:
-                                return (Errors.GitHubApiFailed($"[{error.type}] {error.message}"), error.type, default);
+                                return (Errors.System.GitHubApiFailed($"[{error.type}] {error.message}"), error.type, default);
                         }
                     }
                 }
@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 Log.Write(ex);
-                return (Errors.GitHubApiFailed(ex.Message), default, default);
+                return (Errors.System.GitHubApiFailed(ex.Message), default, default);
             }
         }
 
@@ -236,6 +236,18 @@ namespace Microsoft.Docs.Build
             {
                 _syncRoot.Release();
             }
+        }
+
+        private static GitHubUser ResolveGitHubUserConflict(GitHubUser a, GitHubUser b)
+        {
+            // Pick the user with a valid Id
+            if (a.Id is null)
+                return b;
+            if (b.Id is null)
+                return a;
+
+            // otherwise pick a random one
+            return a;
         }
     }
 }

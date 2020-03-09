@@ -13,9 +13,9 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class MarkdownTocMarkup
+    internal static class TableOfContentsMarkup
     {
-        public static (List<Error> errors, TableOfContentsModel model) Parse(MarkdownEngine markdownEngine, string tocContent, Document file)
+        public static (List<Error> errors, TableOfContentsModel model) Parse(MarkdownEngine markdownEngine, string tocContent, FilePath file)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: file)));
+                        errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.ToSourceInfo(file: file)));
                         break;
                 }
             }
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             return (errors, tocModel);
         }
 
-        private static List<TableOfContentsItem> BuildTree(List<Error> errors, Document filePath, List<HeadingBlock> blocks)
+        private static List<TableOfContentsItem> BuildTree(List<Error> errors, FilePath filePath, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
 
                 if (parent.node is null || currentLevel != parent.level + 1)
                 {
-                    errors.Add(Errors.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
+                    errors.Add(Errors.TableOfContents.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
                 }
                 else
                 {
@@ -95,25 +95,25 @@ namespace Microsoft.Docs.Build
             return result.Items;
         }
 
-        private static TableOfContentsItem GetItem(List<Error> errors, Document filePath, HeadingBlock block)
+        private static TableOfContentsItem? GetItem(List<Error> errors, FilePath filePath, HeadingBlock block)
         {
             var currentItem = new TableOfContentsItem();
             if (block.Inline is null || !block.Inline.Any())
             {
-                currentItem.Name = new SourceInfo<string>(null, block.ToSourceInfo(file: filePath));
+                currentItem.Name = new SourceInfo<string?>(null, block.ToSourceInfo(file: filePath));
                 return currentItem;
             }
 
             if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
             {
-                errors.Add(Errors.InvalidTocSyntax(block.ToSourceInfo(file: filePath)));
+                errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.ToSourceInfo(file: filePath)));
                 return null;
             }
 
             var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
             if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
             {
-                currentItem.Uid = new SourceInfo<string>(xrefInline.Href, xrefInline.ToSourceInfo(file: filePath));
+                currentItem.Uid = new SourceInfo<string?>(xrefInline.Href, xrefInline.ToSourceInfo(file: filePath));
                 return currentItem;
             }
 
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(linkInline.Url))
                 {
-                    currentItem.Href = new SourceInfo<string>(linkInline.Url, linkInline.ToSourceInfo(file: filePath));
+                    currentItem.Href = new SourceInfo<string?>(linkInline.Url, linkInline.ToSourceInfo(file: filePath));
                 }
                 if (!string.IsNullOrEmpty(linkInline.Title))
                     currentItem.DisplayName = linkInline.Title;
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
             return currentItem;
         }
 
-        private static SourceInfo<string> GetLiteral(List<Error> errors, Document filePath, ContainerInline inline)
+        private static SourceInfo<string?> GetLiteral(List<Error> errors, FilePath filePath, ContainerInline inline)
         {
             var result = new StringBuilder();
             var child = inline.FirstChild;
@@ -165,12 +165,12 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add(Errors.InvalidTocSyntax(inline.ToSourceInfo(file: filePath)));
+                    errors.Add(Errors.TableOfContents.InvalidTocSyntax(inline.ToSourceInfo(file: filePath)));
                     return default;
                 }
             }
 
-            return new SourceInfo<string>(result.ToString(), inline.ToSourceInfo(file: filePath));
+            return new SourceInfo<string?>(result.ToString(), inline.ToSourceInfo(file: filePath));
         }
     }
 }

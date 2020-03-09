@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -19,8 +20,6 @@ namespace Microsoft.Docs.Build
         public static string CacheRoot => TestQuirks.CachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
 
         public static string StateRoot => TestQuirks.StatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
-
-        public static string GlobalConfigPath => GetGlobalConfigPath();
 
         public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
@@ -45,11 +44,16 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get the global configuration path, default is under <see cref="s_root"/>
         /// </summary>
-        private static string GetGlobalConfigPath()
+        public static bool TryGetGlobalConfigPath([NotNullWhen(true)] out string? path)
         {
-            return EnvironmentVariable.GlobalConfigPath != null
-                ? Path.GetFullPath(EnvironmentVariable.GlobalConfigPath)
-                : PathUtility.FindYamlOrJson(s_root, "docfx");
+            if (EnvironmentVariable.GlobalConfigPath != null && File.Exists(EnvironmentVariable.GlobalConfigPath))
+            {
+                path = EnvironmentVariable.GlobalConfigPath;
+                return true;
+            }
+
+            path = PathUtility.FindYamlOrJson(s_root, "docfx");
+            return path != null;
         }
 
         /// <summary>

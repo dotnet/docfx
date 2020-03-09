@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     {
         /// <summary>
         /// Gets the owning docset of this document. A document can only belong to one docset.
-        /// TODO: Split data and behaviorial objects from Document and Docset
+        /// TODO: Split data and behavioral objects from Document and Docset
         /// </summary>
         public Docset Docset { get; }
 
@@ -21,9 +21,9 @@ namespace Microsoft.Docs.Build
         public ContentType ContentType { get; }
 
         /// <summary>
-        /// Gets the MIME type specifed in YAML header or JSON $schema.
+        /// Gets the MIME type specified in YAML header or JSON $schema.
         /// </summary>
-        public SourceInfo<string> Mime { get; }
+        public SourceInfo<string?> Mime { get; }
 
         /// <summary>
         /// Gets the source file path relative to docset folder that is:
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             string siteUrl,
             string canonicalUrl,
             ContentType contentType,
-            SourceInfo<string> mime,
+            SourceInfo<string?> mime,
             bool isExperimental,
             bool isPage = true)
         {
@@ -126,11 +126,11 @@ namespace Microsoft.Docs.Build
                 ContentType);
         }
 
-        public static bool operator ==(Document a, Document b) => Equals(a, b);
+        public static bool operator ==(Document? a, Document? b) => Equals(a, b);
 
-        public static bool operator !=(Document a, Document b) => !Equals(a, b);
+        public static bool operator !=(Document? a, Document? b) => !Equals(a, b);
 
-        public bool Equals(Document other)
+        public bool Equals(Document? other)
         {
             if (other is null)
             {
@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
                    ContentType == other.ContentType;
         }
 
-        public override bool Equals(object obj) => Equals(obj as Document);
+        public override bool Equals(object? obj) => Equals(obj as Document);
 
         public override string ToString() => FilePath.ToString();
     }

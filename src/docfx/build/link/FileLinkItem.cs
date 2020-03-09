@@ -8,16 +8,24 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal struct FileLinkItem : IEquatable<FileLinkItem>, IComparable<FileLinkItem>
+    internal class FileLinkItem : IEquatable<FileLinkItem>, IComparable<FileLinkItem>
     {
         [JsonIgnore]
-        public Document SourceFile { get; set; }
+        public Document SourceFile { get; }
 
-        public string SourceUrl { get; set; }
+        public string SourceUrl { get; }
 
-        public string SourceMonikerGroup { get; set; }
+        public string? SourceMonikerGroup { get; }
 
-        public string TargetUrl { get; set; }
+        public string TargetUrl { get; }
+
+        public FileLinkItem(Document sourceFile, string sourceUrl, string? sourceMonikerGroup, string targetUrl)
+        {
+            SourceFile = sourceFile;
+            SourceUrl = sourceUrl;
+            SourceMonikerGroup = sourceMonikerGroup;
+            TargetUrl = targetUrl;
+        }
 
         public int CompareTo(FileLinkItem other)
         {
@@ -30,21 +38,20 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public bool Equals(FileLinkItem other)
+        public bool Equals(FileLinkItem? other)
         {
+            if (other is null)
+            {
+                return false;
+            }
+
             return SourceUrl == other.SourceUrl
                 && TargetUrl == other.TargetUrl
                 && SourceMonikerGroup == other.SourceMonikerGroup;
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is FileLinkItem && Equals((FileLinkItem)obj);
-        }
+        public override bool Equals(object? obj) => Equals(obj as FileLinkItem);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(SourceUrl, TargetUrl, SourceMonikerGroup);
-        }
+        public override int GetHashCode() => HashCode.Combine(SourceUrl, TargetUrl, SourceMonikerGroup);
     }
 }

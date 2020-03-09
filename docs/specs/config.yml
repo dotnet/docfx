@@ -46,7 +46,7 @@ inputs:
 outputs:
   docs/index.json:
 ---
-# Support specifing build scope in content or resource
+# Support specifying build scope in content or resource
 inputs:
   docfx.yml: |
     content:
@@ -186,7 +186,7 @@ outputs:
   docs/a.json: |
     { "key": "another value" }
 ---
-# Metadatata value should be directly passed through
+# Metadata value should be directly passed through
 # Redirect URL should be trimmed
 inputs:
   docfx.yml: |
@@ -405,8 +405,7 @@ outputs:
 inputs:
   docfx.yml: |
     files: '**'
-    output:
-      copyResources: false
+    copyResources: false
     routes:
       docs/: .
   a.png:
@@ -416,7 +415,7 @@ outputs:
   .errors.log: |
       ["error","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]
 ---
-# dependencyPackageUrl's path using git url won't restore the git repo
+# dependencyPackageUrl path using git url won't restore the git repo
 repos:
   https://docs.com/crr-url-using-path/1:
   - files:
@@ -454,23 +453,26 @@ outputs:
   b/a.json:
 ---
 # Peek .openpublishing.publish.config.json for docsets_to_publish and open_to_public_contributors
-inputs:
-  .openpublishing.publish.config.json: |
-    {
-      "docsets_to_publish": [
-        { "build_source_folder": ".", "open_to_public_contributors": true },
-        { "build_source_folder": "b", "open_to_public_contributors": true }
-      ]
-    }
-  docfx.yml: |
-    files: 'a.md'
-  a.md:
-  b/docfx.yml: |
-    globalMetadata:
-      open_to_public_contributors: false
-  b/b.md:
-  c/docfx.yml:
-  c/c.md:
+repos:
+  https://github.com/ops/config-1:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            { "build_source_folder": ".", "open_to_public_contributors": true },
+            { "build_source_folder": "b", "open_to_public_contributors": true }
+          ]
+        }
+      docfx.yml: |
+        files: 'a.md'
+      a.md:
+      b/docfx.yml: |
+        globalMetadata:
+          open_to_public_contributors: false
+      b/.openpublishing.publish.config.json: '{'
+      b/b.md:
+      c/docfx.yml:
+      c/c.md:
 outputs:
   a.json: '{ "open_to_public_contributors": true }'
   b/b.json: '{ "open_to_public_contributors": false }'

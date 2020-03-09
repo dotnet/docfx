@@ -113,7 +113,7 @@ outputs:
 inputs:
   docfx.yml:
   TOC.md: |
-    <!-- this is an xml comemnt -->
+    <!-- this is an xml comment -->
 outputs:
   toc.json:
 ---
@@ -362,7 +362,7 @@ inputs:
   docfx.yml:
   docs/TOC.md: |
     # [Topic1](index.md) #
-    ## Topic1.1 Lanaguage C#
+    ## Topic1.1 Language C#
     ### [Topic1.1.1](/href1.1.1) ##
     ## [Topic1.2 Language Java]() ##
     ### [Topic1.2.1](/href1.2.1) ##
@@ -382,7 +382,7 @@ outputs:
                         "href":"/href1.1.1"
                       }
                   ],
-                  "name":"Topic1.1 Lanaguage C#"
+                  "name":"Topic1.1 Language C#"
                 },
                 {  
                   "items":[  
@@ -404,13 +404,13 @@ outputs:
       ]
     }
 ---
-# Circle toc referenceing 1
+# Circle toc referencing 1
 inputs:
   docfx.yml: |
     files: docs/TOC.md
   docs/TOC.md: |
     # [Topic1](index.md) #
-    ## Refernce toc
+    ## Reference toc
     ### [Reference TOC 1.1](f1/TOC.md)
     ### [Reference TOC 1.2](f1/TOC.md)
     ### [Reference TOC 2.1](f2/TOC.md)
@@ -425,7 +425,7 @@ outputs:
   .errors.log: |
     ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'","docs/TOC.md"]
 ---
-# Circle toc referenceing 2
+# Circle toc referencing 2
 inputs:
   docfx.yml: |
     files: docs/TOC.md
@@ -1172,6 +1172,7 @@ inputs:
   docfx.yml:
   docs/TOC.md: |
     # [good](test.md)
+    # [good with trailing space](test.md)  
     [bad1]()
     #[bad2](test.md)
     >_<
@@ -1180,7 +1181,7 @@ inputs:
 outputs:
   docs/test.json:
   .errors.log: |
-    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",2,1]
+    ["error","invalid-toc-syntax","The toc syntax is invalid, *","docs/TOC.md",3,1]
 ---
 # Skip-level Toc markdown
 inputs:

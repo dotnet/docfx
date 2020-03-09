@@ -158,7 +158,7 @@
 
 > `Rectangle parts` represent outputs(metadata + model)
 
-### Worlflow
+### Workflow
 
   ![build-output-workflow](./images/build-pipeline-output.png)
 
@@ -181,7 +181,7 @@
   *template source metadata example:*
   ```json
   {
-    "titile": "title",
+    "title": "title",
     "author": "docfx",
     "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
     "_op_raw_title": "internal raw title",
@@ -221,7 +221,7 @@
   {
       "content": "template html content",
       "RawMetadata": {
-        "titile": "title",
+        "title": "title",
         "author": "docfx",
         "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
         "_op_raw_title": "internal raw title",

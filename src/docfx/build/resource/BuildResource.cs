@@ -23,23 +23,20 @@ namespace Microsoft.Docs.Build
             var copy = true;
             var publishPath = outputPath;
 
-            if (!context.Config.Output.CopyResources &&
+            if (!context.Config.CopyResources &&
                 context.Input.TryGetPhysicalPath(file.FilePath, out var physicalPath))
             {
                 copy = false;
                 publishPath = PathUtility.NormalizeFile(Path.GetRelativePath(context.Output.OutputPath, physicalPath));
             }
 
-            var publishItem = new PublishItem
-            {
-                Url = file.SiteUrl,
-                Path = publishPath,
-                SourcePath = file.FilePath.Path,
-                Locale = context.LocalizationProvider.Locale,
-                Monikers = monikers,
-                MonikerGroup = MonikerUtility.GetGroup(monikers),
-                ConfigMonikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-            };
+            var publishItem = new PublishItem(
+                file.SiteUrl,
+                publishPath,
+                file.FilePath.Path,
+                context.LocalizationProvider.Locale,
+                monikers,
+                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
             if (context.PublishModelBuilder.TryAdd(file, publishItem) && copy && !context.Config.DryRun)
             {

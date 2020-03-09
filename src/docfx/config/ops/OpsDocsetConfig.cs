@@ -10,12 +10,12 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsDocsetConfig
     {
-        public readonly string DocsetName = "";
+        public string DocsetName { get; private set; } = "";
 
-        public readonly PathString BuildSourceFolder;
+        public PathString BuildSourceFolder { get; private set; }
 
-        public readonly bool OpenToPublicContributors;
+        public bool OpenToPublicContributors { get; private set; }
 
-        public readonly string[] XrefQueryTags = Array.Empty<string>();
+        public string[] XrefQueryTags { get; private set; } = Array.Empty<string>();
     }
 }

@@ -17,21 +17,30 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
+        public static string ValidationServiceEndpoint => s_docsEnvironment switch
+        {
+            DocsEnvironment.Prod => "https://docs.microsoft.com",
+            DocsEnvironment.PPE => "https://ppe.docs.microsoft.com",
+            DocsEnvironment.Internal => "https://ppe.docs.microsoft.com",
+            DocsEnvironment.Perf => "https://ppe.docs.microsoft.com",
+            _ => throw new NotSupportedException()
+        };
+
         public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
 
-        public static readonly string ValidationServiceEndpoint = s_isProduction
-            ? "https://docs.microsoft.com"
-            : "https://ppe.docs.microsoft.com";
+        private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
 
-        private static readonly string s_environment = Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT");
-        private static readonly bool s_isProduction = string.IsNullOrEmpty(s_environment) || string.Equals("PROD", s_environment, StringComparison.OrdinalIgnoreCase);
-
-        private static readonly string s_buildServiceEndpoint = s_isProduction
-            ? "https://op-build-prod.azurewebsites.net"
-            : "https://op-build-sandbox2.azurewebsites.net";
+        private static readonly string s_buildServiceEndpoint = s_docsEnvironment switch
+        {
+            DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
+            DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
+            DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
+            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
+            _ => throw new NotSupportedException(),
+        };
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -51,7 +60,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public async Task<HttpResponseMessage> InterceptHttpRequest(HttpRequestMessage request)
+        public async Task<HttpResponseMessage?> InterceptHttpRequest(HttpRequestMessage request)
         {
             foreach (var (baseUrl, rule) in _apis)
             {
@@ -79,29 +88,24 @@ namespace Microsoft.Docs.Build
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
-            var docsetInfo = await Fetch(fetchUrl, nullOn404: true);
-            if (docsetInfo is null)
-            {
-                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
-            }
-
+            var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
-                new[] { new { name = "", base_path = "", site_name = "", product_name = "" } });
+                new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "" } });
 
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
             {
-                throw Errors.DocsetNotProvisioned(name).ToException(isError: false);
+                throw Errors.Config.DocsetNotProvisioned(name).ToException(isError: false);
             }
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
 
             var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&exclude_depot_name={docset.product_name}.{name}";
             var xrefMapApiEndpoint = GetXrefMapApiEndpoint(xrefEndpoint);
-            if (docset.base_path != "/")
+            if (!string.IsNullOrEmpty(docset.base_path))
             {
-                xrefQueryTags.Add(docset.base_path);
+                xrefQueryTags.Add(docset.base_path.ValueWithLeadingSlash);
             }
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
@@ -115,7 +119,7 @@ namespace Microsoft.Docs.Build
                 product = docset.product_name,
                 siteName = docset.site_name,
                 hostName = GetHostName(docset.site_name),
-                basePath = docset.base_path,
+                basePath = docset.base_path.ValueWithLeadingSlash,
                 xrefHostName = GetXrefHostName(docset.site_name, branch),
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
@@ -130,28 +134,27 @@ namespace Microsoft.Docs.Build
 
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            var isProduction = s_isProduction;
-            if (!string.IsNullOrEmpty(xrefEndpoint))
+            var environment = s_docsEnvironment;
+            if (!string.IsNullOrEmpty(xrefEndpoint) && string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
-                isProduction = string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase);
+                environment = DocsEnvironment.Prod;
             }
-            return isProduction
-                    ? "https://op-build-prod.azurewebsites.net"
-                    : "https://op-build-sandbox2.azurewebsites.net";
+            return environment switch
+            {
+                    DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
+                    DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
+                    DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
+                    DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
+                    _ => throw new NotSupportedException()
+            };
         }
 
         private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
         {
             var url = $"{xrefMapApiEndpoint}/v1/xrefmap{tag}{xrefMapQueryParams}";
-            var response = await Fetch(url, nullOn404: true);
-            if (response is null)
-            {
-                return Array.Empty<string>();
-            }
-            else
-            {
-                return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links;
-            }
+            var response = await Fetch(url, value404: "{}");
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links
+                ?? Array.Empty<string>();
         }
 
         private Task<string> GetMonikerDefinition(Uri url)
@@ -186,7 +189,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
+        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
         {
             try
             {
@@ -211,7 +214,7 @@ namespace Microsoft.Docs.Build
                            var response = await _http.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
-                               _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                               _errorLog.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                            }
                            return response;
                        });
@@ -224,12 +227,12 @@ namespace Microsoft.Docs.Build
                 // Getting validation rules failure should not block build proceeding,
                 // catch and log the excpeition without rethrow.
                 Log.Write(ex);
-                _errorLog.Write(Errors.ValidationIncomplete());
+                _errorLog.Write(Errors.System.ValidationIncomplete());
                 return "{}";
             }
         }
 
-        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
+        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
@@ -246,9 +249,9 @@ namespace Microsoft.Docs.Build
 
                 var response = await _http.SendAsync(request);
 
-                if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
+                if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    return null;
+                    return value404;
                 }
                 return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
             }
@@ -259,24 +262,56 @@ namespace Microsoft.Docs.Build
             switch (siteName)
             {
                 case "DocsAzureCN":
-                    return s_isProduction ? "docs.azure.cn" : "ppe.docs.azure.cn";
+                    return s_docsEnvironment switch
+                    {
+                        DocsEnvironment.Prod => "docs.azure.cn",
+                        DocsEnvironment.PPE => "ppe.docs.azure.cn",
+                        DocsEnvironment.Internal => "ppe.docs.azure.cn",
+                        DocsEnvironment.Perf => "ppe.docs.azure.cn",
+                        _ => throw new NotSupportedException()
+                    };
                 case "dev.microsoft.com":
-                    return s_isProduction ? "developer.microsoft.com" : "devmsft-sandbox.azurewebsites.net";
+                    return s_docsEnvironment switch
+                    {
+                        DocsEnvironment.Prod => "developer.microsoft.com",
+                        DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
+                        DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
+                        DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
+                        _ => throw new NotSupportedException()
+                    };
                 case "rd.microsoft.com":
-                    return "rd.microsoft.com";
+                    return s_docsEnvironment switch
+                    {
+                        DocsEnvironment.Prod => "rd.microsoft.com",
+                        _ => throw new NotSupportedException()
+                    };
                 default:
-                    return s_isProduction ? "docs.microsoft.com" : "ppe.docs.microsoft.com";
+                    return s_docsEnvironment switch
+                    {
+                        DocsEnvironment.Prod => "docs.microsoft.com",
+                        DocsEnvironment.PPE => "ppe.docs.microsoft.com",
+                        DocsEnvironment.Internal => "ppe.docs.microsoft.com",
+                        DocsEnvironment.Perf => "ppe.docs.microsoft.com",
+                        _ => throw new NotSupportedException()
+                    };
             }
         }
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return !IsLive(branch) && s_isProduction ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+            return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)
         {
             return branch == "live" || branch == "live-sxs";
+        }
+
+        private static DocsEnvironment GetDocsEnvironment()
+        {
+            return Enum.TryParse(Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
+                ? docsEnvironment
+                : DocsEnvironment.Prod;
         }
     }
 }

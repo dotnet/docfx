@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         SelfBookmark,
 
         /// <summary>
-        /// The link points to an absolute windows file path with volumn separator, e.g. C:/foo.md
+        /// The link points to an absolute windows file path with volume separator, e.g. C:/foo.md
         /// </summary>
         WindowsAbsolutePath,
     }
