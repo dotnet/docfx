@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class BuildPage

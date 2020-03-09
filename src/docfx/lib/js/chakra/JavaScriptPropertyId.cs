@@ -2,8 +2,6 @@ namespace ChakraHost.Hosting
 {
     using System;
 
-#nullable enable
-
     /// <summary>
     ///     A property identifier.
     /// </summary>

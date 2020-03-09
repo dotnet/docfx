@@ -10,8 +10,6 @@ using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility

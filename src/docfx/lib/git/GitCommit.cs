@@ -3,8 +3,6 @@
 
 using System;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

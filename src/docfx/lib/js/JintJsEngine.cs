@@ -14,8 +14,6 @@ using Jint.Runtime;
 using Jint.Runtime.Interop;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class JintJsEngine : IJavaScriptEngine

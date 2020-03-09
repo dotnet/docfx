@@ -11,8 +11,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

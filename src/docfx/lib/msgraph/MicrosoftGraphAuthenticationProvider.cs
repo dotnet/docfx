@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAuthenticationProvider : IAuthenticationProvider, IDisposable

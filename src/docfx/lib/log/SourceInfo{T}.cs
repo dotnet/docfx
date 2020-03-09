@@ -3,8 +3,6 @@
 
 using System.Runtime.CompilerServices;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal readonly struct SourceInfo<T> : ISourceInfo

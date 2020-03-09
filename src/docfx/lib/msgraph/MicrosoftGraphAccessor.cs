@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using Polly;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor : IDisposable

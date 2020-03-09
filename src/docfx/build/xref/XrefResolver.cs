@@ -7,8 +7,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class XrefResolver

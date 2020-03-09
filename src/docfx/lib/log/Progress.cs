@@ -6,8 +6,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class Progress

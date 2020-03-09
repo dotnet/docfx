@@ -20,8 +20,6 @@ using Microsoft.Extensions.Hosting;
 
 [assembly: ApplicationPart("Microsoft.Docs.Template")]
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class RazorTemplate

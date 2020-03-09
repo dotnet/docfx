@@ -11,8 +11,6 @@ using DotLiquid;
 using DotLiquid.FileSystems;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class LiquidTemplate

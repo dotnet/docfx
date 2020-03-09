@@ -8,8 +8,6 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefMapLoader

@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable

@@ -17,8 +17,6 @@ using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor : IDisposable

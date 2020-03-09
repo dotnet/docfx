@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class RepositoryProvider

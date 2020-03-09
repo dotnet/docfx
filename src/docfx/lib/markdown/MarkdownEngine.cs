@@ -10,8 +10,6 @@ using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class MarkdownEngine

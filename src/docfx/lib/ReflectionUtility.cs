@@ -5,8 +5,6 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class ReflectionUtility

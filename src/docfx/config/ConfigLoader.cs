@@ -9,8 +9,6 @@ using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader

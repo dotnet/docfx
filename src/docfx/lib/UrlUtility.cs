@@ -9,8 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class UrlUtility

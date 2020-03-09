@@ -7,8 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

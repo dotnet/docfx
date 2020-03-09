@@ -6,8 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     public struct InterProcessReaderWriterLock : IDisposable

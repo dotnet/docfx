@@ -1,7 +1,5 @@
 namespace ChakraHost.Hosting
 {
-#nullable enable
-
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Runtime.InteropServices;
