@@ -63,19 +63,18 @@ namespace Microsoft.Docs.Build
             return Math.Round(value.TotalMilliseconds, digits: 2) + "ms";
         }
 
-        private struct LogScope : IDisposable
+        private class LogScope : IDisposable
         {
-            public readonly string Name;
+            public string Name { get; }
 
-            public readonly Stopwatch Stopwatch;
+            public Stopwatch Stopwatch { get; }
 
-            public long LastElapsedMs;
+            public long LastElapsedMs { get; set; }
 
             public LogScope(string name, Stopwatch stopwatch)
             {
                 Name = name;
                 Stopwatch = stopwatch;
-                LastElapsedMs = 0;
             }
 
             public void Dispose()
