@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 throw new InvalidOperationException(message);
             }
 
-            return body;
+            return body.Replace("\r", "");
         }
 
         private static TestServer StartServer()
