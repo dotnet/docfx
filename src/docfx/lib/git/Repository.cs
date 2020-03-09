@@ -4,8 +4,6 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class Repository

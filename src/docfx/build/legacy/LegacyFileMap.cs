@@ -7,8 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyFileMap

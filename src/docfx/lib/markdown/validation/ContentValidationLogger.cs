@@ -5,8 +5,6 @@ using Apex.Validation.Shared;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class ContentValidationLogger : IValidationLogger

@@ -8,8 +8,6 @@ using System.Runtime.InteropServices;
 #pragma warning disable SA1307 // AccessibleFieldsMustBeginWithUpperCaseLetter
 #pragma warning disable IDE1006 // Naming Styles
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class LibGit2

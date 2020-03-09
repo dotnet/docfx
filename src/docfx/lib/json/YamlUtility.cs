@@ -10,8 +10,6 @@ using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static partial class YamlUtility

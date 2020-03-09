@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal interface ICacheObject<TKey> where TKey : notnull

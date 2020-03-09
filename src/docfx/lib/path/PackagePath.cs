@@ -5,8 +5,6 @@ using System;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

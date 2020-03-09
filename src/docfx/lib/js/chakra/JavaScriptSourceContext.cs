@@ -2,8 +2,6 @@ namespace ChakraHost.Hosting
 {
     using System;
 
-#nullable enable
-
     /// <summary>
     ///     A cookie that identifies a script for debugging purposes.
     /// </summary>

@@ -2,8 +2,6 @@ namespace ChakraHost.Hosting
 {
     using System;
 
-#nullable enable
-
     /// <summary>
     ///     A Chakra runtime.
     /// </summary>

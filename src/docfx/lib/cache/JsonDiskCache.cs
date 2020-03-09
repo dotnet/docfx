@@ -9,8 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class JsonDiskCache<TError, TKey, TValue>

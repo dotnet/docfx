@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using Polly;
 using Polly.Extensions.Http;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class FileResolver

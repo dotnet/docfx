@@ -7,8 +7,6 @@ using System.Linq;
 using Docs.MetadataService.Models;
 using Newtonsoft.Json;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class OpsMetadataRuleConverter

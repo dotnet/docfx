@@ -10,8 +10,6 @@ using Stubble.Core.Builders;
 using Stubble.Core.Interfaces;
 using Stubble.Core.Settings;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class MustacheTemplate

@@ -11,8 +11,6 @@ using System.Threading;
 using ChakraHost.Hosting;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

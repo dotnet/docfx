@@ -5,8 +5,6 @@ using System;
 using System.Globalization;
 using System.IO;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class LocalizationProvider

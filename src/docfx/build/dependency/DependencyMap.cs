@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class DependencyMap : ReadOnlyDictionary<Document, HashSet<DependencyItem>>

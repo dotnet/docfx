@@ -6,8 +6,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class HashUtility

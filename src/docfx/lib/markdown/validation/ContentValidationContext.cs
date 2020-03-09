@@ -4,8 +4,6 @@
 using System;
 using Validations.DocFx.Adapter;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class ContentValidationContext : IValidationContext

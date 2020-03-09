@@ -12,8 +12,6 @@ using System.Runtime.InteropServices;
 
 using static Microsoft.Docs.Build.LibGit2;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

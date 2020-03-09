@@ -4,8 +4,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class ExpressionCreator

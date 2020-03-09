@@ -8,8 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class LocalizationUtility

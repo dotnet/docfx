@@ -4,8 +4,6 @@
 using System.IO;
 using Xunit;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     public class ExtractYamlHeaderTest

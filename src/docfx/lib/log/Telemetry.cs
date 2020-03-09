@@ -11,8 +11,6 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class Telemetry

@@ -8,8 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal sealed class ErrorLog : IDisposable
