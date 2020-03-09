@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
+        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string>? headers = null)
         {
             try
             {
