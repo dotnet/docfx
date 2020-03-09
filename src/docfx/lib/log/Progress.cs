@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
         {
             public string Name { get; }
 
-            public Stopwatch Stopwatch{ get; }
+            public Stopwatch Stopwatch { get; }
 
             public long LastElapsedMs { get; set; }
 
