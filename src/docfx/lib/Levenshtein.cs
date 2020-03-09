@@ -5,8 +5,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class Levenshtein

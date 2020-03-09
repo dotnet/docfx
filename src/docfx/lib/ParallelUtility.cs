@@ -10,8 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class ParallelUtility

@@ -10,15 +10,13 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class XrefExtension
     {
         public static MarkdownPipelineBuilder UseXref(
             this MarkdownPipelineBuilder builder,
-            Func<SourceInfo<string>, bool, (string href, string display)> resolveXref)
+            Func<SourceInfo<string>, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {

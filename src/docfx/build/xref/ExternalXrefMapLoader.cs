@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
         private static List<(string uid, long start, long end)> GetXrefSpecPositions(ReadOnlySpan<byte> content)
         {
             var result = new List<(string uid, long start, long end)>();
-            var stack = new Stack<(string uid, long start)>();
+            var stack = new Stack<(string? uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
             while (reader.Read())
             {

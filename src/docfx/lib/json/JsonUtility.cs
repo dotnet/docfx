@@ -13,8 +13,6 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class JsonUtility

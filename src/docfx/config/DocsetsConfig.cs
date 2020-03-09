@@ -4,8 +4,6 @@
 using System;
 using Newtonsoft.Json;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

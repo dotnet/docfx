@@ -9,8 +9,6 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

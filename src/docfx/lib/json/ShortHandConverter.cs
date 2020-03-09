@@ -6,8 +6,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using Newtonsoft.Json;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     /// <summary>

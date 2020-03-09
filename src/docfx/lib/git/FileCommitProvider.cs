@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 
 using static Microsoft.Docs.Build.LibGit2;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal sealed class FileCommitProvider : IDisposable

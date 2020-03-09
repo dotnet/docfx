@@ -9,8 +9,6 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
@@ -54,9 +52,10 @@ namespace Microsoft.Docs.Build
             return mime is null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
         }
 
-        public TemplateSchema GetSchema(SourceInfo<string> schemaName)
+        public TemplateSchema GetSchema(SourceInfo<string?> schemaName)
         {
-            return !string.IsNullOrEmpty(schemaName) && _schemas.TryGetValue(schemaName, out var schemaTemplate)
+            var name = schemaName.Value;
+            return !string.IsNullOrEmpty(name) && _schemas.TryGetValue(name, out var schemaTemplate)
                ? schemaTemplate.Value
                : throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
         }

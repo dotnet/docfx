@@ -7,8 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class StringUtility

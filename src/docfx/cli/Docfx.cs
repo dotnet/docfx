@@ -15,8 +15,6 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     public static class Docfx

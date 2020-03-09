@@ -10,17 +10,17 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class ConceptualModel
     {
-        public string Conceptual { get; set; }
+        public string? Conceptual { get; set; }
 
         [JsonProperty("wordCount")]
         public long? WordCount { get; set; }
 
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [JsonProperty("rawTitle")]
-        public string RawTitle { get; set; }
+        public string? RawTitle { get; set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; set; }
+        public JObject? ExtensionData { get; set; }
     }
 }

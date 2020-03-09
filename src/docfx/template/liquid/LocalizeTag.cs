@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using DotLiquid;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class LocalizeTag : Tag

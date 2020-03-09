@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class CommitBuildTimeProvider

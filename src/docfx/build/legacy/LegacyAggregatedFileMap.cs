@@ -6,8 +6,6 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyAggregatedFileMap

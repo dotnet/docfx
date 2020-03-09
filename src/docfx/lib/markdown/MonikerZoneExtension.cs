@@ -7,8 +7,6 @@ using Markdig;
 using Markdig.Renderers.Html;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class MonikerZoneExtension

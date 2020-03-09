@@ -9,8 +9,6 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility

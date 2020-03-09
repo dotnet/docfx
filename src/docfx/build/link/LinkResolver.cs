@@ -4,8 +4,6 @@
 using System;
 using System.IO;
 
-#nullable enable
-
 namespace Microsoft.Docs.Build
 {
     internal class LinkResolver
@@ -72,7 +70,7 @@ namespace Microsoft.Docs.Build
                 var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
                 var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, inclusionRoot);
 
-                return (uidError, uidHref, declaringFile);
+                return (uidError, uidHref ?? href, declaringFile);
             }
 
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, hrefRelativeTo);
