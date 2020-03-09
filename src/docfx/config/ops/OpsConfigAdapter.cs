@@ -163,14 +163,14 @@ namespace Microsoft.Docs.Build
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchRetry($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
-            var rules = FetchRetry($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
-            var allowlists = FetchRetry($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+            var rules = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
+            var allowlists = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
         }
@@ -186,24 +186,43 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> FetchRetry(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
+        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string> headers = null, bool nullOn404 = false)
         {
             try
             {
-                using var response = await HttpPolicyExtensions
-                   .HandleTransientHttpError()
-                   .Or<OperationCanceledException>()
-                   .Or<IOException>()
-                   .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
-                   .ExecuteAsync(async () =>
-                   {
-                       var content = await Fetch(url, headers);
-                       return new HttpResponseMessage { Content = new StringContent(content) };
-                   });
-                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+                {
+                    using var response = await HttpPolicyExtensions
+                       .HandleTransientHttpError()
+                       .Or<OperationCanceledException>()
+                       .Or<IOException>()
+                       .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                       .ExecuteAsync(async () =>
+                       {
+                           using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                           _credentialProvider?.Invoke(request);
+                           if (headers != null)
+                           {
+                               foreach (var (key, value) in headers)
+                               {
+                                   request.Headers.TryAddWithoutValidation(key, value);
+                               }
+                           }
+                           var response = await _http.SendAsync(request);
+                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                           {
+                               _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                           }
+                           return response;
+                       });
+
+                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                }
             }
             catch (Exception ex)
             {
+                // Getting validation rules failure should not block build proceeding,
+                // catch and log the excpeition without rethrow.
                 Log.Write(ex);
                 _errorLog.Write(Errors.ValidationIncomplete());
                 return "{}";
@@ -226,10 +245,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 var response = await _http.SendAsync(request);
-                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
-                {
-                    _errorLog.Write(Errors.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                }
 
                 if (nullOn404 && response.StatusCode == HttpStatusCode.NotFound)
                 {
