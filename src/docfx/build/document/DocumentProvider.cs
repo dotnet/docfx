@@ -260,6 +260,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        /// <summary>
+        /// In docs, canonical URL is later overwrittern by template JINT code.
+        /// Need to handle the logic difference when template code is removed.
+        /// </summary>
         private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string? mime, bool isPage)
         {
             if (isExperimental)

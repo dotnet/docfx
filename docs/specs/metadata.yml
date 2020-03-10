@@ -194,6 +194,8 @@ outputs:
     }
 ---
 # Generate canonical URL
+# In docs, canonical URL is later overwrittern by template JINT code.
+# Need to handle the logic difference when template code is removed.
 inputs:
   docfx.yml: |
     files: "**/*"
