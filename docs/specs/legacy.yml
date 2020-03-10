@@ -574,7 +574,7 @@ inputs:
     }
   _themes/ContentTemplate/TestPage.html.primary.js: |
     exports.transform = function (model) {
-      return model.prop;
+      return model;
     }
 outputs:
   docs/a.mta.json: |
@@ -588,7 +588,6 @@ outputs:
     }
   docs/a.raw.page.json: |
     {
-      "content": "{\"content\":undefined}",
       "rawMetadata": {
           "metadata": {
               "_path": "docs/a.json",
