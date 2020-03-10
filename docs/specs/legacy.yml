@@ -589,10 +589,6 @@ outputs:
   docs/a.raw.page.json: |
     {
       "rawMetadata": {
-          "metadata": {
-              "_path": "docs/a.json",
-              "canonical_url": "https://docs.com/en-us/docs/a",
-          },
           "monikers": [
               "netcore-1.0",
               "netcore-2.0"
