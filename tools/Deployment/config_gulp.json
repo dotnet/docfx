@@ -22,8 +22,10 @@
     "masterUrl": "https://www.myget.org/F/docfx/api/v2/package"
   },
   "azdevops": {
-    "devUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-ppe/nuget/v3/index.json",
-    "masterUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-prod/nuget/v3/index.json"
+    "perfUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-perf/nuget/v3/index.json",
+    "internalUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-internal/nuget/v3/index.json",
+    "ppeUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-ppe/nuget/v3/index.json",
+    "prodUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-prod/nuget/v3/index.json"
   },
   "choco": {
     "homeDir": "../../src/nuspec/chocolatey/docfx/",
