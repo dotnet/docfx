@@ -45,6 +45,11 @@ namespace Microsoft.Docs.Build
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
+            if (publishItem.ExtensionData.TryGetValue<JObject>("metadata", out var flatten))
+            {
+                publishItem.ExtensionData.Remove("metadata");
+                JsonUtility.Merge(publishItem.ExtensionData, flatten);
+            }
 
             if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
             {

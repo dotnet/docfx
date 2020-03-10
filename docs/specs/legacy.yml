@@ -552,3 +552,73 @@ outputs:
         }
       ]
     }
+---
+# SDP with versioning
+legacy: true
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestPage
+    summary:
+    monikers:
+    - netcore-1.0
+    - netcore-2.0
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": 
+      {
+        "summary": {"contentType": "Markdown"},
+        "monikers": { "items": { "type": "string" }, "minItems": 1, "type": "array" },
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+outputs:
+  docs/a.mta.json: |
+    {
+      "is_dynamic_rendering": true,
+      "monikers": [
+          "netcore-1.0",
+          "netcore-2.0"
+      ],
+      "summary": null,
+    }
+  docs/a.raw.page.json: |
+    {
+      "content": "{\"content\":undefined}",
+      "rawMetadata": {
+          "metadata": {
+              "_path": "docs/a.json",
+              "canonical_url": "https://docs.com/en-us/docs/a",
+          },
+          "monikers": [
+              "netcore-1.0",
+              "netcore-2.0"
+          ],
+          "summary": null
+      }
+    }
+  .publish.json: |
+    {
+      "name": "",
+      "product": "",
+      "base_path": "/",
+      "files": [
+          {
+              "url": "/docs/a",
+              "path": "docs/a.raw.page.json",
+              "source_path": "docs/a.yml",
+              "locale": "en-us",
+              "is_dynamic_rendering": true,
+              "monikers": [
+                  "netcore-1.0",
+                  "netcore-2.0"
+              ],
+              "summary": null
+          }
+      ]
+    }
+
