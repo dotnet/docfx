@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
         /// Get current first commit hash on given committish
         /// </summary>
         public static string GetHeadCommit(string path, string committish = "HEAD")
-            => GetCommits(path, committish, 1)[0];
+            => Execute(path, $"rev-parse {committish}");
 
         public static unsafe byte[]? ReadBytes(string repoPath, string filePath, string committish)
         {
