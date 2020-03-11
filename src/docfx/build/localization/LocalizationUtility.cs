@@ -125,11 +125,12 @@ namespace Microsoft.Docs.Build
             // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
             // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
             // here to generate the correct contributor list.
-            if (repository != null && LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            if (repository != null && TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
                 try
                 {
                     GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                    Log.Write($"Repository {repository.Remote}#{contributionBranch} at committish: {GitUtility.GetHeadCommit(repository.Path, contributionBranch)}")
                 }
                 catch (InvalidOperationException ex)
                 {
