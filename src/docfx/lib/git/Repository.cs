@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            Log.Write($"Repository {remote}#{repoBranch} at committish: {repoCommit}");
+            Log.Write($"Repository {repoUrl ?? remote}#{branch ?? repoBranch} at committish: {repoCommit}");
             return new Repository(repoUrl ?? remote ?? "", branch ?? repoBranch, repoCommit, PathUtility.NormalizeFolder(repoPath));
         }
     }
