@@ -246,8 +246,8 @@ namespace Microsoft.Docs.Build
             if (b.Id is null)
                 return a;
 
-            // otherwise pick a random one
-            return a;
+            // otherwise pick the latest one
+            return (a.UpdatedAt ?? DateTime.MinValue) >= (b.UpdatedAt ?? DateTime.MinValue) ? a : b;
         }
     }
 }
