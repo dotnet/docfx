@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Config? _config;
         private readonly LocalizationProvider? _localizationProvider;
 
-        private readonly Lazy<(string path, Repository?)> _templateRepository;
+        private readonly (string path, Repository?) _templateRepository;
         private readonly ConcurrentDictionary<PathString, Lazy<(string docset, Repository? repository)>> _dependencyRepositories
                    = new ConcurrentDictionary<PathString, Lazy<(string docset, Repository? repository)>>();
 
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             _locale = LocalizationUtility.GetLocale(repository);
             _config = config;
             _localizationProvider = localizationProvider;
-            _templateRepository = new Lazy<(string, Repository?)>(GetTemplateRepository);
+            _templateRepository = GetTemplateRepository();
         }
 
         public Repository? GetRepository(FileOrigin origin, PathString? dependencyName = null)
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                     return _localizationProvider.GetFallbackRepositoryWithDocsetEntry();
 
                 case FileOrigin.Template when _config != null && _packageResolver != null:
-                    return _templateRepository.Value;
+                    return _templateRepository;
 
                 case FileOrigin.Dependency when _config != null && _packageResolver != null && dependencyName != null:
                     return _dependencyRepositories.GetOrAdd(dependencyName.Value, _ => new Lazy<(string docset, Repository? repository)>(() =>
