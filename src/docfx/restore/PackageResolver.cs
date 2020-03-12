@@ -49,7 +49,13 @@ namespace Microsoft.Docs.Build
             try
             {
                 if (path.Type == PackageType.Git)
-                    DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne), (path as DependencyConfig)?.IncludeInBuild == true);
+                {
+                    DownloadGitRepository(
+                        path.Url,
+                        path.Branch,
+                        options.HasFlag(PackageFetchOptions.DepthOne),
+                        path is DependencyConfig dependency && dependency.IncludeInBuild);
+                }
             }
             catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
             {
@@ -107,6 +113,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!File.Exists(gitDocfxHead) || _fetchOptions != FetchOptions.UseCache)
                 {
+                    DeleteIfExist(gitDocfxHead);
                     using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                     {
                         DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
