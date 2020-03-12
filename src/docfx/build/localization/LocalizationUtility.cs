@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
-                    Log.Write($"Repository contribution branch {repository.Remote}#{contributionBranch} at committish: {GitUtility.GetHeadCommit(repository.Path, contributionBranch)}");
+                    Log.Write($"Repository {repository.Remote}#{contributionBranch} at committish: {GitUtility.GetHeadCommit(repository.Path, contributionBranch)}");
                 }
                 catch (InvalidOperationException ex)
                 {

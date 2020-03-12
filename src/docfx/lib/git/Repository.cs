@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         {
             var repository = Create(path, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
             if (repository != null)
-                Log.Write($"Source repository {repository.Remote}#{repository.Branch} at committish: {repository.Commit}");
+                Log.Write($"Repository {repository.Remote}#{repository.Branch} at committish: {repository.Commit}");
             return repository;
         }
 
