@@ -37,10 +37,5 @@
     "Microsoft.VisualStudio.Component.SQL.DataSources",
     "Component.Microsoft.Web.LibraryManager",
     "Microsoft.VisualStudio.ComponentGroup.Web",
-    "Microsoft.Net.Core.Component.SDK.2.2",
-    "Microsoft.NetCore.ComponentGroup.DevelopmentTools.2.2",
-    "Microsoft.NetCore.ComponentGroup.Web.2.2",
-    "Microsoft.VisualStudio.Workload.NetCoreTools",
-    "Microsoft.VisualStudio.Component.Git"
   ]
 }
