@@ -126,6 +126,12 @@ namespace Microsoft.Docs.Build
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
+        /// <summary>
+        /// Get current first commit hash on given committish
+        /// </summary>
+        public static string GetHeadCommit(string path, string committish = "HEAD")
+            => Execute(path, $"rev-parse {committish}");
+
         public static unsafe byte[]? ReadBytes(string repoPath, string filePath, string committish)
         {
             if (git_repository_open(out var repo, repoPath) != 0)
