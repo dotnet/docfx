@@ -30,7 +30,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Repository? Create(string path)
         {
-            return Create(path, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
+            var repository = Create(path, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
+            if (repository != null)
+                Log.Write($"Source repository {repository.Remote}#{repository.Branch} at committish: {repository.Commit}");
+            return repository;
         }
 
         /// <summary>

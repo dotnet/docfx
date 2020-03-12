@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
                         LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
                     }
                 }
-                Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetHeadCommit(gitPath)}");
+                Log.Write($"CRR repository {url}#{committish} at committish: {GitUtility.GetHeadCommit(gitPath)}");
             }
         }
 
