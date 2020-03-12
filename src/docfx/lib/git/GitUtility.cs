@@ -66,10 +66,25 @@ namespace Microsoft.Docs.Build
                 throw new ArgumentException($"Invalid git repo {repoPath}");
             }
 
-            if (git_remote_lookup(out var pRemote, pRepo, "origin") == 0)
+            var remotes = default(git_strarray);
+            if (git_remote_list(&remotes, pRepo) == 0)
             {
-                remote = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
-                git_remote_free(pRemote);
+                var pstr = remotes.strings;
+                for (var i = 0; i < remotes.count; i++)
+                {
+                    var pName = *pstr++;
+                    var name = Marshal.PtrToStringUTF8(pName);
+                    if (git_remote_lookup(out var pRemote, pRepo, pName) == 0)
+                    {
+                        remote = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
+                        git_remote_free(pRemote);
+                        if (name == "origin")
+                        {
+                            break;
+                        }
+                    }
+                }
+                git_strarray_free(&remotes);
             }
 
             if (git_repository_head(out var pHead, pRepo) == 0)
