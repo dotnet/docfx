@@ -60,7 +60,10 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int git_remote_create(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, [MarshalAs(UnmanagedType.LPUTF8Str)]string url);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name);
+        public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, IntPtr name);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_remote_list(git_strarray* remotes, IntPtr repo);
 
         [DllImport(LibName)]
         public static unsafe extern IntPtr git_remote_url(IntPtr remote);
@@ -112,6 +115,9 @@ namespace Microsoft.Docs.Build
 
         [DllImport(LibName)]
         public static unsafe extern void git_signature_free(git_signature* sig);
+
+        [DllImport(LibName)]
+        public static unsafe extern void git_strarray_free(git_strarray* strarray);
 
         [DllImport(LibName)]
         public static unsafe extern git_oid* git_commit_parent_id(IntPtr commit, int n);
@@ -168,6 +174,13 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void git_revwalk_free(IntPtr walk);
 
         [StructLayout(LayoutKind.Sequential)]
+        public unsafe struct git_strarray
+        {
+            public IntPtr* strings;
+            public int count;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         public struct git_time
         {
             private static readonly DateTimeOffset s_epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -177,8 +190,8 @@ namespace Microsoft.Docs.Build
 
             public DateTimeOffset ToDateTimeOffset()
             {
-                DateTimeOffset utcDateTime = s_epoch.AddSeconds(time);
-                TimeSpan timezone = TimeSpan.FromMinutes(offset);
+                var utcDateTime = s_epoch.AddSeconds(time);
+                var timezone = TimeSpan.FromMinutes(offset);
                 return new DateTimeOffset(utcDateTime.DateTime.Add(timezone), timezone);
             }
         }
