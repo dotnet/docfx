@@ -47,8 +47,6 @@ namespace Microsoft.Docs.Build
         /// <returns>Is git repo or not</returns>
         public static bool IsRepo(string path)
         {
-            Debug.Assert(!string.IsNullOrEmpty(path));
-
             var gitPath = Path.Combine(path, ".git");
 
             return Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */;

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
@@ -42,8 +41,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Repository? Create(string path, string? branch, string? repoUrl = null)
         {
-            Debug.Assert(!string.IsNullOrEmpty(path));
-
             var repoPath = GitUtility.FindRepo(System.IO.Path.GetFullPath(path));
             if (repoPath is null)
             {

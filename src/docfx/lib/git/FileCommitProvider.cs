@@ -35,7 +35,6 @@ namespace Microsoft.Docs.Build
 
         public FileCommitProvider(Repository repository, string cacheFilePath)
         {
-            Debug.Assert(repository != null);
             if (git_repository_open(out _repo, repository.Path) != 0)
             {
                 throw new ArgumentException($"Invalid git repo {repository.Path}");
