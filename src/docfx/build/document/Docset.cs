@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -17,19 +16,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string DocsetPath { get; }
 
-        /// <summary>
-        /// Gets the root repository of docset
-        /// </summary>
-        public Repository? Repository { get; }
-
-        private readonly ConcurrentDictionary<string, Lazy<Repository?>> _repositories;
-
-        public Docset(string docsetPath, Repository? repository)
+        public Docset(string docsetPath)
         {
             DocsetPath = PathUtility.NormalizeFolder(Path.GetFullPath(docsetPath));
-            Repository = repository;
-
-            _repositories = new ConcurrentDictionary<string, Lazy<Repository?>>();
         }
 
         public int CompareTo(Docset other)
@@ -65,30 +54,6 @@ namespace Microsoft.Docs.Build
         public static bool operator !=(Docset? obj1, Docset? obj2)
         {
             return !Equals(obj1, obj2);
-        }
-
-        // todo: use repository provider instead
-        public Repository? GetRepository(string filePath)
-        {
-            return GetRepositoryInternal(Path.Combine(DocsetPath, filePath));
-
-            Repository? GetRepositoryInternal(string fullPath)
-            {
-                if (GitUtility.IsRepo(fullPath))
-                {
-                    if (Repository != null && string.Equals(fullPath, Repository.Path.Substring(0, Repository.Path.Length - 1), PathUtility.PathComparison))
-                    {
-                        return Repository;
-                    }
-
-                    return Repository.Create(fullPath, branch: null);
-                }
-
-                var parent = PathUtility.NormalizeFile(Path.GetDirectoryName(fullPath) ?? "");
-                return !string.IsNullOrEmpty(parent)
-                    ? _repositories.GetOrAdd(parent, k => new Lazy<Repository?>(() => GetRepositoryInternal(k))).Value
-                    : null;
-            }
         }
     }
 }

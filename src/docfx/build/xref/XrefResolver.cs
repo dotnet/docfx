@@ -16,16 +16,19 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
+        private readonly Repository? _repository;
         private readonly string _xrefHostName;
 
         public XrefResolver(
             Context context,
             Config config,
             FileResolver fileResolver,
+            Repository? repository,
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder)
         {
             _config = config;
+            _repository = repository;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
                 () => InternalXrefMapBuilder.Build(context));
 
@@ -106,7 +109,7 @@ namespace Microsoft.Docs.Build
                     var xrefSpec = xref.ToExternalXrefSpec();
                     if (repositoryBranch is null)
                     {
-                        repositoryBranch = xref.DeclaringFile.Docset.Repository?.Branch;
+                        repositoryBranch = _repository?.Branch;
                     }
                     if (basePath is null)
                     {

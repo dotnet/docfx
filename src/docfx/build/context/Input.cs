@@ -33,26 +33,25 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool Exists(FilePath file)
         {
-            var (docsetPath, pathToDocset, commit) = ResolveFilePath(file);
+            var (basePath, path, commit) = ResolveFilePath(file);
 
-            if (docsetPath is null)
+            if (basePath is null)
             {
                 return false;
             }
 
             if (commit is null)
             {
-                return File.Exists(PathUtility.Normalize(Path.Combine(docsetPath, pathToDocset)));
+                return File.Exists(PathUtility.Normalize(Path.Combine(basePath, path)));
             }
 
-            var repoPath = GitUtility.FindRepo(docsetPath);
-            if (repoPath is null)
+            var (repo, pathToRepo) = _repositoryProvider.GetRepository(file);
+            if (repo is null || pathToRepo is null)
             {
                 return false;
             }
 
-            var pathToRepo = PathUtility.Normalize(Path.GetRelativePath(repoPath, PathUtility.Normalize(Path.Combine(docsetPath, pathToDocset))));
-            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(repoPath, pathToRepo, commit)) != null;
+            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(repo.Path, pathToRepo, commit)) != null;
         }
 
         /// <summary>

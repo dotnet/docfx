@@ -3,21 +3,23 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
     internal class RepositoryProvider
     {
         private readonly string _docsetPath;
-        private readonly Repository? _repository;
-        private readonly string? _locale;
+        private readonly PathString? _docsetPathToDefaultRepository;
         private readonly PackageResolver? _packageResolver;
         private readonly Config? _config;
         private readonly LocalizationProvider? _localizationProvider;
+        private readonly ConcurrentDictionary<string, Repository?> _repositores = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
 
-        private readonly Lazy<(string path, Repository?)> _templateRepository;
-        private readonly ConcurrentDictionary<PathString, Lazy<(string docset, Repository? repository)>> _dependencyRepositories
-                   = new ConcurrentDictionary<PathString, Lazy<(string docset, Repository? repository)>>();
+        private readonly ConcurrentDictionary<PathString, (string docset, Repository? repository)> _dependencyRepositories
+                   = new ConcurrentDictionary<PathString, (string docset, Repository? repository)>();
+
+        public Repository? DefaultRepository { get; }
 
         public RepositoryProvider(
             string docsetPath,
@@ -27,12 +29,15 @@ namespace Microsoft.Docs.Build
             LocalizationProvider? localizationProvider = null)
         {
             _docsetPath = docsetPath;
-            _repository = repository;
+            DefaultRepository = repository;
             _packageResolver = packageResolver;
-            _locale = LocalizationUtility.GetLocale(repository);
             _config = config;
             _localizationProvider = localizationProvider;
-            _templateRepository = new Lazy<(string, Repository?)>(GetTemplateRepository);
+
+            if (DefaultRepository != null)
+            {
+                _docsetPathToDefaultRepository = new PathString(Path.GetRelativePath(DefaultRepository.Path, _docsetPath));
+            }
         }
 
         public Repository? GetRepository(FileOrigin origin, PathString? dependencyName = null)
@@ -40,57 +45,77 @@ namespace Microsoft.Docs.Build
             return GetRepositoryWithDocsetEntry(origin, dependencyName).repository;
         }
 
-        public (string docsetPath, Repository? repository) GetRepositoryWithDocsetEntry(FileOrigin origin, PathString? dependencyName = null)
+        public (Repository? repository, PathString? pathToRepository) GetRepository(FilePath path)
         {
-            switch (origin)
+            return path.Origin switch
             {
-                case FileOrigin.Redirection:
-                case FileOrigin.Default:
-                    return (_docsetPath, _repository);
-
-                case FileOrigin.Fallback when _localizationProvider != null:
-                    return _localizationProvider.GetFallbackRepositoryWithDocsetEntry();
-
-                case FileOrigin.Template when _config != null && _packageResolver != null:
-                    return _templateRepository.Value;
-
-                case FileOrigin.Dependency when _config != null && _packageResolver != null && dependencyName != null:
-                    return _dependencyRepositories.GetOrAdd(dependencyName.Value, _ => new Lazy<(string docset, Repository? repository)>(() =>
-                    {
-                        var dependency = _config.Dependencies[dependencyName.Value];
-                        var dependencyPath = _packageResolver.ResolvePackage(dependency, dependency.PackageFetchOptions);
-
-                        if (dependency.Type != PackageType.Git)
-                        {
-                            // point to a folder
-                            return (dependencyPath, null);
-                        }
-
-                        return (dependencyPath, Repository.Create(dependencyPath, dependency.Branch, dependency.Url));
-                    })).Value;
-            }
-
-            throw new InvalidOperationException();
+                FileOrigin.Default => GetRepository(Path.Combine(_docsetPath, path.Path)),
+                FileOrigin.Fallback when _localizationProvider != null
+                    => (_localizationProvider.GetFallbackRepositoryWithDocsetEntry().fallbackRepository,
+                        _docsetPathToDefaultRepository is null ? null : _docsetPathToDefaultRepository + path.Path),
+                FileOrigin.Dependency => (GetRepositoryWithDocsetEntry(path.Origin, path.DependencyName).repository, path.GetPathToOrigin()),
+                _ => throw new InvalidOperationException(),
+            };
         }
 
-        private (string path, Repository?) GetTemplateRepository()
+        public (string docsetPath, Repository? repository) GetRepositoryWithDocsetEntry(FileOrigin origin, PathString? dependencyName = null)
         {
-            if (_config is null || _packageResolver is null)
+            return origin switch
             {
-                throw new InvalidOperationException();
+                FileOrigin.Default => (_docsetPath, DefaultRepository),
+                FileOrigin.Fallback when _localizationProvider != null
+                    => _localizationProvider.GetFallbackRepositoryWithDocsetEntry(),
+                FileOrigin.Dependency when _config != null && _packageResolver != null && dependencyName != null
+                    => _dependencyRepositories.GetOrAdd(dependencyName.Value, key => GetDependencyRepository(key, _config, _packageResolver)),
+                _ => throw new InvalidOperationException(),
+            };
+        }
+
+        private (Repository? repository, PathString? pathToRepository) GetRepository(string fullPath)
+        {
+            var directory = Path.GetDirectoryName(fullPath);
+            if (directory is null)
+            {
+                return default;
             }
 
-            var theme = LocalizationUtility.GetLocalizedTheme(_config.Template, _locale, _config.DefaultLocale);
+            var repository = _repositores.GetOrAdd(directory, GetRepositoryCore);
+            if (repository is null)
+            {
+                return default;
+            }
 
-            var templatePath = _packageResolver.ResolvePackage(theme, PackageFetchOptions.DepthOne);
+            return (repository, new PathString(Path.GetRelativePath(repository.Path, fullPath)));
+        }
 
-            if (theme.Type != PackageType.Git)
+        private Repository? GetRepositoryCore(string directory)
+        {
+            var repository = GitUtility.FindRepository(directory);
+            if (repository is null)
+            {
+                return null;
+            }
+
+            if (string.Equals(repository, DefaultRepository?.Path))
+            {
+                return DefaultRepository;
+            }
+
+            return Repository.Create(repository);
+        }
+
+        private (string docset, Repository? repository) GetDependencyRepository(PathString dependencyName, Config config, PackageResolver packageResolver)
+        {
+            var dependency = config.Dependencies[dependencyName];
+            var dependencyPath = packageResolver.ResolvePackage(dependency, dependency.PackageFetchOptions);
+
+            if (dependency.Type != PackageType.Git)
             {
                 // point to a folder
-                return (templatePath, null);
+                return (dependencyPath, null);
             }
 
-            return (templatePath, Repository.Create(templatePath, theme.Branch, theme.Url));
+            return (dependencyPath, Repository.Create(dependencyPath, dependency.Branch, dependency.Url));
         }
     }
 }

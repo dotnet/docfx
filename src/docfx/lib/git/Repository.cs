@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Repository? Create(string path, string? branch, string? repoUrl = null)
         {
-            var repoPath = GitUtility.FindRepo(System.IO.Path.GetFullPath(path));
+            var repoPath = GitUtility.FindRepository(System.IO.Path.GetFullPath(path));
             if (repoPath is null)
             {
                 return null;
