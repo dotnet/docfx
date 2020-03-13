@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            if (string.Equals(repository, DefaultRepository?.Path))
+            if (repository == DefaultRepository?.Path)
             {
                 return DefaultRepository;
             }

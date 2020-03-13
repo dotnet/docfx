@@ -18,20 +18,20 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        public static string? FindRepository(string? path)
+        public static PathString? FindRepository(string? path)
         {
             var repoPath = path;
             while (!string.IsNullOrEmpty(repoPath))
             {
                 if (IsGitRepository(repoPath))
                 {
-                    return repoPath;
+                    return new PathString(repoPath);
                 }
 
                 repoPath = Path.GetDirectoryName(repoPath);
             }
 
-            return string.IsNullOrEmpty(repoPath) ? null : repoPath;
+            return null;
         }
 
         public static bool IsGitRepository(string path)
