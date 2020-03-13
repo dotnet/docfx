@@ -20,4 +20,6 @@
     <ProjectReference Include="../../src/docfx/docfx.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties data_4validation_4rulesets_1json__JsonSchema="http://json-schema.org/draft-04/schema" /></VisualStudio></ProjectExtensions>
+
 </Project>

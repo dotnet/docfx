@@ -76,6 +76,12 @@
     },
     "ms.component": {
       "replacedBy": "ms.subservice"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "strictRequired": [
@@ -84,6 +90,10 @@
     "title",
     "ms.topic",
     "ms.date"
+  ],
+  "uniquewithindocset": [
+    "title",
+    "description"
   ],
   "dependencies": {
     "ms.technology": [
@@ -5162,6 +5172,11 @@
         "severity": "suggestion",
         "code": "title-missing",
         "additionalMessage": "Add a title string to show in search engine results."
+      },
+      "attribute-duplicated-within-docset": {
+        "severity": "suggestion",
+        "code": "duplicate-title-within-docset",
+        "additionalMessage": "Title must be unique within a docset."
       }
     },
     "ms.topic": {
@@ -5208,6 +5223,17 @@
       "attribute-deprecated": {
         "severity": "suggestion",
         "code": "deprecated-attribute"
+      }
+    },
+    "description": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values"
+      },
+      "attribute-duplicated-within-docset": {
+        "severity": "suggestion",
+        "code": "duplicate-description-within-docset",
+        "additionalMessage": "Description must be unique within a docset."
       }
     }
   }
