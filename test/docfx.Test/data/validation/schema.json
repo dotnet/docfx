@@ -91,7 +91,7 @@
     "ms.topic",
     "ms.date"
   ],
-  "uniquewithindocset": [
+  "docsetUnique": [
     "title",
     "description"
   ],
@@ -5173,7 +5173,7 @@
         "code": "title-missing",
         "additionalMessage": "Add a title string to show in search engine results."
       },
-      "attribute-duplicated-within-docset": {
+      "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-title-within-docset",
         "additionalMessage": "Title must be unique within a docset."
@@ -5230,7 +5230,7 @@
         "severity": "suggestion",
         "code": "multiple-values"
       },
-      "attribute-duplicated-within-docset": {
+      "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-description-within-docset",
         "additionalMessage": "Description must be unique within a docset."

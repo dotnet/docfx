@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
             var schema = new
             {
-                uniquewithindocset = new List<string>(),
+                docsetUnique = new List<string>(),
                 properties = new Dictionary<string, dynamic>(),
                 strictRequired = new List<string>(),
                 dependencies = new Dictionary<string, List<string>>(),
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
                 if (rulesInfo.ContainsKey("Uniqueness"))
                 {
-                    schema.uniquewithindocset.Add(attribute);
+                    schema.docsetUnique.Add(attribute);
                 }
 
                 if (rulesInfo.ContainsKey("Required"))
@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
                 { "Date", new string[] { "date-format-invalid", "date-out-of-range" } },
                 { "MicrosoftAlias", new string[] { "ms-alias-invalid" } },
                 { "Deprecated", new string[] { "attribute-deprecated" } },
-                { "Uniqueness", new string[] { "attribute-duplicated-within-docset" } },
+                { "Uniqueness", new string[] { "duplicate-attribute" } },
             };
 
             foreach (var (ruleName, ruleInfo) in rulesInfo)
