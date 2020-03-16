@@ -107,8 +107,8 @@ namespace Microsoft.Docs.Build
                 if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsDefault
-                        ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
-                        : config.FolderRelativePathInDocset + remainingPath;
+                        ? config.FolderRelativePathInDocset.Value.Concat(file.FilePath.Path.GetFileName())
+                        : config.FolderRelativePathInDocset.Value.Concat(remainingPath);
                 }
             }
 
