@@ -95,7 +95,6 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(validator.PostValidate());
             }
 
-            // todo: exclude files with errors from output
             return errors;
         }
 
