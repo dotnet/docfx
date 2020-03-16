@@ -393,6 +393,7 @@ namespace Microsoft.Docs.Build
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
             var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i+1}")).value);
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
+
             foreach(var payload in payloads)
             {
                 jsonSchemaValidator.Validate(payload);

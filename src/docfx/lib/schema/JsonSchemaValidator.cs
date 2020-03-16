@@ -484,7 +484,7 @@ namespace Microsoft.Docs.Build
         {
             var validatedMetadata = _metadataBuilder.ToList();
 
-            var validatedMetadataGroupByValue = validatedMetadata.GroupBy(k => k.value, JsonUtility.DeepEqualsComparer);
+            var validatedMetadataGroupByValue = validatedMetadata.GroupBy(k => k.value, k => (k.key, k.source), JsonUtility.DeepEqualsComparer);
 
             foreach (var metadataGroupByValue in validatedMetadataGroupByValue.Where(v => v.Count() > 1))
             {
