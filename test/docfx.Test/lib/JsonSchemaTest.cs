@@ -4,7 +4,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using Jint.Native.String;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;

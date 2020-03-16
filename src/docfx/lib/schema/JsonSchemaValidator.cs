@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
             ValidateDependencies(schema, name, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
-            ValidateEnumDependencies(schema.EnumDependencies, string.Empty, string.Empty, null, null, map, errors);
+            ValidateEnumDependencies(schema.EnumDependencies, "", "", null, null, map, errors);
             ValidateDocsetUnique(schema, name, map);
             ValidateProperties(schema, name, map, errors);
         }
