@@ -914,6 +914,7 @@ inputs:
     - name: Invalid TocHref Reference
       tocHref: index.md
 outputs:
+  docs/toc.json:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'index.md'.","docs/f1/TOC.yml",2,9]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml",4,12]

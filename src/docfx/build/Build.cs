@@ -137,7 +137,6 @@ namespace Microsoft.Docs.Build
             var file = context.DocumentProvider.GetDocument(path);
             if (!ShouldBuildFile(context, file))
             {
-                context.PublishModelBuilder.ExcludeFromOutput(file);
                 return;
             }
 
@@ -161,17 +160,12 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                if (context.ErrorLog.Write(errors))
-                {
-                    context.PublishModelBuilder.ExcludeFromOutput(file);
-                }
-
+                context.ErrorLog.Write(errors);
                 Telemetry.TrackBuildItemCount(file.ContentType);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.ErrorLog.Write(dex);
-                context.PublishModelBuilder.ExcludeFromOutput(file);
             }
             catch
             {
