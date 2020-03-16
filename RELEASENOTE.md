@@ -1,8 +1,17 @@
-Version Notes (Current Version: v2.50)
+Version Notes (Current Version: v2.51)
 =======================================
 
-v2.50(Pre-release)
+v2.51(Pre-release)
 -----------
+
+v2.50
+-----------
+1. Avoid URL encoding allowed URI characters `(` and `)` when generating links (#5537).
+2. Ensure more deterministic output (#4569). Thanks fibann!
+3. More chance to build incrementally when plugin assemblies have only slight change (#5572).
+4. Bug fix:
+    1. Fix crash when inheritdoc targets non-existent definition (#5561).
+    2. Fix several code extension bugs (#5546).
 
 v2.49
 -----------
