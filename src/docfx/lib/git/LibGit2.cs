@@ -24,6 +24,9 @@ namespace Microsoft.Docs.Build
         }
 
         [DllImport(LibName)]
+        public static unsafe extern void git_buf_free(git_buf* buffer);
+
+        [DllImport(LibName)]
         public static unsafe extern int git_blob_lookup(out IntPtr blob, IntPtr repo, git_oid* obj);
 
         [DllImport(LibName)]
@@ -76,6 +79,15 @@ namespace Microsoft.Docs.Build
 
         [DllImport(LibName)]
         public static unsafe extern int git_branch_name(out IntPtr name, IntPtr reference);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_branch_upstream(out IntPtr reference, IntPtr branch);
+
+        [DllImport(LibName)]
+        public static unsafe extern int git_branch_remote_name(git_buf* buf, IntPtr repo, IntPtr refname);
+
+        [DllImport(LibName)]
+        public static unsafe extern IntPtr git_reference_name(IntPtr reference);
 
         [DllImport(LibName)]
         public static unsafe extern git_oid* git_reference_target(IntPtr reference);
@@ -174,6 +186,14 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void git_revwalk_free(IntPtr walk);
 
         [StructLayout(LayoutKind.Sequential)]
+        public unsafe struct git_buf
+        {
+            public IntPtr ptr;
+            public int asize;
+            public int size;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         public unsafe struct git_strarray
         {
             public IntPtr* strings;
@@ -215,7 +235,7 @@ namespace Microsoft.Docs.Build
             {
                 fixed (git_oid* p = &this)
                 {
-                    sbyte* str = stackalloc sbyte[40];
+                    var str = stackalloc sbyte[40];
                     git_oid_fmt(str, p);
                     return new string(str, 0, 40);
                 }

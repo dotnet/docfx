@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -55,34 +54,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Retrieve git repo information.
         /// </summary>
-        public static unsafe (string? remote, string? branch, string? commit) GetRepoInfo(string repoPath)
+        public static unsafe (string? url, string? branch, string? commit) GetRepoInfo(string repoPath)
         {
-            var (remote, branch, commit) = default((string, string, string));
+            var remoteName = (string?)null;
+            var (url, branch, commit) = default((string, string, string));
 
             if (git_repository_open(out var pRepo, repoPath) != 0)
             {
                 throw new ArgumentException($"Invalid git repo {repoPath}");
-            }
-
-            var remotes = default(git_strarray);
-            if (git_remote_list(&remotes, pRepo) == 0)
-            {
-                var pstr = remotes.strings;
-                for (var i = 0; i < remotes.count; i++)
-                {
-                    var pName = *pstr++;
-                    var name = Marshal.PtrToStringUTF8(pName);
-                    if (git_remote_lookup(out var pRemote, pRepo, pName) == 0)
-                    {
-                        remote = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
-                        git_remote_free(pRemote);
-                        if (name == "origin")
-                        {
-                            break;
-                        }
-                    }
-                }
-                git_strarray_free(&remotes);
             }
 
             if (git_repository_head(out var pHead, pRepo) == 0)
@@ -92,12 +71,59 @@ namespace Microsoft.Docs.Build
                 {
                     branch = Marshal.PtrToStringUTF8(pName);
                 }
+
+                remoteName = GetUpstreamRemoteName(pRepo, pHead);
                 git_reference_free(pHead);
             }
 
+            url = GetRepositoryUrl(pRepo, remoteName ?? "origin");
+
             git_repository_free(pRepo);
 
-            return (remote, branch, commit);
+            return (url, branch, commit);
+
+            static unsafe string? GetUpstreamRemoteName(IntPtr pRepo, IntPtr pBranch)
+            {
+                string? result = null;
+                if (git_branch_upstream(out var pUpstream, pBranch) == 0)
+                {
+                    git_buf buf;
+                    var pUpstreamName = git_reference_name(pUpstream);
+                    if (git_branch_remote_name(&buf, pRepo, pUpstreamName) == 0)
+                    {
+                        result = Marshal.PtrToStringUTF8(buf.ptr) ?? "origin";
+                        git_buf_free(&buf);
+                    }
+                    git_reference_free(pUpstream);
+                }
+                return result;
+            }
+
+            static unsafe string? GetRepositoryUrl(IntPtr pRepo, string remoteName)
+            {
+                var result = (string?)null;
+                var remotes = default(git_strarray);
+                if (git_remote_list(&remotes, pRepo) == 0)
+                {
+                    var pstr = remotes.strings;
+                    for (var i = 0; i < remotes.count; i++)
+                    {
+                        var pName = *pstr++;
+                        var name = Marshal.PtrToStringUTF8(pName);
+                        if (git_remote_lookup(out var pRemote, pRepo, pName) == 0)
+                        {
+                            result = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
+                            git_remote_free(pRemote);
+                            if (name == remoteName)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    git_strarray_free(&remotes);
+                }
+                return result;
+            }
         }
 
         /// <summary>
@@ -227,7 +253,7 @@ namespace Microsoft.Docs.Build
 
             return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
 
-            string GetSecretFromHeader(KeyValuePair<string, string> header)
+            static string GetSecretFromHeader(KeyValuePair<string, string> header)
             {
                 if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
                     AuthenticationHeaderValue.TryParse(header.Value, out var value))
