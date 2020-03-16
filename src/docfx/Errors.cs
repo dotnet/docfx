@@ -606,6 +606,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error MsAliasInvalid(SourceInfo<string> alias, string name)
                 => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", alias);
+
+            /// <summary>
+            /// The attribute value is duplicated within docset
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DuplicateAttribute(SourceInfo? source, string name, string value, List<SourceInfo> duplicatedFiles)
+                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' are duplicated in {StringUtility.Join(duplicatedFiles.Select(d => d.File))}", source);
         }
 
         public static class Metadata

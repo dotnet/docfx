@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Jint.Native.String;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -367,6 +368,36 @@ namespace Microsoft.Docs.Build
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
             var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), new FilePath("file"));
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
+            var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
+            var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');
+            Assert.Equal(expected, actual);
+        }
+
+
+        [Theory]
+        // attribut docset unique validation
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" }, "")]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" , "{'key1': 'b'}" }, "")]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" },
+            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file2',1,12]")]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" },
+            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file2',1,25]")]
+        [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" },
+            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file2',1,25]")]
+        [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a', 'key2': 'b'}", "{'key2': 'b', 'key1': 'a'}" },
+            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' are duplicated in 'file1', 'file2'','file2',1,25]\n" +
+            "['suggestion','duplicate-attribute','Attribute 'key2' with value 'b' are duplicated in 'file1', 'file2'','file1',1,25]\n['suggestion','duplicate-attribute','Attribute 'key2' with value 'b' are duplicated in 'file1', 'file2'','file2',1,12]")]
+        public void TestJsonSchemaPostValidation(string schema, string [] jsons, string expectedErrors)
+        {
+            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i+1}")).value);
+            var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
+            foreach(var payload in payloads)
+            {
+                jsonSchemaValidator.Validate(payload);
+            }
+
+            var errors = jsonSchemaValidator.PostValidate();
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');
             Assert.Equal(expected, actual);

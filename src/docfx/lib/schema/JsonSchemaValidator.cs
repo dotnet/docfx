@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
+        private readonly ListBuilder<(string key, JToken value, SourceInfo? source)> _metadataBuilder;
 
         public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor? microsoftGraphAccessor = null, bool forceError = false)
         {
@@ -23,11 +25,19 @@ namespace Microsoft.Docs.Build
             _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
+            _metadataBuilder = new ListBuilder<(string key, JToken value, SourceInfo? source)>();
         }
 
         public List<Error> Validate(JToken token)
         {
             return Validate(_schema, token);
+        }
+
+        public List<Error> PostValidate()
+        {
+            var errors = new List<(string name, Error)>();
+            PostValidateDocsetUnique(errors);
+            return errors.Select(info => GetError(_schema, info.name, info.Item2)).ToList();
         }
 
         private List<Error> Validate(JsonSchema schema, JToken token)
@@ -156,7 +166,8 @@ namespace Microsoft.Docs.Build
             ValidateDependencies(schema, name, map, errors);
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
-            ValidateEnumDependencies(schema.EnumDependencies, "", "", null, null, map, errors);
+            ValidateEnumDependencies(schema.EnumDependencies, string.Empty, string.Empty, null, null, map, errors);
+            ValidateDocsetUnique(schema, name, map);
             ValidateProperties(schema, name, map, errors);
         }
 
@@ -454,6 +465,37 @@ namespace Microsoft.Docs.Build
             if (IsStrictHaveValue(token) && schema.ReplacedBy != null)
             {
                 errors.Add((name, Errors.JsonSchema.AttributeDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy)));
+            }
+        }
+
+        private void ValidateDocsetUnique(JsonSchema schema, string name, JObject map)
+        {
+            foreach (var docsetUniqueKey in schema.DocsetUnique)
+            {
+                if (map.TryGetValue(docsetUniqueKey, out var value))
+                {
+                    var key = string.IsNullOrEmpty(name) ? docsetUniqueKey : $"{name}.{docsetUniqueKey}";
+                    _metadataBuilder.Add((key, value, JsonUtility.GetSourceInfo(value)));
+                }
+            }
+        }
+
+        private void PostValidateDocsetUnique(List<(string name, Error)> errors)
+        {
+            var validatedMetadata = _metadataBuilder.ToList();
+
+            var validatedMetadataGroupByValue = validatedMetadata.GroupBy(k => k.value, JsonUtility.DeepEqualsComparer);
+
+            foreach (var metadataGroupByValue in validatedMetadataGroupByValue.Where(v => v.Count() > 1))
+            {
+                var metdataValue = metadataGroupByValue.Key;
+                var metadataGroupByKey = metadataGroupByValue.GroupBy(g => g.key);
+                foreach (var group in metadataGroupByKey.Where(g => g.Count() > 1))
+                {
+                    var metadataKey = group.Key;
+                    var sourceFiles = group.Select(g => g.source);
+                    errors.AddRange(sourceFiles.Select(s => (metadataKey, Errors.JsonSchema.DuplicateAttribute(s, metadataKey, metdataValue.ToString(), sourceFiles.ToList()))));
+                }
             }
         }
 
