@@ -376,6 +376,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         // attribut docset unique validation
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" }, "")]
+        [InlineData("{'docsetUnique': ['key1', 'key1']}", new[] { "{'key1': 'a'}" }, "")]
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" , "{'key1': 'b'}" }, "")]
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" },
             "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file2',1,12]")]
