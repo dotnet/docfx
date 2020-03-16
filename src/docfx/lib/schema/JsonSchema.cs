@@ -253,7 +253,7 @@ namespace Microsoft.Docs.Build
         public MicrosoftAliasSchema? MicrosoftAlias { get; set; }
 
         /// <summary>
-        /// Properties of which the value must be unique within the docset
+        /// Properties' value must be unique within the docset
         /// </summary>
         public string[] DocsetUnique { get; set; } = Array.Empty<string>();
 
