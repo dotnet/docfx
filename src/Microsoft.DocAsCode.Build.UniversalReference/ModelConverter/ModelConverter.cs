@@ -290,7 +290,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 var message = $"Can't find {uid} in items or references";
                 Logger.LogError(message);
-                throw new DocumentException(message);
+                throw new DocumentException(message, ErrorCodes.Build.InternalUidNotFound);
             }
             return result;
         }
