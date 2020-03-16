@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
-        private readonly ListBuilder<(string key, JToken value, SourceInfo? source)> _metadataBuilder;
+        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)> _metadataBuilder;
 
         public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor? microsoftGraphAccessor = null, bool forceError = false)
         {
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
-            _metadataBuilder = new ListBuilder<(string key, JToken value, SourceInfo? source)>();
+            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)>();
         }
 
         public List<Error> Validate(JToken token)
@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
             ValidateEither(schema, map, errors);
             ValidatePrecludes(schema, map, errors);
             ValidateEnumDependencies(schema.EnumDependencies, "", "", null, null, map, errors);
-            ValidateDocsetUnique(schema, name, map);
+            ValidateDocsetUnique(schema, map);
             ValidateProperties(schema, name, map, errors);
         }
 
@@ -468,14 +468,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDocsetUnique(JsonSchema schema, string name, JObject map)
+        private void ValidateDocsetUnique(JsonSchema schema, JObject map)
         {
             foreach (var docsetUniqueKey in schema.DocsetUnique)
             {
                 if (map.TryGetValue(docsetUniqueKey, out var value))
                 {
-                    var key = string.IsNullOrEmpty(name) ? docsetUniqueKey : $"{name}.{docsetUniqueKey}";
-                    _metadataBuilder.Add((key, value, JsonUtility.GetSourceInfo(value)));
+                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value)));
                 }
             }
         }
@@ -484,15 +483,15 @@ namespace Microsoft.Docs.Build
         {
             var validatedMetadata = _metadataBuilder.ToList();
 
-            var validatedMetadataGroupByValue = validatedMetadata.GroupBy(k => k.value, k => (k.key, k.source), JsonUtility.DeepEqualsComparer);
+            var validatedMetadataGroupByValue = validatedMetadata.GroupBy(k => k.value, k => (k.schema, k.key, k.source), JsonUtility.DeepEqualsComparer);
 
             foreach (var metadataGroupByValue in validatedMetadataGroupByValue.Where(v => v.Count() > 1))
             {
                 var metdataValue = metadataGroupByValue.Key;
-                var metadataGroupByKey = metadataGroupByValue.GroupBy(g => g.key);
+                var metadataGroupByKey = metadataGroupByValue.GroupBy(g => (g.key, g.schema));
                 foreach (var group in metadataGroupByKey.Where(g => g.Count() > 1))
                 {
-                    var metadataKey = group.Key;
+                    var metadataKey = group.Key.key;
                     var metadataFiles = group.Select(g => g.source);
                     errors.AddRange(metadataFiles.Select(f => (metadataKey, Errors.JsonSchema.DuplicateAttribute(f, metadataKey, metdataValue.ToString(), metadataFiles.ToList()))));
                 }
