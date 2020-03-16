@@ -493,8 +493,8 @@ namespace Microsoft.Docs.Build
                 foreach (var group in metadataGroupByKey.Where(g => g.Count() > 1))
                 {
                     var metadataKey = group.Key;
-                    var sourceFiles = group.Select(g => g.source);
-                    errors.AddRange(sourceFiles.Select(s => (metadataKey, Errors.JsonSchema.DuplicateAttribute(s, metadataKey, metdataValue.ToString(), sourceFiles.ToList()))));
+                    var metadataFiles = group.Select(g => g.source);
+                    errors.AddRange(metadataFiles.Select(f => (metadataKey, Errors.JsonSchema.DuplicateAttribute(f, metadataKey, metdataValue.ToString(), metadataFiles.ToList()))));
                 }
             }
         }
