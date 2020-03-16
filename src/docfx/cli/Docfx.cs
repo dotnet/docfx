@@ -80,9 +80,6 @@ namespace Microsoft.Docs.Build
                         return Restore.Run(workingDirectory, options);
                     case "build":
                         return await Build.Run(workingDirectory, options);
-                    case "watch":
-                        await Watch.Run(workingDirectory, options);
-                        break;
                 }
                 return 0;
             }
@@ -117,11 +114,6 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before building.");
-                    DefineCommonOptions(syntax, ref workingDirectory, options);
-
-                    // Watch command
-                    syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
-                    syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 
