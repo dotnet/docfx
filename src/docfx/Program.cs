@@ -92,7 +92,12 @@ namespace Microsoft.DocAsCode
                 command.Exec(context);
                 return 0;
             }
-            catch (Exception e) when (e is DocumentException || e is DocfxException)
+            catch (Exception e) when (e is DocumentException)
+            {
+                Logger.LogError(e.Message, code: ErrorCodes.Build.DocumentError);
+                return 1;
+            }
+            catch (Exception e) when (e is DocfxException)
             {
                 Logger.LogError(e.Message, code: ErrorCodes.Build.FatalError);
                 return 1;
