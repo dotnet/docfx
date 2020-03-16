@@ -482,18 +482,22 @@ namespace Microsoft.Docs.Build
         private void PostValidateDocsetUnique(List<(string name, Error)> errors)
         {
             var validatedMetadata = _metadataBuilder.ToList();
-
             var validatedMetadataGroupByValue = validatedMetadata.GroupBy(k => k.value, k => (k.schema, k.key, k.source), JsonUtility.DeepEqualsComparer);
 
             foreach (var metadataGroupByValue in validatedMetadataGroupByValue.Where(v => v.Count() > 1))
             {
                 var metdataValue = metadataGroupByValue.Key;
-                var metadataGroupByKey = metadataGroupByValue.GroupBy(g => (g.key, g.schema));
-                foreach (var group in metadataGroupByKey.Where(g => g.Count() > 1))
+                foreach (var group in metadataGroupByValue.GroupBy(g => (g.key, g.schema)))
                 {
-                    var metadataKey = group.Key.key;
-                    var metadataFiles = group.Select(g => g.source);
-                    errors.AddRange(metadataFiles.Select(f => (metadataKey, Errors.JsonSchema.DuplicateAttribute(f, metadataKey, metdataValue.ToString(), metadataFiles.ToList()))));
+                    if (group.Count() > 1)
+                    {
+                        var metadataKey = group.Key.key;
+                        var metadataFiles = (from g in @group where g.source != null select g.source.File).ToArray();
+                        foreach (var file in group)
+                        {
+                            errors.Add((metadataKey, Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metdataValue.ToString(), metadataFiles)));
+                        }
+                    }
                 }
             }
         }

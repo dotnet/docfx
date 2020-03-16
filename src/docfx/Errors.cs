@@ -611,8 +611,8 @@ namespace Microsoft.Docs.Build
             /// The attribute value is duplicated within docset
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error DuplicateAttribute(SourceInfo? source, string name, string value, List<SourceInfo> duplicatedFiles)
-                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedFiles.Select(d => d.File))}", source);
+            public static Error DuplicateAttribute(SourceInfo? source, string name, string value, IEnumerable<FilePath> duplicatedFiles)
+                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedFiles)}", source);
         }
 
         public static class Metadata
