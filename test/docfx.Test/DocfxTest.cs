@@ -132,11 +132,6 @@ namespace Microsoft.Docs.Build
 
         private async static Task RunCore(string docsetPath, string outputPath, DocfxTestSpec spec)
         {
-            if (spec.Watch)
-            {
-                throw new TestSkippedException("Skip watch tests");
-            }
-
             if (spec.Locale != null)
             {
                 // always build from localization docset for localization tests

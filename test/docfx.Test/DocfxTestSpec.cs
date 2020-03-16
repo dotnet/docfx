@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
 
         public bool NoDryRun { get; set; }
 
-        public bool Watch { get; set; }
-
         public bool Legacy { get; set; }
 
         public bool Temp { get; set; }

@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
         public bool UseCache;
         public bool NoRestore;
         public string? Template;
-        public int Port;
 
         public JObject? StdinConfig;
 
