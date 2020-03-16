@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void RunCommandsInParallel()
         {
-            var cwd = GitUtility.FindRepo(Path.GetFullPath("README.md"));
+            var cwd = GitUtility.FindRepository(Path.GetFullPath("README.md"));
 
             Parallel.For(0, 10, i => Assert.NotEmpty(ProcessUtility.Execute("git", "rev-parse HEAD", cwd)));
         }

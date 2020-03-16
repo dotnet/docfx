@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 var input = new Input(docsetPath, repositoryProvider);
 
                 // get docsets(build docset, fallback docset and dependency docsets)
-                var docset = new Docset(docsetPath, repository);
+                var docset = new Docset(docsetPath);
                 var fallbackDocset = localizationProvider.GetFallbackDocset();
 
                 // run build based on docsets

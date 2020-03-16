@@ -2,37 +2,29 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Concurrent;
-using System.IO;
 
 namespace Microsoft.Docs.Build
 {
     internal sealed class GitCommitProvider : IDisposable
     {
+        private readonly RepositoryProvider _repositoryProvider;
         private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
 
-        public (Repository? repo, string? pathToRepo, GitCommit[] commits) GetCommitHistory(Document document, string? committish = null)
+        public GitCommitProvider(RepositoryProvider repositoryProvider)
         {
-            var repository = document.Docset.GetRepository(document.FilePath.Path);
-            return GetCommitHistory(Path.Combine(document.Docset.DocsetPath, document.FilePath.GetPathToOrigin()), repository, committish);
+            _repositoryProvider = repositoryProvider;
         }
 
-        public (Repository? repo, string? pathToRepo, GitCommit[] commits) GetCommitHistory(Docset docset, string filePath)
+        public (Repository? repo, PathString? pathToRepo, GitCommit[] commits) GetCommitHistory(FilePath path, string? committish = null)
         {
-            var repo = docset.GetRepository(filePath);
-            if (repo is null)
+            var (repo, pathToRepo) = _repositoryProvider.GetRepository(path);
+            if (repo is null || pathToRepo is null)
+            {
                 return (null, null, Array.Empty<GitCommit>());
-
-            return GetCommitHistory(Path.Combine(docset.DocsetPath, filePath), repo);
-        }
-
-        public (Repository? repo, string? pathToRepo, GitCommit[] commits) GetCommitHistory(string fullPath, Repository? repo, string? committish = null)
-        {
-            if (repo is null)
-                return (null, null, Array.Empty<GitCommit>());
+            }
 
             using (Telemetry.TrackingOperationTime(TelemetryName.LoadCommitHistory))
             {
-                var pathToRepo = PathUtility.NormalizeFile(Path.GetRelativePath(repo.Path, fullPath));
                 return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
             }
         }

@@ -52,22 +52,22 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Concat two <see cref="PathString"/>s together.
         /// </summary>
-        public static PathString operator +(PathString a, PathString b)
+        public PathString Concat(PathString path)
         {
-            if (string.IsNullOrEmpty(a._value))
-                return b;
+            if (string.IsNullOrEmpty(_value))
+                return path;
 
-            if (string.IsNullOrEmpty(b._value))
-                return a;
+            if (string.IsNullOrEmpty(path._value))
+                return this;
 
-            if (b._value[0] == '/')
-                return b;
+            if (path._value[0] == '/')
+                return path;
 
-            var str = a._value[^1] == '/'
-                ? a._value + b._value
-                : a._value + '/' + b._value;
+            var str = _value[^1] == '/'
+                ? _value + path._value
+                : _value + '/' + path._value;
 
-            if (b._value[0] == '.')
+            if (path._value[0] == '.')
                 return new PathString { _value = PathUtility.Normalize(str) };
 
             return new PathString { _value = str };
