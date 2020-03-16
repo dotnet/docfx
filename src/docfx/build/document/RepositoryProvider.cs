@@ -90,18 +90,18 @@ namespace Microsoft.Docs.Build
 
         private Repository? GetRepositoryCore(string directory)
         {
-            var repository = GitUtility.FindRepository(directory);
-            if (repository is null)
+            var repoPath = GitUtility.FindRepository(directory);
+            if (repoPath is null)
             {
                 return null;
             }
 
-            if (repository == DefaultRepository?.Path)
+            if (repoPath == DefaultRepository?.Path)
             {
                 return DefaultRepository;
             }
 
-            return Repository.Create(repository);
+            return Repository.Create(repoPath);
         }
 
         private (string docset, Repository? repository) GetDependencyRepository(PathString dependencyName, Config config, PackageResolver packageResolver)
