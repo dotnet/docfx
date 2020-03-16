@@ -252,6 +252,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public MicrosoftAliasSchema? MicrosoftAlias { get; set; }
 
+        /// <summary>
+        /// Properties' value must be unique within the docset
+        /// </summary>
+        public string[] DocsetUnique { get; set; } = Array.Empty<string>();
+
         // JSON schema metadata validation error extensions
         //-------------------------------------------
 
