@@ -428,8 +428,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_microsoftGraphAccessor != null)
                     {
-                        var error = _microsoftGraphAccessor.ValidateMicrosoftAlias(
-                            new SourceInfo<string>(alias, JsonUtility.GetSourceInfo(scalar)), name).GetAwaiter().GetResult();
+                        var error = _microsoftGraphAccessor.ValidateMicrosoftAlias(new SourceInfo<string>(alias, JsonUtility.GetSourceInfo(scalar)), name);
                         if (error != null)
                         {
                             errors.Add((name, error));

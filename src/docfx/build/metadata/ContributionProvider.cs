@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -33,7 +32,7 @@ namespace Microsoft.Docs.Build
             _fallbackDocset = fallbackDocset;
         }
 
-        public async Task<(List<Error> errors, ContributionInfo?)> GetContributionInfo(Document document, SourceInfo<string> authorName)
+        public (List<Error> errors, ContributionInfo?) GetContributionInfo(Document document, SourceInfo<string> authorName)
         {
             var errors = new List<Error>();
             var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(document);
@@ -73,7 +72,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var commit in contributionCommits)
                 {
-                    var (error, githubUser) = await _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
+                    var (error, githubUser) = _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     var contributor = githubUser?.ToContributor();
                     if (!string.IsNullOrEmpty(contributor?.Name) && !excludes.Contains(contributor.Name))
@@ -87,7 +86,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(authorName))
             {
                 // Remove author from contributors if author name is specified
-                var (error, githubUser) = await _githubAccessor.GetUserByLogin(authorName);
+                var (error, githubUser) = _githubAccessor.GetUserByLogin(authorName);
                 errors.AddIfNotNull(error);
                 author = githubUser?.ToContributor();
             }

@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<Error?> ValidateMicrosoftAlias(SourceInfo<string> alias, string name)
+        public Error? ValidateMicrosoftAlias(SourceInfo<string> alias, string name)
         {
             if (_msGraphClient is null)
             {
@@ -41,12 +41,12 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            var (error, user) = await _aliasCache.GetOrAdd(alias.Value, GetMicrosoftGraphUserCore);
+            var (error, user) = _aliasCache.GetOrAdd(alias.Value, GetMicrosoftGraphUserCore);
 
             return error ?? (user is null ? Errors.JsonSchema.MsAliasInvalid(alias, name) : null);
         }
 
-        public Task<Error[]> Save()
+        public Error[] Save()
         {
             return _aliasCache.Save();
         }

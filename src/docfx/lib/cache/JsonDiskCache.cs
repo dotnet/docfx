@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
         public JsonDiskCache(string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null, Func<TValue, TValue, TValue>? resolveConflict = null)
         {
-            comparer = comparer ?? EqualityComparer<TKey>.Default;
+            comparer ??= EqualityComparer<TKey>.Default;
             _resolveConflict = resolveConflict;
             _cache = new ConcurrentDictionary<TKey, TValue>(comparer);
             _backgroundUpdates = new ConcurrentDictionary<TKey, Lazy<Task<TError?>>>(comparer);
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         /// Don't throw exception in <paramref name="valueFactory"/> because of the async update,
         /// the exception may be re-thrown in <see cref="Save"/> method.
         /// </summary>
-        public Task<(TError? error, TValue? value)> GetOrAdd(TKey key, Func<TKey, Task<(TError?, TValue?)>> valueFactory)
+        public (TError? error, TValue? value) GetOrAdd(TKey key, Func<TKey, Task<(TError?, TValue?)>> valueFactory)
         {
             return GetOrAdd(key, async aKey =>
             {
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public async Task<(TError? error, TValue? value)> GetOrAdd(TKey key, Func<TKey, Task<(TError?, IEnumerable<TValue>)>> valueFactory)
+        public (TError? error, TValue? value) GetOrAdd(TKey key, Func<TKey, Task<(TError?, IEnumerable<TValue>)>> valueFactory)
         {
             if (_cache.TryGetValue(key, out var value))
             {
@@ -78,14 +78,14 @@ namespace Microsoft.Docs.Build
                 return (default, value);
             }
 
-            var error = await Update(key, valueFactory);
+            var error = Update(key, valueFactory).GetAwaiter().GetResult();
             _cache.TryGetValue(key, out value);
             return (error, value);
         }
 
-        public async Task<TError[]> Save()
+        public TError[] Save()
         {
-            var result = await Task.WhenAll(_backgroundUpdates.Values.Select(item => item.Value));
+            var result = Task.WhenAll(_backgroundUpdates.Values.Select(item => item.Value)).GetAwaiter().GetResult();
 
             if (_needUpdate)
             {
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
                 _needUpdate = false;
             }
 
-            return result.Where(error => error != null).ToArray();
+            return (from error in result where error != null select error).ToArray();
         }
 
         private Task<TError?> Update(TKey key, Func<TKey, Task<(TError?, IEnumerable<TValue>)>> valueFactory)
