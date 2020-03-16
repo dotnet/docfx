@@ -38,8 +38,8 @@ namespace Microsoft.Docs.Build
                 };
 
                 // Note: produce an empty output to make publish happy
-                context.Output.WriteText("{}", publishItem.Path);
-                context.Output.WriteJson(metadata, metadataPath);
+                context.Output.WriteText(publishItem.Path, "{}");
+                context.Output.WriteJson(metadataPath, metadata);
             }
 
             return errors;

@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
             if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && copy && !context.Config.DryRun)
             {
-                context.Output.Copy(file, outputPath);
+                context.Output.Copy(outputPath, file.FilePath);
             }
 
             return errors;

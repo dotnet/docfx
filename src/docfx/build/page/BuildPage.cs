@@ -56,17 +56,17 @@ namespace Microsoft.Docs.Build
             {
                 if (output is string str)
                 {
-                    context.Output.WriteText(str, outputPath);
+                    context.Output.WriteText(outputPath, str);
                 }
                 else
                 {
-                    context.Output.WriteJson(output, outputPath);
+                    context.Output.WriteJson(outputPath, output);
                 }
 
                 if (context.Config.Legacy && file.IsPage)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(metadata, metadataPath);
+                    context.Output.WriteJson(metadataPath, metadata);
                 }
             }
 

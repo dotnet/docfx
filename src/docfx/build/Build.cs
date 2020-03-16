@@ -107,10 +107,10 @@ namespace Microsoft.Docs.Build
                 var dependencyMap = context.DependencyMapBuilder.Build();
                 var fileLinkMap = context.FileLinkMapBuilder.Build();
 
-                context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
-                context.Output.WriteJson(publishModel, ".publish.json");
-                context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
-                context.Output.WriteJson(fileLinkMap, ".links.json");
+                context.Output.WriteJson(".xrefmap.json", xrefMapModel);
+                context.Output.WriteJson(".publish.json", publishModel);
+                context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel());
+                context.Output.WriteJson(".links.json", fileLinkMap);
 
                 if (options.Legacy)
                 {
