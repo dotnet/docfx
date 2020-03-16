@@ -286,13 +286,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         private static ApiBuildOutput ResolveApiBuildOutput(string uid, IReadOnlyDictionary<string, ApiBuildOutput> children)
         {
-            if (!children.TryGetValue(uid, out ApiBuildOutput result))
+            if (children.TryGetValue(uid, out ApiBuildOutput result))
             {
-                var message = $"Can't find {uid} in items or references";
-                Logger.LogError(message);
-                throw new DocumentException(message, ErrorCodes.Build.InternalUidNotFound);
+                return result;
             }
-            return result;
+            throw new DocumentException($"Can't find {uid} in items or references", ErrorCodes.Build.InternalUidNotFound);
         }
     }
 }

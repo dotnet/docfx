@@ -43,8 +43,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 if (!new Regex(pattern).Match(val).Success)
                 {
                     var errorMessage = $"Property {path} with value \"{val}\" is not in valid format, it must follow regular expression \"{pattern}\".";
-                    Logger.LogError(errorMessage, code: ErrorCodes.Build.InvalidPropertyFormat);
-                    throw new DocumentException(errorMessage);
+                    throw new DocumentException(errorMessage, ErrorCodes.Build.InvalidPropertyFormat);
                 }
             }
         }
