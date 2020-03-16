@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                 model.Metadata.Monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && !context.Config.DryRun)
+            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && !context.Config.DryRun)
             {
                 if (context.Config.Legacy)
                 {

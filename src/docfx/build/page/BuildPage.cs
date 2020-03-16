@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file, publishItem);
+            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
                 return errors;

@@ -20,28 +20,28 @@ namespace Microsoft.Docs.Build
             _publishModelBuilder = publishModelBuilder;
         }
 
-        public void AddFileLink(Document file, string targetUrl)
+        public void AddFileLink(FilePath file, string sourceUrl, string targetUrl)
         {
-            if (string.IsNullOrEmpty(targetUrl) || file.SiteUrl == targetUrl)
+            if (string.IsNullOrEmpty(targetUrl) || sourceUrl == targetUrl)
             {
                 return;
             }
 
-            var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+            var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
             if (error != null)
             {
                 _errorLog.Write(error);
             }
 
-            _links.TryAdd(new FileLinkItem(file, file.SiteUrl, MonikerUtility.GetGroup(monikers), targetUrl));
+            _links.TryAdd(new FileLinkItem(file, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl));
         }
 
-        public object Build() =>
-            new
+        public object Build()
+        {
+            return new
             {
-                Links = _links
-                .Where(x => _publishModelBuilder.IsIncludedInOutput(x.SourceFile))
-                .OrderBy(_ => _),
+                Links = from link in _links where _publishModelBuilder.HasOutput(link.SourceFile) orderby link select link,
             };
     }
+}
 }

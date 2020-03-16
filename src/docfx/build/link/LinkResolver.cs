@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot, link);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, link);
 
             if (file != null)
             {

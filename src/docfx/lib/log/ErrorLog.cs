@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace Microsoft.Docs.Build
@@ -17,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly Func<Config?> _config;
 
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
+        private readonly ConcurrentHashSet<FilePath> _errorFiles = new ConcurrentHashSet<FilePath>();
         private readonly Lazy<TextWriter> _output;
 
         private int _errorCount;
@@ -30,6 +32,8 @@ namespace Microsoft.Docs.Build
         public int WarningCount => _warningCount;
 
         public int SuggestionCount => _suggestionCount;
+
+        public IEnumerable<FilePath> ErrorFiles => _errorFiles;
 
         public ErrorLog(string docsetPath, string? outputPath, Func<Config?> config, bool legacy = false)
         {
@@ -180,6 +184,11 @@ namespace Microsoft.Docs.Build
         private void WriteCore(Error error, ErrorLevel level)
         {
             Telemetry.TrackErrorCount(error.Code, level);
+
+            if (level == ErrorLevel.Error && error.FilePath != null)
+            {
+                _errorFiles.TryAdd(error.FilePath);
+            }
 
             if (_output != null)
             {

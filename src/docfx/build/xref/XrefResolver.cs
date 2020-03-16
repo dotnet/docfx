@@ -80,7 +80,8 @@ namespace Microsoft.Docs.Build
                 fragment.Length == 0 ? "" : fragment);
 
             // NOTE: this should also be relative to root file
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot ?? hrefRelativeTo, resolvedHref);
+            var sourceFile = inclusionRoot ?? hrefRelativeTo;
+            _fileLinkMapBuilder.AddFileLink(sourceFile.FilePath, sourceFile.SiteUrl, resolvedHref);
 
             if (xrefSpec?.DeclaringFile != null && inclusionRoot != null)
             {
