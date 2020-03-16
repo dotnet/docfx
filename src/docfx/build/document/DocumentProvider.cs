@@ -292,9 +292,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (remainingPath.IsDefault)
                     {
-                        return dest + path.GetFileName();
+                        return dest.Concat(path.GetFileName());
                     }
-                    return dest + remainingPath;
+                    return dest.Concat(remainingPath);
                 }
             }
             return path;

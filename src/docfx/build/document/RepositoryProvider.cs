@@ -50,9 +50,9 @@ namespace Microsoft.Docs.Build
             return path.Origin switch
             {
                 FileOrigin.Default => GetRepository(Path.Combine(_docsetPath, path.Path)),
-                FileOrigin.Fallback when _localizationProvider != null
+                FileOrigin.Fallback when _localizationProvider != null && _docsetPathToDefaultRepository != null
                     => (_localizationProvider.GetFallbackRepositoryWithDocsetEntry().fallbackRepository,
-                        _docsetPathToDefaultRepository is null ? null : _docsetPathToDefaultRepository + path.Path),
+                        _docsetPathToDefaultRepository.Value.Concat(path.Path)),
                 FileOrigin.Dependency => (GetRepositoryWithDocsetEntry(path.Origin, path.DependencyName).repository, path.GetPathToOrigin()),
                 _ => throw new InvalidOperationException(),
             };
