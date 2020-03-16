@@ -612,7 +612,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DuplicateAttribute(SourceInfo? source, string name, string value, List<SourceInfo> duplicatedFiles)
-                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' are duplicated in {StringUtility.Join(duplicatedFiles.Select(d => d.File))}", source);
+                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedFiles.Select(d => d.File))}", source);
         }
 
         public static class Metadata
