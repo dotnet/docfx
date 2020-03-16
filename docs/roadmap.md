@@ -18,12 +18,12 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 ### Phase 3: Local Authoring Experience for Conceptual Contents
 
 - [x] Local build _(done)_
-- [ ] vscode integration _(in progress)_
+- [x] vscode integration _([done](https://github.com/docascode/vscode-docs-build))_
 - [ ] Local preview
 
 ### Phase 4: API Reference Contents
 
-- [x] Schema driven documents for reference contents _(postponed)_
+- [x] Schema driven documents for reference contents _(in progress)_
 - [ ] Integration with [mdoc](https://www.mono-project.com/docs/tools+libraries/tools/monodocer/) for .NET reference doc.
 
 ### Phase 5: Learn Contents
