@@ -484,7 +484,7 @@ uid: invalid.azure.hello2
                 },
             }));
 
-            Assert.Equal(2, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
+            Assert.Equal(0, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
         }
 
         [Fact]
