@@ -94,26 +94,24 @@ namespace Microsoft.Docs.Build
 
             static unsafe string? GetRepositoryUrl(IntPtr pRepo, string remoteName)
             {
-                var result = (string?)null;
-                var remotes = default(git_strarray);
-                if (git_remote_list(&remotes, pRepo) == 0)
+                string? result = null;
+                if (git_remote_lookup(out var pRemote, pRepo, remoteName) == 0)
                 {
-                    var pstr = remotes.strings;
-                    for (var i = 0; i < remotes.count; i++)
+                    result = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
+                    git_remote_free(pRemote);
+                }
+                else
+                {
+                    var remotes = default(git_strarray);
+                    if (git_remote_list(&remotes, pRepo) == 0)
                     {
-                        var pName = *pstr++;
-                        var name = Marshal.PtrToStringUTF8(pName);
-                        if (git_remote_lookup(out var pRemote, pRepo, pName) == 0)
+                        if (git_remote_lookup(out pRemote, pRepo, *remotes.strings) == 0)
                         {
                             result = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
                             git_remote_free(pRemote);
-                            if (name == remoteName)
-                            {
-                                break;
-                            }
                         }
+                        git_strarray_free(&remotes);
                     }
-                    git_strarray_free(&remotes);
                 }
                 return result;
             }

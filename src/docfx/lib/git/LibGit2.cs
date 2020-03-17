@@ -63,6 +63,9 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int git_remote_create(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, [MarshalAs(UnmanagedType.LPUTF8Str)]string url);
 
         [DllImport(LibName)]
+        public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name);
+
+        [DllImport(LibName)]
         public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, IntPtr name);
 
         [DllImport(LibName)]
