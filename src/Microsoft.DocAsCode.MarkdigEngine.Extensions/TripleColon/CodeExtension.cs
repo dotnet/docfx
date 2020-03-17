@@ -310,7 +310,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             } else
             {
                 var startTagIndex = Array.FindIndex(codeLines, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1) + 2;
-                var endTagIndex = Array.FindIndex(codeLines, startTagIndex, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1);
+                var endTagIndex = Array.FindIndex(codeLines, startTagIndex, line => {
+                    return line.IndexOf($"</{id}", StringComparison.OrdinalIgnoreCase) > -1 //normal end tag
+                           || line.IndexOf($";<{id}", StringComparison.OrdinalIgnoreCase) > -1 //Erlang end tag
+                           || line.IndexOf($"%<{id}", StringComparison.OrdinalIgnoreCase) > -1; //Lisp end tag
+                });
 
                 if(endTagIndex == -1) //search for region then
                 {
