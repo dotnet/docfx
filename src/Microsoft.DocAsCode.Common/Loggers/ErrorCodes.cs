@@ -9,6 +9,8 @@ namespace Microsoft.DocAsCode.Common
         {
             public const string InvalidPropertyFormat = "InvalidPropertyFormat";
             public const string InvalidInputFile = "InvalidInputFile";
+            public const string InternalUidNotFound = "InternalUidNotFound";
+            public const string DocumentError = "DocumentError";
             public const string FatalError = "FatalError";
         }
     }

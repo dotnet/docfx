@@ -116,7 +116,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                             message = $"Error transforming model generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". To get the detailed raw model, please run docfx with debug mode --debug. {e.Message} ";
                         }
 
-                        Logger.LogError(message);
                         throw new DocumentException(message, e);
                     }
 
@@ -139,7 +138,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                             message = $"Error applying template \"{template.Name}\" generated from \"{item.LocalPathFromRoot}\". To get the detailed view model, please run docfx with debug mode --debug. {e.Message}";
                         }
 
-                        Logger.LogError(message);
                         throw new DocumentException(message, e);
                     }
 
