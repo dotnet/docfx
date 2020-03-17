@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
 
-            var redirections = LoadRedirectionModel(docsetPath, repositoryProvider.GetRepository(FileOrigin.Default));
+            var redirections = LoadRedirectionModel(docsetPath, repositoryProvider.DefaultRepository);
             _redirectUrls = GetRedirectUrls(redirections, hostName);
             _renameHistory = GetRenameHistory(redirections, _redirectUrls);
         }

@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 var input = new Input(docsetPath, repositoryProvider);
 
                 // get docsets(build docset, fallback docset and dependency docsets)
-                var docset = new Docset(docsetPath, repository);
+                var docset = new Docset(docsetPath);
                 var fallbackDocset = localizationProvider.GetFallbackDocset();
 
                 // run build based on docsets
@@ -101,6 +101,7 @@ namespace Microsoft.Docs.Build
             }
 
             context.BookmarkValidator.Validate();
+            context.ErrorLog.Write(context.MetadataProvider.Validate());
 
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
             context.ErrorLog.Write(errors);
@@ -113,10 +114,10 @@ namespace Microsoft.Docs.Build
                 var dependencyMap = context.DependencyMapBuilder.Build();
                 var fileLinkMap = context.FileLinkMapBuilder.Build();
 
-                context.Output.WriteJson(xrefMapModel, ".xrefmap.json");
-                context.Output.WriteJson(publishModel, ".publish.json");
-                context.Output.WriteJson(dependencyMap.ToDependencyMapModel(), ".dependencymap.json");
-                context.Output.WriteJson(fileLinkMap, ".links.json");
+                context.Output.WriteJson(".xrefmap.json", xrefMapModel);
+                context.Output.WriteJson(".publish.json", publishModel);
+                context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel());
+                context.Output.WriteJson(".links.json", fileLinkMap);
 
                 if (options.Legacy)
                 {
@@ -144,7 +145,6 @@ namespace Microsoft.Docs.Build
             var file = context.DocumentProvider.GetDocument(path);
             if (!ShouldBuildFile(context, file))
             {
-                context.PublishModelBuilder.ExcludeFromOutput(file);
                 return;
             }
 
@@ -168,17 +168,12 @@ namespace Microsoft.Docs.Build
                         break;
                 }
 
-                if (context.ErrorLog.Write(errors))
-                {
-                    context.PublishModelBuilder.ExcludeFromOutput(file);
-                }
-
+                context.ErrorLog.Write(errors);
                 Telemetry.TrackBuildItemCount(file.ContentType);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 context.ErrorLog.Write(dex);
-                context.PublishModelBuilder.ExcludeFromOutput(file);
             }
             catch
             {

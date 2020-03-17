@@ -273,7 +273,7 @@ namespace Microsoft.Docs.Build
             /// Files published to the same url have no monikers or share common monikers.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, IReadOnlyList<string>> files, List<string> conflictMonikers)
+            public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, IReadOnlyList<string>> files, List<string> conflictMonikers)
             {
                 var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
                 var message = conflictMonikers.Count != 0 && !nonVersion ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
@@ -290,7 +290,7 @@ namespace Microsoft.Docs.Build
             ///   - different file extension with same filename, like `Toc.yml` and `Toc.md`
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error OutputPathConflict(string path, IEnumerable<Document> files)
+            public static Error OutputPathConflict(string path, IEnumerable<FilePath> files)
                 => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
         }
 
@@ -606,6 +606,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error MsAliasInvalid(SourceInfo<string> alias, string name)
                 => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", alias);
+
+            /// <summary>
+            /// The attribute value is duplicated within docset
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DuplicateAttribute(SourceInfo? source, string name, string value, IEnumerable<FilePath> duplicatedFiles)
+                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedFiles)}", source);
         }
 
         public static class Metadata

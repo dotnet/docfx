@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && publishItem.Path != null && !context.Config.DryRun)
+            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && publishItem.Path != null && !context.Config.DryRun)
             {
                 var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new
@@ -38,8 +38,8 @@ namespace Microsoft.Docs.Build
                 };
 
                 // Note: produce an empty output to make publish happy
-                context.Output.WriteText("{}", publishItem.Path);
-                context.Output.WriteJson(metadata, metadataPath);
+                context.Output.WriteText(publishItem.Path, "{}");
+                context.Output.WriteJson(metadataPath, metadata);
             }
 
             return errors;
