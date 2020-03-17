@@ -10,9 +10,14 @@
         public string File { get; set; }
         public int Line { get; set; }
         public int Column { get; set; }
+        public string Code { get; set; }
 
         public DocumentException() { }
         public DocumentException(string message) : base(message) { }
+        public DocumentException(string message, string code) : this(message)
+        {
+            Code = code;
+        }
         public DocumentException(string message, Exception inner) : base(message, inner) { }
         protected DocumentException(SerializationInfo info, StreamingContext context)
             : base(info, context)

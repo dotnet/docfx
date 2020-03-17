@@ -91,10 +91,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     throw new DocfxException(e.Message);
                 }
-                catch (DocumentException e)
-                {
-                    throw new DocfxException(e.Message);
-                }
                 catch (Exception e)
                 {
                     throw new DocfxException(e.ToString());
