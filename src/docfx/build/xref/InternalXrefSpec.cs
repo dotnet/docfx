@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
 
-        public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
-
         public InternalXrefSpec(string uid, string href, Document declaringFile)
         {
             Uid = uid;
@@ -31,12 +29,7 @@ namespace Microsoft.Docs.Build
         public string? GetXrefPropertyValueAsString(string propertyName)
         {
             // for internal UID, the display property should only be plain text
-            var contentType = GetXrefPropertyContentType(propertyName);
-            if (contentType == JsonSchemaContentType.None)
-            {
-                return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
-            }
-            return null;
+            return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
 
         public string? GetName() => GetXrefPropertyValueAsString("name");
@@ -55,14 +48,6 @@ namespace Microsoft.Docs.Build
                 spec.ExtensionData[key] = value.Value;
             }
             return spec;
-        }
-
-        private JsonSchemaContentType GetXrefPropertyContentType(string propertyName)
-        {
-            if (propertyName is null)
-                return default;
-
-            return PropertyContentTypeMapping.TryGetValue(propertyName, out var value) ? value : default;
         }
     }
 }
