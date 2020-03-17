@@ -169,11 +169,11 @@ namespace Microsoft.Docs.Build
 
                 if (spec.Restore)
                 {
-                    await Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
+                    Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
                 }
                 if (spec.Build)
                 {
-                    await Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).Concat(new[] { "--no-restore" }).ToArray());
+                    Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).Concat(new[] { "--no-restore" }).ToArray());
                 }
             }
 

@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static async Task<int> Run(string workingDirectory, CommandLineOptions options)
+        public static int Run(string workingDirectory, CommandLineOptions options)
         {
             options.UseCache = true;
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
@@ -22,11 +22,18 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            var result = await Task.WhenAll(docsets.Select(docset => BuildDocset(docset.docsetPath, docset.outputPath, options)));
-            return result.All(x => x) ? 0 : 1;
+            var hasError = false;
+            Parallel.ForEach(docsets, docset =>
+            {
+                if (BuildDocset(docset.docsetPath, docset.outputPath, options))
+                {
+                    hasError = true;
+                }
+            });
+            return hasError ? 1 : 0;
         }
 
-        private static async Task<bool> BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
+        private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config? config = null;
@@ -57,7 +64,8 @@ namespace Microsoft.Docs.Build
 
                 // run build based on docsets
                 outputPath ??= Path.Combine(docsetPath, config.OutputPath);
-                await Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
+                Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
+                return true;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -70,10 +78,9 @@ namespace Microsoft.Docs.Build
                 Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                 errorLog.PrintSummary();
             }
-            return true;
         }
 
-        private static async Task Run(
+        private static void Run(
             Config config,
             Docset docset,
             Docset? fallbackDocset,
@@ -90,7 +97,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Building files"))
             {
-                await context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
+                context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
             }
 
             context.BookmarkValidator.Validate();
@@ -129,11 +136,11 @@ namespace Microsoft.Docs.Build
             context.ContributionProvider.Save();
             context.GitCommitProvider.Save();
 
-            errorLog.Write(await context.GitHubAccessor.Save());
-            errorLog.Write(await context.MicrosoftGraphAccessor.Save());
+            errorLog.Write(context.GitHubAccessor.Save());
+            errorLog.Write(context.MicrosoftGraphAccessor.Save());
         }
 
-        private static async Task BuildFile(Context context, FilePath path)
+        private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
             if (!ShouldBuildFile(context, file))
@@ -150,7 +157,7 @@ namespace Microsoft.Docs.Build
                         errors = BuildResource.Build(context, file);
                         break;
                     case ContentType.Page:
-                        errors = await BuildPage.Build(context, file);
+                        errors = BuildPage.Build(context, file);
                         break;
                     case ContentType.TableOfContents:
                         // TODO: improve error message for toc monikers overlap
