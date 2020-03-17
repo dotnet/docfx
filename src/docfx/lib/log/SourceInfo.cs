@@ -69,6 +69,11 @@ namespace Microsoft.Docs.Build
             return HashCode.Combine(File, Line, Column, EndLine, EndColumn);
         }
 
+        public override string ToString()
+        {
+            return Line == 0 && Column == 0 ? File.ToString() : $"{File} ({Line}:{Column})";
+        }
+
         public int CompareTo(SourceInfo other)
         {
             if (other is null)

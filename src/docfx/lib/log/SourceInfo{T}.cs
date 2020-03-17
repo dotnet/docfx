@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Microsoft.Docs.Build
 {
-    internal readonly struct SourceInfo<T> : ISourceInfo
+    internal readonly struct SourceInfo<T> : ISourceInfo, IEquatable<SourceInfo<T>>
     {
         public readonly T Value;
 
@@ -36,6 +37,12 @@ namespace Microsoft.Docs.Build
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator SourceInfo?(in SourceInfo<T>? value) => value?.Source;
+
+        public override bool Equals(object? obj) => obj is SourceInfo<T> si && Equals(si);
+
+        public bool Equals(SourceInfo<T> other) => Equals(Value, other.Value) && Equals(Source, other.Source);
+
+        public override int GetHashCode() => HashCode.Combine(Value, Source);
 
         object? ISourceInfo.GetValue() => Value;
 
