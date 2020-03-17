@@ -89,12 +89,12 @@ namespace Microsoft.Docs.Build
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repositoryProvider, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
-            GitCommitProvider = new GitCommitProvider();
-            PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output);
-            BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
+            GitCommitProvider = new GitCommitProvider(repositoryProvider);
+            PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output, ErrorLog);
+            BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
-            XrefResolver = new XrefResolver(this, config, FileResolver, DependencyMapBuilder, FileLinkMapBuilder);
+            XrefResolver = new XrefResolver(this, config, FileResolver, repositoryProvider.DefaultRepository, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
                 config,

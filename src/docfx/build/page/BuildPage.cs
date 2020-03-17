@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file, publishItem);
+            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
                 return errors;
@@ -56,17 +56,17 @@ namespace Microsoft.Docs.Build
             {
                 if (output is string str)
                 {
-                    context.Output.WriteText(str, outputPath);
+                    context.Output.WriteText(outputPath, str);
                 }
                 else
                 {
-                    context.Output.WriteJson(output, outputPath);
+                    context.Output.WriteJson(outputPath, output);
                 }
 
                 if (context.Config.Legacy && file.IsPage)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(metadata, metadataPath);
+                    context.Output.WriteJson(metadataPath, metadata);
                 }
             }
 
@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
-            var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file.FilePath, inputMetadata.Author);
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
 
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
-                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
+                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file.FilePath);
 
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");

@@ -18,42 +18,35 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        /// <summary>
-        /// Find git repo directory
-        /// </summary>
-        /// <param name="path">The git repo entry point</param>
-        /// <returns>The git repo root path. null if the repo root is not found</returns>
-        public static string? FindRepo(string? path)
+        public static PathString? FindRepository(string? path)
         {
-            var repo = path;
-            while (!string.IsNullOrEmpty(repo))
+            var repoPath = path;
+            while (!string.IsNullOrEmpty(repoPath))
             {
-                if (IsRepo(repo))
+                if (IsGitRepository(repoPath))
                 {
-                    return repo;
+                    return new PathString(repoPath);
                 }
 
-                repo = Path.GetDirectoryName(repo);
+                repoPath = Path.GetDirectoryName(repoPath);
             }
 
-            return string.IsNullOrEmpty(repo) ? null : repo;
+            return null;
         }
 
-        /// <summary>
-        /// Determine if the path is a git repo
-        /// </summary>
-        /// <param name="path">The repo path</param>
-        /// <returns>Is git repo or not</returns>
-        public static bool IsRepo(string path)
+        public static bool IsGitRepository(string path)
         {
             var gitPath = Path.Combine(path, ".git");
-
-            return Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */;
+            if (Directory.Exists(gitPath) || File.Exists(gitPath))
+            {
+                if (git_repository_open(out _, gitPath) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        /// <summary>
-        /// Retrieve git repo information.
-        /// </summary>
         public static unsafe (string? url, string? branch, string? commit) GetRepoInfo(string repoPath)
         {
             var remoteName = (string?)null;

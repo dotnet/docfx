@@ -9,8 +9,6 @@ namespace Microsoft.Docs.Build
 {
     internal class LocalizationProvider
     {
-        private readonly Config _config;
-
         // entry should always be localization repo
         private readonly string _localizationDocsetPath;
         private readonly Repository? _localizationRepository;
@@ -35,7 +33,6 @@ namespace Microsoft.Docs.Build
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.DefaultLocale;
             Culture = CreateCultureInfo(Locale);
 
-            _config = config;
             _localizationDocsetPath = docsetPath;
             _localizationRepository = repository;
 
@@ -57,7 +54,7 @@ namespace Microsoft.Docs.Build
 
         public Docset? GetFallbackDocset()
         {
-            return _englishDocsetPath != null ? new Docset(_englishDocsetPath, _englishRepository) : null;
+            return _englishDocsetPath != null ? new Docset(_englishDocsetPath) : null;
         }
 
         public (string fallbackDocsetPath, Repository? fallbackRepository) GetFallbackRepositoryWithDocsetEntry()

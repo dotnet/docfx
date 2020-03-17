@@ -13,9 +13,9 @@ namespace Microsoft.Docs.Build
 
         public string Commit { get; }
 
-        public string Path { get; }
+        public PathString Path { get; }
 
-        private Repository(string remote, string? branch, string commit, string path)
+        private Repository(string remote, string? branch, string commit, PathString path)
         {
             // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
             Remote = Regex.Replace(remote, @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static Repository? Create(string path, string? branch, string? repoUrl = null)
         {
-            var repoPath = GitUtility.FindRepo(System.IO.Path.GetFullPath(path));
+            var repoPath = GitUtility.FindRepository(System.IO.Path.GetFullPath(path));
             if (repoPath is null)
             {
                 return null;
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            return new Repository(repoUrl ?? remote ?? "", branch ?? repoBranch, repoCommit, PathUtility.NormalizeFolder(repoPath));
+            return new Repository(repoUrl ?? remote ?? "", branch ?? repoBranch, repoCommit, new PathString(repoPath));
         }
     }
 }

@@ -79,8 +79,8 @@ namespace Microsoft.Docs.Build
 
                 var dependencyListText = string.Join('\n', dependencyList);
 
-                context.Output.WriteText(dependencyListText, "full-dependent-list.txt");
-                context.Output.WriteText(dependencyListText, "server-side-dependent-list.txt");
+                context.Output.WriteText("full-dependent-list.txt", dependencyListText);
+                context.Output.WriteText("server-side-dependent-list.txt", dependencyListText);
 
                 return sorted.Select(x => new LegacyDependencyMapItem(x.From.Substring(2), x.To.Substring(2), x.Version, x.Type))
                              .GroupBy(x => x.From)

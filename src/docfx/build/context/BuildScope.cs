@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (path.StartsWithPath(mapping.Src, out var remainingPath) && glob(remainingPath))
                     {
-                        return (mapping.Dest + remainingPath, mapping);
+                        return (mapping.Dest.Concat(remainingPath), mapping);
                     }
                 }
                 return (path, null);

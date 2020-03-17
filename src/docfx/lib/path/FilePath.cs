@@ -59,14 +59,14 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Gets the path relative to docset root or dependency docset root
+        /// Gets the path relative to docset root or dependency repository root
         /// </summary>
-        public string GetPathToOrigin()
+        public PathString GetPathToOrigin()
         {
             if (Origin == FileOrigin.Dependency)
             {
                 Debug.Assert(!string.IsNullOrEmpty(DependencyName));
-                return PathUtility.NormalizeFile(System.IO.Path.GetRelativePath(DependencyName, Path));
+                return new PathString(System.IO.Path.GetRelativePath(DependencyName, Path));
             }
 
             return Path;

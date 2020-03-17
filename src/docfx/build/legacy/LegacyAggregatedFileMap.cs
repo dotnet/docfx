@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
             }
 
             context.Output.WriteJson(
+                "op_aggregated_file_map_info.json",
                 new
                 {
                     aggregated_file_map_items = aggregatedFileMapItems
@@ -58,7 +59,7 @@ namespace Microsoft.Docs.Build
                             docset_path_to_root = string.Empty,
                         },
                     },
-                }, "op_aggregated_file_map_info.json");
+                });
         }
 
         [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]

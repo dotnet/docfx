@@ -11,17 +11,17 @@ namespace Microsoft.Docs.Build
         public static void ConvertToLegacyModel(
             Docset docset,
             Context context,
-            Dictionary<Document, PublishItem> fileManifests,
+            Dictionary<FilePath, PublishItem> fileManifests,
             DependencyMap dependencyMap)
         {
             using (Progress.Start("Converting to legacy"))
             {
-                fileManifests = fileManifests.Where(f => !f.Value.HasError).ToDictionary(k => k.Key, v => v.Value);
-                var files = fileManifests.Keys.ToList();
+                var documents = fileManifests.Where(f => !f.Value.HasError).ToDictionary(
+                    k => context.DocumentProvider.GetDocument(k.Key), v => v.Value);
 
-                LegacyManifest.Convert(docset, context, fileManifests);
-                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, files, dependencyMap);
-                LegacyFileMap.Convert(context, legacyDependencyMap, fileManifests);
+                LegacyManifest.Convert(docset, context, documents);
+                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, documents.Keys.ToList(), dependencyMap);
+                LegacyFileMap.Convert(context, legacyDependencyMap, documents);
             }
         }
     }

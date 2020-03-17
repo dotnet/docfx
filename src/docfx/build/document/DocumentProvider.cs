@@ -107,8 +107,8 @@ namespace Microsoft.Docs.Build
                 if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsDefault
-                        ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
-                        : config.FolderRelativePathInDocset + remainingPath;
+                        ? config.FolderRelativePathInDocset.Value.Concat(file.FilePath.Path.GetFileName())
+                        : config.FolderRelativePathInDocset.Value.Concat(remainingPath);
                 }
             }
 
@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
                 var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
                 if (!string.IsNullOrEmpty(entry))
                 {
-                    result.TryAdd(name, new Docset(entry, repository));
+                    result.TryAdd(name, new Docset(entry));
                 }
             }
 
@@ -292,9 +292,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (remainingPath.IsDefault)
                     {
-                        return dest + path.GetFileName();
+                        return dest.Concat(path.GetFileName());
                     }
-                    return dest + remainingPath;
+                    return dest.Concat(remainingPath);
                 }
             }
             return path;
