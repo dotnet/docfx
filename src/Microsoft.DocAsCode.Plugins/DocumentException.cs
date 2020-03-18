@@ -19,6 +19,10 @@
             Code = code;
         }
         public DocumentException(string message, Exception inner) : base(message, inner) { }
+        public DocumentException(string message, string code, Exception inner) : base(message, inner)
+        {
+            Code = code;
+        }
         protected DocumentException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
