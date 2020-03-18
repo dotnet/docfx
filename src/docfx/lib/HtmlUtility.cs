@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get title and raw title, remove title node if all previous nodes are invisible
         /// </summary>
-        public static bool TryExtractTitle(HtmlNode node, [NotNullWhen(true)] out string? title, [NotNullWhen(true)] out string? rawTitle)
+        public static bool TryExtractTitle(HtmlNode node, out string? title, [NotNullWhen(true)] out string? rawTitle)
         {
             var existVisibleNode = false;
 
