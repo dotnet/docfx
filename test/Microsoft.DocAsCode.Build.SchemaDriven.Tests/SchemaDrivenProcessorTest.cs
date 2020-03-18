@@ -472,7 +472,7 @@ uid: invalid.azure.hello2
 ", _inputFolder);
 
             files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-            Assert.Throws<DocumentException>(() => BuildDocument(files, new DocumentBuildParameters
+            var exception = Assert.Throws<DocumentException>(() => BuildDocument(files, new DocumentBuildParameters
             {
                 Files = files,
                 OutputBaseDir = _outputFolder,
@@ -483,6 +483,7 @@ uid: invalid.azure.hello2
                     ["patterned:uid"] = JArray.FromObject(new List<string> { "^azure\\..*" })
                 },
             }));
+            Assert.Equal("DocumentError", exception.Code);
 
             Assert.Equal(0, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
         }
