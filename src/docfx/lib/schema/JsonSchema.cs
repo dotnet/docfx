@@ -197,7 +197,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are transformed using specified pipeline like 'markup'
         /// </summary>
-        public JsonSchemaContentType ContentType { get; set; }
+        public JsonSchemaContentType? ContentType { get; set; }
 
         /// <summary>
         /// Properties that are built into xref map

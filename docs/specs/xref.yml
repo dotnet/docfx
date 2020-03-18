@@ -835,7 +835,7 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "name": "name for b",
       "uid": "b",
-      "inlineDescription": "description for b",
+      "inlineDescription": "description for _b_",
       "summary": "Link to @a",
     }
   _themes/ContentTemplate/schemas/TestData.schema.json: |
@@ -853,17 +853,17 @@ outputs:
     {
       "uid": "a",
       "name": "name for a",
-      "inlineDescription": "Link to <a href=\"b.json\">name for b</a>",
+      "inlineDescription": "Link to <a href=\"b.json\">description for &lt;em&gt;b&lt;/em&gt;</a>",
       "summary": "
           <p>
-            Link to <a href=\"b.json\">name for b</a>
+            Link to <a href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a.json&quot;&gt;name for a&lt;/a&gt;&lt;/p&gt;</a>
           </p>"
     }
   docs/b.json: |
     {
       "name": "name for b",
       "uid": "b",
-      "inlineDescription": "description for b",
+      "inlineDescription": "description for <em>b</em>",
       "summary": "
           <p>
             Link to <a href=\"a.json\">name for a</a>
@@ -1314,3 +1314,24 @@ inputs:
 outputs:
   .errors.log: |
     ["error","file-not-found","Invalid file link: '1.xrefmap.json'.","docfx.yml",1,7]
+---
+# Export all xrefProperties regardless of jschema properties
+repos:
+  https://docs.com/test-xref-sdp#live:
+    - files:
+        docfx.yml: |
+        docs/a.json: |
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+            "uid": "a",
+            "name": "test"
+          }
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "xrefProperties": ["name"],
+            "properties": { "uid": { "contentType": "uid" } }
+          }
+outputs:
+  docs/a.json:
+  .xrefmap.json: | 
+    { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json", "name": "test" }] }

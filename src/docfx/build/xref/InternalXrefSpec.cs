@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
+        public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
 
         public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
 
@@ -30,13 +30,7 @@ namespace Microsoft.Docs.Build
 
         public string? GetXrefPropertyValueAsString(string propertyName)
         {
-            // for internal UID, the display property should only be plain text
-            var contentType = GetXrefPropertyContentType(propertyName);
-            if (contentType == JsonSchemaContentType.None)
-            {
-                return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
-            }
-            return null;
+            return XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
 
         public string? GetName() => GetXrefPropertyValueAsString("name");
@@ -50,19 +44,11 @@ namespace Microsoft.Docs.Build
                 Monikers = Monikers,
             };
 
-            foreach (var (key, value) in ExtensionData)
+            foreach (var (key, value) in XrefProperties)
             {
                 spec.ExtensionData[key] = value.Value;
             }
             return spec;
-        }
-
-        private JsonSchemaContentType GetXrefPropertyContentType(string propertyName)
-        {
-            if (propertyName is null)
-                return default;
-
-            return PropertyContentTypeMapping.TryGetValue(propertyName, out var value) ? value : default;
         }
     }
 }
