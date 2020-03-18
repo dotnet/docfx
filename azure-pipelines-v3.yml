@@ -7,7 +7,7 @@ trigger:
 pr:
 - v3
 variables:
-  dotnetVersion: 3.1.102
+  dotnetVersion: 3.1.200
   runCodesignValidationInjection: false
 
 jobs:
