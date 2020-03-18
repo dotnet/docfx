@@ -375,22 +375,16 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         // attribut docset unique validation
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" }, "")]
-        [InlineData("{'docsetUnique': ['key1', 'key1']}", new[] { "{'key1': 'a'}" }, "")]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" , "{'key1': 'b'}" }, "")]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" },
-            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file2',1,12]")]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" },
-            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file2',1,25]")]
-        [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" },
-            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file2',1,25]")]
-        [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a', 'key2': 'b'}", "{'key2': 'b', 'key1': 'a'}" },
-            "['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file1',1,12]\n['suggestion','duplicate-attribute','Attribute 'key1' with value 'a' is duplicated in 'file1', 'file2'','file2',1,25]\n" +
-            "['suggestion','duplicate-attribute','Attribute 'key2' with value 'b' is duplicated in 'file1', 'file2'','file1',1,25]\n['suggestion','duplicate-attribute','Attribute 'key2' with value 'b' is duplicated in 'file1', 'file2'','file2',1,12]")]
-        [InlineData("{'docsetUnique': ['key11']}", new[] { "{'key1': {'key11': 'a'}}", "'key11': 'a'}" }, "")]
-        [InlineData("{'properties': {'key1': {'docsetUnique': ['key11']}}}", new[] { "{'key1': {'key11': 'a'}}", "{'key1': {'key11': 'a'}, 'key11': 'a'}" },
-            "['suggestion','duplicate-attribute','Attribute 'key11' with value 'a' is duplicated in 'file1', 'file2'','file1',1,22]\n['suggestion','duplicate-attribute','Attribute 'key11' with value 'a' is duplicated in 'file1', 'file2'','file2',1,22]")]
-        public void TestJsonSchemaPostValidation(string schema, string [] jsons, string expectedErrors)
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" }, 0)]
+        [InlineData("{'docsetUnique': ['key1', 'key1']}", new[] { "{'key1': 'a'}" }, 0)]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" , "{'key1': 'b'}" }, 0)]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, 2)]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" }, 2)]
+        [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" }, 2)]
+        [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a', 'key2': 'b'}", "{'key2': 'b', 'key1': 'a'}" }, 4)]
+        [InlineData("{'docsetUnique': ['key11']}", new[] { "{'key1': {'key11': 'a'}}", "'key11': 'a'}" }, 0)]
+        [InlineData("{'properties': {'key1': {'docsetUnique': ['key11']}}}", new[] { "{'key1': {'key11': 'a'}}", "{'key1': {'key11': 'a'}, 'key11': 'a'}" }, 2)]
+        public void TestJsonSchemaPostValidation(string schema, string [] jsons, int errorCount)
         {
             var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
             var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i+1}")).value);
@@ -402,9 +396,7 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = jsonSchemaValidator.PostValidate();
-            var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
-            var actual = string.Join('\n', errors.Select(err => err.ToString().Replace("\\r", "")).OrderBy(err => err).ToArray()).Replace('"', '\'');
-            Assert.Equal(expected, actual);
+            Assert.Equal(errorCount, errors.Count);
         }
     }
 }
