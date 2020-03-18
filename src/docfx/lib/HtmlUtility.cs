@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
                     {
-                        title = string.IsNullOrEmpty(child.InnerText) ? null : HttpUtility.HtmlDecode(child.InnerText);
+                        title = HttpUtility.HtmlDecode(child.InnerText ?? "");
 
                         // NOTE: for backward compatibility during migration phase, the logic of title and raw title is different...
                         if (!existVisibleNode)
@@ -227,12 +227,6 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
-
-            static bool IsInvisibleNode(HtmlNode n)
-            {
-                return n.NodeType == HtmlNodeType.Comment ||
-                    (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
-            }
         }
 
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
@@ -382,6 +376,12 @@ namespace Microsoft.Docs.Build
                 }
             }
             return '/' + locale + href;
+        }
+
+        private static bool IsInvisibleNode(HtmlNode n)
+        {
+            return n.NodeType == HtmlNodeType.Comment ||
+                (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
         }
 
         private static int CountWordInText(string text)
