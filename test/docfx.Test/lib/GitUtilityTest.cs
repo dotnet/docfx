@@ -17,8 +17,8 @@ namespace Microsoft.Docs.Build
             var repo = GitUtility.FindRepository(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
-            var (remote, branch, commit) = GitUtility.GetRepoInfo(repo);
-            Assert.Equal(Exec("git", "config --get remote.origin.url", repo), remote);
+            var (url, branch, commit) = GitUtility.GetRepoInfo(repo);
+            Assert.NotNull(url);
             Assert.Equal(Exec("git", "rev-parse --abbrev-ref HEAD", repo), branch ?? "HEAD");
             Assert.Equal(Exec("git", "rev-parse HEAD", repo), commit);
         }
