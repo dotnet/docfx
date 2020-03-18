@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
 
         public override string ToString()
         {
-            return Line == 0 && Column == 0 ? File.ToString() : $"{File}({Line},{Column})";
+            return Line <= 1 && Column <= 1 ? File.ToString() : $"{File}({Line},{Column})";
         }
 
         public int CompareTo(SourceInfo other)

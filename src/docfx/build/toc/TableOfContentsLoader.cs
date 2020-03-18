@@ -118,9 +118,7 @@ namespace Microsoft.Docs.Build
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(file))
             {
-                var dependencyChain = recursionDetector.Reverse().ToList();
-                dependencyChain.Add(file);
-                throw Errors.Link.CircularReference(dependencyChain, file).ToException();
+                throw Errors.Link.CircularReference(new SourceInfo(file.FilePath, 1, 1), file, recursionDetector).ToException();
             }
 
             var (errors, model) = LoadTocModel(file.FilePath, content);
