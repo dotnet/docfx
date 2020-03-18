@@ -761,7 +761,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml",2,6]
 ---
 # circular reference within SDP UID definition a -> b -> c -> a
 inputs:
@@ -788,9 +788,9 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","docs/b.yml"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))'","docs/c.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml",2,6]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","docs/b.yml",2,6]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))'","docs/c.yml",2,6]
 ---
 # circular reference within SDP UID definition a -> b -> a -> c
 inputs:
@@ -819,8 +819,8 @@ inputs:
 outputs:
   docs/c.json:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","docs/b.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml",2,6]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","docs/b.yml",2,6]
 ---
 # display property of non-plain text content type will be ignored
 inputs:
