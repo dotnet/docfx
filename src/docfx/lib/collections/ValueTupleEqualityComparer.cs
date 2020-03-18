@@ -30,7 +30,9 @@ namespace System.Collections.Concurrent
 
             public int GetHashCode((T1, T2) obj)
             {
-                return HashCode.Combine(_comparer1.GetHashCode(obj.Item1), _comparer2.GetHashCode(obj.Item2));
+                return HashCode.Combine(
+                    obj.Item1 is null ? 0 : _comparer1.GetHashCode(obj.Item1),
+                    obj.Item2 is null ? 0 : _comparer2.GetHashCode(obj.Item2));
             }
         }
     }
