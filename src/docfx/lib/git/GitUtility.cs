@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
 
         public static unsafe (string? url, string? branch, string? commit) GetRepoInfo(string repoPath)
         {
-            var remoteName = (string?)null;
+            string? remoteName = null;
             var (url, branch, commit) = default((string, string, string));
 
             if (git_repository_open(out var pRepo, repoPath) != 0)
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
                     var remotes = default(git_strarray);
                     if (git_remote_list(&remotes, pRepo) == 0)
                     {
-                        if (git_remote_lookup(out pRemote, pRepo, *remotes.strings) == 0)
+                        if (remotes.count > 0 && git_remote_lookup(out pRemote, pRepo, *remotes.strings) == 0)
                         {
                             result = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
                             git_remote_free(pRemote);
