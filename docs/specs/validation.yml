@@ -445,6 +445,6 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md', 'b.md'","b.md",2,14]
-    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md', 'b.md'","a.md",3,14]
+    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","b.md",2,14]
+    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","a.md",3,14]
 ---

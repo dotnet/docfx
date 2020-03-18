@@ -481,21 +481,19 @@ namespace Microsoft.Docs.Build
         private void PostValidateDocsetUnique(List<(string name, Error)> errors)
         {
             var validatedMetadata = _metadataBuilder.ToList();
-            var validatedMetadataGroupByValue = validatedMetadata.GroupBy(k => k.value, k => (k.schema, k.key, k.source), JsonUtility.DeepEqualsComparer);
+            var validatedMetadataGroups = validatedMetadata.GroupBy(
+                k => (k.value, (key: k.key, k.schema)),
+                ValueTupleEqualityComparer.Create(JsonUtility.DeepEqualsComparer, EqualityComparer<(string, JsonSchema)>.Default));
 
-            foreach (var metadataGroupByValue in validatedMetadataGroupByValue.Where(v => v.Count() > 1))
+            foreach (var group in validatedMetadataGroups)
             {
-                var metdataValue = metadataGroupByValue.Key;
-                foreach (var group in metadataGroupByValue.GroupBy(g => (g.key, g.schema)))
+                if (group.Count() > 1)
                 {
-                    if (group.Count() > 1)
+                    var (metadataValue, (metadataKey, _)) = group.Key;
+                    var metadataSources = (from g in @group where g.source != null select g.source).ToArray();
+                    foreach (var file in group)
                     {
-                        var metadataKey = group.Key.key;
-                        var metadataFiles = (from g in @group where g.source != null select g.source.File).ToArray();
-                        foreach (var file in group)
-                        {
-                            errors.Add((metadataKey, Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metdataValue.ToString(), metadataFiles)));
-                        }
+                        errors.Add((metadataKey, Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources)));
                     }
                 }
             }
