@@ -9,11 +9,11 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
-        public string Uid { get; set; }
+        public SourceInfo<string> Uid { get; }
 
-        public string Href { get; set; }
+        public string Href { get; }
 
-        public Document DeclaringFile { get; set; }
+        public Document DeclaringFile { get; }
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
@@ -21,7 +21,9 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
 
-        public InternalXrefSpec(string uid, string href, Document declaringFile)
+        string IXrefSpec.Uid => Uid.Value;
+
+        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile)
         {
             Uid = uid;
             Href = href;

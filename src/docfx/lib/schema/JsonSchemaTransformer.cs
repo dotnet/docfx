@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _xrefPropertiesCache =
                      new ConcurrentDictionary<JToken, (List<Error>, JToken)>(ReferenceEqualsComparer.Default);
 
-        private static ThreadLocal<Stack<(string uid, Document declaringFile)>> t_recursionDetector
-                 = new ThreadLocal<Stack<(string, Document)>>(() => new Stack<(string, Document)>());
+        private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
+                 = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
         public JsonSchemaTransformer(JsonSchema schema)
         {
@@ -36,12 +36,12 @@ namespace Microsoft.Docs.Build
         public (List<Error>, IReadOnlyList<InternalXrefSpec>) LoadXrefSpecs(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
-            var xrefSpecs = new Dictionary<string, InternalXrefSpec>();
+            var xrefSpecs = new List<InternalXrefSpec>();
             LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs);
-            return (errors, xrefSpecs.Values.ToArray());
+            return (errors, xrefSpecs);
         }
 
-        private void LoadXrefSpecsCore(Document file, Context context, JsonSchema schema, JToken node, List<Error> errors, Dictionary<string, InternalXrefSpec> xrefSpecs)
+        private void LoadXrefSpecsCore(Document file, Context context, JsonSchema schema, JToken node, List<Error> errors, List<InternalXrefSpec> xrefSpecs)
         {
             schema = _definitions.GetDefinition(schema);
             switch (node)
@@ -51,14 +51,7 @@ namespace Microsoft.Docs.Build
                     if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string uid &&
                         schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
                     {
-                        if (xrefSpecs.ContainsKey(uid))
-                        {
-                            errors.Add(Errors.Xref.UidConflict(uid, JsonUtility.GetSourceInfo(uidValue)));
-                        }
-                        else
-                        {
-                            xrefSpecs.Add(uid, LoadXrefSpec(file, context, schema, uid, obj));
-                        }
+                        xrefSpecs.Add(LoadXrefSpec(file, context, schema, new SourceInfo<string>(uid, uidValue.GetSourceInfo()), obj));
                     }
 
                     foreach (var (key, value) in obj)
@@ -78,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, string uid, JObject obj)
+        private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj)
         {
             var fragment = $"#{Regex.Replace(uid, @"\W", "_")}";
             var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", fragment);
@@ -105,19 +98,17 @@ namespace Microsoft.Docs.Build
             return xref;
         }
 
-        private JToken LoadXrefProperty(Document file, Context context, string uid, JToken value, JsonSchema schema)
+        private JToken LoadXrefProperty(Document file, Context context, SourceInfo<string> uid, JToken value, JsonSchema schema)
         {
             var recursionDetector = t_recursionDetector.Value!;
-            if (recursionDetector.Contains((uid, file)))
+            if (recursionDetector.Contains(uid))
             {
-                var referenceMap = recursionDetector.Select(x => $"{x.uid} ({x.declaringFile})").Reverse().ToList();
-                referenceMap.Add($"{uid} ({file})");
-                throw Errors.Link.CircularReference(referenceMap, file).ToException();
+                throw Errors.Link.CircularReference(uid, uid, recursionDetector, uid => $"{uid} ({uid.Source})").ToException();
             }
 
             try
             {
-                recursionDetector.Push((uid, file));
+                recursionDetector.Push(uid);
                 var (transformErrors, transformedToken) = _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, schema, value));
                 context.ErrorLog.Write(transformErrors);
                 return transformedToken;
