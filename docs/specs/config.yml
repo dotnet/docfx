@@ -542,3 +542,30 @@ inputs:
   b.json:
 outputs:
   b.json:
+---
+# Map document id from first group to last
+inputs:
+  docfx.json: |
+    {
+      "build": {
+        "content":[
+          {
+            "files": ["**.md"]
+          }
+        ],
+        "globalMetadata": {
+          "_op_documentIdPathDepotMapping": {
+            "src/": {
+              "folder_relative_path_in_docset": "dest-src"
+            },
+            "./": {
+               "folder_relative_path_in_docset": "deset-root"
+            }
+          }
+        }
+      }
+    }
+  src/a.md:
+outputs:
+  src/a.json: |
+    {"document_id":"b33c2202-d7a1-ee69-f111-fb5f135018d3","document_version_independent_id":"f8f728b3-5994-152b-5851-40165b1429b1"}
