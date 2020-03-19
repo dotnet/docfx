@@ -83,13 +83,21 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory, _templateDirectory);
                 }
-                catch (AggregateException agg) when (agg.InnerException is DocfxException || agg.InnerException is DocumentException)
+                catch (AggregateException agg) when (agg.InnerException is DocfxException)
                 {
                     throw new DocfxException(agg.InnerException.Message);
+                }
+                catch (AggregateException agg) when (agg.InnerException is DocumentException)
+                {
+                    throw new DocumentException(agg.InnerException.Message);
                 }
                 catch (DocfxException e)
                 {
                     throw new DocfxException(e.Message);
+                }
+                catch (DocumentException e)
+                {
+                    throw new DocumentException(e.Message);
                 }
                 catch (Exception e)
                 {
