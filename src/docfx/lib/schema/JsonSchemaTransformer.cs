@@ -122,11 +122,6 @@ namespace Microsoft.Docs.Build
 
         private (List<Error>, JToken) TransformContentCore(Document file, Context context, JsonSchema schema, JToken token)
         {
-            if (_xrefPropertiesCache.TryGetValue(token, out var result))
-            {
-                return result;
-            }
-
             var errors = new List<Error>();
             schema = _definitions.GetDefinition(schema);
             switch (token)
@@ -158,7 +153,10 @@ namespace Microsoft.Docs.Build
                         }
                         else if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            var (propertyErrors, transformedValue) = TransformContentCore(file, context, propertySchema, value);
+                            var isXrefProperty = schema.XrefProperties.Contains(key);
+                            var (propertyErrors, transformedValue) = isXrefProperty
+                                ? _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, propertySchema, value))
+                                : TransformContentCore(file, context, propertySchema, value);
                             errors.AddRange(propertyErrors);
                             newObject[key] = transformedValue;
                         }
