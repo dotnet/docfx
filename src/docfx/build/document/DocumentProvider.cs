@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
-            _documentIdRules = documentIdConfig.Reverse().Select(item => (item.Key, item.Value)).ToArray();
+            _documentIdRules = documentIdConfig.Select(item => (item.Key, item.Value)).ToArray();
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
