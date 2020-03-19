@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are built into xref map
         /// </summary>
-        public string[] XrefProperties { get; set; } = Array.Empty<string>();
+        public HashSet<string> XrefProperties { get; } = new HashSet<string>();
 
         // JSON schema metadata validation extensions
         //-------------------------------------------
