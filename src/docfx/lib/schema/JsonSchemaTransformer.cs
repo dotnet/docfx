@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -18,6 +19,9 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchemaDefinition _definitions;
         private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _xrefPropertiesCache =
                      new ConcurrentDictionary<JToken, (List<Error>, JToken)>(ReferenceEqualsComparer.Default);
+
+        private readonly ConcurrentDictionary<JObject, string> _xrefHrefCache =
+                     new ConcurrentDictionary<JObject, string>(ReferenceEqualsComparer.Default);
 
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -47,11 +51,9 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
-                    if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string uid &&
-                        schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
+                    if (IsXrefSpec(schema, obj, out var uid))
                     {
-                        xrefSpecs.Add(LoadXrefSpec(file, context, schema, new SourceInfo<string>(uid, uidValue.GetSourceInfo()), obj));
+                        xrefSpecs.Add(LoadXrefSpec(file, context, schema, uid, obj));
                     }
 
                     foreach (var (key, value) in obj)
@@ -73,8 +75,7 @@ namespace Microsoft.Docs.Build
 
         private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj)
         {
-            var fragment = $"#{Regex.Replace(uid, @"\W", "_")}";
-            var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", fragment);
+            var href = _xrefHrefCache.GetOrAdd(obj, (_) => GetXrefHref(file, uid.Value, obj));
             var xref = new InternalXrefSpec(uid, href, file);
 
             foreach (var xrefProperty in schema.XrefProperties)
@@ -165,6 +166,10 @@ namespace Microsoft.Docs.Build
                             newObject[key] = value;
                         }
                     }
+                    if (IsXrefSpec(schema, obj, out var uid))
+                    {
+                        newObject["href"] = _xrefHrefCache.GetOrAdd(obj, (_) => GetXrefHref(file, uid, obj));
+                    }
                     return (errors, newObject);
 
                 case JValue value:
@@ -236,5 +241,21 @@ namespace Microsoft.Docs.Build
 
             return (errors, value);
         }
+
+        private bool IsXrefSpec(JsonSchema schema, JObject obj, out SourceInfo<string> uid)
+        {
+            // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
+            uid = default;
+            if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string uidResult &&
+                schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
+            {
+                uid = new SourceInfo<string>(uidResult, uidValue.GetSourceInfo());
+                return true;
+            }
+            return false;
+        }
+
+        private string GetXrefHref(Document file, string uid, JObject obj)
+            => obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}");
     }
 }
