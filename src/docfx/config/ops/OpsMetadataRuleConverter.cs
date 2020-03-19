@@ -52,6 +52,8 @@ namespace Microsoft.Docs.Build
                     relativeMinDate = GetRelativeMinDate(rulesInfo),
                     replacedBy = GetReplacedBy(rulesInfo),
                     microsoftAlias = GetMicrosoftAlias(rulesInfo, allowlists),
+                    minLength = GetMinLength(rulesInfo),
+                    maxLength = GetMaxLength(rulesInfo),
                 };
 
                 if (!string.Equals("{}", JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })))
@@ -124,6 +126,7 @@ namespace Microsoft.Docs.Build
                 { "MicrosoftAlias", new string[] { "ms-alias-invalid" } },
                 { "Deprecated", new string[] { "attribute-deprecated" } },
                 { "Uniqueness", new string[] { "duplicate-attribute" } },
+                { "Length", new string[] { "description-bad-length" } },
             };
 
             foreach (var (ruleName, ruleInfo) in rulesInfo)
@@ -226,6 +229,26 @@ namespace Microsoft.Docs.Build
             if (rulesInfo.TryGetValue("Date", out var dateRuleInfo))
             {
                 return dateRuleInfo.Format;
+            }
+
+            return null;
+        }
+
+        private static int? GetMinLength(Dictionary<string, OpsMetadataRule> rulesInfo)
+        {
+            if (rulesInfo.TryGetValue("Length", out var dateRuleInfo))
+            {
+                return dateRuleInfo.MinLength;
+            }
+
+            return null;
+        }
+
+        private static int? GetMaxLength(Dictionary<string, OpsMetadataRule> rulesInfo)
+        {
+            if (rulesInfo.TryGetValue("Length", out var dateRuleInfo))
+            {
+                return dateRuleInfo.MaxLength;
             }
 
             return null;
