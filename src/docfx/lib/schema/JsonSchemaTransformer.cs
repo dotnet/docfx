@@ -38,6 +38,12 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var xrefSpecs = new List<InternalXrefSpec>();
             LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs);
+
+            // if only one uid defined in the file, remove the bookmark from href if any
+            if (xrefSpecs.Count == 1)
+            {
+                xrefSpecs[0].Href = xrefSpecs[0].Href.Split('#')[0];
+            }
             return (errors, xrefSpecs);
         }
 
@@ -74,7 +80,7 @@ namespace Microsoft.Docs.Build
         private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj)
         {
             var fragment = $"#{Regex.Replace(uid, @"\W", "_")}";
-            var href = obj.Parent is JObject ? UrlUtility.MergeUrl(file.SiteUrl, "", fragment) : file.SiteUrl;
+            var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", fragment);
             var xref = new InternalXrefSpec(uid, href, file);
 
             foreach (var xrefProperty in schema.XrefProperties)

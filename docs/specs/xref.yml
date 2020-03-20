@@ -1339,7 +1339,7 @@ outputs:
   .xrefmap.json: | 
     { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json", "name": "test" }] }
 ---
-# SDP with non-root uid in array
+# SDP with non-root uid, which is the only one
 inputs:
   docfx.yml:
   docs/a.yml: |
