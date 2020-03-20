@@ -5237,7 +5237,7 @@
         "code": "duplicate-description-within-docset",
         "additionalMessage": "Description must be unique within a docset."
       },
-      "description-bad-length": {
+      "string-length-invalid": {
         "severity": "suggestion",
         "code": "description-bad-length",
         "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."

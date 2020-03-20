@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
                 { "MicrosoftAlias", new string[] { "ms-alias-invalid" } },
                 { "Deprecated", new string[] { "attribute-deprecated" } },
                 { "Uniqueness", new string[] { "duplicate-attribute" } },
-                { "Length", new string[] { "description-bad-length" } },
+                { "Length", new string[] { "string-length-invalid" } },
             };
 
             foreach (var (ruleName, ruleInfo) in rulesInfo)
