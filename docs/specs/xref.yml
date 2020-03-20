@@ -1341,7 +1341,7 @@ outputs:
 ---
 # SDP with non-root uid, which is the only one
 repos:
-  https://docs.com/test-xref-sdp#live:
+  https://docs.com/test-sdp-unique-uid#live:
   - files:
       docfx.yml:
       docs/a.yml: |
