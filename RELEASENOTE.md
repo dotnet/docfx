@@ -1,8 +1,11 @@
 Version Notes (Current Version: v2.51)
 =======================================
 
-v2.51(Pre-release)
+v2.51
 -----------
+1. Support fetching xref map from fallback folder. (#5593)
+2. Improve error handling to remove some duplicate error logs.
+3. Improvement and bug fix in code extension.
 
 v2.50
 -----------
