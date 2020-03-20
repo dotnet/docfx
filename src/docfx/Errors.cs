@@ -295,7 +295,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error OutputPathConflict(string path, IEnumerable<FilePath> files)
-                => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
+                => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
         }
 
         public static class Heading
