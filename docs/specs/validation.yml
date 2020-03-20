@@ -448,3 +448,37 @@ outputs:
     ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","b.md",2,14]
     ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","a.md",3,14]
 ---
+# Json schema length rule: the length of string must be in range of MinLength and MaxLength
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 2,
+          "maxLength": 10
+        }
+      }
+    }
+  a.md: |
+    ---
+    description: a
+    ---
+  b.md: |
+    ---
+    description: a long description
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    ["warning","string-length-invalid","String 'description' length should be >= 2","a.md",2,14]
+    ["warning","string-length-invalid","String 'description' length should be <= 10","b.md",2,14]
+---

@@ -236,9 +236,9 @@ namespace Microsoft.Docs.Build
 
         private static int? GetMinLength(Dictionary<string, OpsMetadataRule> rulesInfo)
         {
-            if (rulesInfo.TryGetValue("Length", out var dateRuleInfo))
+            if (rulesInfo.TryGetValue("Length", out var lengthRuleInfo))
             {
-                return dateRuleInfo.MinLength;
+                return lengthRuleInfo.MinLength;
             }
 
             return null;
@@ -246,9 +246,9 @@ namespace Microsoft.Docs.Build
 
         private static int? GetMaxLength(Dictionary<string, OpsMetadataRule> rulesInfo)
         {
-            if (rulesInfo.TryGetValue("Length", out var dateRuleInfo))
+            if (rulesInfo.TryGetValue("Length", out var lengthRuleInfo))
             {
-                return dateRuleInfo.MaxLength;
+                return lengthRuleInfo.MaxLength;
             }
 
             return null;
