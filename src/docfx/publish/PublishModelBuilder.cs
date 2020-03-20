@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             return _publishItems.TryGetValue(file, out var item) && !item.HasError;
         }
 
-        public bool TryAdd(FilePath file, PublishItem item, bool overwrite = false)
+        public bool TryAdd(FilePath file, PublishItem item)
         {
             _publishItems[file] = item;
 
@@ -46,11 +46,11 @@ namespace Microsoft.Docs.Build
                     if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
                     {
                         _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<FilePath>()).Add(file);
-                        if (overwrite || file.CompareTo(existingFile) > 0)
+                        if (file.Origin == FileOrigin.Redirection || (existingFile.Origin != FileOrigin.Redirection && file.CompareTo(existingFile) > 0))
                         {
                             _filesByOutputPath[item.Path] = file;
-                            return true;
                         }
+                        return true;
                     }
                     return false;
                 }
@@ -101,10 +101,10 @@ namespace Microsoft.Docs.Build
                     conflictingFiles.Add(conflictingFile);
                 }
 
-                if (_filesByOutputPath.TryRemove(outputPath, out var removed))
-                {
-                    conflictingFiles.Add(removed);
-                }
+                //if (_filesByOutputPath.TryGetValue(outputPath, out var removed))
+                //{
+                //    conflictingFiles.Add(removed);
+                //}
 
                 errors.Add(Errors.UrlPath.OutputPathConflict(outputPath, conflictingFiles));
 
