@@ -1338,3 +1338,20 @@ outputs:
   docs/a.json:
   .xrefmap.json: | 
     { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json", "name": "test" }] }
+---
+# SDP with non-root uid in array
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    members:
+    - uid: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["description"],
+      "properties": {"members": {"items": {"properties": {"uid": {"contentType": "uid"}}}}}
+    }
+outputs:
+  docs/a.json:
+  .xrefmap.json: |
+    { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json"}] }

@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj)
         {
             var fragment = $"#{Regex.Replace(uid, @"\W", "_")}";
-            var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", fragment);
+            var href = obj.Parent is JObject ? UrlUtility.MergeUrl(file.SiteUrl, "", fragment) : file.SiteUrl;
             var xref = new InternalXrefSpec(uid, href, file);
 
             foreach (var xrefProperty in schema.XrefProperties)
