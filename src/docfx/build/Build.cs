@@ -25,6 +25,12 @@ namespace Microsoft.Docs.Build
             var hasError = false;
             Parallel.ForEach(docsets, docset =>
             {
+                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options))
+                {
+                    hasError = true;
+                    return;
+                }
+
                 if (BuildDocset(docset.docsetPath, docset.outputPath, options))
                 {
                     hasError = true;
@@ -69,8 +75,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errorLog.Write(dex);
-                return false;
+                return errorLog.Write(dex);
             }
             finally
             {

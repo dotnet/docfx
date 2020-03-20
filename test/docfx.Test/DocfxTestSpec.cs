@@ -13,11 +13,9 @@ namespace Microsoft.Docs.Build
 
         public string Cwd { get; set; }
 
-        public bool Restore { get; set; } = true;
-
-        public bool Build { get; set; } = true;
-
         public bool NoDryRun { get; set; }
+
+        public bool NoRestore { get; set; }
 
         public bool Legacy { get; set; }
 

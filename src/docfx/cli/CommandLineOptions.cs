@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
         public FetchOptions FetchOptions => NoRestore
             ? FetchOptions.NoFetch
-            : (UseCache ? FetchOptions.UseCache : FetchOptions.None);
+            : (UseCache ? FetchOptions.UseCache : FetchOptions.Latest);
 
         public JObject ToJObject()
         {

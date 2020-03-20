@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Default restore option: Always fetch the latest content, without reading from disk cache.
         /// </summary>
-        None = 0,
+        Latest = 0,
 
         /// <summary>
         /// Do not restore dependencies, throw `need-restore` when encounter missing dependencies.

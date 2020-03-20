@@ -74,7 +74,6 @@ outputs:
     { "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
 ---
 # Restore empty files
-build: false
 inputs:
   docfx.yml: |
     extend: config.json
@@ -102,7 +101,6 @@ outputs:
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>d</p>\n"}
 ---
 # Show error when download failed
-build: false
 inputs:
   docfx.yml: |
     extend: https://this-url-does-not-exit.com/this-is-a-bad-url
@@ -118,10 +116,9 @@ inputs:
 outputs:
   .errors.log: |
     ["error","committish-not-found","Can't find branch, tag, or commit 'bad-branch' for repo https://github.com/docascode/docfx-test-dependencies."]
-    ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
 ---
 # Show error when dependent repo can't be found
-restore: false
+noRestore: true
 inputs:
   docfx.yml: |
     dependencies:
@@ -133,7 +130,7 @@ outputs:
     ["error","need-restore","Cannot find dependency 'https://github.com/docascode/docfx-test-dependencies#bad-branch', did you forget to run `docfx restore`?"]
 ---
 # Show error when dependent URL can't be found
-restore: false
+noRestore: true
 inputs:
   docfx.yml: |
     monikerDefinition: https://docs.microsoft.com/bad-url
