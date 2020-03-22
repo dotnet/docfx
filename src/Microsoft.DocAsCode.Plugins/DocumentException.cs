@@ -29,6 +29,7 @@
             Line = info.GetInt32(nameof(Line));
             Column = info.GetInt32(nameof(Column));
             File = info.GetString(nameof(File));
+            Code = info.GetString(nameof(Code));
         }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
@@ -39,6 +40,7 @@
             info.AddValue(nameof(Line), Line);
             info.AddValue(nameof(Column), Column);
             info.AddValue(nameof(File), File);
+            info.AddValue(nameof(Code), Code);
         }
 
         public static void RunAll(params Action[] actions)
