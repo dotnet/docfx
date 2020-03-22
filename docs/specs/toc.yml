@@ -11,6 +11,7 @@ inputs:
     ### [Reference Normal File 3](f1/n1.md?branch=master)
     ### [Reference Normal File 4](~/docs/n1.md)
     ### [@Reference Normal File 5](n1.md)
+    ### [Title with escape '\]'](n1.md)
   docs/index.md:
   docs/n1.md:
   docs/f1/n1.md:
@@ -42,9 +43,13 @@ outputs:
                         "name":"Reference Normal File 4",
                         "href":"n1"
                       },
-                      {  
+                      {
                         "name":"@Reference Normal File 5",
                         "href":"n1"
+                      },
+                      {
+                        "name": "Title with escape ']'",
+                        "href": "n1"
                       }
                   ],
                   "name":"Existing File Reference"
