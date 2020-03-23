@@ -447,7 +447,11 @@ $(function () {
         var val = this.value;
         //Save filter string to local session storage
         if (typeof(Storage) !== "undefined") {
-          sessionStorage.filterString = val;
+          try {
+            sessionStorage.filterString = val;
+            }
+          catch(e)
+            {}
         }
         if (val === '') {
           // Clear 'filtered' class
@@ -514,14 +518,22 @@ $(function () {
         tocFilterInput.val("");
         tocFilterInput.trigger('input');
         if (typeof(Storage) !== "undefined") {
-          sessionStorage.filterString = "";
+          try {
+            sessionStorage.filterString = "";
+            }
+          catch(e)
+            {}
         }
       });
 
       //Set toc filter from local session storage on page load
       if (typeof(Storage) !== "undefined") {
-        tocFilterInput.val(sessionStorage.filterString);
-        tocFilterInput.trigger('input');
+        try {
+          tocFilterInput.val(sessionStorage.filterString);
+          tocFilterInput.trigger('input');
+          }
+        catch(e)
+          {}
       }
     }
 
