@@ -11,7 +11,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
@@ -74,14 +73,12 @@ namespace Microsoft.Docs.Build
                 var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
                 ThreadPool.SetMinThreads(minThreads, minThreads);
 
-                switch (command)
+                return command switch
                 {
-                    case "restore":
-                        return Restore.Run(workingDirectory, options);
-                    case "build":
-                        return Build.Run(workingDirectory, options);
-                }
-                return 0;
+                    "restore" => Restore.Run(workingDirectory, options),
+                    "build" => Build.Run(workingDirectory, options),
+                    _ => 0,
+                };
             }
         }
 

@@ -21,13 +21,11 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
 
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
-        private static readonly AsyncLocal<bool> t_restoreUseCache = new AsyncLocal<bool>();
         private static readonly AsyncLocal<string> t_cachePath = new AsyncLocal<string>();
         private static readonly AsyncLocal<string> t_statePath = new AsyncLocal<string>();
 
         static DocfxTest()
         {
-            TestQuirks.RestoreUseCache = () => t_restoreUseCache.Value;
             TestQuirks.CachePath = () => t_cachePath.Value;
             TestQuirks.StatePath = () => t_statePath.Value;
 
@@ -50,7 +48,6 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                t_restoreUseCache.Value = true;
                 t_repos.Value = repos;
                 t_cachePath.Value = cachePath;
                 t_statePath.Value = statePath;
@@ -66,7 +63,6 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_restoreUseCache.Value = false;
                 t_repos.Value = null;
                 t_cachePath.Value = null;
                 t_statePath.Value = null;
@@ -158,23 +154,16 @@ namespace Microsoft.Docs.Build
 
             using (TestUtility.EnsureFilesNotChanged(docsetPath))
             {
-                var commandLine = spec.Legacy ? "--legacy" : "";
-
-                var options = commandLine
-                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                    .Concat(new[] { "--output", randomOutputPath })
-                    .ToArray();
-
-                var dryRunOptions = dryRun ? new[] { "--dry-run" } : Array.Empty<string>();
-
-                if (spec.Restore)
+                var commandLine = new[]
                 {
-                    Docfx.Run(new[] { "restore", docsetPath }.Concat(options).ToArray());
-                }
-                if (spec.Build)
-                {
-                    Docfx.Run(new[] { "build", docsetPath }.Concat(options).Concat(dryRunOptions).Concat(new[] { "--no-restore" }).ToArray());
-                }
+                    "build", docsetPath,
+                    "--output", randomOutputPath,
+                    dryRun ? "--dry-run" : null,
+                    spec.Legacy ? "--legacy" : null,
+                    spec.NoRestore ? "--no-restore" : null,
+                };
+
+                Docfx.Run(commandLine.Where(arg => arg != null).ToArray());
             }
 
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
