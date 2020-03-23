@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
     {
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
-            options.UseCache = TestQuirks.RestoreUseCache?.Invoke() ?? options.UseCache;
-
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
@@ -33,7 +31,7 @@ namespace Microsoft.Docs.Build
             return hasError ? 1 : 0;
         }
 
-        private static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options)
+        public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
             List<Error> errors;
             Config? config = null;

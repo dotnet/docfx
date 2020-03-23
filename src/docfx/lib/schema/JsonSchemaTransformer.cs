@@ -38,6 +38,12 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var xrefSpecs = new List<InternalXrefSpec>();
             LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs);
+
+            // if only one uid defined in the file, remove the bookmark from href if any
+            if (xrefSpecs.Count == 1)
+            {
+                xrefSpecs[0].Href = xrefSpecs[0].Href.Split('#')[0];
+            }
             return (errors, xrefSpecs);
         }
 

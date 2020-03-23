@@ -515,7 +515,6 @@ outputs:
     { "conceptual": "<p>live1</p>" }
 ---
 # Throw error for OPS repos that are not provisioned
-build: false
 repos:
   https://github.com/ops/provision:
   - files:
@@ -532,6 +531,7 @@ environments:
   - DOCS_OPS_TOKEN
 outputs:
   .errors.log: |
+    ["warning","docset-not-provisioned","*"]
     ["warning","docset-not-provisioned","*"]
 ---
 # JSON file as resource

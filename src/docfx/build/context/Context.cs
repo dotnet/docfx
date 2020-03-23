@@ -64,6 +64,8 @@ namespace Microsoft.Docs.Build
 
         public LocalizationProvider LocalizationProvider { get; }
 
+        public ContentValidator ContentValidator { get; }
+
         public TableOfContentsMap TocMap => _tocMap.Value;
 
         public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
@@ -92,6 +94,7 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider(repositoryProvider);
             PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output, ErrorLog);
             BookmarkValidator = new BookmarkValidator(errorLog);
+            ContentValidator = new ContentValidator(config, FileResolver, errorLog);
             ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
             XrefResolver = new XrefResolver(this, config, FileResolver, repositoryProvider.DefaultRepository, DependencyMapBuilder, FileLinkMapBuilder);
