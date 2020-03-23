@@ -101,6 +101,7 @@ namespace Microsoft.Docs.Build
             }
 
             context.BookmarkValidator.Validate();
+            context.ContentValidator.PostValidate();
             context.ErrorLog.Write(context.MetadataProvider.Validate());
 
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
