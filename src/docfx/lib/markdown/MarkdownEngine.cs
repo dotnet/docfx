@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                 parser is HeadingBlockParser || parser is ParagraphBlockParser ||
                 parser is ThematicBreakParser || parser is HtmlBlockParser));
 
-            builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser));
+            builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser || parser is EscapeInlineParser));
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
