@@ -222,7 +222,6 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun);
             ValidateBookmarks(context, file, htmlDom);
-
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
                 errors.Add(Errors.Heading.HeadingNotFound(file));
