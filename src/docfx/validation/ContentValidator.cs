@@ -40,6 +40,11 @@ namespace Microsoft.Docs.Build
             _validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult();
         }
 
+        internal void PostValidate()
+        {
+            Write(_validator.PostValidate().GetAwaiter().GetResult());
+        }
+
         internal static string GetMarkdownValidationRulesFilePath(FileResolver fileResolver, Config config)
         {
             string filePath = config.MarkdownValidationRules;
@@ -52,11 +57,6 @@ namespace Microsoft.Docs.Build
             }
 
             return filePath;
-        }
-
-        internal void PostValidate()
-        {
-            Write(_validator.PostValidate().GetAwaiter().GetResult());
         }
 
         private bool Write(IEnumerable<ValidationError> validationErrors)
