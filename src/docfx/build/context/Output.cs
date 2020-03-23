@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly bool _dryRun;
+        private readonly object _lock;
 
         public string OutputPath { get; }
 

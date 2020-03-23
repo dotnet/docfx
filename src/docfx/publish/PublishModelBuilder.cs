@@ -38,26 +38,29 @@ namespace Microsoft.Docs.Build
         {
             if (item.Path != null)
             {
-                // Find output path conflicts
-                if (!_filesByOutputPath.TryAdd(item.Path, file))
+                lock (_filesByOutputPath)
                 {
-                    if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
+                    // Find output path conflicts
+                    if (!_filesByOutputPath.TryAdd(item.Path, file))
                     {
-                        var conflictingHashSet = _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentHashSet<FilePath>());
-                        conflictingHashSet.TryAdd(existingFile);
-                        conflictingHashSet.TryAdd(file);
-
-                        // redirection file is preferred than source file
-                        // otherwise, prefer the one based on FilePath
-                        if (file.Origin == FileOrigin.Redirection || (existingFile.Origin != FileOrigin.Redirection && file.CompareTo(existingFile) > 0))
+                        if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
                         {
-                            _filesByOutputPath[item.Path] = file;
-                            _publishItems.TryRemove(existingFile, out var _);
-                            _publishItems[file] = item;
-                            return true;
+                            var conflictingHashSet = _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentHashSet<FilePath>());
+                            conflictingHashSet.TryAdd(existingFile);
+                            conflictingHashSet.TryAdd(file);
+
+                            // redirection file is preferred than source file
+                            // otherwise, prefer the one based on FilePath
+                            if (file.Origin == FileOrigin.Redirection || (existingFile.Origin != FileOrigin.Redirection && file.CompareTo(existingFile) > 0))
+                            {
+                                _filesByOutputPath[item.Path] = file;
+                                _publishItems.TryRemove(existingFile, out var _);
+                                _publishItems[file] = item;
+                                return true;
+                            }
                         }
+                        return false;
                     }
-                    return false;
                 }
             }
 
