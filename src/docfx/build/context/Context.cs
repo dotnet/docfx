@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -95,7 +96,7 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider(repositoryProvider);
             PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output, ErrorLog);
             BookmarkValidator = new BookmarkValidator(errorLog);
-            DocsValidator = new Validator(config.MarkdownValidationRules);
+            DocsValidator = new Validator(GetMarkdownValidationRulesFilePath(FileResolver, config));
             ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
             XrefResolver = new XrefResolver(this, config, FileResolver, repositoryProvider.DefaultRepository, DependencyMapBuilder, FileLinkMapBuilder);
@@ -126,6 +127,20 @@ namespace Microsoft.Docs.Build
             GitCommitProvider.Dispose();
             GitHubAccessor.Dispose();
             MicrosoftGraphAccessor.Dispose();
+        }
+
+        private string GetMarkdownValidationRulesFilePath(FileResolver fileResolver, Config config)
+        {
+            string filePath = config.MarkdownValidationRules;
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                using var stream = fileResolver.ReadStream(config.MarkdownValidationRules);
+
+                // TODO: validation rules currently only supports physical file.
+                filePath = ((FileStream)stream).Name;
+            }
+
+            return filePath;
         }
     }
 }

@@ -485,5 +485,5 @@ outputs:
   b.json:
   c.json:
   .errors.log: |
-    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","a.md"]
-    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","b.md"]
+    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md,b.md'","a.md"]
+    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md,b.md'","b.md"]
