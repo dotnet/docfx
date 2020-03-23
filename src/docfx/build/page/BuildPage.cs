@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -222,10 +223,13 @@ namespace Microsoft.Docs.Build
 
             var htmlDom = HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun);
             ValidateBookmarks(context, file, htmlDom);
+
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
                 errors.Add(Errors.Heading.HeadingNotFound(file));
             }
+
+            ValidateH1(context, file, title);
 
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
@@ -374,6 +378,27 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);
             return CreateHtmlContent(context, htmlDom);
+        }
+
+        private static void ValidateH1(Context context, Document file, string? title)
+        {
+            if (string.IsNullOrEmpty(title))
+                return;
+
+            var headings = new List<Heading>
+                {
+                    new Heading
+                    {
+                        Level = 1,
+                        Content = title,
+
+                        // todo: get title precise line info
+                        SourceInfo = new SourceInfo(file.FilePath, 0, 0),
+                    },
+                };
+
+            var validationContext = new ValidationContext { DocumentType = string.IsNullOrEmpty(file.Mime) ? "conceptual" : file.Mime.Value! };
+            context.DocsValidator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult();
         }
     }
 }

@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="docs.validation" Version="1.0.0-beta-00064-e58eb5e" />
     <PackageReference Include="DotLiquid" Version="2.0.314" />
     <PackageReference Include="Glob" Version="1.1.5" />
     <!-- To keep HTML intact during v3 migration, keep using HtmlAgilityPack 1.4.9 -->

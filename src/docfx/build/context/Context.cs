@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -64,6 +65,8 @@ namespace Microsoft.Docs.Build
 
         public LocalizationProvider LocalizationProvider { get; }
 
+        public Validator DocsValidator { get; }
+
         public TableOfContentsMap TocMap => _tocMap.Value;
 
         public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
@@ -92,6 +95,7 @@ namespace Microsoft.Docs.Build
             GitCommitProvider = new GitCommitProvider(repositoryProvider);
             PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output, ErrorLog);
             BookmarkValidator = new BookmarkValidator(errorLog);
+            DocsValidator = new Validator(config.MarkdownValidationRules);
             ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, GitCommitProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
             XrefResolver = new XrefResolver(this, config, FileResolver, repositoryProvider.DefaultRepository, DependencyMapBuilder, FileLinkMapBuilder);

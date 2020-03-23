@@ -6,7 +6,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -58,6 +60,20 @@ namespace Microsoft.Docs.Build
 
                 return File.AppendText(outputFilePath);
             });
+        }
+
+        public bool Write(IEnumerable<ValidationError> validationErrors)
+        {
+            return Write(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, e.Message, (SourceInfo?)e.SourceInfo)));
+
+            static ErrorLevel GetLevel(ValidationSeverity severity) =>
+                severity switch
+                {
+                    ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
+                    ValidationSeverity.WARNING => ErrorLevel.Warning,
+                    ValidationSeverity.ERROR => ErrorLevel.Error,
+                    _ => ErrorLevel.Off
+                };
         }
 
         public bool Write(IEnumerable<Error> errors)
