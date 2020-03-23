@@ -1338,3 +1338,21 @@ outputs:
   docs/a.json:
   .xrefmap.json: | 
     { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json", "name": "test" }] }
+---
+# SDP with non-root uid, which is the only one
+repos:
+  https://docs.com/test-sdp-unique-uid#live:
+  - files:
+      docfx.yml:
+      docs/a.yml: |
+        #YamlMime:TestData
+        members:
+        - uid: a
+      _themes/ContentTemplate/schemas/TestData.schema.json: |
+        {
+          "properties": {"members": {"items": {"properties": {"uid": {"contentType": "uid"}}}}}
+        }
+outputs:
+  docs/a.json:
+  .xrefmap.json: |
+    { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json"}] }
