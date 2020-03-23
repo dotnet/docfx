@@ -258,6 +258,8 @@ inputs:
       docs/a.md: /asdf
   docs/a.md:
 outputs:
+  docs/a.mta.json:
+  docs/a.raw.page.json:
   .errors.log: |
     { "message_severity": "warning", "code": "output-path-conflict" }
 ---

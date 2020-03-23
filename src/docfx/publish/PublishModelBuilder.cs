@@ -36,8 +36,6 @@ namespace Microsoft.Docs.Build
 
         public bool TryAdd(FilePath file, PublishItem item)
         {
-            _publishItems[file] = item;
-
             if (item.Path != null)
             {
                 // Find output path conflicts
@@ -45,17 +43,21 @@ namespace Microsoft.Docs.Build
                 {
                     if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
                     {
-                        _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<FilePath>()).Add(file);
                         if (file.Origin == FileOrigin.Redirection || (existingFile.Origin != FileOrigin.Redirection && file.CompareTo(existingFile) > 0))
                         {
+                            _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<FilePath>()).Add(existingFile);
                             _filesByOutputPath[item.Path] = file;
+                            _publishItems.TryRemove(existingFile, out var _);
+                            _publishItems[file] = item;
+                            return true;
                         }
-                        return true;
+                        _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<FilePath>()).Add(file);
                     }
                     return false;
                 }
             }
 
+            _publishItems[file] = item;
             var monikers = item.Monikers;
             if (monikers.Length == 0)
             {
@@ -101,17 +103,12 @@ namespace Microsoft.Docs.Build
                     conflictingFiles.Add(conflictingFile);
                 }
 
-                //if (_filesByOutputPath.TryGetValue(outputPath, out var removed))
-                //{
-                //    conflictingFiles.Add(removed);
-                //}
+                if (_filesByOutputPath.TryGetValue(outputPath, out var removed))
+                {
+                    conflictingFiles.Add(removed);
+                }
 
                 errors.Add(Errors.UrlPath.OutputPathConflict(outputPath, conflictingFiles));
-
-                foreach (var conflictingFile in conflictingFiles)
-                {
-                    DeleteOutput(conflictingFile);
-                }
             }
 
             // Delete files with errors from output
