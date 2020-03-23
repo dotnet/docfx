@@ -40,9 +40,9 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && copy && !context.Config.DryRun)
+            lock (s_lock)
             {
-                lock (s_lock)
+                if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && copy && !context.Config.DryRun)
                 {
                     context.Output.Copy(outputPath, file.FilePath);
                 }
