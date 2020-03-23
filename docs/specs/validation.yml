@@ -422,3 +422,29 @@ outputs:
       "title": "my title"
     }
 ---
+# Json schema docset unique: the attribute value must be unique within docset
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+  schema.json: |
+    {
+      "docsetUnique": [ "title", "description"]
+    }
+  a.md: |
+    ---
+    title: title1
+    description: description1
+    ---
+  b.md: |
+    ---
+    description: description1
+    title: title2
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","b.md",2,14]
+    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","a.md",3,14]
+---

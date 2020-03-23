@@ -14,13 +14,11 @@ namespace Microsoft.Docs.Build
         [InlineData("README.md")]
         public static void GetRepoInfoSameAsGitExe(string file)
         {
-            Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
-
-            var repo = GitUtility.FindRepo(Path.GetFullPath(file));
+            var repo = GitUtility.FindRepository(Path.GetFullPath(file));
             Assert.NotNull(repo);
 
-            var (remote, branch, commit) = GitUtility.GetRepoInfo(repo);
-            Assert.Equal(Exec("git", "config --get remote.origin.url", repo), remote);
+            var (url, branch, commit) = GitUtility.GetRepoInfo(repo);
+            Assert.NotNull(url);
             Assert.Equal(Exec("git", "rev-parse --abbrev-ref HEAD", repo), branch ?? "HEAD");
             Assert.Equal(Exec("git", "rev-parse HEAD", repo), commit);
         }
@@ -29,17 +27,15 @@ namespace Microsoft.Docs.Build
         [InlineData("README.md")]
         public static void GetCommitsSameAsGitExe(string file)
         {
-            Assert.False(GitUtility.IsRepo(Path.GetFullPath(file)));
-
             var repo = Repository.Create(Path.GetFullPath(file), branch: null);
             Assert.NotNull(repo);
 
-            using var gitCommitProvider = new GitCommitProvider();
+            using var gitCommitProvider = new FileCommitProvider(repo, "git-commit-test-cache");
             var pathToRepo = PathUtility.NormalizeFile(file);
 
             // current branch
             var exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" -- \"{pathToRepo}\"", repo.Path);
-            var (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo);
+            var lib = gitCommitProvider.GetCommitHistory(pathToRepo);
 
             Assert.Equal(
                 exe.Replace("\r", ""),
@@ -47,14 +43,13 @@ namespace Microsoft.Docs.Build
 
             // another branch
             exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
-            (_, _, lib) = gitCommitProvider.GetCommitHistory(Path.Combine(repo.Path, pathToRepo), repo, "a050eaf");
+            lib = gitCommitProvider.GetCommitHistory(pathToRepo, "a050eaf");
 
             Assert.Equal(
                 exe.Replace("\r", ""),
                 string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
 
             gitCommitProvider.Save();
-
         }
 
         private static string Exec(string name, string args, string cwd)

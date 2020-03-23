@@ -19,11 +19,11 @@ namespace Microsoft.Docs.Build
 {
     public static class Docfx
     {
-        internal static async Task<int> Main(params string[] args)
+        internal static int Main(params string[] args)
         {
             try
             {
-                return await Run(args);
+                return Run(args);
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static async Task<int> Run(string[] args)
+        internal static int Run(string[] args)
         {
             if (args.Length == 1 && args[0] == "--version")
             {
@@ -79,10 +79,7 @@ namespace Microsoft.Docs.Build
                     case "restore":
                         return Restore.Run(workingDirectory, options);
                     case "build":
-                        return await Build.Run(workingDirectory, options);
-                    case "watch":
-                        await Watch.Run(workingDirectory, options);
-                        break;
+                        return Build.Run(workingDirectory, options);
                 }
                 return 0;
             }
@@ -117,11 +114,6 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before building.");
-                    DefineCommonOptions(syntax, ref workingDirectory, options);
-
-                    // Watch command
-                    syntax.DefineCommand("watch", ref command, "Previews a docset and watch changes interactively.");
-                    syntax.DefineOption("port", ref options.Port, "The port of the launched website.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 

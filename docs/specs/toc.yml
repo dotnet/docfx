@@ -11,6 +11,7 @@ inputs:
     ### [Reference Normal File 3](f1/n1.md?branch=master)
     ### [Reference Normal File 4](~/docs/n1.md)
     ### [@Reference Normal File 5](n1.md)
+    ### [Title with escape '\]'](n1.md)
   docs/index.md:
   docs/n1.md:
   docs/f1/n1.md:
@@ -42,9 +43,13 @@ outputs:
                         "name":"Reference Normal File 4",
                         "href":"n1"
                       },
-                      {  
+                      {
                         "name":"@Reference Normal File 5",
                         "href":"n1"
+                      },
+                      {
+                        "name": "Title with escape ']'",
+                        "href": "n1"
                       }
                   ],
                   "name":"Existing File Reference"
@@ -423,7 +428,7 @@ inputs:
   docs/index.md:
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'","docs/TOC.md"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'","docs/TOC.md",1,1]
 ---
 # Circle toc referencing 2
 inputs:
@@ -435,7 +440,7 @@ inputs:
   docs/index.md:
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/TOC.md'","docs/TOC.md"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/TOC.md'","docs/TOC.md",1,1]
 ---
 # Reference to a folder, basic usages
 # Reference to a folder behavior is not same with reference to a toc file
@@ -914,6 +919,7 @@ inputs:
     - name: Invalid TocHref Reference
       tocHref: index.md
 outputs:
+  docs/toc.json:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'index.md'.","docs/f1/TOC.yml",2,9]
     ["error","invalid-toc-href","The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","docs/f1/TOC.yml",4,12]

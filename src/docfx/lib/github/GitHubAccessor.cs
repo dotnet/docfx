@@ -43,9 +43,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<(Error?, GitHubUser?)> GetUserByLogin(SourceInfo<string> login)
+        public (Error?, GitHubUser?) GetUserByLogin(SourceInfo<string> login)
         {
-            var (error, user) = await _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
+            var (error, user) = _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
             if (user != null && !user.IsValid())
             {
                 return (Errors.Metadata.AuthorNotFound(login), null);
@@ -54,13 +54,13 @@ namespace Microsoft.Docs.Build
             return (error, user);
         }
 
-        public async Task<(Error?, GitHubUser?)> GetUserByEmail(string email, string owner, string name, string commit)
+        public (Error?, GitHubUser?) GetUserByEmail(string email, string owner, string name, string commit)
         {
-            var (error, user) = await _userCache.GetOrAdd(email, _ => GetUserByEmailCore(email, owner, name, commit));
+            var (error, user) = _userCache.GetOrAdd(email, _ => GetUserByEmailCore(email, owner, name, commit));
             return (error, user != null && user.IsValid() ? user : null);
         }
 
-        public Task<Error[]> Save()
+        public Error[] Save()
         {
             return _userCache.Save();
         }
@@ -246,8 +246,8 @@ namespace Microsoft.Docs.Build
             if (b.Id is null)
                 return a;
 
-            // otherwise pick a random one
-            return a;
+            // otherwise pick the latest one
+            return (a.UpdatedAt ?? DateTime.MinValue) >= (b.UpdatedAt ?? DateTime.MinValue) ? a : b;
         }
     }
 }

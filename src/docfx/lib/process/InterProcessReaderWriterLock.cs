@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -21,8 +20,6 @@ namespace Microsoft.Docs.Build
 
         public static InterProcessReaderWriterLock CreateReaderLock(string lockName)
         {
-            Debug.Assert(!string.IsNullOrEmpty(lockName));
-
             var lockHash = HashUtility.GetMd5Hash(lockName);
             var fileLock = WaitFile(lockName, lockHash, FileAccess.Read, FileShare.Read);
 
@@ -31,8 +28,6 @@ namespace Microsoft.Docs.Build
 
         public static InterProcessReaderWriterLock CreateWriterLock(string lockName)
         {
-            Debug.Assert(!string.IsNullOrEmpty(lockName));
-
             var lockHash = HashUtility.GetMd5Hash(lockName);
             var fileLock = WaitFile(lockName, lockHash, FileAccess.Write, FileShare.None);
 

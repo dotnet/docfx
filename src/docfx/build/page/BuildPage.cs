@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -13,13 +12,13 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static async Task<List<Error>> Build(Context context, Document file)
+        public static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
             var errors = new List<Error>();
 
-            var (loadErrors, sourceModel) = await Load(context, file);
+            var (loadErrors, sourceModel) = Load(context, file);
             errors.AddRange(loadErrors);
 
             var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
@@ -35,13 +34,13 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file, publishItem);
+            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
                 return errors;
 
             var (outputErrors, output, metadata) = file.IsPage
-                ? await CreatePageOutput(context, file, sourceModel)
+                ? CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
@@ -56,24 +55,24 @@ namespace Microsoft.Docs.Build
             {
                 if (output is string str)
                 {
-                    context.Output.WriteText(str, outputPath);
+                    context.Output.WriteText(outputPath, str);
                 }
                 else
                 {
-                    context.Output.WriteJson(output, outputPath);
+                    context.Output.WriteJson(outputPath, output);
                 }
 
                 if (context.Config.Legacy && file.IsPage)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(metadata, metadataPath);
+                    context.Output.WriteJson(metadataPath, metadata);
                 }
             }
 
             return errors;
         }
 
-        private static async Task<(List<Error> errors, object output, JObject metadata)> CreatePageOutput(
+        private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(
             Context context, Document file, JObject sourceModel)
         {
             var errors = new List<Error>();
@@ -82,7 +81,7 @@ namespace Microsoft.Docs.Build
 
             var (inputMetadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(inputMetadataErrors);
-            var (systemMetadataErrors, systemMetadata) = await CreateSystemMetadata(context, file, userMetadata);
+            var (systemMetadataErrors, systemMetadata) = CreateSystemMetadata(context, file, userMetadata);
             errors.AddRange(systemMetadataErrors);
 
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
@@ -136,7 +135,7 @@ namespace Microsoft.Docs.Build
             return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
-        private static async Task<(List<Error>, SystemMetadata)> CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
+        private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
@@ -162,7 +161,7 @@ namespace Microsoft.Docs.Build
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
-            var (contributorErrors, contributionInfo) = await context.ContributionProvider.GetContributionInfo(file, inputMetadata.Author);
+            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(file.FilePath, inputMetadata.Author);
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
@@ -180,7 +179,7 @@ namespace Microsoft.Docs.Build
                 = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
 
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
-                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file);
+                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file.FilePath);
 
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
@@ -197,7 +196,7 @@ namespace Microsoft.Docs.Build
             return (errors, systemMetadata);
         }
 
-        private static async Task<(List<Error> errors, JObject model)> Load(Context context, Document file)
+        private static (List<Error> errors, JObject model) Load(Context context, Document file)
         {
             if (file.FilePath.EndsWith(".md"))
             {
@@ -205,11 +204,11 @@ namespace Microsoft.Docs.Build
             }
             if (file.FilePath.EndsWith(".yml"))
             {
-                return await LoadYaml(context, file);
+                return LoadYaml(context, file);
             }
 
             Debug.Assert(file.FilePath.EndsWith(".json"));
-            return await LoadJson(context, file);
+            return LoadJson(context, file);
         }
 
         private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)
@@ -247,22 +246,21 @@ namespace Microsoft.Docs.Build
             return (errors, pageModel);
         }
 
-        private static async Task<(List<Error> errors, JObject model)> LoadYaml(Context context, Document file)
+        private static (List<Error> errors, JObject model) LoadYaml(Context context, Document file)
         {
             var (errors, token) = context.Input.ReadYaml(file.FilePath);
 
-            return await LoadSchemaDocument(context, errors, token, file);
+            return LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, JObject model)> LoadJson(Context context, Document file)
+        private static (List<Error> errors, JObject model) LoadJson(Context context, Document file)
         {
             var (errors, token) = context.Input.ReadJson(file.FilePath);
 
-            return await LoadSchemaDocument(context, errors, token, file);
+            return LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static async Task<(List<Error> errors, JObject model)>
-            LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
+        private static (List<Error> errors, JObject model) LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
         {
             var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
@@ -296,7 +294,8 @@ namespace Microsoft.Docs.Build
                 var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
                 errors.AddRange(deserializeErrors);
 
-                var htmlDom = HtmlUtility.LoadHtml(await RazorTemplate.Render(file.Mime, landingData)).PostMarkup(context.Config.DryRun);
+                var razorHtml = RazorTemplate.Render(file.Mime, landingData).GetAwaiter().GetResult();
+                var htmlDom = HtmlUtility.LoadHtml(razorHtml).PostMarkup(context.Config.DryRun);
                 ValidateBookmarks(context, file, htmlDom);
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel

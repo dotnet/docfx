@@ -87,6 +87,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public List<Error> Validate()
+        {
+            var errors = new List<Error>();
+            foreach (var validator in _schemaValidators)
+            {
+                errors.AddRange(validator.PostValidate());
+            }
+
+            return errors;
+        }
+
         private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
         {
             var result = new JObject();

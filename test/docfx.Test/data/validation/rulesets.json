@@ -218,6 +218,18 @@
                 "severity": "SUGGESTION",
                 "code": "title-missing",
                 "additionalErrorMessage": "Add a title string to show in search engine results."
+            },
+            {
+                "type": "Uniqueness",
+                "contentTypes": [
+                    "conceptual",
+                    "include",
+                    "landingpage",
+                    "hubpage"
+                ],
+                "severity": "SUGGESTION",
+                "code": "duplicate-title-within-docset",
+                "additionalErrorMessage": "Title must be unique within a docset."
             }
         ]
     },
@@ -355,6 +367,35 @@
                 "severity": "SUGGESTION",
                 "code": "deprecated-attribute",
                 "replacedBy": "ms.subservice"
+            }
+        ]
+    },
+    "description": {
+        "name": "description",
+        "description": "The description of this page",
+        "aliases": null,
+        "rules": [
+            {
+                "type": "Kind",
+                "contentTypes": [
+                    "conceptual",
+                    "include"
+                ],
+                "multipleValues": false,
+                "severity": "SUGGESTION",
+                "code": "multiple-values"
+            },
+            {
+                "type": "Uniqueness",
+                "contentTypes": [
+                    "conceptual",
+                    "include",
+                    "landingpage",
+                    "hubpage"
+                ],
+                "severity": "SUGGESTION",
+                "code": "duplicate-description-within-docset",
+                "additionalErrorMessage": "Description must be unique within a docset."
             }
         ]
     }

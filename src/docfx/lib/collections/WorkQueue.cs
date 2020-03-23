@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             Interlocked.Increment(ref _remainingCount);
         }
 
-        public Task Drain(Func<T, Task> run, Action<int, int>? progress = null)
+        public void Drain(Action<T> run, Action<int, int>? progress = null)
         {
             if (Interlocked.Exchange(ref _drained, 1) == 1)
             {
@@ -70,11 +70,11 @@ namespace Microsoft.Docs.Build
 
             if (_queue.Count == 0)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             DrainCore();
-            return _drainTcs.Task;
+            _drainTcs.Task.GetAwaiter().GetResult();
 
             void DrainCore()
             {
@@ -109,23 +109,16 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
-                Task task;
-
                 try
                 {
-                    task = run(item);
+                    run(item);
+                    OnComplete();
                 }
                 catch (Exception ex)
                 {
                     OnComplete(ex);
                     return;
                 }
-
-                task.ContinueWith(
-                    t => OnComplete(t.Exception?.InnerException),
-                    default,
-                    TaskContinuationOptions.ExecuteSynchronously,
-                    TaskScheduler.Default);
             }
 
             void OnComplete(Exception? exception = null)

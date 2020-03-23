@@ -197,12 +197,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are transformed using specified pipeline like 'markup'
         /// </summary>
-        public JsonSchemaContentType ContentType { get; set; }
+        public JsonSchemaContentType? ContentType { get; set; }
 
         /// <summary>
         /// Properties that are built into xref map
         /// </summary>
-        public string[] XrefProperties { get; set; } = Array.Empty<string>();
+        public HashSet<string> XrefProperties { get; } = new HashSet<string>();
 
         // JSON schema metadata validation extensions
         //-------------------------------------------
@@ -251,6 +251,11 @@ namespace Microsoft.Docs.Build
         /// Properties that are used to validate microsoft alias
         /// </summary>
         public MicrosoftAliasSchema? MicrosoftAlias { get; set; }
+
+        /// <summary>
+        /// Properties' value must be unique within the docset
+        /// </summary>
+        public HashSet<string> DocsetUnique { get; set; } = new HashSet<string>();
 
         // JSON schema metadata validation error extensions
         //-------------------------------------------

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -34,9 +33,6 @@ namespace Microsoft.Docs.Build
 
         public Error(ErrorLevel level, string code, string message, FilePath? file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
         {
-            Debug.Assert(!string.IsNullOrEmpty(code));
-            Debug.Assert(!string.IsNullOrEmpty(message));
-
             Level = level;
             Code = code;
             Message = message;

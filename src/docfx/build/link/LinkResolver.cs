@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot, link);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, link);
 
             if (file != null)
             {
@@ -288,7 +288,7 @@ namespace Microsoft.Docs.Build
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
-                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
+                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(path);
                     var commit = repo != null && commits.Length > 1 ? commits[1] : default;
                     path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
                     if (_input.Exists(path))

@@ -29,9 +29,7 @@ namespace Microsoft.Docs.Build
 
         public static void Update(int done, int total)
         {
-            Debug.Assert(t_scope.Value != null);
-
-            var scope = t_scope.Value.Peek();
+            var scope = t_scope.Value!.Peek();
 
             // Only write progress if it takes longer than 2 seconds
             var elapsedMs = scope.Stopwatch.ElapsedMilliseconds;

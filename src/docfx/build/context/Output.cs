@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         /// Writes the input object as json to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public void WriteJson(object graph, string destRelativePath)
+        public void WriteJson(string destRelativePath, object graph)
         {
             EnsureNoDryRun();
 
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         /// Writes the input text to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public void WriteText(string text, string destRelativePath)
+        public void WriteText(string destRelativePath, string text)
         {
             EnsureNoDryRun();
 
@@ -48,18 +48,18 @@ namespace Microsoft.Docs.Build
         /// Copies a file from source to destination, throws if source does not exists.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public void Copy(Document file, string destRelativePath)
+        public void Copy(string destRelativePath, FilePath file)
         {
             EnsureNoDryRun();
 
             var targetPhysicalPath = GetDestinationPath(destRelativePath);
-            if (_input.TryGetPhysicalPath(file.FilePath, out var sourcePhysicalPath))
+            if (_input.TryGetPhysicalPath(file, out var sourcePhysicalPath))
             {
                 File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
                 return;
             }
 
-            using var sourceStream = _input.ReadStream(file.FilePath);
+            using var sourceStream = _input.ReadStream(file);
             using var targetStream = File.Create(targetPhysicalPath);
             sourceStream.CopyTo(targetStream);
         }

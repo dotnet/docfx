@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,8 +14,6 @@ namespace Microsoft.Docs.Build
 
         public EvaluatorWithMonikersVisitor(MonikerDefinitionModel monikerDefinition)
         {
-            Debug.Assert(monikerDefinition != null);
-
             _monikerMap = monikerDefinition.Monikers.ToDictionary(x => x.MonikerName, StringComparer.OrdinalIgnoreCase);
             _productMoniker = monikerDefinition.Monikers.GroupBy(x => x.ProductName).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Order).ToList());
             MonikerOrder = SetMonikerOrder();
@@ -26,7 +23,6 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<Moniker> Visit(ComparatorExpression expression)
         {
-            Debug.Assert(expression.Operand != null);
             if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
             {
                 throw new MonikerRangeException($"Moniker `{expression.Operand}` is not defined");
@@ -51,9 +47,6 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<Moniker> Visit(LogicExpression expression)
         {
-            Debug.Assert(expression.Left != null);
-            Debug.Assert(expression.Right != null);
-
             var left = expression.Left.Accept(this);
             var right = expression.Right.Accept(this);
 

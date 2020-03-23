@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
             var result =
                 from spec in builder.ToList()
-                group spec by spec.Uid into g
+                group spec by spec.Uid.Value into g
                 let uid = g.Key
                 let spec = AggregateXrefSpecs(context, uid, g.ToArray())
                 select (uid, spec);
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             }
 
             var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
-            xref.ExtensionData["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
+            xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
@@ -118,11 +118,14 @@ namespace Microsoft.Docs.Build
 
             // multiple uid conflicts without moniker range definition
             // log an warning and take the first one order by the declaring file
-            var conflictsWithoutMoniker = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
-            if (conflictsWithoutMoniker.Length > 1)
+            var duplicatedSpecs = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
+            if (duplicatedSpecs.Length > 1)
             {
-                var orderedConflict = conflictsWithoutMoniker.OrderBy(item => item.DeclaringFile);
-                context.ErrorLog.Write(Errors.Xref.UidConflict(uid, orderedConflict.Select(x => x.DeclaringFile.FilePath)));
+                var duplicatedSources = (from spec in duplicatedSpecs where spec.Uid.Source != null select spec.Uid.Source).ToArray();
+                foreach (var spec in duplicatedSpecs)
+                {
+                    context.ErrorLog.Write(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
+                }
             }
 
             // uid conflicts with overlapping monikers

@@ -34,17 +34,17 @@ namespace Microsoft.Docs.Build
                 model.Metadata.Monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && !context.Config.DryRun)
+            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && !context.Config.DryRun)
             {
                 if (context.Config.Legacy)
                 {
                     var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(output, outputPath);
-                    context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
+                    context.Output.WriteJson(outputPath, output);
+                    context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
                 }
                 else
                 {
-                    context.Output.WriteJson(model, outputPath);
+                    context.Output.WriteJson(outputPath, model);
                 }
             }
 

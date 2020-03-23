@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -92,9 +91,6 @@ namespace Microsoft.Docs.Build
             {
                 var template = (string)HttpContext.Items["template"];
                 var model = HttpContext.Items["model"];
-
-                Debug.Assert(template != null);
-                Debug.Assert(model != null);
 
                 return View(template, model);
             }

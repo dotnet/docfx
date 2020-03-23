@@ -15,27 +15,26 @@ namespace Microsoft.Docs.Build
         private readonly string _outputPath;
         private readonly Config _config;
         private readonly Output _output;
-        private readonly ConcurrentDictionary<string, ConcurrentBag<Document>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<Document>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<Document, IReadOnlyList<string>>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, Document> _filesByOutputPath = new ConcurrentDictionary<string, Document>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<Document, PublishItem> _publishItems = new ConcurrentDictionary<Document, PublishItem>();
-        private readonly ConcurrentHashSet<Document> _excludedFiles = new ConcurrentHashSet<Document>();
+        private readonly ErrorLog _errorLog;
+        private readonly ConcurrentDictionary<string, ConcurrentBag<FilePath>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<FilePath>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<FilePath, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<FilePath, IReadOnlyList<string>>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, FilePath> _filesByOutputPath = new ConcurrentDictionary<string, FilePath>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<FilePath, PublishItem> _publishItems = new ConcurrentDictionary<FilePath, PublishItem>();
 
-        public PublishModelBuilder(string outputPath, Config config, Output output)
+        public PublishModelBuilder(string outputPath, Config config, Output output, ErrorLog errorLog)
         {
             _config = config;
             _output = output;
+            _errorLog = errorLog;
             _outputPath = PathUtility.NormalizeFolder(outputPath);
         }
 
-        public void ExcludeFromOutput(Document file)
+        public bool HasOutput(FilePath file)
         {
-            _excludedFiles.TryAdd(file);
+            return _publishItems.TryGetValue(file, out var item) && !item.HasError;
         }
 
-        public bool IsIncludedInOutput(Document file) => !_excludedFiles.Contains(file);
-
-        public bool TryAdd(Document file, PublishItem item)
+        public bool TryAdd(FilePath file, PublishItem item)
         {
             _publishItems[file] = item;
 
@@ -46,7 +45,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
                     {
-                        _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<Document>()).Add(file);
+                        _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<FilePath>()).Add(file);
                     }
                     return false;
                 }
@@ -55,14 +54,14 @@ namespace Microsoft.Docs.Build
             var monikers = item.Monikers;
             if (monikers.Length == 0)
             {
-                monikers = new[] { PublishModelBuilder.NonVersion };
+                monikers = new[] { NonVersion };
             }
-            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<Document, IReadOnlyList<string>>()).TryAdd(file, monikers);
+            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<FilePath, IReadOnlyList<string>>()).TryAdd(file, monikers);
 
             return true;
         }
 
-        public (List<Error> errors, PublishModel, Dictionary<Document, PublishItem>) Build()
+        public (List<Error> errors, PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var errors = new List<Error>();
 
@@ -82,7 +81,7 @@ namespace Microsoft.Docs.Build
                     errors.Add(Errors.UrlPath.PublishUrlConflict(siteUrl, files, conflictMoniker));
                     foreach (var conflictingFile in files.Keys)
                     {
-                        HandleExcludedFile(conflictingFile);
+                        DeleteOutput(conflictingFile);
                     }
                 }
             }
@@ -90,7 +89,7 @@ namespace Microsoft.Docs.Build
             // Handle output path conflicts
             foreach (var (outputPath, conflict) in _outputPathConflicts)
             {
-                var conflictingFiles = new HashSet<Document>();
+                var conflictingFiles = new HashSet<FilePath>();
 
                 foreach (var conflictingFile in conflict)
                 {
@@ -106,17 +105,14 @@ namespace Microsoft.Docs.Build
 
                 foreach (var conflictingFile in conflictingFiles)
                 {
-                    HandleExcludedFile(conflictingFile);
+                    DeleteOutput(conflictingFile);
                 }
             }
 
-            // Handle files excluded from output
-            foreach (var file in _excludedFiles.ToList())
+            // Delete files with errors from output
+            foreach (var file in _errorLog.ErrorFiles)
             {
-                if (_filesBySiteUrl.TryRemove(file.SiteUrl, out _))
-                {
-                    HandleExcludedFile(file);
-                }
+                DeleteOutput(file);
             }
 
             var publishItems = (
@@ -144,7 +140,7 @@ namespace Microsoft.Docs.Build
             return (errors, model, fileManifests);
         }
 
-        private void HandleExcludedFile(Document file)
+        private void DeleteOutput(FilePath file)
         {
             if (!_config.DryRun && _publishItems.TryGetValue(file, out var item))
             {

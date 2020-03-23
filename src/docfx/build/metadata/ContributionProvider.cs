@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -33,16 +32,16 @@ namespace Microsoft.Docs.Build
             _fallbackDocset = fallbackDocset;
         }
 
-        public async Task<(List<Error> errors, ContributionInfo?)> GetContributionInfo(Document document, SourceInfo<string> authorName)
+        public (List<Error> errors, ContributionInfo?) GetContributionInfo(FilePath file, SourceInfo<string> authorName)
         {
             var errors = new List<Error>();
-            var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(document);
+            var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(file);
             if (repo is null)
             {
                 return (errors, null);
             }
 
-            var updatedDateTime = GetUpdatedAt(document, repo, commits);
+            var updatedDateTime = GetUpdatedAt(file, repo, commits);
             var contributionInfo = new ContributionInfo
             {
                 UpdateAt = updatedDateTime.ToString(
@@ -59,7 +58,7 @@ namespace Microsoft.Docs.Build
             var contributionBranch = LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
             if (!string.IsNullOrEmpty(contributionBranch))
             {
-                (_, _, contributionCommits) = _gitCommitProvider.GetCommitHistory(document, contributionBranch);
+                (_, _, contributionCommits) = _gitCommitProvider.GetCommitHistory(file, contributionBranch);
             }
 
             var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
@@ -73,7 +72,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var commit in contributionCommits)
                 {
-                    var (error, githubUser) = await _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
+                    var (error, githubUser) = _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     var contributor = githubUser?.ToContributor();
                     if (!string.IsNullOrEmpty(contributor?.Name) && !excludes.Contains(contributor.Name))
@@ -87,7 +86,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(authorName))
             {
                 // Remove author from contributors if author name is specified
-                var (error, githubUser) = await _githubAccessor.GetUserByLogin(authorName);
+                var (error, githubUser) = _githubAccessor.GetUserByLogin(authorName);
                 errors.AddIfNotNull(error);
                 author = githubUser?.ToContributor();
             }
@@ -103,7 +102,7 @@ namespace Microsoft.Docs.Build
             return (errors, contributionInfo);
         }
 
-        public DateTime GetUpdatedAt(Document document, Repository? repository, GitCommit[] fileCommits)
+        public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
         {
             if (fileCommits.Length > 0)
             {
@@ -119,16 +118,16 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return _input.TryGetPhysicalPath(document.FilePath, out var physicalPath)
+            return _input.TryGetPhysicalPath(file, out var physicalPath)
                 ? File.GetLastWriteTimeUtc(physicalPath)
                 : default;
         }
 
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate, string? gitCommit)
-            GetGitUrls(Document document)
+            GetGitUrls(FilePath file)
         {
-            var isWhitelisted = document.FilePath.Origin == FileOrigin.Default || document.FilePath.Origin == FileOrigin.Fallback;
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(document);
+            var isWhitelisted = file.Origin == FileOrigin.Default || file.Origin == FileOrigin.Fallback;
+            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(file);
             if (repo is null || pathToRepo is null)
                 return default;
 

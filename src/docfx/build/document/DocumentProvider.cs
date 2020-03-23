@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
-            _documentIdRules = documentIdConfig.Reverse().Select(item => (item.Key, item.Value)).ToArray();
+            _documentIdRules = documentIdConfig.Select(item => (item.Key, item.Value)).ToArray();
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
@@ -107,8 +107,8 @@ namespace Microsoft.Docs.Build
                 if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsDefault
-                        ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
-                        : config.FolderRelativePathInDocset + remainingPath;
+                        ? config.FolderRelativePathInDocset.Value.Concat(file.FilePath.Path.GetFileName())
+                        : config.FolderRelativePathInDocset.Value.Concat(remainingPath);
                 }
             }
 
@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
                 var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
                 if (!string.IsNullOrEmpty(entry))
                 {
-                    result.TryAdd(name, new Docset(entry, repository));
+                    result.TryAdd(name, new Docset(entry));
                 }
             }
 
@@ -260,6 +260,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        /// <summary>
+        /// In docs, canonical URL is later overwritten by template JINT code.
+        /// TODO: need to handle the logic difference when template code is removed.
+        /// </summary>
         private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string? mime, bool isPage)
         {
             if (isExperimental)
@@ -288,9 +292,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (remainingPath.IsDefault)
                     {
-                        return dest + path.GetFileName();
+                        return dest.Concat(path.GetFileName());
                     }
-                    return dest + remainingPath;
+                    return dest.Concat(remainingPath);
                 }
             }
             return path;
