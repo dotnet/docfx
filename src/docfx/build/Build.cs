@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 var configLoader = new ConfigLoader(repository, errorLog);
                 (errors, config) = configLoader.Load(docsetPath, locale, options);
                 if (errorLog.Write(errors))
-                    return false;
+                    return true;
 
                 using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
                 var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
                 // run build based on docsets
                 outputPath ??= Path.Combine(docsetPath, config.OutputPath);
                 Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
-                return true;
+                return false;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
