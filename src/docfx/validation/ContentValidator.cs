@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 };
 
             var validationContext = new ValidationContext { DocumentType = string.IsNullOrEmpty(file.Mime) ? "conceptual" : file.Mime.Value! };
-            _validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult();
+            Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
         }
 
         internal void PostValidate()
