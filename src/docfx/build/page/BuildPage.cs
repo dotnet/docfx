@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
-using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
