@@ -8,6 +8,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildRedirection
     {
+        private static readonly object s_lock = new object();
+
         internal static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
@@ -37,9 +39,12 @@ namespace Microsoft.Docs.Build
                     is_dynamic_rendering = true,
                 };
 
-                // Note: produce an empty output to make publish happy
-                context.Output.WriteText(publishItem.Path, "{}");
-                context.Output.WriteJson(metadataPath, metadata);
+                lock (s_lock)
+                {
+                    // Note: produce an empty output to make publish happy
+                    context.Output.WriteText(publishItem.Path, "{}");
+                    context.Output.WriteJson(metadataPath, metadata);
+                }
             }
 
             return errors;

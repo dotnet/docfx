@@ -21,6 +21,8 @@ namespace System.Collections.Concurrent
 
         public bool Contains(T value) => _dictionary.ContainsKey(value);
 
+        public HashSet<T> ToHashSet() => _dictionary.Keys.ToHashSet();
+
         public IEnumerator<T> GetEnumerator() => _dictionary.Keys.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => _dictionary.Keys.GetEnumerator();

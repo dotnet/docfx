@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Output _output;
         private readonly ErrorLog _errorLog;
-        private readonly ConcurrentDictionary<string, ConcurrentBag<FilePath>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentBag<FilePath>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, ConcurrentHashSet<FilePath>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentHashSet<FilePath>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<FilePath, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<FilePath, IReadOnlyList<string>>>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, FilePath> _filesByOutputPath = new ConcurrentDictionary<string, FilePath>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<FilePath, PublishItem> _publishItems = new ConcurrentDictionary<FilePath, PublishItem>();
@@ -43,15 +43,19 @@ namespace Microsoft.Docs.Build
                 {
                     if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
                     {
+                        var conflictingHashSet = _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentHashSet<FilePath>());
+                        conflictingHashSet.TryAdd(existingFile);
+                        conflictingHashSet.TryAdd(file);
+
+                        // redirection file is preferred than source file
+                        // otherwise, prefer the one based on FilePath
                         if (file.Origin == FileOrigin.Redirection || (existingFile.Origin != FileOrigin.Redirection && file.CompareTo(existingFile) > 0))
                         {
-                            _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<FilePath>()).Add(existingFile);
                             _filesByOutputPath[item.Path] = file;
                             _publishItems.TryRemove(existingFile, out var _);
                             _publishItems[file] = item;
                             return true;
                         }
-                        _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentBag<FilePath>()).Add(file);
                     }
                     return false;
                 }
@@ -96,19 +100,7 @@ namespace Microsoft.Docs.Build
             // Handle output path conflicts
             foreach (var (outputPath, conflict) in _outputPathConflicts)
             {
-                var conflictingFiles = new HashSet<FilePath>();
-
-                foreach (var conflictingFile in conflict)
-                {
-                    conflictingFiles.Add(conflictingFile);
-                }
-
-                if (_filesByOutputPath.TryGetValue(outputPath, out var removed))
-                {
-                    conflictingFiles.Add(removed);
-                }
-
-                errors.Add(Errors.UrlPath.OutputPathConflict(outputPath, conflictingFiles));
+                errors.Add(Errors.UrlPath.OutputPathConflict(outputPath, conflict.ToHashSet()));
             }
 
             // Delete files with errors from output

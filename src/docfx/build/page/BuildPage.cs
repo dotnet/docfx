@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
+        private static readonly object s_lock = new object();
+
         public static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
@@ -53,19 +55,22 @@ namespace Microsoft.Docs.Build
 
             if (shouldWriteOutput && !context.Config.DryRun)
             {
-                if (output is string str)
+                lock (s_lock)
                 {
-                    context.Output.WriteText(outputPath, str);
-                }
-                else
-                {
-                    context.Output.WriteJson(outputPath, output);
-                }
+                    if (output is string str)
+                    {
+                        context.Output.WriteText(outputPath, str);
+                    }
+                    else
+                    {
+                        context.Output.WriteJson(outputPath, output);
+                    }
 
-                if (context.Config.Legacy && file.IsPage)
-                {
-                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(metadataPath, metadata);
+                    if (context.Config.Legacy && file.IsPage)
+                    {
+                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                        context.Output.WriteJson(metadataPath, metadata);
+                    }
                 }
             }
 

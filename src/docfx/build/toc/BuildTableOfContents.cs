@@ -8,6 +8,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
+        private static readonly object s_lock = new object();
+
         public static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
@@ -36,15 +38,18 @@ namespace Microsoft.Docs.Build
 
             if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && !context.Config.DryRun)
             {
-                if (context.Config.Legacy)
+                lock (s_lock)
                 {
-                    var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(outputPath, output);
-                    context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
-                }
-                else
-                {
-                    context.Output.WriteJson(outputPath, model);
+                    if (context.Config.Legacy)
+                    {
+                        var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
+                        context.Output.WriteJson(outputPath, output);
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
+                    }
+                    else
+                    {
+                        context.Output.WriteJson(outputPath, model);
+                    }
                 }
             }
 

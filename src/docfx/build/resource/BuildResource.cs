@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
+        private static readonly object s_lock = new object();
+
         internal static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
@@ -40,7 +42,10 @@ namespace Microsoft.Docs.Build
 
             if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && copy && !context.Config.DryRun)
             {
-                context.Output.Copy(outputPath, file.FilePath);
+                lock (s_lock)
+                {
+                    context.Output.Copy(outputPath, file.FilePath);
+                }
             }
 
             return errors;
