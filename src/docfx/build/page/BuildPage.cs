@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Heading.HeadingNotFound(file));
             }
 
-            ValidateH1(context, file, title);
+            context.ContentValidator.ValidateH1(file, title);
 
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
@@ -378,27 +378,6 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);
             return CreateHtmlContent(context, htmlDom);
-        }
-
-        private static void ValidateH1(Context context, Document file, string? title)
-        {
-            if (string.IsNullOrEmpty(title))
-                return;
-
-            var headings = new List<Heading>
-                {
-                    new Heading
-                    {
-                        Level = 1,
-                        Content = title,
-
-                        // todo: get title precise line info
-                        SourceInfo = new SourceInfo(file.FilePath, 0, 0),
-                    },
-                };
-
-            var validationContext = new ValidationContext { DocumentType = string.IsNullOrEmpty(file.Mime) ? "conceptual" : file.Mime.Value! };
-            context.DocsValidator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult();
         }
     }
 }

@@ -62,20 +62,6 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public bool Write(IEnumerable<ValidationError> validationErrors)
-        {
-            return Write(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, e.Message, (SourceInfo?)e.SourceInfo)));
-
-            static ErrorLevel GetLevel(ValidationSeverity severity) =>
-                severity switch
-                {
-                    ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
-                    ValidationSeverity.WARNING => ErrorLevel.Warning,
-                    ValidationSeverity.ERROR => ErrorLevel.Error,
-                    _ => ErrorLevel.Off
-                };
-        }
-
         public bool Write(IEnumerable<Error> errors)
         {
             var hasErrors = false;
