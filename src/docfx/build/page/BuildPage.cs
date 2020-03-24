@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
 
-            if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
+            if (IsCustomized404Page(file))
             {
                 // custom 404 page is not supported
                 errors.Add(Errors.Content.Custom404Page(file));
@@ -186,6 +186,11 @@ namespace Microsoft.Docs.Build
 
             systemMetadata.SearchProduct = context.Config.Product;
             systemMetadata.SearchDocsetName = context.Config.Name;
+
+            if (IsCustomized404Page(file))
+            {
+                systemMetadata.Robots = "NOINDEX, NOFOLLOW";
+            }
 
             if (context.Config.OutputPdf)
             {
@@ -376,6 +381,11 @@ namespace Microsoft.Docs.Build
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);
             return CreateHtmlContent(context, htmlDom);
+        }
+
+        private static bool IsCustomized404Page(Document file)
+        {
+            return Path.GetFileName(file.FilePath.Path).Equals("404.md", PathUtility.PathComparison);
         }
     }
 }

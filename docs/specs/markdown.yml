@@ -563,13 +563,16 @@ outputs:
     ["warning","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
     ["warning","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]
 ---
-# custom 404 page is not supported
+# Report warning for custom 404 page
 inputs:
   docfx.yml:
   docs/404.md:
 outputs:
-  docs/404.json:
-  .errors.log: |
+  docs/404.json: |
+    {
+      "robots": "NOINDEX, NOFOLLOW"
+    }
+  .errors.log: | 
     ["warning","custom-404-page","Custom 404 page is not supported","docs/404.md"]
 ---
 # bookmark as HTML predefined url
