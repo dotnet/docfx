@@ -49,6 +49,29 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p>DEP</p>"}
 ---
+# Dependency resolve when includeInBuild is case insensitive on windows and mac
+os: windows, osx
+repos:
+  https://github.com/dep-include-in-build/casing:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{ "build_source_folder": "OfficeUpdates" }],
+            "dependent_repositories": [{
+                "path_to_root": "OfficeUpdates/common",
+                "url": "https://github.com/dep-include-in-build/casing-diff",
+                "include_in_build": true
+              }]
+          }
+        OfficeUpdates/docfx.yml: |
+  https://github.com/dep-include-in-build/casing-diff:
+    - files:
+        Office/a.md: '[](media/icons/small-business.svg)'
+        Office/media/icons/Small-business.svg: "SVG"
+outputs:
+  OfficeUpdates/common/office/a.json:
+  OfficeUpdates/common/office/media/icons/small-business.svg: "SVG"
+---
 # Route config is case insensitive on windows and mac
 os: windows, osx
 inputs:

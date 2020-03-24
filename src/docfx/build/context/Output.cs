@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
             using var sourceStream = _input.ReadStream(file);
             using var targetStream = File.Create(targetPhysicalPath);
             sourceStream.CopyTo(targetStream);
+            sourceStream.Flush();
         }
 
         public void Delete(string destRelativePath, bool legacy = false)

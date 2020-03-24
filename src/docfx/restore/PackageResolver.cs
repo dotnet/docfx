@@ -138,6 +138,7 @@ namespace Microsoft.Docs.Build
 
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
+            GitUtility.AddRemote(cwd, "origin", url);
 
             // Remove git lock files if previous build was killed during git operation
             DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));
