@@ -13,6 +13,9 @@ namespace Microsoft.Docs.Build
     {
         public static string GenerateJsonSchema(string rulesContent, string allowlistsContent)
         {
+            Log.Write(rulesContent);
+            Log.Write(allowlistsContent);
+
             var rules = JsonConvert.DeserializeObject<Rules>(rulesContent);
             if (rules == null || rules.Count == 0)
             {
@@ -106,7 +109,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return JsonConvert.SerializeObject(schema, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            var jsonSchema = JsonConvert.SerializeObject(schema, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            Log.Write(jsonSchema);
+            return jsonSchema;
         }
 
         private static bool TryGetAttributeAdditionalErrors(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeAdditionalErrorsErrors)
