@@ -248,3 +248,107 @@ repos:
         ContentTemplate/schemas/TestLocTemplate.schema.json: "{}"
 outputs:
   a.json:
+---
+# Support <xref> tag in mustache template
+legacy: true
+inputs:
+  docfx.yml: |
+    xref: xrefmap.yml
+  xrefmap.yml: |
+    references:
+      - uid: uid1
+        name: uid1-name
+        href: https://docs.com/uid1
+      - uid: uid2
+        name: uid2-name
+        href: https://docs.com/uid2
+    
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "contentType": "xref"
+        },
+        "uid": {
+          "type": "string",
+          "contentType": "xref"
+        },
+        "uids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "contentType": "xref"
+          }
+        },
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "contentType": "xref"
+          }
+        }
+      }
+    }
+  _themes/ContentTemplate/xref-partial.tmpl.partial: |
+    <a href="{{href}}" class="partial"> {{name}} </a>
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <p>
+      <xref uid="{{uid}}" />
+      <xref uid="{{namespace}}" template="xref-partial.tmpl.partial" />
+      {{#uids}}
+        <xref uid="{{.}}" />
+      {{/uids}}
+      {{#namespaces}}
+        <xref uid="{{.}}" template="xref-partial.tmpl.partial"/>
+      {{/namespaces}}
+    </p>
+  uid-resolve.yml: |
+    ### YamlMime: TestPage
+    uid: uid1
+  uid-unresolve.yml: |
+    ### YamlMime: TestPage
+    uid: unresolve
+  uid-partial-resolve.yml: |
+    ### YamlMime: TestPage
+    namespace: uid1
+  uid-partial-unresolve.yml: |
+    ### YamlMime: TestPage
+    namespace: unresolve
+  uid-list.yml: |
+    ### YamlMime: TestPage
+    uids:
+      - uid1
+      - unresolve
+      - uid2
+  uid-list-partial.yml: |
+    ### YamlMime: TestPage
+    namespaces:
+      - uid1
+      - unresolve
+      - uid2
+outputs:
+  uid-resolve.mta.json:
+  uid-resolve.raw.page.json: |
+    {"content": "<p> <a href=\"https://docs.com/uid1\" data-linktype=\"external\"> uid1 </a> </p> "}
+  uid-unresolve.mta.json:
+  uid-unresolve.raw.page.json: |
+    {"content": "<p> <span> unresolve </span> </p>"}
+  uid-partial-resolve.mta.json:
+  uid-partial-resolve.raw.page.json: |
+    {"content": "<p> <a href=\"https://docs.com/uid1\" class=\"partial\" data-linktype=\"external\"> uid1-name </a> </p>"}
+  uid-partial-unresolve.mta.json:
+  uid-partial-unresolve.raw.page.json: |
+    {"content": "<p> <span> unresolve </span> </p>"}
+  uid-list.mta.json:
+  uid-list.raw.page.json: |
+    {"content": "<p> <a href=\"https://docs.com/uid1\" data-linktype=\"external\"> uid1 </a> <span> unresolve </span> <a href=\"https://docs.com/uid2\" data-linktype=\"external\"> uid2 </a> </p> "}
+  uid-list-partial.mta.json:
+  uid-list-partial.raw.page.json: |
+    {"content": "<p> <a href=\"https://docs.com/uid1\" class=\"partial\" data-linktype=\"external\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docs.com/uid2\" class=\"partial\" data-linktype=\"external\"> uid2-name </a> </p> "}
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'","file":"uid-list.yml","line":4,"end_line":4,"column":5,"end_column":14}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'","file":"uid-list-partial.yml","line":4,"end_line":4,"column":5,"end_column":14}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'","file":"uid-partial-unresolve.yml","line":2,"end_line":2,"column":12,"end_column":21}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'","file":"uid-unresolve.yml","line":2,"end_line":2,"column":6,"end_column":15}
