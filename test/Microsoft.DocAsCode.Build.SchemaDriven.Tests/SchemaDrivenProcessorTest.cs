@@ -483,9 +483,8 @@ uid: invalid.azure.hello2
                     ["patterned:uid"] = JArray.FromObject(new List<string> { "^azure\\..*" })
                 },
             }));
-            Assert.Equal("InvalidPropertyFormat", exception.Code);
 
-            Assert.Equal(0, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
+            Assert.Equal(2, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
         }
 
         [Fact]

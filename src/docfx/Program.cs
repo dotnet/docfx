@@ -113,9 +113,8 @@ namespace Microsoft.DocAsCode
 
         private static void LogExceptionError(Exception exception)
         {
-            if (exception is DocumentException documentException)
+            if (exception is DocumentException)
             {
-                Logger.LogError(documentException.Message, code: documentException.Code ?? ErrorCodes.Build.DocumentError);
                 return;
             }
             else if (exception is DocfxException docfxException)

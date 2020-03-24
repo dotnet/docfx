@@ -89,7 +89,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
             catch (Exception e)
             {
-                throw new DocumentException($"{file} is not a valid TOC File: {e.Message}", e);
+                var message = $"{file} is not a valid TOC File: {e.Message}";
+                Logger.LogError(message, code: ErrorCodes.Build.InvalidTocFile);
+                throw new DocumentException(message, e);
             }
 
             throw new NotSupportedException($"{file} is not a valid TOC file, supported TOC files should be either \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");

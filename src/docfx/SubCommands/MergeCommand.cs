@@ -83,7 +83,13 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             config = CommandUtility.GetConfig<MergeConfig>(configFile).Item;
-            if (config == null) throw new DocumentException($"Unable to find build subcommand config in file '{configFile}'.");
+            if (config == null)
+            {
+                var message = $"Unable to find build subcommand config in file '{configFile}'.";
+                Logger.LogError(message, code: ErrorCodes.Build.BuildSubCommandConfigNotFound);
+                throw new DocumentException(message);
+            }
+
             for (int i = 0; i < config.Count; i++)
             {
                 var round = config[i];

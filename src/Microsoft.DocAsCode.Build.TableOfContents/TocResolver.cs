@@ -45,7 +45,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var file = wrapper.File;
             if (stack.Contains(file))
             {
-                throw new DocumentException($"Circular reference to {file.FullPath} is found in {stack.Peek().FullPath}");
+                var message = $"Circular reference to {file.FullPath} is found in {stack.Peek().FullPath}";
+                Logger.LogError(message, code: ErrorCodes.Build.CircularReferenceFound);
+                throw new DocumentException(message);
             }
 
             if (wrapper.Content == null)
@@ -115,12 +117,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 if (!string.IsNullOrEmpty(item.Homepage))
                 {
-                    throw new DocumentException(
-                        $"TopicHref should be used to specify the homepage for {item.TocHref} when tocHref is used.");
+                    var message = $"TopicHref should be used to specify the homepage for {item.TocHref} when tocHref is used.";
+                    Logger.LogError(message, code: ErrorCodes.Build.TopicHrefNotset);
+                    throw new DocumentException(message);
                 }
                 if (tocHrefType == HrefType.RelativeFile || tocHrefType == HrefType.RelativeFolder)
                 {
-                    throw new DocumentException($"TocHref {item.TocHref} only supports absolute path or local toc file.");
+                    var message = $"TocHref {item.TocHref} only supports absolute path or local toc file.";
+                    Logger.LogError(message, code: ErrorCodes.Build.UnsupportedTocHrefType);
+                    throw new DocumentException(message);
                 }
             }
 

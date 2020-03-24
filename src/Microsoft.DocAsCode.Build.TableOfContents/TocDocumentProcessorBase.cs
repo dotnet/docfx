@@ -164,7 +164,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var index = pathToFile.IndexOfAny(QueryStringOrAnchor);
             if (index == 0)
             {
-                throw new DocumentException($"Invalid toc link for {propertyName}: {originalPathToFile}.");
+                var message = $"Invalid toc link for {propertyName}: {originalPathToFile}.";
+                Logger.LogError(message, code: ErrorCodes.Build.InvalidTocLink);
+                throw new DocumentException(message);
             }
 
             var path = UriUtility.GetPath(pathToFile);

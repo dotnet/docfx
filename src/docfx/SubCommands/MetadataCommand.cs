@@ -88,7 +88,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
                 if (config == null)
                 {
-                    throw new DocumentException($"Unable to find metadata subcommand config in file '{configFile}'.");
+                    var message = $"Unable to find metadata subcommand config in file '{configFile}'.";
+                    Logger.LogError(message, code: ErrorCodes.Build.MetadataSubCommandConfigNotFound);
+                    throw new DocumentException(message);
                 }
 
                 baseDirectory = Path.GetDirectoryName(configFile);

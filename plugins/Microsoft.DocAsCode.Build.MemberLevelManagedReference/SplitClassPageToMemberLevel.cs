@@ -603,7 +603,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
             }
 
-            throw new DocumentException($"All the file name candidates {fileNames.ToDelimitedString()} exceed the maximum allowed file name length {MaximumFileNameLength}");
+            var message = $"All the file name candidates {fileNames.ToDelimitedString()} exceed the maximum allowed file name length {MaximumFileNameLength}";
+            Logger.LogError(message, code: ErrorCodes.Build.FileNamesMaxLengthExceeded);
+            throw new DocumentException(message);
         }
 
         private ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)

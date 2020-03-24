@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Plugins;
@@ -103,7 +103,9 @@
             public override string FilePath { get; }
             public override ParseState ApplyRules(ParseRule[] rules, ref string input, ref int lineNumber)
             {
-                throw new DocumentException($"Invalid toc file: {FilePath}, Details: {Message}");
+                var message = $"Invalid toc file: {FilePath}, Details: {Message}";
+                Logger.LogError(message, code: ErrorCodes.Build.InvalidTocFile);
+                throw new DocumentException(message);
             }
         }
 

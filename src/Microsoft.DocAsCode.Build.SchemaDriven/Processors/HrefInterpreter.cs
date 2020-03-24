@@ -37,7 +37,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             if (!Uri.TryCreate(val, UriKind.RelativeOrAbsolute, out Uri uri))
             {
-                throw new DocumentException($"{val} is not a valid href");
+                var message = $"{val} is not a valid href";
+                Logger.LogError(message, code: ErrorCodes.Build.InvalidHref);
+                throw new DocumentException(message);
             }
 
             // "/" is also considered as absolute to us

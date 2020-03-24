@@ -174,7 +174,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     }
                     catch (YamlDotNet.Core.YamlException e)
                     {
-                        throw new DocumentException($"{file.File} is not in supported format: {e.Message}", e);
+                        var message = $"{file.File} is not in supported format: {e.Message}";
+                        Logger.LogError(message, code: ErrorCodes.Build.UnsupportedFileFormat);
+                        throw new DocumentException(message, e);
                     }
                 case DocumentType.Overwrite:
                     return OverwriteDocumentReader.Read(file);

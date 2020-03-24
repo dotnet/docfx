@@ -10,26 +10,17 @@
         public string File { get; set; }
         public int Line { get; set; }
         public int Column { get; set; }
-        public string Code { get; set; }
 
         public DocumentException() { }
         public DocumentException(string message) : base(message) { }
-        public DocumentException(string message, string code) : this(message)
-        {
-            Code = code;
-        }
         public DocumentException(string message, Exception inner) : base(message, inner) { }
-        public DocumentException(string message, string code, Exception inner) : base(message, inner)
-        {
-            Code = code;
-        }
+        
         protected DocumentException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             Line = info.GetInt32(nameof(Line));
             Column = info.GetInt32(nameof(Column));
             File = info.GetString(nameof(File));
-            Code = info.GetString(nameof(Code));
         }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
@@ -40,7 +31,6 @@
             info.AddValue(nameof(Line), Line);
             info.AddValue(nameof(Column), Column);
             info.AddValue(nameof(File), File);
-            info.AddValue(nameof(Code), Code);
         }
 
         public static void RunAll(params Action[] actions)

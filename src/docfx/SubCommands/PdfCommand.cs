@@ -116,7 +116,9 @@ namespace Microsoft.DocAsCode.SubCommands
             config = CommandUtility.GetConfig<PdfConfig>(configFile).Item;
             if (config == null)
             {
-                throw new DocumentException($"Unable to find pdf subcommand config in file '{configFile}'.");
+                var message = $"Unable to find pdf subcommand config in file '{configFile}'.";
+                Logger.LogError(message, code: ErrorCodes.Build.PdfSubCommandConfigNotFound);
+                throw new DocumentException(message);
             }
 
             config.BaseDirectory = Path.GetDirectoryName(configFile);
