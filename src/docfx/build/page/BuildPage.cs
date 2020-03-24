@@ -45,12 +45,6 @@ namespace Microsoft.Docs.Build
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
 
-            if (IsCustomized404Page(file))
-            {
-                // custom 404 page is not supported
-                errors.Add(Errors.Content.Custom404Page(file));
-            }
-
             if (shouldWriteOutput && !context.Config.DryRun)
             {
                 if (output is string str)
@@ -190,6 +184,7 @@ namespace Microsoft.Docs.Build
             if (IsCustomized404Page(file))
             {
                 systemMetadata.Robots = "NOINDEX, NOFOLLOW";
+                errors.Add(Errors.Content.Custom404Page(file));
             }
 
             if (context.Config.OutputPdf)
