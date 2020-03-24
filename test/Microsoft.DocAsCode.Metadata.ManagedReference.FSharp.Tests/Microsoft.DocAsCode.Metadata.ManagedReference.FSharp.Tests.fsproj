@@ -38,7 +38,7 @@
   <ItemGroup>
     <PackageReference Include="FSharp.Compiler.Service" version="34.1.1" />
     <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" version="34.1.1" />
-    <PackageReference Update="System.ValueTuple" Version="4.4.0" />
+    <PackageReference Update="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
 </Project>
