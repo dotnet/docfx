@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 if (config == null)
                 {
                     var message = $"Unable to find metadata subcommand config in file '{configFile}'.";
-                    Logger.LogError(message, code: ErrorCodes.Build.MetadataSubCommandConfigNotFound);
+                    Logger.LogError(message, code: ErrorCodes.Config.MetadataConfigNotFound);
                     throw new DocumentException(message);
                 }
 

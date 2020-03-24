@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             catch (Exception e)
             {
                 var message = $"{file} is not a valid TOC File: {e.Message}";
-                Logger.LogError(message, code: ErrorCodes.Build.InvalidTocFile);
+                Logger.LogError(message, code: ErrorCodes.Toc.InvalidTocFile);
                 throw new DocumentException(message, e);
             }
 

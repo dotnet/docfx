@@ -165,7 +165,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             if (index == 0)
             {
                 var message = $"Invalid toc link for {propertyName}: {originalPathToFile}.";
-                Logger.LogError(message, code: ErrorCodes.Build.InvalidTocLink);
+                Logger.LogError(message, code: ErrorCodes.Toc.InvalidTocLink);
                 throw new DocumentException(message);
             }
 

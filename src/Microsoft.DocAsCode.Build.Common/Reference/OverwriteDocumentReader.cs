@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 catch (YamlException ye)
                 {
                     var message = $"Unable to deserialize YAML header from \"{s.Documentation.Path}\" Line {s.Documentation.StartLine} to TYPE {typeof(T).Name}: {ye.Message}";
-                    Logger.LogError(message, code: ErrorCodes.Build.InvalidYamlHeader);
+                    Logger.LogError(message, code: ErrorCodes.Overwrite.InvalidOverwriteDocument);
                     throw new DocumentException(message, ye);
                 }
             });

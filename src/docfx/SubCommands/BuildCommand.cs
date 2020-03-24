@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.SubCommands
             if (config == null)
             {
                 var message = $"Unable to find build subcommand config in file '{configFile}'.";
-                Logger.LogError(message, code: ErrorCodes.Build.BuildSubCommandConfigNotFound);
+                Logger.LogError(message, code: ErrorCodes.Config.BuildConfigNotFound);
                 throw new DocumentException(message);
             }
             config.BaseDirectory = Path.GetDirectoryName(configFile);

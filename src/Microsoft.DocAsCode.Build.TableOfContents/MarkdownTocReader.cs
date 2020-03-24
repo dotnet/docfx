@@ -104,7 +104,7 @@
             public override ParseState ApplyRules(ParseRule[] rules, ref string input, ref int lineNumber)
             {
                 var message = $"Invalid toc file: {FilePath}, Details: {Message}";
-                Logger.LogError(message, code: ErrorCodes.Build.InvalidTocFile);
+                Logger.LogError(message, code: ErrorCodes.Toc.InvalidMarkdownToc);
                 throw new DocumentException(message);
             }
         }

@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 catch (AggregateException agg) when (agg.InnerException is DocumentException)
                 {
-                    throw;
+                    throw new DocumentException(agg.InnerException.Message);
                 }
                 catch (DocfxException e)
                 {

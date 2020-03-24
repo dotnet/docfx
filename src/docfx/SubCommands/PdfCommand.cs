@@ -117,7 +117,7 @@ namespace Microsoft.DocAsCode.SubCommands
             if (config == null)
             {
                 var message = $"Unable to find pdf subcommand config in file '{configFile}'.";
-                Logger.LogError(message, code: ErrorCodes.Build.PdfSubCommandConfigNotFound);
+                Logger.LogError(message, code: ErrorCodes.Config.PdfConfigNotFound);
                 throw new DocumentException(message);
             }
 

@@ -11,24 +11,41 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidInputFile = "InvalidInputFile";
             public const string InvalidRelativePath = "InvalidRelativePath";
             public const string InvalidHref = "InvalidHref";
-            public const string InvalidTocLink = "InvalidTocLink";
-            public const string InvalidTocFile = "InvalidTocFile";
             public const string InternalUidNotFound = "InternalUidNotFound";
             public const string InvalidMarkdown = "InvalidMarkdown";
-            public const string BuildSubCommandConfigNotFound = "BuildSubCommandConfigNotFound";
-            public const string MetadataSubCommandConfigNotFound = "MetadataSubCommandConfigNotFound";
-            public const string PdfSubCommandConfigNotFound = "PdfSubCommandConfigNotFound";
             public const string FileNamesMaxLengthExceeded = "FileNamesMaxLengthExceeded";
             public const string UidFoundInMultipleArticles = "UidFoundInMultipleArticles";
-            public const string TemplateModelTransformError = "TemplateModelTransformError";
-            public const string InvalidYamlHeader = "InvalidYamlHeader";
-            public const string ApplyTemplateError = "ApplyTemplateError";
-            public const string OverwriteDocumentMergeError = "OverwriteDocumentMergeError";
             public const string UnsupportedTocHrefType = "UnsupportedTocHrefType";
             public const string TopicHrefNotset = "TopicHrefNotset";
-            public const string CircularReferenceFound = "CircularReferenceFound";
-            public const string UnsupportedFileFormat = "UnsupportedFileFormat";
+            public const string InvalidYamlFile = "InvalidYamlFile";
             public const string FatalError = "FatalError";
+        }
+
+        public static class Toc
+        {
+            public const string InvalidMarkdownToc = "InvalidMarkdownToc";
+            public const string InvalidTocLink = "InvalidTocLink";
+            public const string InvalidTocFile = "InvalidTocFile";
+            public const string CircularReferenceFound = "CircularReferenceFound";
+        }
+
+        public static class Config
+        {
+            public const string BuildConfigNotFound = "BuildConfigNotFound";
+            public const string MetadataConfigNotFound = "MetadataConfigNotFound";
+            public const string PdfConfigNotFound = "PdfConfigNotFound";
+        }
+
+        public static class Template
+        {
+            public const string ApplyTemplatePreprocessorError = "ApplyTemplatePreprocessorError";
+            public const string ApplyTemplateRendererError = "ApplyTemplateRendererError";
+        }
+
+        public static class Overwrite
+        {
+            public const string InvalidOverwriteDocument = "InvalidOverwriteDocument";
+            public const string OverwriteDocumentMergeError = "OverwriteDocumentMergeError";
         }
     }
 }
