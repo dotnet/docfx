@@ -36,25 +36,27 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
+            if (errors.Any(e => e.Level == ErrorLevel.Error))
+            {
+                context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
+                return errors;
+            }
+
+            var (outputErrors, output, metadata) = file.IsPage
+                ? CreatePageOutput(context, file, sourceModel)
+                : CreateDataOutput(context, file, sourceModel);
+            errors.AddRange(outputErrors);
+            publishItem.ExtensionData = metadata;
+
+            if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
+            {
+                // custom 404 page is not supported
+                errors.Add(Errors.Content.Custom404Page(file));
+            }
+
             lock (s_lock)
             {
                 var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
-
-                if (errors.Any(e => e.Level == ErrorLevel.Error))
-                    return errors;
-
-                var (outputErrors, output, metadata) = file.IsPage
-                    ? CreatePageOutput(context, file, sourceModel)
-                    : CreateDataOutput(context, file, sourceModel);
-                errors.AddRange(outputErrors);
-                publishItem.ExtensionData = metadata;
-
-                if (Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison))
-                {
-                    // custom 404 page is not supported
-                    errors.Add(Errors.Content.Custom404Page(file));
-                }
-
                 if (shouldWriteOutput && !context.Config.DryRun)
                 {
                     if (output is string str)
