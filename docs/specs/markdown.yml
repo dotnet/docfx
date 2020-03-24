@@ -572,7 +572,7 @@ outputs:
     {
       "robots": "NOINDEX, NOFOLLOW"
     }
-  .errors.log: | 
+  .errors.log: |
     ["warning","custom-404-page","Custom 404 page is not supported","docs/404.md"]
 ---
 # bookmark as HTML predefined url

@@ -148,6 +148,12 @@ namespace Microsoft.Docs.Build
             errors.AddIfNotNull(monikerError);
             systemMetadata.Monikers = monikers;
 
+            if (IsCustomized404Page(file))
+            {
+                systemMetadata.Robots = "NOINDEX, NOFOLLOW";
+                errors.Add(Errors.Content.Custom404Page(file));
+            }
+
             if (context.Config.DryRun)
             {
                 return (errors, systemMetadata);
@@ -180,12 +186,6 @@ namespace Microsoft.Docs.Build
 
             systemMetadata.SearchProduct = context.Config.Product;
             systemMetadata.SearchDocsetName = context.Config.Name;
-
-            if (IsCustomized404Page(file))
-            {
-                systemMetadata.Robots = "NOINDEX, NOFOLLOW";
-                errors.Add(Errors.Content.Custom404Page(file));
-            }
 
             if (context.Config.OutputPdf)
             {

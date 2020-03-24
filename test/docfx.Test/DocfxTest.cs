@@ -191,9 +191,11 @@ namespace Microsoft.Docs.Build
                 expectedOutputs[".errors.log"] = JValue.CreateUndefined();
             }
 
-            var actualOutputs = Directory
-                .GetFiles(outputPath, "*", SearchOption.AllDirectories)
-                .ToDictionary(file => Path.GetRelativePath(outputPath, file).Replace('\\', '/'), File.ReadAllText);
+            var actualOutputs = Directory.Exists(outputPath)
+                ? Directory
+                    .GetFiles(outputPath, "*", SearchOption.AllDirectories)
+                    .ToDictionary(file => Path.GetRelativePath(outputPath, file).Replace('\\', '/'), File.ReadAllText)
+                : new Dictionary<string, string>();
 
             s_jsonDiff.Verify(expectedOutputs, actualOutputs);
         }
