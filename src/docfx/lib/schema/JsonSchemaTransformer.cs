@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
                         return (errors, specObj);
                     }
 
-                    return (errors, JValue.CreateString(content));
+                    return (errors, value);
             }
 
             return (errors, value);

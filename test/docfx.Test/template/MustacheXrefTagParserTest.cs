@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class XrefTagParserTest
+    public class MustacheXrefTagParserTest
     {
         [Theory]
         [InlineData("<xref uid='{{uid}}'/>",
@@ -55,12 +56,21 @@ namespace Microsoft.Docs.Build
             "  <span> {{.}} </span>" +
             "{{/href}}"
             )]
+        [InlineData("<xref no-uid='{{ . }}'/>", null)]
         public void ProcessXrefTag(string template, string expected)
         {
             template = template.Replace('\'', '"');
-            Assert.Equal(
-                Regex.Replace(expected.Replace('\'', '"'), @"(?<=\}) +| +(?=\{)", ""),
-                Regex.Replace(XrefTagParser.ProcessXrefTag(template), @"(?<=\}) +| +(?=\{)", ""));
+            if (expected != null)
+            {
+                Assert.Equal(
+                expected.Replace('\'', '"').Replace(" ", ""),
+                MustacheXrefTagParser.ProcessXrefTag("template-file", template).Replace(" ", ""));
+            }
+            else
+            {
+                Assert.Throws<NotSupportedException>(() => MustacheXrefTagParser.ProcessXrefTag("template-file", template));
+            }
+            
         }
     }
 }

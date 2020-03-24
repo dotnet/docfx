@@ -32,7 +32,9 @@ namespace Microsoft.Docs.Build
                 key => new Lazy<string?>(() =>
                 {
                     var fileName = Path.Combine(_templateDir, templateFileName);
-                    return File.Exists(fileName) ? XrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", "")) : null;
+                    return File.Exists(fileName)
+                    ? MustacheXrefTagParser.ProcessXrefTag(templateFileName, File.ReadAllText(fileName).Replace("\r", ""))
+                    : null;
                 })).Value;
             return template == null ? JsonUtility.Serialize(model) : _renderer.Render(template, model);
         }

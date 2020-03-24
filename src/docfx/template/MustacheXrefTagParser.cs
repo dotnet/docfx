@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class XrefTagParser
+    internal static class MustacheXrefTagParser
     {
         /// <summary>
         /// Using `href` property to indicate xref spec resolve success.
@@ -23,9 +23,10 @@ namespace Microsoft.Docs.Build
 
         private static readonly Regex s_xrefTagMatcher = new Regex(@"<xref(.*?)\/>", RegexOptions.IgnoreCase);
 
-        public static string ProcessXrefTag(string templateStr) => s_xrefTagMatcher.Replace(templateStr, ReplaceXrefTag);
+        public static string ProcessXrefTag(string tempalteFileName, string templateStr)
+            => s_xrefTagMatcher.Replace(templateStr, (match) => ReplaceXrefTag(match, tempalteFileName));
 
-        private static string ReplaceXrefTag(Match match)
+        private static string ReplaceXrefTag(Match match, string templateFileName)
         {
             var xrefTag = HtmlUtility.LoadHtml(match.Value).ChildNodes.FindFirst("xref");
             var uidName = default(string);
@@ -43,7 +44,12 @@ namespace Microsoft.Docs.Build
                 : "{{> " + partialName + "}}";
             var resultTemplate = XrefTagTemplate.Replace("@resolvedTag", resolvedTag);
 
-            if (uidName == ".")
+            if (uidName == null)
+            {
+                // TODO: uid may fallback to href in ProfileList
+                throw new NotSupportedException($"<xref> defined without uid in templte: {templateFileName}");
+            }
+            else if (uidName == ".")
             {
                 return resultTemplate;
             }
