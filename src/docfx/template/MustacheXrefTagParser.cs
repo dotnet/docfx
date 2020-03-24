@@ -29,10 +29,11 @@ namespace Microsoft.Docs.Build
         private static string ReplaceXrefTag(Match match, string templateFileName)
         {
             var xrefTag = HtmlUtility.LoadHtml(match.Value).ChildNodes.FindFirst("xref");
-            var uidName = default(string);
+            var uidName = "uid";
             var partialName = default(string);
             foreach (var attribute in xrefTag.Attributes)
             {
+                // TODO: uid may fallback to href in ProfileList
                 if (string.Equals(attribute.Name, "uid", StringComparison.OrdinalIgnoreCase))
                     uidName = attribute.Value.Trim(s_trimChars);
                 else if (string.Equals(attribute.Name, "template", StringComparison.OrdinalIgnoreCase))
@@ -44,12 +45,7 @@ namespace Microsoft.Docs.Build
                 : "{{> " + partialName + "}}";
             var resultTemplate = XrefTagTemplate.Replace("@resolvedTag", resolvedTag);
 
-            if (uidName == null)
-            {
-                // TODO: uid may fallback to href in ProfileList
-                throw new NotSupportedException($"<xref> defined without uid in templte: {templateFileName}");
-            }
-            else if (uidName == ".")
+            if (uidName == ".")
             {
                 return resultTemplate;
             }
