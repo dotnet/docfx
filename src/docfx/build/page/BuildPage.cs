@@ -385,7 +385,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsCustomized404Page(Document file)
         {
-            return Path.GetFileName(file.FilePath.Path).Equals("404.md", PathUtility.PathComparison);
+            return Path.GetFileNameWithoutExtension(file.FilePath.Path).Equals("404", PathUtility.PathComparison);
         }
     }
 }
