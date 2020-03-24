@@ -415,7 +415,7 @@ inputs:
     }
 outputs:
   docs/b.json: | 
-    {"xref": null}
+    {"xref": "a"}
   .errors.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
     ["warning","xref-not-found","Cross reference not found: 'a'","docs/b.json",3,13]
@@ -1225,7 +1225,7 @@ outputs:
        "children":[
           {
              "uid":"child1",
-             "xref":null
+             "xref":"a"
           },
           {
              "uid":"child2",
