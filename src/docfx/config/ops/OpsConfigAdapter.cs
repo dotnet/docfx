@@ -172,10 +172,15 @@ namespace Microsoft.Docs.Build
         private async Task<string> GetMetadataSchema(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
-            var rules = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
-            var allowlists = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+            var rules = await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
+            var allowlists = await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
+            Log.Write(rules);
+            Log.Write(allowlists);
+            var jsonSchema = OpsMetadataRuleConverter.GenerateJsonSchema(rules, allowlists);
+            Log.Write(jsonSchema);
+
+            return jsonSchema;
         }
 
         private static Dictionary<string, string> GetValidationServiceHeaders(Uri url)
