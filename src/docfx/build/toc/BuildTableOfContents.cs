@@ -8,8 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        private static readonly object s_lock = new object();
-
         public static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
@@ -36,9 +34,9 @@ namespace Microsoft.Docs.Build
                 model.Metadata.Monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            lock (s_lock)
+            context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem, () =>
             {
-                if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && !context.Config.DryRun)
+                if (!context.Config.DryRun)
                 {
                     if (context.Config.Legacy)
                     {
@@ -51,7 +49,7 @@ namespace Microsoft.Docs.Build
                         context.Output.WriteJson(outputPath, model);
                     }
                 }
-            }
+            });
 
             return errors;
         }

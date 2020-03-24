@@ -279,12 +279,11 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, IReadOnlyList<string>> files, List<string> conflictMonikers)
             {
-                var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
-                var message = conflictMonikers.Count != 0 && !nonVersion ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
+                var message = conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
                 return new Error(
-                    ErrorLevel.Error,
+                    ErrorLevel.Warning,
                     "publish-url-conflict",
-                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(nonVersion ? null : $"<{StringUtility.Join(file.Value)}>")}"))}");
+                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"))}");
             }
 
             /// <summary>

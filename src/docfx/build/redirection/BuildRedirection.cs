@@ -8,8 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildRedirection
     {
-        private static readonly object s_lock = new object();
-
         internal static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
@@ -28,9 +26,9 @@ namespace Microsoft.Docs.Build
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 
-            lock (s_lock)
+            context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem, () =>
             {
-                if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && publishItem.Path != null && !context.Config.DryRun)
+                if (publishItem.Path != null && !context.Config.DryRun)
                 {
                     var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
                     var metadata = new
@@ -41,11 +39,11 @@ namespace Microsoft.Docs.Build
                         is_dynamic_rendering = true,
                     };
 
-                    // Note: produce an empty output to make publish happy
-                    context.Output.WriteText(publishItem.Path, "{}");
+                        // Note: produce an empty output to make publish happy
+                        context.Output.WriteText(publishItem.Path, "{}");
                     context.Output.WriteJson(metadataPath, metadata);
                 }
-            }
+            });
 
             return errors;
         }

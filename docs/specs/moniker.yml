@@ -403,7 +403,7 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md [redirection]<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/a-old.md [redirection]<'netcore-1.1', 'netcore-1.2'>'"]
+    ["warning","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md [redirection]<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/a-old.md [redirection]<'netcore-1.1', 'netcore-1.2'>'"]
 ---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
 inputs:
@@ -438,7 +438,7 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.0', 'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'"]
+    ["warning","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.0', 'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'"]
 ---
 # With moniker range not defined in config, user should not define it in file metadata
 inputs:
@@ -733,7 +733,7 @@ outputs:
   .errors.log: |
     ["error","moniker-overlapping","Two or more documents with the same uid `a`('docs/v1/a.md', 'docs/v2/a.md') have defined overlapping moniker: 'netcore-2.0'"]
     ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'"]
-    ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'"]
+    ["warning","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'"]
   .xrefmap.json: | 
     {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
   .publish.json: |
@@ -1274,7 +1274,7 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md<'netcore-1.0', 'netcore-2.0'>', 'docs/v2/TOC.md<'netcore-2.0'>'"]
+    ["warning","publish-url-conflict","Two or more files of the same version('netcore-2.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md<'netcore-1.0', 'netcore-2.0'>', 'docs/v2/TOC.md<'netcore-2.0'>'"]
 ---
 # No intersection of config monikers and file monikers of TOC file
 inputs:
@@ -1388,7 +1388,7 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/c.png<'netcore-1.1', 'netcore-1.2'>'"]
+    ["warning","publish-url-conflict","Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/c.png<'netcore-1.1', 'netcore-1.2'>'"]
 ---
 # Invalid moniker definition
 inputs:
@@ -1538,9 +1538,9 @@ outputs:
       }
     }
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/b.png': 'docs/b.png<'NONE_VERSION'>', 'docs/v1/b.png<'netcore-1.0'>'"]
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md<'NONE_VERSION'>', 'docs/v1/a.md<'netcore-1.0'>'"]
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/toc.json': 'docs/TOC.md<'NONE_VERSION'>', 'docs/v1/TOC.md<'netcore-1.0'>'"]
+    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/b.png': 'docs/b.png<'NONE_VERSION'>', 'docs/v1/b.png<'netcore-1.0'>'"]
+    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md<'NONE_VERSION'>', 'docs/v1/a.md<'netcore-1.0'>'"]
+    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/toc.json': 'docs/TOC.md<'NONE_VERSION'>', 'docs/v1/TOC.md<'netcore-1.0'>'"]
 ---
 # monikers output should be stable
 inputs:

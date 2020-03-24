@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -10,19 +12,19 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModelBuilder
     {
-        public const string NonVersion = "NONE_VERSION";
-
+        private readonly Context _context;
         private readonly string _outputPath;
         private readonly Config _config;
         private readonly Output _output;
         private readonly ErrorLog _errorLog;
-        private readonly ConcurrentDictionary<string, ConcurrentHashSet<FilePath>> _outputPathConflicts = new ConcurrentDictionary<string, ConcurrentHashSet<FilePath>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<FilePath, IReadOnlyList<string>>> _filesBySiteUrl = new ConcurrentDictionary<string, ConcurrentDictionary<FilePath, IReadOnlyList<string>>>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, FilePath> _filesByOutputPath = new ConcurrentDictionary<string, FilePath>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<FilePath, PublishItem> _publishItems = new ConcurrentDictionary<FilePath, PublishItem>();
+        private readonly ConcurrentDictionary<PublishItemKey, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>> _outputConflicts
+            = new ConcurrentDictionary<PublishItemKey, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>>();
 
-        public PublishModelBuilder(string outputPath, Config config, Output output, ErrorLog errorLog)
+        private readonly Dictionary<FilePath, PublishItem> _publishItems = new Dictionary<FilePath, PublishItem>();
+
+        public PublishModelBuilder(Context context, string outputPath, Config config, Output output, ErrorLog errorLog)
         {
+            _context = context;
             _config = config;
             _output = output;
             _errorLog = errorLog;
@@ -34,73 +36,123 @@ namespace Microsoft.Docs.Build
             return _publishItems.TryGetValue(file, out var item) && !item.HasError;
         }
 
-        public bool TryAdd(FilePath file, PublishItem item)
+        public void AddOrUpdate(FilePath file, PublishItem item, Action? writeOutput = null)
         {
-            if (item.Path != null)
-            {
-                // Find output path conflicts
-                if (!_filesByOutputPath.TryAdd(item.Path, file))
+            var newKey = new PublishItemKey(item, file);
+            _outputConflicts.AddOrUpdate(
+                newKey,
+                key =>
                 {
-                    if (_filesByOutputPath.TryGetValue(item.Path, out var existingFile) && existingFile != file)
-                    {
-                        var conflictingHashSet = _outputPathConflicts.GetOrAdd(item.Path, _ => new ConcurrentHashSet<FilePath>());
-                        conflictingHashSet.TryAdd(existingFile);
-                        conflictingHashSet.TryAdd(file);
+                    writeOutput?.Invoke();
+                    return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(()
+                    => (file, item, ConflictingType.None, new ConcurrentDictionary<FilePath, IReadOnlyList<string>>()));
+                },
+                (key, existingValue) =>
+                {
+                    var (existingFile, existingPublishItem, conflictingTYpe, conflictingFiles) = existingValue.Value;
+                    conflictingFiles.TryAdd(existingFile, existingPublishItem.Monikers);
+                    conflictingFiles.TryAdd(file, item.Monikers);
 
+                    if (newKey.OutputPath != null && PathUtility.PathComparer.Compare(existingPublishItem.Path, newKey.OutputPath) == 0)
+                    {
                         // redirection file is preferred than source file
                         // otherwise, prefer the one based on FilePath
-                        if (file.Origin == FileOrigin.Redirection || (existingFile.Origin != FileOrigin.Redirection && file.CompareTo(existingFile) > 0))
+                        if (newKey.FilePath.Origin == FileOrigin.Redirection ||
+                            (existingFile.Origin != FileOrigin.Redirection && newKey.FilePath.CompareTo(existingFile) > 0))
                         {
-                            _filesByOutputPath[item.Path] = file;
-                            _publishItems.TryRemove(existingFile, out var _);
-                            _publishItems[file] = item;
-                            return true;
+                            writeOutput?.Invoke();
+                            return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
+                                () => (file, item, ConflictingType.OutputPathConflicts, conflictingFiles));
                         }
+                        return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
+                            () => (existingFile, existingPublishItem, ConflictingType.OutputPathConflicts, conflictingFiles));
                     }
-                    return false;
-                }
-            }
+                    else if (key.PublishUrlConflicts(newKey))
+                    {
+                        if (CompareMonikers(key.Monikers, newKey.Monikers) > 0 || newKey.FilePath.CompareTo(existingFile) > 0)
+                        {
+                            writeOutput?.Invoke();
+                            return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
+                                () => (file, item, ConflictingType.PublishUrlConflicts, conflictingFiles));
+                        }
+                        return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
+                            () => (existingFile, existingPublishItem, ConflictingType.PublishUrlConflicts, conflictingFiles));
+                    }
+                    return existingValue;
+                });
 
-            _publishItems[file] = item;
-            var monikers = item.Monikers;
-            if (monikers.Length == 0)
+            int CompareMonikers(string[] monikers, string[] otherMonikers)
             {
-                monikers = new[] { NonVersion };
-            }
-            _filesBySiteUrl.GetOrAdd(item.Url, _ => new ConcurrentDictionary<FilePath, IReadOnlyList<string>>()).TryAdd(file, monikers);
+                if (monikers.Length == 0)
+                {
+                    if (otherMonikers.Length == 0)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+                else if (otherMonikers.Length == 0)
+                {
+                    return -1;
+                }
 
-            return true;
+                // monikers are sorted already
+                var index = 0;
+                while (index < monikers.Length)
+                {
+                    if (index >= otherMonikers.Length)
+                    {
+                        return 1;
+                    }
+                    var result = _context.MonikerProvider.Comparer.Compare(monikers[index], otherMonikers[index]);
+                    if (result != 0)
+                    {
+                        return result;
+                    }
+                    index += 1;
+                }
+                if (otherMonikers.Length >= index)
+                {
+                    return -1;
+                }
+                return 0;
+            }
         }
 
         public (List<Error> errors, PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var errors = new List<Error>();
 
-            // Handle publish url conflicts
-            foreach (var (siteUrl, files) in _filesBySiteUrl)
+            // Handle conflicts
+            foreach (var (key, conflict) in _outputConflicts)
             {
-                var conflictMoniker = files
+                var (existingFile, existingPublishItem, conflictingTYpe, conflictingFiles) = conflict.Value;
+                var conflictMoniker = conflictingFiles
                     .SelectMany(file => file.Value)
                     .GroupBy(moniker => moniker)
                     .Where(group => group.Count() > 1)
                     .Select(group => group.Key)
                     .ToList();
-
-                if (conflictMoniker.Count != 0
-                    || (files.Count > 1 && files.Any(file => file.Value.Contains(NonVersion))))
+                _publishItems.Add(existingFile, existingPublishItem);
+                if (conflictingTYpe == ConflictingType.OutputPathConflicts)
                 {
-                    errors.Add(Errors.UrlPath.PublishUrlConflict(siteUrl, files, conflictMoniker));
-                    foreach (var conflictingFile in files.Keys)
-                    {
-                        DeleteOutput(conflictingFile);
-                    }
+                    errors.Add(Errors.UrlPath.OutputPathConflict(key.OutputPath, conflictingFiles.Keys));
                 }
-            }
-
-            // Handle output path conflicts
-            foreach (var (outputPath, conflict) in _outputPathConflicts)
-            {
-                errors.Add(Errors.UrlPath.OutputPathConflict(outputPath, conflict.ToHashSet()));
+                else if (conflictingTYpe == ConflictingType.PublishUrlConflicts)
+                {
+                    // for the same publish url, output path could be different
+                    foreach (var conflictingFile in conflictingFiles.Keys)
+                    {
+                        if (conflictingFile.CompareTo(key.FilePath) != 0)
+                        {
+                            DeleteOutput(conflictingFile);
+                        }
+                    }
+                    errors.Add(Errors.UrlPath.PublishUrlConflict(key.SiteUrl, conflictingFiles, conflictMoniker));
+                }
             }
 
             // Delete files with errors from output
@@ -149,6 +201,58 @@ namespace Microsoft.Docs.Build
         {
             var outputFilePath = PathUtility.NormalizeFolder(Path.Combine(_outputPath, path));
             return outputFilePath.StartsWith(_outputPath);
+        }
+
+        private enum ConflictingType
+        {
+            None,
+            OutputPathConflicts,
+            PublishUrlConflicts,
+        }
+
+        private class PublishItemKey : IEquatable<PublishItemKey>
+        {
+            public string[] Monikers { get; } = Array.Empty<string>();
+
+            public string OutputPath { get; }
+
+            public string SiteUrl { get; } = "";
+
+            public FilePath FilePath { get; }
+
+            public PublishItemKey(PublishItem item, FilePath file)
+            {
+                Debug.Assert(item != null);
+                Monikers = item.Monikers;
+                OutputPath = item.Path;
+                SiteUrl = item.Url;
+                FilePath = file;
+            }
+
+            public bool Equals(PublishItemKey? other)
+            {
+                if (other is null)
+                {
+                    return false;
+                }
+
+                return OutputPathConflicts(other) || PublishUrlConflicts(other);
+            }
+
+            public override bool Equals(object? obj)
+                => Equals(obj as PublishItemKey);
+
+            public override int GetHashCode()
+                => PathUtility.PathComparer.GetHashCode(SiteUrl);
+
+            public bool PublishUrlConflicts(PublishItemKey other)
+                => PathUtility.PathComparer.Compare(SiteUrl, other.SiteUrl) == 0
+                    && (Monikers.Length == 0
+                    || other.Monikers.Length == 0
+                    || Monikers.Intersect(other.Monikers).Any());
+
+            private bool OutputPathConflicts(PublishItemKey other)
+                => OutputPath != null && PathUtility.PathComparer.Compare(OutputPath, other.OutputPath) == 0;
         }
     }
 }

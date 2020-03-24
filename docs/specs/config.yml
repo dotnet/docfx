@@ -413,7 +413,7 @@ inputs:
 outputs:
   .publish.json:
   .errors.log: |
-      ["error","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]
+      ["warning","publish-url-conflict","Two or more files publish to the same url '/a.png': 'a.png', 'docs/a.png'"]
 ---
 # dependencyPackageUrl path using git url won't restore the git repo
 repos:

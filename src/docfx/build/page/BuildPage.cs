@@ -12,8 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        private static readonly object s_lock = new object();
-
         public static List<Error> Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
@@ -38,7 +36,7 @@ namespace Microsoft.Docs.Build
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
-                context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
+                context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem);
                 return errors;
             }
 
@@ -54,10 +52,9 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
-            lock (s_lock)
+            context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem, () =>
             {
-                var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
-                if (shouldWriteOutput && !context.Config.DryRun)
+                if (!context.Config.DryRun)
                 {
                     if (output is string str)
                     {
@@ -74,7 +71,7 @@ namespace Microsoft.Docs.Build
                         context.Output.WriteJson(metadataPath, metadata);
                     }
                 }
-            }
+            });
 
             return errors;
         }
