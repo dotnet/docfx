@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var jsonSchema = JsonConvert.SerializeObject(schema, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            var jsonSchema = JsonConvert.SerializeObject(schema, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             Log.Write(jsonSchema);
             return jsonSchema;
         }
