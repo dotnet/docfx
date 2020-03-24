@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 {
                     var fileName = Path.Combine(_templateDir, templateFileName);
                     return File.Exists(fileName)
-                    ? MustacheXrefTagParser.ProcessXrefTag(templateFileName, File.ReadAllText(fileName).Replace("\r", ""))
+                    ? MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""))
                     : null;
                 })).Value;
             return template == null ? JsonUtility.Serialize(model) : _renderer.Render(template, model);

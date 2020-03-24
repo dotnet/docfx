@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             template = template.Replace('\'', '"');
             Assert.Equal(
             expected.Replace('\'', '"').Replace(" ", ""),
-            MustacheXrefTagParser.ProcessXrefTag("template-file", template).Replace(" ", ""));
+            MustacheXrefTagParser.ProcessXrefTag(template).Replace(" ", ""));
             
         }
     }

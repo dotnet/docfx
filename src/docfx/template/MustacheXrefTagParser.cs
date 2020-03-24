@@ -23,10 +23,10 @@ namespace Microsoft.Docs.Build
 
         private static readonly Regex s_xrefTagMatcher = new Regex(@"<xref(.*?)\/>", RegexOptions.IgnoreCase);
 
-        public static string ProcessXrefTag(string tempalteFileName, string templateStr)
-            => s_xrefTagMatcher.Replace(templateStr, (match) => ReplaceXrefTag(match, tempalteFileName));
+        public static string ProcessXrefTag(string templateStr)
+            => s_xrefTagMatcher.Replace(templateStr, ReplaceXrefTag);
 
-        private static string ReplaceXrefTag(Match match, string templateFileName)
+        private static string ReplaceXrefTag(Match match)
         {
             var xrefTag = HtmlUtility.LoadHtml(match.Value).ChildNodes.FindFirst("xref");
             var uidName = "uid";
