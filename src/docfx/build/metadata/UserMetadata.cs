@@ -24,6 +24,8 @@ namespace Microsoft.Docs.Build
         [JsonProperty("_tocRel")]
         public string? TocRel { get; private set; }
 
+        public string? Robots { get; set; }
+
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();
     }
