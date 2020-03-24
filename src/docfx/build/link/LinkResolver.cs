@@ -280,7 +280,7 @@ namespace Microsoft.Docs.Build
             // resolve from fallback docset
             if (_fallbackDocset != null)
             {
-                path = new FilePath(pathToDocset, isGitHistory: false);
+                path = new FilePath(pathToDocset, isGitCommit: false);
                 if (_input.Exists(path))
                 {
                     return _documentProvider.GetDocument(path);
@@ -289,7 +289,7 @@ namespace Microsoft.Docs.Build
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
-                    path = new FilePath(pathToDocset, isGitHistory: true);
+                    path = new FilePath(pathToDocset, isGitCommit: true);
                     if (_input.Exists(path))
                     {
                         return _documentProvider.GetDocument(path);

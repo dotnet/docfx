@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         {
             var fullPath = GetFullPath(file);
 
-            return file.IsGitHistory ? ReadBytesFromGit(fullPath) != null : File.Exists(fullPath);
+            return file.IsGitCommit ? ReadBytesFromGit(fullPath) != null : File.Exists(fullPath);
         }
 
         public PathString GetFullPath(FilePath file)
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool TryGetPhysicalPath(FilePath file, [NotNullWhen(true)] out string? physicalPath)
         {
-            if (!file.IsGitHistory)
+            if (!file.IsGitCommit)
             {
                 var fullPath = GetFullPath(file);
                 if (File.Exists(fullPath))
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
         public Stream ReadStream(FilePath file)
         {
             var fullPath = GetFullPath(file);
-            if (!file.IsGitHistory)
+            if (!file.IsGitCommit)
             {
                 return File.OpenRead(fullPath);
             }
