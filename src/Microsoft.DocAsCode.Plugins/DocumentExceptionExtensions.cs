@@ -72,7 +72,7 @@
             }
             if (firstException != null)
             {
-                throw new DocumentException(firstException.Message, firstException.Code, firstException);
+                throw new DocumentException(firstException.Message, firstException);
             }
         }
 
@@ -112,7 +112,7 @@
                 });
             if (firstException != null)
             {
-                throw new DocumentException(firstException.Message, firstException.Code, firstException);
+                throw new DocumentException(firstException.Message, firstException);
             }
         }
     }

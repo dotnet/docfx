@@ -110,7 +110,12 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             config = CommandUtility.GetConfig<BuildConfig>(configFile).Item;
-            if (config == null) throw new DocumentException($"Unable to find build subcommand config in file '{configFile}'.");
+            if (config == null)
+            {
+                var message = $"Unable to find build subcommand config in file '{configFile}'.";
+                Logger.LogError(message, code: ErrorCodes.Config.BuildConfigNotFound);
+                throw new DocumentException(message);
+            }
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);

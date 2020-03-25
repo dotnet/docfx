@@ -140,7 +140,9 @@ namespace Microsoft.DocAsCode.Build.Common
                 }
                 catch (YamlException ye)
                 {
-                    throw new DocumentException($"Unable to deserialize YAML header from \"{s.Documentation.Path}\" Line {s.Documentation.StartLine} to TYPE {typeof(T).Name}: {ye.Message}", ye);
+                    var message = $"Unable to deserialize YAML header from \"{s.Documentation.Path}\" Line {s.Documentation.StartLine} to TYPE {typeof(T).Name}: {ye.Message}";
+                    Logger.LogError(message, code: ErrorCodes.Overwrite.InvalidOverwriteDocument);
+                    throw new DocumentException(message, ye);
                 }
             });
         }
@@ -158,7 +160,9 @@ namespace Microsoft.DocAsCode.Build.Common
             }
             catch (Exception e)
             {
-                throw new DocumentException($"Error merging overwrite document from {model.OriginalFileAndType}: {e.Message}", e);
+                var message = $"Error merging overwrite document from {model.OriginalFileAndType}: {e.Message}";
+                Logger.LogError(message, code: ErrorCodes.Overwrite.OverwriteDocumentMergeError);
+                throw new DocumentException(message, e);
             }
 
             return baseModel;

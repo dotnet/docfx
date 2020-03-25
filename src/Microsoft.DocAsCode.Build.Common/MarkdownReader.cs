@@ -101,6 +101,7 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 Debug.Fail("Markup failed!");
                 var message = $"Markup failed: {ex.Message}.";
+                Logger.LogError(message, code: ErrorCodes.Build.InvalidMarkdown);
                 throw new DocumentException(message, ex);
             }
         }
