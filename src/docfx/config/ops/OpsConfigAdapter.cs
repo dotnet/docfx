@@ -141,11 +141,11 @@ namespace Microsoft.Docs.Build
             }
             return environment switch
             {
-                    DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
-                    DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
-                    DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
-                    DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
-                    _ => throw new NotSupportedException()
+                DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
+                DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
+                DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
+                DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
+                _ => throw new NotSupportedException()
             };
         }
 
@@ -259,42 +259,38 @@ namespace Microsoft.Docs.Build
 
         private static string GetHostName(string siteName)
         {
-            switch (siteName)
+            return siteName switch
             {
-                case "DocsAzureCN":
-                    return s_docsEnvironment switch
-                    {
-                        DocsEnvironment.Prod => "docs.azure.cn",
-                        DocsEnvironment.PPE => "ppe.docs.azure.cn",
-                        DocsEnvironment.Internal => "ppe.docs.azure.cn",
-                        DocsEnvironment.Perf => "ppe.docs.azure.cn",
-                        _ => throw new NotSupportedException()
-                    };
-                case "dev.microsoft.com":
-                    return s_docsEnvironment switch
-                    {
-                        DocsEnvironment.Prod => "developer.microsoft.com",
-                        DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
-                        DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
-                        DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
-                        _ => throw new NotSupportedException()
-                    };
-                case "rd.microsoft.com":
-                    return s_docsEnvironment switch
-                    {
-                        DocsEnvironment.Prod => "rd.microsoft.com",
-                        _ => throw new NotSupportedException()
-                    };
-                default:
-                    return s_docsEnvironment switch
-                    {
-                        DocsEnvironment.Prod => "docs.microsoft.com",
-                        DocsEnvironment.PPE => "ppe.docs.microsoft.com",
-                        DocsEnvironment.Internal => "ppe.docs.microsoft.com",
-                        DocsEnvironment.Perf => "ppe.docs.microsoft.com",
-                        _ => throw new NotSupportedException()
-                    };
-            }
+                "DocsAzureCN" => s_docsEnvironment switch
+                {
+                    DocsEnvironment.Prod => "docs.azure.cn",
+                    DocsEnvironment.PPE => "ppe.docs.azure.cn",
+                    DocsEnvironment.Internal => "ppe.docs.azure.cn",
+                    DocsEnvironment.Perf => "ppe.docs.azure.cn",
+                    _ => throw new NotSupportedException()
+                },
+                "dev.microsoft.com" => s_docsEnvironment switch
+                {
+                    DocsEnvironment.Prod => "developer.microsoft.com",
+                    DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
+                    DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
+                    DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
+                    _ => throw new NotSupportedException()
+                },
+                "rd.microsoft.com" => s_docsEnvironment switch
+                {
+                    DocsEnvironment.Prod => "rd.microsoft.com",
+                    _ => throw new NotSupportedException()
+                },
+                _ => s_docsEnvironment switch
+                {
+                    DocsEnvironment.Prod => "docs.microsoft.com",
+                    DocsEnvironment.PPE => "ppe.docs.microsoft.com",
+                    DocsEnvironment.Internal => "ppe.docs.microsoft.com",
+                    DocsEnvironment.Perf => "ppe.docs.microsoft.com",
+                    _ => throw new NotSupportedException()
+                },
+            };
         }
 
         private static string GetXrefHostName(string siteName, string branch)

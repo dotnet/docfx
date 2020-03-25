@@ -120,12 +120,15 @@ outputs:
 # Resolve <a> and <img> tags embedded inside markdown
 inputs:
   docfx.yml:
-  docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
+  docs/a.md: |
+    <a href="">Empty string</a>
+    <a href=" ">Space</a>
+    Link to <a href="b.md " target="_blank"><em>b</em></a>
   docs/b.md: <div>Link to <img src="c.png" /></div>
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
+    { "conceptual": "<p><a href=\"\">Empty string</a><a href=\"\">Space</a>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
   docs/b.json: |
     { "conceptual": "<div>Link to <img src=\"c.png\" /></div>" }
   docs/c.png:

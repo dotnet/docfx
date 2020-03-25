@@ -396,6 +396,17 @@
                 "severity": "SUGGESTION",
                 "code": "duplicate-description-within-docset",
                 "additionalErrorMessage": "Description must be unique within a docset."
+            },
+            {
+                "type": "Length",
+                "contentTypes": [
+                  "conceptual"
+                ],
+                "MinLength":  2,
+                "MaxLength": 10,
+                "severity": "SUGGESTION",
+                "code": "description-bad-length",
+                "additionalErrorMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
             }
         ]
     }

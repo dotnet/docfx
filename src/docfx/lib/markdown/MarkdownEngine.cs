@@ -39,15 +39,7 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
-            _markdownValidationRules = config.MarkdownValidationRules;
-            if (!string.IsNullOrEmpty(_markdownValidationRules))
-            {
-                using var stream = fileResolver.ReadStream(config.MarkdownValidationRules);
-
-                // TODO: validation rules currently only supports physical file.
-                _markdownValidationRules = ((FileStream)stream).Name;
-            }
-
+            _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),

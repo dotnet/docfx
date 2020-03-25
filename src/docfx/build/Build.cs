@@ -25,6 +25,12 @@ namespace Microsoft.Docs.Build
             var hasError = false;
             Parallel.ForEach(docsets, docset =>
             {
+                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options))
+                {
+                    hasError = true;
+                    return;
+                }
+
                 if (BuildDocset(docset.docsetPath, docset.outputPath, options))
                 {
                     hasError = true;
@@ -51,7 +57,7 @@ namespace Microsoft.Docs.Build
                 var configLoader = new ConfigLoader(repository, errorLog);
                 (errors, config) = configLoader.Load(docsetPath, locale, options);
                 if (errorLog.Write(errors))
-                    return false;
+                    return true;
 
                 using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
                 var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
@@ -65,12 +71,11 @@ namespace Microsoft.Docs.Build
                 // run build based on docsets
                 outputPath ??= Path.Combine(docsetPath, config.OutputPath);
                 Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
-                return true;
+                return false;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errorLog.Write(dex);
-                return false;
+                return errorLog.Write(dex);
             }
             finally
             {
@@ -101,6 +106,7 @@ namespace Microsoft.Docs.Build
             }
 
             context.BookmarkValidator.Validate();
+            context.ContentValidator.PostValidate();
             context.ErrorLog.Write(context.MetadataProvider.Validate());
 
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
