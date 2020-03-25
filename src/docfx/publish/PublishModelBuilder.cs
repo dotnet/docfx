@@ -12,14 +12,13 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModelBuilder
     {
-        private readonly object _lock = new object();
         private readonly Context _context;
         private readonly string _outputPath;
         private readonly Config _config;
         private readonly Output _output;
         private readonly ErrorLog _errorLog;
-        private readonly ConcurrentDictionary<PublishItemKey, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>> _outputConflicts
-            = new ConcurrentDictionary<PublishItemKey, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>>();
+        private readonly ConcurrentDictionary<PublishItemKey, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)>> _outputConflicts
+            = new ConcurrentDictionary<PublishItemKey, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)>>();
 
         private readonly Dictionary<FilePath, PublishItem> _publishItems = new Dictionary<FilePath, PublishItem>();
 
@@ -40,13 +39,10 @@ namespace Microsoft.Docs.Build
         public void AddOrUpdate(FilePath file, PublishItem item, Action? writeOutput = null)
         {
             var newKey = new PublishItemKey(item, file);
-            lock (_lock)
-            {
-                _outputConflicts.AddOrUpdate(
-                    newKey,
-                    key => Add(file, item, writeOutput),
-                    (key, existingValue) => Update(file, item, writeOutput, existingValue, newKey));
-            }
+            _outputConflicts.AddOrUpdate(
+                newKey,
+                key => Add(file, item, writeOutput),
+                (key, existingValue) => Update(file, item, writeOutput, existingValue, newKey));
         }
 
         public (List<Error> errors, PublishModel, Dictionary<FilePath, PublishItem>) Build()
@@ -58,7 +54,7 @@ namespace Microsoft.Docs.Build
             {
                 var (existingFile, existingPublishItem, conflictingTYpe, conflictingFiles) = conflict.Value;
                 var conflictMoniker = conflictingFiles
-                    .SelectMany(file => file.Value)
+                    .SelectMany(file => file.Value.Item2)
                     .GroupBy(moniker => moniker)
                     .Where(group => group.Count() > 1)
                     .Select(group => group.Key)
@@ -70,7 +66,20 @@ namespace Microsoft.Docs.Build
                 }
                 else if (conflictingTYpe == ConflictingType.PublishUrlConflicts)
                 {
-                    errors.Add(Errors.UrlPath.PublishUrlConflict(key.SiteUrl, conflictingFiles, conflictMoniker));
+                    foreach (var (conflictingFile, (conflictingOutputPath, _)) in conflictingFiles)
+                    {
+                        // delete output path from pervious moniker
+                        if (!_config.DryRun
+                            && conflictingOutputPath != null
+                            && conflictingOutputPath.CompareTo(existingPublishItem.Path) != 0
+                            && IsInsideOutputFolder(conflictingOutputPath))
+                        {
+                            _output.Delete(conflictingOutputPath, _config.Legacy);
+                        }
+                    }
+
+                    var conflicts = conflictingFiles.ToDictionary(keyValuePair => keyValuePair.Key, keyValuePair => keyValuePair.Value.Item2);
+                    errors.Add(Errors.UrlPath.PublishUrlConflict(key.SiteUrl, conflicts, conflictMoniker));
                 }
             }
 
@@ -105,60 +114,66 @@ namespace Microsoft.Docs.Build
             return (errors, model, fileManifests);
         }
 
-        private Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)> Add(FilePath file, PublishItem item, Action? writeOutput)
+        private Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)> Add(FilePath file, PublishItem item, Action? writeOutput)
         {
             if (!_config.DryRun)
             {
                 writeOutput?.Invoke();
             }
-            return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(()
-            => (file, item, ConflictingType.None, new ConcurrentDictionary<FilePath, IReadOnlyList<string>>()));
+            return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)>(()
+            => (file, item, ConflictingType.None, new ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>()));
         }
 
-        private Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)> Update(FilePath file, PublishItem item, Action? writeOutput, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)> existingValue, PublishItemKey newKey)
+        private Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)> Update(FilePath file, PublishItem item, Action? writeOutput, Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)> existingValue, PublishItemKey newKey)
         {
             var (existingFile, existingPublishItem, conflictingTYpe, conflictingFiles) = existingValue.Value;
-            conflictingFiles.TryAdd(existingFile, existingPublishItem.Monikers);
-            conflictingFiles.TryAdd(file, item.Monikers);
+            conflictingFiles.TryAdd(existingFile, (existingPublishItem.Path, existingPublishItem.Monikers));
+            conflictingFiles.TryAdd(file, (item.Path, item.Monikers));
 
             if (PublishItemKey.OutputPathConflicts(newKey.OutputPath, existingPublishItem.Path))
             {
-                // redirection file is preferred than source file
-                // otherwise, prefer the one based on FilePath
-                if (newKey.FilePath.Origin == FileOrigin.Redirection ||
-                    (existingFile.Origin != FileOrigin.Redirection && newKey.FilePath.CompareTo(existingFile) > 0))
-                {
-                    if (!_config.DryRun)
+                return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)>(
+                    () =>
                     {
-                        writeOutput?.Invoke();
-                    }
-                    return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
-                        () => (file, item, ConflictingType.OutputPathConflicts, conflictingFiles));
-                }
-                return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
-                    () => (existingFile, existingPublishItem, ConflictingType.OutputPathConflicts, conflictingFiles));
+                        // redirection file is preferred than source file
+                        // otherwise, prefer the one based on FilePath
+                        if (newKey.FilePath.Origin == FileOrigin.Redirection ||
+                            (existingFile.Origin != FileOrigin.Redirection && newKey.FilePath.CompareTo(existingFile) > 0))
+                        {
+                            if (!_config.DryRun)
+                            {
+                                writeOutput?.Invoke();
+                            }
+                            return (file, item, ConflictingType.OutputPathConflicts, conflictingFiles);
+                        }
+                        else
+                        {
+                            return (existingFile, existingPublishItem, ConflictingType.OutputPathConflicts, conflictingFiles);
+                        }
+                    });
             }
             else if (PublishItemKey.PublishUrlConflicts(newKey.SiteUrl, existingPublishItem.Url, newKey.Monikers, existingPublishItem.Monikers))
             {
-                var compareMoniker = CompareMonikers(newKey.Monikers, existingPublishItem.Monikers);
-                if (compareMoniker > 0
-                    || (compareMoniker == 0
-                        && (newKey.FilePath.Origin == FileOrigin.Redirection
-                            || (existingFile.Origin != FileOrigin.Redirection && newKey.FilePath.CompareTo(existingFile) > 0))))
-                {
-                    if (!_config.DryRun)
+                return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>)>(
+                    () =>
                     {
-                        // delete output path from pervious moniker
-                        if (existingPublishItem.Path != null && IsInsideOutputFolder(existingPublishItem.Path))
-                            _output.Delete(existingPublishItem.Path, _config.Legacy);
-
-                        writeOutput?.Invoke();
-                    }
-                    return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
-                        () => (file, item, ConflictingType.PublishUrlConflicts, conflictingFiles));
-                }
-                return new Lazy<(FilePath, PublishItem, ConflictingType, ConcurrentDictionary<FilePath, IReadOnlyList<string>>)>(
-                    () => (existingFile, existingPublishItem, ConflictingType.PublishUrlConflicts, conflictingFiles));
+                        var compareMoniker = CompareMonikers(newKey.Monikers, existingPublishItem.Monikers);
+                        if (compareMoniker > 0
+                            || (compareMoniker == 0
+                                && (newKey.FilePath.Origin == FileOrigin.Redirection
+                                    || (existingFile.Origin != FileOrigin.Redirection && newKey.FilePath.CompareTo(existingFile) > 0))))
+                        {
+                            if (!_config.DryRun)
+                            {
+                                writeOutput?.Invoke();
+                            }
+                            return (file, item, ConflictingType.PublishUrlConflicts, conflictingFiles);
+                        }
+                        else
+                        {
+                            return (existingFile, existingPublishItem, ConflictingType.PublishUrlConflicts, conflictingFiles);
+                        }
+                    });
             }
             return existingValue;
         }

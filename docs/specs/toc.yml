@@ -1247,7 +1247,7 @@ outputs:
   docs/toc.json: |
     {"items": [{"maintainContext": true, "expanded": true, "displayName": "display name"}]}
 ---
-# conflicted toc files will be removed from toc map and build outputs
+# conflicted toc files will be removed from toc map
 inputs:
   docfx.yml:
   docs/TOC.yml: |
