@@ -48,20 +48,21 @@ namespace Microsoft.Docs.Build
 
                     if (PublishItemComparer.OutputPathEquals(item, existingItem))
                     {
-
                         return new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>(
                             () =>
-                            {// redirection file is preferred than source file
-                             // otherwise, prefer the one based on FilePath
+                            {
+                                // redirection file is preferred than source file
+                                // otherwise, prefer the one based on FilePath
                                 if (file.Origin == FileOrigin.Redirection ||
                                     (existingFile != null && existingFile.Origin != FileOrigin.Redirection && file.CompareTo(existingFile) > 0))
                                 {
                                     return (item, writeLock, file, conflicts, ConflictingType.OutputPathConflicts);
                                 }
-                                else
+                                else if (existingItem != null && writeLock != null && existingFile != null)
                                 {
                                     return (existingItem, writeLock, existingFile, conflicts, ConflictingType.OutputPathConflicts);
                                 }
+                                return default;
                             });
                     }
 
@@ -79,7 +80,11 @@ namespace Microsoft.Docs.Build
                                     return (item, writeLock, file, conflicts, ConflictingType.PublishUrlConflicts);
                                 }
                             }
-                            return (existingItem, writeLock, existingFile, conflicts, ConflictingType.PublishUrlConflicts);
+                            else if (existingItem != null && writeLock != null && existingFile != null)
+                            {
+                                return (existingItem, writeLock, existingFile, conflicts, ConflictingType.PublishUrlConflicts);
+                            }
+                            return default;
                         });
                 }).Value;
 
