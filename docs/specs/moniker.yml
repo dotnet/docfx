@@ -1501,10 +1501,16 @@ inputs:
       docs/: .
       docs/v1/: .
     monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ![image](b.png)
   docs/v1/TOC.md:
     # [A](a.md)
+  docs/v1/b.png:
+  docs/a.md: |
+    ![image](b.png)
   docs/TOC.md:
     # [A](a.md)
+  docs/b.png:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -1512,14 +1518,20 @@ inputs:
       ]
     }
 outputs:
+  docs/a.json:
+  docs/b.png:
   docs/toc.json:
   .publish.json: |
     {
       "files":[
+        {"url":"/docs/a","moniker_group":undefined},
+        {"url":"/docs/b.png","moniker_group":undefined},
         {"url":"/docs/toc.json","moniker_group":undefined}
       ]
     }
   .errors.log: |
+    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/b.png': 'docs/b.png', 'docs/v1/b.png'"]
+    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md'"]
     ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/toc.json': 'docs/TOC.md', 'docs/v1/TOC.md'"]
 ---
 # monikers output should be stable

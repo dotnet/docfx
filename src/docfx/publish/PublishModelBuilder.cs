@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal partial class PublishModelBuilder
+    internal class PublishModelBuilder
     {
         private readonly string _outputPath;
         private readonly Config _config;
