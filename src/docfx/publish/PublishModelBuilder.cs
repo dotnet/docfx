@@ -58,18 +58,18 @@ namespace Microsoft.Docs.Build
                                 {
                                     return (item, writeLock, file, conflicts, ConflictingType.OutputPathConflicts);
                                 }
-                                else if (existingItem != null && writeLock != null && existingFile != null)
+                                if (existingItem != null && existingFile != null)
                                 {
                                     return (existingItem, writeLock, existingFile, conflicts, ConflictingType.OutputPathConflicts);
                                 }
-                                return default;
+                                throw new InvalidOperationException();
                             });
                     }
 
-                    return new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>(
-                        () =>
-                        {
-                            if (PublishItemComparer.PublishUrlEquals(item, existingItem))
+                    if (PublishItemComparer.PublishUrlEquals(item, existingItem))
+                    {
+                        return new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>(
+                            () =>
                             {
                                 var compareMoniker = CompareMonikerGroup(item.MonikerGroup, existingItem.MonikerGroup);
                                 if (compareMoniker > 0
@@ -79,13 +79,14 @@ namespace Microsoft.Docs.Build
                                 {
                                     return (item, writeLock, file, conflicts, ConflictingType.PublishUrlConflicts);
                                 }
-                            }
-                            else if (existingItem != null && writeLock != null && existingFile != null)
-                            {
-                                return (existingItem, writeLock, existingFile, conflicts, ConflictingType.PublishUrlConflicts);
-                            }
-                            return default;
-                        });
+                                if (existingItem != null && existingFile != null)
+                                {
+                                    return (existingItem, writeLock, existingFile, conflicts, ConflictingType.PublishUrlConflicts);
+                                }
+                                throw new InvalidOperationException();
+                            });
+                    }
+                    throw new InvalidOperationException();
                 }).Value;
 
             if (addedItem == item)
