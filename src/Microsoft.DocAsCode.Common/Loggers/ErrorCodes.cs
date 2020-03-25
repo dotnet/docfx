@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidMarkdownToc = "InvalidMarkdownToc";
             public const string InvalidTocLink = "InvalidTocLink";
             public const string InvalidTocFile = "InvalidTocFile";
-            public const string CircularReferenceFound = "CircularReferenceFound";
+            public const string CircularTocInclusion = "CircularTocInclusion";
         }
 
         public static class Config

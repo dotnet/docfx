@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             if (stack.Contains(file))
             {
                 var message = $"Circular reference to {file.FullPath} is found in {stack.Peek().FullPath}";
-                Logger.LogError(message, code: ErrorCodes.Toc.CircularReferenceFound);
+                Logger.LogError(message, code: ErrorCodes.Toc.CircularTocInclusion);
                 throw new DocumentException(message);
             }
 
