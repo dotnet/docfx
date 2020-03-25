@@ -44,6 +44,12 @@ namespace Microsoft.Docs.Build
         // MatchRule
         public string? Value { get; set; }
 
+        // LengthRule
+        public int? MinLength { get; set; }
+
+        // LengthRule
+        public int? MaxLength { get; set; }
+
         // MicrosoftAliasRule
         public string? AllowedDLs { get; set; }
     }

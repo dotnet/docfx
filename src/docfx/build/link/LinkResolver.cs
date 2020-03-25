@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
         private (Error? error, Document? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
             Document referencingFile, SourceInfo<string> href, bool inclusion = false)
         {
-            href = href.Or("");
+            href = new SourceInfo<string>(href.Value.Trim(), href.Source).Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
 
             switch (UrlUtility.GetLinkType(href))
