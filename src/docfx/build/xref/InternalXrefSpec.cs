@@ -9,7 +9,11 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
+        private readonly Lazy<string?> _name;
+
         public SourceInfo<string> Uid { get; }
+
+        public string Name => _name.Value ?? Uid;
 
         public string Href { get; set; }
 
@@ -23,19 +27,32 @@ namespace Microsoft.Docs.Build
 
         string IXrefSpec.Uid => Uid.Value;
 
-        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile)
+        public InternalXrefSpec(SourceInfo<string> uid, Lazy<string?> name, string href, Document declaringFile)
         {
             Uid = uid;
             Href = href;
             DeclaringFile = declaringFile;
+            _name = name;
+        }
+
+        public InternalXrefSpec(
+            SourceInfo<string> uid,
+            Lazy<string?> name,
+            string href,
+            Document declaringFile,
+            Dictionary<string, Lazy<JToken>> xrefProperties)
+        {
+            Uid = uid;
+            Href = href;
+            DeclaringFile = declaringFile;
+            _name = name;
+            XrefProperties = xrefProperties;
         }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
         {
             return XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
-
-        public string? GetName() => GetXrefPropertyValueAsString("name");
 
         public ExternalXrefSpec ToExternalXrefSpec()
         {
@@ -44,6 +61,7 @@ namespace Microsoft.Docs.Build
                 Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href),
                 Uid = Uid,
                 Monikers = Monikers,
+                Name = Name,
             };
 
             foreach (var (key, value) in XrefProperties)

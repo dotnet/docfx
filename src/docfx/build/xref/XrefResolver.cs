@@ -65,12 +65,11 @@ namespace Microsoft.Docs.Build
                 return (xrefError, null, "", null);
             }
 
-            var name = xrefSpec.GetXrefPropertyValueAsString("name");
             var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
 
             // fallback order:
-            // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? name ?? uid;
+            // text -> xrefSpec.displayProperty -> xrefSpec.name
+            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.Name;
 
             if (!string.IsNullOrEmpty(moniker))
             {

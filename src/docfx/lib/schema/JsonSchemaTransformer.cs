@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         {
             var fragment = $"#{Regex.Replace(uid, @"\W", "_")}";
             var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", fragment);
-            var xref = new InternalXrefSpec(uid, href, file);
+            var xrefProperties = new Dictionary<string, Lazy<JToken>>();
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
@@ -92,14 +92,20 @@ namespace Microsoft.Docs.Build
 
                 if (!schema.Properties.TryGetValue(xrefProperty, out var propertySchema))
                 {
-                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => value);
+                    xrefProperties[xrefProperty] = new Lazy<JToken>(() => value);
                     continue;
                 }
 
-                xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
+                xrefProperties[xrefProperty] = new Lazy<JToken>(
                     () => LoadXrefProperty(file, context, uid, value, propertySchema),
                     LazyThreadSafetyMode.PublicationOnly);
             }
+            var name = new Lazy<string?>(() =>
+                xrefProperties.TryGetValue("name", out var nameProperty) && nameProperty.Value is JValue jValue && jValue.Value is string nameValue
+                ? nameValue
+                : uid);
+
+            var xref = new InternalXrefSpec(uid, name, href, file, xrefProperties);
 
             return xref;
         }

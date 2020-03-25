@@ -93,8 +93,8 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
-            xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
+            var name = new Lazy<string?>(() => string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title);
+            var xref = new InternalXrefSpec(metadata.Uid, name, file.SiteUrl, file);
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
 
             // uid conflicts with different names
             // log an warning and take the first one order by the declaring file
-            var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
+            var conflictingNames = specsWithSameUid.Select(x => x.Name).Distinct();
             if (conflictingNames.Count() > 1)
             {
                 context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, "name", conflictingNames));
