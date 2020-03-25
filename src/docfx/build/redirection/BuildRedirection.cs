@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
                         is_dynamic_rendering = true,
                     };
 
-                        // Note: produce an empty output to make publish happy
-                        context.Output.WriteText(publishItem.Path, "{}");
+                    // Note: produce an empty output to make publish happy
+                    context.Output.WriteText(publishItem.Path, "{}");
                     context.Output.WriteJson(metadataPath, metadata);
                 }
             });
