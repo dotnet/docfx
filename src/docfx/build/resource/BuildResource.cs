@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem, () =>
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
                 if (copy && !context.Config.DryRun)
                 {

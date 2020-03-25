@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 
-            context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem, () =>
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
                 if (publishItem.Path != null && !context.Config.DryRun)
                 {

@@ -428,12 +428,12 @@ inputs:
       ]
     }
 outputs:
-  23d205a5/docs/a.json:
+  f7525be1/docs/a.json:
   .publish.json: |
     {
       "files":
       [
-        {"url": "/docs/a", "path": "23d205a5/docs/a.json"}
+        {"url": "/docs/a", "path": "f7525be1/docs/a.json"}
       ]
     }
   .errors.log: |
@@ -727,7 +727,7 @@ inputs:
       ]
     }
 outputs:
-  23d205a5/docs/a.json:
+  afb33dd2/docs/a.json:
   docs/c.json: |
     {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-1.1, netcore-2.0</a></p>"}
   .errors.log: |
@@ -740,7 +740,7 @@ outputs:
     {
       "files": 
       [
-        {"url": "/docs/a", "path": "23d205a5/docs/a.json"},
+        {"url": "/docs/a", "path": "afb33dd2/docs/a.json"},
         {"url": "/docs/c"}
       ]
     }
@@ -1256,7 +1256,7 @@ inputs:
       ]
     }
 outputs:
-  4667fedf/docs/toc.json:
+  e2dfe8fd/docs/toc.json:
   .publish.json: |
     {
       "files":
@@ -1264,7 +1264,7 @@ outputs:
         {
           "url": "/docs/toc.json",
           "locale": "en-us",
-          "path": "4667fedf/docs/toc.json",
+          "path": "e2dfe8fd/docs/toc.json",
         }
       ]
     }

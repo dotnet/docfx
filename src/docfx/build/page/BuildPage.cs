@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
-                context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem);
+                context.PublishModelBuilder.Add(file.FilePath, publishItem);
                 return errors;
             }
 
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
 
-            context.PublishModelBuilder.AddOrUpdate(file.FilePath, publishItem, () =>
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
                 if (!context.Config.DryRun)
                 {
