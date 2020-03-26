@@ -93,8 +93,8 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var name = new Lazy<string?>(() => string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title);
-            var xref = new InternalXrefSpec(metadata.Uid, name, file.SiteUrl, file);
+            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file); var name = new Lazy<string?>(() => string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title);
+            xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();

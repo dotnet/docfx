@@ -9,11 +9,9 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
-        private readonly Lazy<string?> _name;
-
         public SourceInfo<string> Uid { get; }
 
-        public string Name => _name.Value ?? Uid;
+        public string Name => GetXrefPropertyValueAsString("name") ?? Uid;
 
         public string Href { get; set; }
 
@@ -27,26 +25,11 @@ namespace Microsoft.Docs.Build
 
         string IXrefSpec.Uid => Uid.Value;
 
-        public InternalXrefSpec(SourceInfo<string> uid, Lazy<string?> name, string href, Document declaringFile)
+        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile)
         {
             Uid = uid;
             Href = href;
             DeclaringFile = declaringFile;
-            _name = name;
-        }
-
-        public InternalXrefSpec(
-            SourceInfo<string> uid,
-            Lazy<string?> name,
-            string href,
-            Document declaringFile,
-            Dictionary<string, Lazy<JToken>> xrefProperties)
-        {
-            Uid = uid;
-            Href = href;
-            DeclaringFile = declaringFile;
-            _name = name;
-            XrefProperties = xrefProperties;
         }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
