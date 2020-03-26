@@ -37,19 +37,22 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                if (context.Config.Legacy)
+                if (!context.Config.DryRun)
                 {
-                    var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(outputPath, output);
-                    context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
+                    if (context.Config.Legacy)
+                    {
+                        var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
+                        context.Output.WriteJson(outputPath, output);
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
+                    }
+                    else
+                    {
+                        context.Output.WriteJson(outputPath, model);
+                    }
                 }
-                else
-                {
-                    context.Output.WriteJson(outputPath, model);
-                }
-            }
+            });
 
             return errors;
         }

@@ -26,21 +26,24 @@ namespace Microsoft.Docs.Build
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 
-            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && publishItem.Path != null && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
-                var metadata = new
+                if (publishItem.Path != null && !context.Config.DryRun)
                 {
-                    locale = context.LocalizationProvider.Locale,
-                    monikers,
-                    redirect_url = publishItem.RedirectUrl,
-                    is_dynamic_rendering = true,
-                };
+                    var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
+                    var metadata = new
+                    {
+                        locale = context.LocalizationProvider.Locale,
+                        monikers,
+                        redirect_url = publishItem.RedirectUrl,
+                        is_dynamic_rendering = true,
+                    };
 
-                // Note: produce an empty output to make publish happy
-                context.Output.WriteText(publishItem.Path, "{}");
-                context.Output.WriteJson(metadataPath, metadata);
-            }
+                    // Note: produce an empty output to make publish happy
+                    context.Output.WriteText(publishItem.Path, "{}");
+                    context.Output.WriteJson(metadataPath, metadata);
+                }
+            });
 
             return errors;
         }

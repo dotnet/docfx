@@ -34,10 +34,11 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
-
             if (errors.Any(e => e.Level == ErrorLevel.Error))
+            {
+                context.PublishModelBuilder.Add(file.FilePath, publishItem);
                 return errors;
+            }
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? CreatePageOutput(context, file, sourceModel)
@@ -45,23 +46,26 @@ namespace Microsoft.Docs.Build
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
 
-            if (shouldWriteOutput && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                if (output is string str)
+                if (!context.Config.DryRun)
                 {
-                    context.Output.WriteText(outputPath, str);
-                }
-                else
-                {
-                    context.Output.WriteJson(outputPath, output);
-                }
+                    if (output is string str)
+                    {
+                        context.Output.WriteText(outputPath, str);
+                    }
+                    else
+                    {
+                        context.Output.WriteJson(outputPath, output);
+                    }
 
-                if (context.Config.Legacy && file.IsPage)
-                {
-                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(metadataPath, metadata);
+                    if (context.Config.Legacy && file.IsPage)
+                    {
+                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                        context.Output.WriteJson(metadataPath, metadata);
+                    }
                 }
-            }
+            });
 
             return errors;
         }

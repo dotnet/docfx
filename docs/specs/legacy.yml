@@ -249,7 +249,7 @@ outputs:
     }
   b.json:
 ---
-# Produce deterministic result when redirection and file share the same publish url
+# Prefer redirection when redirection and file share the same output path
 legacy: true
 inputs:
   docfx.yml:
@@ -258,8 +258,11 @@ inputs:
       docs/a.md: /asdf
   docs/a.md:
 outputs:
+  docs/a.mta.json: |
+    {"redirect_url":"/asdf"}
+  docs/a.raw.page.json:
   .errors.log: |
-    { "message_severity": "error", "code": "output-path-conflict" }
+    { "message_severity": "warning", "code": "output-path-conflict" }
 ---
 # Redirection file href shouldn't have extension
 legacy: true

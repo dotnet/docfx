@@ -1247,7 +1247,7 @@ outputs:
   docs/toc.json: |
     {"items": [{"maintainContext": true, "expanded": true, "displayName": "display name"}]}
 ---
-# conflicted toc files will be removed from toc map and build outputs
+# conflicted toc files will be removed from toc map
 inputs:
   docfx.yml:
   docs/TOC.yml: |
@@ -1259,8 +1259,9 @@ inputs:
 outputs:
   docs/a.json: |
     {"_tocRel": "toc.json"}
+  docs/toc.json:
   .errors.log: |
-    ["error","output-path-conflict","Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
+    ["warning","output-path-conflict","Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"]
 ---
 # validate bookmarks in toc
 inputs:
