@@ -448,6 +448,29 @@ outputs:
     ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","b.md",2,14]
     ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","a.md",3,14]
 ---
+# Json schema docset unique: null/empty values are not in-scope
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+  schema.json: |
+    {
+      "docsetUnique": [ "title", "description"]
+    }
+  a.md: |
+    ---
+    title: null
+    description:
+    ---
+  b.md: |
+    ---
+    description:
+    title: null
+    ---
+outputs:
+  a.json:
+  b.json:
+---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
   docfx.yml: |
