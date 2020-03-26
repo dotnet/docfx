@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -202,17 +203,13 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, JObject model) Load(Context context, Document file)
         {
-            if (file.FilePath.EndsWith(".md"))
+            return file.FilePath.Format switch
             {
-                return LoadMarkdown(context, file);
-            }
-            if (file.FilePath.EndsWith(".yml"))
-            {
-                return LoadYaml(context, file);
-            }
-
-            Debug.Assert(file.FilePath.EndsWith(".json"));
-            return LoadJson(context, file);
+                FileFormat.Markdown => LoadMarkdown(context, file),
+                FileFormat.Yaml => LoadYaml(context, file),
+                FileFormat.Json => LoadJson(context, file),
+                _ => throw new InvalidOperationException(),
+            };
         }
 
         private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)

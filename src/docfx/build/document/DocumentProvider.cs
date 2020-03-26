@@ -302,31 +302,26 @@ namespace Microsoft.Docs.Build
 
         private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath)
         {
-            SourceInfo<string?> mime = default;
-
-            if (filePath.EndsWith(".json"))
+            switch (filePath.Format)
             {
                 // TODO: we could have not depend on this exists check, but currently
                 //       LinkResolver works with Document and return a Document for token files,
                 //       thus we are forced to get the mime type of a token file here even if it's not useful.
                 //
                 //       After token resolve does not create Document, this Exists check can be removed.
-                if (input.Exists(filePath))
-                {
-                    using var reader = input.ReadText(filePath);
-                    mime = JsonUtility.ReadMime(reader, filePath);
-                }
+                case FileFormat.Json when input.Exists(filePath):
+                    using (var reader = input.ReadText(filePath))
+                    {
+                        return JsonUtility.ReadMime(reader, filePath);
+                    }
+                case FileFormat.Yaml when input.Exists(filePath):
+                    using (var reader = input.ReadText(filePath))
+                    {
+                        return new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
+                    }
+                default:
+                    return default;
             }
-            else if (filePath.EndsWith(".yml"))
-            {
-                if (input.Exists(filePath))
-                {
-                    using var reader = input.ReadText(filePath);
-                    mime = new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
-                }
-            }
-
-            return mime;
         }
     }
 }

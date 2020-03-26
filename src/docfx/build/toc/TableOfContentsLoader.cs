@@ -76,27 +76,30 @@ namespace Microsoft.Docs.Build
 
         private (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(FilePath file, string? content = null)
         {
-            if (file.EndsWith(".yml"))
+            switch (file.Format)
             {
-                var (errors, tocToken) = content is null ? _input.ReadYaml(file) : YamlUtility.Parse(content, file);
-                var (loadErrors, toc) = LoadTocModel(tocToken);
-                errors.AddRange(loadErrors);
-                return (errors, toc);
+                case FileFormat.Yaml:
+                    {
+                        var (errors, tocToken) = content is null ? _input.ReadYaml(file) : YamlUtility.Parse(content, file);
+                        var (loadErrors, toc) = LoadTocModel(tocToken);
+                        errors.AddRange(loadErrors);
+                        return (errors, toc);
+                    }
+                case FileFormat.Json:
+                    {
+                        var (errors, tocToken) = content is null ? _input.ReadJson(file) : JsonUtility.Parse(content, file);
+                        var (loadErrors, toc) = LoadTocModel(tocToken);
+                        errors.AddRange(loadErrors);
+                        return (errors, toc);
+                    }
+                case FileFormat.Markdown:
+                    {
+                        content ??= _input.ReadString(file);
+                        return TableOfContentsMarkup.Parse(_markdownEngine, content, file);
+                    }
+                default:
+                    throw new NotSupportedException($"'{file}' is an unknown TOC file");
             }
-            else if (file.EndsWith(".json"))
-            {
-                var (errors, tocToken) = content is null ? _input.ReadJson(file) : JsonUtility.Parse(content, file);
-                var (loadErrors, toc) = LoadTocModel(tocToken);
-                errors.AddRange(loadErrors);
-                return (errors, toc);
-            }
-            else if (file.EndsWith(".md"))
-            {
-                content = content ?? _input.ReadString(file);
-                return TableOfContentsMarkup.Parse(_markdownEngine, content, file);
-            }
-
-            throw new NotSupportedException($"'{file}' is an unknown TOC file");
         }
 
         private static (List<Error>, TableOfContentsModel) LoadTocModel(JToken tocToken)
