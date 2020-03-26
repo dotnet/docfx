@@ -1380,8 +1380,7 @@ outputs:
     {
       "items": [
         { "name":"Uid Ref","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
-      ],
-      "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
+      ]
     }
 ---
 # uid reference in markdown toc
@@ -1432,8 +1431,7 @@ outputs:
     {
       "items": [
         { "name":"Title A","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
-      ],
-      "metadata": {"monikers": ["netcore-1.1", "netcore-1.2", "netcore-1.3" ]}
+      ]
     }
 ---
 # uid reference in toc inclusion
