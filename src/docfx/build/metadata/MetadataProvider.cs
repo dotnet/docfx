@@ -87,6 +87,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public List<Error> Validate()
+        {
+            var errors = new List<Error>();
+            foreach (var validator in _schemaValidators)
+            {
+                errors.AddRange(validator.PostValidate());
+            }
+
+            return errors;
+        }
+
         private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
         {
             var result = new JObject();
@@ -170,23 +181,20 @@ namespace Microsoft.Docs.Build
 
         private (List<Error> errors, JObject yamlHeader) LoadYamlHeader(FilePath file)
         {
-            if (file.EndsWith(".md"))
+            switch (file.Format)
             {
-                using var reader = _input.ReadText(file);
-                return ExtractYamlHeader.Extract(reader, file);
+                case FileFormat.Markdown:
+                    using (var reader = _input.ReadText(file))
+                    {
+                        return ExtractYamlHeader.Extract(reader, file);
+                    }
+                case FileFormat.Yaml:
+                    return LoadSchemaDocumentYamlHeader(_input.ReadYaml(file), file);
+                case FileFormat.Json:
+                    return LoadSchemaDocumentYamlHeader(_input.ReadJson(file), file);
+                default:
+                    return (new List<Error>(), new JObject());
             }
-
-            if (file.EndsWith(".yml"))
-            {
-                return LoadSchemaDocumentYamlHeader(_input.ReadYaml(file), file);
-            }
-
-            if (file.EndsWith(".json"))
-            {
-                return LoadSchemaDocumentYamlHeader(_input.ReadJson(file), file);
-            }
-
-            return (new List<Error>(), new JObject());
         }
 
         private static (List<Error> errors, JObject metadata) LoadSchemaDocumentYamlHeader((List<Error>, JToken) document, FilePath file)

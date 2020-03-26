@@ -39,15 +39,9 @@ namespace Microsoft.Docs.Build
             }
 
             using var reader = new StringReader(tocContent);
-            var (metaErrors, metadata) = ExtractYamlHeader.Extract(reader, file);
-            errors.AddRange(metaErrors);
-
-            var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata);
-            errors.AddRange(validationErrors);
-
             var items = BuildTree(errors, file, headingBlocks);
 
-            var tocModel = new TableOfContentsModel { Metadata = tocMetadata, Items = items };
+            var tocModel = new TableOfContentsModel { Items = items };
 
             return (errors, tocModel);
         }

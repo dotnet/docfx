@@ -50,15 +50,11 @@ namespace Microsoft.Docs.Build
             {
                 if (path.Type == PackageType.Git)
                 {
-                    var repoPath = DownloadGitRepository(path.Url, path.Branch, options.HasFlag(PackageFetchOptions.DepthOne));
-
-                    // ensure contribution branch for CRR included in build
-                    // empty repo path means hit cache
-                    if ((path as DependencyConfig)?.IncludeInBuild == true && !string.IsNullOrEmpty(repoPath))
-                    {
-                        var crrRepository = Repository.Create(repoPath, path.Branch, path.Url);
-                        LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
-                    }
+                    DownloadGitRepository(
+                        path.Url,
+                        path.Branch,
+                        options.HasFlag(PackageFetchOptions.DepthOne),
+                        path is DependencyConfig dependency && dependency.IncludeInBuild);
                 }
             }
             catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
@@ -108,27 +104,30 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string DownloadGitRepository(string url, string committish, bool depthOne)
+        private void DownloadGitRepository(string url, string committish, bool depthOne, bool fetchContributionBranch)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
 
             using (InterProcessReaderWriterLock.CreateWriterLock(gitPath))
             {
-                if (File.Exists(gitDocfxHead))
+                if (!File.Exists(gitDocfxHead) || _fetchOptions != FetchOptions.UseCache)
                 {
-                    if (_fetchOptions == FetchOptions.UseCache)
+                    DeleteIfExist(gitDocfxHead);
+                    using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                     {
-                        return "";
+                        DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
                     }
-                    File.Delete(gitDocfxHead);
+                    File.WriteAllText(gitDocfxHead, committish);
+
+                    // ensure contribution branch for CRR included in build
+                    if (fetchContributionBranch)
+                    {
+                        var crrRepository = Repository.Create(gitPath, committish, url);
+                        LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
+                    }
                 }
-                using (PerfScope.Start($"Downloading '{url}#{committish}'"))
-                {
-                    DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
-                }
-                File.WriteAllText(gitDocfxHead, committish);
-                return gitPath;
+                Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetHeadCommit(gitPath)}");
             }
         }
 
@@ -139,6 +138,7 @@ namespace Microsoft.Docs.Build
 
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
+            GitUtility.AddRemote(cwd, "origin", url);
 
             // Remove git lock files if previous build was killed during git operation
             DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));

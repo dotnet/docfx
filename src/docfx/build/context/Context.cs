@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerProvider MonikerProvider { get; }
 
-        public GitCommitProvider GitCommitProvider { get; }
+        public RepositoryProvider RepositoryProvider { get; }
 
         public BookmarkValidator BookmarkValidator { get; }
 
@@ -64,10 +64,13 @@ namespace Microsoft.Docs.Build
 
         public LocalizationProvider LocalizationProvider { get; }
 
+        public ContentValidator ContentValidator { get; }
+
         public TableOfContentsMap TocMap => _tocMap.Value;
 
         public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
         {
+            var repository = repositoryProvider.Repository;
             var credentialProvider = config.GetCredentialProvider();
 
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -77,6 +80,7 @@ namespace Microsoft.Docs.Build
             Config = config;
             ErrorLog = errorLog;
             PackageResolver = packageResolver;
+            RepositoryProvider = repositoryProvider;
             FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions, fallbackDocset);
             Input = input;
             LocalizationProvider = localizationProvider;
@@ -84,17 +88,17 @@ namespace Microsoft.Docs.Build
             TemplateEngine = new TemplateEngine(docset.DocsetPath, config, localizationProvider.Locale, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
             BuildScope = new BuildScope(Config, Input, fallbackDocset);
-            DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
+            DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, input, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repositoryProvider, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repository, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
-            GitCommitProvider = new GitCommitProvider();
-            PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output);
-            BookmarkValidator = new BookmarkValidator(errorLog, PublishModelBuilder);
-            ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, GitCommitProvider);
+            PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output, ErrorLog);
+            BookmarkValidator = new BookmarkValidator(errorLog);
+            ContentValidator = new ContentValidator(config, FileResolver, errorLog);
+            ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, RepositoryProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
-            XrefResolver = new XrefResolver(this, config, FileResolver, DependencyMapBuilder, FileLinkMapBuilder);
+            XrefResolver = new XrefResolver(this, config, FileResolver, repository, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
                 config,
@@ -104,7 +108,6 @@ namespace Microsoft.Docs.Build
                 BuildQueue,
                 RedirectionProvider,
                 DocumentProvider,
-                GitCommitProvider,
                 BookmarkValidator,
                 DependencyMapBuilder,
                 XrefResolver,
@@ -114,12 +117,12 @@ namespace Microsoft.Docs.Build
             MarkdownEngine = new MarkdownEngine(Config, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
 
             TableOfContentsLoader = new TableOfContentsLoader(
-                Input, LinkResolver, XrefResolver, MarkdownEngine, MonikerProvider, DependencyMapBuilder);
+                Input, LinkResolver, XrefResolver, MarkdownEngine, MetadataProvider, MonikerProvider, DependencyMapBuilder);
         }
 
         public void Dispose()
         {
-            GitCommitProvider.Dispose();
+            RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();
             MicrosoftGraphAccessor.Dispose();
         }

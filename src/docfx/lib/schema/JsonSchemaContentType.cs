@@ -5,7 +5,6 @@ namespace Microsoft.Docs.Build
 {
     public enum JsonSchemaContentType
     {
-        None,
         Href,
         Markdown,
         InlineMarkdown,

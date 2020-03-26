@@ -39,15 +39,7 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
-            _markdownValidationRules = config.MarkdownValidationRules;
-            if (!string.IsNullOrEmpty(_markdownValidationRules))
-            {
-                using var stream = fileResolver.ReadStream(config.MarkdownValidationRules);
-
-                // TODO: validation rules currently only supports physical file.
-                _markdownValidationRules = ((FileStream)stream).Name;
-            }
-
+            _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
@@ -129,7 +121,7 @@ namespace Microsoft.Docs.Build
                 parser is HeadingBlockParser || parser is ParagraphBlockParser ||
                 parser is ThematicBreakParser || parser is HtmlBlockParser));
 
-            builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser));
+            builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser || parser is EscapeInlineParser));
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
@@ -165,12 +157,12 @@ namespace Microsoft.Docs.Build
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
         }
 
-        private (string content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
+        private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
             var (error, content, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
             status.Errors.AddIfNotNull(error);
-            return (content, file);
+            return (content?.Replace("\r", ""), file);
         }
 
         private string GetLink(SourceInfo<string> href)

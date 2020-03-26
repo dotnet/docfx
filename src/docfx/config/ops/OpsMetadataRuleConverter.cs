@@ -13,6 +13,9 @@ namespace Microsoft.Docs.Build
     {
         public static string GenerateJsonSchema(string rulesContent, string allowlistsContent)
         {
+            Log.Write(rulesContent);
+            Log.Write(allowlistsContent);
+
             var rules = JsonConvert.DeserializeObject<Rules>(rulesContent);
             if (rules == null || rules.Count == 0)
             {
@@ -23,6 +26,7 @@ namespace Microsoft.Docs.Build
 
             var schema = new
             {
+                docsetUnique = new List<string>(),
                 properties = new Dictionary<string, dynamic>(),
                 strictRequired = new List<string>(),
                 dependencies = new Dictionary<string, List<string>>(),
@@ -51,6 +55,8 @@ namespace Microsoft.Docs.Build
                     relativeMinDate = GetRelativeMinDate(rulesInfo),
                     replacedBy = GetReplacedBy(rulesInfo),
                     microsoftAlias = GetMicrosoftAlias(rulesInfo, allowlists),
+                    minLength = GetMinLength(rulesInfo),
+                    maxLength = GetMaxLength(rulesInfo),
                 };
 
                 if (!string.Equals("{}", JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })))
@@ -61,6 +67,11 @@ namespace Microsoft.Docs.Build
                 if (TryGetAttributeAdditionalErrors(rulesInfo, out var attributeAdditionalErrors))
                 {
                     schema.customErrors.Add(attribute, attributeAdditionalErrors);
+                }
+
+                if (rulesInfo.ContainsKey("Uniqueness"))
+                {
+                    schema.docsetUnique.Add(attribute);
                 }
 
                 if (rulesInfo.ContainsKey("Required"))
@@ -98,7 +109,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return JsonConvert.SerializeObject(schema, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            var jsonSchema = JsonConvert.SerializeObject(schema, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            Log.Write(jsonSchema);
+            return jsonSchema;
         }
 
         private static bool TryGetAttributeAdditionalErrors(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeAdditionalErrorsErrors)
@@ -117,6 +130,8 @@ namespace Microsoft.Docs.Build
                 { "Date", new string[] { "date-format-invalid", "date-out-of-range" } },
                 { "MicrosoftAlias", new string[] { "ms-alias-invalid" } },
                 { "Deprecated", new string[] { "attribute-deprecated" } },
+                { "Uniqueness", new string[] { "duplicate-attribute" } },
+                { "Length", new string[] { "string-length-invalid" } },
             };
 
             foreach (var (ruleName, ruleInfo) in rulesInfo)
@@ -219,6 +234,26 @@ namespace Microsoft.Docs.Build
             if (rulesInfo.TryGetValue("Date", out var dateRuleInfo))
             {
                 return dateRuleInfo.Format;
+            }
+
+            return null;
+        }
+
+        private static int? GetMinLength(Dictionary<string, OpsMetadataRule> rulesInfo)
+        {
+            if (rulesInfo.TryGetValue("Length", out var lengthRuleInfo))
+            {
+                return lengthRuleInfo.MinLength;
+            }
+
+            return null;
+        }
+
+        private static int? GetMaxLength(Dictionary<string, OpsMetadataRule> rulesInfo)
+        {
+            if (rulesInfo.TryGetValue("Length", out var lengthRuleInfo))
+            {
+                return lengthRuleInfo.MaxLength;
             }
 
             return null;

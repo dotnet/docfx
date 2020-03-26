@@ -21,14 +21,14 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
-            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, RepositoryProvider repositoryProvider, DocumentProvider documentProvider, MonikerProvider monikerProvider)
+            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, Repository? repository, DocumentProvider documentProvider, MonikerProvider monikerProvider)
         {
             _errorLog = errorLog;
             _buildScope = buildScope;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
 
-            var redirections = LoadRedirectionModel(docsetPath, repositoryProvider.GetRepository(FileOrigin.Default));
+            var redirections = LoadRedirectionModel(docsetPath, repository);
             _redirectUrls = GetRedirectUrls(redirections, hostName);
             _renameHistory = GetRenameHistory(redirections, _redirectUrls);
         }

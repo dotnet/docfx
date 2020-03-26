@@ -76,6 +76,14 @@
     },
     "ms.component": {
       "replacedBy": "ms.subservice"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 2,
+      "maxLength": 10
     }
   },
   "strictRequired": [
@@ -84,6 +92,10 @@
     "title",
     "ms.topic",
     "ms.date"
+  ],
+  "docsetUnique": [
+    "title",
+    "description"
   ],
   "dependencies": {
     "ms.technology": [
@@ -5162,6 +5174,11 @@
         "severity": "suggestion",
         "code": "title-missing",
         "additionalMessage": "Add a title string to show in search engine results."
+      },
+      "duplicate-attribute": {
+        "severity": "suggestion",
+        "code": "duplicate-title-within-docset",
+        "additionalMessage": "Title must be unique within a docset."
       }
     },
     "ms.topic": {
@@ -5208,6 +5225,22 @@
       "attribute-deprecated": {
         "severity": "suggestion",
         "code": "deprecated-attribute"
+      }
+    },
+    "description": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values"
+      },
+      "duplicate-attribute": {
+        "severity": "suggestion",
+        "code": "duplicate-description-within-docset",
+        "additionalMessage": "Description must be unique within a docset."
+      },
+      "string-length-invalid": {
+        "severity": "suggestion",
+        "code": "description-bad-length",
+        "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
       }
     }
   }

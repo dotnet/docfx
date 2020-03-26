@@ -15,19 +15,23 @@ namespace Microsoft.Docs.Build
         [InlineData(typeof(InvalidOperationException))]
         [InlineData(typeof(OperationCanceledException))]
         [InlineData(typeof(TaskCanceledException))]
-        public static async Task ThrowsTheSameException(Type exceptionType)
+        public static void ThrowsTheSameException(Type exceptionType)
         {
             var queue = new WorkQueue<int>();
             queue.Enqueue(Enumerable.Range(0, 1000));
 
-            var exception = await Assert.ThrowsAnyAsync<Exception>(() => queue.Drain(Run));
+            var exception = Assert.ThrowsAny<Exception>(() => queue.Drain(Run));
             Assert.Equal(exceptionType, exception.GetType());
 
-            Task Run(int n) => n % 500 == 0 ? throw (Exception)Activator.CreateInstance(exceptionType) : Task.CompletedTask;
+            void Run(int n)
+            {
+                if (n % 500 == 0)
+                    throw (Exception)Activator.CreateInstance(exceptionType);
+            }
         }
 
         [Fact]
-        public static async Task MustRunSource()
+        public static void MustRunSource()
         {
             var done = 0;
             var total = 10;
@@ -35,13 +39,12 @@ namespace Microsoft.Docs.Build
             var queue = new WorkQueue<int>();
             queue.Enqueue(Enumerable.Range(0, total));
 
-            await queue.Drain(Run);
+            queue.Drain(Run);
 
-            Task Run(int n)
+            void Run(int n)
             {
                 Thread.Sleep(100);
                 Interlocked.Increment(ref done);
-                return Task.CompletedTask;
             }
 
             Assert.Equal(total, done);

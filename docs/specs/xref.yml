@@ -328,7 +328,8 @@ outputs:
   base_path/docs/c.json: |
     {"conceptual": "<p>Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a></p>\n"}
   .errors.log: |
-    ["warning","uid-conflict","UID 'a' is defined in more than one file: 'docs/a.yml', 'docs/b.json'"]
+    ["warning","duplicate-uid","UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'","docs/a.yml",2,6]
+    ["warning","duplicate-uid","UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'","docs/b.json",3,12]
   .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}], "properties": {"tags":["/base_path","internal"]}}
 ---
@@ -414,7 +415,7 @@ inputs:
     }
 outputs:
   docs/b.json: | 
-    {"xref": null}
+    {"xref": "a"}
   .errors.log: |
     ["error","json-syntax-error","Unexpected character encountered while parsing value: }.","docs/a.json",7]
     ["warning","xref-not-found","Cross reference not found: 'a'","docs/b.json",3,13]
@@ -516,7 +517,8 @@ outputs:
   docs/b.json: |
     {"xref":{"uid":"a","href":"a.json"}}
   .errors.log: |
-    ["warning","uid-conflict","The same Uid 'a' has been defined multiple times in the same file","docs/a.json",6,14]
+    ["warning","duplicate-uid","UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'","docs/a.json",3,12]
+    ["warning","duplicate-uid","UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'","docs/a.json",6,14]
 ---
 # uid conflict in non-root level and another SDP
 inputs:
@@ -546,7 +548,8 @@ outputs:
   docs/a.json:
   docs/b.json:
   .errors.log: |
-    ["warning","uid-conflict","UID 'b' is defined in more than one file: 'docs/a.json', 'docs/b.json'"]
+    ["warning","duplicate-uid","UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'","docs/a.json",6,14]
+    ["warning","duplicate-uid","UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'","docs/b.json",3,12]
 ---
 # Xref property field which supports markdown content
 inputs:
@@ -758,7 +761,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml",2,6]
 ---
 # circular reference within SDP UID definition a -> b -> c -> a
 inputs:
@@ -785,9 +788,9 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'c (docs/c.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml)' --> 'c (docs/c.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)'","docs/b.yml"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'c (docs/c.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'c (docs/c.yml)'","docs/c.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml",2,6]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","docs/b.yml",2,6]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))'","docs/c.yml",2,6]
 ---
 # circular reference within SDP UID definition a -> b -> a -> c
 inputs:
@@ -816,8 +819,8 @@ inputs:
 outputs:
   docs/c.json:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml)' --> 'b (docs/b.yml)' --> 'a (docs/a.yml)'","docs/a.yml"]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml)' --> 'a (docs/a.yml)' --> 'b (docs/b.yml)'","docs/b.yml"]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))'","docs/a.yml",2,6]
+    ["error","circular-reference","Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","docs/b.yml",2,6]
 ---
 # display property of non-plain text content type will be ignored
 inputs:
@@ -835,7 +838,7 @@ inputs:
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "name": "name for b",
       "uid": "b",
-      "inlineDescription": "description for b",
+      "inlineDescription": "description for _b_",
       "summary": "Link to @a",
     }
   _themes/ContentTemplate/schemas/TestData.schema.json: |
@@ -853,17 +856,17 @@ outputs:
     {
       "uid": "a",
       "name": "name for a",
-      "inlineDescription": "Link to <a href=\"b.json\">name for b</a>",
+      "inlineDescription": "Link to <a href=\"b.json\">description for &lt;em&gt;b&lt;/em&gt;</a>",
       "summary": "
           <p>
-            Link to <a href=\"b.json\">name for b</a>
+            Link to <a href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a.json&quot;&gt;name for a&lt;/a&gt;&lt;/p&gt;</a>
           </p>"
     }
   docs/b.json: |
     {
       "name": "name for b",
       "uid": "b",
-      "inlineDescription": "description for b",
+      "inlineDescription": "description for <em>b</em>",
       "summary": "
           <p>
             Link to <a href=\"a.json\">name for a</a>
@@ -1222,7 +1225,7 @@ outputs:
        "children":[
           {
              "uid":"child1",
-             "xref":null
+             "xref":"a"
           },
           {
              "uid":"child2",
@@ -1314,3 +1317,42 @@ inputs:
 outputs:
   .errors.log: |
     ["error","file-not-found","Invalid file link: '1.xrefmap.json'.","docfx.yml",1,7]
+---
+# Export all xrefProperties regardless of jschema properties
+repos:
+  https://docs.com/test-xref-sdp#live:
+    - files:
+        docfx.yml: |
+        docs/a.json: |
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+            "uid": "a",
+            "name": "test"
+          }
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "xrefProperties": ["name"],
+            "properties": { "uid": { "contentType": "uid" } }
+          }
+outputs:
+  docs/a.json:
+  .xrefmap.json: | 
+    { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json", "name": "test" }] }
+---
+# SDP with non-root uid, which is the only one
+repos:
+  https://docs.com/test-sdp-unique-uid#live:
+  - files:
+      docfx.yml:
+      docs/a.yml: |
+        #YamlMime:TestData
+        members:
+        - uid: a
+      _themes/ContentTemplate/schemas/TestData.schema.json: |
+        {
+          "properties": {"members": {"items": {"properties": {"uid": {"contentType": "uid"}}}}}
+        }
+outputs:
+  docs/a.json:
+  .xrefmap.json: |
+    { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json"}] }

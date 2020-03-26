@@ -263,8 +263,12 @@ namespace Microsoft.Docs.Build
             ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error CircularReference<T>(IEnumerable<T> dependencyChain, Document declaringFile)
-                => new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))}", file: declaringFile.FilePath);
+            public static Error CircularReference<T>(SourceInfo? source, T current, Stack<T> recursionDetector, Func<T, string?>? display = null)
+            {
+                display ??= obj => obj?.ToString();
+                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{display(file)}'"));
+                return new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}", source);
+            }
         }
 
         public static class UrlPath
@@ -273,14 +277,13 @@ namespace Microsoft.Docs.Build
             /// Files published to the same url have no monikers or share common monikers.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error PublishUrlConflict(string url, IReadOnlyDictionary<Document, IReadOnlyList<string>> files, List<string> conflictMonikers)
+            public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, IReadOnlyList<string>> files, List<string> conflictMonikers)
             {
-                var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
-                var message = conflictMonikers.Count != 0 && !nonVersion ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
+                var message = conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
                 return new Error(
-                    ErrorLevel.Error,
+                    ErrorLevel.Warning,
                     "publish-url-conflict",
-                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(nonVersion ? null : $"<{StringUtility.Join(file.Value)}>")}"))}");
+                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"))}");
             }
 
             /// <summary>
@@ -290,8 +293,8 @@ namespace Microsoft.Docs.Build
             ///   - different file extension with same filename, like `Toc.yml` and `Toc.md`
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error OutputPathConflict(string path, IEnumerable<Document> files)
-                => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
+            public static Error OutputPathConflict(string path, IEnumerable<FilePath> files)
+                => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
         }
 
         public static class Heading
@@ -407,16 +410,13 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'", source);
 
             /// <summary>
-            /// More than one files defined the same uid.
+            /// The same uid of the same version is defined in multiple places
             /// Examples:
             ///   - both files with no monikers defined same uid
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error UidConflict(string uid, SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "uid-conflict", $"The same Uid '{uid}' has been defined multiple times in the same file", source);
-
-            public static Error UidConflict(string uid, IEnumerable<FilePath> conflicts)
-                => new Error(ErrorLevel.Warning, "uid-conflict", $"UID '{uid}' is defined in more than one file: {StringUtility.Join(conflicts)}");
+            public static Error DuplicateUid(SourceInfo<string> uid, IEnumerable<SourceInfo> conflicts)
+                => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}", uid);
 
             /// <summary>
             /// Same uid defined within different versions with the different name.
@@ -606,6 +606,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error MsAliasInvalid(SourceInfo<string> alias, string name)
                 => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", alias);
+
+            /// <summary>
+            /// The attribute value is duplicated within docset
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
+                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}", source);
         }
 
         public static class Metadata

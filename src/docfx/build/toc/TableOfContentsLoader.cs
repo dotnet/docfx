@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly MarkdownEngine _markdownEngine;
         private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsModel, List<Document>, List<Document>)> _cache =
@@ -34,6 +35,7 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MarkdownEngine markdownEngine,
+            MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             DependencyMapBuilder dependencyMapBuilder)
         {
@@ -41,6 +43,7 @@ namespace Microsoft.Docs.Build
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _markdownEngine = markdownEngine;
+            _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
         }
@@ -52,40 +55,51 @@ namespace Microsoft.Docs.Build
             {
                 var referencedFiles = new List<Document>();
                 var referencedTocs = new List<Document>();
+                var errors = new List<Error>();
 
-                var (errors, model) = LoadInternal(file, file, referencedFiles, referencedTocs);
+                var (loadErrors, model) = LoadInternal(file, file, referencedFiles, referencedTocs);
+                errors.AddRange(loadErrors);
+
+                var (metadataErrors, metadata) = _metadataProvider.GetMetadata(file.FilePath);
+                errors.AddRange(metadataErrors);
+
+                var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
+                errors.AddRange(validationErrors);
+                model.Metadata = tocMetadata;
 
                 var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
                 errors.AddIfNotNull(error);
 
-                model.Metadata.Monikers = monikers;
                 return (errors, model, referencedFiles, referencedTocs);
             });
         }
 
         private (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(FilePath file, string? content = null)
         {
-            if (file.EndsWith(".yml"))
+            switch (file.Format)
             {
-                var (errors, tocToken) = content is null ? _input.ReadYaml(file) : YamlUtility.Parse(content, file);
-                var (loadErrors, toc) = LoadTocModel(tocToken);
-                errors.AddRange(loadErrors);
-                return (errors, toc);
+                case FileFormat.Yaml:
+                    {
+                        var (errors, tocToken) = content is null ? _input.ReadYaml(file) : YamlUtility.Parse(content, file);
+                        var (loadErrors, toc) = LoadTocModel(tocToken);
+                        errors.AddRange(loadErrors);
+                        return (errors, toc);
+                    }
+                case FileFormat.Json:
+                    {
+                        var (errors, tocToken) = content is null ? _input.ReadJson(file) : JsonUtility.Parse(content, file);
+                        var (loadErrors, toc) = LoadTocModel(tocToken);
+                        errors.AddRange(loadErrors);
+                        return (errors, toc);
+                    }
+                case FileFormat.Markdown:
+                    {
+                        content ??= _input.ReadString(file);
+                        return TableOfContentsMarkup.Parse(_markdownEngine, content, file);
+                    }
+                default:
+                    throw new NotSupportedException($"'{file}' is an unknown TOC file");
             }
-            else if (file.EndsWith(".json"))
-            {
-                var (errors, tocToken) = content is null ? _input.ReadJson(file) : JsonUtility.Parse(content, file);
-                var (loadErrors, toc) = LoadTocModel(tocToken);
-                errors.AddRange(loadErrors);
-                return (errors, toc);
-            }
-            else if (file.EndsWith(".md"))
-            {
-                content = content ?? _input.ReadString(file);
-                return TableOfContentsMarkup.Parse(_markdownEngine, content, file);
-            }
-
-            throw new NotSupportedException($"'{file}' is an unknown TOC file");
         }
 
         private static (List<Error>, TableOfContentsModel) LoadTocModel(JToken tocToken)
@@ -118,9 +132,7 @@ namespace Microsoft.Docs.Build
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(file))
             {
-                var dependencyChain = recursionDetector.Reverse().ToList();
-                dependencyChain.Add(file);
-                throw Errors.Link.CircularReference(dependencyChain, file).ToException();
+                throw Errors.Link.CircularReference(new SourceInfo(file.FilePath, 1, 1), file, recursionDetector).ToException();
             }
 
             var (errors, model) = LoadTocModel(file.FilePath, content);
@@ -398,7 +410,7 @@ namespace Microsoft.Docs.Build
                         var subToc = Resolve(tocFileName);
                         if (subToc != null)
                         {
-                            if (!subToc.Value.filePath.FilePath.IsFromHistory)
+                            if (!subToc.Value.filePath.FilePath.IsGitCommit)
                             {
                                 return subToc.Value;
                             }

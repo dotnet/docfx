@@ -17,13 +17,12 @@ namespace Microsoft.Docs.Build
         public bool UseCache;
         public bool NoRestore;
         public string? Template;
-        public int Port;
 
         public JObject? StdinConfig;
 
         public FetchOptions FetchOptions => NoRestore
             ? FetchOptions.NoFetch
-            : (UseCache ? FetchOptions.UseCache : FetchOptions.None);
+            : (UseCache ? FetchOptions.UseCache : FetchOptions.Latest);
 
         public JObject ToJObject()
         {

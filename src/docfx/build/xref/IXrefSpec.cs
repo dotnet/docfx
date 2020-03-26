@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 
         string Href { get; }
 
+        string Name { get; }
+
         Document? DeclaringFile { get; }
 
         HashSet<string> Monikers { get; }

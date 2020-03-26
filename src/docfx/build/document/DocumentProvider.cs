@@ -23,19 +23,17 @@ namespace Microsoft.Docs.Build
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
         private readonly HashSet<string> _configReferences;
-        private readonly IReadOnlyDictionary<string, Docset> _dependencyDocsets;
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
+            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, TemplateEngine templateEngine)
         {
             _config = config;
             _docset = docset;
             _localization = localization;
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
-            _dependencyDocsets = LoadDependencies(repositoryProvider);
             _input = input;
             _templateEngine = templateEngine;
 
@@ -43,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
-            _documentIdRules = documentIdConfig.Reverse().Select(item => (item.Key, item.Value)).ToArray();
+            _documentIdRules = documentIdConfig.Select(item => (item.Key, item.Value)).ToArray();
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
@@ -107,8 +105,8 @@ namespace Microsoft.Docs.Build
                 if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsDefault
-                        ? config.FolderRelativePathInDocset + file.FilePath.Path.GetFileName()
-                        : config.FolderRelativePathInDocset + remainingPath;
+                        ? config.FolderRelativePathInDocset.Value.Concat(file.FilePath.Path.GetFileName())
+                        : config.FolderRelativePathInDocset.Value.Concat(remainingPath);
                 }
             }
 
@@ -145,33 +143,12 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocumentCore(FilePath path)
         {
-            switch (path.Origin)
+            return path.Origin switch
             {
-                case FileOrigin.Fallback:
-                    return CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path);
-
-                case FileOrigin.Dependency:
-                    return CreateDocument(_dependencyDocsets[path.DependencyName], path);
-
-                default:
-                    return CreateDocument(_docset, path);
-            }
-        }
-
-        private Dictionary<string, Docset> LoadDependencies(RepositoryProvider repositoryProvider)
-        {
-            var result = new Dictionary<string, Docset>(_config.Dependencies.Count, PathUtility.PathComparer);
-
-            foreach (var (name, dependency) in _config.Dependencies)
-            {
-                var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
-                if (!string.IsNullOrEmpty(entry))
-                {
-                    result.TryAdd(name, new Docset(entry, repository));
-                }
-            }
-
-            return result;
+                FileOrigin.Fallback => CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path),
+                FileOrigin.Dependency => CreateDocument(_docset, path),
+                _ => CreateDocument(_docset, path),
+            };
         }
 
         private Document CreateDocument(Docset docset, FilePath path)
@@ -292,9 +269,9 @@ namespace Microsoft.Docs.Build
                 {
                     if (remainingPath.IsDefault)
                     {
-                        return dest + path.GetFileName();
+                        return dest.Concat(path.GetFileName());
                     }
-                    return dest + remainingPath;
+                    return dest.Concat(remainingPath);
                 }
             }
             return path;
@@ -302,31 +279,26 @@ namespace Microsoft.Docs.Build
 
         private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath)
         {
-            SourceInfo<string?> mime = default;
-
-            if (filePath.EndsWith(".json"))
+            switch (filePath.Format)
             {
                 // TODO: we could have not depend on this exists check, but currently
                 //       LinkResolver works with Document and return a Document for token files,
                 //       thus we are forced to get the mime type of a token file here even if it's not useful.
                 //
                 //       After token resolve does not create Document, this Exists check can be removed.
-                if (input.Exists(filePath))
-                {
-                    using var reader = input.ReadText(filePath);
-                    mime = JsonUtility.ReadMime(reader, filePath);
-                }
+                case FileFormat.Json when input.Exists(filePath):
+                    using (var reader = input.ReadText(filePath))
+                    {
+                        return JsonUtility.ReadMime(reader, filePath);
+                    }
+                case FileFormat.Yaml when input.Exists(filePath):
+                    using (var reader = input.ReadText(filePath))
+                    {
+                        return new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
+                    }
+                default:
+                    return default;
             }
-            else if (filePath.EndsWith(".yml"))
-            {
-                if (input.Exists(filePath))
-                {
-                    using var reader = input.ReadText(filePath);
-                    mime = new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
-                }
-            }
-
-            return mime;
         }
     }
 }

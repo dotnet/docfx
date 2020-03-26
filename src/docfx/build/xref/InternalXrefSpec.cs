@@ -9,19 +9,21 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefSpec : IXrefSpec
     {
-        public string Uid { get; set; }
+        public SourceInfo<string> Uid { get; }
+
+        public string Name => GetXrefPropertyValueAsString("name") ?? Uid;
 
         public string Href { get; set; }
 
-        public Document DeclaringFile { get; set; }
+        public Document DeclaringFile { get; }
 
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, Lazy<JToken>> ExtensionData { get; } = new Dictionary<string, Lazy<JToken>>();
+        public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
 
-        public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
+        string IXrefSpec.Uid => Uid.Value;
 
-        public InternalXrefSpec(string uid, string href, Document declaringFile)
+        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile)
         {
             Uid = uid;
             Href = href;
@@ -30,16 +32,8 @@ namespace Microsoft.Docs.Build
 
         public string? GetXrefPropertyValueAsString(string propertyName)
         {
-            // for internal UID, the display property should only be plain text
-            var contentType = GetXrefPropertyContentType(propertyName);
-            if (contentType == JsonSchemaContentType.None)
-            {
-                return ExtensionData.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
-            }
-            return null;
+            return XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
-
-        public string? GetName() => GetXrefPropertyValueAsString("name");
 
         public ExternalXrefSpec ToExternalXrefSpec()
         {
@@ -48,21 +42,14 @@ namespace Microsoft.Docs.Build
                 Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href),
                 Uid = Uid,
                 Monikers = Monikers,
+                Name = Name,
             };
 
-            foreach (var (key, value) in ExtensionData)
+            foreach (var (key, value) in XrefProperties)
             {
                 spec.ExtensionData[key] = value.Value;
             }
             return spec;
-        }
-
-        private JsonSchemaContentType GetXrefPropertyContentType(string propertyName)
-        {
-            if (propertyName is null)
-                return default;
-
-            return PropertyContentTypeMapping.TryGetValue(propertyName, out var value) ? value : default;
         }
     }
 }

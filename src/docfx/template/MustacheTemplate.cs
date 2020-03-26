@@ -32,9 +32,10 @@ namespace Microsoft.Docs.Build
                 key => new Lazy<string?>(() =>
                 {
                     var fileName = Path.Combine(_templateDir, templateFileName);
-                    return File.Exists(fileName) ? File.ReadAllText(fileName).Replace("\r", "") : null;
+                    return File.Exists(fileName)
+                    ? MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""))
+                    : null;
                 })).Value;
-
             return template == null ? JsonUtility.Serialize(model) : _renderer.Render(template, model);
         }
 
@@ -72,7 +73,13 @@ namespace Microsoft.Docs.Build
 
             public string Load(string name) => _cache.GetOrAdd(
                 name,
-                key => new Lazy<string>(() => File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial")))).Value;
+                key => new Lazy<string>(() =>
+                {
+                    var fileName = Path.Combine(_dir, name);
+                    if (File.Exists(fileName))
+                        return File.ReadAllText(fileName).Replace("\r", "");
+                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial")).Replace("\r", "");
+                })).Value;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
-        private readonly GitCommitProvider _gitCommitProvider;
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -30,7 +29,6 @@ namespace Microsoft.Docs.Build
             WorkQueue<FilePath> buildQueue,
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
-            GitCommitProvider gitCommitProvider,
             BookmarkValidator bookmarkValidator,
             DependencyMapBuilder dependencyMapBuilder,
             XrefResolver xrefResolver,
@@ -46,20 +44,26 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _bookmarkValidator = bookmarkValidator;
             _dependencyMapBuilder = dependencyMapBuilder;
-            _gitCommitProvider = gitCommitProvider;
             _xrefResolver = xrefResolver;
             _templateEngine = templateEngine;
             _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
-        public (Error? error, string content, Document? file) ResolveContent(
-            SourceInfo<string> path, Document referencingFile, DependencyType dependencyType = DependencyType.Inclusion)
+        public (Error? error, string? content, Document? file) ResolveContent(
+            SourceInfo<string> href, Document referencingFile, DependencyType dependencyType = DependencyType.Inclusion)
         {
-            var (error, content, child) = TryResolveContent(referencingFile, path);
+            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
 
-            _dependencyMapBuilder.AddDependencyItem(referencingFile, child, dependencyType);
+            if (file is null || file.ContentType == ContentType.Redirection)
+            {
+                return default;
+            }
 
-            return (error, content, child);
+            var content = _input.ReadString(file.FilePath);
+
+            _dependencyMapBuilder.AddDependencyItem(referencingFile, file, dependencyType);
+
+            return (error, content, file);
         }
 
         public (Error? error, string link, Document? file) ResolveLink(
@@ -80,7 +84,7 @@ namespace Microsoft.Docs.Build
                 _buildQueue.Enqueue(file.FilePath);
             }
 
-            inclusionRoot = inclusionRoot ?? hrefRelativeTo;
+            inclusionRoot ??= hrefRelativeTo;
             if (!isCrossReference)
             {
                 if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
@@ -95,7 +99,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot, link);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, link);
 
             if (file != null)
             {
@@ -103,18 +107,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (error, link, file);
-        }
-
-        private (Error? error, string content, Document? file) TryResolveContent(Document referencingFile, SourceInfo<string> href)
-        {
-            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
-
-            if (file?.ContentType == ContentType.Redirection)
-            {
-                return default;
-            }
-
-            return file != null ? (error, _input.ReadString(file.FilePath), file) : default;
         }
 
         private (Error? error, string href, string? fragment, LinkType linkType, Document? file, bool isCrossReference) TryResolveAbsoluteLink(
@@ -158,7 +150,7 @@ namespace Microsoft.Docs.Build
         private (Error? error, Document? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
             Document referencingFile, SourceInfo<string> href, bool inclusion = false)
         {
-            href = href.Or("");
+            href = new SourceInfo<string>(href.Value.Trim(), href.Source).Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
 
             switch (UrlUtility.GetLinkType(href))
@@ -222,7 +214,7 @@ namespace Microsoft.Docs.Build
             else
             {
                 // Path relative to referencing file
-                var baseDirectory = Path.GetDirectoryName(referencingFile.GetPathToOrigin()) ?? "";
+                var baseDirectory = Path.GetDirectoryName(referencingFile.Path) ?? "";
                 pathToDocset = new PathString(Path.Combine(baseDirectory, relativePath));
 
                 // the relative path could be outside docset
@@ -241,6 +233,10 @@ namespace Microsoft.Docs.Build
             // resolve from the current docset for files in dependencies
             if (referencingFile.Origin == FileOrigin.Dependency)
             {
+                if (!pathToDocset.StartsWithPath(referencingFile.DependencyName, out _))
+                {
+                    return null;
+                }
                 path = new FilePath(pathToDocset, referencingFile.DependencyName);
                 if (_input.Exists(path))
                 {
@@ -259,9 +255,9 @@ namespace Microsoft.Docs.Build
             // resolve from dependent docsets
             foreach (var (dependencyName, _) in _config.Dependencies)
             {
-                if (pathToDocset.StartsWithPath(dependencyName, out var remainingPath))
+                if (pathToDocset.StartsWithPath(dependencyName, out _))
                 {
-                    path = new FilePath(remainingPath, dependencyName);
+                    path = new FilePath(pathToDocset, dependencyName);
                     if (_input.Exists(path))
                     {
                         return _documentProvider.GetDocument(path);
@@ -279,7 +275,7 @@ namespace Microsoft.Docs.Build
             // resolve from fallback docset
             if (_fallbackDocset != null)
             {
-                path = new FilePath(pathToDocset, FileOrigin.Fallback);
+                path = new FilePath(pathToDocset, isGitCommit: false);
                 if (_input.Exists(path))
                 {
                     return _documentProvider.GetDocument(path);
@@ -288,9 +284,7 @@ namespace Microsoft.Docs.Build
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
-                    var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(_fallbackDocset, pathToDocset);
-                    var commit = repo != null && commits.Length > 1 ? commits[1] : default;
-                    path = new FilePath(pathToDocset, commit?.Sha, FileOrigin.Fallback);
+                    path = new FilePath(pathToDocset, isGitCommit: true);
                     if (_input.Exists(path))
                     {
                         return _documentProvider.GetDocument(path);

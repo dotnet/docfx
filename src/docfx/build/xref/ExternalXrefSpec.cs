@@ -9,9 +9,17 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefSpec : IXrefSpec
     {
+        private string? _name;
+
         public string Uid { get; set; } = "";
 
         public string Href { get; set; } = "";
+
+        public string Name
+        {
+            get => _name ?? Uid;
+            set => _name = value;
+        }
 
         Document? IXrefSpec.DeclaringFile => null;
 

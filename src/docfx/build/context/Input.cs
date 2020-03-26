@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -16,16 +17,22 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class Input
     {
-        private readonly string _docsetPath;
+        private readonly PathString _docsetPath;
+        private readonly Config _config;
+        private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
+        private readonly LocalizationProvider _localizationProvider;
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
-        private readonly ConcurrentDictionary<FilePath, byte[]?> _gitBlobCache = new ConcurrentDictionary<FilePath, byte[]?>();
+        private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
 
-        public Input(string docsetPath, RepositoryProvider repositoryProvider)
+        public Input(string docsetPath, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider)
         {
+            _config = config;
+            _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
-            _docsetPath = Path.GetFullPath(docsetPath);
+            _localizationProvider = localizationProvider;
+            _docsetPath = new PathString(Path.GetFullPath(docsetPath));
         }
 
         /// <summary>
@@ -33,26 +40,31 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool Exists(FilePath file)
         {
-            var (docsetPath, pathToDocset, commit) = ResolveFilePath(file);
+            var fullPath = GetFullPath(file);
 
-            if (docsetPath is null)
+            return file.IsGitCommit ? ReadBytesFromGit(fullPath) != null : File.Exists(fullPath);
+        }
+
+        public PathString GetFullPath(FilePath file)
+        {
+            switch (file.Origin)
             {
-                return false;
-            }
+                case FileOrigin.Default:
+                    return _docsetPath.Concat(file.Path);
 
-            if (commit is null)
-            {
-                return File.Exists(PathUtility.Normalize(Path.Combine(docsetPath, pathToDocset)));
-            }
+                case FileOrigin.Dependency:
+                    var package = _config.Dependencies[file.DependencyName];
+                    var packagePath = _packageResolver.ResolvePackage(package, package.PackageFetchOptions);
+                    var pathToPackage = Path.GetRelativePath(file.DependencyName, file.Path);
+                    Debug.Assert(!pathToPackage.StartsWith('.'));
+                    return new PathString(Path.Combine(packagePath, pathToPackage));
 
-            var repoPath = GitUtility.FindRepo(docsetPath);
-            if (repoPath is null)
-            {
-                return false;
-            }
+                case FileOrigin.Fallback when _localizationProvider.FallbackDocsetPath != null:
+                    return _localizationProvider.FallbackDocsetPath.Value.Concat(file.Path);
 
-            var pathToRepo = PathUtility.Normalize(Path.GetRelativePath(repoPath, PathUtility.Normalize(Path.Combine(docsetPath, pathToDocset))));
-            return _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(repoPath, pathToRepo, commit)) != null;
+                default:
+                    throw new InvalidOperationException();
+            }
         }
 
         /// <summary>
@@ -62,11 +74,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool TryGetPhysicalPath(FilePath file, [NotNullWhen(true)] out string? physicalPath)
         {
-            var (basePath, path, commit) = ResolveFilePath(file);
-
-            if (basePath != null && commit is null)
+            if (!file.IsGitCommit)
             {
-                var fullPath = Path.Combine(basePath, path);
+                var fullPath = GetFullPath(file);
                 if (File.Exists(fullPath))
                 {
                     physicalPath = fullPath;
@@ -121,20 +131,13 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(FilePath file)
         {
-            var (basePath, path, commit) = ResolveFilePath(file);
-
-            if (basePath is null)
+            var fullPath = GetFullPath(file);
+            if (!file.IsGitCommit)
             {
-                throw new NotSupportedException($"{nameof(ReadStream)}: {file}");
+                return File.OpenRead(fullPath);
             }
 
-            if (commit is null)
-            {
-                return File.OpenRead(PathUtility.NormalizeFile(Path.Combine(basePath, path)));
-            }
-
-            var bytes = _gitBlobCache.GetOrAdd(file, _ => GitUtility.ReadBytes(basePath, path, commit))
-                ?? throw new InvalidOperationException($"Error reading '{file}'");
+            var bytes = ReadBytesFromGit(fullPath) ?? throw new InvalidOperationException($"Error reading '{file}'");
 
             return new MemoryStream(bytes, writable: false);
         }
@@ -147,60 +150,56 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Default:
-                    return ListFilesRecursive(_docsetPath);
+                    return GetFiles(_docsetPath).Select(file => new FilePath(file)).ToArray();
 
-                case FileOrigin.Fallback:
-                    var (fallbackEntry, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin);
+                case FileOrigin.Fallback when _localizationProvider.FallbackDocsetPath != null:
+                    return GetFiles(_localizationProvider.FallbackDocsetPath).Select(file => new FilePath(file, FileOrigin.Fallback)).ToArray();
 
-                    return ListFilesRecursive(fallbackEntry);
+                case FileOrigin.Dependency when dependencyName != null:
+                    var package = _config.Dependencies[dependencyName.Value];
+                    var packagePath = _packageResolver.ResolvePackage(package, package.PackageFetchOptions);
 
-                case FileOrigin.Dependency:
-                    var (dependencyEntry, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(origin, dependencyName);
-
-                    return ListFilesRecursive(dependencyEntry);
+                    return (
+                        from file in GetFiles(packagePath)
+                        let path = dependencyName.Value.Concat(file)
+                        select new FilePath(path, dependencyName.Value)).ToArray();
 
                 default:
                     throw new NotSupportedException($"{nameof(ListFilesRecursive)}: {origin}");
             }
-
-            FilePath[] ListFilesRecursive(string entry)
-            {
-                if (!Directory.Exists(entry))
-                {
-                    return Array.Empty<FilePath>();
-                }
-
-                return Directory
-                    .GetFiles(entry, "*", SearchOption.AllDirectories)
-                    .Select(path => CreateFilePath(Path.GetRelativePath(entry, path)))
-                    .ToArray();
-            }
-
-            FilePath CreateFilePath(string path)
-            {
-                return dependencyName is null ? new FilePath(path, origin) : new FilePath(path, dependencyName.Value);
-            }
         }
 
-        private (string basePath, string path, string? commit) ResolveFilePath(FilePath file)
+        private IEnumerable<PathString> GetFiles(string directory)
         {
-            switch (file.Origin)
+            if (!Directory.Exists(directory))
             {
-                case FileOrigin.Default:
-                    return (_docsetPath, file.Path, file.Commit);
-
-                case FileOrigin.Dependency:
-                    var (dependencyEntry, dependencyRepository) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin, file.DependencyName);
-                    return (dependencyEntry, file.GetPathToOrigin(), file.Commit ?? dependencyRepository?.Commit);
-
-                case FileOrigin.Fallback:
-                case FileOrigin.Template:
-                    var (docsetPath, _) = _repositoryProvider.GetRepositoryWithDocsetEntry(file.Origin);
-                    return (docsetPath, file.Path, file.Commit);
-
-                default:
-                    throw new InvalidOperationException();
+                return Array.Empty<PathString>();
             }
+
+            return from file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories)
+                   where !file.Contains("/.git/") && !file.Contains("\\.git\\")
+                   let path = new PathString(Path.GetRelativePath(directory, file))
+                   where !path.Value.StartsWith('.')
+                   select path;
+        }
+
+        private byte[]? ReadBytesFromGit(PathString fullPath)
+        {
+            var (repo, pathToRepo) = _repositoryProvider.GetRepository(fullPath);
+            if (repo is null || pathToRepo is null)
+            {
+                return null;
+            }
+
+            return _gitBlobCache.GetOrAdd(fullPath, path =>
+            {
+                var (repo, _, commits) = _repositoryProvider.GetCommitHistory(path);
+                if (repo is null || commits.Length <= 1)
+                {
+                    return null;
+                }
+                return GitUtility.ReadBytes(repo.Path, pathToRepo, commits[1].Sha);
+            });
         }
     }
 }

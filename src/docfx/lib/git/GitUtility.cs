@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -19,57 +18,43 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        /// <summary>
-        /// Find git repo directory
-        /// </summary>
-        /// <param name="path">The git repo entry point</param>
-        /// <returns>The git repo root path. null if the repo root is not found</returns>
-        public static string? FindRepo(string? path)
+        public static PathString? FindRepository(string? path)
         {
-            var repo = path;
-            while (!string.IsNullOrEmpty(repo))
+            var repoPath = path;
+            while (!string.IsNullOrEmpty(repoPath))
             {
-                if (IsRepo(repo))
+                if (IsGitRepository(repoPath))
                 {
-                    return repo;
+                    return new PathString(repoPath);
                 }
 
-                repo = Path.GetDirectoryName(repo);
+                repoPath = Path.GetDirectoryName(repoPath);
             }
 
-            return string.IsNullOrEmpty(repo) ? null : repo;
+            return null;
         }
 
-        /// <summary>
-        /// Determine if the path is a git repo
-        /// </summary>
-        /// <param name="path">The repo path</param>
-        /// <returns>Is git repo or not</returns>
-        public static bool IsRepo(string path)
+        public static bool IsGitRepository(string path)
         {
-            Debug.Assert(!string.IsNullOrEmpty(path));
-
             var gitPath = Path.Combine(path, ".git");
-
-            return Directory.Exists(gitPath) || File.Exists(gitPath) /* submodule */;
+            if (Directory.Exists(gitPath) || File.Exists(gitPath))
+            {
+                if (git_repository_open(out _, gitPath) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        /// <summary>
-        /// Retrieve git repo information.
-        /// </summary>
-        public static unsafe (string? remote, string? branch, string? commit) GetRepoInfo(string repoPath)
+        public static unsafe (string? url, string? branch, string? commit) GetRepoInfo(string repoPath)
         {
-            var (remote, branch, commit) = default((string, string, string));
+            string? remoteName = null;
+            var (url, branch, commit) = default((string, string, string));
 
             if (git_repository_open(out var pRepo, repoPath) != 0)
             {
                 throw new ArgumentException($"Invalid git repo {repoPath}");
-            }
-
-            if (git_remote_lookup(out var pRemote, pRepo, "origin") == 0)
-            {
-                remote = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
-                git_remote_free(pRemote);
             }
 
             if (git_repository_head(out var pHead, pRepo) == 0)
@@ -79,33 +64,84 @@ namespace Microsoft.Docs.Build
                 {
                     branch = Marshal.PtrToStringUTF8(pName);
                 }
+
+                remoteName = GetUpstreamRemoteName(pRepo, pHead);
                 git_reference_free(pHead);
             }
 
+            url = GetRepositoryUrl(pRepo, remoteName ?? "origin");
+
             git_repository_free(pRepo);
 
-            return (remote, branch, commit);
+            return (url, branch, commit);
+
+            static unsafe string? GetUpstreamRemoteName(IntPtr pRepo, IntPtr pBranch)
+            {
+                string? result = null;
+                if (git_branch_upstream(out var pUpstream, pBranch) == 0)
+                {
+                    git_buf buf;
+                    var pUpstreamName = git_reference_name(pUpstream);
+                    if (git_branch_remote_name(&buf, pRepo, pUpstreamName) == 0)
+                    {
+                        result = Marshal.PtrToStringUTF8(buf.ptr) ?? "origin";
+                        git_buf_free(&buf);
+                    }
+                    git_reference_free(pUpstream);
+                }
+                return result;
+            }
+
+            static unsafe string? GetRepositoryUrl(IntPtr pRepo, string remoteName)
+            {
+                string? result = null;
+                if (git_remote_lookup(out var pRemote, pRepo, remoteName) == 0)
+                {
+                    result = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
+                    git_remote_free(pRemote);
+                }
+                else
+                {
+                    var remotes = default(git_strarray);
+                    if (git_remote_list(&remotes, pRepo) == 0)
+                    {
+                        if (remotes.count > 0 && git_remote_lookup(out pRemote, pRepo, *remotes.strings) == 0)
+                        {
+                            result = Marshal.PtrToStringUTF8(git_remote_url(pRemote));
+                            git_remote_free(pRemote);
+                        }
+                        git_strarray_free(&remotes);
+                    }
+                }
+                return result;
+            }
         }
 
-        /// <summary>
-        /// Clones or update a git repository to the latest version.
-        /// </summary>
         public static void Init(string path)
         {
             ExecuteNonQuery(path, "init");
         }
 
         /// <summary>
-        /// checkout existing git repository to specificed committish
+        /// Clones or update a git repository to the latest version.
         /// </summary>
+        public static void AddRemote(string path, string remote, string url)
+        {
+            try
+            {
+                ExecuteNonQuery(path, $"remote add \"{remote}\" \"{url}\"");
+            }
+            catch (InvalidOperationException)
+            {
+                // Remote already exits
+            }
+        }
+
         public static void Checkout(string path, string committish, string? options = null)
         {
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
         }
 
-        /// <summary>
-        /// Fetch a git repository's updates
-        /// </summary>
         public static void Fetch(Config config, string path, string url, string refspecs, string? options = null)
         {
             // Allow test to proxy remotes to local folder
@@ -125,6 +161,12 @@ namespace Microsoft.Docs.Build
             return Execute(path, $"--no-pager log --pretty=format:\"%H\" {topParam} {committish}")
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
+
+        /// <summary>
+        /// Get current first commit hash on given committish
+        /// </summary>
+        public static string GetHeadCommit(string path, string committish = "HEAD")
+            => Execute(path, $"rev-parse {committish}");
 
         public static unsafe byte[]? ReadBytes(string repoPath, string filePath, string committish)
         {
@@ -208,7 +250,7 @@ namespace Microsoft.Docs.Build
 
             return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
 
-            string GetSecretFromHeader(KeyValuePair<string, string> header)
+            static string GetSecretFromHeader(KeyValuePair<string, string> header)
             {
                 if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
                     AuthenticationHeaderValue.TryParse(header.Value, out var value))

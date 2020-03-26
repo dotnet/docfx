@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,8 +14,6 @@ namespace Microsoft.Docs.Build
 
         public JsonSchemaDefinition(JsonSchema root)
         {
-            Debug.Assert(root != null);
-
             _root = root;
             _definitions = _root.Definitions.ToDictionary(k => $"#/definitions/{k.Key}", v => v.Value);
             _definitions.Add("#", root);

@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                             };
                             if (!context.Config.CopyResources)
                             {
-                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.GetPathToOrigin()));
+                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.Path));
                             }
                             output.ResourceOutput = resourceOutput;
                         }
@@ -107,27 +107,27 @@ namespace Microsoft.Docs.Build
                 var monikerGroups = dictionaryBuilder.ToDictionary();
                 var convertedItems = listBuilder.ToList();
                 context.Output.WriteJson(
-                new
-                {
-                    groups = monikerGroups.Any() ? monikerGroups.OrderBy(item => item.Key).Select(item => new
+                    Path.Combine(context.Config.BasePath, ".manifest.json"),
+                    new
                     {
-                        group = item.Key,
-                        monikers = item.Value,
-                    }) : null,
-                    default_version_info = new
-                    {
-                        name = string.Empty,
-                        version_folder = string.Empty,
-                        xref_map = "xrefmap.yml",
-                    },
-                    files = convertedItems
-                        .OrderBy(f => f.manifestItem.AssetId + f.manifestItem.SourceRelativePath).Select(f => f.manifestItem),
-                    is_already_processed = true,
-                    source_base_path = ".",
-                    version_info = new { },
-                    items_to_publish = itemsToPublish,
-                },
-                Path.Combine(context.Config.BasePath, ".manifest.json"));
+                        groups = monikerGroups.Any() ? monikerGroups.OrderBy(item => item.Key).Select(item => new
+                        {
+                            group = item.Key,
+                            monikers = item.Value,
+                        }) : null,
+                        default_version_info = new
+                        {
+                            name = string.Empty,
+                            version_folder = string.Empty,
+                            xref_map = "xrefmap.yml",
+                        },
+                        files = convertedItems
+                            .OrderBy(f => f.manifestItem.AssetId + f.manifestItem.SourceRelativePath).Select(f => f.manifestItem),
+                        is_already_processed = true,
+                        source_base_path = ".",
+                        version_info = new { },
+                        items_to_publish = itemsToPublish,
+                    });
             }
         }
 

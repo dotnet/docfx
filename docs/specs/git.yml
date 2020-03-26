@@ -316,25 +316,6 @@ outputs:
       "gitcommit": "https://github.com/testowner/testrepo/blob/e662dbc7c5e582a14b863d6a6a82e495d6272f91/docs/index.md",
     }
 ---
-# Specify editLink repo and branch in .openpublishing.publish.config.json
-repos:
-  https://github.com/testowner/test-op-edit-link-repo#master-edit-link:
-  - files:
-      .openpublishing.publish.config.json: |
-        {
-          "git_repository_url_open_to_public_contributors": "https://github.com/a/b",
-          "git_repository_branch_open_to_public_contributors": "c"
-        }
-      docfx.yml:
-      a.md:
-outputs:
-  a.json: |
-    {
-      "content_git_url": "https://github.com/a/b/blob/c/a.md",
-      "original_content_git_url": "https://github.com/testowner/test-op-edit-link-repo/blob/master-edit-link/a.md",
-      "gitcommit": "https://github.com/testowner/test-op-edit-link-repo/blob/65344f739e0bca9b2d0b93615f905d148af0607f/a.md",
-    }
----
 # Use commit time as updated_at when `updateTimeAsCommitBuildTime` is false
 repos:
   https://github.com/testowner/testrepo#master-time-from-commit:
@@ -406,7 +387,6 @@ repos:
         a.md:
 outputs:
   .errors.log: |
-    ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *"]
     ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *"]
 ---
 # Use current repo's branch when edit branch isn't specified in contribution config,
@@ -639,7 +619,6 @@ repos:
               url: https://github.com/testowner/crr-content
               branch: test
               includeInBuild: true
-        docs/a.md:
   https://github.com/testowner/crr-content#test:
     - author: Charlie
       email: charlie@contoso.com
@@ -676,7 +655,6 @@ cache:
         ]
       }
 outputs:
-  docs/a.json:
   crrb/b.json: |
     {
       "_op_gitContributorInformation":

@@ -120,12 +120,15 @@ outputs:
 # Resolve <a> and <img> tags embedded inside markdown
 inputs:
   docfx.yml:
-  docs/a.md: Link to <a href="b.md" target="_blank"><em>b</em></a>
+  docs/a.md: |
+    <a href="">Empty string</a>
+    <a href=" ">Space</a>
+    Link to <a href="b.md " target="_blank"><em>b</em></a>
   docs/b.md: <div>Link to <img src="c.png" /></div>
   docs/c.png:
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
+    { "conceptual": "<p><a href=\"\">Empty string</a><a href=\"\">Space</a>Link to <a href=\"b\" target=\"_blank\"><em>b</em></a></p>" }
   docs/b.json: |
     { "conceptual": "<div>Link to <img src=\"c.png\" /></div>" }
   docs/c.png:
@@ -183,8 +186,9 @@ inputs:
   docs/a.png.md: '![](a.png)'
   docs/a.png:
 outputs:
+  docs/a.png.json:
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
+    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"]
 ---
 # Prefer relative url to file when there is a matching folder name
 inputs:
@@ -242,7 +246,7 @@ inputs:
   docs/redirect.md:
 outputs:
   .errors.log: |
-    ["error","publish-url-conflict","Two or more files publish to the same url '/docs/redirect': 'docs/redirect.md [redirection]', 'docs/redirect.md'"]
+    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/redirect': 'docs/redirect.md [redirection]', 'docs/redirect.md'"]
 ---
 # Show warning if link to a page outside build scope
 inputs:

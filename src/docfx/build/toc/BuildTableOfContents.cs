@@ -16,8 +16,11 @@ namespace Microsoft.Docs.Build
             var (errors, model, _, _) = context.TableOfContentsLoader.Load(file);
 
             // enable pdf
-            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, model.Metadata.Monikers);
-            var monikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers);
+            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddIfNotNull(monikerError);
+
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
+            var monikerGroup = MonikerUtility.GetGroup(monikers);
 
             if (context.Config.OutputPdf)
             {
@@ -31,22 +34,25 @@ namespace Microsoft.Docs.Build
                 outputPath,
                 file.FilePath.Path,
                 context.LocalizationProvider.Locale,
-                model.Metadata.Monikers,
+                monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                if (context.Config.Legacy)
+                if (!context.Config.DryRun)
                 {
-                    var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(output, outputPath);
-                    context.Output.WriteJson(model.Metadata, LegacyUtility.ChangeExtension(outputPath, ".mta.json"));
+                    if (context.Config.Legacy)
+                    {
+                        var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
+                        context.Output.WriteJson(outputPath, output);
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
+                    }
+                    else
+                    {
+                        context.Output.WriteJson(outputPath, model);
+                    }
                 }
-                else
-                {
-                    context.Output.WriteJson(model, outputPath);
-                }
-            }
+            });
 
             return errors;
         }

@@ -38,10 +38,13 @@ namespace Microsoft.Docs.Build
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file, publishItem) && copy && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                context.Output.Copy(file, outputPath);
-            }
+                if (copy && !context.Config.DryRun)
+                {
+                    context.Output.Copy(outputPath, file.FilePath);
+                }
+            });
 
             return errors;
         }

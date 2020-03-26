@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -18,9 +17,9 @@ namespace Microsoft.Docs.Build
         [InlineData("OPSTest", 23694395, "OPSTest", "OPSTest")]
         [InlineData("luyajun0205", 15990849, "luyajun0205", "luyajun0205")]
         [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null, null, null)]
-        public static async Task GetUserByLogin(string login, int? expectedId, string expectedName, string expectedLogin)
+        public static void GetUserByLogin(string login, int? expectedId, string expectedName, string expectedLogin)
         {
-            var (error, user) = await s_github.GetUserByLogin(new SourceInfo<string>(login));
+            var (error, user) = s_github.GetUserByLogin(new SourceInfo<string>(login));
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (!string.IsNullOrEmpty(s_token))
@@ -51,10 +50,10 @@ namespace Microsoft.Docs.Build
         [InlineData("error@example.com", null, null, "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
         [InlineData("51308672+disabled-account-osmond@users.noreply.github.com", "docascode", "contribution-test", "b2b280fbc64790011c7a4d01bca5b84b6d98e386", null, null, null, null)]
         [InlineData("yufeih@live.com", "docascode", "contribution-test", "6d0e5bc3595e3841ac62dc545dfbb2c01fe64e7c", "yufeih", 511355, "Yufei Huang", new[] { "yufeih@live.com", "yufeih@microsoft.com" })]
-        public static async Task GetUserByEmail(
+        public static void GetUserByEmail(
             string email, string repoOwner, string repoName, string commit, string expectedLogin, int? expectedId, string expectedName, string[] expectedEmails)
         {
-            var (error, user) = await s_github.GetUserByEmail(email, repoOwner, repoName, commit);
+            var (error, user) = s_github.GetUserByEmail(email, repoOwner, repoName, commit);
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (!string.IsNullOrEmpty(s_token))

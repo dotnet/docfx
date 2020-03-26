@@ -24,10 +24,5 @@ namespace Microsoft.Docs.Build
         /// This file is a redirection file.
         /// </summary>
         Redirection,
-
-        /// <summary>
-        /// This file is coming from template.
-        /// </summary>
-        Template,
     }
 }

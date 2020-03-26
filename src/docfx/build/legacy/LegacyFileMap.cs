@@ -53,6 +53,7 @@ namespace Microsoft.Docs.Build
         public static void Convert(Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
         {
             context.Output.WriteJson(
+                Path.Combine(context.Config.BasePath, "filemap.json"),
                 new
                 {
                     host = $"https://{context.Config.HostName}",
@@ -74,8 +75,7 @@ namespace Microsoft.Docs.Build
                             }
                         },
                         item => item.fileMapItem),
-                },
-                Path.Combine(context.Config.BasePath, "filemap.json"));
+                });
         }
     }
 }
