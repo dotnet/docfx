@@ -96,30 +96,38 @@ namespace Microsoft.Docs.Build
         public (Error?, ExternalXrefSpec?) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
-            return (error, xrefSpec?.ToExternalXrefSpec());
+            if (xrefSpec == null)
+                return (error, null);
+
+            var externalXrefSpec = xrefSpec.ToExternalXrefSpec();
+            var (href, _, fragment) = UrlUtility.SplitUrl(externalXrefSpec.Href);
+            href = RemoveSharingHost(href, _config.HostName);
+            if (UrlUtility.GetLinkType(href) != LinkType.External)
+            {
+                href = PathUtility.GetRelativePathToFile(referencingFile.SiteUrl, href);
+                externalXrefSpec.Href = PathUtility.Normalize(UrlUtility.MergeUrl(href, "", fragment));
+            }
+            else
+            {
+                externalXrefSpec.Href = UrlUtility.MergeUrl(href, "", fragment);
+            }
+            return (error, externalXrefSpec);
         }
 
         public XrefMapModel ToXrefMapModel()
         {
-            string? repositoryBranch = null;
-            string? basePath = null;
+            var repositoryBranch = _repository?.Branch;
+            var basePath = _config.BasePath.ValueWithLeadingSlash;
+
             var references = _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
                     var xrefSpec = xref.ToExternalXrefSpec();
-                    if (repositoryBranch is null)
-                    {
-                        repositoryBranch = _repository?.Branch;
-                    }
-                    if (basePath is null)
-                    {
-                        basePath = _config.BasePath.ValueWithLeadingSlash;
-                    }
 
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
-                    var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
-                    var path = $"https://{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
+                    var (href, _, fragment) = UrlUtility.SplitUrl(xref.Href);
+                    var path = $"https://{_xrefHostName}{href}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
                     return xrefSpec;

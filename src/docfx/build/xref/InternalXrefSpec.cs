@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         {
             var spec = new ExternalXrefSpec
             {
-                Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href),
+                Href = Href,
                 Uid = Uid,
                 Monikers = Monikers,
                 Name = Name,
