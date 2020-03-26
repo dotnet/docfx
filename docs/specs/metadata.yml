@@ -165,33 +165,26 @@ outputs:
       "items":[{"name":"toc reference", "items": [{"name":"title", "c": "d"}]}]
     }
 ---
-# TOC does not respect global metadata and file metadata
+# TOC respect global metadata and file metadata
 inputs:
   docfx.yml: |
     globalMetadata:
       a: b
-  docs/json/TOC.json: |
-    [{"name":"title"}]
+    fileMetadata:
+      area:
+        docs/json/TOC.json: 2
+  docs/json/TOC.json: '{}'
   docs/yaml/TOC.yml: |
     metadata:
       c: d
-    items:
-      - name: title
-  docs/md/TOC.md: |
-    # title
+  docs/md/TOC.md:
 outputs:
   docs/yaml/toc.json: |
-    {  
-      "items": [{ "name": "title" }], "metadata": { "a": undefined, "c": "d"}
-    }
+    { "metadata": { "a": "b", "c": "d"} }
   docs/json/toc.json: |
-    {  
-      "items": [{ "name": "title" }], "metadata": { "a": undefined }
-    }
+    { "metadata": { "a": "b", "area": 2 } }
   docs/md/toc.json: |
-    {  
-      "items": [{ "name": "title" }], "metadata": { "a": undefined }
-    }
+    { "metadata": { "a": "b", "area": undefined } }
 ---
 # Generate canonical URL
 # In docs, canonical URL is later overwritten by template JINT code.

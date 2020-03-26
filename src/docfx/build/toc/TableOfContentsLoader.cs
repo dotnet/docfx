@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly MarkdownEngine _markdownEngine;
         private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsModel, List<Document>, List<Document>)> _cache =
@@ -34,6 +35,7 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MarkdownEngine markdownEngine,
+            MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             DependencyMapBuilder dependencyMapBuilder)
         {
@@ -41,6 +43,7 @@ namespace Microsoft.Docs.Build
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _markdownEngine = markdownEngine;
+            _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
         }
@@ -52,13 +55,21 @@ namespace Microsoft.Docs.Build
             {
                 var referencedFiles = new List<Document>();
                 var referencedTocs = new List<Document>();
+                var errors = new List<Error>();
 
-                var (errors, model) = LoadInternal(file, file, referencedFiles, referencedTocs);
+                var (loadErrors, model) = LoadInternal(file, file, referencedFiles, referencedTocs);
+                errors.AddRange(loadErrors);
+
+                var (metadataErrors, metadata) = _metadataProvider.GetMetadata(file.FilePath);
+                errors.AddRange(metadataErrors);
+
+                var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
+                errors.AddRange(validationErrors);
+                model.Metadata = tocMetadata;
 
                 var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
                 errors.AddIfNotNull(error);
 
-                model.Metadata.Monikers = monikers;
                 return (errors, model, referencedFiles, referencedTocs);
             });
         }

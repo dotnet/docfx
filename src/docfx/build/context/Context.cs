@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             MarkdownEngine = new MarkdownEngine(Config, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
 
             TableOfContentsLoader = new TableOfContentsLoader(
-                Input, LinkResolver, XrefResolver, MarkdownEngine, MonikerProvider, DependencyMapBuilder);
+                Input, LinkResolver, XrefResolver, MarkdownEngine, MetadataProvider, MonikerProvider, DependencyMapBuilder);
         }
 
         public void Dispose()
