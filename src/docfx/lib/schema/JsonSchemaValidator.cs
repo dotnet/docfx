@@ -481,9 +481,11 @@ namespace Microsoft.Docs.Build
         private void PostValidateDocsetUnique(List<(string name, Error)> errors)
         {
             var validatedMetadata = _metadataBuilder.ToList();
-            var validatedMetadataGroups = validatedMetadata.GroupBy(
-                k => (k.value, (key: k.key, k.schema)),
-                ValueTupleEqualityComparer.Create(JsonUtility.DeepEqualsComparer, EqualityComparer<(string, JsonSchema)>.Default));
+            var validatedMetadataGroups = validatedMetadata
+                .Where(k => IsStrictHaveValue(k.value))
+                .GroupBy(
+                    k => (k.value, (k.key, k.schema)),
+                    ValueTupleEqualityComparer.Create(JsonUtility.DeepEqualsComparer, EqualityComparer<(string, JsonSchema)>.Default));
 
             foreach (var group in validatedMetadataGroups)
             {
