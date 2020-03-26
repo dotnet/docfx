@@ -117,25 +117,31 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        /// <summary>
-        /// Clones or update a git repository to the latest version.
-        /// </summary>
         public static void Init(string path)
         {
             ExecuteNonQuery(path, "init");
         }
 
         /// <summary>
-        /// checkout existing git repository to specificed committish
+        /// Clones or update a git repository to the latest version.
         /// </summary>
+        public static void AddRemote(string path, string remote, string url)
+        {
+            try
+            {
+                ExecuteNonQuery(path, $"remote add \"{remote}\" \"{url}\"");
+            }
+            catch (InvalidOperationException)
+            {
+                // Remote already exits
+            }
+        }
+
         public static void Checkout(string path, string committish, string? options = null)
         {
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
         }
 
-        /// <summary>
-        /// Fetch a git repository's updates
-        /// </summary>
         public static void Fetch(Config config, string path, string url, string refspecs, string? options = null)
         {
             // Allow test to proxy remotes to local folder

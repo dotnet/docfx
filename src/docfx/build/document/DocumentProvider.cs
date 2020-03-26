@@ -23,19 +23,17 @@ namespace Microsoft.Docs.Build
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
         private readonly HashSet<string> _configReferences;
-        private readonly IReadOnlyDictionary<string, Docset> _dependencyDocsets;
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, RepositoryProvider repositoryProvider, TemplateEngine templateEngine)
+            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, TemplateEngine templateEngine)
         {
             _config = config;
             _docset = docset;
             _localization = localization;
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
-            _dependencyDocsets = LoadDependencies(repositoryProvider);
             _input = input;
             _templateEngine = templateEngine;
 
@@ -145,33 +143,12 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocumentCore(FilePath path)
         {
-            switch (path.Origin)
+            return path.Origin switch
             {
-                case FileOrigin.Fallback:
-                    return CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path);
-
-                case FileOrigin.Dependency:
-                    return CreateDocument(_dependencyDocsets[path.DependencyName], path);
-
-                default:
-                    return CreateDocument(_docset, path);
-            }
-        }
-
-        private Dictionary<string, Docset> LoadDependencies(RepositoryProvider repositoryProvider)
-        {
-            var result = new Dictionary<string, Docset>(_config.Dependencies.Count, PathUtility.PathComparer);
-
-            foreach (var (name, dependency) in _config.Dependencies)
-            {
-                var (entry, repository) = repositoryProvider.GetRepositoryWithDocsetEntry(FileOrigin.Dependency, name);
-                if (!string.IsNullOrEmpty(entry))
-                {
-                    result.TryAdd(name, new Docset(entry));
-                }
-            }
-
-            return result;
+                FileOrigin.Fallback => CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path),
+                FileOrigin.Dependency => CreateDocument(_docset, path),
+                _ => CreateDocument(_docset, path),
+            };
         }
 
         private Document CreateDocument(Docset docset, FilePath path)

@@ -619,7 +619,6 @@ repos:
               url: https://github.com/testowner/crr-content
               branch: test
               includeInBuild: true
-        docs/a.md:
   https://github.com/testowner/crr-content#test:
     - author: Charlie
       email: charlie@contoso.com
@@ -656,7 +655,6 @@ cache:
         ]
       }
 outputs:
-  docs/a.json:
   crrb/b.json: |
     {
       "_op_gitContributorInformation":

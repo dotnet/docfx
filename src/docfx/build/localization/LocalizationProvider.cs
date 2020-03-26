@@ -9,14 +9,6 @@ namespace Microsoft.Docs.Build
 {
     internal class LocalizationProvider
     {
-        // entry should always be localization repo
-        private readonly string _localizationDocsetPath;
-        private readonly Repository? _localizationRepository;
-
-        // en-us repo is used for fallback
-        private string? _englishDocsetPath;
-        private Repository? _englishRepository;
-
         /// <summary>
         /// Gets the lower-case culture name computed from <see cref="CommandLineOptions.Locale" or <see cref="Config.DefaultLocale"/>/>
         /// </summary>
@@ -24,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public CultureInfo Culture { get; }
 
-        public bool IsLocalizationBuild { get; }
+        public PathString? FallbackDocsetPath { get; }
 
         public bool EnableSideBySide { get; }
 
@@ -33,40 +25,24 @@ namespace Microsoft.Docs.Build
             Locale = !string.IsNullOrEmpty(locale) ? locale.ToLowerInvariant() : config.DefaultLocale;
             Culture = CreateCultureInfo(Locale);
 
-            _localizationDocsetPath = docsetPath;
-            _localizationRepository = repository;
-
-            if (!string.IsNullOrEmpty(locale) && !string.Equals(locale, config.DefaultLocale))
+            if (repository != null)
             {
-                IsLocalizationBuild = true;
-            }
+                EnableSideBySide =
+                    LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
+                    contributionBranch != repository.Branch;
 
-            EnableSideBySide = repository != null &&
-                LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
-                contributionBranch != repository.Branch;
-
-            if (_localizationRepository != null)
-            {
-                var docsetSourceFolder = Path.GetRelativePath(_localizationRepository.Path, _localizationDocsetPath);
-                (_englishDocsetPath, _englishRepository) = GetFallbackRepository(_localizationRepository, packageResolver, docsetSourceFolder);
+                FallbackDocsetPath = GetFallbackDocsetPath(docsetPath, repository, packageResolver);
             }
         }
 
         public Docset? GetFallbackDocset()
         {
-            return _englishDocsetPath != null ? new Docset(_englishDocsetPath) : null;
+            return FallbackDocsetPath != null ? new Docset(FallbackDocsetPath) : null;
         }
 
-        public (string fallbackDocsetPath, Repository? fallbackRepository) GetFallbackRepositoryWithDocsetEntry()
+        private static PathString? GetFallbackDocsetPath(string docsetPath, Repository repository, PackageResolver packageResolver)
         {
-            return (_englishDocsetPath ?? throw new InvalidOperationException(), _englishRepository);
-        }
-
-        private static (string fallbackDocsetPath, Repository? fallbackRepo) GetFallbackRepository(
-            Repository? repository,
-            PackageResolver packageResolver,
-            string docsetSourceFolder)
-        {
+            var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
             if (LocalizationUtility.TryGetFallbackRepository(repository?.Remote, repository?.Branch, out var fallbackRemote, out var fallbackBranch))
             {
                 foreach (var branch in new[] { fallbackBranch, "master" })
@@ -74,8 +50,7 @@ namespace Microsoft.Docs.Build
                     if (packageResolver.TryResolvePackage(
                         new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
                     {
-                        return (PathUtility.NormalizeFolder(Path.Combine(fallbackRepoPath, docsetSourceFolder)),
-                            Repository.Create(fallbackRepoPath, branch, fallbackRemote));
+                        return new PathString(Path.Combine(fallbackRepoPath, docsetSourceFolder));
                     }
                 }
             }

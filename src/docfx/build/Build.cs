@@ -61,8 +61,8 @@ namespace Microsoft.Docs.Build
 
                 using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
                 var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
-                var repositoryProvider = new RepositoryProvider(docsetPath, repository, config, packageResolver, localizationProvider);
-                var input = new Input(docsetPath, repositoryProvider);
+                var repositoryProvider = new RepositoryProvider(repository);
+                var input = new Input(docsetPath, config, packageResolver, repositoryProvider, localizationProvider);
 
                 // get docsets(build docset, fallback docset and dependency docsets)
                 var docset = new Docset(docsetPath);
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             }
 
             context.ContributionProvider.Save();
-            context.GitCommitProvider.Save();
+            context.RepositoryProvider.Save();
 
             errorLog.Write(context.GitHubAccessor.Save());
             errorLog.Write(context.MicrosoftGraphAccessor.Save());
