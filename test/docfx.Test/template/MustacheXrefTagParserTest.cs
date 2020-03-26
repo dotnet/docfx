@@ -62,7 +62,6 @@ namespace Microsoft.Docs.Build
             Assert.Equal(
             expected.Replace('\'', '"').Replace(" ", ""),
             MustacheXrefTagParser.ProcessXrefTag(template).Replace(" ", ""));
-            
         }
     }
 }

@@ -46,32 +46,39 @@ namespace Microsoft.Docs.Build
                 var errors = new List<Error>();
                 var content = context.Input.ReadString(file.FilePath);
                 var callStack = new List<Document> { file };
-                if (file.FilePath.EndsWith(".md"))
+
+                switch (file.FilePath.Format)
                 {
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-                    errors.AddRange(fileMetaErrors);
-                    var (error, spec) = LoadMarkdown(context, fileMetadata, file);
-                    errors.AddIfNotNull(error);
-                    if (spec != null)
-                    {
-                        xrefs.Add(spec);
-                    }
-                }
-                else if (file.FilePath.EndsWith(".yml"))
-                {
-                    var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
-                    errors.AddRange(yamlErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
-                    errors.AddRange(schemaErrors);
-                    xrefs.AddRange(specs);
-                }
-                else if (file.FilePath.EndsWith(".json"))
-                {
-                    var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
-                    errors.AddRange(jsonErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
-                    errors.AddRange(schemaErrors);
-                    xrefs.AddRange(specs);
+                    case FileFormat.Markdown:
+                        {
+                            var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+                            errors.AddRange(fileMetaErrors);
+                            var (error, spec) = LoadMarkdown(context, fileMetadata, file);
+                            errors.AddIfNotNull(error);
+                            if (spec != null)
+                            {
+                                xrefs.Add(spec);
+                            }
+                            break;
+                        }
+                    case FileFormat.Yaml:
+                        {
+                            var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
+                            errors.AddRange(yamlErrors);
+                            var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                            errors.AddRange(schemaErrors);
+                            xrefs.AddRange(specs);
+                            break;
+                        }
+                    case FileFormat.Json:
+                        {
+                            var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
+                            errors.AddRange(jsonErrors);
+                            var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                            errors.AddRange(schemaErrors);
+                            xrefs.AddRange(specs);
+                            break;
+                        }
                 }
                 context.ErrorLog.Write(errors);
             }

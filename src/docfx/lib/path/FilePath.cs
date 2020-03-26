@@ -17,6 +17,12 @@ namespace Microsoft.Docs.Build
         public PathString Path { get; }
 
         /// <summary>
+        /// Gets the file format.
+        /// Prefer this over file extension because .NET xml file path ends with .xml, but the format is yaml.
+        /// </summary>
+        public FileFormat Format { get; }
+
+        /// <summary>
         /// Gets the name of the dependency if it is from dependency repo.
         /// </summary>
         public PathString DependencyName { get; }
@@ -41,12 +47,14 @@ namespace Microsoft.Docs.Build
             Debug.Assert(origin != FileOrigin.Dependency);
 
             Path = new PathString(path);
+            Format = GetFormat(path);
             Origin = origin;
         }
 
         public FilePath(string path, string? commit, FileOrigin origin)
         {
             Path = new PathString(path);
+            Format = GetFormat(path);
             Origin = origin;
             Commit = commit;
         }
@@ -54,6 +62,7 @@ namespace Microsoft.Docs.Build
         public FilePath(string path, PathString dependencyName)
         {
             Path = new PathString(System.IO.Path.Combine(dependencyName, path));
+            Format = GetFormat(path);
             DependencyName = dependencyName;
             Origin = FileOrigin.Dependency;
         }
@@ -138,6 +147,24 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public bool EndsWith(string value) => Path.Value.EndsWith(value, PathUtility.PathComparison);
+        private static FileFormat GetFormat(string path)
+        {
+            if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                return FileFormat.Markdown;
+            }
+
+            if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            {
+                return FileFormat.Yaml;
+            }
+
+            if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                return FileFormat.Json;
+            }
+
+            return FileFormat.Unknown;
+        }
     }
 }
