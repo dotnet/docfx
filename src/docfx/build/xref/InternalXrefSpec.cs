@@ -21,8 +21,6 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
 
-        public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
-
         string IXrefSpec.Uid => Uid.Value;
 
         public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile)
