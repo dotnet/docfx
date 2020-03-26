@@ -70,7 +70,6 @@ namespace Microsoft.Docs.Build
                 var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
                 errors.AddIfNotNull(error);
 
-                model.Metadata.Monikers = monikers;
                 return (errors, model, referencedFiles, referencedTocs);
             });
         }
