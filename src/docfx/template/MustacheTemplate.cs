@@ -77,8 +77,8 @@ namespace Microsoft.Docs.Build
                 {
                     var fileName = Path.Combine(_dir, name);
                     if (File.Exists(fileName))
-                        return File.ReadAllText(fileName);
-                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial"));
+                        return File.ReadAllText(fileName).Replace("\r", "");
+                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial")).Replace("\r", "");
                 })).Value;
         }
     }
