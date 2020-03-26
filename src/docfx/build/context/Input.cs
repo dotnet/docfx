@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
 
                     return (
                         from file in GetFiles(packagePath)
-                        let path = dependencyName.Value.Concat(new PathString(file))
+                        let path = dependencyName.Value.Concat(file)
                         select new FilePath(path, dependencyName.Value)).ToArray();
 
                 default:
@@ -169,16 +169,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private IEnumerable<string> GetFiles(string directory)
+        private IEnumerable<PathString> GetFiles(string directory)
         {
             if (!Directory.Exists(directory))
             {
-                return Array.Empty<string>();
+                return Array.Empty<PathString>();
             }
 
             return from file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories)
-                   where !file.Contains(".git/") && !file.Contains(".git\\")
-                   select Path.GetRelativePath(directory, file);
+                   where !file.Contains("/.git/") && !file.Contains("\\.git\\")
+                   let path = new PathString(Path.GetRelativePath(directory, file))
+                   where !path.Value.StartsWith('.')
+                   select path;
         }
 
         private byte[]? ReadBytesFromGit(PathString fullPath)
