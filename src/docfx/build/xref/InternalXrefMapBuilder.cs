@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
 
             // uid conflicts with different names
             // log an warning and take the first one order by the declaring file
-            var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
+            var conflictingNames = specsWithSameUid.Select(x => x.Name).Distinct();
             if (conflictingNames.Count() > 1)
             {
                 context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, "name", conflictingNames));

@@ -260,7 +260,6 @@ inputs:
         name: uid1-name
         href: https://docs.com/uid1
       - uid: uid2
-        name: uid2-name
         href: https://docs.com/uid2
     
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
@@ -331,7 +330,7 @@ inputs:
 outputs:
   uid-resolve.mta.json:
   uid-resolve.raw.page.json: |
-    {"content": "<p> <a href=\"https://docs.com/uid1\" data-linktype=\"external\"> uid1 </a> </p> "}
+    {"content": "<p> <a href=\"https://docs.com/uid1\" data-linktype=\"external\"> uid1-name </a> </p> "}
   uid-unresolve.mta.json:
   uid-unresolve.raw.page.json: |
     {"content": "<p> <span> unresolve </span> </p>"}
@@ -343,10 +342,10 @@ outputs:
     {"content": "<p> <span> unresolve </span> </p>"}
   uid-list.mta.json:
   uid-list.raw.page.json: |
-    {"content": "<p> <a href=\"https://docs.com/uid1\" data-linktype=\"external\"> uid1 </a> <span> unresolve </span> <a href=\"https://docs.com/uid2\" data-linktype=\"external\"> uid2 </a> </p> "}
+    {"content": "<p> <a href=\"https://docs.com/uid1\" data-linktype=\"external\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docs.com/uid2\" data-linktype=\"external\"> uid2 </a> </p> "}
   uid-list-partial.mta.json:
   uid-list-partial.raw.page.json: |
-    {"content": "<p> <a href=\"https://docs.com/uid1\" class=\"partial\" data-linktype=\"external\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docs.com/uid2\" class=\"partial\" data-linktype=\"external\"> uid2-name </a> </p> "}
+    {"content": "<p> <a href=\"https://docs.com/uid1\" class=\"partial\" data-linktype=\"external\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docs.com/uid2\" class=\"partial\" data-linktype=\"external\"> uid2 </a> </p> "}
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'","file":"uid-list.yml","line":4,"end_line":4,"column":5,"end_column":14}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'","file":"uid-list-partial.yml","line":4,"end_line":4,"column":5,"end_column":14}

@@ -25,14 +25,14 @@ namespace Microsoft.Docs.Build
         [InlineData("section.tmpl", "{'section':1}", "<p></p>")]
         [InlineData("section.tmpl", "{'section':'string'}", "<p></p>")]
         [InlineData("section.tmpl", "{'section':''}", "")]
-        [InlineData("xref.tmpl", "{'uid':{'uid':'uid-name-resolve','href':'https://domain/path'}}", "<a href=\"https://domain/path\"> uid-name-resolve </a>")]
+        [InlineData("xref.tmpl", "{'uid':{'name':'uid-name-resolve','href':'https://domain/path'}}", "<a href=\"https://domain/path\"> uid-name-resolve </a>")]
         [InlineData("xref.tmpl", "{'uid':'uid-name-unresolve'}", "<span> uid-name-unresolve </span>")]
         [InlineData("xref-partial.tmpl", "{'uid':'uid-name-unresolve'}", "<span> uid-name-unresolve </span>")]
         [InlineData("xref-partial.tmpl",
             "{'uid':{'name':'uid-name-resolve','href':'https://domain/path'}}",
             "<a class=\"xref\" href=\"https://domain/path\">uid-name-resolve</a>")]
         [InlineData("xref-list.tmpl",
-            "{'uids': [{'uid':'uid-name-resolve', 'href': 'https://domain/path'}, 'uid-name-unresolve']}",
+            "{'uids': [{'name':'uid-name-resolve', 'href': 'https://domain/path'}, 'uid-name-unresolve']}",
             "<a href=\"https://domain/path\"> uid-name-resolve </a>\n<span> uid-name-unresolve </span>")]
         [InlineData(
             "include.tmpl",

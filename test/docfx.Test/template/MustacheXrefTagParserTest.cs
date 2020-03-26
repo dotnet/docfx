@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<xref/>",
             "{{#uid}}" +
             "  {{#href}}" +
-            "    <a href=\"{{href}}\"> {{uid}} </a>" +
+            "    <a href=\"{{href}}\"> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
             "    <span> {{.}} </span>" +
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<xref uid='{{uid}}'/>",
             "{{#uid}}" +
             "  {{#href}}" +
-            "    <a href=\"{{href}}\"> {{uid}} </a>" +
+            "    <a href=\"{{href}}\"> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
             "    <span> {{.}} </span>" +
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<xref uid='{{namespace}}'/>",
             "{{#namespace}}" +
             "  {{#href}}" +
-            "    <a href='{{href}}'> {{uid}} </a>" +
+            "    <a href='{{href}}'> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
             "    <span> {{.}} </span>" +
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             )]
         [InlineData("<xref uid='{{ . }}'/>",
             "{{#href}}" +
-            "  <a href=\"{{href}}\"> {{uid}} </a>" +
+            "  <a href=\"{{href}}\"> {{name}} </a>" +
             "{{/href}}" +
             "{{^href}}" +
             "  <span> {{.}} </span>" +
