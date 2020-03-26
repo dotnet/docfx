@@ -2,81 +2,49 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.IO;
 using Xunit;
 
 namespace Microsoft.Docs.Build
 {
     public static class TocTest
     {
-        private static readonly string s_docsetPath = Directory.GetCurrentDirectory();
-        private static readonly Repository s_repository = Repository.Create(s_docsetPath);
-        private static readonly RepositoryProvider s_repositoryProvider = new RepositoryProvider(s_repository);
-        private static readonly Config s_config = JsonUtility.Deserialize<Config>("{'outputJson': true}".Replace('\'', '\"'), null);
-        private static readonly Docset s_docset = new Docset(Directory.GetCurrentDirectory());
-        private static readonly PackageResolver s_packageResolver = new PackageResolver(s_docsetPath, s_config);
-        private static readonly TemplateEngine s_templateEngine = new TemplateEngine(s_docsetPath, s_config, "en-us", s_packageResolver);
-        private static readonly LocalizationProvider s_loc = new LocalizationProvider(s_packageResolver, s_config, "en-us", s_docsetPath, s_repository);
-        private static readonly Input s_input = new Input(s_docsetPath, s_config, s_packageResolver, s_repositoryProvider, s_loc);
-        private static readonly BuildScope s_buildScope = new BuildScope(s_config, s_input, null);
-        private static readonly DocumentProvider s_documentProvider = new DocumentProvider(s_config, s_loc, s_docset, null, s_buildScope, s_input, s_templateEngine);
-
         [Theory]
+
         // same level
-        [InlineData(new[] { "TOC.md" }, "b.md", "toc.json", "toc.json")]
-        [InlineData(new[] { "TOC.md", "a/TOC.md" }, "b.md", "toc.json", "toc.json")]
-        [InlineData(new[] { "TOC.md", "a/TOC.md" }, "a/b.md", "toc.json", "toc.json")]
-        [InlineData(new[] { "b/TOC.md", "a/TOC.md" }, "a/b.md", "toc.json", "toc.json")]
-        [InlineData(new[] { "TOC.md", "a/b/TOC.md" }, "a/b/b.md", "toc.json", "toc.json")]
-        [InlineData(new[] { "c/a/d/TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "toc.json", "toc.json")]
+        [InlineData(new[] { "TOC.md" }, "b.md", "TOC.md", "TOC.md")]
+        [InlineData(new[] { "TOC.md", "a/TOC.md" }, "b.md", "TOC.md", "TOC.md")]
+        [InlineData(new[] { "TOC.md", "a/TOC.md" }, "a/b.md", "a/TOC.md", "a/TOC.md")]
+        [InlineData(new[] { "b/TOC.md", "a/TOC.md" }, "a/b.md", "a/TOC.md", "a/TOC.md")]
+        [InlineData(new[] { "TOC.md", "a/b/TOC.md" }, "a/b/b.md", "a/b/TOC.md", "a/b/TOC.md")]
+        [InlineData(new[] { "c/a/d/TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "c/a/d/TOC.md", "c/a/d/TOC.md")]
 
         // next level(nearest)
-        [InlineData(new[] { "b/c/TOC.md", "a/TOC.md" }, "b.md", "a/toc.json", null)]
-        [InlineData(new[] { "b/TOC.md", "a/b/TOC.md" }, "b.md", "b/toc.json", null)]
-        [InlineData(new[] { "b/./TOC.md", "a/b/TOC.md" }, "b.md", "b/toc.json", null)]
-        [InlineData(new[] { "b/../b/./TOC.md", "a/b/TOC.md" }, "b.md", "b/toc.json", null)]
-        [InlineData(new[] { "b/../b/./TOC.md", "a/b/TOC.md" }, "a/../b.md", "b/toc.json", null)]
-        [InlineData(new[] { "a/TOC.md", "a/b/TOC.md" }, "a/../b.md", "a/toc.json", null)]
+        [InlineData(new[] { "b/c/TOC.md", "a/TOC.md" }, "b.md", "a/TOC.md", null)]
+        [InlineData(new[] { "b/TOC.md", "a/b/TOC.md" }, "b.md", "b/TOC.md", null)]
 
         // order by folder name
-        [InlineData(new[] { "b/c/TOC.md", "b/d/TOC.md" }, "b.md", "b/c/toc.json", null)]
-        [InlineData(new[] { "b/c/TOC.md", "b/d/TOC.md" }, "b/e/b.md", "../c/toc.json", null)]
+        [InlineData(new[] { "b/c/TOC.md", "b/d/TOC.md" }, "b.md", "b/c/TOC.md", null)]
 
         // up level(nearest)
-        [InlineData(new[] { "TOC.md", "a/TOC.md" }, "b/b.md", "../toc.json", "../toc.json")]
-        [InlineData(new[] { "TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "../toc.json", "../toc.json")]
-        [InlineData(new[] { "c/b/TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "../toc.json", "../toc.json")]
+        [InlineData(new[] { "TOC.md", "a/TOC.md" }, "b/b.md", "TOC.md", "TOC.md")]
+        [InlineData(new[] { "TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "c/a/TOC.md", "c/a/TOC.md")]
+        [InlineData(new[] { "c/b/TOC.md", "c/a/TOC.md" }, "c/a/d/b.md", "c/a/TOC.md", "c/a/TOC.md")]
 
         // mix level(nearest)
-        [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/a.md", "../toc.json", "../toc.json")]
-        [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/b/a.md", "toc.json", "toc.json")]
-        [InlineData(new[] { "c/b/TOC.md", "c/d/e/TOC.md" }, "c/f/h/a.md", "../../b/toc.json", null)]
+        [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/a.md", "TOC.md", "TOC.md")]
+        [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/b/a.md", "c/b/TOC.md", "c/b/TOC.md")]
+        [InlineData(new[] { "c/b/TOC.md", "c/d/e/TOC.md" }, "c/f/h/a.md", "c/b/TOC.md", null)]
 
-        public static void FindTocRelativePath(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
+        public static void FindNearestToc(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
-            // TODO: This test depend too much on the details of our implementation and it needs some refactoring.
-            var builder = new TableOfContentsMapBuilder();
-            var document = s_documentProvider.GetDocument(new FilePath(file));
+            var tocs = new HashSet<string>(tocFiles);
+            var documentsToTocs = new Dictionary<string, HashSet<string>> { { file, tocs } };
 
             // test multiple reference case
-            foreach (var tocFile in tocFiles)
-            {
-                var toc = s_documentProvider.GetDocument(new FilePath(tocFile));
-                builder.Add(toc, new List<Document> { document }, new List<Document>());
-            }
-
-            var tocMap = builder.Build();
-            Assert.Equal(expectedTocPath, tocMap.FindTocRelativePath(document));
+            Assert.Equal(expectedTocPath, TableOfContentsMap.FindNearestToc(file, tocs, documentsToTocs, _ => _));
 
             // test orphan case
-            builder = new TableOfContentsMapBuilder();
-            foreach (var tocFile in tocFiles)
-            {
-                var toc = s_documentProvider.GetDocument(new FilePath(tocFile));
-                builder.Add(toc, new List<Document>(), new List<Document>());
-            }
-            tocMap = builder.Build();
-            Assert.Equal(expectedOrphanTocPath, tocMap.FindTocRelativePath(document));
+            Assert.Equal(expectedOrphanTocPath, TableOfContentsMap.FindNearestToc(file, tocs, new Dictionary<string, HashSet<string>>(), _ => _));
         }
     }
 }

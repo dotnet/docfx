@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var toc = context.TocMap.GetNearestToc(document);
+                        var toc = context.TocMap.FindNearestToc(document);
                         if (toc != null)
                         {
                             legacyDependencyMap.Add(new LegacyDependencyMapItem(
