@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Output _output;
         private readonly ErrorLog _errorLog;
-        private readonly ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>> _outputsBySiteUrl
+        private readonly ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>> _outputsByPublishItem
             = new ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>>(new PublishItemComparer());
 
         private readonly Dictionary<FilePath, PublishItem> _publishItems = new Dictionary<FilePath, PublishItem>();
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public void Add(FilePath file, PublishItem item, Action? writeOutput = null)
         {
-            var (addedItem, _, writeLock, _, _) = _outputsBySiteUrl
+            var (addedItem, writeLock, _, _, _) = _outputsByPublishItem
                 .AddOrUpdate(
                 item,
                 key => new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>(
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             {
                 lock (writeLock)
                 {
-                    if (_outputsBySiteUrl.TryGetValue(item, out var current)
+                    if (_outputsByPublishItem.TryGetValue(item, out var current)
                         && item == current.Value.Item1
                         && !_config.DryRun)
                     {
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
 
-            foreach (var (_, conflict) in _outputsBySiteUrl)
+            foreach (var (_, conflict) in _outputsByPublishItem)
             {
                 var (item, _, file, conflictingFiles, conflictingTYpe) = conflict.Value;
                 _publishItems.Add(file, item);
