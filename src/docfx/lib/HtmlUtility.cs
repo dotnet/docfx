@@ -155,14 +155,22 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
+            var pos = 0;
+            var result = new StringBuilder(html.Length + 64);
+
             // TODO: remove this column offset hack while we have accurate line info for link in HTML block
             var columnOffset = 0;
-            var replacingNodes = new List<(HtmlNode, HtmlNode)>();
             foreach (var node in doc.DocumentNode.Descendants())
             {
                 if (node.Name != "xref")
                 {
                     continue;
+                }
+
+                var valueStartIndex = node.StreamPosition;
+                if (valueStartIndex > pos)
+                {
+                    result.Append(html, pos, valueStartIndex - pos);
                 }
 
                 var xref = HttpUtility.HtmlDecode(node.GetAttributeValue("href", ""));
@@ -174,25 +182,24 @@ namespace Microsoft.Docs.Build
 
                 var (resolvedHref, display) = transform(xref, isShorthand, columnOffset);
 
-                var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    resolvedNode.LoadHtml(raw);
+                    result.Append(raw);
                 }
                 else
                 {
-                    resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
+                    result.Append($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
                 }
-                replacingNodes.Add((node, resolvedNode.DocumentNode));
+
+                pos = valueStartIndex + node.OuterHtml.Length;
                 columnOffset++;
             }
 
-            foreach (var (node, resolvedNode) in replacingNodes)
+            if (html.Length > pos)
             {
-                node.ParentNode.ReplaceChild(resolvedNode, node);
+                result.Append(html, pos, html.Length - pos);
             }
-
-            return doc.DocumentNode.WriteTo();
+            return result.ToString();
         }
 
         /// <summary>
