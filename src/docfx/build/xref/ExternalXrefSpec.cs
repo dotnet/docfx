@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using YamlDotNet.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {

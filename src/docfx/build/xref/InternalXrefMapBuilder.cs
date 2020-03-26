@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file); var name = new Lazy<string?>(() => string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title);
+            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
