@@ -17,5 +17,8 @@ namespace Microsoft.Docs.Build
         public bool OpenToPublicContributors { get; private set; }
 
         public string[] XrefQueryTags { get; private set; } = Array.Empty<string>();
+
+        [JsonProperty("JoinTOCPlugin")]
+        public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
     }
 }

@@ -48,7 +48,8 @@ namespace Microsoft.Docs.Build
                 from dep in dependencies
                 where !dep.name.Equals("_themes", StringComparison.OrdinalIgnoreCase) &&
                       !dep.name.Equals("_themes.pdf", StringComparison.OrdinalIgnoreCase) &&
-                      !dep.name.Equals("_repo.en-us", StringComparison.OrdinalIgnoreCase)
+                      !dep.name.Equals("_repo.en-us", StringComparison.OrdinalIgnoreCase) &&
+                      !dep.name.StartsWith("_dependentPackages", StringComparison.OrdinalIgnoreCase)
                 select new JProperty(dep.path, dep.obj));
 
             result["template"] = dependencies.FirstOrDefault(
@@ -76,6 +77,8 @@ namespace Microsoft.Docs.Build
                 };
             }
 
+            result["fileMetadata"] = GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>());
+
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
@@ -92,6 +95,30 @@ namespace Microsoft.Docs.Build
                     ["branch"] = depBranch,
                 }
                 select (obj, path, dep.PathToRoot)).ToArray();
+        }
+
+        private static JObject GenerateJoinTocMetadata(OpsJoinTocConfig[] configs)
+        {
+            var conceptualToc = new JObject();
+            var refToc = new JObject();
+
+            foreach (var config in configs)
+            {
+                if (!string.IsNullOrEmpty(config.ConceptualTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
+                {
+                    refToc[config.ConceptualTOC] = config.ReferenceTOCUrl;
+                }
+                if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
+                {
+                    conceptualToc[config.ReferenceTOC] = config.ConceptualTOCUrl;
+                }
+            }
+
+            return new JObject
+            {
+                ["universal_conceptual_toc"] = conceptualToc,
+                ["universal_ref_toc"] = refToc,
+            };
         }
     }
 }

@@ -1,4 +1,3 @@
-
 # Peek .openpublishing.publish.config.json for docsets_to_publish and open_to_public_contributors
 repos:
   https://github.com/ops/config-1:
@@ -177,3 +176,40 @@ outputs:
   ce/basics/teams-integration.json: |
     { "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48" }
 ---
+# Supports fusion TOC ops config
+repos:
+  https://github.com/ops/fusion-toc:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "JoinTOCPlugin": [
+            {
+              "ReferenceTOC": "api/TOC.yml",
+              "ReferenceTOCUrl": "/dotnet/api/azure_ref_toc/toc.json",
+              "ConceptualTOCUrl": "/dotnet/azure/sdk/toc.json",
+              "ConceptualTOC": "docs-ref-conceptual/TOC.yml"
+            },
+            {
+              "ReferenceTOC": "api-1/TOC.yml",
+              "ConceptualTOCUrl": "/dotnet-1/azure/sdk/toc.json",
+            },
+            {
+              "ReferenceTOCUrl": "/dotnet-2/api/azure_ref_toc/toc.json",
+              "ConceptualTOC": "docs-ref-conceptual-2/TOC.yml"
+            }
+          ],
+        }
+      docfx.yml:
+      api/TOC.yml:
+      docs-ref-conceptual/TOC.yml:
+      api-1/TOC.yml:
+      docs-ref-conceptual-2/TOC.yml:
+outputs:
+  api/toc.json: |
+    { "metadata": { "universal_conceptual_toc": "/dotnet/azure/sdk/toc.json", "universal_ref_toc": undefined } }
+  docs-ref-conceptual/toc.json: |
+    { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet/api/azure_ref_toc/toc.json" } }
+  api-1/toc.json: |
+    { "metadata": { "universal_conceptual_toc": "/dotnet-1/azure/sdk/toc.json", "universal_ref_toc": undefined } }
+  docs-ref-conceptual-2/toc.json: |
+    { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet-2/api/azure_ref_toc/toc.json" } }
