@@ -471,6 +471,29 @@ outputs:
   a.json:
   b.json:
 ---
+# Json schema docset unique: global metadata and file metadata
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema.json
+    globalMetadata:
+      description: abc
+  schema.json: |
+    {
+      "docsetUnique": ["description"]
+    }
+  a.md: |
+    ---
+    description: abc
+    ---
+  b.md:
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    ["suggestion","duplicate-attribute","Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","a.md",2,14]
+    ["suggestion","duplicate-attribute","Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","docfx.yml",4,16]
+---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
   docfx.yml: |

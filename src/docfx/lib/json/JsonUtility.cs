@@ -219,9 +219,6 @@ namespace Microsoft.Docs.Build
 
         public static void Merge(string[] unionProperties, JObject container, params JObject?[] overwrites)
         {
-            if (overwrites == null)
-                return;
-
             foreach (var overwrite in overwrites)
             {
                 Merge(container, overwrite, unionProperties);
@@ -235,18 +232,22 @@ namespace Microsoft.Docs.Build
 
             foreach (var (key, value) in overwrite)
             {
-                if (container[key] is JObject containerObj && value is JObject overwriteObj)
+                if (value is null)
+                {
+                    continue;
+                }
+                else if (container[key] is JObject containerObj && value is JObject overwriteObj)
                 {
                     Merge(containerObj, overwriteObj, unionProperties);
                 }
                 else if (container[key] is JArray array && value is JArray newArray && unionProperties?.Contains(key) == true)
                 {
                     // TODO: need to check if miss line info for JArray
-                    container[key] = new JArray(newArray.Union(array));
+                    SetProperty(container, key, new JArray(newArray.Union(array)));
                 }
                 else
                 {
-                    container[key] = DeepClone(value);
+                    SetProperty(container, key, value);
                 }
             }
         }
@@ -279,6 +280,26 @@ namespace Microsoft.Docs.Build
             }
 
             throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Sets the property value. Prefer this method when you need to propagate source info.
+        /// </summary>
+        public static void SetProperty(this JObject obj, string key, JToken value)
+        {
+            // Assign a JToken to a property erases line info,
+            // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055.
+            var newValue = DeepClone(value);
+
+            obj[key] = newValue;
+
+            // Json.NET reuses existing property when value equals,
+            // in that case, value source info will not be assigned to the property.
+            var property = obj.Property(key);
+            if (property != null)
+            {
+                SetSourceInfo(property.Value, newValue.GetSourceInfo());
+            }
         }
 
         /// <summary>
