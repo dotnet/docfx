@@ -1617,7 +1617,8 @@ inputs:
       ]
     }
 outputs:
-  4667fedf/docs/toc.json:
+  4667fedf/docs/toc.json: |
+    {"metadata":{"monikers":"netcore-2.0"}}
 ---
 # User defined monikers should not outrange moniker range in config
 inputs:

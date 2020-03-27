@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
 
                 // monikerRagen takes precedence over monikers since it is more likely from user configuration
-                if (metadata.MonikerRange != null && metadata.Monikers != null)
+                if (!string.IsNullOrEmpty(metadata.MonikerRange) && metadata.Monikers != null)
                 {
                     var source = metadata.Monikers.First().Source;
                     if (source != null)
