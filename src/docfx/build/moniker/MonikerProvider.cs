@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             var configMonikerRange = GetConfigMonikerRange(file);
             var configedMonikers = _rangeParser.Parse(configMonikerRange);
 
-            if (!string.IsNullOrEmpty(metadata.MonikerRange) || metadata.Monikers.Length > 0)
+            if (!string.IsNullOrEmpty(metadata.MonikerRange) || metadata.Monikers != null)
             {
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
@@ -104,13 +104,17 @@ namespace Microsoft.Docs.Build
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
 
                 // monikerRagen takes precedence over monikers since it is more likely from user configuration
-                if (fileMonikers.Length > 0 && metadata.Monikers.Length > 0)
+                if (metadata.MonikerRange != null && metadata.Monikers != null)
                 {
-                    errors.Add(Errors.Versioning.DuplciateMonikerConfig(new SourceInfo(file, 0, 0)));
+                    var source = metadata.Monikers.First().Source;
+                    if (source != null)
+                    {
+                        errors.Add(Errors.Versioning.DuplciateMonikerConfig(source));
+                    }
                 }
-                if (fileMonikers.Length == 0 && metadata.Monikers.Length > 0)
+                if (string.IsNullOrEmpty(metadata.MonikerRange) && metadata.Monikers != null)
                 {
-                    fileMonikers = metadata.Monikers.Select(x => x.Value).ToArray();
+                    fileMonikers = metadata.Monikers.SelectMany(x => _rangeParser.Parse(x)).ToArray();
                 }
 
                 var intersection = configedMonikers.Intersect(fileMonikers).ToArray();

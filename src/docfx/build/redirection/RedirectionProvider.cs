@@ -192,10 +192,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
-                foreach (var error in errors)
-                {
-                    _errorLog.Write(error);
-                }
+                _errorLog.Write(errors);
 
                 List<FilePath> candidates;
                 if (redirectionSourceMonikers.Length == 0)

@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> MonikerRange { get; private set; } = new SourceInfo<string>("");
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string>[] Monikers { get; set; } = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[]? Monikers { get; set; }
 
         public SourceInfo<string> Uid { get; private set; } = new SourceInfo<string>("");
 

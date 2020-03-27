@@ -28,10 +28,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file);
-            foreach (var error in errors)
-            {
-                _errorLog.Write(error);
-            }
+            _errorLog.Write(errors);
 
             _links.TryAdd(new FileLinkItem(file, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl));
         }
