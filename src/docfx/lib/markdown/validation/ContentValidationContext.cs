@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
         private const int ValidationRetryDelaySeconds = 3;
         private const int ValidationMaxTransientFailureCount = 20;
 
+        public string DocfxVersion { get; set; }
+
         public string MarkdownRulesFilePath { get; set; }
 
         public string? MetadataRulesFilePath { get; set; }
@@ -37,6 +39,7 @@ namespace Microsoft.Docs.Build
             RepositoryUrl = EnvironmentVariable.RepositoryUrl;
             Branch = EnvironmentVariable.RepositoryBranch;
             ApiBase = OpsConfigAdapter.ValidationServiceEndpoint;
+            DocfxVersion = "v3";
             RequestTimeout = TimeSpan.FromSeconds(ValidationRequestTimeoutInSeconds);
             MaxTries = ValidationMaxTries;
             RetryDelaySeconds = ValidationRetryDelaySeconds;
