@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         /// <returns>The toc relative path</returns>
         public string? FindTocRelativePath(Document file)
         {
-            var nearestToc = GetNearestToc(file);
+            var nearestToc = FindNearestToc(file);
 
             return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath)) : null;
         }
@@ -65,20 +65,9 @@ namespace Microsoft.Docs.Build
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
         /// when the file is not referenced, return only toc in the same or higher folder level.
         /// </summary>
-        public Document? GetNearestToc(Document file)
+        public Document? FindNearestToc(Document file)
         {
-            var hasReferencedTocs = false;
-            var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
-
-            var tocCandidates = from toc in filteredTocs
-                                let dirInfo = GetRelativeDirectoryInfo(file.FilePath.Path, toc.FilePath.Path)
-                                where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
-                                select new TocCandidate((dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount), toc);
-
-            return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
-            {
-                return CompareTocCandidate(minCandidate, nextCandidate) <= 0 ? minCandidate : nextCandidate;
-            })?.Toc;
+            return FindNearestToc(file, _tocs, _documentToTocs, file => file.FilePath.Path);
         }
 
         public static TableOfContentsMap Create(Context context)
@@ -93,6 +82,64 @@ namespace Microsoft.Docs.Build
 
                 return builder.Build();
             }
+        }
+
+        /// <summary>
+        /// Compare two toc candidate relative to target file.
+        /// Return negative if x is closer than y, positive if x is farer than y, 0 if x equals y.
+        /// 1. sub nearest(based on file path)
+        /// 2. parent nearest(based on file path)
+        /// 3. sub-name lexicographical nearest
+        /// </summary>
+        internal static T? FindNearestToc<T>(T file, HashSet<T> tocs, IReadOnlyDictionary<T, HashSet<T>> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
+        {
+            var hasReferencedTocs = false;
+            var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
+
+            var tocCandidates = from toc in filteredTocs
+                                let dirInfo = GetRelativeDirectoryInfo(getPath(file), getPath(toc))
+                                where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
+                                select (subCount: dirInfo.subDirectoryCount, parentCount: dirInfo.parentDirectoryCount, toc);
+
+            return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
+            {
+                var result = minCandidate.subCount - nextCandidate.subCount;
+                if (result == 0)
+                    result = minCandidate.parentCount - nextCandidate.parentCount;
+                if (result == 0)
+                    result = minCandidate.toc.CompareTo(nextCandidate.toc);
+                return result <= 0 ? minCandidate : nextCandidate;
+            }).toc;
+        }
+
+        private static (int subDirectoryCount, int parentDirectoryCount) GetRelativeDirectoryInfo(string pathA, string pathB)
+        {
+            var relativePath = PathUtility.NormalizeFile(
+                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
+            if (string.IsNullOrEmpty(relativePath))
+            {
+                return default;
+            }
+
+            // todo: perf optimization, don't split '/' here again.
+            var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
+            var parentDirectoryCount = 0;
+            var subDirectoryCount = 0;
+
+            foreach (var part in relativePathParts)
+            {
+                switch (part)
+                {
+                    case "..":
+                        parentDirectoryCount++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
+            return (subDirectoryCount, parentDirectoryCount);
         }
 
         private static void BuildTocMap(Context context, FilePath path, TableOfContentsMapBuilder tocMapBuilder)
@@ -114,65 +161,6 @@ namespace Microsoft.Docs.Build
             {
                 context.ErrorLog.Write(dex);
             }
-        }
-
-        private static (int subDirectoryCount, int parentDirectoryCount)
-            GetRelativeDirectoryInfo(string pathA, string pathB)
-        {
-            var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
-            if (string.IsNullOrEmpty(relativePath))
-            {
-                return default;
-            }
-
-            // todo: perf optimization, don't split '/' here again.
-            var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
-            var parentDirectoryCount = 0;
-            var subDirectoryCount = 0;
-            foreach (var part in relativePathParts)
-            {
-                switch (part)
-                {
-                    case "..":
-                        parentDirectoryCount++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
-            return (subDirectoryCount, parentDirectoryCount);
-        }
-
-        private sealed class TocCandidate
-        {
-            public (int subCount, int parentCount) FileDirInfo { get; }
-
-            public Document Toc { get; }
-
-            public TocCandidate((int, int) fileDirInfo, Document toc)
-            {
-                FileDirInfo = fileDirInfo;
-                Toc = toc;
-            }
-        }
-
-        /// <summary>
-        /// Compare two toc candidate relative to target file.
-        /// Return negative if x is closer than y, positive if x is farer than y, 0 if x equals y.
-        /// 1. sub nearest(based on file path)
-        /// 2. parent nearest(based on file path)
-        /// 3. sub-name lexicographical nearest
-        /// </summary>
-        private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
-        {
-            var result = candidateX.FileDirInfo.subCount - candidateY.FileDirInfo.subCount;
-            if (result == 0)
-                result = candidateX.FileDirInfo.parentCount - candidateY.FileDirInfo.parentCount;
-            if (result == 0)
-                result = candidateX.Toc.CompareTo(candidateY.Toc);
-            return result;
         }
     }
 }
