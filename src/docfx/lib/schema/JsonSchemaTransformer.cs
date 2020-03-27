@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
                     // the content here must be an UID, not href
-                    var (xrefError, xrefSpec, href) = context.XrefResolver.ResolveXrefSpec(content, file);
+                    var (xrefError, xrefSpec, href) = context.XrefResolver.ResolveXrefSpec(content, file, file);
                     errors.AddIfNotNull(xrefError);
 
                     if (xrefSpec != null)

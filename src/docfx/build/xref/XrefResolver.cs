@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string? href, string display, Document? declaringFile) ResolveXref(
-            SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
+            SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string? moniker = null;
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), inclusionRoot ?? hrefRelativeTo, writeFileLink: true);
+            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
             if (xrefError != null || xrefSpec is null || resolvedHref == null)
             {
                 return (xrefError, null, "", null);
@@ -76,6 +76,13 @@ namespace Microsoft.Docs.Build
                 queries["view"] = moniker;
             }
 
+            var fileLink = UrlUtility.MergeUrl(
+                xrefSpec.Href,
+                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
+                fragment.Length == 0 ? "" : fragment);
+
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, fileLink);
+
             resolvedHref = UrlUtility.MergeUrl(
                 resolvedHref,
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
@@ -84,20 +91,11 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, bool writeFileLink = false)
+        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
-            var (error, xrefSpec) = Resolve(uid, referencingFile);
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot);
             if (xrefSpec == null)
                 return (error, null, null);
-
-            var href = RemoveSharingHost(xrefSpec.Href, _config.HostName);
-
-            if (writeFileLink)
-                _fileLinkMapBuilder.AddFileLink(referencingFile.FilePath, referencingFile.SiteUrl, href);
-
-            if (xrefSpec?.DeclaringFile != null && referencingFile != null)
-                href = UrlUtility.GetRelativeUrl(referencingFile.SiteUrl, href);
-
             return (error, xrefSpec, href);
         }
 
@@ -155,30 +153,38 @@ namespace Microsoft.Docs.Build
             return url;
         }
 
-        private (Error?, IXrefSpec?) Resolve(SourceInfo<string> uid, Document referencingFile)
+        private (Error?, IXrefSpec?, string? href) Resolve(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
             var unescapedUid = Uri.UnescapeDataString(uid);
-            var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referencingFile) ?? ResolveExternalXrefSpec(unescapedUid);
+            var (xrefSpec, href) = ResolveInternalXrefSpec(unescapedUid, referencingFile, inclusionRoot);
             if (xrefSpec is null)
-            {
-                return (Errors.Xref.XrefNotFound(uid), null);
-            }
-            return (null, xrefSpec);
+                (xrefSpec, href) = ResolveExternalXrefSpec(unescapedUid);
+
+            if (xrefSpec is null)
+                return (Errors.Xref.XrefNotFound(uid), null, null);
+
+            return (null, xrefSpec, href);
         }
 
-        private IXrefSpec? ResolveExternalXrefSpec(string uid)
+        private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            return _externalXrefMap.Value.TryGetValue(uid, out var result) ? result.Value : null;
+            if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
+            {
+                var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
+                return (spec.Value, href);
+            }
+            return default;
         }
 
-        private IXrefSpec? ResolveInternalXrefSpec(string uid, Document declaringFile)
+        private (IXrefSpec?, string? href) ResolveInternalXrefSpec(string uid, Document referencingFile, Document inclusionRoot)
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, spec.DeclaringFile, DependencyType.UidInclusion);
-                return spec;
+                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, DependencyType.UidInclusion);
+                var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
+                return (spec, href);
             }
-            return null;
+            return default;
         }
     }
 }
