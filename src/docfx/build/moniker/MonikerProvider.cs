@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
-                if (fileMonikers.Length == 0 && metadata.Monikers.Length > 0)
+                if (string.IsNullOrEmpty(metadata.MonikerRange) && metadata.Monikers.Length > 0)
                 {
                     fileMonikers = metadata.Monikers.SelectMany(x => _rangeParser.Parse(x)).ToArray();
                 }
