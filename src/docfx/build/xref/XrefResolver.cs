@@ -76,18 +76,11 @@ namespace Microsoft.Docs.Build
                 queries["view"] = moniker;
             }
 
-            var fileLink = UrlUtility.MergeUrl(
-                xrefSpec.Href,
-                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
-                fragment.Length == 0 ? "" : fragment);
-
+            query = queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries);
+            var fileLink = UrlUtility.MergeUrl( xrefSpec.Href, query, fragment);
             _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, fileLink);
 
-            resolvedHref = UrlUtility.MergeUrl(
-                resolvedHref,
-                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
-                fragment.Length == 0 ? "" : fragment);
-
+            resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
