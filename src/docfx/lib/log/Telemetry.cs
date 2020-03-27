@@ -37,17 +37,17 @@ namespace Microsoft.Docs.Build
 
         static Telemetry()
         {
-            s_telemetryClient.Context.GlobalProperties["OS"] = RuntimeInformation.OSDescription ?? "<null>";
-            s_telemetryClient.Context.GlobalProperties["Version"] = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
-            s_telemetryClient.Context.GlobalProperties["CorrelationId"] = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
+            s_telemetryClient.Context.GlobalProperties["OS"] = s_os;
+            s_telemetryClient.Context.GlobalProperties["Version"] = s_version;
+            s_telemetryClient.Context.GlobalProperties["CorrelationId"] = s_correlationId;
         }
 
         public static void SetRepository(string? repo, string? branch)
         {
             s_repo = string.IsNullOrEmpty(repo) ? "<null>" : repo;
             s_branch = string.IsNullOrEmpty(branch) ? "<null>" : branch;
-            s_telemetryClient.Context.GlobalProperties["Repo"] = string.IsNullOrEmpty(repo) ? "<null>" : repo;
-            s_telemetryClient.Context.GlobalProperties["Branch"] = string.IsNullOrEmpty(branch) ? "<null>" : branch;
+            s_telemetryClient.Context.GlobalProperties["Repo"] = s_repo;
+            s_telemetryClient.Context.GlobalProperties["Branch"] = s_branch;
         }
 
         public static void TrackOperationTime(string name, TimeSpan duration)
