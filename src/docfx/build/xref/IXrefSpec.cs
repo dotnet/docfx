@@ -19,6 +19,6 @@ namespace Microsoft.Docs.Build
 
         string? GetXrefPropertyValueAsString(string propertyName);
 
-        ExternalXrefSpec ToExternalXrefSpec();
+        ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null);
     }
 }

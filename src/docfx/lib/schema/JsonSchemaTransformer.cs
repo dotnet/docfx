@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -227,12 +226,12 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
                     // the content here must be an UID, not href
-                    var (xrefError, xrefSpec) = context.XrefResolver.ResolveXrefSpec(content, file);
+                    var (xrefError, xrefSpec, href) = context.XrefResolver.ResolveXrefSpec(content, file, file);
                     errors.AddIfNotNull(xrefError);
 
                     if (xrefSpec != null)
                     {
-                        var specObj = JsonUtility.ToJObject(xrefSpec);
+                        var specObj = JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
                         JsonUtility.SetSourceInfo(specObj, content);
                         return (errors, specObj);
                     }
