@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         public HashSet<string> Monikers { get; private set; } = new HashSet<string>();
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; } = new JObject();
+        public JObject ExtensionData { get; private set; } = new JObject();
 
         public ExternalXrefSpec() { }
 
@@ -48,6 +48,10 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) => this;
+        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) =>
+            new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers)
+            {
+                ExtensionData = ExtensionData,
+            };
     }
 }

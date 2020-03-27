@@ -59,8 +59,8 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), hrefRelativeTo);
-            if (xrefError != null || xrefSpec is null)
+            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), hrefRelativeTo, inclusionRoot);
+            if (xrefError != null || xrefSpec is null || resolvedHref == null)
             {
                 return (xrefError, null, "", null);
             }
@@ -76,43 +76,32 @@ namespace Microsoft.Docs.Build
                 queries["view"] = moniker;
             }
 
-            var resolvedHref = UrlUtility.MergeUrl(
-                RemoveSharingHost(xrefSpec.Href, _config.HostName),
+            resolvedHref = UrlUtility.MergeUrl(
+                resolvedHref,
                 queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
                 fragment.Length == 0 ? "" : fragment);
-
-            // NOTE: this should also be relative to root file
-            var sourceFile = inclusionRoot ?? hrefRelativeTo;
-            _fileLinkMapBuilder.AddFileLink(sourceFile.FilePath, sourceFile.SiteUrl, resolvedHref);
-
-            if (xrefSpec?.DeclaringFile != null && inclusionRoot != null)
-            {
-                resolvedHref = UrlUtility.GetRelativeUrl(inclusionRoot.SiteUrl, resolvedHref);
-            }
 
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error?, ExternalXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document? inclusionRoot = null)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
             if (xrefSpec == null)
                 return (error, null, null);
 
-            var externalXrefSpec = xrefSpec.ToExternalXrefSpec();
-            var (href, _, fragment) = UrlUtility.SplitUrl(externalXrefSpec.Href);
-            href = RemoveSharingHost(href, _config.HostName);
-            if (UrlUtility.GetLinkType(href) != LinkType.External)
-            {
-                href = PathUtility.Normalize(
-                    UrlUtility.MergeUrl(PathUtility.GetRelativePathToFile(referencingFile.SiteUrl, href), "", fragment));
-            }
-            else
-            {
-                href = UrlUtility.MergeUrl(href, "", fragment);
-            }
+            var href = RemoveSharingHost(xrefSpec.Href, _config.HostName);
 
-            return (error, externalXrefSpec, href);
+            // NOTE: this should also be relative to root file
+            // Using inclusionRoot to decide whether write link
+            referencingFile = inclusionRoot ?? referencingFile;
+            if (inclusionRoot != null)
+                _fileLinkMapBuilder.AddFileLink(referencingFile.FilePath, referencingFile.SiteUrl, href);
+
+            if (xrefSpec?.DeclaringFile != null && referencingFile != null)
+                href = UrlUtility.GetRelativeUrl(referencingFile.SiteUrl, href);
+
+            return (error, xrefSpec, href);
         }
 
         public XrefMapModel ToXrefMapModel()
