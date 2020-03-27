@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
                 .OrderBy(xref => xref.Uid).ToArray();
 
             var model = new XrefMapModel { References = references };
-            if (basePath != null)
+            if (basePath != null && references.Length > 0)
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
