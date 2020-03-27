@@ -22,8 +22,8 @@ namespace Microsoft.Docs.Build
             var (loadErrors, sourceModel) = Load(context, file);
             errors.AddRange(loadErrors);
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddIfNotNull(monikerError);
+            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
@@ -149,8 +149,8 @@ namespace Microsoft.Docs.Build
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddIfNotNull(monikerError);
+            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddRange(monikerErrors);
             systemMetadata.Monikers = monikers;
 
             if (IsCustomized404Page(file))

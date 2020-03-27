@@ -53,8 +53,8 @@ namespace Microsoft.Docs.Build
                         {
                             var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                             errors.AddRange(fileMetaErrors);
-                            var (error, spec) = LoadMarkdown(context, fileMetadata, file);
-                            errors.AddIfNotNull(error);
+                            var (markdownErrors, spec) = LoadMarkdown(context, fileMetadata, file);
+                            errors.AddRange(markdownErrors);
                             if (spec != null)
                             {
                                 xrefs.Add(spec);
@@ -93,19 +93,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error? error, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
+        private static (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
         {
             if (string.IsNullOrEmpty(metadata.Uid))
             {
-                return default;
+                return (new List<Error>(), default);
             }
 
             var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
-            return (error, xref);
+            return (errors, xref);
         }
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)

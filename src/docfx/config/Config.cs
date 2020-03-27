@@ -205,8 +205,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public Dictionary<string, SourceInfo<string>> MonikerRange { get; } = new Dictionary<string, SourceInfo<string>>();
 
-        public Dictionary<string, SourceInfo<string>> Version { get; private set; } = new Dictionary<string, SourceInfo<string>>();
-
         /// <summary>
         /// Get the definition of monikers
         /// It should be absolute url or relative path

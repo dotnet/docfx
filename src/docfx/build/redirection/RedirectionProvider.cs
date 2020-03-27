@@ -191,8 +191,8 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var (error, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
-                if (error != null)
+                var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
+                foreach (var error in errors)
                 {
                     _errorLog.Write(error);
                 }

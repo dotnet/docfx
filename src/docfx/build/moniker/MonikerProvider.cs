@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -19,8 +21,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string>> _monikerRangeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string>>();
 
-        private readonly ConcurrentDictionary<FilePath, (Error?, string[])> _monikerCache
-                   = new ConcurrentDictionary<FilePath, (Error?, string[])>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, string[])> _monikerCache
+                   = new ConcurrentDictionary<FilePath, (List<Error>, string[])>();
 
         public MonikerComparer Comparer { get; }
 
@@ -54,7 +56,7 @@ namespace Microsoft.Docs.Build
             return _monikerRangeCache.GetOrAdd(file, GetConfigMonikerRangeCore);
         }
 
-        public (Error? error, string[] monikers) GetFileLevelMonikers(FilePath file)
+        public (List<Error> errors, string[] monikers) GetFileLevelMonikers(FilePath file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
@@ -81,36 +83,49 @@ namespace Microsoft.Docs.Build
             return (null, monikers);
         }
 
-        private (Error? error, string[] monikers) GetFileLevelMonikersCore(FilePath file)
+        private (List<Error> errors, string[] monikers) GetFileLevelMonikersCore(FilePath file)
         {
+            var errors = new List<Error>();
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
             var configMonikerRange = GetConfigMonikerRange(file);
-            var configMonikers = _rangeParser.Parse(configMonikerRange);
+            var configedMonikers = _rangeParser.Parse(configMonikerRange);
 
-            if (!string.IsNullOrEmpty(metadata.MonikerRange))
+            if (!string.IsNullOrEmpty(metadata.MonikerRange) || metadata.Monikers.Length > 0)
             {
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (configMonikers.Length == 0)
+                if (configedMonikers.Length == 0)
                 {
-                    return (Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange), configMonikers);
+                    errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange));
+                    return (errors, configedMonikers);
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
-                var intersection = configMonikers.Intersect(fileMonikers).ToArray();
+
+                // monikerRagen takes precedence over monikers since it is more likely from user configuration
+                if (fileMonikers.Length > 0 && metadata.Monikers.Length > 0)
+                {
+                    errors.Add(Errors.Versioning.DuplciateMonikerConfig(new SourceInfo(file, 0, 0)));
+                }
+                if (fileMonikers.Length == 0 && metadata.Monikers.Length > 0)
+                {
+                    fileMonikers = metadata.Monikers.Select(x => x.Value).ToArray();
+                }
+
+                var intersection = configedMonikers.Intersect(fileMonikers).ToArray();
 
                 // With non-empty config monikers,
                 // warn if no intersection of config monikers and file monikers
                 if (intersection.Length == 0)
                 {
-                    var error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
-                    return (error, intersection);
+                    errors.Add(Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configedMonikers, fileMonikers, metadata.MonikerRange, metadata.Monikers));
+                    return (errors, intersection);
                 }
-                return (null, intersection);
+                return (errors, intersection);
             }
 
-            return (null, configMonikers);
+            return (errors, configedMonikers);
         }
 
         private SourceInfo<string> GetConfigMonikerRangeCore(FilePath file)

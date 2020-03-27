@@ -1595,3 +1595,76 @@ outputs:
     { "monikers": ["netcore-1.0"] }
   4667fedf/a.json: |
     { "monikers": ["netcore-2.0"] }
+---
+# Allow monikers Config if monikerRange not defined
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/TOC.md: |
+    ---
+    monikers: netcore-2.0
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  4667fedf/docs/toc.json:
+---
+# User defined monikers should not outrange moniker range in config
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/TOC.md: |
+    ---
+    monikers: netcore-1.0
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file monikers is 'netcore-1.0'","docs/v1/TOC.md",2,11]
+---
+# Warn on moniker config duplication
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/TOC.md: |
+    ---
+    monikers: netcore-1.0
+    monikerRange: netcore-1.0
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  .errors.log: |
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","docs/v1/TOC.md",3,15]
+    ["warning","duplicate-moniker-config","Only 'monikers' or 'monikerRange' should be configed","docs/v1/TOC.md"]

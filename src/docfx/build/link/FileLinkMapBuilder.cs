@@ -27,8 +27,8 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
-            if (error != null)
+            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+            foreach (var error in errors)
             {
                 _errorLog.Write(error);
             }
