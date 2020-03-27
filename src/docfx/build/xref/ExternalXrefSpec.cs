@@ -11,9 +11,9 @@ namespace Microsoft.Docs.Build
     {
         private string? _name;
 
-        public string Uid { get; set; } = "";
+        public string Uid { get; private set; } = "";
 
-        public string Href { get; set; } = "";
+        public string Href { get; private set; } = "";
 
         public string Name
         {
@@ -24,10 +24,20 @@ namespace Microsoft.Docs.Build
         Document? IXrefSpec.DeclaringFile => null;
 
         [JsonIgnore]
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public HashSet<string> Monikers { get; private set; } = new HashSet<string>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
+
+        public ExternalXrefSpec() { }
+
+        public ExternalXrefSpec(string? name, string uid, string href, HashSet<string> monikers)
+        {
+            _name = name;
+            Uid = uid;
+            Href = href;
+            Monikers = monikers;
+        }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
         {
@@ -38,6 +48,6 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public ExternalXrefSpec ToExternalXrefSpec() => this;
+        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) => this;
     }
 }

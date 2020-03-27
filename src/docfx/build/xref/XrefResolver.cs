@@ -123,14 +123,14 @@ namespace Microsoft.Docs.Build
             var references = _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
-                    var xrefSpec = xref.ToExternalXrefSpec();
-
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var (href, _, fragment) = UrlUtility.SplitUrl(xref.Href);
                     var path = $"https://{_xrefHostName}{href}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
-                    xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
+                    href = UrlUtility.MergeUrl(path, query, fragment);
+
+                    var xrefSpec = xref.ToExternalXrefSpec(href);
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();

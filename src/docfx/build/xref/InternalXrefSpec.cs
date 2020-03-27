@@ -35,15 +35,9 @@ namespace Microsoft.Docs.Build
             return XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
 
-        public ExternalXrefSpec ToExternalXrefSpec()
+        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
         {
-            var spec = new ExternalXrefSpec
-            {
-                Href = Href,
-                Uid = Uid,
-                Monikers = Monikers,
-                Name = Name,
-            };
+            var spec = new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers);
 
             foreach (var (key, value) in XrefProperties)
             {
