@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), hrefRelativeTo, inclusionRoot);
+            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), inclusionRoot ?? hrefRelativeTo, writeFileLink: true);
             if (xrefError != null || xrefSpec is null || resolvedHref == null)
             {
                 return (xrefError, null, "", null);
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document? inclusionRoot = null)
+        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, bool writeFileLink = false)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
             if (xrefSpec == null)
@@ -92,10 +92,7 @@ namespace Microsoft.Docs.Build
 
             var href = RemoveSharingHost(xrefSpec.Href, _config.HostName);
 
-            // NOTE: this should also be relative to root file
-            // Using inclusionRoot to decide whether write link
-            referencingFile = inclusionRoot ?? referencingFile;
-            if (inclusionRoot != null)
+            if (writeFileLink)
                 _fileLinkMapBuilder.AddFileLink(referencingFile.FilePath, referencingFile.SiteUrl, href);
 
             if (xrefSpec?.DeclaringFile != null && referencingFile != null)
