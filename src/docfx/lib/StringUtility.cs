@@ -28,11 +28,9 @@ namespace Microsoft.Docs.Build
             return sb.ToString().Trim();
         }
 
-        public static string Join<T>(IEnumerable<T>? source, int take = 5)
+        public static string Join<T>(IEnumerable<T> source, int take = 5)
         {
-            var formatSource = source is null
-                ? Enumerable.Empty<string>()
-                : source.Select(item => $"'{item}'").OrderBy(_ => _, StringComparer.Ordinal);
+            var formatSource = source.Select(item => $"'{item}'").OrderBy(_ => _, StringComparer.Ordinal);
             return $"{string.Join(", ", formatSource.Take(take))}{(formatSource.Count() > 5 ? "..." : "")}";
         }
 

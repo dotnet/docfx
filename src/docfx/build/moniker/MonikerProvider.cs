@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             var configMonikerRange = GetConfigMonikerRange(file);
             var configedMonikers = _rangeParser.Parse(configMonikerRange);
 
-            if (!string.IsNullOrEmpty(metadata.MonikerRange) || metadata.Monikers != null)
+            if (!string.IsNullOrEmpty(metadata.MonikerRange) || metadata.Monikers.Length > 0)
             {
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
@@ -101,10 +101,8 @@ namespace Microsoft.Docs.Build
                     return (errors, configedMonikers);
                 }
 
-                var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
-
                 // monikerRagen takes precedence over monikers since it is more likely from user configuration
-                if (!string.IsNullOrEmpty(metadata.MonikerRange) && metadata.Monikers != null)
+                if (!string.IsNullOrEmpty(metadata.MonikerRange) && metadata.Monikers.Length > 0)
                 {
                     var source = metadata.Monikers.First().Source;
                     if (source != null)
@@ -112,7 +110,9 @@ namespace Microsoft.Docs.Build
                         errors.Add(Errors.Versioning.DuplciateMonikerConfig(source));
                     }
                 }
-                if (string.IsNullOrEmpty(metadata.MonikerRange) && metadata.Monikers != null)
+
+                var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
+                if (fileMonikers.Length == 0 && metadata.Monikers.Length > 0)
                 {
                     fileMonikers = metadata.Monikers.SelectMany(x => _rangeParser.Parse(x)).ToArray();
                 }
