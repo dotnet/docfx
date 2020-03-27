@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -24,7 +24,8 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildLog", "Code", "Level", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_buildItemCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Count", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_buildCommitCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Count", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_buildFileTypeCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
@@ -34,10 +35,19 @@ namespace Microsoft.Docs.Build
 
         private static string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
 
+        static Telemetry()
+        {
+            s_telemetryClient.Context.GlobalProperties["OS"] = RuntimeInformation.OSDescription ?? "<null>";
+            s_telemetryClient.Context.GlobalProperties["Version"] = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
+            s_telemetryClient.Context.GlobalProperties["CorrelationId"] = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
+        }
+
         public static void SetRepository(string? repo, string? branch)
         {
             s_repo = string.IsNullOrEmpty(repo) ? "<null>" : repo;
             s_branch = string.IsNullOrEmpty(branch) ? "<null>" : branch;
+            s_telemetryClient.Context.GlobalProperties["Repo"] = string.IsNullOrEmpty(repo) ? "<null>" : repo;
+            s_telemetryClient.Context.GlobalProperties["Branch"] = string.IsNullOrEmpty(branch) ? "<null>" : branch;
         }
 
         public static void TrackOperationTime(string name, TimeSpan duration)
@@ -65,26 +75,25 @@ namespace Microsoft.Docs.Build
             s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static void TrackBuildItemCount(ContentType contentType)
+        public static void TrackBuildFileTypeCount(Document file)
         {
-            s_buildItemCountMetric.TrackValue(1, $"{TelemetryName.BuildItems}-{contentType}", s_os, s_version, s_repo, s_branch, s_correlationId);
+            var fileExtension = (Path.GetExtension(file.FilePath.Path) ?? "<null>").ToLowerInvariant();
+            var mimeType = file.Mime.Value ?? "<null>";
+            if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
+            {
+                mimeType = "Conceptual";
+            }
+            s_buildFileTypeCountMetric.TrackValue(1, fileExtension, file.ContentType.ToString(), mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildCommitCount(int count)
         {
-            s_buildItemCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch, s_correlationId);
+            s_buildCommitCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackException(Exception ex)
         {
-            s_telemetryClient.TrackException(ex, new Dictionary<string, string>
-            {
-                { "OS", s_os },
-                { "Version", s_version },
-                { "Repo", s_repo },
-                { "Branch", s_branch },
-                { "CorrelationId", s_correlationId },
-            });
+            s_telemetryClient.TrackException(ex);
         }
 
         public static void Flush()

@@ -10,7 +10,6 @@ namespace Microsoft.Docs.Build
         GitHubUserCache,
         MicrosoftGraphCache,
         LoadCommitHistory,
-        BuildItems,
         BuildCommits,
     }
 }

@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 context.ErrorLog.Write(errors);
-                Telemetry.TrackBuildItemCount(file.ContentType);
+                Telemetry.TrackBuildFileTypeCount(file);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
