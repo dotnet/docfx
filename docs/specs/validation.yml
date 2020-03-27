@@ -526,6 +526,9 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
             ]
           }
         ]
