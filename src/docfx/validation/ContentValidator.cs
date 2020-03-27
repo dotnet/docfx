@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                         Content = title,
 
                         // todo: get title precise line info
-                        SourceInfo = new SourceInfo(file.FilePath, 1, 1),
+                        SourceInfo = new SourceInfo(file.FilePath, 0, 0),
                     },
                 };
 
