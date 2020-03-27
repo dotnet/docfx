@@ -93,25 +93,26 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error?, ExternalXrefSpec?) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        public (Error?, ExternalXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
         {
             var (error, xrefSpec) = Resolve(uid, referencingFile);
             if (xrefSpec == null)
-                return (error, null);
+                return (error, null, null);
 
             var externalXrefSpec = xrefSpec.ToExternalXrefSpec();
             var (href, _, fragment) = UrlUtility.SplitUrl(externalXrefSpec.Href);
             href = RemoveSharingHost(href, _config.HostName);
             if (UrlUtility.GetLinkType(href) != LinkType.External)
             {
-                href = PathUtility.GetRelativePathToFile(referencingFile.SiteUrl, href);
-                externalXrefSpec.Href = PathUtility.Normalize(UrlUtility.MergeUrl(href, "", fragment));
+                href = PathUtility.Normalize(
+                    UrlUtility.MergeUrl(PathUtility.GetRelativePathToFile(referencingFile.SiteUrl, href), "", fragment));
             }
             else
             {
-                externalXrefSpec.Href = UrlUtility.MergeUrl(href, "", fragment);
+                href = UrlUtility.MergeUrl(href, "", fragment);
             }
-            return (error, externalXrefSpec);
+
+            return (error, externalXrefSpec, href);
         }
 
         public XrefMapModel ToXrefMapModel()
