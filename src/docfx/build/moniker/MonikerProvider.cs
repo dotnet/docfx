@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -69,7 +68,8 @@ namespace Microsoft.Docs.Build
             // User should not define it in moniker zone
             if (fileLevelMonikers.Length == 0)
             {
-                return (Errors.Versioning.MonikerRangeUndefined(rangeString), Array.Empty<string>());
+                var source = rangeString.Source;
+                return (source is null ? null : Errors.Versioning.MonikerRangeUndefined(source), Array.Empty<string>());
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
@@ -97,7 +97,11 @@ namespace Microsoft.Docs.Build
                 // user should not define it in file metadata
                 if (configedMonikers.Length == 0)
                 {
-                    errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange));
+                    var source = metadata.MonikerRange.Source;
+                    if (source != null)
+                    {
+                        errors.Add(Errors.Versioning.MonikerRangeUndefined(source));
+                    }
                     return (errors, configedMonikers);
                 }
 
