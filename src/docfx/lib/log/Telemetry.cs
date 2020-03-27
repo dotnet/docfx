@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
         public static void TrackBuildFileTypeCount(Document file)
         {
-            var fileExtension = (Path.GetExtension(file.FilePath.Path) ?? "<null>").ToLowerInvariant();
+            var fileExtension = Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant() ?? "<null>";
             var mimeType = file.Mime.Value ?? "<null>";
             if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
             {
