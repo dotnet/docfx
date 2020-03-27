@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             }
 
             query = queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries);
-            var fileLink = UrlUtility.MergeUrl( xrefSpec.Href, query, fragment);
+            var fileLink = UrlUtility.MergeUrl(xrefSpec.Href, query, fragment);
             _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, fileLink);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
