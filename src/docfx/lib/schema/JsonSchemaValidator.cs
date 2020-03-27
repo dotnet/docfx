@@ -553,6 +553,25 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
+                else
+                {
+                    if (string.IsNullOrEmpty(dependentFieldNameWithIndex))
+                    {
+                        errors.Add((fieldName, Errors.JsonSchema.InvalidValue(
+                            JsonUtility.GetSourceInfo(fieldName),
+                            fieldName,
+                            fieldName)));
+                    }
+                    else
+                    {
+                        errors.Add((dependentFieldName, Errors.JsonSchema.InvalidPairedAttribute(
+                            JsonUtility.GetSourceInfo(fieldName),
+                            fieldName,
+                            fieldName,
+                            dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                            dependentFieldValue)));
+                    }
+                }
             }
         }
 
