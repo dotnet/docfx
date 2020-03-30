@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
 
         /// <summary>
         /// Gets the file format.
-        /// Prefer this over file extension because .NET xml file path ends with .xml, but the format is yaml.
         /// </summary>
         public FileFormat Format { get; }
 
@@ -37,31 +36,72 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsGitCommit { get; }
 
-        public FilePath(string path, FileOrigin origin = FileOrigin.Default)
-        {
-            Debug.Assert(origin != FileOrigin.Dependency);
+        /// <summary>
+        /// Gets the original file path specified in source map.
+        /// </summary>
+        public PathString? OriginalPath { get; }
 
+        /// <summary>
+        /// Creates an unknown file path.
+        /// </summary>
+        public FilePath(string path)
+        {
             Path = new PathString(path);
+            Format = GetFormat(path);
+            Origin = FileOrigin.External;
+        }
+
+        /// <summary>
+        /// Creates a file path from main docset.
+        /// </summary>
+        public FilePath(PathString path, PathString? originalPath)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+
+            Origin = FileOrigin.Main;
+            Path = path;
+            OriginalPath = originalPath;
+            Format = GetFormat(path);
+        }
+
+        /// <summary>
+        /// Creates a redirection file path.
+        /// </summary>
+        public FilePath(PathString path, FileOrigin origin)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            Debug.Assert(origin == FileOrigin.Redirection);
+
+            Path = path;
             Format = GetFormat(path);
             Origin = origin;
         }
 
-        public FilePath(string path, bool isGitCommit)
+        /// <summary>
+        /// Creates a fallback file path.
+        /// </summary>
+        public FilePath(PathString path, bool isGitCommit)
         {
-            Path = new PathString(path);
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+
+            Path = path;
             Format = GetFormat(path);
             Origin = FileOrigin.Fallback;
             IsGitCommit = isGitCommit;
         }
 
+        /// <summary>
+        /// Creates a dependency file path.
+        /// </summary>
         public FilePath(PathString path, PathString dependencyName)
         {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            Debug.Assert(Path.StartsWithPath(DependencyName, out _));
+
             Path = path;
             Format = GetFormat(path);
             DependencyName = dependencyName;
             Origin = FileOrigin.Dependency;
-
-            Debug.Assert(Path.StartsWithPath(DependencyName, out _));
         }
 
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
@@ -74,7 +114,7 @@ namespace Microsoft.Docs.Build
 
             switch (Origin)
             {
-                case FileOrigin.Default:
+                case FileOrigin.Main:
                     break;
 
                 case FileOrigin.Dependency:
@@ -84,6 +124,11 @@ namespace Microsoft.Docs.Build
                 default:
                     tags += $"[{Origin.ToString().ToLowerInvariant()}]";
                     break;
+            }
+
+            if (OriginalPath != null)
+            {
+                tags += $"(<<{OriginalPath})";
             }
 
             if (IsGitCommit)
@@ -101,7 +146,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
+            return HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, OriginalPath);
         }
 
         public bool Equals(FilePath? other)
@@ -114,7 +159,8 @@ namespace Microsoft.Docs.Build
             return Path.Equals(other.Path) &&
                    DependencyName.Equals(other.DependencyName) &&
                    other.Origin == Origin &&
-                   IsGitCommit == other.IsGitCommit;
+                   IsGitCommit == other.IsGitCommit &&
+                   OriginalPath == other.OriginalPath;
         }
 
         public int CompareTo(FilePath other)
@@ -126,7 +172,8 @@ namespace Microsoft.Docs.Build
                 result = DependencyName.CompareTo(other.DependencyName);
             if (result == 0)
                 result = IsGitCommit.CompareTo(other.IsGitCommit);
-
+            if (result == 0)
+                result = Nullable.Compare(OriginalPath, other.OriginalPath);
             return result;
         }
 

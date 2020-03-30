@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly Input _input;
+        private readonly SourceMap _sourceMap;
         private readonly Docset? _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
@@ -25,6 +26,7 @@ namespace Microsoft.Docs.Build
             Config config,
             Docset? fallbackDocset,
             Input input,
+            SourceMap sourceMap,
             BuildScope buildScope,
             WorkQueue<FilePath> buildQueue,
             RedirectionProvider redirectionProvider,
@@ -37,6 +39,7 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
             _input = input;
+            _sourceMap = sourceMap;
             _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
@@ -266,7 +269,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from entry docset
-            path = new FilePath(pathToDocset);
+            path = new FilePath(pathToDocset, _sourceMap.GetOriginalFilePath(pathToDocset));
             if (_input.Exists(path))
             {
                 return _documentProvider.GetDocument(path);

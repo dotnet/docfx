@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             var files = new HashSet<FilePath>();
             var fileNames = new HashSet<PathString>();
 
-            var defaultFiles = input.ListFilesRecursive(FileOrigin.Default);
+            var defaultFiles = input.ListFilesRecursive(FileOrigin.Main);
             files.UnionWith(defaultFiles);
             fileNames.UnionWith(defaultFiles.Select(file => file.Path));
 

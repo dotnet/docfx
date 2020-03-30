@@ -274,6 +274,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string MicrosoftGraphClientSecret { get; private set; } = "";
 
+        /// <summary>
+        /// A file containing a map of file path to the original file path.
+        /// </summary>
+        public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)
@@ -281,6 +286,7 @@ namespace Microsoft.Docs.Build
                 yield return url;
             }
 
+            yield return SourceMap;
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
 

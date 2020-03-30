@@ -24,6 +24,8 @@ namespace Microsoft.Docs.Build
 
         public Input Input { get; }
 
+        public SourceMap SourceMap { get; }
+
         public BuildScope BuildScope { get; }
 
         public RedirectionProvider RedirectionProvider { get; }
@@ -68,9 +70,8 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
-        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
+        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Repository? repository, LocalizationProvider localizationProvider, PackageResolver packageResolver)
         {
-            var repository = repositoryProvider.Repository;
             var credentialProvider = config.GetCredentialProvider();
 
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -80,15 +81,16 @@ namespace Microsoft.Docs.Build
             Config = config;
             ErrorLog = errorLog;
             PackageResolver = packageResolver;
-            RepositoryProvider = repositoryProvider;
+            RepositoryProvider = new RepositoryProvider(repository);
             FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions, fallbackDocset);
-            Input = input;
+            SourceMap = new SourceMap(new PathString(docset.DocsetPath), Config, FileResolver);
+            Input = new Input(docset.DocsetPath, Config, SourceMap, PackageResolver, RepositoryProvider, localizationProvider);
             LocalizationProvider = localizationProvider;
-            Output = new Output(outputPath, input, Config.DryRun);
+            Output = new Output(outputPath, Input, Config.DryRun);
             TemplateEngine = new TemplateEngine(docset.DocsetPath, config, localizationProvider.Locale, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
             BuildScope = new BuildScope(Config, Input, fallbackDocset);
-            DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, input, TemplateEngine);
+            DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, Input, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repository, DocumentProvider, MonikerProvider);
@@ -104,6 +106,7 @@ namespace Microsoft.Docs.Build
                 config,
                 fallbackDocset,
                 Input,
+                SourceMap,
                 BuildScope,
                 BuildQueue,
                 RedirectionProvider,
