@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var absoluteRedirectUrl = redirectUrl.Value.Trim();
-                var filePath = new FilePath(path, FileOrigin.Redirection);
+                var filePath = FilePath.Redirection(path);
 
                 if (item.RedirectDocumentId)
                 {
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in redirections.Where(item => item.RedirectDocumentId))
             {
-                var file = new FilePath(item.SourcePath, FileOrigin.Redirection);
+                var file = FilePath.Redirection(item.SourcePath);
                 if (!redirectUrls.TryGetValue(file, out var redirectUrl))
                 {
                     continue;

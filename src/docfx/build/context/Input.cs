@@ -152,10 +152,10 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Main:
-                    return GetFiles(_docsetPath).Select(file => new FilePath(file, _sourceMap.GetOriginalFilePath(file))).ToArray();
+                    return GetFiles(_docsetPath).Select(file => FilePath.Content(file, _sourceMap.GetOriginalFilePath(file))).ToArray();
 
                 case FileOrigin.Fallback when _localizationProvider.FallbackDocsetPath != null:
-                    return GetFiles(_localizationProvider.FallbackDocsetPath).Select(file => new FilePath(file, isGitCommit: false)).ToArray();
+                    return GetFiles(_localizationProvider.FallbackDocsetPath).Select(file => FilePath.Fallback(file)).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var package = _config.Dependencies[dependencyName.Value];
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
                     return (
                         from file in GetFiles(packagePath)
                         let path = dependencyName.Value.Concat(file)
-                        select new FilePath(path, dependencyName.Value)).ToArray();
+                        select FilePath.Dependency(path, dependencyName.Value)).ToArray();
 
                 default:
                     throw new NotSupportedException($"{nameof(ListFilesRecursive)}: {origin}");

@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
                 {
                     return null;
                 }
-                path = new FilePath(pathToDocset, referencingFile.DependencyName);
+                path = FilePath.Dependency(pathToDocset, referencingFile.DependencyName);
                 if (_input.Exists(path))
                 {
                     return _documentProvider.GetDocument(path);
@@ -249,7 +249,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from redirection files
-            path = new FilePath(pathToDocset, FileOrigin.Redirection);
+            path = FilePath.Redirection(pathToDocset);
             if (_redirectionProvider.Contains(path))
             {
                 return _documentProvider.GetDocument(path);
@@ -260,7 +260,7 @@ namespace Microsoft.Docs.Build
             {
                 if (pathToDocset.StartsWithPath(dependencyName, out _))
                 {
-                    path = new FilePath(pathToDocset, dependencyName);
+                    path = FilePath.Dependency(pathToDocset, dependencyName);
                     if (_input.Exists(path))
                     {
                         return _documentProvider.GetDocument(path);
@@ -269,7 +269,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from entry docset
-            path = new FilePath(pathToDocset, _sourceMap.GetOriginalFilePath(pathToDocset));
+            path = FilePath.Content(pathToDocset, _sourceMap.GetOriginalFilePath(pathToDocset));
             if (_input.Exists(path))
             {
                 return _documentProvider.GetDocument(path);
@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
             // resolve from fallback docset
             if (_fallbackDocset != null)
             {
-                path = new FilePath(pathToDocset, isGitCommit: false);
+                path = FilePath.Fallback(pathToDocset);
                 if (_input.Exists(path))
                 {
                     return _documentProvider.GetDocument(path);
@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
-                    path = new FilePath(pathToDocset, isGitCommit: true);
+                    path = FilePath.Fallback(pathToDocset, isGitCommit: true);
                     if (_input.Exists(path))
                     {
                         return _documentProvider.GetDocument(path);

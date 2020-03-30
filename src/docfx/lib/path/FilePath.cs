@@ -51,57 +51,39 @@ namespace Microsoft.Docs.Build
             Origin = FileOrigin.External;
         }
 
-        /// <summary>
-        /// Creates a file path from main docset.
-        /// </summary>
-        public FilePath(PathString path, PathString? originalPath)
+        private FilePath(FileOrigin origin, PathString path, PathString? originalPath, PathString dependencyName, bool isGitCommit)
         {
-            Debug.Assert(!System.IO.Path.IsPathRooted(path));
-
-            Origin = FileOrigin.Main;
             Path = path;
             OriginalPath = originalPath;
-            Format = GetFormat(path);
-        }
-
-        /// <summary>
-        /// Creates a redirection file path.
-        /// </summary>
-        public FilePath(PathString path, FileOrigin origin)
-        {
-            Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            Debug.Assert(origin == FileOrigin.Redirection);
-
-            Path = path;
-            Format = GetFormat(path);
             Origin = origin;
-        }
-
-        /// <summary>
-        /// Creates a fallback file path.
-        /// </summary>
-        public FilePath(PathString path, bool isGitCommit)
-        {
-            Debug.Assert(!System.IO.Path.IsPathRooted(path));
-
-            Path = path;
-            Format = GetFormat(path);
-            Origin = FileOrigin.Fallback;
-            IsGitCommit = isGitCommit;
-        }
-
-        /// <summary>
-        /// Creates a dependency file path.
-        /// </summary>
-        public FilePath(PathString path, PathString dependencyName)
-        {
-            Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            Debug.Assert(Path.StartsWithPath(DependencyName, out _));
-
-            Path = path;
-            Format = GetFormat(path);
             DependencyName = dependencyName;
-            Origin = FileOrigin.Dependency;
+            IsGitCommit = isGitCommit;
+            Format = GetFormat(path);
+        }
+
+        public static FilePath Content(PathString path, PathString? originalPath)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            return new FilePath(FileOrigin.Main, path, originalPath, default, default);
+        }
+
+        public static FilePath Redirection(PathString path)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            return new FilePath(FileOrigin.Redirection, path, default, default, default);
+        }
+
+        public static FilePath Fallback(PathString path, bool isGitCommit = false)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            return new FilePath(FileOrigin.Fallback, path, default, default, isGitCommit);
+        }
+
+        public static FilePath Dependency(PathString path, PathString dependencyName)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            Debug.Assert(path.StartsWithPath(dependencyName, out _));
+            return new FilePath(FileOrigin.Dependency, path, default, dependencyName, default);
         }
 
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
