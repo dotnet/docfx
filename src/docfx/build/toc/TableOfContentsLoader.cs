@@ -67,8 +67,8 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(validationErrors);
                 model.Metadata = tocMetadata;
 
-                var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
-                errors.AddIfNotNull(error);
+                var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+                errors.AddRange(monikerErrors);
 
                 return (errors, model, referencedFiles, referencedTocs);
             });
@@ -226,8 +226,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (currentItem.Document != null)
                     {
-                        var (error, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
-                        errors.AddIfNotNull(error);
+                        var (monikerErrors, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
+                        errors.AddRange(monikerErrors);
 
                         if (referenceFileMonikers.Length == 0)
                         {

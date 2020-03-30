@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,8 +20,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string>> _monikerRangeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string>>();
 
-        private readonly ConcurrentDictionary<FilePath, (Error?, string[])> _monikerCache
-                   = new ConcurrentDictionary<FilePath, (Error?, string[])>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, string[])> _monikerCache
+                   = new ConcurrentDictionary<FilePath, (List<Error>, string[])>();
 
         public MonikerComparer Comparer { get; }
 
@@ -54,7 +55,7 @@ namespace Microsoft.Docs.Build
             return _monikerRangeCache.GetOrAdd(file, GetConfigMonikerRangeCore);
         }
 
-        public (Error? error, string[] monikers) GetFileLevelMonikers(FilePath file)
+        public (List<Error> errors, string[] monikers) GetFileLevelMonikers(FilePath file)
         {
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
@@ -81,8 +82,9 @@ namespace Microsoft.Docs.Build
             return (null, monikers);
         }
 
-        private (Error? error, string[] monikers) GetFileLevelMonikersCore(FilePath file)
+        private (List<Error> errors, string[] monikers) GetFileLevelMonikersCore(FilePath file)
         {
+            var errors = new List<Error>();
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
             var configMonikerRange = GetConfigMonikerRange(file);
@@ -94,23 +96,52 @@ namespace Microsoft.Docs.Build
                 // user should not define it in file metadata
                 if (configMonikers.Length == 0)
                 {
-                    return (Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange), configMonikers);
+                    errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
+                    return (errors, configMonikers);
+                }
+
+                // monikerRange takes precedence over monikers since it is more likely from user configuration
+                if (metadata.Monikers.Length > 0)
+                {
+                    errors.Add(Errors.Versioning.DuplicateMonikerConfig(metadata.Monikers.First()));
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
-                var intersection = configMonikers.Intersect(fileMonikers).ToArray();
-
-                // With non-empty config monikers,
-                // warn if no intersection of config monikers and file monikers
-                if (intersection.Length == 0)
-                {
-                    var error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
-                    return (error, intersection);
-                }
-                return (null, intersection);
+                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers);
+                errors.AddIfNotNull(intersectionError);
+                return (errors, intersection);
+            }
+            else if (metadata.Monikers.Length > 0)
+            {
+                var fileMonikers = metadata.Monikers.SelectMany(x => _rangeParser.Parse(x)).ToArray();
+                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers);
+                errors.AddIfNotNull(intersectionError);
+                return (errors, intersection);
             }
 
-            return (null, configMonikers);
+            return (errors, configMonikers);
+        }
+
+        private static (Error?, string[]) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string> configMonikerRange, string[] configMonikers, string[] fileMonikers)
+        {
+            Error? error = null;
+
+            // With non-empty config monikers,
+            // warn if no intersection of config monikers and file monikers
+            var intersection = configMonikers.Intersect(fileMonikers).ToArray();
+            if (intersection.Length == 0)
+            {
+                if (!string.IsNullOrEmpty(metadata.MonikerRange))
+                {
+                    error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
+                }
+                else if (metadata.Monikers.Length > 0)
+                {
+                    error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.Monikers, fileMonikers);
+                }
+            }
+
+            return (error, intersection);
         }
 
         private SourceInfo<string> GetConfigMonikerRangeCore(FilePath file)

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -18,6 +19,9 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("monikerRange")]
         public SourceInfo<string> MonikerRange { get; private set; } = new SourceInfo<string>("");
+
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public SourceInfo<string>[] Monikers { get; private set; } = Array.Empty<SourceInfo<string>>();
 
         public SourceInfo<string> Uid { get; private set; } = new SourceInfo<string>("");
 

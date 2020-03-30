@@ -191,11 +191,8 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var (error, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
-                if (error != null)
-                {
-                    _errorLog.Write(error);
-                }
+                var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
+                _errorLog.Write(errors);
 
                 List<FilePath> candidates;
                 if (redirectionSourceMonikers.Length == 0)

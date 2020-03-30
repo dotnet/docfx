@@ -430,6 +430,9 @@ namespace Microsoft.Docs.Build
 
         public static class Versioning
         {
+            public static Error DuplicateMonikerConfig(SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "duplicate-moniker-config", $"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored", source);
+
             /// <summary>
             /// Multiple articles with same uid contain overlapped monikers,
             /// and can't decide which article to use when referencing that uid with this overlapped version
@@ -463,6 +466,9 @@ namespace Microsoft.Docs.Build
 
             public static Error MonikeRangeOutOfScope(SourceInfo<string> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file moniker range '{monikerRange}' is {StringUtility.Join(fileMonikers)}", monikerRange);
+
+            public static Error MonikeRangeOutOfScope(SourceInfo<string> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string>[] monikers, IReadOnlyList<string> fileMonikers)
+                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}", monikers.FirstOrDefault());
         }
 
         public static class JsonSchema

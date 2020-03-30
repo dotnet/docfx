@@ -27,11 +27,8 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var (error, monikers) = _monikerProvider.GetFileLevelMonikers(file);
-            if (error != null)
-            {
-                _errorLog.Write(error);
-            }
+            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+            _errorLog.Write(errors);
 
             _links.TryAdd(new FileLinkItem(file, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl));
         }
