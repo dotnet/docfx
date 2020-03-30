@@ -115,6 +115,7 @@ namespace Microsoft.Docs.Build
             switch (Origin)
             {
                 case FileOrigin.Main:
+                case FileOrigin.External:
                     break;
 
                 case FileOrigin.Dependency:
