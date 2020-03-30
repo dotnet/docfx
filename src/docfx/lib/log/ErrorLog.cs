@@ -281,7 +281,7 @@ namespace Microsoft.Docs.Build
             var message_severity = level;
             var code = error.Code;
             var message = error.Message;
-            var file = error.FilePath?.Path;
+            var file = error.FilePath?.OriginalPath ?? error.FilePath?.Path;
             var line = error.Line;
             var end_line = error.EndLine;
             var column = error.Column;

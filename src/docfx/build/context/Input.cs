@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly PathString _docsetPath;
         private readonly Config _config;
+        private readonly SourceMap _sourceMap;
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
         private readonly LocalizationProvider _localizationProvider;
@@ -26,9 +27,10 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
 
-        public Input(string docsetPath, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider)
+        public Input(string docsetPath, Config config, SourceMap sourceMap, PackageResolver packageResolver, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider)
         {
             _config = config;
+            _sourceMap = sourceMap;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
             _localizationProvider = localizationProvider;
@@ -45,12 +47,12 @@ namespace Microsoft.Docs.Build
             return file.IsGitCommit ? ReadBytesFromGit(fullPath) != null : File.Exists(fullPath);
         }
 
-        public PathString GetFullPath(FilePath file)
+        public PathString GetFullPath(FilePath file, bool preferOriginalPath = false)
         {
             switch (file.Origin)
             {
-                case FileOrigin.Default:
-                    return _docsetPath.Concat(file.Path);
+                case FileOrigin.Main:
+                    return _docsetPath.Concat(preferOriginalPath ? file.OriginalPath ?? file.Path : file.Path);
 
                 case FileOrigin.Dependency:
                     var package = _config.Dependencies[file.DependencyName];
@@ -149,11 +151,11 @@ namespace Microsoft.Docs.Build
         {
             switch (origin)
             {
-                case FileOrigin.Default:
-                    return GetFiles(_docsetPath).Select(file => new FilePath(file)).ToArray();
+                case FileOrigin.Main:
+                    return GetFiles(_docsetPath).Select(file => new FilePath(file, _sourceMap.GetOriginalFilePath(file))).ToArray();
 
                 case FileOrigin.Fallback when _localizationProvider.FallbackDocsetPath != null:
-                    return GetFiles(_localizationProvider.FallbackDocsetPath).Select(file => new FilePath(file, FileOrigin.Fallback)).ToArray();
+                    return GetFiles(_localizationProvider.FallbackDocsetPath).Select(file => new FilePath(file, isGitCommit: false)).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var package = _config.Dependencies[dependencyName.Value];

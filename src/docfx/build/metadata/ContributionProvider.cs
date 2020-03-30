@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, ContributionInfo?) GetContributionInfo(FilePath file, SourceInfo<string> authorName)
         {
             var errors = new List<Error>();
-            var fullPath = _input.GetFullPath(file);
+            var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
             var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath);
             if (repo is null)
             {
@@ -127,8 +127,8 @@ namespace Microsoft.Docs.Build
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate, string? gitCommit)
             GetGitUrls(FilePath file)
         {
-            var isWhitelisted = file.Origin == FileOrigin.Default || file.Origin == FileOrigin.Fallback;
-            var fullPath = _input.GetFullPath(file);
+            var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
+            var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
             var (repo, pathToRepo, commits) = _repositoryProvider.GetCommitHistory(fullPath);
             if (repo is null || pathToRepo is null)
                 return default;

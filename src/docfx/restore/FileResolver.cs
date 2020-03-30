@@ -47,6 +47,11 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(SourceInfo<string> file)
         {
+            return File.OpenRead(ResolveFilePath(file));
+        }
+
+        public string ResolveFilePath(SourceInfo<string> file)
+        {
             if (_fetchOptions != FetchOptions.NoFetch)
             {
                 Download(file).GetAwaiter().GetResult();
@@ -57,12 +62,12 @@ namespace Microsoft.Docs.Build
                 var localFilePath = Path.Combine(_docsetPath, file);
                 if (File.Exists(localFilePath))
                 {
-                    return File.OpenRead(localFilePath);
+                    return localFilePath;
                 }
                 else if (_fallbackDocset != null
                     && File.Exists(localFilePath = Path.Combine(_fallbackDocset.DocsetPath, file)))
                 {
-                    return File.OpenRead(localFilePath);
+                    return localFilePath;
                 }
 
                 throw Errors.Config.FileNotFound(file).ToException();
@@ -74,7 +79,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.System.NeedRestore(file).ToException();
             }
 
-            return File.OpenRead(filePath);
+            return filePath;
         }
 
         public async Task Download(SourceInfo<string> file)

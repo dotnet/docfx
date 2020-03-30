@@ -614,3 +614,29 @@ outputs:
           }
       ]
     }
+---
+# Relocate error file path, git urls based on source map
+repos:
+  https://github.com/relocate/source-file:
+    - files:
+        docfx.yml: |
+          sourceMap: a/sourceMap.json
+        a/sourceMap.json: |
+          {
+            "../a.yml": "original.xml",
+            "..\\b.md": "original.xml",
+            "..\\c.md": "original.xml",
+          }
+        a/original.xml:
+        a.yml:
+        b.md: '[](c.md)'
+        c.md:
+outputs:
+  b.json: |
+    {
+      "conceptual": "<p><a href='c'></a></p>",
+      "content_git_url": "https://github.com/relocate/source-file/blob/master/a/original.xml"
+    }
+  c.json:
+  .errors.log: |
+    ["error","schema-not-found","Unknown schema ''","a/original.xml",1,1]
