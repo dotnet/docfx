@@ -232,7 +232,6 @@ namespace Microsoft.Docs.Build
                     if (xrefSpec != null)
                     {
                         var specObj = JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
-                        JsonUtility.SetSourceInfo(specObj, content);
                         return (errors, specObj);
                     }
 
