@@ -555,7 +555,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    if (allowList.Keys.All(k => IsStrictHaveValue(k)))
+                    if (!string.IsNullOrWhiteSpace(dependentFieldNameWithIndex) && allowList.Keys.All(k => IsStrictHaveValue(k)))
                     {
                         errors.Add((dependentFieldName, Errors.JsonSchema.InvalidPairedAttribute(
                             JsonUtility.GetSourceInfo(map),
