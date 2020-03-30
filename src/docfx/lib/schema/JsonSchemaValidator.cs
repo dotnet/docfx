@@ -555,12 +555,15 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add((dependentFieldName, Errors.JsonSchema.InvalidPairedAttribute(
-                        JsonUtility.GetSourceInfo(fieldName),
-                        fieldName,
-                        fieldName,
-                        dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
-                        dependentFieldValue)));
+                    if (allowList.Keys.All(k => IsStrictHaveValue(k)))
+                    {
+                        errors.Add((dependentFieldName, Errors.JsonSchema.InvalidPairedAttribute(
+                            JsonUtility.GetSourceInfo(fieldName),
+                            fieldName,
+                            fieldName,
+                            dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                            dependentFieldValue)));
+                    }
                 }
             }
         }
