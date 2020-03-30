@@ -461,7 +461,7 @@ inputs:
 outputs:
   b.json:
 ---
-# Map document id from first group to last
+# Map document id order by path depth, then value
 inputs:
   docfx.json: |
     {
@@ -473,17 +473,23 @@ inputs:
         ],
         "globalMetadata": {
           "_op_documentIdPathDepotMapping": {
+            "./": {
+               "folder_relative_path_in_docset": "dest-root"
+            },
             "src/": {
               "folder_relative_path_in_docset": "dest-src"
             },
-            "./": {
-               "folder_relative_path_in_docset": "deset-root"
+            "src/dir1": {
+              "folder_relative_path_in_docset": "dest-src-dir1"
             }
           }
         }
       }
     }
   src/a.md:
+  src/dir1/a.md:
 outputs:
   src/a.json: |
     {"document_id":"b33c2202-d7a1-ee69-f111-fb5f135018d3","document_version_independent_id":"f8f728b3-5994-152b-5851-40165b1429b1"}
+  src/dir1/a.json: |
+    {"document_id":"e04d08a3-5e61-6422-50e4-cd8000304b56","document_version_independent_id":"b8237034-136e-c4b6-5c3b-1c3e43575cb7"}
