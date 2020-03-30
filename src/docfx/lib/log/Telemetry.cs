@@ -44,8 +44,8 @@ namespace Microsoft.Docs.Build
 
         public static void SetRepository(string? repo, string? branch)
         {
-            s_repo = string.IsNullOrEmpty(repo) ? "<null>" : repo;
-            s_branch = string.IsNullOrEmpty(branch) ? "<null>" : branch;
+            s_repo = CoalesceEmpty(repo);
+            s_branch = CoalesceEmpty(branch);
             s_telemetryClient.Context.GlobalProperties["Repo"] = s_repo;
             s_telemetryClient.Context.GlobalProperties["Branch"] = s_branch;
         }
@@ -77,8 +77,8 @@ namespace Microsoft.Docs.Build
 
         public static void TrackBuildFileTypeCount(Document file)
         {
-            var fileExtension = Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant() ?? "<null>";
-            var mimeType = file.Mime.Value ?? "<null>";
+            var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
+            var mimeType = CoalesceEmpty(file.Mime.Value);
             if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
             {
                 mimeType = "Conceptual";
@@ -118,6 +118,11 @@ namespace Microsoft.Docs.Build
             {
                 TrackOperationTime(_name, _stopwatch.Elapsed);
             }
+        }
+
+        private static string CoalesceEmpty(string? str)
+        {
+            return string.IsNullOrEmpty(str) ? "<null>" : str;
         }
     }
 }
