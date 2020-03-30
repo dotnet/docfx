@@ -555,6 +555,18 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(dependentFieldNameWithIndex) && allowList.Keys.All(k => IsStrictHaveValue(k)))
+                    {
+                        errors.Add((dependentFieldName, Errors.JsonSchema.InvalidPairedAttribute(
+                            JsonUtility.GetSourceInfo(map),
+                            fieldName,
+                            fieldName,
+                            dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                            dependentFieldValue)));
+                    }
+                }
             }
         }
 
