@@ -68,8 +68,7 @@ namespace Microsoft.Docs.Build
             // User should not define it in moniker zone
             if (fileLevelMonikers.Length == 0)
             {
-                var source = rangeString.Source;
-                return (source is null ? null : Errors.Versioning.MonikerRangeUndefined(source), Array.Empty<string>());
+                return (Errors.Versioning.MonikerRangeUndefined(rangeString), Array.Empty<string>());
             }
 
             var zoneLevelMonikers = _rangeParser.Parse(rangeString);
@@ -104,7 +103,7 @@ namespace Microsoft.Docs.Build
                 // monikerRange takes precedence over monikers since it is more likely from user configuration
                 if (metadata.Monikers.Length > 0)
                 {
-                    errors.Add(Errors.Versioning.DupicateMonikerConfig(metadata.Monikers.First()));
+                    errors.Add(Errors.Versioning.DuplicateMonikerConfig(metadata.Monikers.First()));
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
