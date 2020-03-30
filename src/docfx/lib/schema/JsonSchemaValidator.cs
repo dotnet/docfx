@@ -558,7 +558,7 @@ namespace Microsoft.Docs.Build
                     if (allowList.Keys.All(k => IsStrictHaveValue(k)))
                     {
                         errors.Add((dependentFieldName, Errors.JsonSchema.InvalidPairedAttribute(
-                            JsonUtility.GetSourceInfo(fieldName),
+                            JsonUtility.GetSourceInfo(map),
                             fieldName,
                             fieldName,
                             dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
