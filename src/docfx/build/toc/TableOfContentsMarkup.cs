@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class TableOfContentsMarkup
     {
-        public static (List<Error> errors, TableOfContentsModel model) Parse(MarkdownEngine markdownEngine, string tocContent, FilePath file)
+        public static (List<Error> errors, TableOfContentsNode node) Parse(MarkdownEngine markdownEngine, string tocContent, FilePath file)
         {
             var errors = new List<Error>();
             var headingBlocks = new List<HeadingBlock>();
@@ -39,22 +39,18 @@ namespace Microsoft.Docs.Build
             }
 
             using var reader = new StringReader(tocContent);
-            var items = BuildTree(errors, file, headingBlocks);
-
-            var tocModel = new TableOfContentsModel { Items = items };
-
-            return (errors, tocModel);
+            return (errors, new TableOfContentsNode { Items = BuildTree(errors, file, headingBlocks) });
         }
 
-        private static List<TableOfContentsItem> BuildTree(List<Error> errors, FilePath filePath, List<HeadingBlock> blocks)
+        private static List<TableOfContentsNode> BuildTree(List<Error> errors, FilePath filePath, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
-                return new List<TableOfContentsItem>();
+                return new List<TableOfContentsNode>();
             }
 
-            var result = new TableOfContentsItem();
-            var stack = new Stack<(int level, TableOfContentsItem item)>();
+            var result = new TableOfContentsNode();
+            var stack = new Stack<(int level, TableOfContentsNode item)>();
 
             // Level of root node is determined by its first child
             var parent = (level: blocks[0].Level - 1, node: result);
@@ -89,9 +85,9 @@ namespace Microsoft.Docs.Build
             return result.Items;
         }
 
-        private static TableOfContentsItem? GetItem(List<Error> errors, FilePath filePath, HeadingBlock block)
+        private static TableOfContentsNode? GetItem(List<Error> errors, FilePath filePath, HeadingBlock block)
         {
-            var currentItem = new TableOfContentsItem();
+            var currentItem = new TableOfContentsNode();
             if (block.Inline is null || !block.Inline.Any())
             {
                 currentItem.Name = new SourceInfo<string?>(null, block.ToSourceInfo(file: filePath));

@@ -1,19 +1,18 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsModel
     {
-        public TableOfContentsMetadata Metadata { get; set; } = new TableOfContentsMetadata();
+        public TableOfContentsMetadata Metadata { get; }
 
-        public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
+        public TableOfContentsNode[] Items { get; }
 
-        [JsonExtensionData(WriteData = false)]
-        public JObject ExtensionData { get; } = new JObject();
+        public TableOfContentsModel(TableOfContentsNode[] items, TableOfContentsMetadata metadata)
+        {
+            Items = items;
+            Metadata = metadata;
+        }
     }
 }

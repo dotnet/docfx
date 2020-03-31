@@ -12,8 +12,16 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
-            // load toc model
-            var (errors, model, _, _) = context.TableOfContentsLoader.Load(file);
+            // load toc tree
+            var (errors, node, _, _) = context.TableOfContentsLoader.Load(file);
+
+            var (metadataErrors, metadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+            errors.AddRange(metadataErrors);
+
+            var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
+            errors.AddRange(validationErrors);
+
+            var model = new TableOfContentsModel(node.Items.ToArray(), tocMetadata);
 
             // enable pdf
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);

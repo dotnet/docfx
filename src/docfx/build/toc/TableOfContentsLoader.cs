@@ -19,11 +19,10 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly MarkdownEngine _markdownEngine;
         private readonly MonikerProvider _monikerProvider;
-        private readonly MetadataProvider _metadataProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
 
-        private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsModel, List<Document>, List<Document>)> _cache =
-                     new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsModel, List<Document>, List<Document>)>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
+                     new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
@@ -35,7 +34,6 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MarkdownEngine markdownEngine,
-            MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             DependencyMapBuilder dependencyMapBuilder)
         {
@@ -43,12 +41,11 @@ namespace Microsoft.Docs.Build
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _markdownEngine = markdownEngine;
-            _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
         }
 
-        public (List<Error> errors, TableOfContentsModel model, List<Document> referencedFiles, List<Document> referencedTocs)
+        public (List<Error> errors, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
             Load(Document file)
         {
             return _cache.GetOrAdd(file.FilePath, _ =>
@@ -57,24 +54,14 @@ namespace Microsoft.Docs.Build
                 var referencedTocs = new List<Document>();
                 var errors = new List<Error>();
 
-                var (loadErrors, model) = LoadInternal(file, file, referencedFiles, referencedTocs);
+                var (loadErrors, node) = LoadInternal(file, file, referencedFiles, referencedTocs);
                 errors.AddRange(loadErrors);
 
-                var (metadataErrors, metadata) = _metadataProvider.GetMetadata(file.FilePath);
-                errors.AddRange(metadataErrors);
-
-                var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
-                errors.AddRange(validationErrors);
-                model.Metadata = tocMetadata;
-
-                var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
-                errors.AddRange(monikerErrors);
-
-                return (errors, model, referencedFiles, referencedTocs);
+                return (errors, node, referencedFiles, referencedTocs);
             });
         }
 
-        private (List<Error> errors, TableOfContentsModel tocModel) LoadTocModel(FilePath file, string? content = null)
+        private (List<Error> errors, TableOfContentsNode node) LoadTocModel(FilePath file, string? content = null)
         {
             switch (file.Format)
             {
@@ -102,13 +89,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error>, TableOfContentsModel) LoadTocModel(JToken tocToken)
+        private static (List<Error>, TableOfContentsNode) LoadTocModel(JToken tocToken)
         {
             if (tocToken is JArray tocArray)
             {
                 // toc model
-                var (errors, items) = JsonUtility.ToObject<List<TableOfContentsItem>>(tocArray);
-                return (errors, new TableOfContentsModel
+                var (errors, items) = JsonUtility.ToObject<List<TableOfContentsNode>>(tocArray);
+                return (errors, new TableOfContentsNode
                 {
                     Items = items,
                 });
@@ -116,12 +103,12 @@ namespace Microsoft.Docs.Build
             else if (tocToken is JObject tocObject)
             {
                 // toc root model
-                return JsonUtility.ToObject<TableOfContentsModel>(tocObject);
+                return JsonUtility.ToObject<TableOfContentsNode>(tocObject);
             }
-            return (new List<Error>(), new TableOfContentsModel());
+            return (new List<Error>(), new TableOfContentsNode());
         }
 
-        private (List<Error> errors, TableOfContentsModel model) LoadInternal(
+        private (List<Error> errors, TableOfContentsNode node) LoadInternal(
             Document file,
             Document rootPath,
             List<Document> referencedFiles,
@@ -135,16 +122,16 @@ namespace Microsoft.Docs.Build
                 throw Errors.Link.CircularReference(new SourceInfo(file.FilePath, 1, 1), file, recursionDetector).ToException();
             }
 
-            var (errors, model) = LoadTocModel(file.FilePath, content);
+            var (errors, node) = LoadTocModel(file.FilePath, content);
 
-            if (model.Items.Count > 0)
+            if (node.Items.Count > 0)
             {
                 try
                 {
                     recursionDetector.Push(file);
-                    var (resolveErrors, newItems) = ResolveTocModelItems(model.Items, file, rootPath, referencedFiles, referencedTocs);
+                    var (resolveErrors, newItems) = ResolveTocModelItems(node.Items, file, rootPath, referencedFiles, referencedTocs);
                     errors.AddRange(resolveErrors);
-                    model.Items = newItems;
+                    node.Items = newItems;
                 }
                 finally
                 {
@@ -152,18 +139,18 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return (errors, model);
+            return (errors, node);
         }
 
-        private (List<Error> errors, List<TableOfContentsItem> items) ResolveTocModelItems(
-            List<TableOfContentsItem> tocModelItems,
+        private (List<Error> errors, List<TableOfContentsNode> items) ResolveTocModelItems(
+            List<TableOfContentsNode> tocModelItems,
             Document filePath,
             Document rootPath,
             List<Document> referencedFiles,
             List<Document> referencedTocs)
         {
             var errors = new List<Error>();
-            var newItems = new List<TableOfContentsItem>();
+            var newItems = new List<TableOfContentsNode>();
             foreach (var tocModelItem in tocModelItems)
             {
                 // process
@@ -177,7 +164,7 @@ namespace Microsoft.Docs.Build
                     filePath, rootPath, referencedFiles, topicUid, topicHref, errors);
 
                 // set resolved href/document back
-                var newItem = new TableOfContentsItem(tocModelItem)
+                var newItem = new TableOfContentsNode(tocModelItem)
                 {
                     Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
                     TocHref = resolvedTocHref,
@@ -212,7 +199,7 @@ namespace Microsoft.Docs.Build
             return (errors, newItems);
         }
 
-        private IReadOnlyList<string> GetMonikers(TableOfContentsItem currentItem, List<Error> errors)
+        private IReadOnlyList<string> GetMonikers(TableOfContentsNode currentItem, List<Error> errors)
         {
             var monikers = new List<string>();
             if (!string.IsNullOrEmpty(currentItem.Href))
@@ -254,7 +241,7 @@ namespace Microsoft.Docs.Build
             return monikers.ToArray();
         }
 
-        private SourceInfo<string?> GetTocHref(TableOfContentsItem tocInputModel, List<Error> errors)
+        private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, List<Error> errors)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TocHref))
             {
@@ -277,7 +264,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private SourceInfo<string?> GetTopicHref(TableOfContentsItem tocInputModel, List<Error> errors)
+        private SourceInfo<string?> GetTopicHref(TableOfContentsNode tocInputModel, List<Error> errors)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TopicHref))
             {
@@ -300,7 +287,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (SourceInfo<string?> resolvedTocHref, TableOfContentsModel? subChildren, TableOfContentsItem? subChildrenFirstItem)
+        private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? subChildren, TableOfContentsNode? subChildrenFirstItem)
             ProcessTocHref(
             Document filePath,
             Document rootPath,
@@ -451,7 +438,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TableOfContentsItem? GetFirstItem(List<TableOfContentsItem> items)
+        private static TableOfContentsNode? GetFirstItem(List<TableOfContentsNode> items)
         {
             foreach (var item in items)
             {
