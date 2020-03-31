@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -171,10 +173,7 @@ namespace Microsoft.Docs.Build
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
             var renameHistory = new Dictionary<FilePath, FilePath>();
-
-            var publishUrlMap = _buildScope.Files.Concat(redirectUrls.Keys)
-                .GroupBy(file => _documentProvider.GetDocument(file).SiteUrl)
-                .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
+            var publishUrlMap = GetPublishUrlMap(redirectUrls.Keys);
 
             foreach (var item in redirections.Where(item => item.RedirectDocumentId))
             {
@@ -213,6 +212,17 @@ namespace Microsoft.Docs.Build
                 }
             }
             return renameHistory;
+        }
+
+        private Dictionary<string, List<FilePath>> GetPublishUrlMap(IEnumerable<FilePath> redirectUrlSources)
+        {
+            var fileUrls = new ConcurrentBag<(FilePath file, string url)>();
+            var allSources = _buildScope.Files.Concat(redirectUrlSources);
+            Parallel.ForEach(allSources, file => fileUrls.Add((file, _documentProvider.GetDocument(file).SiteUrl)));
+
+            var publishUrlMap = fileUrls.GroupBy(fileUrl => fileUrl.url)
+                                .ToDictionary(group => group.Key, group => group.Select(g => g.file).ToList(), PathUtility.PathComparer);
+            return publishUrlMap;
         }
 
         private static string RemoveTrailingIndex(string redirectionUrl)
