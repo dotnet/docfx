@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsItem
+    internal class TableOfContentsNode
     {
         public SourceInfo<string?> Name { get; set; }
 
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
 
-        public List<TableOfContentsItem> Items { get; set; } = new List<TableOfContentsItem>();
+        public List<TableOfContentsNode> Items { get; set; } = new List<TableOfContentsNode>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public Document? Document { get; set; }
 
-        public TableOfContentsItem(TableOfContentsItem item)
+        public TableOfContentsNode(TableOfContentsNode item)
         {
             Name = item.Name;
             DisplayName = item.DisplayName;
@@ -56,6 +56,6 @@ namespace Microsoft.Docs.Build
             Document = item.Document;
         }
 
-        public TableOfContentsItem() { }
+        public TableOfContentsNode() { }
     }
 }
