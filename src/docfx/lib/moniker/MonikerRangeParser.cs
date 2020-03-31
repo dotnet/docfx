@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        result.Add(key);
+                        result.Add(key.ToLowerInvariant());
                     }
                 }
             }
