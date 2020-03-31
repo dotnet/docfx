@@ -1,18 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
 {
     internal class ExpressionCreator
     {
-        private static readonly Regex OrSymbolRegex = new Regex(@"^\s*(?<or>\|\|)", RegexOptions.Compiled);
-        private static readonly Regex OperatorSymbolRegex = new Regex(@"^\s*(?<operator>\=|[\>\<]\=?)", RegexOptions.Compiled);
-        private static readonly Regex MonikerSymbolRegex = new Regex(@"^\s*(?<moniker>[\w\-\.]+)", RegexOptions.Compiled);
+        private static readonly Regex s_orSymbolRegex = new Regex(@"^\s*(?<or>\|\|)", RegexOptions.Compiled);
+        private static readonly Regex s_operatorSymbolRegex = new Regex(@"^\s*(?<operator>\=|[\>\<]\=?)", RegexOptions.Compiled);
+        private static readonly Regex s_monikerSymbolRegex = new Regex(@"^\s*(?<moniker>[\w\-\.]+)", RegexOptions.Compiled);
 
-        private static readonly Dictionary<string, ComparatorOperatorType> OperatorMap = new Dictionary<string, ComparatorOperatorType>
+        private static readonly Dictionary<string, ComparatorOperatorType> s_operatorMap = new Dictionary<string, ComparatorOperatorType>
         {
             { "=", ComparatorOperatorType.EqualTo },
             { ">", ComparatorOperatorType.GreaterThan },
@@ -21,109 +23,128 @@ namespace Microsoft.Docs.Build
             { "<=", ComparatorOperatorType.LessThanOrEqualTo },
         };
 
-        public static IExpression Create(string rangeString)
+        public static (List<Error>, IExpression?) Create(string rangeString, SourceInfo? source)
         {
-            var expression = GetMonikerRange();
+            var errors = new List<Error>();
+            var (rangeErrors, expression) = GetMonikerRange(rangeString, source);
+            errors.AddRange(rangeErrors);
             if (!string.IsNullOrWhiteSpace(rangeString))
             {
-                throw new MonikerRangeException($"Parse ends before reaching end of string, unrecognized string: `{rangeString}`");
+                errors.Add(Errors.Versioning.MonikerRangeInvalid(source, $"Parse ends before reaching end of string, unrecognized string: `{rangeString}`"));
             }
 
-            return expression;
+            return (errors, expression);
+        }
 
-            IExpression GetMonikerRange()
+        private static (List<Error>, IExpression?) GetMonikerRange(string rangeString, SourceInfo? source)
+        {
+            var errors = new List<Error>();
+            var (firstErros, result) = GetComparatorSet(rangeString, source);
+            errors.AddRange(firstErros);
+            if (result is null)
             {
-                var result = GetComparatorSet();
-                while (Accept(SymbolType.Or, out _))
-                {
-                    result = new LogicExpression(result, LogicOperatorType.Or, GetComparatorSet());
-                }
-                return result;
+                return (errors, result);
             }
-
-            IExpression GetComparatorSet()
+            while (Accept(rangeString, SymbolType.Or, out _))
             {
-                IExpression? result = null;
-                while (TryGetComparator(out var comparator) && comparator != null)
+                var (compareErrors, comparatorSet) = GetComparatorSet(rangeString, source);
+                errors.AddRange(compareErrors);
+                if (comparatorSet is null)
                 {
-                    if (result != null)
-                    {
-                        result = new LogicExpression(result, LogicOperatorType.And, comparator);
-                    }
-                    else
-                    {
-                        result = comparator;
-                    }
+                    break;
                 }
-                if (result is null)
-                {
-                    throw new MonikerRangeException($"Expect a comparator set, but got `{rangeString}`");
-                }
-                return result;
+                result = new LogicExpression(result, LogicOperatorType.Or, comparatorSet);
             }
+            return (errors, result);
+        }
 
-            bool TryGetComparator(out IExpression? comparator)
+        private static (List<Error>, IExpression?) GetComparatorSet(string rangeString, SourceInfo? source)
+        {
+            var errors = new List<Error>();
+            IExpression? result = null;
+            while (TryGetComparator(rangeString, source, out var comparator, out var compareError) && comparator != null)
             {
-                var foundOperator = Accept(SymbolType.Operator, out string @operator);
-                if (!foundOperator)
+                errors.AddIfNotNull(compareError);
+                if (result != null)
                 {
-                    @operator = "=";
-                }
-                if (Accept(SymbolType.Moniker, out string moniker))
-                {
-                    comparator = new ComparatorExpression(OperatorMap[@operator], moniker);
-                    return true;
-                }
-                else if (!foundOperator)
-                {
-                    comparator = null;
-                    return false;
+                    result = new LogicExpression(result, LogicOperatorType.And, comparator);
                 }
                 else
                 {
-                    throw new MonikerRangeException($"Expect a moniker string, but got `{rangeString}`");
+                    result = comparator;
                 }
             }
-
-            bool Accept(SymbolType type, out string value)
+            if (result is null)
             {
-                value = string.Empty;
-                if (!string.IsNullOrEmpty(rangeString) && TryMatchSymbol(type, out value))
-                {
-                    return true;
-                }
+                errors.Add(Errors.Versioning.MonikerRangeInvalid(source, $"Expect a comparator set, but got '{rangeString}'"));
+            }
+            return (errors, result);
+        }
+
+        private static bool TryGetComparator(string rangeString, SourceInfo? source, out IExpression? comparator, out Error? error)
+        {
+            error = null;
+            comparator = null;
+            var foundOperator = Accept(rangeString, SymbolType.Operator, out var @operator);
+            if (!foundOperator)
+            {
+                @operator = "=";
+            }
+            if (Accept(rangeString, SymbolType.Moniker, out var moniker))
+            {
+                comparator = new ComparatorExpression(s_operatorMap[@operator], new SourceInfo<string?>(moniker));
+                return true;
+            }
+            else if (!foundOperator)
+            {
+                comparator = null;
                 return false;
             }
-
-            bool TryMatchSymbol(SymbolType type, out string value)
+            else
             {
-                value = string.Empty;
-
-                Match match;
-
-                switch (type)
-                {
-                    case SymbolType.Or:
-                        match = OrSymbolRegex.Match(rangeString);
-                        break;
-                    case SymbolType.Moniker:
-                        match = MonikerSymbolRegex.Match(rangeString);
-                        break;
-                    case SymbolType.Operator:
-                        match = OperatorSymbolRegex.Match(rangeString);
-                        break;
-                    default:
-                        return false;
-                }
-                if (match.Length > 0)
-                {
-                    value = match.Groups[1].Value;
-                    rangeString = rangeString.Substring(match.Length);
-                    return true;
-                }
-
+                error = Errors.Versioning.MonikerRangeInvalid(source, $"Expect a moniker string, but got `{rangeString}`");
                 return false;
             }
+        }
+
+        private static bool Accept(string rangeString, SymbolType type, out string value)
+        {
+            value = string.Empty;
+            if (!string.IsNullOrEmpty(rangeString) && TryMatchSymbol(rangeString, type, out value))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static bool TryMatchSymbol(string rangeString, SymbolType type, out string value)
+        {
+            value = string.Empty;
+
+            Match match;
+
+            switch (type)
+            {
+                case SymbolType.Or:
+                    match = s_orSymbolRegex.Match(rangeString);
+                    break;
+                case SymbolType.Moniker:
+                    match = s_monikerSymbolRegex.Match(rangeString);
+                    break;
+                case SymbolType.Operator:
+                    match = s_operatorSymbolRegex.Match(rangeString);
+                    break;
+                default:
+                    return false;
+            }
+            if (match.Length > 0)
+            {
+                value = match.Groups[1].Value;
+                rangeString = rangeString.Substring(match.Length);
+                return true;
+            }
+
+            return false;
         }
     }
 }

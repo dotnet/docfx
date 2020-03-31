@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             Right = right;
         }
 
-        public IEnumerable<Moniker> Accept(EvaluatorWithMonikersVisitor visitor)
+        public (List<Error>, IEnumerable<Moniker>) Accept(EvaluatorWithMonikersVisitor visitor)
         {
             return visitor.Visit(this);
         }

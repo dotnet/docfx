@@ -10,55 +10,57 @@ namespace Microsoft.Docs.Build
     internal class EvaluatorWithMonikersVisitor
     {
         private readonly Dictionary<string, List<Moniker>> _productMoniker;
-        private readonly Dictionary<string, Moniker> _monikerMap;
 
         public EvaluatorWithMonikersVisitor(MonikerDefinitionModel monikerDefinition)
         {
-            _monikerMap = monikerDefinition.Monikers.ToDictionary(x => x.MonikerName, StringComparer.OrdinalIgnoreCase);
+            MonikerMap = monikerDefinition.Monikers.ToDictionary(x => x.MonikerName, StringComparer.OrdinalIgnoreCase);
             _productMoniker = monikerDefinition.Monikers.GroupBy(x => x.ProductName).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Order).ToList());
             MonikerOrder = SetMonikerOrder();
         }
 
+        public Dictionary<string, Moniker> MonikerMap { get; }
+
         public Dictionary<string, (string productName, int orderInProduct)> MonikerOrder { get; }
 
-        public IEnumerable<Moniker> Visit(ComparatorExpression expression)
+        public (List<Error>, IEnumerable<Moniker>) Visit(ComparatorExpression expression)
         {
-            if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
+            var errors = new List<Error>();
+            var value = expression.Operand.Value;
+            if (value is null)
             {
-                throw new MonikerRangeException($"Moniker `{expression.Operand}` is not defined");
+                return (errors, Array.Empty<Moniker>());
             }
 
-            switch (expression.Operator)
+            if (!MonikerOrder.TryGetValue(value, out var moniker))
             {
-                case ComparatorOperatorType.EqualTo:
-                    return new List<Moniker> { _monikerMap[expression.Operand] };
-                case ComparatorOperatorType.GreaterThan:
-                    return _productMoniker[moniker.productName].Skip(moniker.orderInProduct + 1);
-                case ComparatorOperatorType.GreaterThanOrEqualTo:
-                    return _productMoniker[moniker.productName].Skip(moniker.orderInProduct);
-                case ComparatorOperatorType.LessThan:
-                    return _productMoniker[moniker.productName].Take(moniker.orderInProduct);
-                case ComparatorOperatorType.LessThanOrEqualTo:
-                    return _productMoniker[moniker.productName].Take(moniker.orderInProduct + 1);
-                default:
-                    return Array.Empty<Moniker>();
+                errors.Add(Errors.Versioning.MonikerRangeInvalid(expression.Operand, $"Invalid moniker range: Moniker {expression.Operand}"));
             }
+
+            return expression.Operator switch
+            {
+                ComparatorOperatorType.EqualTo => (errors, new List<Moniker> { MonikerMap[value] }),
+                ComparatorOperatorType.GreaterThan => (errors, _productMoniker[moniker.productName].Skip(moniker.orderInProduct + 1)),
+                ComparatorOperatorType.GreaterThanOrEqualTo => (errors, _productMoniker[moniker.productName].Skip(moniker.orderInProduct)),
+                ComparatorOperatorType.LessThan => (errors, _productMoniker[moniker.productName].Take(moniker.orderInProduct)),
+                ComparatorOperatorType.LessThanOrEqualTo => (errors, _productMoniker[moniker.productName].Take(moniker.orderInProduct + 1)),
+                _ => (errors, Array.Empty<Moniker>()),
+            };
         }
 
-        public IEnumerable<Moniker> Visit(LogicExpression expression)
+        public (List<Error>, IEnumerable<Moniker>) Visit(LogicExpression expression)
         {
-            var left = expression.Left.Accept(this);
-            var right = expression.Right.Accept(this);
+            var errors = new List<Error>();
+            var (leftError, left) = expression.Left.Accept(this);
+            errors.AddRange(leftError);
+            var (rightError, right) = expression.Right.Accept(this);
+            errors.AddRange(rightError);
 
-            switch (expression.OperatorType)
+            return expression.OperatorType switch
             {
-                case LogicOperatorType.And:
-                    return left.Intersect(right);
-                case LogicOperatorType.Or:
-                    return left.Union(right);
-                default:
-                    return Array.Empty<Moniker>();
-            }
+                LogicOperatorType.And => (errors, left.Intersect(right)),
+                LogicOperatorType.Or => (errors, left.Union(right)),
+                _ => (errors, Array.Empty<Moniker>()),
+            };
         }
 
         private Dictionary<string, (string, int)> SetMonikerOrder()

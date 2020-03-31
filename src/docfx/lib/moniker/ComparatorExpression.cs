@@ -9,15 +9,15 @@ namespace Microsoft.Docs.Build
     {
         public ComparatorOperatorType Operator { get; set; }
 
-        public string Operand { get; set; }
+        public SourceInfo<string?> Operand { get; set; }
 
-        public ComparatorExpression(ComparatorOperatorType @operator, string operand)
+        public ComparatorExpression(ComparatorOperatorType @operator, SourceInfo<string?> operand)
         {
             Operator = @operator;
             Operand = operand;
         }
 
-        public IEnumerable<Moniker> Accept(EvaluatorWithMonikersVisitor visitor)
+        public (List<Error>, IEnumerable<Moniker>) Accept(EvaluatorWithMonikersVisitor visitor)
         {
             return visitor.Visit(this);
         }
