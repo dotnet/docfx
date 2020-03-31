@@ -46,20 +46,13 @@ namespace Microsoft.Docs.Build
 
         public void DownloadPackage(PackagePath path, PackageFetchOptions options)
         {
-            try
+            if (path.Type == PackageType.Git)
             {
-                if (path.Type == PackageType.Git)
-                {
-                    DownloadGitRepository(
-                        path.Url,
-                        path.Branch,
-                        options.HasFlag(PackageFetchOptions.DepthOne),
-                        path is DependencyConfig dependency && dependency.IncludeInBuild);
-                }
-            }
-            catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
-            {
-                Log.Write($"Ignore optional package download failure '{path}': {ex}");
+                DownloadGitRepository(
+                    path.Url,
+                    path.Branch,
+                    options.HasFlag(PackageFetchOptions.DepthOne),
+                    path is DependencyConfig dependency && dependency.IncludeInBuild);
             }
         }
 

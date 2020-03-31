@@ -17,12 +17,5 @@ namespace Microsoft.Docs.Build
         /// Uses --depth 1 to fetch git repositories.
         /// </summary>
         DepthOne = 0b0001,
-
-        /// <summary>
-        /// Don't throw in case of error.
-        /// Some package dependencies are optional, like fallback branch.
-        /// Failing to restore these dependencies should not stop the build.
-        /// </summary>
-        IgnoreError = 0b0010,
     }
 }
