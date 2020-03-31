@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
         }
 
-        public static void Fetch(Config config, string path, string url, string refspecs, string? options = null)
+        public static void Fetch(PreloadConfig config, string path, string url, string refspecs, string? options = null)
         {
             // Allow test to proxy remotes to local folder
             url = TestQuirks.GitRemoteProxy?.Invoke(url) ?? url;
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string cmd, string[] secrets) GetGitCommandLineConfig(string url, Config config)
+        private static (string cmd, string[] secrets) GetGitCommandLineConfig(string url, PreloadConfig config)
         {
             if (config is null)
             {

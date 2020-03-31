@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                 file.SiteUrl,
                 context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath, monikers) : null,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
+                context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                     var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
                     var metadata = new
                     {
-                        locale = context.LocalizationProvider.Locale,
+                        locale = context.BuildOptions.Locale,
                         monikers,
                         redirect_url = publishItem.RedirectUrl,
                         is_dynamic_rendering = true,

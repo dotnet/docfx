@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 new
                 {
                     host = $"https://{context.Config.HostName}",
-                    locale = context.LocalizationProvider.Locale,
+                    locale = context.BuildOptions.Locale,
                     base_path = context.Config.BasePath.ValueWithLeadingSlash,
                     source_base_path = ".",
                     version_info = new { },

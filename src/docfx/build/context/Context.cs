@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
 
         public Config Config { get; }
 
+        public BuildOptions BuildOptions { get; }
+
         public FileResolver FileResolver { get; }
 
         public PackageResolver PackageResolver { get; }
@@ -64,48 +66,44 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsLoader TableOfContentsLoader { get; }
 
-        public LocalizationProvider LocalizationProvider { get; }
-
         public ContentValidator ContentValidator { get; }
 
         public TableOfContentsMap TocMap => _tocMap.Value;
 
-        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Repository? repository, LocalizationProvider localizationProvider, PackageResolver packageResolver)
+        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
         {
-            var credentialProvider = config.GetCredentialProvider();
-
             DependencyMapBuilder = new DependencyMapBuilder();
             _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<FilePath>();
 
             Config = config;
             ErrorLog = errorLog;
+            BuildOptions = buildOptions;
             PackageResolver = packageResolver;
-            RepositoryProvider = new RepositoryProvider(repository);
-            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions, fallbackDocset);
-            SourceMap = new SourceMap(new PathString(docset.DocsetPath), Config, FileResolver);
-            Input = new Input(docset.DocsetPath, Config, SourceMap, PackageResolver, RepositoryProvider, localizationProvider);
-            LocalizationProvider = localizationProvider;
-            Output = new Output(outputPath, Input, Config.DryRun);
-            TemplateEngine = new TemplateEngine(docset.DocsetPath, config, localizationProvider.Locale, PackageResolver);
+            FileResolver = fileResolver;
+            SourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), Config, FileResolver);
+            RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
+            Input = new Input(buildOptions, config, SourceMap, packageResolver, RepositoryProvider);
+            Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
+            TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
-            BuildScope = new BuildScope(Config, Input, fallbackDocset);
-            DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, Input, TemplateEngine);
+            BuildScope = new BuildScope(Config, Input, buildOptions);
+            DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, Input, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repository, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
-            PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output, ErrorLog);
+            PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
-            ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, RepositoryProvider);
+            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
-            XrefResolver = new XrefResolver(this, config, FileResolver, repository, DependencyMapBuilder, FileLinkMapBuilder);
+            XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
                 config,
-                fallbackDocset,
                 Input,
+                BuildOptions,
                 SourceMap,
                 BuildScope,
                 BuildQueue,
@@ -124,6 +122,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
+            PackageResolver.Dispose();
             RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();
             MicrosoftGraphAccessor.Dispose();

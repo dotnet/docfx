@@ -2,9 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,34 +39,21 @@ namespace Microsoft.Docs.Build
 
         private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
-            List<Error> errors;
-            Config? config = null;
+            Config? logConfig = null;
 
-            using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
+            using var errorLog = new ErrorLog(docsetPath, outputPath, () => logConfig, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
 
             try
             {
-                // load and trace entry repository
-                var repository = Repository.Create(docsetPath);
-                Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                var locale = LocalizationUtility.GetLocale(repository);
-
-                var configLoader = new ConfigLoader(repository, errorLog);
-                (errors, config) = configLoader.Load(docsetPath, locale, options);
+                var configLoader = new ConfigLoader(errorLog);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options);
                 if (errorLog.Write(errors))
                     return true;
 
-                using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
-                var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
-
-                // get docsets(build docset, fallback docset and dependency docsets)
-                var docset = new Docset(docsetPath);
-                var fallbackDocset = localizationProvider.GetFallbackDocset();
-
-                // run build based on docsets
-                outputPath ??= Path.Combine(docsetPath, config.OutputPath);
-                Run(config, docset, fallbackDocset, repository, options, errorLog, outputPath, localizationProvider, packageResolver);
+                logConfig = config;
+                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
+                Run(context);
                 return false;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -78,23 +63,13 @@ namespace Microsoft.Docs.Build
             finally
             {
                 Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
-                Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                 errorLog.PrintSummary();
             }
         }
 
-        private static void Run(
-            Config config,
-            Docset docset,
-            Docset? fallbackDocset,
-            Repository? repository,
-            CommandLineOptions options,
-            ErrorLog errorLog,
-            string outputPath,
-            LocalizationProvider localizationProvider,
-            PackageResolver packageResolver)
+        private static void Run(Context context)
         {
-            using var context = new Context(outputPath, errorLog, options, config, docset, fallbackDocset, repository, localizationProvider, packageResolver);
             context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
 
             using (Progress.Start("Building files"))
@@ -122,25 +97,18 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel());
                 context.Output.WriteJson(".links.json", fileLinkMap);
 
-                if (options.Legacy)
+                if (context.Config.Legacy && context.Config.OutputJson)
                 {
-                    if (context.Config.OutputJson)
-                    {
-                        // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
-                    }
-                    else
-                    {
-                        context.TemplateEngine.CopyTo(outputPath);
-                    }
+                    // TODO: decouple files and dependencies from legacy.
+                    Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap);
                 }
             }
 
             context.ContributionProvider.Save();
             context.RepositoryProvider.Save();
 
-            errorLog.Write(context.GitHubAccessor.Save());
-            errorLog.Write(context.MicrosoftGraphAccessor.Save());
+            context.ErrorLog.Write(context.GitHubAccessor.Save());
+            context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save());
         }
 
         private static void BuildFile(Context context, FilePath path)

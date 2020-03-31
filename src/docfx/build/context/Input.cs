@@ -17,24 +17,22 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class Input
     {
-        private readonly PathString _docsetPath;
         private readonly Config _config;
         private readonly SourceMap _sourceMap;
+        private readonly BuildOptions _buildOptions;
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
-        private readonly LocalizationProvider _localizationProvider;
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
 
-        public Input(string docsetPath, Config config, SourceMap sourceMap, PackageResolver packageResolver, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider)
+        public Input(BuildOptions buildOptions, Config config, SourceMap sourceMap, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
         {
             _config = config;
             _sourceMap = sourceMap;
+            _buildOptions = buildOptions;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
-            _localizationProvider = localizationProvider;
-            _docsetPath = new PathString(Path.GetFullPath(docsetPath));
         }
 
         /// <summary>
@@ -52,7 +50,7 @@ namespace Microsoft.Docs.Build
             switch (file.Origin)
             {
                 case FileOrigin.Main:
-                    return _docsetPath.Concat(preferOriginalPath ? file.OriginalPath ?? file.Path : file.Path);
+                    return _buildOptions.DocsetPath.Concat(preferOriginalPath ? file.OriginalPath ?? file.Path : file.Path);
 
                 case FileOrigin.Dependency:
                     var package = _config.Dependencies[file.DependencyName];
@@ -61,8 +59,8 @@ namespace Microsoft.Docs.Build
                     Debug.Assert(!pathToPackage.StartsWith('.'));
                     return new PathString(Path.Combine(packagePath, pathToPackage));
 
-                case FileOrigin.Fallback when _localizationProvider.FallbackDocsetPath != null:
-                    return _localizationProvider.FallbackDocsetPath.Value.Concat(file.Path);
+                case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
+                    return _buildOptions.FallbackDocsetPath.Value.Concat(file.Path);
 
                 default:
                     throw new InvalidOperationException();
@@ -152,10 +150,10 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Main:
-                    return GetFiles(_docsetPath).Select(file => FilePath.Content(file, _sourceMap.GetOriginalFilePath(file))).ToArray();
+                    return GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file, _sourceMap.GetOriginalFilePath(file))).ToArray();
 
-                case FileOrigin.Fallback when _localizationProvider.FallbackDocsetPath != null:
-                    return GetFiles(_localizationProvider.FallbackDocsetPath).Select(file => FilePath.Fallback(file)).ToArray();
+                case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
+                    return GetFiles(_buildOptions.FallbackDocsetPath).Select(file => FilePath.Fallback(file)).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var package = _config.Dependencies[dependencyName.Value];

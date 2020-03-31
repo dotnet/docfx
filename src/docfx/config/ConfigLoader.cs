@@ -13,12 +13,10 @@ namespace Microsoft.Docs.Build
 {
     internal class ConfigLoader
     {
-        private readonly Repository? _repository;
         private readonly ErrorLog _errorLog;
 
-        public ConfigLoader(Repository? repository, ErrorLog errorLog)
+        public ConfigLoader(ErrorLog errorLog)
         {
-            _repository = repository;
             _errorLog = errorLog;
         }
 
@@ -47,8 +45,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error> errors, Config config) Load(string docsetPath, string? locale, CommandLineOptions options)
+        public (List<Error>, Config, BuildOptions, PackageResolver, FileResolver) Load(string docsetPath, string? outputPath, CommandLineOptions options)
         {
+            // load and trace entry repository
+            var repository = Repository.Create(docsetPath);
+            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+
             var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
             if (configPath is null)
             {
@@ -63,7 +65,7 @@ namespace Microsoft.Docs.Build
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, _repository);
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
             var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
                 ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
                 : null;
@@ -77,8 +79,11 @@ namespace Microsoft.Docs.Build
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
-            var fileResolver = new FileResolver(docsetPath, credentialProvider, configAdapter, options.FetchOptions);
-            var extendConfig = DownloadExtendConfig(errors, locale, preloadConfig, xrefEndpoint, xrefQueryTags, _repository, fileResolver);
+            var packageResolver = new PackageResolver(docsetPath, preloadConfig, options.FetchOptions);
+            var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, packageResolver);
+            var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, options.FetchOptions);
+            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath, outputPath, repository, preloadConfig);
+            var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
 
             // Create full config
             var configObject = new JObject();
@@ -86,7 +91,7 @@ namespace Microsoft.Docs.Build
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
-            return (errors, config);
+            return (errors, config, buildOptions, packageResolver, fileResolver);
         }
 
         private static JObject LoadConfig(List<Error> errorBuilder, string fileName, string content)

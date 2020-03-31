@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     internal static class LegacyDependencyMap
     {
         public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(
-            Docset docset,
+            string docsetPath,
             Context context,
             List<Document> documents,
             DependencyMap dependencyMap)
@@ -72,8 +72,8 @@ namespace Microsoft.Docs.Build
                     select JsonUtility.Serialize(new
                     {
                         dependency_type = dep.Type,
-                        from_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, dep.From.Substring(2))),
-                        to_file_path = Path.GetFullPath(Path.Combine(docset.DocsetPath, dep.To.Substring(2))),
+                        from_file_path = Path.GetFullPath(Path.Combine(docsetPath, dep.From.Substring(2))),
+                        to_file_path = Path.GetFullPath(Path.Combine(docsetPath, dep.To.Substring(2))),
                         version = dep.Version,
                     });
 
