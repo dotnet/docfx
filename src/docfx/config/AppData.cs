@@ -9,17 +9,17 @@ namespace Microsoft.Docs.Build
 {
     internal static class AppData
     {
-        private static readonly string s_root = TestQuirks.AppDataPath?.Invoke() ?? GetAppDataRoot();
+        public static string Root => TestQuirks.AppDataPath?.Invoke() ?? GetAppDataRoot();
 
-        public static string GitRoot => Path.Combine(s_root, "git6");
+        public static string GitRoot => Path.Combine(Root, "git6");
 
-        public static string DownloadsRoot => Path.Combine(s_root, "downloads2");
+        public static string DownloadsRoot => Path.Combine(Root, "downloads2");
 
-        public static string MutexRoot => Path.Combine(s_root, "mutex");
+        public static string MutexRoot => Path.Combine(Root, "mutex");
 
-        public static string CacheRoot => EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
+        public static string CacheRoot => EnvironmentVariable.CachePath ?? Path.Combine(Root, "cache");
 
-        public static string StateRoot => EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
+        public static string StateRoot => EnvironmentVariable.StatePath ?? Path.Combine(Root, "state");
 
         public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Get the global configuration path, default is under <see cref="s_root"/>
+        /// Get the global configuration path, default is under <see cref="Root"/>
         /// </summary>
         public static bool TryGetGlobalConfigPath([NotNullWhen(true)] out string? path)
         {
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            path = PathUtility.FindYamlOrJson(s_root, "docfx");
+            path = PathUtility.FindYamlOrJson(Root, "docfx");
             return path != null;
         }
 

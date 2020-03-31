@@ -69,12 +69,12 @@ namespace Microsoft.Docs.Build
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-test", testName));
+            var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName));
             var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs"));
+            var markerPath = Path.Combine(basePath, "marker");
             var appDataPath = Path.Combine(basePath, "appdata");
             var cachePath = Path.Combine(appDataPath, "cache");
             var statePath = Path.Combine(appDataPath, "state");
-            var markerPath = Path.Combine(basePath, ".marker");
 
             var variables = new Dictionary<string, string>
             {
