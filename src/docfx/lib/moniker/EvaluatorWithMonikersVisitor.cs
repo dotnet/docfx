@@ -25,13 +25,7 @@ namespace Microsoft.Docs.Build
         public (List<Error>, IEnumerable<Moniker>) Visit(ComparatorExpression expression, SourceInfo<string?> monikerRange)
         {
             var errors = new List<Error>();
-            var value = expression.Operand.Value;
-            if (value is null)
-            {
-                return (errors, Array.Empty<Moniker>());
-            }
-
-            if (!MonikerOrder.TryGetValue(value, out var moniker))
+            if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
             {
                 errors.Add(Errors.Versioning.MonikerRangeInvalid(monikerRange, $"Invalid moniker range '{monikerRange}': Moniker '{expression.Operand}' is not defined"));
                 return (errors, Array.Empty<Moniker>());
@@ -39,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             return expression.Operator switch
             {
-                ComparatorOperatorType.EqualTo => (errors, new List<Moniker> { MonikerMap[value] }),
+                ComparatorOperatorType.EqualTo => (errors, new List<Moniker> { MonikerMap[expression.Operand] }),
                 ComparatorOperatorType.GreaterThan => (errors, _productMoniker[moniker.productName].Skip(moniker.orderInProduct + 1)),
                 ComparatorOperatorType.GreaterThanOrEqualTo => (errors, _productMoniker[moniker.productName].Skip(moniker.orderInProduct)),
                 ComparatorOperatorType.LessThan => (errors, _productMoniker[moniker.productName].Take(moniker.orderInProduct)),

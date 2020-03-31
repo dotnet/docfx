@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             }
             if (Accept(ref rangeString, SymbolType.Moniker, out var moniker))
             {
-                comparator = new ComparatorExpression(s_operatorMap[@operator], new SourceInfo<string?>(moniker));
+                comparator = new ComparatorExpression(s_operatorMap[@operator], moniker);
                 return true;
             }
             else if (!foundOperator)

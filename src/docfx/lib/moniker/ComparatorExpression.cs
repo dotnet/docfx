@@ -9,9 +9,9 @@ namespace Microsoft.Docs.Build
     {
         public ComparatorOperatorType Operator { get; set; }
 
-        public SourceInfo<string?> Operand { get; set; }
+        public string Operand { get; set; }
 
-        public ComparatorExpression(ComparatorOperatorType @operator, SourceInfo<string?> operand)
+        public ComparatorExpression(ComparatorOperatorType @operator, string operand)
         {
             Operator = @operator;
             Operand = operand;
