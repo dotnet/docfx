@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class AppData
     {
-        private static readonly string s_root = GetAppDataRoot();
+        private static readonly string s_root = TestQuirks.AppDataPath?.Invoke() ?? GetAppDataRoot();
 
         public static string GitRoot => Path.Combine(s_root, "git6");
 
@@ -17,9 +17,9 @@ namespace Microsoft.Docs.Build
 
         public static string MutexRoot => Path.Combine(s_root, "mutex");
 
-        public static string CacheRoot => TestQuirks.CachePath?.Invoke() ?? EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
+        public static string CacheRoot => EnvironmentVariable.CachePath ?? Path.Combine(s_root, "cache");
 
-        public static string StateRoot => TestQuirks.StatePath?.Invoke() ?? EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
+        public static string StateRoot => EnvironmentVariable.StatePath ?? Path.Combine(s_root, "state");
 
         public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
