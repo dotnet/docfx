@@ -1604,7 +1604,7 @@ inputs:
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
-  docs/v1/TOC.md: |
+  docs/v1/q.md: |
     ---
     monikers: netcore-2.0
     ---
@@ -1617,8 +1617,8 @@ inputs:
       ]
     }
 outputs:
-  4667fedf/docs/toc.json: |
-    {"metadata":{"monikers":"netcore-2.0"}}
+  4667fedf/docs/q.json: |
+    {"monikers":["netcore-2.0"]}
 ---
 # User defined monikers should not outrange moniker range in config
 inputs:
@@ -1729,7 +1729,7 @@ inputs:
     routes:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
-  docs/v1/TOC.md: |
+  docs/v1/a.md: |
     ---
     monikers: netcore-1.0
     monikerRange:
@@ -1743,8 +1743,8 @@ inputs:
       ]
     }
 outputs:
-  136a42ac/docs/toc.json: |
-    {"metadata":{"monikers":"netcore-1.0"}}
+  136a42ac/docs/a.json: |
+    {"monikers":["netcore-1.0"]}
 ---
 # Should warn if user input monikers with array of empty items
 inputs:
