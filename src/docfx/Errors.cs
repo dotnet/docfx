@@ -445,7 +445,7 @@ namespace Microsoft.Docs.Build
             /// Failed to parse moniker string.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeInvalid(SourceInfo<string> source, Exception ex)
+            public static Error MonikerRangeInvalid(SourceInfo<string?> source, Exception ex)
                 => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {ex.Message}", source);
 
             /// <summary>
@@ -461,13 +461,13 @@ namespace Microsoft.Docs.Build
             /// or moniker-zone defined in article.md has no intersection with file-level monikers.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikeRangeOutOfScope(SourceInfo<string> source, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> source, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{source}' is {StringUtility.Join(zoneLevelMonikers)}, while file level monikers is {StringUtility.Join(fileLevelMonikers)}.", source);
 
-            public static Error MonikeRangeOutOfScope(SourceInfo<string> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string?> monikerRange, IReadOnlyList<string> fileMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file moniker range '{monikerRange}' is {StringUtility.Join(fileMonikers)}", monikerRange);
 
-            public static Error MonikeRangeOutOfScope(SourceInfo<string> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string>[] monikers, IReadOnlyList<string> fileMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string?>[] monikers, IReadOnlyList<string> fileMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}", monikers.FirstOrDefault());
         }
 

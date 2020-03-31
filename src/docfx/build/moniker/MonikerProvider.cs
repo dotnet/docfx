@@ -15,10 +15,10 @@ namespace Microsoft.Docs.Build
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
 
-        private readonly (Func<string, bool> glob, SourceInfo<string>)[] _rules;
+        private readonly (Func<string, bool> glob, SourceInfo<string?>)[] _rules;
 
-        private readonly ConcurrentDictionary<FilePath, SourceInfo<string>> _monikerRangeCache
-                   = new ConcurrentDictionary<FilePath, SourceInfo<string>>();
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _monikerRangeCache
+                   = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, string[])> _monikerCache
                    = new ConcurrentDictionary<FilePath, (List<Error>, string[])>();
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
         }
 
-        public SourceInfo<string> GetConfigMonikerRange(FilePath file)
+        public SourceInfo<string?> GetConfigMonikerRange(FilePath file)
         {
             // Fast pass to get config moniker range if the docset doesn't have any moniker config
             if (_rules.Length == 0 && _config.Groups.Count == 0)
@@ -60,13 +60,14 @@ namespace Microsoft.Docs.Build
             return _monikerCache.GetOrAdd(file, GetFileLevelMonikersCore);
         }
 
-        public (Error? error, string[] monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string> rangeString)
+        public (Error? error, string[] monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string?> rangeString)
         {
+            var configMonikerRange = GetConfigMonikerRange(file);
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (fileLevelMonikers.Length == 0)
+            if (configMonikerRange.Value is null)
             {
                 return (Errors.Versioning.MonikerRangeUndefined(rangeString), Array.Empty<string>());
             }
@@ -90,20 +91,20 @@ namespace Microsoft.Docs.Build
             var configMonikerRange = GetConfigMonikerRange(file);
             var configMonikers = _rangeParser.Parse(configMonikerRange);
 
-            if (!string.IsNullOrEmpty(metadata.MonikerRange))
+            if (metadata.MonikerRange != null)
             {
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (configMonikers.Length == 0)
+                if (configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
                     return (errors, configMonikers);
                 }
 
                 // monikerRange takes precedence over monikers since it is more likely from user configuration
-                if (metadata.Monikers.Length > 0)
+                if (metadata.Monikers != null)
                 {
-                    errors.Add(Errors.Versioning.DuplicateMonikerConfig(metadata.Monikers.First()));
+                    errors.Add(Errors.Versioning.DuplicateMonikerConfig(metadata.Monikers.FirstOrDefault()));
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
@@ -111,7 +112,7 @@ namespace Microsoft.Docs.Build
                 errors.AddIfNotNull(intersectionError);
                 return (errors, intersection);
             }
-            else if (metadata.Monikers.Length > 0)
+            else if (metadata.Monikers != null)
             {
                 var fileMonikers = metadata.Monikers.SelectMany(x => _rangeParser.Parse(x)).ToArray();
                 var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers);
@@ -122,7 +123,7 @@ namespace Microsoft.Docs.Build
             return (errors, configMonikers);
         }
 
-        private static (Error?, string[]) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string> configMonikerRange, string[] configMonikers, string[] fileMonikers)
+        private static (Error?, string[]) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string?> configMonikerRange, string[] configMonikers, string[] fileMonikers)
         {
             Error? error = null;
 
@@ -135,7 +136,7 @@ namespace Microsoft.Docs.Build
                 {
                     error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                 }
-                else if (metadata.Monikers.Length > 0)
+                else if (metadata.Monikers != null)
                 {
                     error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.Monikers, fileMonikers);
                 }
@@ -144,7 +145,7 @@ namespace Microsoft.Docs.Build
             return (error, intersection);
         }
 
-        private SourceInfo<string> GetConfigMonikerRangeCore(FilePath file)
+        private SourceInfo<string?> GetConfigMonikerRangeCore(FilePath file)
         {
             var (_, mapping) = _buildScope.MapPath(file.Path);
 

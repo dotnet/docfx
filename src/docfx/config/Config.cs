@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the moniker range mapping
         /// </summary>
-        public Dictionary<string, SourceInfo<string>> MonikerRange { get; } = new Dictionary<string, SourceInfo<string>>();
+        public Dictionary<string, SourceInfo<string?>> MonikerRange { get; } = new Dictionary<string, SourceInfo<string?>>();
 
         /// <summary>
         /// Get the definition of monikers
