@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                     ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
                     ValidationSeverity.WARNING => ErrorLevel.Warning,
                     ValidationSeverity.ERROR => ErrorLevel.Error,
-                    _ => ErrorLevel.Off
+                    _ => ErrorLevel.Off,
                 };
         }
     }

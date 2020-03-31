@@ -82,10 +82,8 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("[^a-c]*")]
         [InlineData("[abc[]]a")]
         [InlineData("[a[]")]
-        [InlineData("[(]")]
         [InlineData("[")]
         [InlineData("{{a,b}}")]
         [InlineData("z{a,b{,c}d")]

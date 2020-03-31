@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.PPE => "https://ppe.docs.microsoft.com",
             DocsEnvironment.Internal => "https://ppe.docs.microsoft.com",
             DocsEnvironment.Perf => "https://ppe.docs.microsoft.com",
-            _ => throw new NotSupportedException()
+            _ => throw new NotSupportedException(),
         };
 
         public const string BuildConfigApi = "https://ops/buildconfig/";
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
                 DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
                 DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
-                _ => throw new NotSupportedException()
+                _ => throw new NotSupportedException(),
             };
         }
 
@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.PPE => "ppe.docs.azure.cn",
                     DocsEnvironment.Internal => "ppe.docs.azure.cn",
                     DocsEnvironment.Perf => "ppe.docs.azure.cn",
-                    _ => throw new NotSupportedException()
+                    _ => throw new NotSupportedException(),
                 },
                 "dev.microsoft.com" => s_docsEnvironment switch
                 {
@@ -275,12 +275,12 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
                     DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
                     DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
-                    _ => throw new NotSupportedException()
+                    _ => throw new NotSupportedException(),
                 },
                 "rd.microsoft.com" => s_docsEnvironment switch
                 {
                     DocsEnvironment.Prod => "rd.microsoft.com",
-                    _ => throw new NotSupportedException()
+                    _ => throw new NotSupportedException(),
                 },
                 _ => s_docsEnvironment switch
                 {
@@ -288,7 +288,7 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.PPE => "ppe.docs.microsoft.com",
                     DocsEnvironment.Internal => "ppe.docs.microsoft.com",
                     DocsEnvironment.Perf => "ppe.docs.microsoft.com",
-                    _ => throw new NotSupportedException()
+                    _ => throw new NotSupportedException(),
                 },
             };
         }
