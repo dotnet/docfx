@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public string? MonikerGroup { get; }
 
-        public string ConfigMonikerRange { get; }
+        public string? ConfigMonikerRange { get; }
 
         public string Locale { get; }
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject? ExtensionData { get; set; }
 
-        public PublishItem(string url, string? path, string? sourcePath, string locale, string[] monikers, string configMonikerRange)
+        public PublishItem(string url, string? path, string? sourcePath, string locale, string[] monikers, string? configMonikerRange)
         {
             Url = url;
             Path = path;

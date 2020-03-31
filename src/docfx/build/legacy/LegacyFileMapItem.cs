@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         public string AssetId { get; set; }
 
         [JsonProperty(PropertyName = "version")]
-        public string Version { get; set; }
+        public string? Version { get; set; }
 
         [JsonProperty(PropertyName = "is_moniker_range")]
         public bool IsMonikerRange { get; set; } = true;
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             string legacyOutputFilePathRelativeToBasePath,
             string legacySiteUrlRelativeToBasePath,
             ContentType contentType,
-            string version,
+            string? version,
             IReadOnlyList<string> monikers)
         {
             switch (contentType)
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             string legacyOutputFilePathRelativeToBasePath,
             string legacySiteUrlRelativeToBasePath,
             ContentType contentType,
-            string version,
+            string? version,
             IReadOnlyList<string> monikers)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)

@@ -1719,4 +1719,58 @@ outputs:
   .errors.log: |
     ["warning","duplicate-moniker-config","Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored","docs/v1/TOC.md",2,11]
     ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', 'netcore-2.0', while file moniker range '>netcore-1.0 <netcore-1.0' is ","docs/v1/TOC.md",3,15]
-
+---
+# Should take monikers as final monikers if user inputs empty string for monikerRange
+# and no duplicate-moniker-config warning
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/TOC.md: |
+    ---
+    monikers: netcore-1.0
+    monikerRange:
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  136a42ac/docs/toc.json: |
+    {"metadata":{"monikers":"netcore-1.0"}}
+---
+# Should warn if user input monikers with array of empty items
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/TOC.md: |
+    ---
+    monikers:
+      -
+    monikerRange: < netcore-2.0
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  136a42ac/docs/toc.json: |
+    {"metadata":{}}
+  .errors.log: |
+    ["warning","null-array-value","'monikers' contains null value, the null value has been removed","docs/v1/TOC.md",3,4]
+    ["warning","duplicate-moniker-config","Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored"]
