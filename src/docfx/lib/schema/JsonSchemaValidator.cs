@@ -258,12 +258,12 @@ namespace Microsoft.Docs.Build
             switch (schema.Format)
             {
                 case JsonSchemaStringFormat.DateTime:
-                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
+                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                         errors.Add((name, Errors.JsonSchema.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.DateTime)));
                     break;
 
                 case JsonSchemaStringFormat.Date:
-                    if (!DateTime.TryParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
+                    if (!DateTime.TryParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                         errors.Add((name, Errors.JsonSchema.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Date)));
                     break;
 

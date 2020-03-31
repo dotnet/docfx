@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -12,7 +11,10 @@ namespace Microsoft.Docs.Build
     internal class TableOfContentsMetadata
     {
         [JsonProperty(PropertyName = "monikerRange")]
-        public SourceInfo<string?> MonikerRange { get; set; }
+        public SourceInfo<string?> MonikerRange { get; private set; }
+
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public SourceInfo<string?>[]? Monikers { get; private set; }
 
         public string? PdfAbsolutePath { get; set; }
 
@@ -20,5 +22,7 @@ namespace Microsoft.Docs.Build
         public JObject ExtensionData { get; } = new JObject();
 
         public bool ShouldSerializeMonikerRange() => false;
+
+        public bool ShouldSerializeMonikers() => false;
     }
 }

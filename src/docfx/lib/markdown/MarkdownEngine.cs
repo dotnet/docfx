@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
             return (link, display);
         }
 
-        private IReadOnlyList<string> GetMonikerRange(SourceInfo<string> monikerRange)
+        private IReadOnlyList<string> GetMonikerRange(SourceInfo<string?> monikerRange)
         {
             var status = t_status.Value!.Peek();
             var (error, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);

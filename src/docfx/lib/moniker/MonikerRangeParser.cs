@@ -17,14 +17,15 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = monikersEvaluator;
         }
 
-        public string[] Parse(SourceInfo<string> rangeString)
+        public string[] Parse(SourceInfo<string?> rangeString)
         {
-            if (string.IsNullOrWhiteSpace(rangeString))
+            var key = rangeString.Value;
+            if (string.IsNullOrWhiteSpace(key))
             {
                 return Array.Empty<string>();
             }
 
-            return _cache.GetOrAdd(rangeString, value =>
+            return _cache.GetOrAdd(key, value =>
             {
                 try
                 {
