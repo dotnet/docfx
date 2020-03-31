@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0034" />
-    <PackageReference Include="Fody" Version="6.0.5" />
+    <PackageReference Include="Fody" Version="6.1.1" />
     <PackageReference Include="ModuleInit.Fody" Version="2.1.0" />
   </ItemGroup>
 
