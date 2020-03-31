@@ -133,11 +133,6 @@ namespace Microsoft.Docs.Build
         {
             var (errors,_) = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString));
             Assert.Contains(Errors.Versioning.MonikerRangeInvalid(null, errorMessage), errors, new ErrorEqualityComparer());
-            //Assert.Contains(errors, error =>
-            //{
-            //    Assert.Equal("moniker-range-invalid", error.Code);
-            //    Assert.Equal(errorMessage, error.Message);
-            //});
         }
 
         [Fact]
