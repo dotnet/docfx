@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal interface IExpression
     {
-        (List<Error>, IEnumerable<Moniker>) Accept(EvaluatorWithMonikersVisitor visitor);
+        (List<Error>, IEnumerable<Moniker>) Accept(EvaluatorWithMonikersVisitor visitor, SourceInfo<string?> monikerRange);
     }
 }

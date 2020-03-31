@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, (string productName, int orderInProduct)> MonikerOrder { get; }
 
-        public (List<Error>, IEnumerable<Moniker>) Visit(ComparatorExpression expression)
+        public (List<Error>, IEnumerable<Moniker>) Visit(ComparatorExpression expression, SourceInfo<string?> monikerRange)
         {
             var errors = new List<Error>();
             var value = expression.Operand.Value;
@@ -33,7 +33,8 @@ namespace Microsoft.Docs.Build
 
             if (!MonikerOrder.TryGetValue(value, out var moniker))
             {
-                errors.Add(Errors.Versioning.MonikerRangeInvalid(expression.Operand, $"Invalid moniker range: Moniker {expression.Operand}"));
+                errors.Add(Errors.Versioning.MonikerRangeInvalid(monikerRange, $"Invalid moniker range '{monikerRange}': Moniker '{expression.Operand}' is not defined"));
+                return (errors, Array.Empty<Moniker>());
             }
 
             return expression.Operator switch
@@ -47,12 +48,12 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public (List<Error>, IEnumerable<Moniker>) Visit(LogicExpression expression)
+        public (List<Error>, IEnumerable<Moniker>) Visit(LogicExpression expression, SourceInfo<string?> monikerRange)
         {
             var errors = new List<Error>();
-            var (leftError, left) = expression.Left.Accept(this);
+            var (leftError, left) = expression.Left.Accept(this, monikerRange);
             errors.AddRange(leftError);
-            var (rightError, right) = expression.Right.Accept(this);
+            var (rightError, right) = expression.Right.Accept(this, monikerRange);
             errors.AddRange(rightError);
 
             return expression.OperatorType switch

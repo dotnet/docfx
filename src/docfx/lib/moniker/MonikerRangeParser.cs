@@ -29,11 +29,11 @@ namespace Microsoft.Docs.Build
                 {
                     if (!_monikersEvaluator.MonikerMap.ContainsKey(key))
                     {
-                        errors.Add(Errors.Versioning.MonikerRangeInvalid(moniker, $"Invalid moniker range: Moniker {key}"));
+                        errors.Add(Errors.Versioning.MonikerRangeInvalid(moniker, $"Invalid monikers: Moniker '{key}' is not defined"));
                     }
                     else
                     {
-                        result.Add(moniker);
+                        result.Add(key);
                     }
                 }
             }
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 {
                     return (errors, Array.Empty<string>());
                 }
-                var (evaluateErrors, monikers) = result.Accept(_monikersEvaluator);
+                var (evaluateErrors, monikers) = result.Accept(_monikersEvaluator, rangeString);
                 errors.AddRange(evaluateErrors);
                 return (errors, monikers
                     .Select(x => x.MonikerName.ToLowerInvariant())

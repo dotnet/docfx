@@ -17,9 +17,9 @@ namespace Microsoft.Docs.Build
             Operand = operand;
         }
 
-        public (List<Error>, IEnumerable<Moniker>) Accept(EvaluatorWithMonikersVisitor visitor)
+        public (List<Error>, IEnumerable<Moniker>) Accept(EvaluatorWithMonikersVisitor visitor, SourceInfo<string?> monikerRange)
         {
-            return visitor.Visit(this);
+            return visitor.Visit(this, monikerRange);
         }
     }
 }
