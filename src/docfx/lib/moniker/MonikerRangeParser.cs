@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public string[] Parse(SourceInfo<string?> rangeString)
         {
-            var key = (string?)rangeString;
+            var key = rangeString.Value;
             if (string.IsNullOrWhiteSpace(key))
             {
                 return Array.Empty<string>();
