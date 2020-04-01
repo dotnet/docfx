@@ -63,17 +63,6 @@ namespace Microsoft.Docs.Build
             return repository is null ? null : TryRemoveLocale(repository.Remote, out _, out var remoteLocale) ? remoteLocale : null;
         }
 
-        public static string AppendLocale(string name, string locale)
-        {
-            var newLocale = $".{locale}";
-            if (name.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
-            {
-                return name;
-            }
-
-            return $"{name}{newLocale}";
-        }
-
         public static bool TryGetContributionBranch(string branch, [NotNullWhen(true)] out string? contributionBranch)
         {
             if (branch.EndsWith("-sxs"))
@@ -86,17 +75,17 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static PackagePath GetLocalizedTheme(PackagePath theme, BuildOptions buildOptions)
+        public static string GetLocalizedRepository(string repositoryUrl, string locale)
         {
-            if (!buildOptions.IsLocalizedBuild)
-            {
-                return theme;
-            }
+            return AppendLocale(repositoryUrl, locale);
+        }
 
+        public static PackagePath GetLocalizedTheme(PackagePath theme, string locale)
+        {
             return theme.Type switch
             {
-                PackageType.Folder => new PackagePath(AppendLocale(theme.Path, buildOptions.Locale)),
-                PackageType.Git => new PackagePath(AppendLocale(theme.Url, buildOptions.Locale), theme.Branch),
+                PackageType.Folder => new PackagePath(AppendLocale(theme.Path, locale)),
+                PackageType.Git => new PackagePath(AppendLocale(theme.Url, locale), theme.Branch),
                 _ => theme,
             };
         }
@@ -166,6 +155,17 @@ namespace Microsoft.Docs.Build
             nameWithoutLocale = null;
             locale = null;
             return false;
+        }
+
+        private static string AppendLocale(string name, string locale)
+        {
+            var newLocale = $".{locale}";
+            if (name.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
+            {
+                return name;
+            }
+
+            return $"{name}{newLocale}";
         }
     }
 }

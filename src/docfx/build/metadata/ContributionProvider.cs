@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
 
             if (_buildOptions.IsLocalizedBuild)
             {
-                repo = LocalizationUtility.AppendLocale(repo, _buildOptions.Locale);
+                repo = LocalizationUtility.GetLocalizedRepository(repo, _buildOptions.Locale);
             }
 
             var (gitUrlTemplate, _) = GetContentGitUrlTemplate(repo, pathToRepo);

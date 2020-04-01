@@ -14,11 +14,12 @@ namespace Microsoft.Docs.Build
     {
         private readonly bool _legacy;
         private readonly object _outputLock = new object();
-        private readonly Func<Config?> _config;
 
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
         private readonly ConcurrentHashSet<FilePath> _errorFiles = new ConcurrentHashSet<FilePath>();
-        private readonly Lazy<TextWriter> _output;
+
+        private TextWriter _output;
+        private Config? _config;
 
         private int _errorCount;
         private int _warningCount;
@@ -34,30 +35,22 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> ErrorFiles => _errorFiles;
 
-        public ErrorLog(string docsetPath, string? outputPath, Func<Config?> config, bool legacy = false)
+        public ErrorLog(string? outputPath, bool legacy = false)
+        {
+            _legacy = legacy;
+            _output = outputPath is null ? TextWriter.Null : CreateOutput(outputPath);
+        }
+
+        public void Configure(Config config, string outputPath)
         {
             _config = config;
-            _legacy = legacy;
-            _output = new Lazy<TextWriter>(() =>
+
+            lock (_outputLock)
             {
-                if (string.IsNullOrEmpty(outputPath))
-                {
-                    var conf = _config();
-                    if (conf == null)
-                    {
-                        return TextWriter.Null;
-                    }
-
-                    outputPath = Path.Combine(docsetPath, conf.OutputPath);
-                }
-
-                // add default build log file output path
-                var outputFilePath = Path.GetFullPath(Path.Combine(outputPath, ".errors.log"));
-
-                Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
-
-                return File.AppendText(outputFilePath);
-            });
+                _output.Flush();
+                _output.Dispose();
+                _output = CreateOutput(outputPath);
+            }
         }
 
         public bool Write(IEnumerable<Error> errors)
@@ -89,8 +82,7 @@ namespace Microsoft.Docs.Build
 
         public bool Write(Error error, ErrorLevel? overwriteLevel = null)
         {
-            var config = _config();
-
+            var config = _config;
             if (config != null && config.CustomErrors.TryGetValue(error.Code, out var customError))
             {
                 error = error.WithCustomError(customError);
@@ -173,10 +165,7 @@ namespace Microsoft.Docs.Build
         {
             lock (_outputLock)
             {
-                if (_output != null && _output.IsValueCreated)
-                {
-                    _output.Value.Dispose();
-                }
+                _output.Dispose();
             }
         }
 
@@ -194,11 +183,21 @@ namespace Microsoft.Docs.Build
                 var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
                 lock (_outputLock)
                 {
-                    _output.Value.WriteLine(line);
+                    _output.WriteLine(line);
                 }
             }
 
             PrintError(error, level);
+        }
+
+        private TextWriter CreateOutput(string outputPath)
+        {
+            // add default build log file output path
+            var outputFilePath = Path.GetFullPath(Path.Combine(outputPath, ".errors.log"));
+
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+
+            return File.AppendText(outputFilePath);
         }
 
         private int GetMaxCount(Config? config, ErrorLevel level)
@@ -208,17 +207,13 @@ namespace Microsoft.Docs.Build
                 return int.MaxValue;
             }
 
-            switch (level)
+            return level switch
             {
-                case ErrorLevel.Error:
-                    return config.MaxErrors;
-                case ErrorLevel.Warning:
-                    return config.MaxWarnings;
-                case ErrorLevel.Suggestion:
-                    return config.MaxSuggestions;
-                default:
-                    return int.MaxValue;
-            }
+                ErrorLevel.Error => config.MaxErrors,
+                ErrorLevel.Warning => config.MaxWarnings,
+                ErrorLevel.Suggestion => config.MaxSuggestions,
+                _ => int.MaxValue,
+            };
         }
 
         private bool ExceedMaxErrors(Config? config, ErrorLevel level)
@@ -228,17 +223,13 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            switch (level)
+            return level switch
             {
-                case ErrorLevel.Error:
-                    return Volatile.Read(ref _errorCount) >= config.MaxErrors;
-                case ErrorLevel.Warning:
-                    return Volatile.Read(ref _warningCount) >= config.MaxWarnings;
-                case ErrorLevel.Suggestion:
-                    return Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions;
-                default:
-                    return false;
-            }
+                ErrorLevel.Error => Volatile.Read(ref _errorCount) >= config.MaxErrors,
+                ErrorLevel.Warning => Volatile.Read(ref _warningCount) >= config.MaxWarnings,
+                ErrorLevel.Suggestion => Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions,
+                _ => false,
+            };
         }
 
         private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level)
@@ -248,32 +239,24 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            switch (level)
+            return level switch
             {
-                case ErrorLevel.Error:
-                    return Interlocked.Increment(ref _errorCount) > config.MaxErrors;
-                case ErrorLevel.Warning:
-                    return Interlocked.Increment(ref _warningCount) > config.MaxWarnings;
-                case ErrorLevel.Suggestion:
-                    return Interlocked.Increment(ref _suggestionCount) > config.MaxSuggestions;
-                default:
-                    return false;
-            }
+                ErrorLevel.Error => Interlocked.Increment(ref _errorCount) > config.MaxErrors,
+                ErrorLevel.Warning => Interlocked.Increment(ref _warningCount) > config.MaxWarnings,
+                ErrorLevel.Suggestion => Interlocked.Increment(ref _suggestionCount) > config.MaxSuggestions,
+                _ => false,
+            };
         }
 
         private static ConsoleColor GetColor(ErrorLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case ErrorLevel.Error:
-                    return ConsoleColor.Red;
-                case ErrorLevel.Warning:
-                    return ConsoleColor.Yellow;
-                case ErrorLevel.Suggestion:
-                    return ConsoleColor.Magenta;
-                default:
-                    return ConsoleColor.Cyan;
-            }
+                ErrorLevel.Error => ConsoleColor.Red,
+                ErrorLevel.Warning => ConsoleColor.Yellow,
+                ErrorLevel.Suggestion => ConsoleColor.Magenta,
+                _ => ConsoleColor.Cyan,
+            };
         }
 
         private static string LegacyReport(Error error, ErrorLevel level)

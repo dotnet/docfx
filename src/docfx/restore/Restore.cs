@@ -33,11 +33,9 @@ namespace Microsoft.Docs.Build
 
         public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
-            Config? logConfig = null;
-
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
-            using (var errorLog = new ErrorLog(docsetPath, outputPath, () => logConfig, options.Legacy))
+            using (var errorLog = new ErrorLog(outputPath, options.Legacy))
             using (Progress.Start("Restore dependencies"))
             {
                 var stopwatch = Stopwatch.StartNew();
@@ -50,7 +48,7 @@ namespace Microsoft.Docs.Build
                     if (errorLog.Write(errors))
                         return true;
 
-                    logConfig = config;
+                    errorLog.Configure(config, buildOptions.OutputPath);
                     using (packageResolver)
                     {
                         // download dependencies to disk
@@ -98,8 +96,8 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                var theme = LocalizationUtility.GetLocalizedTheme(config.Template, buildOptions);
-                yield return (theme, PackageFetchOptions.DepthOne);
+                var template = buildOptions.IsLocalizedBuild ? LocalizationUtility.GetLocalizedTheme(config.Template, buildOptions.Locale) : config.Template;
+                yield return (template, PackageFetchOptions.DepthOne);
             }
         }
     }

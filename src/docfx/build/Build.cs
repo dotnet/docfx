@@ -39,9 +39,7 @@ namespace Microsoft.Docs.Build
 
         private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
-            Config? logConfig = null;
-
-            using var errorLog = new ErrorLog(docsetPath, outputPath, () => logConfig, options.Legacy);
+            using var errorLog = new ErrorLog(outputPath, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
 
             try
@@ -51,7 +49,7 @@ namespace Microsoft.Docs.Build
                 if (errorLog.Write(errors))
                     return true;
 
-                logConfig = config;
+                errorLog.Configure(config, buildOptions.OutputPath);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
                 Run(context);
                 return false;
@@ -97,7 +95,7 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel());
                 context.Output.WriteJson(".links.json", fileLinkMap);
 
-                if (context.Config.Legacy && context.Config.OutputJson)
+                if (context.Config.OutputJson)
                 {
                     // TODO: decouple files and dependencies from legacy.
                     Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap);
