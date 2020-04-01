@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class CommitBuildTimeProvider
     {
-        private readonly DateTime _buildTime = DateTime.UtcNow;
+        private readonly DateTime _buildTime;
         private readonly Repository _repo;
         private readonly Config _config;
         private readonly string _commitBuildTimePath;
@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
             _repo = repo;
             _config = config;
             _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Remote, repo.Branch);
+            _buildTime = config.BuildTime.HasValue? config.BuildTime.Value.ToUniversalTime() : DateTime.UtcNow;
 
             var exists = File.Exists(_commitBuildTimePath);
             Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
