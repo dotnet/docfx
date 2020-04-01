@@ -129,6 +129,8 @@ namespace Microsoft.Docs.Build
         [InlineData(">netcore<-1.0 || ||", "Expect a comparator set, but got ` ||`")]
         [InlineData(">netcore<-1.0 || <", "Expect a moniker string, but got ``")]
         [InlineData(">*", "Moniker `*` is not defined")]
+        [InlineData("* || *", "Expect a comparator set, but got `* || *`")]
+        [InlineData("* && >netcore-1.0", "Expect a comparator set, but got `* && >netcore-1.0`")]
         public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
             var exception = Assert.Throws<DocfxException>(() => _monikerRangeParser.Parse(new SourceInfo<string>(rangeString)));
