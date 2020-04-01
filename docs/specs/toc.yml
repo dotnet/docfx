@@ -895,9 +895,9 @@ outputs:
   docs/toc.json:
   docs/f1/toc.json:
   .errors.log: |
-    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
-    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.yml",7,3]
-    ["warning","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
+    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/TOC.yml",5,8]
+    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/TOC.yml",7,3]
+    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/f1/TOC.md",1,1]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
@@ -1002,7 +1002,7 @@ outputs:
   .errors.log: |
     ["error","invalid-toc-level","The toc level can't be skipped from 0 to 1","TOC.md",2,1]
 ---
-# Missing TOC head name
+# Missing TOC heading name
 inputs:
   docfx.yml:
   docs/TOC.md: |
@@ -1011,7 +1011,7 @@ inputs:
 outputs:
   docs/toc.json:
   .errors.log: |
-    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.md",2,1]
+    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/TOC.md",2,1]
 ---
 # Multiple leaf inlines in toc title
 inputs:
