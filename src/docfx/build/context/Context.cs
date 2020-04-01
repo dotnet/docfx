@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
 
             MarkdownEngine = new MarkdownEngine(Config, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
             TableOfContentsLoader = new TableOfContentsLoader(Input, LinkResolver, XrefResolver, new TableOfContentsParser(MarkdownEngine), MonikerProvider, DependencyMapBuilder);
-            TocMap = TableOfContentsMap.Create(this);
+            TocMap = new TableOfContentsMap(ErrorLog, BuildScope, TableOfContentsLoader, DocumentProvider);
         }
 
         public void Dispose()
