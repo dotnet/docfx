@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
-                    context.BuildScope.Files,
+                    context.BuildScope.GetFiles(ContentType.Page),
                     file => Load(context, builder, file),
                     Progress.Update);
             }

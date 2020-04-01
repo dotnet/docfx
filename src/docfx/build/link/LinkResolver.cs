@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                     }
 
                     // resolve file
-                    var lookupFallbackCommits = inclusion || _documentProvider.GetContentType(path) == ContentType.Resource;
+                    var lookupFallbackCommits = inclusion || _buildScope.GetContentType(path) == ContentType.Resource;
                     var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,

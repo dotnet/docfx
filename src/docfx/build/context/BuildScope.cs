@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -13,11 +14,13 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly (Func<string, bool>, FileMappingConfig)[] _globs;
         private readonly Func<string, bool>[] _resourceGlobs;
+        private readonly HashSet<string> _configReferences;
 
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
         private readonly HashSet<PathString> _fileNames = new HashSet<PathString>();
+        private readonly ConcurrentDictionary<FilePath, ContentType> _files = new ConcurrentDictionary<FilePath, ContentType>();
 
         private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
                    = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)>();
@@ -25,48 +28,78 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
         /// </summary>
-        public HashSet<FilePath> Files { get; }
+        public IEnumerable<FilePath> Files => _files.Keys;
 
         public BuildScope(Config config, Input input, BuildOptions buildOptions)
         {
             _config = config;
             _globs = CreateGlobs(config);
             _resourceGlobs = CreateResourceGlob(config);
+            _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
 
             using (Progress.Start("Globing files"))
             {
                 var (fileNames, allFiles) = ListFiles(config, input, buildOptions);
 
-                var files = new ListBuilder<FilePath>();
                 ParallelUtility.ForEach(allFiles, file =>
                 {
                     if (Glob(file.Path))
                     {
-                        files.Add(file);
+                        _files.TryAdd(file, GetContentType(file));
                     }
                 });
 
-                Files = files.ToList().ToHashSet();
                 _fileNames = fileNames;
             }
         }
 
-        public bool IsResource(string path)
+        public IEnumerable<FilePath> GetFiles(ContentType contentType)
         {
+            return from pair in _files where pair.Value == contentType select pair.Key;
+        }
+
+        public ContentType GetContentType(FilePath path)
+        {
+            return path.Origin == FileOrigin.Redirection ? ContentType.Redirection : GetContentType(path.Path);
+        }
+
+        public ContentType GetContentType(string path)
+        {
+            if (_configReferences.Contains(path))
+            {
+                return ContentType.Unknown;
+            }
+
+            var name = Path.GetFileNameWithoutExtension(path);
+            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
+            {
+                return ContentType.TableOfContents;
+            }
+            if (name.Equals("docfx", PathUtility.PathComparison))
+            {
+                return ContentType.Unknown;
+            }
+            if (name.Equals("redirections", PathUtility.PathComparison))
+            {
+                return ContentType.Unknown;
+            }
+
             foreach (var glob in _resourceGlobs)
             {
                 if (glob(path))
                 {
-                    return true;
+                    return ContentType.Resource;
                 }
             }
+
             if (!path.EndsWith(".md", PathUtility.PathComparison) &&
                 !path.EndsWith(".json", PathUtility.PathComparison) &&
                 !path.EndsWith(".yml", PathUtility.PathComparison))
             {
-                return true;
+                return ContentType.Resource;
             }
-            return false;
+
+            return ContentType.Page;
         }
 
         public bool Glob(PathString path)
@@ -99,7 +132,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Pages outside build scope, don't build the file, leave href as is
-            if ((filePath.ContentType == ContentType.Page || filePath.ContentType == ContentType.TableOfContents) && !Files.Contains(filePath.FilePath))
+            if ((filePath.ContentType == ContentType.Page || filePath.ContentType == ContentType.TableOfContents) && !_files.ContainsKey(filePath.FilePath))
             {
                 return true;
             }
