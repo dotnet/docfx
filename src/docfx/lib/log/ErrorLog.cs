@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
         private readonly ConcurrentHashSet<FilePath> _errorFiles = new ConcurrentHashSet<FilePath>();
 
-        private TextWriter _output;
+        private Lazy<TextWriter> _output;
         private Config? _config;
 
         private int _errorCount;
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         public ErrorLog(string? outputPath, bool legacy = false)
         {
             _legacy = legacy;
-            _output = outputPath is null ? TextWriter.Null : CreateOutput(outputPath);
+            _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
         public void Configure(Config config, string outputPath)
@@ -47,9 +47,12 @@ namespace Microsoft.Docs.Build
 
             lock (_outputLock)
             {
-                _output.Flush();
-                _output.Dispose();
-                _output = CreateOutput(outputPath);
+                if (_output.IsValueCreated)
+                {
+                    _output.Value.Flush();
+                    _output.Value.Dispose();
+                }
+                _output = new Lazy<TextWriter>(() => CreateOutput(outputPath));
             }
         }
 
@@ -165,7 +168,10 @@ namespace Microsoft.Docs.Build
         {
             lock (_outputLock)
             {
-                _output.Dispose();
+                if (_output.IsValueCreated)
+                {
+                    _output.Value.Dispose();
+                }
             }
         }
 
@@ -183,7 +189,7 @@ namespace Microsoft.Docs.Build
                 var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
                 lock (_outputLock)
                 {
-                    _output.WriteLine(line);
+                    _output.Value.WriteLine(line);
                 }
             }
 

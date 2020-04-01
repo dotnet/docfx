@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
         public void DedupErrors()
         {
             using var errorLog = new ErrorLog("DedupErrors");
+            errorLog.Configure(new Config(), ".");
             errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
             errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
             errorLog.Write(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
@@ -24,6 +25,7 @@ namespace Microsoft.Docs.Build
         {
             var maxErrors = 1000;
             using var errorLog = new ErrorLog("MaxErrors");
+            errorLog.Configure(new Config(), ".");
             for (var i = 0; i < maxErrors; i++)
             {
                 errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
