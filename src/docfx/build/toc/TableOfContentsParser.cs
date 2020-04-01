@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,16 +11,56 @@ using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class TableOfContentsMarkup
+    internal class TableOfContentsParser
     {
-        public static (List<Error> errors, TableOfContentsNode node) Parse(MarkdownEngine markdownEngine, string tocContent, FilePath file)
+        private readonly MarkdownEngine _markdownEngine;
+
+        public TableOfContentsParser(MarkdownEngine markdownEngine)
         {
-            var errors = new List<Error>();
+            _markdownEngine = markdownEngine;
+        }
+
+        public TableOfContentsNode Parse(string content, FilePath file, List<Error> errors)
+        {
+            return file.Format switch
+            {
+                FileFormat.Yaml => Deserialize(YamlUtility.Parse(content, file), errors),
+                FileFormat.Json => Deserialize(JsonUtility.Parse(content, file), errors),
+                FileFormat.Markdown => ParseMarkdown(content, file, errors),
+                _ => throw new NotSupportedException($"'{file}' is an unknown TOC file"),
+            };
+        }
+
+        private static TableOfContentsNode Deserialize((List<Error>, JToken) input, List<Error> errors)
+        {
+            var (inputErrors, token) = input;
+            errors.AddRange(inputErrors);
+
+            if (token is JArray tocArray)
+            {
+                // toc model
+                var (toObjectErrors, items) = JsonUtility.ToObject<List<TableOfContentsNode>>(tocArray);
+                errors.AddRange(toObjectErrors);
+                return new TableOfContentsNode { Items = items };
+            }
+            else if (token is JObject tocObject)
+            {
+                // toc root model
+                var (loadErrors, result) = JsonUtility.ToObject<TableOfContentsNode>(tocObject);
+                errors.AddRange(loadErrors);
+                return result;
+            }
+            return new TableOfContentsNode();
+        }
+
+        private TableOfContentsNode ParseMarkdown(string content, FilePath file, List<Error> errors)
+        {
             var headingBlocks = new List<HeadingBlock>();
-            var (markupErrors, ast) = markdownEngine.Parse(tocContent, MarkdownPipelineType.TocMarkdown);
+            var (markupErrors, ast) = _markdownEngine.Parse(content, MarkdownPipelineType.TocMarkdown);
             errors.AddRange(markupErrors);
 
             foreach (var block in ast)
@@ -38,8 +79,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            using var reader = new StringReader(tocContent);
-            return (errors, new TableOfContentsNode { Items = BuildTree(errors, file, headingBlocks) });
+            using var reader = new StringReader(content);
+            return new TableOfContentsNode { Items = BuildTree(errors, file, headingBlocks) };
         }
 
         private static List<TableOfContentsNode> BuildTree(List<Error> errors, FilePath filePath, List<HeadingBlock> blocks)
