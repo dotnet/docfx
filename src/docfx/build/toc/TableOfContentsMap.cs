@@ -149,19 +149,12 @@ namespace Microsoft.Docs.Build
                     file => LoadToc(file, tocReferences),
                     Progress.Update);
 
-                var tocToTocs = new Dictionary<Document, Document[]>();
                 var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
 
-                foreach (var (toc, (docs, tocs)) in tocReferences)
-                {
-                    if (includedTocs.Contains(toc))
-                    {
-                        // TOC been included by other TOCs will be ignored
-                        continue;
-                    }
-
-                    tocToTocs.Add(toc, tocs.Distinct().ToArray());
-                }
+                var tocToTocs = (
+                    from item in tocReferences
+                    where !includedTocs.Contains(item.Key)
+                    select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
 
                 var docToTocs = (
                     from item in tocReferences
