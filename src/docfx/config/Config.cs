@@ -280,9 +280,9 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
-        /// Identify if the build docset is reference
+        /// Determines if validate the moniker confguration.
         /// </summary>
-        public bool IsReference { get; private set; }
+        public bool SkipMonikerValidation { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

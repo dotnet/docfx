@@ -1778,7 +1778,7 @@ outputs:
 # Should be OK for reference versioning docset to skip moniker range in config file
 inputs:
   docfx.yml: |
-    isReference: true
+    skipMonikerValidation: true
     monikerDefinition: monikerDefinition.json
   docs/a.yml: |
     ### YamlMime:TestData

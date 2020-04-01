@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (!_config.IsReference && configMonikerRange.Value is null)
+            if (!_config.SkipMonikerValidation && configMonikerRange.Value is null)
             {
                 return (Errors.Versioning.MonikerRangeUndefined(rangeString), Array.Empty<string>());
             }
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 // For conceptual docet,
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (!_config.IsReference && configMonikerRange.Value is null)
+                if (!_config.SkipMonikerValidation && configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
                     return (errors, configMonikers);
@@ -110,14 +110,14 @@ namespace Microsoft.Docs.Build
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
-                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.IsReference);
+                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
                 errors.AddIfNotNull(intersectionError);
                 return (errors, intersection);
             }
             else if (metadata.Monikers != null)
             {
                 var fileMonikers = metadata.Monikers.SelectMany(x => _rangeParser.Parse(x)).ToArray();
-                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.IsReference);
+                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
                 errors.AddIfNotNull(intersectionError);
                 return (errors, intersection);
             }

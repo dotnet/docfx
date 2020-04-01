@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 xref = xrefMaps,
-                isReference = docset.use_template,
+                skipMonikerValidation = docset.use_template,
             });
         }
 
