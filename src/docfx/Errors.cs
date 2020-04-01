@@ -371,8 +371,8 @@ namespace Microsoft.Docs.Build
             /// In markdown-format toc, defined an empty node(# ) with no content.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MissingTocHead(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "missing-toc-heading", $"The toc title(for .md files) or name(for .yml files name property of each node) is missing", source);
+            public static Error MissingTocName(SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "missing-toc-name", $"The name(for .yml files name property of each node) or toc title(for .md files) is missing", source);
 
             /// <summary>
             /// In markdown-format toc, used wrong toc syntax.

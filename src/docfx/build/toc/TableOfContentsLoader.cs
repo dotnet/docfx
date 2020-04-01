@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 // todo: how to do required validation in strong model
                 if (string.IsNullOrEmpty(newItem.Name))
                 {
-                    errors.Add(Errors.TableOfContents.MissingTocHead(newItem.Name.Source ?? node.Source));
+                    errors.Add(Errors.TableOfContents.MissingTocName(newItem.Name.Source ?? node.Source));
                 }
             }
 

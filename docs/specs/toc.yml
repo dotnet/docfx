@@ -895,9 +895,9 @@ outputs:
   docs/toc.json:
   docs/f1/toc.json:
   .errors.log: |
-    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/TOC.yml",5,8]
-    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/TOC.yml",7,3]
-    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/f1/TOC.md",1,1]
+    ["warning","missing-toc-name","The name(for .yml files name property of each node) or toc title(for .md files) is missing","docs/TOC.yml",5,8]
+    ["warning","missing-toc-name","The name(for .yml files name property of each node) or toc title(for .md files) is missing","docs/TOC.yml",7,3]
+    ["warning","missing-toc-name","The name(for .yml files name property of each node) or toc title(for .md files) is missing","docs/f1/TOC.md",1,1]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
@@ -1011,7 +1011,7 @@ inputs:
 outputs:
   docs/toc.json:
   .errors.log: |
-    ["warning","missing-toc-heading","The toc title(for .md files) or name(for .yml files name property of each node) is missing","docs/TOC.md",2,1]
+    ["warning","missing-toc-name","The name(for .yml files name property of each node) or toc title(for .md files) is missing","docs/TOC.md",2,1]
 ---
 # Multiple leaf inlines in toc title
 inputs:
