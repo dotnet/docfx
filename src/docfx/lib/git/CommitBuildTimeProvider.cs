@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             _repo = repo;
             _config = config;
             _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Remote, repo.Branch);
-            _buildTime = config.BuildTime.HasValue? config.BuildTime.Value.ToUniversalTime() : DateTime.UtcNow;
+            _buildTime = config.BuildTime ?? DateTime.UtcNow;
 
             var exists = File.Exists(_commitBuildTimePath);
             Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
