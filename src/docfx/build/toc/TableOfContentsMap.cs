@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -22,6 +21,8 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<Document, List<Document>> _tocReferences;
 
+        public IEnumerable<FilePath> Files => _tocs.Concat(_experimentalTocs).Where(ShouldBuildFile).Select(toc => toc.FilePath);
+
         public TableOfContentsMap(
             List<Document> tocs,
             List<Document> experimentalTocs,
@@ -33,18 +34,6 @@ namespace Microsoft.Docs.Build
             _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
             _tocReferences = tocReferences ?? throw new ArgumentNullException(nameof(tocReferences));
         }
-
-        public bool TryGetTocReferences(Document toc, [NotNullWhen(true)] out List<Document>? tocs)
-        {
-            return _tocReferences.TryGetValue(toc, out tocs);
-        }
-
-        /// <summary>
-        /// Contains toc or not
-        /// </summary>
-        /// <param name="toc">The toc to build</param>
-        /// <returns>Whether contains toc or not</returns>
-        public bool Contains(Document toc) => _tocs.Contains(toc) || _experimentalTocs.Contains(toc);
 
         /// <summary>
         /// Find the toc relative path to document
@@ -76,7 +65,7 @@ namespace Microsoft.Docs.Build
             {
                 var builder = new TableOfContentsMapBuilder();
                 ParallelUtility.ForEach(
-                    context.BuildScope.Files,
+                    context.BuildScope.GetFiles(ContentType.TableOfContents),
                     file => BuildTocMap(context, file, builder),
                     Progress.Update);
 
@@ -140,6 +129,22 @@ namespace Microsoft.Docs.Build
 
             subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
             return (subDirectoryCount, parentDirectoryCount);
+        }
+
+        private bool ShouldBuildFile(Document file)
+        {
+            if (file.FilePath.Origin != FileOrigin.Fallback)
+            {
+                return true;
+            }
+
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            if (_tocReferences.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static void BuildTocMap(Context context, FilePath path, TableOfContentsMapBuilder tocMapBuilder)

@@ -10,8 +10,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal sealed class Context : IDisposable
     {
-        private readonly Lazy<TableOfContentsMap> _tocMap;
-
         public Config Config { get; }
 
         public BuildOptions BuildOptions { get; }
@@ -68,12 +66,11 @@ namespace Microsoft.Docs.Build
 
         public ContentValidator ContentValidator { get; }
 
-        public TableOfContentsMap TocMap => _tocMap.Value;
+        public TableOfContentsMap TocMap { get; }
 
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
         {
             DependencyMapBuilder = new DependencyMapBuilder();
-            _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<FilePath>();
 
             Config = config;
@@ -116,8 +113,8 @@ namespace Microsoft.Docs.Build
                 FileLinkMapBuilder);
 
             MarkdownEngine = new MarkdownEngine(Config, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
-
             TableOfContentsLoader = new TableOfContentsLoader(Input, LinkResolver, XrefResolver, new TableOfContentsParser(MarkdownEngine), MonikerProvider, DependencyMapBuilder);
+            TocMap = TableOfContentsMap.Create(this);
         }
 
         public void Dispose()

@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
         private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
-        private readonly HashSet<string> _configReferences;
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
@@ -35,7 +34,6 @@ namespace Microsoft.Docs.Build
 
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
-            _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
             _documentIdRules = documentIdConfig.Select(item => (item.Key, item.Value)).OrderByDescending(item => item.Key).ToArray();
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
@@ -43,35 +41,6 @@ namespace Microsoft.Docs.Build
         public Document GetDocument(FilePath path)
         {
             return _documents.GetOrAdd(path, GetDocumentCore);
-        }
-
-        public ContentType GetContentType(string path)
-        {
-            if (_configReferences.Contains(path))
-            {
-                return ContentType.Unknown;
-            }
-
-            if (_buildScope.IsResource(path))
-            {
-                return ContentType.Resource;
-            }
-
-            var name = Path.GetFileNameWithoutExtension(path);
-            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
-            {
-                return ContentType.TableOfContents;
-            }
-            if (name.Equals("docfx", PathUtility.PathComparison))
-            {
-                return ContentType.Unknown;
-            }
-            if (name.Equals("redirections", PathUtility.PathComparison))
-            {
-                return ContentType.Unknown;
-            }
-
-            return ContentType.Page;
         }
 
         public string GetOutputPath(FilePath path, string[] monikers)
@@ -138,8 +107,7 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocumentCore(FilePath path)
         {
-            var contentType = path.Origin == FileOrigin.Redirection ? ContentType.Redirection : GetContentType(path.Path);
-
+            var contentType = _buildScope.GetContentType(path);
             var mime = contentType == ContentType.Page ? ReadMimeFromFile(_input, path) : default;
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,7 +69,10 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
-            context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
+            context.BuildQueue.Enqueue(context.RedirectionProvider.Files);
+            context.BuildQueue.Enqueue(context.TocMap.Files);
+            context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page));
+            context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource));
 
             using (Progress.Start("Building files"))
             {
@@ -112,30 +116,17 @@ namespace Microsoft.Docs.Build
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
-            if (!ShouldBuildFile(context, file))
-            {
-                return;
-            }
 
             try
             {
-                var errors = Enumerable.Empty<Error>();
-                switch (file.ContentType)
+                var errors = file.ContentType switch
                 {
-                    case ContentType.Resource:
-                        errors = BuildResource.Build(context, file);
-                        break;
-                    case ContentType.Page:
-                        errors = BuildPage.Build(context, file);
-                        break;
-                    case ContentType.TableOfContents:
-                        // TODO: improve error message for toc monikers overlap
-                        errors = BuildTableOfContents.Build(context, file);
-                        break;
-                    case ContentType.Redirection:
-                        errors = BuildRedirection.Build(context, file);
-                        break;
-                }
+                    ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
+                    ContentType.Resource when path.Origin != FileOrigin.Fallback => BuildResource.Build(context, file),
+                    ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
+                    ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
+                    _ => new List<Error>(),
+                };
 
                 context.ErrorLog.Write(errors);
                 Telemetry.TrackBuildFileTypeCount(file);
@@ -149,24 +140,6 @@ namespace Microsoft.Docs.Build
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
             }
-        }
-
-        private static bool ShouldBuildFile(Context context, Document file)
-        {
-            if (file.ContentType == ContentType.TableOfContents)
-            {
-                if (!context.TocMap.Contains(file))
-                {
-                    return false;
-                }
-
-                // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                return file.FilePath.Origin != FileOrigin.Fallback
-                    || (context.TocMap.TryGetTocReferences(file, out var tocReferences)
-                        && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
-            }
-
-            return file.FilePath.Origin != FileOrigin.Fallback;
         }
     }
 }

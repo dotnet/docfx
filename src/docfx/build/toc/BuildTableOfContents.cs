@@ -23,13 +23,14 @@ namespace Microsoft.Docs.Build
 
             var model = new TableOfContentsModel(node.Items.ToArray(), tocMetadata);
 
-            // enable pdf
+            // TODO: improve error message for toc monikers overlap
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
             var monikerGroup = MonikerUtility.GetGroup(monikers);
 
+            // enable pdf
             if (context.Config.OutputPdf)
             {
                 model.Metadata.PdfAbsolutePath = "/" +
