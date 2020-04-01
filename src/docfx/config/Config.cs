@@ -274,6 +274,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
 
+        /// <summary>
+        /// Determines if validate the moniker confguration.
+        /// </summary>
+        public bool SkipMonikerValidation { get; private set; }
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)

@@ -1774,3 +1774,34 @@ outputs:
   .errors.log: |
     ["warning","null-array-value","'monikers' contains null value, the null value has been removed","docs/v1/TOC.md",3,4]
     ["warning","duplicate-moniker-config","Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored"]
+---
+# Should be OK for reference versioning docset to skip moniker range in config file
+inputs:
+  docfx.yml: |
+    skipMonikerValidation: true
+    monikerDefinition: monikerDefinition.json
+  docs/a.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-1.0
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "metadata": {
+          "properties": {
+            "monikers": { "type": "array" }
+          }
+        }
+      }
+    }
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  136a42ac/docs/a.json: |
+    {"metadata":{"monikers":["netcore-1.0"]}}
