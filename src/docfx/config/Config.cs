@@ -229,6 +229,11 @@ namespace Microsoft.Docs.Build
         public bool UpdateCommitBuildTime { get; private set; } = true;
 
         /// <summary>
+        /// Overwrite current <see cref="CommitBuildTimeProvider._buildTime"/>
+        /// </summary>
+        public DateTime? BuildTime { get; private set; }
+
+        /// <summary>
         /// Token that can be used to access the GitHub API.
         /// </summary>
         public string GithubToken { get; private set; } = "";
