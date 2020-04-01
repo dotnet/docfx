@@ -279,6 +279,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
 
+        /// <summary>
+        /// Identify if the build docset is reference
+        /// </summary>
+        public bool IsReference { get; private set; }
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)

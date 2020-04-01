@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
-                new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "" } });
+                new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template= false } });
 
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
@@ -129,6 +129,7 @@ namespace Microsoft.Docs.Build
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 xref = xrefMaps,
+                isReference = docset.use_template,
             });
         }
 

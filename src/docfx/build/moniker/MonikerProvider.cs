@@ -65,9 +65,10 @@ namespace Microsoft.Docs.Build
             var configMonikerRange = GetConfigMonikerRange(file);
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
+            // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (configMonikerRange.Value is null)
+            if (!_config.IsReference && configMonikerRange.Value is null)
             {
                 return (Errors.Versioning.MonikerRangeUndefined(rangeString), Array.Empty<string>());
             }
@@ -93,9 +94,10 @@ namespace Microsoft.Docs.Build
 
             if (metadata.MonikerRange != null)
             {
+                // For conceptual docet,
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (configMonikerRange.Value is null)
+                if (!_config.IsReference && configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
                     return (errors, configMonikers);
@@ -108,14 +110,14 @@ namespace Microsoft.Docs.Build
                 }
 
                 var fileMonikers = _rangeParser.Parse(metadata.MonikerRange);
-                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers);
+                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.IsReference);
                 errors.AddIfNotNull(intersectionError);
                 return (errors, intersection);
             }
             else if (metadata.Monikers != null)
             {
                 var fileMonikers = metadata.Monikers.SelectMany(x => _rangeParser.Parse(x)).ToArray();
-                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers);
+                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.IsReference);
                 errors.AddIfNotNull(intersectionError);
                 return (errors, intersection);
             }
@@ -123,11 +125,18 @@ namespace Microsoft.Docs.Build
             return (errors, configMonikers);
         }
 
-        private static (Error?, string[]) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string?> configMonikerRange, string[] configMonikers, string[] fileMonikers)
+        private static (Error?, string[]) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string?> configMonikerRange, string[] configMonikers, string[] fileMonikers, bool isReference)
         {
             Error? error = null;
 
-            // With non-empty config monikers,
+            // for reference docset, if config monikers is not defined
+            // just use file monikers
+            if (isReference && configMonikerRange.Value is null)
+            {
+                return (error, fileMonikers);
+            }
+
+            // With config monikers defined,
             // warn if no intersection of config monikers and file monikers
             var intersection = configMonikers.Intersect(fileMonikers).ToArray();
             if (intersection.Length == 0)
