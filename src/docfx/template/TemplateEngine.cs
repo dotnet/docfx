@@ -6,15 +6,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
-        private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
-
         private readonly string _templateDir;
         private readonly string _contentTemplateDir;
         private readonly JObject _global;
@@ -23,12 +20,13 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
 
-        public TemplateEngine(string docsetPath, Config config, string locale, PackageResolver packageResolver)
+        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver)
         {
+            var template = buildOptions.IsLocalizedBuild ? LocalizationUtility.GetLocalizedTheme(config.Template, buildOptions.Locale) : config.Template;
             _templateDir = config.Template.Type switch
             {
-                PackageType.None => Path.Combine(docsetPath, "_themes"),
-                _ => packageResolver.ResolvePackage(LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.DefaultLocale), PackageFetchOptions.DepthOne),
+                PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
+                _ => packageResolver.ResolvePackage(template, PackageFetchOptions.DepthOne),
             };
 
             _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");
@@ -79,23 +77,6 @@ namespace Microsoft.Docs.Build
         public string RunMustache(string templateName, JObject pageModel)
         {
             return _mustacheTemplate.Render(templateName, pageModel);
-        }
-
-        public void CopyTo(string outputPath)
-        {
-            foreach (var resourceDir in s_resourceFolders)
-            {
-                var srcDir = Path.Combine(_templateDir, resourceDir);
-                if (Directory.Exists(srcDir))
-                {
-                    Parallel.ForEach(Directory.EnumerateFiles(srcDir, "*", SearchOption.AllDirectories), file =>
-                    {
-                        var outputFilePath = Path.Combine(outputPath, "_themes", file.Substring(_templateDir.Length + 1));
-                        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(outputFilePath)));
-                        File.Copy(file, outputFilePath, overwrite: true);
-                    });
-                }
-            }
         }
 
         public JObject RunJint(string scriptName, JObject model, string methodName = "transform", bool tryParseFromContent = true)

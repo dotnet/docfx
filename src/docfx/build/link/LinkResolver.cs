@@ -10,8 +10,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly Input _input;
+        private readonly BuildOptions _buildOptions;
         private readonly SourceMap _sourceMap;
-        private readonly Docset? _fallbackDocset;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
         private readonly WorkQueue<FilePath> _buildQueue;
@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
 
         public LinkResolver(
             Config config,
-            Docset? fallbackDocset,
             Input input,
+            BuildOptions buildOptions,
             SourceMap sourceMap,
             BuildScope buildScope,
             WorkQueue<FilePath> buildQueue,
@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
             _input = input;
+            _buildOptions = buildOptions;
             _sourceMap = sourceMap;
-            _fallbackDocset = fallbackDocset;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
             _redirectionProvider = redirectionProvider;
@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
 
                     // resolve file
                     var lookupFallbackCommits = inclusion || _documentProvider.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile.Docset.DocsetPath, referencingFile.FilePath, path, lookupFallbackCommits);
+                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile.Docset.DocsetPath, referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
                         }
 
                         // Do not report error for landing page
@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Document? TryResolveRelativePath(string docsetPath, FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
+        private Document? TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
             PathString pathToDocset;
@@ -223,7 +223,7 @@ namespace Microsoft.Docs.Build
                 // the relative path could be outside docset
                 if (pathToDocset.Value.StartsWith("."))
                 {
-                    pathToDocset = new PathString(Path.GetRelativePath(docsetPath, Path.Combine(docsetPath, pathToDocset.Value)));
+                    pathToDocset = new PathString(Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.DocsetPath, pathToDocset.Value)));
                 }
             }
 
@@ -276,7 +276,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from fallback docset
-            if (_fallbackDocset != null)
+            if (_buildOptions.IsLocalizedBuild)
             {
                 path = FilePath.Fallback(pathToDocset);
                 if (_input.Exists(path))

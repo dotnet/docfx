@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                 file.SiteUrl,
                 outputPath,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
+                context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
@@ -170,14 +170,14 @@ namespace Microsoft.Docs.Build
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
-            systemMetadata.Locale = context.LocalizationProvider.Locale;
+            systemMetadata.Locale = context.BuildOptions.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
             systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
-            systemMetadata.EnableLocSxs = context.LocalizationProvider.EnableSideBySide;
+            systemMetadata.EnableLocSxs = context.BuildOptions.EnableSideBySide;
             systemMetadata.SiteName = context.Config.SiteName;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
@@ -352,8 +352,8 @@ namespace Microsoft.Docs.Build
         private static string CreateHtmlContent(Context context, HtmlNode html)
         {
             return LocalizationUtility.AddLeftToRightMarker(
-                context.LocalizationProvider.Culture,
-                HtmlUtility.AddLinkType(html, context.LocalizationProvider.Locale).WriteTo());
+                context.BuildOptions.Culture,
+                HtmlUtility.AddLinkType(html, context.BuildOptions.Locale).WriteTo());
         }
 
         private static void ValidateBookmarks(Context context, Document file, HtmlNode html)

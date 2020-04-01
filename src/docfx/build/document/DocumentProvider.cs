@@ -12,11 +12,9 @@ namespace Microsoft.Docs.Build
     internal class DocumentProvider
     {
         private readonly Config _config;
-        private readonly Docset _docset;
-        private readonly Docset? _fallbackDocset;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
-        private readonly LocalizationProvider _localization;
+        private readonly BuildOptions _buildOptions;
         private readonly TemplateEngine _templateEngine;
 
         private readonly string _depotName;
@@ -27,12 +25,10 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, TemplateEngine templateEngine)
+            Config config, BuildOptions buildOptions, BuildScope buildScope, Input input, TemplateEngine templateEngine)
         {
             _config = config;
-            _docset = docset;
-            _localization = localization;
-            _fallbackDocset = fallbackDocset;
+            _buildOptions = buildOptions;
             _buildScope = buildScope;
             _input = input;
             _templateEngine = templateEngine;
@@ -142,16 +138,6 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocumentCore(FilePath path)
         {
-            return path.Origin switch
-            {
-                FileOrigin.Fallback => CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path),
-                FileOrigin.Dependency => CreateDocument(_docset, path),
-                _ => CreateDocument(_docset, path),
-            };
-        }
-
-        private Document CreateDocument(Docset docset, FilePath path)
-        {
             var contentType = path.Origin == FileOrigin.Redirection ? ContentType.Redirection : GetContentType(path.Path);
 
             var mime = contentType == ContentType.Page ? ReadMimeFromFile(_input, path) : default;
@@ -167,7 +153,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, mime, _config.OutputJson, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, mime, isPage);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
+            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
 
         private static string FilePathToSitePath(string path, ContentType contentType, string? mime, bool json, bool uglifyUrl, bool isPage)
@@ -248,7 +234,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.OutputJson, isPage);
             }
 
-            return $"https://{_config.HostName}/{_localization.Locale}{siteUrl}";
+            return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {

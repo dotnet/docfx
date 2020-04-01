@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                 file.SiteUrl,
                 publishPath,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
+                context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 

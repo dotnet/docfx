@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     internal static class Legacy
     {
         public static void ConvertToLegacyModel(
-            Docset docset,
+            string docsetPath,
             Context context,
             Dictionary<FilePath, PublishItem> fileManifests,
             DependencyMap dependencyMap)
@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
                 var documents = fileManifests.Where(f => !f.Value.HasError).ToDictionary(
                     k => context.DocumentProvider.GetDocument(k.Key), v => v.Value);
 
-                LegacyManifest.Convert(docset, context, documents);
-                var legacyDependencyMap = LegacyDependencyMap.Convert(docset, context, documents.Keys.ToList(), dependencyMap);
+                LegacyManifest.Convert(docsetPath, context, documents);
+                var legacyDependencyMap = LegacyDependencyMap.Convert(docsetPath, context, documents.Keys.ToList(), dependencyMap);
                 LegacyFileMap.Convert(context, legacyDependencyMap, documents);
             }
         }

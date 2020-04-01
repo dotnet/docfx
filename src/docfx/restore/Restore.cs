@@ -33,33 +33,29 @@ namespace Microsoft.Docs.Build
 
         public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
-            List<Error> errors;
-            Config? config = null;
-
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
-            using (var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy))
+            using (var errorLog = new ErrorLog(outputPath, options.Legacy))
             using (Progress.Start("Restore dependencies"))
             {
                 var stopwatch = Stopwatch.StartNew();
 
                 try
                 {
-                    // load and trace entry repository
-                    var repository = Repository.Create(docsetPath);
-                    Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                    var locale = LocalizationUtility.GetLocale(repository);
-
                     // load configuration from current entry or fallback repository
-                    var configLoader = new ConfigLoader(repository, errorLog);
-                    (errors, config) = configLoader.Load(docsetPath, locale, options);
+                    var configLoader = new ConfigLoader(errorLog);
+                    var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options);
                     if (errorLog.Write(errors))
                         return true;
 
-                    // download dependencies to disk
-                    Parallel.Invoke(
-                        () => RestoreFiles(docsetPath, config, errorLog, options.FetchOptions).GetAwaiter().GetResult(),
-                        () => RestorePackages(docsetPath, config, locale, repository, options.FetchOptions));
+                    errorLog.Configure(config, buildOptions.OutputPath);
+                    using (packageResolver)
+                    {
+                        // download dependencies to disk
+                        Parallel.Invoke(
+                            () => RestoreFiles(config, fileResolver).GetAwaiter().GetResult(),
+                            () => RestorePackages(buildOptions, config, packageResolver));
+                    }
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
@@ -68,34 +64,30 @@ namespace Microsoft.Docs.Build
                 finally
                 {
                     Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
-                    Log.Important($"Restore '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                    Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
                 return false;
             }
         }
 
-        private static async Task RestoreFiles(string docsetPath, Config config, ErrorLog errorLog, FetchOptions fetchOptions)
+        private static async Task RestoreFiles(Config config, FileResolver fileResolver)
         {
-            var credentialProvider = config.GetCredentialProvider();
-            var fileResolver = new FileResolver(docsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), fetchOptions);
             await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(string docsetPath, Config config, string? locale, Repository? repository, FetchOptions fetchOptions)
+        private static void RestorePackages(BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
-            using var packageResolver = new PackageResolver(docsetPath, config, fetchOptions);
             ParallelUtility.ForEach(
-                GetPackages(config, locale, repository).Distinct(),
+                GetPackages(config, buildOptions).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags),
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
 
-            LocalizationUtility.EnsureLocalizationContributionBranch(config, repository);
+            LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
         }
 
-        private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(
-            Config config, string? locale, Repository? repository)
+        private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(Config config, BuildOptions buildOptions)
         {
             foreach (var (_, package) in config.Dependencies)
             {
@@ -104,43 +96,8 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                var theme = LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.DefaultLocale);
-                yield return (theme, PackageFetchOptions.DepthOne);
-            }
-
-            foreach (var item in GetLocalizationPackages(config, locale, repository))
-            {
-                yield return item;
-            }
-        }
-
-        /// <summary>
-        /// Get source repository or localized repository
-        /// </summary>
-        private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetLocalizationPackages(
-            Config config, string? locale, Repository? repository)
-        {
-            if (string.IsNullOrEmpty(locale))
-            {
-                yield break;
-            }
-
-            if (string.Equals(locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
-            {
-                yield break;
-            }
-
-            if (repository is null || string.IsNullOrEmpty(repository.Remote))
-            {
-                yield break;
-            }
-
-            if (LocalizationUtility.TryGetFallbackRepository(repository.Remote, repository.Branch, out var fallbackRemote, out var fallbackBranch))
-            {
-                // fallback to master
-                yield return (new PackagePath(fallbackRemote, fallbackBranch), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
-                yield return (new PackagePath(fallbackRemote, "master"), PackageFetchOptions.IgnoreError | PackageFetchOptions.None);
-                yield break;
+                var template = buildOptions.IsLocalizedBuild ? LocalizationUtility.GetLocalizedTheme(config.Template, buildOptions.Locale) : config.Template;
+                yield return (template, PackageFetchOptions.DepthOne);
             }
         }
     }

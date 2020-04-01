@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<FilePath> Files { get; }
 
-        public BuildScope(Config config, Input input, Docset? fallbackDocset)
+        public BuildScope(Config config, Input input, BuildOptions buildOptions)
         {
             _config = config;
             _globs = CreateGlobs(config);
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Globing files"))
             {
-                var (fileNames, allFiles) = ListFiles(config, input, fallbackDocset);
+                var (fileNames, allFiles) = ListFiles(config, input, buildOptions);
 
                 var files = new ListBuilder<FilePath>();
                 ParallelUtility.ForEach(allFiles, file =>
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             return _fileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        private static (HashSet<PathString> fileNames, HashSet<FilePath> files) ListFiles(Config config, Input input, Docset? fallbackDocset)
+        private static (HashSet<PathString> fileNames, HashSet<FilePath> files) ListFiles(Config config, Input input, BuildOptions buildOptions)
         {
             var files = new HashSet<FilePath>();
             var fileNames = new HashSet<PathString>();
@@ -121,11 +121,9 @@ namespace Microsoft.Docs.Build
             files.UnionWith(defaultFiles);
             fileNames.UnionWith(defaultFiles.Select(file => file.Path));
 
-            if (fallbackDocset != null)
+            if (buildOptions.IsLocalizedBuild)
             {
-                var fallbackFiles = input.ListFilesRecursive(FileOrigin.Fallback)
-                    .Where(file => !fileNames.Contains(file.Path));
-
+                var fallbackFiles = input.ListFilesRecursive(FileOrigin.Fallback).Where(file => !fileNames.Contains(file.Path));
                 files.UnionWith(fallbackFiles);
                 fileNames.UnionWith(fallbackFiles.Select(file => file.Path));
             }

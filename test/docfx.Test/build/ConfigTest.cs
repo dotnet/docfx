@@ -11,48 +11,19 @@ namespace Microsoft.Docs.Build
     public static class ConfigTest
     {
         [Theory]
-        [InlineData(null, "zh-cn", null)]
-        [InlineData("", "zh-cn", "")]
-        [InlineData("https://github.com/docfx/name", "", "https://github.com/docfx/name")]
-        [InlineData("https://github.com/docfx/name", null, "https://github.com/docfx/name")]
         [InlineData("https://github.com/docfx/name", "zh-cn", "https://github.com/docfx/name.zh-cn")]
         [InlineData("https://github.com/docfx/name.en-us", "zh-cn", "https://github.com/docfx/name.en-us.zh-cn")]
         [InlineData("https://github.com/docfx/name.zh-cn", "zh-cn", "https://github.com/docfx/name.zh-cn")]
         [InlineData("https://github.com/docfx/name.en", "zh-cn", "https://github.com/docfx/name.en.zh-cn")]
-        [InlineData("https://github.com/docfx/test-repo", "en-us", "https://github.com/docfx/test-repo")]
         [InlineData("https://github.com/docfx/en-us", "zh-cn", "https://github.com/docfx/en-us.zh-cn")]
         [InlineData("https://github.com/docfx/test-repo", "bs-Cyrl-BA", "https://github.com/docfx/test-repo.bs-Cyrl-BA")]
         [InlineData("https://github.com/docfx/test-repo.en-us", "bs-Cyrl-BA", "https://github.com/docfx/test-repo.en-us.bs-Cyrl-BA")]
-        [InlineData("https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.bs-Cyrl-BA.sr-Latn-RS", "bs-Cyrl-BA")]
+        [InlineData("https://github.com/docfx/test-repo.bs-Cyrl-BA", "sr-Latn-RS", "https://github.com/docfx/test-repo.bs-Cyrl-BA.sr-Latn-RS")]
         [InlineData("https://test.visualstudio.com/_git/TripleCrown.Backend", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
         [InlineData("https://test.visualstudio.com/_git/TripleCrown.Backend.en-us", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.en-us.sr-Latn-RS")]
         [InlineData("https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS", "sr-Latn-RS", "https://test.visualstudio.com/_git/TripleCrown.Backend.sr-Latn-RS")]
-        public static void LocConfigConventionRepoRemote(string sourceName, string locale, string locName, string defaultLocale = "en-us")
-            => Assert.Equal(locName, LocalizationUtility.GetLocalizedRepo(false, sourceName, "master", locale, defaultLocale).remote);
-
-        [Theory]
-        [InlineData(true, "", "zh-cn", "")]
-        [InlineData(true, null, "zh-cn", null)]
-        [InlineData(false, "master", "zh-cn", "master")]
-        [InlineData(false, "master", "en-us", "master")]
-        [InlineData(true, "master", "zh-cn", "master-sxs")]
-        public static void LocConfigConventionRepoBranch(bool enableBilingual, string sourceBranch, string locale, string targetBranch)
-            => Assert.Equal(targetBranch, LocalizationUtility.GetLocalizedRepo(enableBilingual, "abc", sourceBranch, locale, "en-us").branch);
-
-        [Theory]
-        [InlineData("https://github.com/docs/theme", "en-us", "en-us", "https://github.com/docs/theme#master")]
-        [InlineData("https://github.com/docs/theme", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#master")]
-        [InlineData("https://github.com/docs/theme", "", "en-us", "https://github.com/docs/theme#master")]
-        [InlineData("https://github.com/docs/theme.zh-cn", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#master")]
-        [InlineData("https://github.com/docs/theme.en-us", "zh-cn", "en-us", "https://github.com/docs/theme.en-us.zh-cn#master")]
-        [InlineData("https://github.com/docs/theme#live", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#live")]
-        [InlineData("https://github.com/docs/theme.en-us#live", "zh-cn", "en-us", "https://github.com/docs/theme.en-us.zh-cn#live")]
-        [InlineData("https://github.com/docs/theme.zh-cn#live", "zh-cn", "en-us", "https://github.com/docs/theme.zh-cn#live")]
-        public static void LocConfigConventionTheme(string theme, string locale, string defaultLocale, string expectedTheme)
-        {
-            var locTheme = LocalizationUtility.GetLocalizedTheme(new PackagePath(theme), locale, defaultLocale);
-            Assert.Equal(expectedTheme, locTheme.ToString());
-        }
+        public static void GetLocalizedRepository(string sourceName, string locale, string locName)
+              => Assert.Equal(locName, LocalizationUtility.GetLocalizedRepository(sourceName, locale));
 
         [Theory]
         [InlineData("https://github.com/docs", "master", null, null)]

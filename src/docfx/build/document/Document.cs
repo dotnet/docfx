@@ -10,12 +10,6 @@ namespace Microsoft.Docs.Build
     internal class Document : IEquatable<Document>, IComparable<Document>
     {
         /// <summary>
-        /// Gets the owning docset of this document. A document can only belong to one docset.
-        /// TODO: Split data and behavioral objects from Document and Docset
-        /// </summary>
-        public Docset Docset { get; }
-
-        /// <summary>
         /// Gets the content type of this document.
         /// </summary>
         public ContentType ContentType { get; }
@@ -82,7 +76,6 @@ namespace Microsoft.Docs.Build
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
         /// </summary>
         public Document(
-            Docset docset,
             FilePath filePath,
             string sitePath,
             string siteUrl,
@@ -94,7 +87,6 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
 
-            Docset = docset;
             FilePath = filePath;
             SitePath = sitePath;
             SiteUrl = siteUrl;
@@ -110,20 +102,12 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(Document other)
         {
-            var result = string.CompareOrdinal(Docset.DocsetPath, other.Docset.DocsetPath);
-            if (result == 0)
-                result = ContentType.CompareTo(other.ContentType);
-            if (result == 0)
-                result = FilePath.CompareTo(other.FilePath);
-            return result;
+            return FilePath.CompareTo(other.FilePath);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                PathUtility.PathComparer.GetHashCode(Docset.DocsetPath),
-                PathUtility.PathComparer.GetHashCode(FilePath),
-                ContentType);
+            return FilePath.GetHashCode();
         }
 
         public static bool operator ==(Document? a, Document? b) => Equals(a, b);
@@ -137,9 +121,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return string.Equals(Docset.DocsetPath, other.Docset.DocsetPath, PathUtility.PathComparison) &&
-                   Equals(FilePath, other.FilePath) &&
-                   ContentType == other.ContentType;
+            return FilePath.Equals(other.FilePath);
         }
 
         public override bool Equals(object? obj) => Equals(obj as Document);
