@@ -88,21 +88,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private List<TableOfContentsNode> LoadTocNode(
-            List<TableOfContentsNode> nodes,
+        private List<SourceInfo<TableOfContentsNode>> LoadTocNode(
+            List<SourceInfo<TableOfContentsNode>> nodes,
             Document filePath,
             Document rootPath,
             List<Document> referencedFiles,
             List<Document> referencedTocs,
             List<Error> errors)
         {
-            var newItems = new List<TableOfContentsNode>();
+            var newItems = new List<SourceInfo<TableOfContentsNode>>();
             foreach (var node in nodes)
             {
                 // process
                 var tocHref = GetTocHref(node, errors);
                 var topicHref = GetTopicHref(node, errors);
-                var topicUid = node.Uid;
+                var topicUid = node.Value.Uid;
 
                 var (resolvedTocHref, subChildren, subChildrenFirstItem) = ProcessTocHref(
                     filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
@@ -114,28 +114,28 @@ namespace Microsoft.Docs.Build
                 {
                     Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
                     TocHref = resolvedTocHref,
-                    Homepage = string.IsNullOrEmpty(node.Href) && !string.IsNullOrEmpty(node.TopicHref)
+                    Homepage = string.IsNullOrEmpty(node.Value.Href) && !string.IsNullOrEmpty(node.Value.TopicHref)
                         ? resolvedTopicHref : default,
-                    Name = node.Name.Or(resolvedTopicName),
+                    Name = node.Value.Name.Or(resolvedTopicName),
                     Document = document ?? subChildrenFirstItem?.Document,
-                    Items = subChildren?.Items ?? node.Items,
+                    Items = subChildren?.Items ?? node.Value.Items,
                 };
 
                 // resolve children
                 if (subChildren is null)
                 {
-                    newItem.Items = LoadTocNode(node.Items, filePath, rootPath, referencedFiles, referencedTocs, errors);
+                    newItem.Items = LoadTocNode(node.Value.Items, filePath, rootPath, referencedFiles, referencedTocs, errors);
                 }
 
                 // resolve monikers
                 newItem.Monikers = GetMonikers(newItem, errors);
-                newItems.Add(newItem);
+                newItems.Add(new SourceInfo<TableOfContentsNode>(newItem, node.Source));
 
                 // validate
                 // todo: how to do required validation in strong model
                 if (string.IsNullOrEmpty(newItem.Name))
                 {
-                    errors.Add(Errors.TableOfContents.MissingTocHead(newItem.Name));
+                    errors.Add(Errors.TableOfContents.MissingTocHead(newItem.Name.Source ?? node.Source));
                 }
             }
 
@@ -173,11 +173,11 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in currentItem.Items)
                 {
-                    if (item.Monikers.Count == 0)
+                    if (item.Value.Monikers.Count == 0)
                     {
                         return Array.Empty<string>();
                     }
-                    monikers = monikers.Union(item.Monikers).Distinct().ToList();
+                    monikers = monikers.Union(item.Value.Monikers).Distinct().ToList();
                 }
             }
             monikers.Sort(StringComparer.OrdinalIgnoreCase);
@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
 
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
-                    var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
+                    var nestedTocFirstItem = GetFirstItem(nestedToc.Items.Select(item => item.Value).ToList());
                     _dependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.Link);
                     return (default, default, nestedTocFirstItem);
                 }
@@ -391,7 +391,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in items)
             {
-                return GetFirstItem(item.Items);
+                return GetFirstItem(item.Items.Select(item => item.Value).ToList());
             }
 
             return null;

@@ -886,6 +886,7 @@ inputs:
       additionalProperty: a
       name:
       items: []
+    - href: f1/b.md
   docs/f1/a.md:
   docs/f1/b.md:
 outputs:
@@ -895,6 +896,7 @@ outputs:
   docs/f1/toc.json:
   .errors.log: |
     ["warning","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
+    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.yml",7,3]
     ["warning","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
