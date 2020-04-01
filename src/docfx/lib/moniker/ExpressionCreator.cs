@@ -107,6 +107,12 @@ namespace Microsoft.Docs.Build
                         match = OrSymbolRegex.Match(rangeString);
                         break;
                     case SymbolType.Moniker:
+                        if (rangeString == "*")
+                        {
+                            value = "*";
+                            rangeString = rangeString.Substring(1);
+                            return true;
+                        }
                         match = MonikerSymbolRegex.Match(rangeString);
                         break;
                     case SymbolType.Operator:

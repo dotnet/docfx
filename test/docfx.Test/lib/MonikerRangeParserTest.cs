@@ -110,6 +110,8 @@ namespace Microsoft.Docs.Build
         [InlineData(
             "azuresqldb-current || azure-sqldw-latest",
             "azure-sqldw-latest azuresqldb-current")]
+        [InlineData("*", "netcore-1.0 netcore-2.0 netcore-3.0 dotnet-1.0 dotnet-2.0 dotnet-3.0 azure-sqldw-latest azuresqldb-current")]
+        [InlineData("=*", "netcore-1.0 netcore-2.0 netcore-3.0 dotnet-1.0 dotnet-2.0 dotnet-3.0 azure-sqldw-latest azuresqldb-current")]
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
             var result = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString)).ToList();
@@ -126,6 +128,7 @@ namespace Microsoft.Docs.Build
         [InlineData(">netcore<-1.0 ||| >netcore-2.0", "Expect a comparator set, but got `| >netcore-2.0`")]
         [InlineData(">netcore<-1.0 || ||", "Expect a comparator set, but got ` ||`")]
         [InlineData(">netcore<-1.0 || <", "Expect a moniker string, but got ``")]
+        [InlineData(">*", "Moniker `*` is not defined")]
         public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
             var exception = Assert.Throws<DocfxException>(() => _monikerRangeParser.Parse(new SourceInfo<string>(rangeString)));

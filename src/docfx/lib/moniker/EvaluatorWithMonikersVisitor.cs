@@ -23,6 +23,11 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<Moniker> Visit(ComparatorExpression expression)
         {
+            if (expression.Operator == ComparatorOperatorType.EqualTo && expression.Operand == "*")
+            {
+                return _monikerMap.Values;
+            }
+
             if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
             {
                 throw new MonikerRangeException($"Moniker `{expression.Operand}` is not defined");
