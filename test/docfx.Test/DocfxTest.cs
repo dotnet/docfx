@@ -21,13 +21,11 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
 
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
-        private static readonly AsyncLocal<string> t_cachePath = new AsyncLocal<string>();
-        private static readonly AsyncLocal<string> t_statePath = new AsyncLocal<string>();
+        private static readonly AsyncLocal<string> t_appDataPath = new AsyncLocal<string>();
 
         static DocfxTest()
         {
-            TestQuirks.CachePath = () => t_cachePath.Value;
-            TestQuirks.StatePath = () => t_statePath.Value;
+            TestQuirks.AppDataPath = () => t_appDataPath.Value;
 
             TestQuirks.GitRemoteProxy = remote =>
             {
@@ -44,13 +42,12 @@ namespace Microsoft.Docs.Build
         [MarkdownTest("~/docs/designs/**/*.md")]
         public static async Task Run(TestData test, DocfxTestSpec spec)
         {
-            var (docsetPath, cachePath, statePath, outputPath, repos) = CreateDocset(test, spec);
+            var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
 
             try
             {
                 t_repos.Value = repos;
-                t_cachePath.Value = cachePath;
-                t_statePath.Value = statePath;
+                t_appDataPath.Value = appDataPath;
 
                 if (OsMatches(spec.OS))
                 {
@@ -64,20 +61,20 @@ namespace Microsoft.Docs.Build
             finally
             {
                 t_repos.Value = null;
-                t_cachePath.Value = null;
-                t_statePath.Value = null;
+                t_appDataPath.Value = null;
             }
         }
 
-        private static (string docsetPath, string cachePath, string statePath, string outputPath, Dictionary<string, string> repos)
+        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-test", testName));
+            var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName));
             var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs"));
-            var cachePath = Path.Combine(basePath, "cache");
-            var statePath = Path.Combine(basePath, "state");
             var markerPath = Path.Combine(basePath, "marker");
+            var appDataPath = Path.Combine(basePath, "appdata");
+            var cachePath = Path.Combine(appDataPath, "cache");
+            var statePath = Path.Combine(appDataPath, "state");
 
             var variables = new Dictionary<string, string>
             {
@@ -123,7 +120,7 @@ namespace Microsoft.Docs.Build
                 File.WriteAllText(markerPath, "");
             }
 
-            return (docsetPath, cachePath, statePath, outputPath, repos);
+            return (docsetPath, appDataPath, outputPath, repos);
         }
 
         private async static Task RunCore(string docsetPath, string outputPath, DocfxTestSpec spec)

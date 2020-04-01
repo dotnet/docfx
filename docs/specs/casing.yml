@@ -63,7 +63,7 @@ repos:
                 "include_in_build": true
               }]
           }
-        OfficeUpdates/docfx.yml: |
+        OfficeUpdates/docfx.yml:
         OfficeUpdates/a.md:
   https://github.com/dep-include-in-build/casing-diff:
     - files:
