@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
 
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
-                    var nestedTocFirstItem = GetFirstItem(nestedToc.Items.Select(item => item.Value).ToList());
+                    var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
                     _dependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.Link);
                     return (default, default, nestedTocFirstItem);
                 }
@@ -381,17 +381,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TableOfContentsNode? GetFirstItem(List<TableOfContentsNode> items)
+        private static TableOfContentsNode? GetFirstItem(List<SourceInfo<TableOfContentsNode>> items)
         {
             foreach (var item in items)
             {
-                if (!string.IsNullOrEmpty(item.Href))
+                if (!string.IsNullOrEmpty(item.Value.Href))
                     return item;
             }
 
             foreach (var item in items)
             {
-                return GetFirstItem(item.Items.Select(item => item.Value).ToList());
+                return GetFirstItem(item.Value.Items);
             }
 
             return null;
