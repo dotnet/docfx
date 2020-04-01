@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
 
-        public List<TableOfContentsNode> Items { get; set; } = new List<TableOfContentsNode>();
+        public List<SourceInfo<TableOfContentsNode>> Items { get; set; } = new List<SourceInfo<TableOfContentsNode>>();
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();

@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,7 +22,7 @@ namespace Microsoft.Docs.Build
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
             errors.AddRange(validationErrors);
 
-            var model = new TableOfContentsModel(node.Items.ToArray(), tocMetadata);
+            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata);
 
             // TODO: improve error message for toc monikers overlap
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
