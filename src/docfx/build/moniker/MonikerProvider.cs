@@ -125,13 +125,13 @@ namespace Microsoft.Docs.Build
             return (errors, configMonikers);
         }
 
-        private static (Error?, string[]) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string?> configMonikerRange, string[] configMonikers, string[] fileMonikers, bool isReference)
+        private static (Error?, string[]) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string?> configMonikerRange, string[] configMonikers, string[] fileMonikers, bool skipMonikerValidation)
         {
             Error? error = null;
 
             // for reference docset, if config monikers is not defined
             // just use file monikers
-            if (isReference && configMonikerRange.Value is null)
+            if (skipMonikerValidation && configMonikerRange.Value is null)
             {
                 return (error, fileMonikers);
             }
