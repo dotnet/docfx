@@ -25,7 +25,6 @@ namespace Microsoft.Docs.Build
             foreach (var engine in _engines)
             {
                 var outputJson = engine.Run("index.js", "main", inputJson);
-                (outputJson as JObject)?.Property("__global")?.Remove();
                 Assert.Equal(output.Replace('\'', '"'), outputJson.ToString(Formatting.None));
             }
         }

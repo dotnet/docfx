@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                 ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
                 : new JintJsEngine(_contentTemplateDir, _global);
 
-            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
+            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global);
         }
 
         public bool IsPage(string? mime)

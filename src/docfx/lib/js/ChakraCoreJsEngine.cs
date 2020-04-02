@@ -285,7 +285,10 @@ namespace Microsoft.Docs.Build
                     for (var i = 0; i < namesLength; i++)
                     {
                         var name = names.GetIndexedProperty(JavaScriptValue.FromInt32(i)).ToString();
-                        obj[name] = ToJToken(value.GetProperty(JavaScriptPropertyId.FromString(name)));
+                        if (name != "__global")
+                        {
+                            obj[name] = ToJToken(value.GetProperty(JavaScriptPropertyId.FromString(name)));
+                        }
                     }
                     return obj;
 
