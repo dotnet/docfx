@@ -35,16 +35,15 @@ namespace Microsoft.Docs.Build
         [InlineData(new[] { "c/b/TOC.md", "TOC.md" }, "c/b/a.md", "c/b/TOC.md", "c/b/TOC.md")]
         [InlineData(new[] { "c/b/TOC.md", "c/d/e/TOC.md" }, "c/f/h/a.md", "c/b/TOC.md", null)]
 
-        public static void FindNearestToc(string[] tocFiles, string file, string expectedTocPath, string expectedOrphanTocPath)
+        public static void FindNearestToc(string[] tocs, string file, string expectedTocPath, string expectedOrphanTocPath)
         {
-            var tocs = new HashSet<string>(tocFiles);
-            var documentsToTocs = new Dictionary<string, HashSet<string>> { { file, tocs } };
+            var documentsToTocs = new Dictionary<string, string[]> { { file, tocs } };
 
             // test multiple reference case
             Assert.Equal(expectedTocPath, TableOfContentsMap.FindNearestToc(file, tocs, documentsToTocs, _ => _));
 
             // test orphan case
-            Assert.Equal(expectedOrphanTocPath, TableOfContentsMap.FindNearestToc(file, tocs, new Dictionary<string, HashSet<string>>(), _ => _));
+            Assert.Equal(expectedOrphanTocPath, TableOfContentsMap.FindNearestToc(file, tocs, new Dictionary<string, string[]>(), _ => _));
         }
     }
 }

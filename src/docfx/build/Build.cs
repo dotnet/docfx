@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -70,7 +69,7 @@ namespace Microsoft.Docs.Build
         private static void Run(Context context)
         {
             context.BuildQueue.Enqueue(context.RedirectionProvider.Files);
-            context.BuildQueue.Enqueue(context.TocMap.Files);
+            context.BuildQueue.Enqueue(context.TocMap.GetFiles());
             context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page));
             context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource));
 
