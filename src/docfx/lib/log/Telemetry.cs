@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -16,6 +17,7 @@ namespace Microsoft.Docs.Build
     internal static class Telemetry
     {
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
+        private static readonly ConcurrentDictionary<Document, (string, string, string)> s_fileTypeCache = new ConcurrentDictionary<Document, (string, string, string)>();
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
@@ -124,13 +126,16 @@ namespace Microsoft.Docs.Build
 
         private static (string fileExtension, string documentType, string mimeType) GetFileType(Document file)
         {
-            var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
-            var mimeType = CoalesceEmpty(file.Mime.Value);
-            if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
+            return s_fileTypeCache.GetOrAdd(file, file =>
             {
-                mimeType = "Conceptual";
-            }
-            return (fileExtension, file.ContentType.ToString(), mimeType);
+                var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
+                var mimeType = CoalesceEmpty(file.Mime.Value);
+                if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
+                {
+                    mimeType = "Conceptual";
+                }
+                return (fileExtension, file.ContentType.ToString(), mimeType);
+            });
         }
 
         private static string CoalesceEmpty(string? str)
