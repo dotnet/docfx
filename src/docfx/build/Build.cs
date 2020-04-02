@@ -68,19 +68,27 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
-            context.BuildQueue.Enqueue(context.RedirectionProvider.Files);
-            context.BuildQueue.Enqueue(context.TocMap.GetFiles());
-            context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page));
-            context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource));
+            Parallel.Invoke(
+                () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
+                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
+                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
+                () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
 
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
             }
 
-            context.BookmarkValidator.Validate();
-            context.ContentValidator.PostValidate();
-            context.ErrorLog.Write(context.MetadataProvider.Validate());
+            var postActions = new List<Action>
+            {
+                () => context.BookmarkValidator.Validate(),
+                () => context.ContentValidator.PostValidate(),
+                () => context.ErrorLog.Write(context.MetadataProvider.Validate()),
+                () => context.ContributionProvider.Save(),
+                () => context.RepositoryProvider.Save(),
+                () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
+                () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()),
+            };
 
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
             context.ErrorLog.Write(errors);
@@ -91,25 +99,17 @@ namespace Microsoft.Docs.Build
             if (!context.Config.DryRun)
             {
                 var dependencyMap = context.DependencyMapBuilder.Build();
-                var fileLinkMap = context.FileLinkMapBuilder.Build();
 
-                context.Output.WriteJson(".xrefmap.json", xrefMapModel);
-                context.Output.WriteJson(".publish.json", publishModel);
-                context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel());
-                context.Output.WriteJson(".links.json", fileLinkMap);
+                postActions.Add(() => context.Output.WriteJson(".xrefmap.json", xrefMapModel));
+                postActions.Add(() => context.Output.WriteJson(".publish.json", publishModel));
+                postActions.Add(() => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()));
+                postActions.Add(() => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build()));
 
-                if (context.Config.OutputJson)
-                {
-                    // TODO: decouple files and dependencies from legacy.
-                    Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap);
-                }
+                // TODO: decouple files and dependencies from legacy.
+                postActions.Add(() => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
             }
 
-            context.ContributionProvider.Save();
-            context.RepositoryProvider.Save();
-
-            context.ErrorLog.Write(context.GitHubAccessor.Save());
-            context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save());
+            Parallel.Invoke(postActions.ToArray());
         }
 
         private static void BuildFile(Context context, FilePath path)
