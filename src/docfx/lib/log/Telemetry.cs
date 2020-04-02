@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_buildCommitCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildCommitCount", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_buildFileTypeCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_markdownElementCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "MarkdownElement", "ElementType", "TokenType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
@@ -77,13 +78,14 @@ namespace Microsoft.Docs.Build
 
         public static void TrackBuildFileTypeCount(Document file)
         {
-            var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
-            var mimeType = CoalesceEmpty(file.Mime.Value);
-            if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
-            {
-                mimeType = "Conceptual";
-            }
-            s_buildFileTypeCountMetric.TrackValue(1, fileExtension, file.ContentType.ToString(), mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
+            var (fileExtension, documentType, mimeType) = GetFileType(file);
+            s_buildFileTypeCountMetric.TrackValue(1, fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
+        }
+
+        public static void TrackMarkdownElement(Document file, string? elementType, string? tokenType)
+        {
+            var (fileExtension, documentType, mimeType) = GetFileType(file);
+            s_markdownElementCountMetric.TrackValue(1, CoalesceEmpty(elementType), CoalesceEmpty(tokenType), fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildCommitCount(int count)
@@ -118,6 +120,17 @@ namespace Microsoft.Docs.Build
             {
                 TrackOperationTime(_name, _stopwatch.Elapsed);
             }
+        }
+
+        private static (string fileExtension, string documentType, string mimeType) GetFileType(Document file)
+        {
+            var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
+            var mimeType = CoalesceEmpty(file.Mime.Value);
+            if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
+            {
+                mimeType = "Conceptual";
+            }
+            return (fileExtension, file.ContentType.ToString(), mimeType);
         }
 
         private static string CoalesceEmpty(string? str)

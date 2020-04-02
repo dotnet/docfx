@@ -123,16 +123,6 @@ namespace Microsoft.Docs.Build
             => Assert.Equal(valid, LocalizationUtility.IsValidLocale(locale));
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("a", "a")]
-        [InlineData("OUTPUT_PATH", "outputPath")]
-        [InlineData("OUTPUT_PATH_NAME", "outputPathName")]
-        public static void ToCamelCaseTest(string name, string camelCaseName)
-        {
-            Assert.Equal(camelCaseName, StringUtility.ToCamelCase('_', name));
-        }
-
-        [Theory]
         [InlineData("https://a.com/a", "a")]
         [InlineData("https://a.com/a/1", "a")]
         [InlineData("https://a.com/a/b", "a/b")]
