@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var type = _documentProvider.GetContentType(path);
+                var type = _buildScope.GetContentType(path);
                 if (type != ContentType.Page)
                 {
                     _errorLog.Write(Errors.Redirection.RedirectionInvalid(redirectUrl, path));

@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             if (token is JArray tocArray)
             {
                 // toc model
-                var (toObjectErrors, items) = JsonUtility.ToObject<List<TableOfContentsNode>>(tocArray);
+                var (toObjectErrors, items) = JsonUtility.ToObject<List<SourceInfo<TableOfContentsNode>>>(tocArray);
                 errors.AddRange(toObjectErrors);
                 return new TableOfContentsNode { Items = items };
             }
@@ -83,11 +83,11 @@ namespace Microsoft.Docs.Build
             return new TableOfContentsNode { Items = BuildTree(errors, file, headingBlocks) };
         }
 
-        private static List<TableOfContentsNode> BuildTree(List<Error> errors, FilePath filePath, List<HeadingBlock> blocks)
+        private static List<SourceInfo<TableOfContentsNode>> BuildTree(List<Error> errors, FilePath filePath, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
-                return new List<TableOfContentsNode>();
+                return new List<SourceInfo<TableOfContentsNode>>();
             }
 
             var result = new TableOfContentsNode();
@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    parent.node.Items.Add(currentItem);
+                    parent.node.Items.Add(currentItem.Value);
                 }
 
                 stack.Push((currentLevel, currentItem));
@@ -126,13 +126,14 @@ namespace Microsoft.Docs.Build
             return result.Items;
         }
 
-        private static TableOfContentsNode? GetItem(List<Error> errors, FilePath filePath, HeadingBlock block)
+        private static SourceInfo<TableOfContentsNode>? GetItem(List<Error> errors, FilePath filePath, HeadingBlock block)
         {
+            var source = block.ToSourceInfo(file: filePath);
             var currentItem = new TableOfContentsNode();
             if (block.Inline is null || !block.Inline.Any())
             {
-                currentItem.Name = new SourceInfo<string?>(null, block.ToSourceInfo(file: filePath));
-                return currentItem;
+                currentItem.Name = new SourceInfo<string?>(null, source);
+                return new SourceInfo<TableOfContentsNode>(currentItem, source);
             }
 
             if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
@@ -145,7 +146,7 @@ namespace Microsoft.Docs.Build
             if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
             {
                 currentItem.Uid = new SourceInfo<string?>(xrefInline.Href, xrefInline.ToSourceInfo(file: filePath));
-                return currentItem;
+                return new SourceInfo<TableOfContentsNode>(currentItem, source);
             }
 
             var link = block.Inline.FirstOrDefault(l => l is LinkInline);
@@ -165,8 +166,7 @@ namespace Microsoft.Docs.Build
             {
                 currentItem.Name = GetLiteral(errors, filePath, block.Inline);
             }
-
-            return currentItem;
+            return new SourceInfo<TableOfContentsNode>(currentItem, source);
         }
 
         private static SourceInfo<string?> GetLiteral(List<Error> errors, FilePath filePath, ContainerInline inline)

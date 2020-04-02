@@ -123,15 +123,14 @@ namespace Microsoft.Docs.Build
             return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }
 
-        private static (List<Error> errors, object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel)
+        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
         {
             if (context.Config.DryRun)
             {
                 return (new List<Error>(), new JObject(), new JObject());
             }
 
-            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), new JObject());
+            return (new List<Error>(), context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
         private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
@@ -326,8 +325,8 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint(
-                string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            var jsName = string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js";
+            var templateMetadata = context.TemplateEngine.RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
 
             if (TemplateEngine.IsLandingData(file.Mime))
             {
@@ -371,8 +370,8 @@ namespace Microsoft.Docs.Build
             }
 
             // Generate SDP content
-            var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
-            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
+            var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model);
 
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);

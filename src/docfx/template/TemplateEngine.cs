@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                 ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
                 : new JintJsEngine(_contentTemplateDir, _global);
 
-            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
+            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global);
         }
 
         public bool IsPage(string? mime)
@@ -74,12 +74,12 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public string RunMustache(string templateName, JObject pageModel)
+        public string RunMustache(string templateName, JToken pageModel)
         {
             return _mustacheTemplate.Render(templateName, pageModel);
         }
 
-        public JObject RunJint(string scriptName, JObject model, string methodName = "transform", bool tryParseFromContent = true)
+        public JToken RunJavaScript(string scriptName, JObject model, string methodName = "transform")
         {
             var scriptPath = Path.Combine(_contentTemplateDir, scriptName);
             if (!File.Exists(scriptPath))
@@ -87,20 +87,9 @@ namespace Microsoft.Docs.Build
                 return model;
             }
 
-            var jsResult = _js.Run(scriptPath, methodName, model);
-
-            var result = new JObject();
-            if (jsResult is JValue)
-            {
-                // workaround for result is not JObject
-                result["content"] = jsResult;
-                return result;
-            }
-
-            result = (JObject)_js.Run(scriptPath, methodName, model);
-            if (tryParseFromContent
-                && result.TryGetValue<JValue>("content", out var value)
-                && value.Value is string content)
+            var result = _js.Run(scriptPath, methodName, model);
+            if (result is JObject obj && obj.TryGetValue("content", out var token) &&
+                token is JValue value && value.Value is string content)
             {
                 try
                 {

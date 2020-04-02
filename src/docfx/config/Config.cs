@@ -229,6 +229,11 @@ namespace Microsoft.Docs.Build
         public bool UpdateCommitBuildTime { get; private set; } = true;
 
         /// <summary>
+        /// Overwrite current <see cref="CommitBuildTimeProvider._buildTime"/>
+        /// </summary>
+        public DateTime? BuildTime { get; private set; }
+
+        /// <summary>
         /// Token that can be used to access the GitHub API.
         /// </summary>
         public string GithubToken { get; private set; } = "";
@@ -268,6 +273,11 @@ namespace Microsoft.Docs.Build
         /// A file containing a map of file path to the original file path.
         /// </summary>
         public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
+
+        /// <summary>
+        /// Determines if validate the moniker confguration.
+        /// </summary>
+        public bool SkipMonikerValidation { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

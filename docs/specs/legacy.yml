@@ -8,6 +8,8 @@ repos:
       docfx.yml: |
         template: https://docs.com/theme
         metadataSchema: schema.json
+        updateTimeAsCommitBuildTime: true
+        buildTime: 2020-04-01T08:08:08Z
       redirections.yml: |
         redirections:
           a.md: /b
@@ -60,7 +62,7 @@ outputs:
         "robots": undefined,
         "api_name": ["API Name"],
         "_op_gitContributorInformation": {
-          "updated_at_date_time": "2018-10-30T00:00:00.0000000Z"
+          "updated_at_date_time": "2020-04-01T08:08:08Z"
         }
       },
       "themesRelativePathToOutputRoot": "_themes/",
@@ -71,7 +73,7 @@ outputs:
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
-        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/ed16b07c7e69f6ef393855bb424635c0d41a67f2/c.md\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/882f998f63d445aeaae7362eea74195ce5e3c333/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/master/c.md\" />
@@ -81,7 +83,7 @@ outputs:
         <meta name=\"search.ms_product\" content=\"\" />
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
         <meta name=\"site_name\" content=\"Docs\" />
-        <meta name=\"updated_at\" content=\"2018-10-30 12:00 AM\" />
+        <meta name=\"updated_at\" content=\"2020-04-01 08:08 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
   c.mta.json: |
