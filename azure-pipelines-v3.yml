@@ -204,17 +204,19 @@ jobs:
       Dynamics-365-Operations:
         params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --branch v3-integration-test --timeout 65
       SCCMDocs-pr:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr --branch v3-integration-test --timeout 30
+        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr --branch v3-integration-test --timeout 35
       SCCMDocs-pr.zh-cn:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch v3-integration-test-sxs --locale zh-cn --timeout 30
+        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch v3-integration-test-sxs --locale zh-cn --timeout 35
       office-dev-O365API:
         params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
       dynamics-crm-notinTOC_1.he-il:
         params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
       mc-docs-pr:
-        params: https://github.com/opse2epr/mc-docs-pr --timeout 70
+        params: https://github.com/opse2epr/mc-docs-pr --branch v3-integration-test --timeout 70
       ATADocs-pr:
         params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
+      azure-docs-rest-apis:
+        params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
 
   steps:
   # Install .NET Core sdk
@@ -247,3 +249,4 @@ jobs:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+      APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09

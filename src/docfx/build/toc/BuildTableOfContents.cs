@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,15 +22,16 @@ namespace Microsoft.Docs.Build
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
             errors.AddRange(validationErrors);
 
-            var model = new TableOfContentsModel(node.Items.ToArray(), tocMetadata);
+            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata);
 
-            // enable pdf
+            // TODO: improve error message for toc monikers overlap
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
             var monikerGroup = MonikerUtility.GetGroup(monikers);
 
+            // enable pdf
             if (context.Config.OutputPdf)
             {
                 model.Metadata.PdfAbsolutePath = "/" +
@@ -51,7 +53,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (context.Config.Legacy)
                     {
-                        var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
+                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                         context.Output.WriteJson(outputPath, output);
                         context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
                     }
