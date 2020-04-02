@@ -212,7 +212,7 @@ jobs:
       dynamics-crm-notinTOC_1.he-il:
         params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
       mc-docs-pr:
-        params: https://github.com/opse2epr/mc-docs-pr --timeout 70
+        params: https://github.com/opse2epr/mc-docs-pr --branch v3-integration-test --timeout 70
       ATADocs-pr:
         params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
 
