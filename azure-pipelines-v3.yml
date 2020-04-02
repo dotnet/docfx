@@ -216,7 +216,7 @@ jobs:
       ATADocs-pr:
         params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
       azure-docs-rest-apis:
-        params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test
+        params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
 
   steps:
   # Install .NET Core sdk
