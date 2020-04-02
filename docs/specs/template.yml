@@ -188,7 +188,7 @@ inputs:
       }
     }
   _themes/ContentTemplate/TestData.html.primary.tmpl: |
-    <div>{{content}}</div>
+    <div>{{.}}</div>
   _themes/ContentTemplate/TestData.html.primary.js: |
     exports.transform = function (model) {
       return model.prop;

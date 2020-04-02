@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (context.Config.Legacy)
                     {
-                        var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
+                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                         context.Output.WriteJson(outputPath, output);
                         context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
                     }
