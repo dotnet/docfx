@@ -2,11 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Markdig;
-using Markdig.Extensions.Emoji;
-using Markdig.Extensions.Tables;
-using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -17,34 +13,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        private static readonly IReadOnlyDictionary<Type, string> s_markdownElementTypeMapping = new Dictionary<Type, string>()
-        {
-            { typeof(ThematicBreakBlock), "ThematicBreak" },
-            { typeof(CodeBlock), "IndentedCode" },
-            { typeof(FencedCodeBlock), "FencedCode" },
-            { typeof(HtmlBlock), "HTML" },
-            { typeof(LinkReferenceDefinition), "LinkReferenceDefinition" },
-            { typeof(ParagraphBlock), "Paragraph" },
-            { typeof(BlankLineBlock), "BlankLine" },
-            { typeof(ListBlock), "List" },
-            { typeof(CodeSnippet), "CodeSnippet" },
-            { typeof(Table), "Table" },
-            { typeof(TabGroupBlock), "TabbedContent" },
-            { typeof(MonikerRangeBlock), "MonikerRange" },
-            { typeof(RowBlock), "Row" },
-            { typeof(NestedColumnBlock), "NestedColumn" },
-            { typeof(YamlFrontMatterBlock), "YamlHeader" },
-            { typeof(InclusionBlock), "IncludeFile" },
-            { typeof(InclusionInline), "IncludeFile" },
-            { typeof(HtmlEntityInline), "HTMLEntity" },
-            { typeof(CodeInline), "CodeSpan" },
-            { typeof(AutolinkInline), "Autolink" },
-            { typeof(HtmlInline), "RawHTML" },
-            { typeof(XrefInline), "Xref" },
-            { typeof(EmojiInline), "Emoji" },
-            { typeof(NolocInline), "Noloc" },
-        };
-
         public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null, int columnOffset = 0)
         {
             var path = file ?? (InclusionContext.File as Document)?.FilePath;
@@ -142,102 +110,6 @@ namespace Microsoft.Docs.Build
         {
             builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
             return builder;
-        }
-
-        public static string? GetElementType(MarkdownObject node)
-        {
-            if (node is null)
-            {
-                return default;
-            }
-
-            string? elementType = s_markdownElementTypeMapping.GetValueOrDefault(node.GetType(), null);
-            if (elementType is null)
-            {
-                if (node is HeadingBlock heading)
-                {
-                    elementType = heading.HeaderChar == '#' ? "ATXHeading" : "SetextHeading";
-                }
-                else if (node is QuoteSectionNoteBlock quoteSectionNote)
-                {
-                    switch (quoteSectionNote.QuoteType)
-                    {
-                        case QuoteSectionNoteType.DFMNote:
-                            elementType = "Note";
-                            break;
-                        case QuoteSectionNoteType.DFMSection:
-                            elementType = "SectionDefinition";
-                            break;
-                        case QuoteSectionNoteType.DFMVideo:
-                            elementType = "Video";
-                            break;
-                        case QuoteSectionNoteType.MarkdownQuote:
-                            elementType = "BlockQuote";
-                            break;
-                    }
-                }
-                else if (node is TripleColonBlock tripleColon)
-                {
-                    var extensionName = StringUtility.UpperCaseFirstChar(tripleColon.Extension.Name);
-                    elementType = $"TripleColon{extensionName}";
-                }
-                else if (node is LiteralInline literal)
-                {
-                    elementType = literal.IsFirstCharacterEscaped ? "BlackslashEscape" : "TextualContent";
-                }
-                else if (node is EmphasisInline emphasis)
-                {
-                    elementType = emphasis.DelimiterCount == 2 ? "StrongEmphasis" : "Emphasis";
-                }
-                else if (node is LinkInline link)
-                {
-                    if (link.IsImage)
-                    {
-                        elementType = "Image";
-                    }
-                    else if (link.IsAutoLink)
-                    {
-                        elementType = "Autolink";
-                    }
-                    else
-                    {
-                        elementType = "Link";
-                    }
-                }
-                else if (node is LineBreakInline linkBreak)
-                {
-                    elementType = linkBreak.IsHard ? "HardLineBreak" : "SoftLineBreak";
-                }
-            }
-            return elementType;
-        }
-
-        public static string? GetTokenType(MarkdownObject node)
-        {
-            if (node is null)
-            {
-                return default;
-            }
-
-            var tokenType = node.GetType().Name;
-            if (node is HtmlBlock html)
-            {
-                tokenType += $"-{html.Type}";
-            }
-            else if (node is QuoteSectionNoteBlock quoteSectionNote)
-            {
-                tokenType += $"-{quoteSectionNote.QuoteType}";
-                if (quoteSectionNote.QuoteType == QuoteSectionNoteType.DFMNote)
-                {
-                    tokenType += $"-{StringUtility.UpperCaseFirstChar(quoteSectionNote.NoteTypeString)}";
-                }
-            }
-            else if (node is TripleColonBlock tripleColon)
-            {
-                var extensionName = StringUtility.UpperCaseFirstChar(tripleColon.Extension.Name);
-                tokenType += $"-{extensionName}";
-            }
-            return tokenType;
         }
 
         private class DelegatingExtension : IMarkdownExtension

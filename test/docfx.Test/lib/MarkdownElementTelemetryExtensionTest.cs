@@ -13,26 +13,25 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public static class MarkdigUtilityTest
+    public static class MarkdownElementTelemetryExtensionTest
     {
         [Theory]
         [MemberData(nameof(ElementTypeTestData))]
         public static void GetElementTypeTest(MarkdownObject node, string expectedElementType)
         {
-            Assert.Equal(expectedElementType, MarkdigUtility.GetElementType(node));
+            Assert.Equal(expectedElementType, MarkdownElementTelemetryExtension.GetElementType(node));
         }
 
         [Theory]
         [MemberData(nameof(TokenTypeTestData))]
         public static void GetTokenTypeTest(MarkdownObject node, string expectedElementType)
         {
-            Assert.Equal(expectedElementType, MarkdigUtility.GetTokenType(node));
+            Assert.Equal(expectedElementType, MarkdownElementTelemetryExtension.GetTokenType(node));
         }
 
         public static IEnumerable<object[]> ElementTypeTestData =>
             new List<object[]>
             {
-                new object[] { null, null },
                 new object[] { new ThematicBreakBlock (null), "ThematicBreak" },
                 new object[] { new HeadingBlock (null) { HeaderChar = '#' }, "ATXHeading" },
                 new object[] { new HeadingBlock (null) { HeaderChar = '\0' }, "SetextHeading" },
@@ -81,7 +80,6 @@ namespace Microsoft.Docs.Build
         public static IEnumerable<object[]> TokenTypeTestData =>
             new List<object[]>
             {
-                new object[] { null, null },
                 new object[] { new HtmlBlock(null) { Type = HtmlBlockType.CData }, "HtmlBlock-CData" },
                 new object[] { new HtmlBlock(null) { Type = HtmlBlockType.Comment }, "HtmlBlock-Comment" },
                 new object[] { new QuoteSectionNoteBlock (null) { QuoteType = QuoteSectionNoteType.MarkdownQuote }, "QuoteSectionNoteBlock-MarkdownQuote" },
