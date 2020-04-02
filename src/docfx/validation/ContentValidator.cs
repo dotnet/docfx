@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -35,9 +37,26 @@ namespace Microsoft.Docs.Build
                         SourceInfo = new SourceInfo(file.FilePath, 0, 0),
                     },
                 };
+            if (TryGetDocumentType(file, out string documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
+            }
+        }
 
-            var validationContext = new ValidationContext { DocumentType = string.IsNullOrEmpty(file.Mime) ? "conceptual" : file.Mime.Value! };
-            Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
+        internal void ValidateManifest(Document file)
+        {
+            var manifestItem = new ManifestItem()
+            {
+                PublishUrl = file.SiteUrl,
+                SourceInfo = new SourceInfo(file.FilePath, 0, 0),
+            };
+
+            if (TryGetDocumentType(file, out string documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                Write(_validator.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
+            }
         }
 
         internal void PostValidate()
@@ -71,6 +90,32 @@ namespace Microsoft.Docs.Build
                     ValidationSeverity.ERROR => ErrorLevel.Error,
                     _ => ErrorLevel.Off,
                 };
+        }
+
+        // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
+        private bool TryGetDocumentType(Document document, out string documentType)
+        {
+            documentType = string.Empty;
+            switch (document.ContentType)
+            {
+                case ContentType.Page:
+                    if (!string.IsNullOrEmpty(document.Mime))
+                    {
+                        return false;
+                    }
+                    documentType = "conceptual";
+                    return true;
+                case ContentType.Redirection:
+                    documentType = "redirection";
+                    return true;
+                case ContentType.TableOfContents:
+                    documentType = "toc";
+                    return true;
+                case ContentType.Resource:
+                case ContentType.Unknown:
+                default:
+                    return false;
+            }
         }
     }
 }

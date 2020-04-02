@@ -139,6 +139,7 @@ namespace Microsoft.Docs.Build
 
                 context.ErrorLog.Write(errors);
                 Telemetry.TrackBuildFileTypeCount(file);
+                context.ContentValidator.ValidateManifest(file);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
