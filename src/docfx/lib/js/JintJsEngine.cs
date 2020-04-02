@@ -129,6 +129,10 @@ namespace Microsoft.Docs.Build
 
         private static JToken ToJToken(JsValue token)
         {
+            if (token.AsObject() is ObjectInstance obj)
+            {
+                obj.Delete("__global", throwOnError: false);
+            }
             return JToken.Parse(s_engine.Json.Stringify(null, new[] { token }).AsString());
         }
     }
