@@ -117,7 +117,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             }
             catch (DocumentException de)
             {
-                Logger.LogError(de.Message, code: de.Code ?? ErrorCodes.Build.DocumentError);
                 throw;
             }
             catch (Exception e)

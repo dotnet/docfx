@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
     using System.IO;
-
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
 
     using Newtonsoft.Json.Linq;
@@ -33,7 +33,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         {
             if (!ValidateSchemaUrl(_jSchema.SchemaVersion))
             {
-                throw new InvalidSchemaException($"Schema {_jSchema.SchemaVersion} is not supported. Current supported schemas are: {SupportedMetaSchemaUri.OriginalString}.");
+                var message = $"Schema {_jSchema.SchemaVersion} is not supported. Current supported schemas are: {SupportedMetaSchemaUri.OriginalString}.";
+                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
+                throw new InvalidSchemaException(message);
             }
 
             using var stream = typeof(DocumentSchema).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDriven.schemas.v1._0.schema.json");

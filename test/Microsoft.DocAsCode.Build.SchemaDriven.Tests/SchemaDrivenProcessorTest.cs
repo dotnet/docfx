@@ -483,9 +483,8 @@ uid: invalid.azure.hello2
                     ["patterned:uid"] = JArray.FromObject(new List<string> { "^azure\\..*" })
                 },
             }));
-            Assert.Equal("InvalidPropertyFormat", exception.Code);
 
-            Assert.Equal(0, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
+            Assert.Equal(2, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
         }
 
         [Fact]
@@ -516,9 +515,8 @@ metadata: Web Apps Documentation
             FileCollection files = new FileCollection(_defaultFiles);
             files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
             BuildDocument(files);
-            var errors = listener.Items.Where(s => s.Code == "InvalidInputFile").ToList();
+            var errors = listener.Items.Where(s => s.Code == "ViolateSchema").ToList();
             Assert.Single(errors);
-            Assert.Equal($"Unable to load file '{inputFile}' via processor 'MetadataReferenceTest': Schema validation failed. Please validate the file and make sure it conforms to schema 'MetadataReferenceTest' (https://contoso.com/template/schemas/mta.reference.test.schema.json): \nInvalid type. Expected Object but got String. Path 'metadata'.", errors[0].Message);
         }
 
         [Fact]
