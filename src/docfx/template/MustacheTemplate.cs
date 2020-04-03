@@ -2,7 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -46,6 +49,11 @@ namespace Microsoft.Docs.Build
             // need to put it to section blacklist and overwrite the truthy check method.
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
                            .AddValueGetter(typeof(JArray), GetJArrayValue)
+                           .AddValueGetter(typeof(IList), OverwriteValuleGetter) // overwrite default value getters in stubble
+                           .AddValueGetter(typeof(IDictionary<string, object>), OverwriteValuleGetter)
+                           .AddValueGetter(typeof(IDictionary), OverwriteValuleGetter)
+                           .AddValueGetter(typeof(IDynamicMetaObjectProvider), OverwriteValuleGetter)
+                           .AddValueGetter(typeof(object), OverwriteValuleGetter)
                            .AddTruthyCheck<JObject>(value => value != null)
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
                            .AddSectionBlacklistType(typeof(JObject));
@@ -79,6 +87,8 @@ namespace Microsoft.Docs.Build
                             : JValue.CreateNull();
                 }
             }
+
+            object? OverwriteValuleGetter(object value, string key, bool ignoreCase) => null;
         }
 
         private class PartialLoader : IStubbleLoader
