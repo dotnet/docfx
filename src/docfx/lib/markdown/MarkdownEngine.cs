@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using Markdig;
 using Markdig.Parsers;
@@ -16,6 +15,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
+        private readonly Input _input;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
         private readonly string _markdownValidationRules;
@@ -27,12 +27,14 @@ namespace Microsoft.Docs.Build
 
         public MarkdownEngine(
             Config config,
+            Input input,
             FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine)
         {
+            _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _monikerProvider = monikerProvider;
@@ -162,18 +164,21 @@ namespace Microsoft.Docs.Build
         private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, content, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
+            var referencingFile = (Document)relativeTo;
+
+            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), referencingFile, DependencyType.Inclusion);
             status.Errors.AddIfNotNull(error);
-            return (content?.Replace("\r", ""), file);
+
+            return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);
         }
 
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, file) = _linkResolver.ResolveLink(
-                href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
+            var (error, link, _) = _linkResolver.ResolveLink(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
+
             return link;
         }
 

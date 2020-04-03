@@ -17,20 +17,22 @@ namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsParser
     {
+        private readonly Input _input;
         private readonly MarkdownEngine _markdownEngine;
 
-        public TableOfContentsParser(MarkdownEngine markdownEngine)
+        public TableOfContentsParser(Input input, MarkdownEngine markdownEngine)
         {
+            _input = input;
             _markdownEngine = markdownEngine;
         }
 
-        public TableOfContentsNode Parse(string content, FilePath file, List<Error> errors)
+        public TableOfContentsNode Parse(FilePath file, List<Error> errors)
         {
             return file.Format switch
             {
-                FileFormat.Yaml => Deserialize(YamlUtility.Parse(content, file), errors),
-                FileFormat.Json => Deserialize(JsonUtility.Parse(content, file), errors),
-                FileFormat.Markdown => ParseMarkdown(content, file, errors),
+                FileFormat.Yaml => Deserialize(_input.ReadYaml(file), errors),
+                FileFormat.Json => Deserialize(_input.ReadJson(file), errors),
+                FileFormat.Markdown => ParseMarkdown(_input.ReadString(file), file, errors),
                 _ => throw new NotSupportedException($"'{file}' is an unknown TOC file"),
             };
         }
