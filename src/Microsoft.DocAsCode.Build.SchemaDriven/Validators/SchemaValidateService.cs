@@ -71,7 +71,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             if (errors.Count > 0)
             {
                 var idInfo = schema.Id == null ? string.Empty : $" ({schema.Id})";
-                throw new InvalidSchemaException($"Schema validation failed. Please validate the file and make sure it conforms to schema '{schema.Title}'{idInfo}: \n{errors.ToDelimitedString("\n")}");
+                var message = $"Schema validation failed. Please validate the file and make sure it conforms to schema '{schema.Title}'{idInfo}: \n{errors.ToDelimitedString("\n")}";
+                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
+                throw new InvalidSchemaException(message);
             }
         }
 

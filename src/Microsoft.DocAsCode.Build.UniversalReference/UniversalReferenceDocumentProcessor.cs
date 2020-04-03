@@ -115,6 +115,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 UpdateModelContent(model);
             }
+            catch (DocumentException de)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Logger.LogError(e.Message);

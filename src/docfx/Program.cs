@@ -92,19 +92,39 @@ namespace Microsoft.DocAsCode
                 command.Exec(context);
                 return 0;
             }
-            catch (Exception e) when (e is DocumentException || e is DocfxException)
+            catch (AggregateException ae)
             {
-                Logger.LogError(e.Message, code: ErrorCodes.Build.FatalError);
+                foreach (var e in ae.Flatten().InnerExceptions)
+                {
+                    LogExceptionError(e);
+                }
                 return 1;
             }
             catch (Exception e)
             {
-                Logger.LogError(e.ToString(), code: ErrorCodes.Build.FatalError);
+                LogExceptionError(e);
                 return 1;
             }
             finally
             {
                 scope?.Dispose();
+            }
+        }
+
+        private static void LogExceptionError(Exception exception)
+        {
+            if (exception is DocumentException)
+            {
+                return;
+            }
+            else if (exception is DocfxException docfxException)
+            {
+                Logger.LogError(docfxException.Message, code: ErrorCodes.Build.FatalError);
+                return;
+            }
+            else
+            {
+                Logger.LogError(exception.ToString(), code: ErrorCodes.Build.FatalError);
             }
         }
     }

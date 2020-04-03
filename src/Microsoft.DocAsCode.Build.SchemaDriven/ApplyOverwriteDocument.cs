@@ -38,7 +38,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             if (articles.Count > 1)
             {
-                throw new DocumentException($"{uid} is defined in multiple articles {articles.Select(s => s.LocalPathFromRoot).ToDelimitedString()}");
+                var message = $"{uid} is defined in multiple articles {articles.Select(s => s.LocalPathFromRoot).ToDelimitedString()}";
+                Logger.LogError(message, code: ErrorCodes.Build.UidFoundInMultipleArticles);
+                throw new DocumentException(message);
             }
 
             var model = articles[0];

@@ -472,7 +472,7 @@ uid: invalid.azure.hello2
 ", _inputFolder);
 
             files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-            Assert.Throws<DocumentException>(() => BuildDocument(files, new DocumentBuildParameters
+            var exception = Assert.Throws<DocumentException>(() => BuildDocument(files, new DocumentBuildParameters
             {
                 Files = files,
                 OutputBaseDir = _outputFolder,
@@ -515,9 +515,8 @@ metadata: Web Apps Documentation
             FileCollection files = new FileCollection(_defaultFiles);
             files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
             BuildDocument(files);
-            var errors = listener.Items.Where(s => s.Code == "InvalidInputFile").ToList();
+            var errors = listener.Items.Where(s => s.Code == "ViolateSchema").ToList();
             Assert.Single(errors);
-            Assert.Equal($"Unable to load file '{inputFile}' via processor 'MetadataReferenceTest': Schema validation failed. Please validate the file and make sure it conforms to schema 'MetadataReferenceTest' (https://contoso.com/template/schemas/mta.reference.test.schema.json): \nInvalid type. Expected Object but got String. Path 'metadata'.", errors[0].Message);
         }
 
         [Fact]

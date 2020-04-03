@@ -36,7 +36,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 throw new ArgumentException($"{value.GetType()} is not supported type string.");
             }
 
-            var relPath = RelativePath.TryParse(val) ?? throw new DocumentException($"{val} is not a valid relative file path that supported by contentType file ");
+            var relPath = RelativePath.TryParse(val);
+            if (relPath == null)
+            {
+                var message = $"{val} is not a valid relative file path that supported by contentType file ";
+                Logger.LogError(message, code: ErrorCodes.Build.InvalidRelativePath);
+                throw new DocumentException(message);
+            }
 
             var originalFile = context.GetOriginalContentFile(path);
 

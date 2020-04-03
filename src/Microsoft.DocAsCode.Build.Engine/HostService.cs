@@ -171,7 +171,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 System.Diagnostics.Debug.Fail("Markup failed!");
                 var message = $"Markup failed: {ex.Message}.";
-                Logger.LogError(message);
+                Logger.LogError(message, code: ErrorCodes.Build.InvalidMarkdown);
                 throw new DocumentException(message, ex);
             }
         }
