@@ -12,13 +12,13 @@ namespace Microsoft.Docs.Build
     internal class PackageResolver : IDisposable
     {
         private readonly string _docsetPath;
-        private readonly Config _config;
+        private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
 
         private readonly ConcurrentDictionary<PackagePath, Lazy<string>> _packagePath = new ConcurrentDictionary<PackagePath, Lazy<string>>();
         private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
 
-        public PackageResolver(string docsetPath, Config config, FetchOptions fetchOptions = default)
+        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions)
         {
             _docsetPath = docsetPath;
             _config = config;
@@ -46,20 +46,13 @@ namespace Microsoft.Docs.Build
 
         public void DownloadPackage(PackagePath path, PackageFetchOptions options)
         {
-            try
+            if (path.Type == PackageType.Git)
             {
-                if (path.Type == PackageType.Git)
-                {
-                    DownloadGitRepository(
-                        path.Url,
-                        path.Branch,
-                        options.HasFlag(PackageFetchOptions.DepthOne),
-                        path is DependencyConfig dependency && dependency.IncludeInBuild);
-                }
-            }
-            catch (Exception ex) when (options.HasFlag(PackageFetchOptions.IgnoreError))
-            {
-                Log.Write($"Ignore optional package download failure '{path}': {ex}");
+                DownloadGitRepository(
+                    path.Url,
+                    path.Branch,
+                    options.HasFlag(PackageFetchOptions.DepthOne),
+                    path is DependencyConfig dependency && dependency.IncludeInBuild);
             }
         }
 
@@ -138,6 +131,7 @@ namespace Microsoft.Docs.Build
 
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
+            GitUtility.AddRemote(cwd, "origin", url);
 
             // Remove git lock files if previous build was killed during git operation
             DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));

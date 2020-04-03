@@ -2,8 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -14,37 +15,26 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class TableOfContentsMap
     {
-        private readonly HashSet<Document> _tocs;
+        private readonly ErrorLog _errorLog;
+        private readonly BuildScope _buildScope;
+        private readonly TableOfContentsLoader _tocLoader;
+        private readonly DocumentProvider _documentProvider;
 
-        private readonly HashSet<Document> _experimentalTocs;
+        private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
-        private readonly IReadOnlyDictionary<Document, HashSet<Document>> _documentToTocs;
-
-        private readonly IReadOnlyDictionary<Document, List<Document>> _tocReferences;
-
-        public TableOfContentsMap(
-            List<Document> tocs,
-            List<Document> experimentalTocs,
-            Dictionary<Document, HashSet<Document>> documentToTocs,
-            Dictionary<Document, List<Document>> tocReferences)
+        public TableOfContentsMap(ErrorLog errorLog, BuildScope buildScope, TableOfContentsLoader tocLoader, DocumentProvider documentProvider)
         {
-            _tocs = new HashSet<Document>(tocs ?? throw new ArgumentNullException(nameof(tocs)));
-            _experimentalTocs = new HashSet<Document>(experimentalTocs ?? throw new ArgumentNullException(nameof(experimentalTocs)));
-            _documentToTocs = documentToTocs ?? throw new ArgumentNullException(nameof(documentToTocs));
-            _tocReferences = tocReferences ?? throw new ArgumentNullException(nameof(tocReferences));
+            _errorLog = errorLog;
+            _buildScope = buildScope;
+            _tocLoader = tocLoader;
+            _documentProvider = documentProvider;
+            _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
         }
 
-        public bool TryGetTocReferences(Document toc, [NotNullWhen(true)] out List<Document>? tocs)
+        public IEnumerable<FilePath> GetFiles()
         {
-            return _tocReferences.TryGetValue(toc, out tocs);
+            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Select(toc => toc.FilePath);
         }
-
-        /// <summary>
-        /// Contains toc or not
-        /// </summary>
-        /// <param name="toc">The toc to build</param>
-        /// <returns>Whether contains toc or not</returns>
-        public bool Contains(Document toc) => _tocs.Contains(toc) || _experimentalTocs.Contains(toc);
 
         /// <summary>
         /// Find the toc relative path to document
@@ -53,7 +43,7 @@ namespace Microsoft.Docs.Build
         /// <returns>The toc relative path</returns>
         public string? FindTocRelativePath(Document file)
         {
-            var nearestToc = GetNearestToc(file);
+            var nearestToc = FindNearestToc(file);
 
             return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath)) : null;
         }
@@ -65,59 +55,44 @@ namespace Microsoft.Docs.Build
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
         /// when the file is not referenced, return only toc in the same or higher folder level.
         /// </summary>
-        public Document? GetNearestToc(Document file)
+        public Document? FindNearestToc(Document file)
+        {
+            return FindNearestToc(
+                file,
+                _tocs.Value.tocToTocs.Keys.Where(toc => !toc.IsExperimental),
+                _tocs.Value.docToTocs,
+                file => file.FilePath.Path);
+        }
+
+        /// <summary>
+        /// Compare two toc candidate relative to target file.
+        /// Return negative if x is closer than y, positive if x is farer than y, 0 if x equals y.
+        /// 1. sub nearest(based on file path)
+        /// 2. parent nearest(based on file path)
+        /// 3. sub-name lexicographical nearest
+        /// </summary>
+        internal static T? FindNearestToc<T>(T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
         {
             var hasReferencedTocs = false;
-            var filteredTocs = (hasReferencedTocs = _documentToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : _tocs;
+            var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
 
             var tocCandidates = from toc in filteredTocs
-                                let dirInfo = GetRelativeDirectoryInfo(file.FilePath.Path, toc.FilePath.Path)
+                                let dirInfo = GetRelativeDirectoryInfo(getPath(file), getPath(toc))
                                 where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
-                                select new TocCandidate((dirInfo.subDirectoryCount, dirInfo.parentDirectoryCount), toc);
+                                select (subCount: dirInfo.subDirectoryCount, parentCount: dirInfo.parentDirectoryCount, toc);
 
             return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
-                return CompareTocCandidate(minCandidate, nextCandidate) <= 0 ? minCandidate : nextCandidate;
-            })?.Toc;
+                var result = minCandidate.subCount - nextCandidate.subCount;
+                if (result == 0)
+                    result = minCandidate.parentCount - nextCandidate.parentCount;
+                if (result == 0)
+                    result = minCandidate.toc.CompareTo(nextCandidate.toc);
+                return result <= 0 ? minCandidate : nextCandidate;
+            }).toc;
         }
 
-        public static TableOfContentsMap Create(Context context)
-        {
-            using (Progress.Start("Loading TOC"))
-            {
-                var builder = new TableOfContentsMapBuilder();
-                ParallelUtility.ForEach(
-                    context.BuildScope.Files,
-                    file => BuildTocMap(context, file, builder),
-                    Progress.Update);
-
-                return builder.Build();
-            }
-        }
-
-        private static void BuildTocMap(Context context, FilePath path, TableOfContentsMapBuilder tocMapBuilder)
-        {
-            try
-            {
-                var file = context.DocumentProvider.GetDocument(path);
-                if (file.ContentType != ContentType.TableOfContents)
-                {
-                    return;
-                }
-
-                var (errors, _, referencedDocuments, referencedTocs) = context.TableOfContentsLoader.Load(file);
-                context.ErrorLog.Write(errors);
-
-                tocMapBuilder.Add(file, referencedDocuments, referencedTocs);
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                context.ErrorLog.Write(dex);
-            }
-        }
-
-        private static (int subDirectoryCount, int parentDirectoryCount)
-            GetRelativeDirectoryInfo(string pathA, string pathB)
+        private static (int subDirectoryCount, int parentDirectoryCount) GetRelativeDirectoryInfo(string pathA, string pathB)
         {
             var relativePath = PathUtility.NormalizeFile(
                 Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
@@ -130,6 +105,7 @@ namespace Microsoft.Docs.Build
             var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
             var parentDirectoryCount = 0;
             var subDirectoryCount = 0;
+
             foreach (var part in relativePathParts)
             {
                 switch (part)
@@ -141,38 +117,71 @@ namespace Microsoft.Docs.Build
                         break;
                 }
             }
+
             subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
             return (subDirectoryCount, parentDirectoryCount);
         }
 
-        private sealed class TocCandidate
+        private bool ShouldBuildFile(Document file)
         {
-            public (int subCount, int parentCount) FileDirInfo { get; }
-
-            public Document Toc { get; }
-
-            public TocCandidate((int, int) fileDirInfo, Document toc)
+            if (file.FilePath.Origin != FileOrigin.Fallback)
             {
-                FileDirInfo = fileDirInfo;
-                Toc = toc;
+                return true;
+            }
+
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            if (_tocs.Value.tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private (Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs) BuildTocMap()
+        {
+            using (Progress.Start("Loading TOC"))
+            {
+                var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs)>();
+
+                ParallelUtility.ForEach(
+                    _buildScope.GetFiles(ContentType.TableOfContents),
+                    file => LoadToc(file, tocReferences),
+                    Progress.Update);
+
+                var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
+
+                var tocToTocs = (
+                    from item in tocReferences
+                    where !includedTocs.Contains(item.Key)
+                    select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
+
+                var docToTocs = (
+                    from item in tocReferences
+                    from doc in item.Value.docs
+                    where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental
+                    group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
+
+                return (tocToTocs, docToTocs);
             }
         }
 
-        /// <summary>
-        /// Compare two toc candidate relative to target file.
-        /// Return negative if x is closer than y, positive if x is farer than y, 0 if x equals y.
-        /// 1. sub nearest(based on file path)
-        /// 2. parent nearest(based on file path)
-        /// 3. sub-name lexicographical nearest
-        /// </summary>
-        private int CompareTocCandidate(TocCandidate candidateX, TocCandidate candidateY)
+        private void LoadToc(FilePath path, ConcurrentDictionary<Document, (List<Document> files, List<Document> tocs)> tocReferences)
         {
-            var result = candidateX.FileDirInfo.subCount - candidateY.FileDirInfo.subCount;
-            if (result == 0)
-                result = candidateX.FileDirInfo.parentCount - candidateY.FileDirInfo.parentCount;
-            if (result == 0)
-                result = candidateX.Toc.CompareTo(candidateY.Toc);
-            return result;
+            try
+            {
+                var file = _documentProvider.GetDocument(path);
+                Debug.Assert(file.ContentType == ContentType.TableOfContents);
+
+                var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
+                _errorLog.Write(errors);
+
+                tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                _errorLog.Write(dex);
+            }
         }
     }
 }

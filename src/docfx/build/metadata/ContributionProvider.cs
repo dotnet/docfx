@@ -13,29 +13,28 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly Config _config;
-        private readonly Docset? _fallbackDocset;
         private readonly GitHubAccessor _githubAccessor;
-        private readonly LocalizationProvider _localization;
+        private readonly BuildOptions _buildOptions;
 
         private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
 
-        private readonly GitCommitProvider _gitCommitProvider;
+        private readonly RepositoryProvider _repositoryProvider;
 
         public ContributionProvider(
-            Config config, LocalizationProvider localization, Input input, Docset? fallbackDocset, GitHubAccessor githubAccessor, GitCommitProvider gitCommitProvider)
+            Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider)
         {
             _input = input;
             _config = config;
-            _localization = localization;
+            _buildOptions = buildOptions;
             _githubAccessor = githubAccessor;
-            _gitCommitProvider = gitCommitProvider;
-            _fallbackDocset = fallbackDocset;
+            _repositoryProvider = repositoryProvider;
         }
 
         public (List<Error> errors, ContributionInfo?) GetContributionInfo(FilePath file, SourceInfo<string> authorName)
         {
             var errors = new List<Error>();
-            var (repo, _, commits) = _gitCommitProvider.GetCommitHistory(file);
+            var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
+            var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath);
             if (repo is null)
             {
                 return (errors, null);
@@ -45,7 +44,7 @@ namespace Microsoft.Docs.Build
             var contributionInfo = new ContributionInfo
             {
                 UpdateAt = updatedDateTime.ToString(
-                    _localization.Locale == "en-us" ? "M/d/yyyy" : _localization.Culture.DateTimeFormat.ShortDatePattern),
+                    _buildOptions.Locale == "en-us" ? "M/d/yyyy" : _buildOptions.Culture.DateTimeFormat.ShortDatePattern),
                 UpdatedAtDateTime = updatedDateTime,
             };
 
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
             var contributionBranch = LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
             if (!string.IsNullOrEmpty(contributionBranch))
             {
-                (_, _, contributionCommits) = _gitCommitProvider.GetCommitHistory(file, contributionBranch);
+                (_, _, contributionCommits) = _repositoryProvider.GetCommitHistory(fullPath, contributionBranch);
             }
 
             var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
@@ -126,8 +125,9 @@ namespace Microsoft.Docs.Build
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate, string? gitCommit)
             GetGitUrls(FilePath file)
         {
-            var isWhitelisted = file.Origin == FileOrigin.Default || file.Origin == FileOrigin.Fallback;
-            var (repo, pathToRepo, commits) = _gitCommitProvider.GetCommitHistory(file);
+            var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
+            var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
+            var (repo, pathToRepo, commits) = _repositoryProvider.GetCommitHistory(fullPath);
             if (repo is null || pathToRepo is null)
                 return default;
 
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
 
             var contentGitCommitUrl = contentCommitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{commit}", commit);
             var originalContentGitUrl = contentBranchUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo, _localization.Locale) : originalContentGitUrl;
+            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo) : originalContentGitUrl;
 
             return (
                 contentGitUrl,
@@ -157,7 +157,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string? GetContentGitUrl(string repo, string branch, string pathToRepo, string locale)
+        private string? GetContentGitUrl(string repo, string branch, string pathToRepo)
         {
             if (!string.IsNullOrEmpty(_config.EditRepositoryUrl))
             {
@@ -174,9 +174,9 @@ namespace Microsoft.Docs.Build
                 branch = contributionBranch;
             }
 
-            if (_fallbackDocset != null)
+            if (_buildOptions.IsLocalizedBuild)
             {
-                (repo, branch) = LocalizationUtility.GetLocalizedRepo(false, repo, branch, locale, _config.DefaultLocale);
+                repo = LocalizationUtility.GetLocalizedRepository(repo, _buildOptions.Locale);
             }
 
             var (gitUrlTemplate, _) = GetContentGitUrlTemplate(repo, pathToRepo);

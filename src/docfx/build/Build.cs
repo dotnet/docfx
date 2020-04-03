@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -41,36 +39,19 @@ namespace Microsoft.Docs.Build
 
         private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
         {
-            List<Error> errors;
-            Config? config = null;
-
-            using var errorLog = new ErrorLog(docsetPath, outputPath, () => config, options.Legacy);
+            using var errorLog = new ErrorLog(outputPath, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
 
             try
             {
-                // load and trace entry repository
-                var repository = Repository.Create(docsetPath);
-                Telemetry.SetRepository(repository?.Remote, repository?.Branch);
-                var locale = LocalizationUtility.GetLocale(repository);
-
-                var configLoader = new ConfigLoader(repository, errorLog);
-                (errors, config) = configLoader.Load(docsetPath, locale, options);
+                var configLoader = new ConfigLoader(errorLog);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options);
                 if (errorLog.Write(errors))
                     return true;
 
-                using var packageResolver = new PackageResolver(docsetPath, config, options.FetchOptions);
-                var localizationProvider = new LocalizationProvider(packageResolver, config, locale, docsetPath, repository);
-                var repositoryProvider = new RepositoryProvider(docsetPath, repository, config, packageResolver, localizationProvider);
-                var input = new Input(docsetPath, repositoryProvider);
-
-                // get docsets(build docset, fallback docset and dependency docsets)
-                var docset = new Docset(docsetPath);
-                var fallbackDocset = localizationProvider.GetFallbackDocset();
-
-                // run build based on docsets
-                outputPath ??= Path.Combine(docsetPath, config.OutputPath);
-                Run(config, docset, fallbackDocset, options, errorLog, outputPath, input, repositoryProvider, localizationProvider, packageResolver);
+                errorLog.Configure(config, buildOptions.OutputPath);
+                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
+                Run(context);
                 return false;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -80,102 +61,71 @@ namespace Microsoft.Docs.Build
             finally
             {
                 Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
-                Log.Important($"Build '{config?.Name}' done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                 errorLog.PrintSummary();
             }
         }
 
-        private static void Run(
-            Config config,
-            Docset docset,
-            Docset? fallbackDocset,
-            CommandLineOptions options,
-            ErrorLog errorLog,
-            string outputPath,
-            Input input,
-            RepositoryProvider repositoryProvider,
-            LocalizationProvider localizationProvider,
-            PackageResolver packageResolver)
+        private static void Run(Context context)
         {
-            using var context = new Context(outputPath, errorLog, options, config, docset, fallbackDocset, input, repositoryProvider, localizationProvider, packageResolver);
-            context.BuildQueue.Enqueue(context.BuildScope.Files.Concat(context.RedirectionProvider.Files));
+            Parallel.Invoke(
+                () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
+                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
+                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
+                () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
 
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
             }
 
-            context.BookmarkValidator.Validate();
-            context.ContentValidator.PostValidate();
-            context.ErrorLog.Write(context.MetadataProvider.Validate());
-
-            var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
-            context.ErrorLog.Write(errors);
+            Parallel.Invoke(
+                () => context.BookmarkValidator.Validate(),
+                () => context.ContentValidator.PostValidate(),
+                () => context.ErrorLog.Write(context.MetadataProvider.PostValidate()),
+                () => context.ContributionProvider.Save(),
+                () => context.RepositoryProvider.Save(),
+                () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
+                () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+            var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
+            context.ErrorLog.Write(errors);
 
-            if (!context.Config.DryRun)
+            if (context.Config.DryRun)
             {
-                var dependencyMap = context.DependencyMapBuilder.Build();
-                var fileLinkMap = context.FileLinkMapBuilder.Build();
-
-                context.Output.WriteJson(".xrefmap.json", xrefMapModel);
-                context.Output.WriteJson(".publish.json", publishModel);
-                context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel());
-                context.Output.WriteJson(".links.json", fileLinkMap);
-
-                if (options.Legacy)
-                {
-                    if (context.Config.OutputJson)
-                    {
-                        // TODO: decouple files and dependencies from legacy.
-                        Legacy.ConvertToLegacyModel(docset, context, fileManifests, dependencyMap);
-                    }
-                    else
-                    {
-                        context.TemplateEngine.CopyTo(outputPath);
-                    }
-                }
+                return;
             }
 
-            context.ContributionProvider.Save();
-            context.GitCommitProvider.Save();
+            // TODO: decouple files and dependencies from legacy.
+            var dependencyMap = context.DependencyMapBuilder.Build();
 
-            errorLog.Write(context.GitHubAccessor.Save());
-            errorLog.Write(context.MicrosoftGraphAccessor.Save());
+            Parallel.Invoke(
+                () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
+                () => context.Output.WriteJson(".publish.json", publishModel),
+                () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
+                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build()),
+                () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
         }
 
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
-            if (!ShouldBuildFile(context, file))
-            {
-                return;
-            }
 
             try
             {
-                var errors = Enumerable.Empty<Error>();
-                switch (file.ContentType)
+                var errors = file.ContentType switch
                 {
-                    case ContentType.Resource:
-                        errors = BuildResource.Build(context, file);
-                        break;
-                    case ContentType.Page:
-                        errors = BuildPage.Build(context, file);
-                        break;
-                    case ContentType.TableOfContents:
-                        // TODO: improve error message for toc monikers overlap
-                        errors = BuildTableOfContents.Build(context, file);
-                        break;
-                    case ContentType.Redirection:
-                        errors = BuildRedirection.Build(context, file);
-                        break;
-                }
+                    ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
+                    ContentType.Resource when path.Origin != FileOrigin.Fallback => BuildResource.Build(context, file),
+                    ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
+                    ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
+                    _ => new List<Error>(),
+                };
 
                 context.ErrorLog.Write(errors);
-                Telemetry.TrackBuildItemCount(file.ContentType);
+                Telemetry.TrackBuildFileTypeCount(file);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -186,24 +136,6 @@ namespace Microsoft.Docs.Build
                 Console.WriteLine($"Build {file.FilePath} failed");
                 throw;
             }
-        }
-
-        private static bool ShouldBuildFile(Context context, Document file)
-        {
-            if (file.ContentType == ContentType.TableOfContents)
-            {
-                if (!context.TocMap.Contains(file))
-                {
-                    return false;
-                }
-
-                // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                return file.FilePath.Origin != FileOrigin.Fallback
-                    || (context.TocMap.TryGetTocReferences(file, out var tocReferences)
-                        && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback));
-            }
-
-            return file.FilePath.Origin != FileOrigin.Fallback;
         }
     }
 }

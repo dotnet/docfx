@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             }
 
             var resolvedTag = partialName == null
-                ? "<a href=\"{{href}}\"> {{uid}} </a>"
+                ? "<a href=\"{{href}}\"> {{name}} </a>"
                 : "{{> " + partialName + "}}";
             var resultTemplate = XrefTagTemplate.Replace("@resolvedTag", resolvedTag);
 

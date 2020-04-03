@@ -14,8 +14,8 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Resource);
 
             var errors = new List<Error>();
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddIfNotNull(monikerError);
+            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
@@ -34,14 +34,17 @@ namespace Microsoft.Docs.Build
                 file.SiteUrl,
                 publishPath,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
+                context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && copy && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                context.Output.Copy(outputPath, file.FilePath);
-            }
+                if (copy && !context.Config.DryRun)
+                {
+                    context.Output.Copy(outputPath, file.FilePath);
+                }
+            });
 
             return errors;
         }

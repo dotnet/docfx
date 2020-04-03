@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
             return builder.Use(document =>
             {
-                if (((Document)InclusionContext.File).FilePath.EndsWith(".md"))
+                if (((Document)InclusionContext.File).FilePath.Format == FileFormat.Markdown)
                 {
                     foreach (var validator in validators)
                     {

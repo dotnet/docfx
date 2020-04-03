@@ -92,6 +92,7 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
+                .UseMarkdownElementTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
@@ -104,6 +105,7 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
+                .UseMarkdownElementTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
@@ -157,12 +159,12 @@ namespace Microsoft.Docs.Build
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
         }
 
-        private (string content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
+        private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
             var (error, content, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
             status.Errors.AddIfNotNull(error);
-            return (content, file);
+            return (content?.Replace("\r", ""), file);
         }
 
         private string GetLink(SourceInfo<string> href)
@@ -188,7 +190,7 @@ namespace Microsoft.Docs.Build
             return (link, display);
         }
 
-        private IReadOnlyList<string> GetMonikerRange(SourceInfo<string> monikerRange)
+        private IReadOnlyList<string> GetMonikerRange(SourceInfo<string?> monikerRange)
         {
             var status = t_status.Value!.Peek();
             var (error, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);

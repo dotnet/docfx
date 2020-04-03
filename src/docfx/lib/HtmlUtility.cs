@@ -391,7 +391,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var ch in text)
             {
-                if (ch == ' ' || ch == '\t' || ch == '\n')
+                if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
                 {
                     if (word)
                     {

@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                         Content = title,
 
                         // todo: get title precise line info
-                        SourceInfo = new SourceInfo(file.FilePath, 1, 1),
+                        SourceInfo = new SourceInfo(file.FilePath, 0, 0),
                     },
                 };
 
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                     ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
                     ValidationSeverity.WARNING => ErrorLevel.Warning,
                     ValidationSeverity.ERROR => ErrorLevel.Error,
-                    _ => ErrorLevel.Off
+                    _ => ErrorLevel.Off,
                 };
         }
     }

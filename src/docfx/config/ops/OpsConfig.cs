@@ -21,5 +21,8 @@ namespace Microsoft.Docs.Build
         public bool NeedGeneratePdfUrlTemplate { get; private set; }
 
         public string? XrefEndpoint { get; private set; }
+
+        [JsonProperty("JoinTOCPlugin")]
+        public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
     }
 }

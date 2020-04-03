@@ -346,7 +346,7 @@ repos:
             "fullName": "test.test",
             "description": "a.description"
           }
-        docs/b.json: | 
+        docs/f1/f2/b.json: | 
           {
             "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
             "xref": "a"
@@ -364,11 +364,11 @@ repos:
           }
 outputs:
   docs/a.json:
-  docs/b.json: | 
+  docs/f1/f2/b.json: | 
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
       "xref": {
-          "href": "a.json",
+          "href": "../../a.json",
           "uid": "a",
           "name": "test",
           "fullName": "test.test",
@@ -380,7 +380,7 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-          "docs/b.json": [
+          "docs/f1/f2/b.json": [
               {
                   "source": "docs/a.json",
                   "type": "uidInclusion"

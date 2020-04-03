@@ -279,12 +279,11 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, IReadOnlyList<string>> files, List<string> conflictMonikers)
             {
-                var nonVersion = conflictMonikers.Contains(PublishModelBuilder.NonVersion);
-                var message = conflictMonikers.Count != 0 && !nonVersion ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
+                var message = conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
                 return new Error(
-                    ErrorLevel.Error,
+                    ErrorLevel.Warning,
                     "publish-url-conflict",
-                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(nonVersion ? null : $"<{StringUtility.Join(file.Value)}>")}"))}");
+                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"))}");
             }
 
             /// <summary>
@@ -295,7 +294,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error OutputPathConflict(string path, IEnumerable<FilePath> files)
-                => new Error(ErrorLevel.Error, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
+                => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
         }
 
         public static class Heading
@@ -372,8 +371,8 @@ namespace Microsoft.Docs.Build
             /// In markdown-format toc, defined an empty node(# ) with no content.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MissingTocHead(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "missing-toc-head", $"The toc head name is missing", source);
+            public static Error MissingTocName(SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "missing-toc-name", $"TOC node is missing name (if it is toc.yml) or title (toc.md)", source);
 
             /// <summary>
             /// In markdown-format toc, used wrong toc syntax.
@@ -431,6 +430,9 @@ namespace Microsoft.Docs.Build
 
         public static class Versioning
         {
+            public static Error DuplicateMonikerConfig(SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "duplicate-moniker-config", $"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored", source);
+
             /// <summary>
             /// Multiple articles with same uid contain overlapped monikers,
             /// and can't decide which article to use when referencing that uid with this overlapped version
@@ -443,7 +445,7 @@ namespace Microsoft.Docs.Build
             /// Failed to parse moniker string.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeInvalid(SourceInfo<string> source, Exception ex)
+            public static Error MonikerRangeInvalid(SourceInfo<string?> source, Exception ex)
                 => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: '{source}': {ex.Message}", source);
 
             /// <summary>
@@ -459,11 +461,14 @@ namespace Microsoft.Docs.Build
             /// or moniker-zone defined in article.md has no intersection with file-level monikers.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikeRangeOutOfScope(SourceInfo<string> source, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> source, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{source}' is {StringUtility.Join(zoneLevelMonikers)}, while file level monikers is {StringUtility.Join(fileLevelMonikers)}.", source);
 
-            public static Error MonikeRangeOutOfScope(SourceInfo<string> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string> monikerRange, IReadOnlyList<string> fileMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string?> monikerRange, IReadOnlyList<string> fileMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file moniker range '{monikerRange}' is {StringUtility.Join(fileMonikers)}", monikerRange);
+
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string?>[] monikers, IReadOnlyList<string> fileMonikers)
+                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}", monikers.FirstOrDefault());
         }
 
         public static class JsonSchema
@@ -671,7 +676,7 @@ namespace Microsoft.Docs.Build
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
             public static Error Custom404Page(Document file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning", file.FilePath);
         }
     }
 }

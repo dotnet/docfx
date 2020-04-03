@@ -13,34 +13,37 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
             var errors = new List<Error>();
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddIfNotNull(monikerError);
+            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddRange(monikerErrors);
 
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath, monikers) : null,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
+                context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 
-            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && publishItem.Path != null && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
-                var metadata = new
+                if (publishItem.Path != null && !context.Config.DryRun)
                 {
-                    locale = context.LocalizationProvider.Locale,
-                    monikers,
-                    redirect_url = publishItem.RedirectUrl,
-                    is_dynamic_rendering = true,
-                };
+                    var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
+                    var metadata = new
+                    {
+                        locale = context.BuildOptions.Locale,
+                        monikers,
+                        redirect_url = publishItem.RedirectUrl,
+                        is_dynamic_rendering = true,
+                    };
 
-                // Note: produce an empty output to make publish happy
-                context.Output.WriteText(publishItem.Path, "{}");
-                context.Output.WriteJson(metadataPath, metadata);
-            }
+                    // Note: produce an empty output to make publish happy
+                    context.Output.WriteText(publishItem.Path, "{}");
+                    context.Output.WriteJson(metadataPath, metadata);
+                }
+            });
 
             return errors;
         }

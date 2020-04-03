@@ -1,0 +1,215 @@
+# Peek .openpublishing.publish.config.json for docsets_to_publish and open_to_public_contributors
+repos:
+  https://github.com/ops/config-1:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            { "build_source_folder": ".", "open_to_public_contributors": true },
+            { "build_source_folder": "b", "open_to_public_contributors": true }
+          ]
+        }
+      docfx.yml: |
+        files: 'a.md'
+      a.md:
+      b/docfx.yml: |
+        globalMetadata:
+          open_to_public_contributors: false
+      b/.openpublishing.publish.config.json: '{'
+      b/b.md:
+      c/docfx.yml:
+      c/c.md:
+outputs:
+  a.json: '{ "open_to_public_contributors": true }'
+  b/b.json: '{ "open_to_public_contributors": false }'
+---
+# Peak .openpublishing.publish.config.json for multiple docsets, dependencies and themes
+repos:
+  https://github.com/ops1/dep#live:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{ "build_source_folder": "articles" }],
+          "dependent_repositories": [{
+              "path_to_root": "_themes",
+              "url": "https://github.com/ops1/template",
+              "branch": "test"
+            }, {
+              "path_to_root": "articles/crr",
+              "url": "https://github.com/ops1/crr",
+              "branch_mapping": { "live": "live1" },
+              "include_in_build": true
+            }]
+        }
+      articles/docfx.yml:
+      articles/a.yml: '#YamlMime:TestData'
+      articles/b.md: '[!INCLUDE[](crr/token.md)]'
+  https://github.com/ops1/template#test:
+  - files:
+      ContentTemplate/schemas/TestData.schema.json: "{}"
+  https://github.com/ops1/crr#live:
+  - files:
+      token.md: live
+  https://github.com/ops1/crr#live1:
+  - files:
+      token.md: live1
+outputs:
+  articles/a.json:
+  articles/b.json: |
+    { "conceptual": "<p>live1</p>" }
+  articles/crr/token.json: |
+    { "conceptual": "<p>live1</p>" }
+---
+# Throw error for OPS repos that are not provisioned
+repos:
+  https://github.com/ops/provision:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+           "docsets_to_publish": [{ "docset_name": "bad_name" }]
+        }
+      docfx.yml: |
+        http:
+          https://op-build-prod.azurewebsites.net:
+            headers:
+              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
+environments:
+  - DOCS_OPS_TOKEN
+outputs:
+  .errors.log: |
+    ["warning","docset-not-provisioned","*"]
+    ["warning","docset-not-provisioned","*"]
+---
+# Specify editLink repo and branch in .openpublishing.publish.config.json
+repos:
+  https://github.com/testowner/test-op-edit-link-repo#master-edit-link:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "git_repository_url_open_to_public_contributors": "https://github.com/a/b",
+          "git_repository_branch_open_to_public_contributors": "c"
+        }
+      docfx.yml:
+      a.md:
+outputs:
+  a.json: |
+    {
+      "content_git_url": "https://github.com/a/b/blob/c/a.md",
+      "original_content_git_url": "https://github.com/testowner/test-op-edit-link-repo/blob/master-edit-link/a.md",
+      "gitcommit": "https://github.com/testowner/test-op-edit-link-repo/blob/65344f739e0bca9b2d0b93615f905d148af0607f/a.md",
+    }
+---
+# Generate _op_pdfUrlPrefixTemplate when need_generate_pdf_url_template in .openpublishing.publish.config.json is true
+repos:
+  https://docs.com/ops/need_generate_pdf_url_template:
+  - files:
+      .openpublishing.publish.config.json: |
+        { "need_generate_pdf_url_template": true }
+      docfx.yml:
+      a.md:
+outputs:
+  a.json: |
+    { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
+---
+# Ignore OPS config if it is not a git repo
+inputs:
+  .openpublishing.publish.config.json: |
+    { "need_generate_pdf_url_template": true }
+  docfx.yml:
+  a.md:
+outputs:
+  a.json: |
+    { "_op_pdfUrlPrefixTemplate": undefined }
+---
+# Ignore redirection rules in .openpublishing.redirections.json if it doesn't belong to current docset
+repos:
+  https://github.com/redirection/ignore:
+  - files:
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {"source_path": "index.md", "redirect_url": "/"},
+            {"source_path": "a/index.md", "redirect_url": "/a"},
+          ]
+        }
+      docsets.yml:
+      a/docfx.yml:
+outputs:
+  a/.publish.json: |
+    { "files": [{ "source_path": "index.md", "redirect_url": "/a" }] }
+---
+# redirect_url is case insensitive
+repos:
+  https://docs.com/ops/redirect-1:
+  - files:
+      docfx.yml:
+      .openpublishing.redirection.json: |
+        { "redirections": [{"source_path": "a.md", "redirect_URL": "/"}] }
+outputs:
+  .publish.json: |
+    { "files": [{ "source_path": "a.md", "redirect_url": "/" }] }
+---
+# document_id of files redirected to relative path
+repos:
+  https://github.com/ops/redirect-2:
+  - files:
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {
+              "source_path": "ce/admin/integrate-with-microsoft-teams.md",
+              "redirect_url": "../basics/teams-integration",
+              "redirect_document_id": "true"
+            },
+          ]
+        }
+      docsets.yml:
+      ce/docfx.yml: |
+        name: customer-engagement-ppe
+        product: MSDN
+      ce/.openpublishing.redirection.json: '{'
+      ce/redirections.yml: |
+        renames:
+          admin/integrate-with-microsoft-teams.md: '../basics/teams-integration'
+      ce/basics/teams-integration.md:
+outputs:
+  ce/basics/teams-integration.json: |
+    { "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48" }
+---
+# Supports fusion TOC ops config
+repos:
+  https://github.com/ops/fusion-toc:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "JoinTOCPlugin": [
+            {
+              "ReferenceTOC": "api/TOC.yml",
+              "ReferenceTOCUrl": "/dotnet/api/azure_ref_toc/toc.json",
+              "ConceptualTOCUrl": "/dotnet/azure/sdk/toc.json",
+              "ConceptualTOC": "docs-ref-conceptual/TOC.yml"
+            },
+            {
+              "ReferenceTOC": "api-1/TOC.yml",
+              "ConceptualTOCUrl": "/dotnet-1/azure/sdk/toc.json",
+            },
+            {
+              "ReferenceTOCUrl": "/dotnet-2/api/azure_ref_toc/toc.json",
+              "ConceptualTOC": "docs-ref-conceptual-2/TOC.yml"
+            }
+          ],
+        }
+      docfx.yml:
+      api/TOC.yml:
+      docs-ref-conceptual/TOC.yml:
+      api-1/TOC.yml:
+      docs-ref-conceptual-2/TOC.yml:
+outputs:
+  api/toc.json: |
+    { "metadata": { "universal_conceptual_toc": "/dotnet/azure/sdk/toc.json", "universal_ref_toc": undefined } }
+  docs-ref-conceptual/toc.json: |
+    { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet/api/azure_ref_toc/toc.json" } }
+  api-1/toc.json: |
+    { "metadata": { "universal_conceptual_toc": "/dotnet-1/azure/sdk/toc.json", "universal_ref_toc": undefined } }
+  docs-ref-conceptual-2/toc.json: |
+    { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet-2/api/azure_ref_toc/toc.json" } }

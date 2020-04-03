@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -21,8 +22,8 @@ namespace Microsoft.Docs.Build
             var (loadErrors, sourceModel) = Load(context, file);
             errors.AddRange(loadErrors);
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddIfNotNull(monikerError);
+            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
@@ -30,14 +31,15 @@ namespace Microsoft.Docs.Build
                 file.SiteUrl,
                 outputPath,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
+                context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            var shouldWriteOutput = context.PublishModelBuilder.TryAdd(file.FilePath, publishItem);
-
             if (errors.Any(e => e.Level == ErrorLevel.Error))
+            {
+                context.PublishModelBuilder.Add(file.FilePath, publishItem);
                 return errors;
+            }
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? CreatePageOutput(context, file, sourceModel)
@@ -45,23 +47,26 @@ namespace Microsoft.Docs.Build
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
 
-            if (shouldWriteOutput && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                if (output is string str)
+                if (!context.Config.DryRun)
                 {
-                    context.Output.WriteText(outputPath, str);
-                }
-                else
-                {
-                    context.Output.WriteJson(outputPath, output);
-                }
+                    if (output is string str)
+                    {
+                        context.Output.WriteText(outputPath, str);
+                    }
+                    else
+                    {
+                        context.Output.WriteJson(outputPath, output);
+                    }
 
-                if (context.Config.Legacy && file.IsPage)
-                {
-                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                    context.Output.WriteJson(metadataPath, metadata);
+                    if (context.Config.Legacy && file.IsPage)
+                    {
+                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                        context.Output.WriteJson(metadataPath, metadata);
+                    }
                 }
-            }
+            });
 
             return errors;
         }
@@ -118,15 +123,14 @@ namespace Microsoft.Docs.Build
             return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }
 
-        private static (List<Error> errors, object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel)
+        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
         {
             if (context.Config.DryRun)
             {
                 return (new List<Error>(), new JObject(), new JObject());
             }
 
-            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), new JObject());
+            return (new List<Error>(), context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
         private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
@@ -144,8 +148,8 @@ namespace Microsoft.Docs.Build
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
 
-            var (monikerError, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddIfNotNull(monikerError);
+            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddRange(monikerErrors);
             systemMetadata.Monikers = monikers;
 
             if (IsCustomized404Page(file))
@@ -165,14 +169,14 @@ namespace Microsoft.Docs.Build
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
-            systemMetadata.Locale = context.LocalizationProvider.Locale;
+            systemMetadata.Locale = context.BuildOptions.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
             systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
-            systemMetadata.EnableLocSxs = context.LocalizationProvider.EnableSideBySide;
+            systemMetadata.EnableLocSxs = context.BuildOptions.EnableSideBySide;
             systemMetadata.SiteName = context.Config.SiteName;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
@@ -198,17 +202,13 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error> errors, JObject model) Load(Context context, Document file)
         {
-            if (file.FilePath.EndsWith(".md"))
+            return file.FilePath.Format switch
             {
-                return LoadMarkdown(context, file);
-            }
-            if (file.FilePath.EndsWith(".yml"))
-            {
-                return LoadYaml(context, file);
-            }
-
-            Debug.Assert(file.FilePath.EndsWith(".json"));
-            return LoadJson(context, file);
+                FileFormat.Markdown => LoadMarkdown(context, file),
+                FileFormat.Yaml => LoadYaml(context, file),
+                FileFormat.Json => LoadJson(context, file),
+                _ => throw new InvalidOperationException(),
+            };
         }
 
         private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)
@@ -325,8 +325,8 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint(
-                string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            var jsName = string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js";
+            var templateMetadata = context.TemplateEngine.RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
 
             if (TemplateEngine.IsLandingData(file.Mime))
             {
@@ -351,8 +351,8 @@ namespace Microsoft.Docs.Build
         private static string CreateHtmlContent(Context context, HtmlNode html)
         {
             return LocalizationUtility.AddLeftToRightMarker(
-                context.LocalizationProvider.Culture,
-                HtmlUtility.AddLinkType(html, context.LocalizationProvider.Locale).WriteTo());
+                context.BuildOptions.Culture,
+                HtmlUtility.AddLinkType(html, context.BuildOptions.Locale).WriteTo());
         }
 
         private static void ValidateBookmarks(Context context, Document file, HtmlNode html)
@@ -370,8 +370,8 @@ namespace Microsoft.Docs.Build
             }
 
             // Generate SDP content
-            var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
-            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
+            var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model);
 
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);

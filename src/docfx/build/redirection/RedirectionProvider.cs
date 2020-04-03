@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,14 +23,14 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
-            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, RepositoryProvider repositoryProvider, DocumentProvider documentProvider, MonikerProvider monikerProvider)
+            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, Repository? repository, DocumentProvider documentProvider, MonikerProvider monikerProvider)
         {
             _errorLog = errorLog;
             _buildScope = buildScope;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
 
-            var redirections = LoadRedirectionModel(docsetPath, repositoryProvider.DefaultRepository);
+            var redirections = LoadRedirectionModel(docsetPath, repository);
             _redirectUrls = GetRedirectUrls(redirections, hostName);
             _renameHistory = GetRenameHistory(redirections, _redirectUrls);
         }
@@ -77,7 +79,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var type = _documentProvider.GetContentType(path);
+                var type = _buildScope.GetContentType(path);
                 if (type != ContentType.Page)
                 {
                     _errorLog.Write(Errors.Redirection.RedirectionInvalid(redirectUrl, path));
@@ -85,7 +87,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var absoluteRedirectUrl = redirectUrl.Value.Trim();
-                var filePath = new FilePath(path, FileOrigin.Redirection);
+                var filePath = FilePath.Redirection(path);
 
                 if (item.RedirectDocumentId)
                 {
@@ -171,14 +173,11 @@ namespace Microsoft.Docs.Build
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
             var renameHistory = new Dictionary<FilePath, FilePath>();
-
-            var publishUrlMap = _buildScope.Files.Concat(redirectUrls.Keys)
-                .GroupBy(file => _documentProvider.GetDocument(file).SiteUrl)
-                .ToDictionary(group => group.Key, group => group.ToList(), PathUtility.PathComparer);
+            var publishUrlMap = GetPublishUrlMap(redirectUrls.Keys);
 
             foreach (var item in redirections.Where(item => item.RedirectDocumentId))
             {
-                var file = new FilePath(item.SourcePath, FileOrigin.Redirection);
+                var file = FilePath.Redirection(item.SourcePath);
                 if (!redirectUrls.TryGetValue(file, out var redirectUrl))
                 {
                     continue;
@@ -191,11 +190,8 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var (error, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
-                if (error != null)
-                {
-                    _errorLog.Write(error);
-                }
+                var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
+                _errorLog.Write(errors);
 
                 List<FilePath> candidates;
                 if (redirectionSourceMonikers.Length == 0)
@@ -216,6 +212,17 @@ namespace Microsoft.Docs.Build
                 }
             }
             return renameHistory;
+        }
+
+        private Dictionary<string, List<FilePath>> GetPublishUrlMap(IEnumerable<FilePath> redirectUrlSources)
+        {
+            var fileUrls = new ConcurrentBag<(FilePath file, string url)>();
+            var allSources = _buildScope.Files.Concat(redirectUrlSources);
+            Parallel.ForEach(allSources, file => fileUrls.Add((file, _documentProvider.GetDocument(file).SiteUrl)));
+
+            var publishUrlMap = fileUrls.GroupBy(fileUrl => fileUrl.url)
+                                .ToDictionary(group => group.Key, group => group.Select(g => g.file).ToList(), PathUtility.PathComparer);
+            return publishUrlMap;
         }
 
         private static string RemoveTrailingIndex(string redirectionUrl)

@@ -20,23 +20,23 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
+        private readonly string? _fallbackDocsetPath;
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
-        private readonly Docset? _fallbackDocset;
 
         public FileResolver(
             string docsetPath,
+            string? fallbackDocsetPath = null,
             Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
-            FetchOptions fetchOptions = default,
-            Docset? fallbackDocset = null)
+            FetchOptions fetchOptions = default)
         {
             _docsetPath = docsetPath;
+            _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
             _credentialProvider = credentialProvider;
-            _fallbackDocset = fallbackDocset;
         }
 
         public string ReadString(SourceInfo<string> file)
@@ -46,6 +46,11 @@ namespace Microsoft.Docs.Build
         }
 
         public Stream ReadStream(SourceInfo<string> file)
+        {
+            return File.OpenRead(ResolveFilePath(file));
+        }
+
+        public string ResolveFilePath(SourceInfo<string> file)
         {
             if (_fetchOptions != FetchOptions.NoFetch)
             {
@@ -57,12 +62,11 @@ namespace Microsoft.Docs.Build
                 var localFilePath = Path.Combine(_docsetPath, file);
                 if (File.Exists(localFilePath))
                 {
-                    return File.OpenRead(localFilePath);
+                    return localFilePath;
                 }
-                else if (_fallbackDocset != null
-                    && File.Exists(localFilePath = Path.Combine(_fallbackDocset.DocsetPath, file)))
+                else if (_fallbackDocsetPath != null && File.Exists(localFilePath = Path.Combine(_fallbackDocsetPath, file)))
                 {
-                    return File.OpenRead(localFilePath);
+                    return localFilePath;
                 }
 
                 throw Errors.Config.FileNotFound(file).ToException();
@@ -74,7 +78,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.System.NeedRestore(file).ToException();
             }
 
-            return File.OpenRead(filePath);
+            return filePath;
         }
 
         public async Task Download(SourceInfo<string> file)

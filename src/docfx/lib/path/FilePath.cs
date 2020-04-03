@@ -12,9 +12,14 @@ namespace Microsoft.Docs.Build
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
         /// <summary>
-        /// Gets the file path relative to the main docset(fallback docset).
+        /// Gets the file path relative to the main docset.
         /// </summary>
         public PathString Path { get; }
+
+        /// <summary>
+        /// Gets the file format.
+        /// </summary>
+        public FileFormat Format { get; }
 
         /// <summary>
         /// Gets the name of the dependency if it is from dependency repo.
@@ -27,49 +32,58 @@ namespace Microsoft.Docs.Build
         public FileOrigin Origin { get; }
 
         /// <summary>
-        /// Gets the commit id if this file is owned by a git repository and is not the latest version.
-        /// </summary>
-        public string? Commit { get; }
-
-        /// <summary>
         /// Indicate if the file is from git commit history.
         /// </summary>
-        public bool IsFromHistory => Commit != null;
-
-        public FilePath(string path, FileOrigin origin = FileOrigin.Default)
-        {
-            Debug.Assert(origin != FileOrigin.Dependency);
-
-            Path = new PathString(path);
-            Origin = origin;
-        }
-
-        public FilePath(string path, string? commit, FileOrigin origin)
-        {
-            Path = new PathString(path);
-            Origin = origin;
-            Commit = commit;
-        }
-
-        public FilePath(string path, PathString dependencyName)
-        {
-            Path = new PathString(System.IO.Path.Combine(dependencyName, path));
-            DependencyName = dependencyName;
-            Origin = FileOrigin.Dependency;
-        }
+        public bool IsGitCommit { get; }
 
         /// <summary>
-        /// Gets the path relative to docset root or dependency repository root
+        /// Gets the original file path specified in source map.
         /// </summary>
-        public PathString GetPathToOrigin()
-        {
-            if (Origin == FileOrigin.Dependency)
-            {
-                Debug.Assert(!string.IsNullOrEmpty(DependencyName));
-                return new PathString(System.IO.Path.GetRelativePath(DependencyName, Path));
-            }
+        public PathString? OriginalPath { get; }
 
-            return Path;
+        /// <summary>
+        /// Creates an unknown file path.
+        /// </summary>
+        public FilePath(string path)
+        {
+            Path = new PathString(path);
+            Format = GetFormat(path);
+            Origin = FileOrigin.External;
+        }
+
+        private FilePath(FileOrigin origin, PathString path, PathString? originalPath, PathString dependencyName, bool isGitCommit)
+        {
+            Path = path;
+            OriginalPath = originalPath;
+            Origin = origin;
+            DependencyName = dependencyName;
+            IsGitCommit = isGitCommit;
+            Format = GetFormat(path);
+        }
+
+        public static FilePath Content(PathString path, PathString? originalPath)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            return new FilePath(FileOrigin.Main, path, originalPath, default, default);
+        }
+
+        public static FilePath Redirection(PathString path)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            return new FilePath(FileOrigin.Redirection, path, default, default, default);
+        }
+
+        public static FilePath Fallback(PathString path, bool isGitCommit = false)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            return new FilePath(FileOrigin.Fallback, path, default, default, isGitCommit);
+        }
+
+        public static FilePath Dependency(PathString path, PathString dependencyName)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            Debug.Assert(path.StartsWithPath(dependencyName, out _));
+            return new FilePath(FileOrigin.Dependency, path, default, dependencyName, default);
         }
 
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
@@ -82,7 +96,8 @@ namespace Microsoft.Docs.Build
 
             switch (Origin)
             {
-                case FileOrigin.Default:
+                case FileOrigin.Main:
+                case FileOrigin.External:
                     break;
 
                 case FileOrigin.Dependency:
@@ -94,9 +109,14 @@ namespace Microsoft.Docs.Build
                     break;
             }
 
-            if (Commit != null)
+            if (OriginalPath != null)
             {
-                tags += $"[{Commit}]";
+                tags += $"(<<{OriginalPath})";
+            }
+
+            if (IsGitCommit)
+            {
+                tags += $"!";
             }
 
             return tags.Length > 0 ? $"{Path} {tags}" : $"{Path}";
@@ -109,7 +129,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Path, DependencyName, Origin, Commit);
+            return HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, OriginalPath);
         }
 
         public bool Equals(FilePath? other)
@@ -122,7 +142,8 @@ namespace Microsoft.Docs.Build
             return Path.Equals(other.Path) &&
                    DependencyName.Equals(other.DependencyName) &&
                    other.Origin == Origin &&
-                   Commit == other.Commit;
+                   IsGitCommit == other.IsGitCommit &&
+                   OriginalPath == other.OriginalPath;
         }
 
         public int CompareTo(FilePath other)
@@ -133,11 +154,30 @@ namespace Microsoft.Docs.Build
             if (result == 0)
                 result = DependencyName.CompareTo(other.DependencyName);
             if (result == 0)
-                result = string.CompareOrdinal(Commit, other.Commit);
-
+                result = IsGitCommit.CompareTo(other.IsGitCommit);
+            if (result == 0)
+                result = Nullable.Compare(OriginalPath, other.OriginalPath);
             return result;
         }
 
-        public bool EndsWith(string value) => Path.Value.EndsWith(value, PathUtility.PathComparison);
+        private static FileFormat GetFormat(string path)
+        {
+            if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                return FileFormat.Markdown;
+            }
+
+            if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            {
+                return FileFormat.Yaml;
+            }
+
+            if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                return FileFormat.Json;
+            }
+
+            return FileFormat.Unknown;
+        }
     }
 }

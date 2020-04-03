@@ -20,6 +20,16 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> Name { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
+        /// Gets the build output directory. Could be absolute or relative.
+        /// </summary>
+        public string OutputPath { get; private set; } = "_site";
+
+        /// <summary>
+        /// Gets the default locale of this docset.
+        /// </summary>
+        public string DefaultLocale { get; private set; } = "en-us";
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>

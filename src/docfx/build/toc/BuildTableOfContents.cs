@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -12,13 +13,25 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
-            // load toc model
-            var (errors, model, _, _) = context.TableOfContentsLoader.Load(file);
+            // load toc tree
+            var (errors, node, _, _) = context.TableOfContentsLoader.Load(file);
+
+            var (metadataErrors, metadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+            errors.AddRange(metadataErrors);
+
+            var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
+            errors.AddRange(validationErrors);
+
+            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata);
+
+            // TODO: improve error message for toc monikers overlap
+            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            errors.AddRange(monikerErrors);
+
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
+            var monikerGroup = MonikerUtility.GetGroup(monikers);
 
             // enable pdf
-            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, model.Metadata.Monikers);
-            var monikerGroup = MonikerUtility.GetGroup(model.Metadata.Monikers);
-
             if (context.Config.OutputPdf)
             {
                 model.Metadata.PdfAbsolutePath = "/" +
@@ -30,23 +43,26 @@ namespace Microsoft.Docs.Build
                 file.SiteUrl,
                 outputPath,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
-                model.Metadata.Monikers,
+                context.BuildOptions.Locale,
+                monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
-            if (context.PublishModelBuilder.TryAdd(file.FilePath, publishItem) && !context.Config.DryRun)
+            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
-                if (context.Config.Legacy)
+                if (!context.Config.DryRun)
                 {
-                    var output = context.TemplateEngine.RunJint("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(outputPath, output);
-                    context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
+                    if (context.Config.Legacy)
+                    {
+                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
+                        context.Output.WriteJson(outputPath, output);
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
+                    }
+                    else
+                    {
+                        context.Output.WriteJson(outputPath, model);
+                    }
                 }
-                else
-                {
-                    context.Output.WriteJson(outputPath, model);
-                }
-            }
+            });
 
             return errors;
         }

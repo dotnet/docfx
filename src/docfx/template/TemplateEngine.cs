@@ -6,15 +6,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
-        private static readonly string[] s_resourceFolders = new[] { "global", "css", "fonts" };
-
         private readonly string _templateDir;
         private readonly string _contentTemplateDir;
         private readonly JObject _global;
@@ -23,12 +20,13 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
 
-        public TemplateEngine(string docsetPath, Config config, string locale, PackageResolver packageResolver)
+        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver)
         {
+            var template = buildOptions.IsLocalizedBuild ? LocalizationUtility.GetLocalizedTheme(config.Template, buildOptions.Locale) : config.Template;
             _templateDir = config.Template.Type switch
             {
-                PackageType.None => Path.Combine(docsetPath, "_themes"),
-                _ => packageResolver.ResolvePackage(LocalizationUtility.GetLocalizedTheme(config.Template, locale, config.DefaultLocale), PackageFetchOptions.DepthOne),
+                PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
+                _ => packageResolver.ResolvePackage(template, PackageFetchOptions.DepthOne),
             };
 
             _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");
@@ -44,7 +42,7 @@ namespace Microsoft.Docs.Build
                 ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
                 : new JintJsEngine(_contentTemplateDir, _global);
 
-            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir);
+            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global);
         }
 
         public bool IsPage(string? mime)
@@ -76,29 +74,12 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public string RunMustache(string templateName, JObject pageModel)
+        public string RunMustache(string templateName, JToken pageModel)
         {
             return _mustacheTemplate.Render(templateName, pageModel);
         }
 
-        public void CopyTo(string outputPath)
-        {
-            foreach (var resourceDir in s_resourceFolders)
-            {
-                var srcDir = Path.Combine(_templateDir, resourceDir);
-                if (Directory.Exists(srcDir))
-                {
-                    Parallel.ForEach(Directory.EnumerateFiles(srcDir, "*", SearchOption.AllDirectories), file =>
-                    {
-                        var outputFilePath = Path.Combine(outputPath, "_themes", file.Substring(_templateDir.Length + 1));
-                        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(outputFilePath)));
-                        File.Copy(file, outputFilePath, overwrite: true);
-                    });
-                }
-            }
-        }
-
-        public JObject RunJint(string scriptName, JObject model, string methodName = "transform", bool tryParseFromContent = true)
+        public JToken RunJavaScript(string scriptName, JObject model, string methodName = "transform")
         {
             var scriptPath = Path.Combine(_contentTemplateDir, scriptName);
             if (!File.Exists(scriptPath))
@@ -106,20 +87,9 @@ namespace Microsoft.Docs.Build
                 return model;
             }
 
-            var jsResult = _js.Run(scriptPath, methodName, model);
-
-            var result = new JObject();
-            if (jsResult is JValue)
-            {
-                // workaround for result is not JObject
-                result["content"] = jsResult;
-                return result;
-            }
-
-            result = (JObject)_js.Run(scriptPath, methodName, model);
-            if (tryParseFromContent
-                && result.TryGetValue<JValue>("content", out var value)
-                && value.Value is string content)
+            var result = _js.Run(scriptPath, methodName, model);
+            if (result is JObject obj && obj.TryGetValue("content", out var token) &&
+                token is JValue value && value.Value is string content)
             {
                 try
                 {

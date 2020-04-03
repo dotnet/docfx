@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
-                    context.BuildScope.Files,
+                    context.BuildScope.GetFiles(ContentType.Page),
                     file => Load(context, builder, file),
                     Progress.Update);
             }
@@ -46,32 +46,39 @@ namespace Microsoft.Docs.Build
                 var errors = new List<Error>();
                 var content = context.Input.ReadString(file.FilePath);
                 var callStack = new List<Document> { file };
-                if (file.FilePath.EndsWith(".md"))
+
+                switch (file.FilePath.Format)
                 {
-                    var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-                    errors.AddRange(fileMetaErrors);
-                    var (error, spec) = LoadMarkdown(context, fileMetadata, file);
-                    errors.AddIfNotNull(error);
-                    if (spec != null)
-                    {
-                        xrefs.Add(spec);
-                    }
-                }
-                else if (file.FilePath.EndsWith(".yml"))
-                {
-                    var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
-                    errors.AddRange(yamlErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
-                    errors.AddRange(schemaErrors);
-                    xrefs.AddRange(specs);
-                }
-                else if (file.FilePath.EndsWith(".json"))
-                {
-                    var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
-                    errors.AddRange(jsonErrors);
-                    var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
-                    errors.AddRange(schemaErrors);
-                    xrefs.AddRange(specs);
+                    case FileFormat.Markdown:
+                        {
+                            var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+                            errors.AddRange(fileMetaErrors);
+                            var (markdownErrors, spec) = LoadMarkdown(context, fileMetadata, file);
+                            errors.AddRange(markdownErrors);
+                            if (spec != null)
+                            {
+                                xrefs.Add(spec);
+                            }
+                            break;
+                        }
+                    case FileFormat.Yaml:
+                        {
+                            var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
+                            errors.AddRange(yamlErrors);
+                            var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                            errors.AddRange(schemaErrors);
+                            xrefs.AddRange(specs);
+                            break;
+                        }
+                    case FileFormat.Json:
+                        {
+                            var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
+                            errors.AddRange(jsonErrors);
+                            var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                            errors.AddRange(schemaErrors);
+                            xrefs.AddRange(specs);
+                            break;
+                        }
                 }
                 context.ErrorLog.Write(errors);
             }
@@ -86,19 +93,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (Error? error, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
+        private static (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
         {
             if (string.IsNullOrEmpty(metadata.Uid))
             {
-                return default;
+                return (new List<Error>(), default);
             }
 
             var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
-            var (error, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers.ToHashSet();
-            return (error, xref);
+            return (errors, xref);
         }
 
         private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)
@@ -138,7 +145,7 @@ namespace Microsoft.Docs.Build
 
             // uid conflicts with different names
             // log an warning and take the first one order by the declaring file
-            var conflictingNames = specsWithSameUid.Select(x => x.GetName()).Distinct();
+            var conflictingNames = specsWithSameUid.Select(x => x.Name).Distinct();
             if (conflictingNames.Count() > 1)
             {
                 context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, "name", conflictingNames));

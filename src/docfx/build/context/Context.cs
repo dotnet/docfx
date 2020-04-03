@@ -10,9 +10,9 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal sealed class Context : IDisposable
     {
-        private readonly Lazy<TableOfContentsMap> _tocMap;
-
         public Config Config { get; }
+
+        public BuildOptions BuildOptions { get; }
 
         public FileResolver FileResolver { get; }
 
@@ -23,6 +23,8 @@ namespace Microsoft.Docs.Build
         public Output Output { get; }
 
         public Input Input { get; }
+
+        public SourceMap SourceMap { get; }
 
         public BuildScope BuildScope { get; }
 
@@ -36,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerProvider MonikerProvider { get; }
 
-        public GitCommitProvider GitCommitProvider { get; }
+        public RepositoryProvider RepositoryProvider { get; }
 
         public BookmarkValidator BookmarkValidator { get; }
 
@@ -62,52 +64,48 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsLoader TableOfContentsLoader { get; }
 
-        public LocalizationProvider LocalizationProvider { get; }
-
         public ContentValidator ContentValidator { get; }
 
-        public TableOfContentsMap TocMap => _tocMap.Value;
+        public TableOfContentsMap TocMap { get; }
 
-        public Context(string outputPath, ErrorLog errorLog, CommandLineOptions options, Config config, Docset docset, Docset? fallbackDocset, Input input, RepositoryProvider repositoryProvider, LocalizationProvider localizationProvider, PackageResolver packageResolver)
+        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
         {
-            var credentialProvider = config.GetCredentialProvider();
-
             DependencyMapBuilder = new DependencyMapBuilder();
-            _tocMap = new Lazy<TableOfContentsMap>(() => TableOfContentsMap.Create(this));
             BuildQueue = new WorkQueue<FilePath>();
 
             Config = config;
             ErrorLog = errorLog;
+            BuildOptions = buildOptions;
             PackageResolver = packageResolver;
-            FileResolver = new FileResolver(docset.DocsetPath, credentialProvider, new OpsConfigAdapter(errorLog, credentialProvider), options.FetchOptions, fallbackDocset);
-            Input = input;
-            LocalizationProvider = localizationProvider;
-            Output = new Output(outputPath, input, Config.DryRun);
-            TemplateEngine = new TemplateEngine(docset.DocsetPath, config, localizationProvider.Locale, PackageResolver);
+            FileResolver = fileResolver;
+            SourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), Config, FileResolver);
+            RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
+            Input = new Input(buildOptions, config, SourceMap, packageResolver, RepositoryProvider);
+            Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
+            TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
-            BuildScope = new BuildScope(Config, Input, fallbackDocset);
-            DocumentProvider = new DocumentProvider(config, localizationProvider, docset, fallbackDocset, BuildScope, input, repositoryProvider, TemplateEngine);
+            BuildScope = new BuildScope(Config, Input, buildOptions);
+            DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, Input, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            RedirectionProvider = new RedirectionProvider(docset.DocsetPath, Config.HostName, ErrorLog, BuildScope, repositoryProvider, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
-            GitCommitProvider = new GitCommitProvider(repositoryProvider);
-            PublishModelBuilder = new PublishModelBuilder(outputPath, Config, Output, ErrorLog);
+            PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
-            ContributionProvider = new ContributionProvider(config, localizationProvider, Input, fallbackDocset, GitHubAccessor, GitCommitProvider);
+            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
-            XrefResolver = new XrefResolver(this, config, FileResolver, repositoryProvider.DefaultRepository, DependencyMapBuilder, FileLinkMapBuilder);
+            XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(
                 config,
-                fallbackDocset,
                 Input,
+                BuildOptions,
+                SourceMap,
                 BuildScope,
                 BuildQueue,
                 RedirectionProvider,
                 DocumentProvider,
-                GitCommitProvider,
                 BookmarkValidator,
                 DependencyMapBuilder,
                 XrefResolver,
@@ -115,14 +113,15 @@ namespace Microsoft.Docs.Build
                 FileLinkMapBuilder);
 
             MarkdownEngine = new MarkdownEngine(Config, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
-
-            TableOfContentsLoader = new TableOfContentsLoader(
-                Input, LinkResolver, XrefResolver, MarkdownEngine, MonikerProvider, DependencyMapBuilder);
+            TableOfContentsLoader = new TableOfContentsLoader(Input, LinkResolver, XrefResolver, new TableOfContentsParser(MarkdownEngine), MonikerProvider, DependencyMapBuilder);
+            TocMap = new TableOfContentsMap(ErrorLog, BuildScope, TableOfContentsLoader, DocumentProvider);
         }
 
         public void Dispose()
         {
-            GitCommitProvider.Dispose();
+            ErrorLog.Dispose();
+            PackageResolver.Dispose();
+            RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();
             MicrosoftGraphAccessor.Dispose();
         }

@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
             var parser = new Parser(input);
             parser.Consume<StreamStart>();
-            if (!parser.TryConsume<StreamEnd>(out var _))
+            if (!parser.TryConsume<StreamEnd>(out _))
             {
                 parser.Consume<DocumentStart>();
                 result = ToJToken(parser, onKeyDuplicate, onConvert);
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
 
                 case SequenceStart seq:
                     var array = new JArray();
-                    while (!parser.TryConsume<SequenceEnd>(out var _))
+                    while (!parser.TryConsume<SequenceEnd>(out _))
                     {
                         array.Add(ToJToken(parser, onKeyDuplicate, onConvert));
                     }
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
 
                 case MappingStart map:
                     var obj = new JObject();
-                    while (!parser.TryConsume<MappingEnd>(out var _))
+                    while (!parser.TryConsume<MappingEnd>(out _))
                     {
                         var key = parser.Consume<Scalar>();
                         var value = ToJToken(parser, onKeyDuplicate, onConvert);

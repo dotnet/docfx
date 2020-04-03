@@ -258,12 +258,12 @@ namespace Microsoft.Docs.Build
             switch (schema.Format)
             {
                 case JsonSchemaStringFormat.DateTime:
-                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
+                    if (!DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                         errors.Add((name, Errors.JsonSchema.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.DateTime)));
                     break;
 
                 case JsonSchemaStringFormat.Date:
-                    if (!DateTime.TryParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
+                    if (!DateTime.TryParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                         errors.Add((name, Errors.JsonSchema.FormatInvalid(JsonUtility.GetSourceInfo(scalar), str, JsonSchemaStringFormat.Date)));
                     break;
 
@@ -481,9 +481,11 @@ namespace Microsoft.Docs.Build
         private void PostValidateDocsetUnique(List<(string name, Error)> errors)
         {
             var validatedMetadata = _metadataBuilder.ToList();
-            var validatedMetadataGroups = validatedMetadata.GroupBy(
-                k => (k.value, (key: k.key, k.schema)),
-                ValueTupleEqualityComparer.Create(JsonUtility.DeepEqualsComparer, EqualityComparer<(string, JsonSchema)>.Default));
+            var validatedMetadataGroups = validatedMetadata
+                .Where(k => IsStrictHaveValue(k.value))
+                .GroupBy(
+                    k => (k.value, (k.key, k.schema)),
+                    ValueTupleEqualityComparer.Create(JsonUtility.DeepEqualsComparer, EqualityComparer<(string, JsonSchema)>.Default));
 
             foreach (var group in validatedMetadataGroups)
             {
@@ -551,6 +553,18 @@ namespace Microsoft.Docs.Build
                                 dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
                                 dependentFieldValue)));
                         }
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(dependentFieldNameWithIndex) && allowList.Keys.All(k => IsStrictHaveValue(k)))
+                    {
+                        errors.Add((dependentFieldName, Errors.JsonSchema.InvalidPairedAttribute(
+                            JsonUtility.GetSourceInfo(map),
+                            fieldName,
+                            fieldName,
+                            dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
+                            dependentFieldValue)));
                     }
                 }
             }

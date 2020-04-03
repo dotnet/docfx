@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string? href, string display, Document? declaringFile) ResolveXref(
-            SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
+            SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string? moniker = null;
@@ -59,76 +59,59 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec) = Resolve(new SourceInfo<string>(uid, href.Source), hrefRelativeTo);
-            if (xrefError != null || xrefSpec is null)
+            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
+            if (xrefError != null || xrefSpec is null || resolvedHref == null)
             {
                 return (xrefError, null, "", null);
             }
 
-            var name = xrefSpec.GetXrefPropertyValueAsString("name");
             var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
 
             // fallback order:
-            // text -> xrefSpec.displayProperty -> xrefSpec.name -> uid
-            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? name ?? uid;
+            // text -> xrefSpec.displayProperty -> xrefSpec.name
+            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.Name;
 
             if (!string.IsNullOrEmpty(moniker))
             {
                 queries["view"] = moniker;
             }
 
-            var resolvedHref = UrlUtility.MergeUrl(
-                RemoveSharingHost(xrefSpec.Href, _config.HostName),
-                queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries),
-                fragment.Length == 0 ? "" : fragment);
+            query = queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries);
+            var fileLink = UrlUtility.MergeUrl(xrefSpec.Href, query, fragment);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, fileLink);
 
-            // NOTE: this should also be relative to root file
-            var sourceFile = inclusionRoot ?? hrefRelativeTo;
-            _fileLinkMapBuilder.AddFileLink(sourceFile.FilePath, sourceFile.SiteUrl, resolvedHref);
-
-            if (xrefSpec?.DeclaringFile != null && inclusionRoot != null)
-            {
-                resolvedHref = UrlUtility.GetRelativeUrl(inclusionRoot.SiteUrl, resolvedHref);
-            }
-
+            resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error?, ExternalXrefSpec?) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile)
+        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
-            var (error, xrefSpec) = Resolve(uid, referencingFile);
-            return (error, xrefSpec?.ToExternalXrefSpec());
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot);
+            if (xrefSpec == null)
+                return (error, null, null);
+            return (error, xrefSpec, href);
         }
 
         public XrefMapModel ToXrefMapModel()
         {
-            string? repositoryBranch = null;
-            string? basePath = null;
+            var repositoryBranch = _repository?.Branch;
+            var basePath = _config.BasePath.ValueWithLeadingSlash;
+
             var references = _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
-                    var xrefSpec = xref.ToExternalXrefSpec();
-                    if (repositoryBranch is null)
-                    {
-                        repositoryBranch = _repository?.Branch;
-                    }
-                    if (basePath is null)
-                    {
-                        basePath = _config.BasePath.ValueWithLeadingSlash;
-                    }
-
                     // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
-                    var (_, _, fragment) = UrlUtility.SplitUrl(xref.Href);
-                    var path = $"https://{_xrefHostName}{xref.DeclaringFile.SiteUrl}";
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
-                    xrefSpec.Href = UrlUtility.MergeUrl(path, query, fragment);
+                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+
+                    var xrefSpec = xref.ToExternalXrefSpec(href);
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();
 
             var model = new XrefMapModel { References = references };
-            if (basePath != null)
+            if (basePath != null && references.Length > 0)
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
@@ -163,30 +146,38 @@ namespace Microsoft.Docs.Build
             return url;
         }
 
-        private (Error?, IXrefSpec?) Resolve(SourceInfo<string> uid, Document referencingFile)
+        private (Error?, IXrefSpec?, string? href) Resolve(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
             var unescapedUid = Uri.UnescapeDataString(uid);
-            var xrefSpec = ResolveInternalXrefSpec(unescapedUid, referencingFile) ?? ResolveExternalXrefSpec(unescapedUid);
+            var (xrefSpec, href) = ResolveInternalXrefSpec(unescapedUid, referencingFile, inclusionRoot);
             if (xrefSpec is null)
-            {
-                return (Errors.Xref.XrefNotFound(uid), null);
-            }
-            return (null, xrefSpec);
+                (xrefSpec, href) = ResolveExternalXrefSpec(unescapedUid);
+
+            if (xrefSpec is null)
+                return (Errors.Xref.XrefNotFound(uid), null, null);
+
+            return (null, xrefSpec, href);
         }
 
-        private IXrefSpec? ResolveExternalXrefSpec(string uid)
+        private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            return _externalXrefMap.Value.TryGetValue(uid, out var result) ? result.Value : null;
+            if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
+            {
+                var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
+                return (spec.Value, href);
+            }
+            return default;
         }
 
-        private IXrefSpec? ResolveInternalXrefSpec(string uid, Document declaringFile)
+        private (IXrefSpec?, string? href) ResolveInternalXrefSpec(string uid, Document referencingFile, Document inclusionRoot)
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                _dependencyMapBuilder.AddDependencyItem(declaringFile, spec.DeclaringFile, DependencyType.UidInclusion);
-                return spec;
+                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, DependencyType.UidInclusion);
+                var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
+                return (spec, href);
             }
-            return null;
+            return default;
         }
     }
 }

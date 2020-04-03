@@ -573,7 +573,7 @@ outputs:
       "robots": "NOINDEX, NOFOLLOW"
     }
   .errors.log: |
-    ["warning","custom-404-page","Custom 404 page is not supported","docs/404.md"]
+    ["warning","custom-404-page","Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning","docs/404.md"]
 ---
 # bookmark as HTML predefined url
 inputs:

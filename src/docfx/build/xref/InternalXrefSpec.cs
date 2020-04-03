@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
     {
         public SourceInfo<string> Uid { get; }
 
+        public string Name => GetXrefPropertyValueAsString("name") ?? Uid;
+
         public string Href { get; set; }
 
         public Document DeclaringFile { get; }
@@ -18,8 +20,6 @@ namespace Microsoft.Docs.Build
         public HashSet<string> Monikers { get; set; } = new HashSet<string>();
 
         public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
-
-        public Dictionary<string, JsonSchemaContentType> PropertyContentTypeMapping { get; } = new Dictionary<string, JsonSchemaContentType>();
 
         string IXrefSpec.Uid => Uid.Value;
 
@@ -35,16 +35,9 @@ namespace Microsoft.Docs.Build
             return XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr ? internalStr : null;
         }
 
-        public string? GetName() => GetXrefPropertyValueAsString("name");
-
-        public ExternalXrefSpec ToExternalXrefSpec()
+        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
         {
-            var spec = new ExternalXrefSpec
-            {
-                Href = PathUtility.GetRelativePathToFile(DeclaringFile.SiteUrl, Href),
-                Uid = Uid,
-                Monikers = Monikers,
-            };
+            var spec = new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers);
 
             foreach (var (key, value) in XrefProperties)
             {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -38,15 +39,77 @@ namespace Microsoft.Docs.Build
             return s_lrmAdjustment.Replace(text, me => $"{me.Groups[1]}{me.Groups[2]}&lrm;{me.Groups[3]}{me.Groups[4]}");
         }
 
-        public static (string remote, string branch) GetLocalizedRepo(bool bilingual, string remote, string branch, string locale, string defaultLocale)
+        public static string? GetFallbackDocsetPath(string docsetPath, Repository? repository, PackageResolver packageResolver)
         {
-            var newRemote = GetLocalizationName(remote, locale, defaultLocale);
-            var newBranch = bilingual ? GetBilingualBranch(branch) : branch;
-
-            return (newRemote, newBranch);
+            if (repository != null)
+            {
+                var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
+                if (TryGetFallbackRepository(repository?.Remote, repository?.Branch, out var fallbackRemote, out var fallbackBranch))
+                {
+                    foreach (var branch in new[] { fallbackBranch, "master" })
+                    {
+                        if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
+                        {
+                            return Path.Combine(fallbackRepoPath, docsetSourceFolder);
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
-        public static bool TryGetFallbackRepository(
+        public static string? GetLocale(Repository? repository)
+        {
+            return repository is null ? null : TryRemoveLocale(repository.Remote, out _, out var remoteLocale) ? remoteLocale : null;
+        }
+
+        public static bool TryGetContributionBranch(string branch, [NotNullWhen(true)] out string? contributionBranch)
+        {
+            if (branch.EndsWith("-sxs"))
+            {
+                contributionBranch = branch[0..^4];
+                return true;
+            }
+
+            contributionBranch = null;
+            return false;
+        }
+
+        public static string GetLocalizedRepository(string repositoryUrl, string locale)
+        {
+            return AppendLocale(repositoryUrl, locale);
+        }
+
+        public static PackagePath GetLocalizedTheme(PackagePath theme, string locale)
+        {
+            return theme.Type switch
+            {
+                PackageType.Folder => new PackagePath(AppendLocale(theme.Path, locale)),
+                PackageType.Git => new PackagePath(AppendLocale(theme.Url, locale), theme.Branch),
+                _ => theme,
+            };
+        }
+
+        public static void EnsureLocalizationContributionBranch(PreloadConfig config, Repository? repository)
+        {
+            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
+            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
+            // here to generate the correct contributor list.
+            if (repository != null && TryGetContributionBranch(repository.Branch, out var contributionBranch))
+            {
+                try
+                {
+                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                    Log.Write($"Repository {repository.Remote}#{contributionBranch} at committish: {GitUtility.GetHeadCommit(repository.Path, contributionBranch)}");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                }
+            }
+        }
+
+        internal static bool TryGetFallbackRepository(
             string? remote,
             string? branch,
             [NotNullWhen(true)] out string? fallbackRemote,
@@ -79,75 +142,8 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static string? GetLocale(Repository? repository)
+        private static bool TryRemoveLocale(string name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
         {
-            return TryRemoveLocale(repository?.Remote, out _, out var remoteLocale)
-                ? remoteLocale : null;
-        }
-
-        public static bool TryGetContributionBranch(string branch, [NotNullWhen(true)] out string? contributionBranch)
-        {
-            contributionBranch = null;
-            if (string.IsNullOrEmpty(branch))
-            {
-                return false;
-            }
-
-            if (branch.EndsWith("-sxs"))
-            {
-                contributionBranch = branch.Substring(0, branch.Length - 4);
-                return true;
-            }
-
-            return false;
-        }
-
-        public static PackagePath GetLocalizedTheme(PackagePath theme, string? locale, string defaultLocale)
-        {
-            switch (theme.Type)
-            {
-                case PackageType.Folder:
-                    return new PackagePath(
-                        GetLocalizationName(theme.Path, locale, defaultLocale));
-
-                case PackageType.Git:
-                    return new PackagePath(
-                        GetLocalizationName(theme.Url, locale, defaultLocale),
-                        theme.Branch);
-
-                default:
-                    return theme;
-            }
-        }
-
-        public static void EnsureLocalizationContributionBranch(Config config, Repository? repository)
-        {
-            // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
-            // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
-            // here to generate the correct contributor list.
-            if (repository != null && TryGetContributionBranch(repository.Branch, out var contributionBranch))
-            {
-                try
-                {
-                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
-                    Log.Write($"Repository {repository.Remote}#{contributionBranch} at committish: {GitUtility.GetHeadCommit(repository.Path, contributionBranch)}");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
-                }
-            }
-        }
-
-        private static bool TryRemoveLocale(string? name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
-        {
-            nameWithoutLocale = null;
-            locale = null;
-            if (string.IsNullOrEmpty(name))
-            {
-                return false;
-            }
-
             var match = s_nameWithLocale.Match(name);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
@@ -156,31 +152,13 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
+            nameWithoutLocale = null;
+            locale = null;
             return false;
         }
 
-        private static string GetBilingualBranch(string branch)
+        private static string AppendLocale(string name, string locale)
         {
-            return string.IsNullOrEmpty(branch) ? branch : $"{branch}-sxs";
-        }
-
-        private static string GetLocalizationName(string name, string? locale, string defaultLocale)
-        {
-            if (string.Equals(locale, defaultLocale))
-            {
-                return name;
-            }
-
-            if (string.IsNullOrEmpty(name))
-            {
-                return name;
-            }
-
-            if (string.IsNullOrEmpty(locale))
-            {
-                return name;
-            }
-
             var newLocale = $".{locale}";
             if (name.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
             {

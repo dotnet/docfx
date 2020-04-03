@@ -11,12 +11,14 @@ namespace Microsoft.Docs.Build
 
         string Href { get; }
 
+        string Name { get; }
+
         Document? DeclaringFile { get; }
 
         HashSet<string> Monikers { get; }
 
         string? GetXrefPropertyValueAsString(string propertyName);
 
-        ExternalXrefSpec ToExternalXrefSpec();
+        ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null);
     }
 }

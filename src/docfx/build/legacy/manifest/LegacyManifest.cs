@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static void Convert(Docset docset, Context context, Dictionary<Document, PublishItem> fileManifests)
+        public static void Convert(string docsetPath, Context context, Dictionary<Document, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                             };
                             if (!context.Config.CopyResources)
                             {
-                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docset.DocsetPath, document.FilePath.GetPathToOrigin()));
+                                resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docsetPath, document.FilePath.Path));
                             }
                             output.ResourceOutput = resourceOutput;
                         }

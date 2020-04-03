@@ -9,11 +9,11 @@ namespace Microsoft.Docs.Build
 
         public string To { get; }
 
-        public string Version { get; }
+        public string? Version { get; }
 
         public LegacyDependencyMapType Type { get; }
 
-        public LegacyDependencyMapItem(string from, string to, string version, LegacyDependencyMapType type)
+        public LegacyDependencyMapItem(string from, string to, string? version, LegacyDependencyMapType type)
         {
             From = from;
             To = to;

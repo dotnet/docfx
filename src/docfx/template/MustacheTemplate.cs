@@ -18,11 +18,11 @@ namespace Microsoft.Docs.Build
         private readonly IStubbleRenderer _renderer;
         private readonly ConcurrentDictionary<string, Lazy<string?>> _templates = new ConcurrentDictionary<string, Lazy<string?>>();
 
-        public MustacheTemplate(string templateDir)
+        public MustacheTemplate(string templateDir, JObject? global = null)
         {
             _templateDir = templateDir;
             _renderer = new StubbleBuilder().Configure(
-                settings => UseJson(settings).SetPartialTemplateLoader(new PartialLoader(templateDir))).Build();
+                settings => UseJson(settings, global).SetPartialTemplateLoader(new PartialLoader(templateDir))).Build();
         }
 
         public string Render(string templateFileName, JToken model)
@@ -36,10 +36,11 @@ namespace Microsoft.Docs.Build
                     ? MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""))
                     : null;
                 })).Value;
+
             return template == null ? JsonUtility.Serialize(model) : _renderer.Render(template, model);
         }
 
-        private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings)
+        private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings, JObject? global)
         {
             // JObject implements IEnumerable, stubble treats IEnumerable as array,
             // need to put it to section blacklist and overwrite the truthy check method.
@@ -53,6 +54,11 @@ namespace Microsoft.Docs.Build
 
             object? GetJObjectValue(object value, string key, bool ignoreCase)
             {
+                if (key == "__global" && global != null)
+                {
+                    return global;
+                }
+
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
@@ -77,8 +83,8 @@ namespace Microsoft.Docs.Build
                 {
                     var fileName = Path.Combine(_dir, name);
                     if (File.Exists(fileName))
-                        return File.ReadAllText(fileName);
-                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial"));
+                        return File.ReadAllText(fileName).Replace("\r", "");
+                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial")).Replace("\r", "");
                 })).Value;
         }
     }
