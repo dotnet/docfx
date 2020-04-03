@@ -49,11 +49,11 @@ namespace Microsoft.Docs.Build
             // need to put it to section blacklist and overwrite the truthy check method.
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
                            .AddValueGetter(typeof(JArray), GetJArrayValue)
-                           .AddValueGetter(typeof(IList), OverwriteValuleGetter) // overwrite default value getters in stubble
-                           .AddValueGetter(typeof(IDictionary<string, object>), OverwriteValuleGetter)
-                           .AddValueGetter(typeof(IDictionary), OverwriteValuleGetter)
-                           .AddValueGetter(typeof(IDynamicMetaObjectProvider), OverwriteValuleGetter)
-                           .AddValueGetter(typeof(object), OverwriteValuleGetter)
+                           .AddValueGetter(typeof(IList), OverwriteValueGetter) // overwrite default value getters in stubble
+                           .AddValueGetter(typeof(IDictionary<string, object>), OverwriteValueGetter)
+                           .AddValueGetter(typeof(IDictionary), OverwriteValueGetter)
+                           .AddValueGetter(typeof(IDynamicMetaObjectProvider), OverwriteValueGetter)
+                           .AddValueGetter(typeof(object), OverwriteValueGetter)
                            .AddTruthyCheck<JObject>(value => value != null)
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
                            .AddSectionBlacklistType(typeof(JObject));
@@ -75,20 +75,21 @@ namespace Microsoft.Docs.Build
             {
                 _ = ignoreCase;
                 var jArr = (JArray)value;
-                switch (key.ToLowerInvariant())
+                if (string.Equals(key, "length", StringComparison.OrdinalIgnoreCase))
                 {
-                    case "length":
-                        return jArr.Count.ToString();
-                    default:
-                        return int.TryParse(key, out var index) && index > -1 && jArr.Count > index
+                    return jArr.Count.ToString();
+                }
+                else
+                {
+                    return int.TryParse(key, out var index) && index > -1 && jArr.Count > index
                             ? jArr[index] is JValue scalar
                                 ? scalar.Value ?? JValue.CreateNull()
                                 : jArr[index]
-                            : JValue.CreateNull();
+                            : null;
                 }
             }
 
-            object? OverwriteValuleGetter(object value, string key, bool ignoreCase) => null;
+            object? OverwriteValueGetter(object value, string key, bool ignoreCase) => null;
         }
 
         private class PartialLoader : IStubbleLoader
