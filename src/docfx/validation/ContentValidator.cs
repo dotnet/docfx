@@ -4,8 +4,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -37,7 +35,7 @@ namespace Microsoft.Docs.Build
                         SourceInfo = new SourceInfo(file.FilePath, 0, 0),
                     },
                 };
-            if (TryGetDocumentType(file, out string documentType))
+            if (TryGetDocumentType(file, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
@@ -52,7 +50,7 @@ namespace Microsoft.Docs.Build
                 SourceInfo = new SourceInfo(file.FilePath, 0, 0),
             };
 
-            if (TryGetDocumentType(file, out string documentType))
+            if (TryGetDocumentType(file, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
