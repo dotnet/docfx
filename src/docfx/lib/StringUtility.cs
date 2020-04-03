@@ -28,6 +28,13 @@ namespace Microsoft.Docs.Build
             return sb.ToString().Trim();
         }
 
+        public static string UpperCaseFirstChar(string value)
+        {
+            return value.Length == 0
+                        ? value
+                        : value.First().ToString().ToUpperInvariant() + value.Substring(1).ToLowerInvariant();
+        }
+
         public static string Join<T>(IEnumerable<T> source, int take = 5)
         {
             var formatSource = source.Select(item => $"'{item}'").OrderBy(_ => _, StringComparer.Ordinal);

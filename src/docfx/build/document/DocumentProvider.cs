@@ -12,34 +12,28 @@ namespace Microsoft.Docs.Build
     internal class DocumentProvider
     {
         private readonly Config _config;
-        private readonly Docset _docset;
-        private readonly Docset? _fallbackDocset;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
-        private readonly LocalizationProvider _localization;
+        private readonly BuildOptions _buildOptions;
         private readonly TemplateEngine _templateEngine;
 
         private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
-        private readonly HashSet<string> _configReferences;
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, LocalizationProvider localization, Docset docset, Docset? fallbackDocset, BuildScope buildScope, Input input, TemplateEngine templateEngine)
+            Config config, BuildOptions buildOptions, BuildScope buildScope, Input input, TemplateEngine templateEngine)
         {
             _config = config;
-            _docset = docset;
-            _localization = localization;
-            _fallbackDocset = fallbackDocset;
+            _buildOptions = buildOptions;
             _buildScope = buildScope;
             _input = input;
             _templateEngine = templateEngine;
 
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
-            _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
             _documentIdRules = documentIdConfig.Select(item => (item.Key, item.Value)).OrderByDescending(item => item.Key).ToArray();
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
@@ -47,35 +41,6 @@ namespace Microsoft.Docs.Build
         public Document GetDocument(FilePath path)
         {
             return _documents.GetOrAdd(path, GetDocumentCore);
-        }
-
-        public ContentType GetContentType(string path)
-        {
-            if (_configReferences.Contains(path))
-            {
-                return ContentType.Unknown;
-            }
-
-            if (_buildScope.IsResource(path))
-            {
-                return ContentType.Resource;
-            }
-
-            var name = Path.GetFileNameWithoutExtension(path);
-            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
-            {
-                return ContentType.TableOfContents;
-            }
-            if (name.Equals("docfx", PathUtility.PathComparison))
-            {
-                return ContentType.Unknown;
-            }
-            if (name.Equals("redirections", PathUtility.PathComparison))
-            {
-                return ContentType.Unknown;
-            }
-
-            return ContentType.Page;
         }
 
         public string GetOutputPath(FilePath path, string[] monikers)
@@ -142,18 +107,7 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocumentCore(FilePath path)
         {
-            return path.Origin switch
-            {
-                FileOrigin.Fallback => CreateDocument(_fallbackDocset ?? throw new InvalidOperationException(), path),
-                FileOrigin.Dependency => CreateDocument(_docset, path),
-                _ => CreateDocument(_docset, path),
-            };
-        }
-
-        private Document CreateDocument(Docset docset, FilePath path)
-        {
-            var contentType = path.Origin == FileOrigin.Redirection ? ContentType.Redirection : GetContentType(path.Path);
-
+            var contentType = _buildScope.GetContentType(path);
             var mime = contentType == ContentType.Page ? ReadMimeFromFile(_input, path) : default;
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
@@ -167,7 +121,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, mime, _config.OutputJson, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, mime, isPage);
 
-            return new Document(docset, path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
+            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
 
         private static string FilePathToSitePath(string path, ContentType contentType, string? mime, bool json, bool uglifyUrl, bool isPage)
@@ -248,7 +202,7 @@ namespace Microsoft.Docs.Build
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.OutputJson, isPage);
             }
 
-            return $"https://{_config.HostName}/{_localization.Locale}{siteUrl}";
+            return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
 
             string ReplaceLast(string source, string find, string replace)
             {

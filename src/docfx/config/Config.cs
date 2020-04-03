@@ -21,11 +21,6 @@ namespace Microsoft.Docs.Build
         };
 
         /// <summary>
-        /// Gets the default locale of this docset.
-        /// </summary>
-        public string DefaultLocale { get; private set; } = "en-us";
-
-        /// <summary>
         /// Gets the default site name
         /// </summary>
         public string SiteName { get; private set; } = "Docs";
@@ -63,11 +58,6 @@ namespace Microsoft.Docs.Build
         /// Gets moniker range group configuration for v2 backward compatibility.
         /// </summary>
         public Dictionary<string, GroupConfig> Groups { get; } = new Dictionary<string, GroupConfig>();
-
-        /// <summary>
-        /// Gets the build output directory. Could be absolute or relative.
-        /// </summary>
-        public string OutputPath { get; private set; } = "_site";
 
         /// <summary>
         /// Gets whether to output JSON model.
@@ -239,6 +229,11 @@ namespace Microsoft.Docs.Build
         public bool UpdateCommitBuildTime { get; private set; } = true;
 
         /// <summary>
+        /// Overwrite current <see cref="CommitBuildTimeProvider._buildTime"/>
+        /// </summary>
+        public DateTime? BuildTime { get; private set; }
+
+        /// <summary>
         /// Token that can be used to access the GitHub API.
         /// </summary>
         public string GithubToken { get; private set; } = "";
@@ -279,6 +274,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
 
+        /// <summary>
+        /// Determines if validate the moniker confguration.
+        /// </summary>
+        public bool SkipMonikerValidation { get; private set; }
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)
@@ -304,8 +304,6 @@ namespace Microsoft.Docs.Build
                 HostName = HostName.ToLowerInvariant();
                 BasePath = new BasePath(BasePath.Value.ToLowerInvariant());
             }
-
-            DefaultLocale = DefaultLocale.ToLowerInvariant();
         }
     }
 }

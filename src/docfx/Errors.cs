@@ -371,8 +371,8 @@ namespace Microsoft.Docs.Build
             /// In markdown-format toc, defined an empty node(# ) with no content.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MissingTocHead(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "missing-toc-head", $"The toc head name is missing", source);
+            public static Error MissingTocName(SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "missing-toc-name", $"TOC node is missing name (if it is toc.yml) or title (toc.md)", source);
 
             /// <summary>
             /// In markdown-format toc, used wrong toc syntax.
@@ -676,7 +676,7 @@ namespace Microsoft.Docs.Build
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
             public static Error Custom404Page(Document file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page is not supported", file.FilePath);
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning", file.FilePath);
         }
     }
 }

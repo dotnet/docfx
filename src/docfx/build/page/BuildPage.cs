@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                 file.SiteUrl,
                 outputPath,
                 file.FilePath.Path,
-                context.LocalizationProvider.Locale,
+                context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
 
@@ -123,15 +123,14 @@ namespace Microsoft.Docs.Build
             return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }
 
-        private static (List<Error> errors, object output, JObject metadata)
-            CreateDataOutput(Context context, Document file, JObject sourceModel)
+        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
         {
             if (context.Config.DryRun)
             {
                 return (new List<Error>(), new JObject(), new JObject());
             }
 
-            return (new List<Error>(), context.TemplateEngine.RunJint($"{file.Mime}.json.js", sourceModel), new JObject());
+            return (new List<Error>(), context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
         private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
@@ -170,14 +169,14 @@ namespace Microsoft.Docs.Build
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
-            systemMetadata.Locale = context.LocalizationProvider.Locale;
+            systemMetadata.Locale = context.BuildOptions.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
             systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
             systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
                 ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
-            systemMetadata.EnableLocSxs = context.LocalizationProvider.EnableSideBySide;
+            systemMetadata.EnableLocSxs = context.BuildOptions.EnableSideBySide;
             systemMetadata.SiteName = context.Config.SiteName;
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
@@ -326,8 +325,8 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var templateMetadata = context.TemplateEngine.RunJint(
-                string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js", pageModel);
+            var jsName = string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js";
+            var templateMetadata = context.TemplateEngine.RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
 
             if (TemplateEngine.IsLandingData(file.Mime))
             {
@@ -352,8 +351,8 @@ namespace Microsoft.Docs.Build
         private static string CreateHtmlContent(Context context, HtmlNode html)
         {
             return LocalizationUtility.AddLeftToRightMarker(
-                context.LocalizationProvider.Culture,
-                HtmlUtility.AddLinkType(html, context.LocalizationProvider.Locale).WriteTo());
+                context.BuildOptions.Culture,
+                HtmlUtility.AddLinkType(html, context.BuildOptions.Locale).WriteTo());
         }
 
         private static void ValidateBookmarks(Context context, Document file, HtmlNode html)
@@ -371,8 +370,8 @@ namespace Microsoft.Docs.Build
             }
 
             // Generate SDP content
-            var jintResult = context.TemplateEngine.RunJint($"{file.Mime}.html.primary.js", pageModel);
-            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", jintResult);
+            var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model);
 
             var htmlDom = HtmlUtility.LoadHtml(content);
             ValidateBookmarks(context, file, htmlDom);

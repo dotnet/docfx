@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public List<Error> Validate()
+        public List<Error> PostValidate()
         {
             var errors = new List<Error>();
             foreach (var validator in _schemaValidators)

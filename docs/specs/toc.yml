@@ -21,44 +21,22 @@ outputs:
   docs/n1.json:
   docs/f1/n1.json:
   docs/toc.json: |
-    {  
-      "items":[  
-          {  
-            "items":[  
-                {  
-                  "items":[  
-                      {  
-                        "name":"Reference Normal File 1",
-                        "href":"n1"
-                      },
-                      {  
-                        "name":"Reference Normal File 2",
-                        "href":"../"
-                      },
-                      {  
-                        "name":"Reference Normal File 3",
-                        "href":"f1/n1?branch=master"
-                      },
-                      {  
-                        "name":"Reference Normal File 4",
-                        "href":"n1"
-                      },
-                      {
-                        "name":"@Reference Normal File 5",
-                        "href":"n1"
-                      },
-                      {
-                        "name": "Title with escape ']'",
-                        "href": "n1"
-                      }
-                  ],
-                  "name":"Existing File Reference"
-                }
-            ],
-            "name":"Index Reference",
-            "href":"./"
-          }
-      ]
+    {
+      "items":[{
+        "name":"Index Reference",
+        "href":"./",
+        "items":[{
+          "name":"Existing File Reference",
+          "items":[
+            { "name":"Reference Normal File 1", "href":"n1" },
+            { "name":"Reference Normal File 2", "href":"../" },
+            { "name":"Reference Normal File 3", "href":"f1/n1?branch=master" },
+            { "name":"Reference Normal File 4", "href":"n1" },
+            { "name":"@Reference Normal File 5", "href":"n1" },
+            { "name": "Title with escape ']'", "href": "n1" }
+          ]
+        }]
+      }]
     }
 ---
 # TOC can be a json file
@@ -68,12 +46,8 @@ inputs:
     [{ "name": "title" }]
 outputs:
   docs/toc.json: |
-    {  
-      "items":[
-          {
-            "name":"title"
-          }
-      ]
+    {
+      "items":[{ "name":"title" }]
     }
 ---
 # TOC json file is invalid
@@ -96,21 +70,11 @@ inputs:
 outputs:
   docs/toc.json: |
     {
-      "items": [
-        {
-          "name": "a",
-          "href": "a/b"
-        }
-      ]
+      "items": [{ "name": "a", "href": "a/b" }]
     }
   docs/a/toc.json: |
     {
-      "items": [
-        {
-          "name": "b",
-          "href": "b"
-        }
-      ]
+      "items": [{ "name": "b", "href": "b" }]
     }
   docs/a/b.json:
 ---
@@ -136,36 +100,17 @@ inputs:
 outputs:
   docs/index.json:
   docs/toc.json: |
-    {  
-      "items":[  
-          {  
-            "items":[  
-                {  
-                  "items":[  
-                      {  
-                        "name":"Reference No-Existing File 1",
-                        "href":"no-existing.md"
-                      },
-                      {  
-                        "name":"Reference No-Existing File 2",
-                        "href":"no-existing.system.md"
-                      },
-                      {  
-                        "name":"Reference No-Existing File 3",
-                        "href":"../no-existing.md"
-                      },
-                      {  
-                        "name":"Reference No-Existing File 4",
-                        "href":"~/docs/no-existing.md"
-                      }
-                  ],
-                  "name":"No Existing File Reference"
-                }
-            ],
-            "name":"Index Reference",
-            "href":"./"
-          }
-      ]
+    {
+      "items":[{
+        "items":[{
+          "items":[
+            { "name":"Reference No-Existing File 1", "href":"no-existing.md" },
+            { "name":"Reference No-Existing File 2", "href":"no-existing.system.md" },
+            { "name":"Reference No-Existing File 3", "href":"../no-existing.md" },
+            { "name":"Reference No-Existing File 4", "href":"~/docs/no-existing.md" }
+          ]
+        }]
+      }]
     }
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'no-existing.md'.","docs/TOC.md",3,5]
@@ -196,28 +141,15 @@ inputs:
 outputs:
   docs/index.json:
   docs/toc.json: |
-    {  
-      "items":[  
-          {  
-            "items":[  
-                {  
-                  "items":[  
-                      {  
-                        "name":"Reference Absolute path 1",
-                        "href":"https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906"
-                      },
-                      {  
-                        "name":"Reference Absolute Path 2",
-                        "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json"
-                      }
-                  ],
-                  "name":"Absolute File Reference"
-                }
-            ],
-            "name":"Index Reference",
-            "href":"./"
-          }
-      ]
+    {
+      "items":[{
+        "items":[{
+          "items":[
+            { "name":"Reference Absolute path 1", "href":"https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906" },
+            { "name":"Reference Absolute Path 2", "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json" }
+          ]
+        }]
+      }]
     }
 ---
 # Nested TOC reference 1
@@ -234,35 +166,11 @@ inputs:
 outputs:
   docs/f1/index.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "items":[  
-                {  
-                   "name":"Index Reference",
-                   "href":"f1/"
-                }
-             ],
-             "name":"Reference TOC File 1"
-          },
-          {  
-             "items":[  
-                {  
-                   "name":"Index Reference",
-                   "href":"f1/"
-                }
-             ],
-             "name":"Reference TOC File 2"
-          },
-          {  
-             "items":[  
-                {  
-                   "name":"Index Reference",
-                   "href":"f1/"
-                }
-             ],
-             "name":"Reference TOC File 3"
-          }
+    {
+       "items":[
+         { "items":[{ "name":"Index Reference", "href":"f1/" }] },
+         { "items":[{ "name":"Index Reference", "href":"f1/" }] },
+         { "items":[{ "name":"Index Reference", "href":"f1/" }] }
        ]
     }
 ---
@@ -289,77 +197,38 @@ outputs:
   docs/f1/f11/index.json:
   docs/f1/f11/a.json:
   docs/toc.json: |
-   {
-        "items": [
-            {
-                "name": "Reference TOC File 1",
-                "items": [
-                    {
-                        "name": "Reference TOC Folder",
-                        "href": "f1/f11/"
-                    }
-                ]
-            },
-            {
-                "name": "Reference TOC File 2",
-                "items": [
-                    {
-                        "name": "Toc Reference",
-                        "items": [
-                            {
-                                "name": "Index Reference",
-                                "href": "f1/f11/"
-                            },
-                            {
-                                "name": "A File reference",
-                                "href": "f1/f11/a"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+    {
+      "items": [
+        { "items": [{ "name": "Reference TOC Folder", "href": "f1/f11/" }] },
+        {
+          "items": [{
+            "items": [
+              { "name": "Index Reference", "href": "f1/f11/" },
+              { "name": "A File reference", "href": "f1/f11/a" }
+            ]
+          }]
+        }
+      ]
     }
   .dependencymap.json: |
     {
-        "dependencies": {
-            "docs/f1/f11/TOC.md": [
-                {
-                    "source": "docs/f1/f11/a.md",
-                    "type": "link"
-                },
-                {
-                    "source": "docs/f1/f11/index.md",
-                    "type": "link"
-                }
-            ],
-            "docs/f1/TOC.md": [
-                {
-                  "source": "docs/f1/f11/index.md",
-                  "type": "link"
-                },
-                {
-                  "source": "docs/f2/TOC.yml",
-                  "type": "tocInclusion"
-                }
-            ],
-            "docs/f2/TOC.yml": [
-                {
-                    "source": "docs/f1/f11/TOC.md",
-                    "type": "tocInclusion"
-                }
-            ],
-            "docs/TOC.md": [
-                {
-                    "source": "docs/f1/TOC.md",
-                    "type": "tocInclusion"
-                },
-                {
-                    "source": "docs/f2/TOC.yml",
-                    "type": "tocInclusion"
-                },
-            ]
-        }
+      "dependencies": {
+        "docs/f1/f11/TOC.md": [
+            { "source": "docs/f1/f11/a.md", "type": "link" },
+            { "source": "docs/f1/f11/index.md", "type": "link" }
+        ],
+        "docs/f1/TOC.md": [
+            { "source": "docs/f1/f11/index.md", "type": "link" },
+            { "source": "docs/f2/TOC.yml", "type": "tocInclusion" }
+        ],
+        "docs/f2/TOC.yml": [
+            { "source": "docs/f1/f11/TOC.md", "type": "tocInclusion" }
+        ],
+        "docs/TOC.md": [
+            { "source": "docs/f1/TOC.md", "type": "tocInclusion" },
+            { "source": "docs/f2/TOC.yml", "type": "tocInclusion" },
+        ]
+      }
     }
 ---
 # Title with # or End with #
@@ -376,36 +245,22 @@ inputs:
 outputs:
   docs/index.json:
   docs/toc.json: |
-    {  
-      "items":[  
-          {  
-            "items":[  
-                {  
-                  "items":[  
-                      {  
-                        "name":"Topic1.1.1",
-                        "href":"/href1.1.1"
-                      }
-                  ],
-                  "name":"Topic1.1 Language C#"
-                },
-                {  
-                  "items":[  
-                      {  
-                        "name":"Topic1.2.1",
-                        "href":"/href1.2.1"
-                      }
-                  ],
-                  "name":"Topic1.2 Language Java",
-                }
-            ],
-            "name":"Topic1",
-            "href":"./"
-          },
-          {  
-            "name":"Topic2",
-            "href":"https://github.com/docfx"
-          }
+    {
+      "items":[
+        {
+          "name": "Topic1",
+          "items": [
+            {
+              "items":[{ "name":"Topic1.1.1", "href":"/href1.1.1" }],
+              "name":"Topic1.1 Language C#"
+            },
+            {
+              "items":[{ "name":"Topic1.2.1", "href":"/href1.2.1" }],
+              "name":"Topic1.2 Language Java",
+            }
+          ]
+        },
+        { "name":"Topic2", "href":"https://github.com/docfx" }
       ]
     }
 ---
@@ -462,26 +317,15 @@ outputs:
   docs/f1/a.json:
   docs/f1/index.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"Toc Reference",
-             "items":[  
-                {  
-                   "name":"Index Reference",
-                   "href":"f1/"
-                }
-             ]
-          },
-          {  
-             "name":"Folder Reference1",
-             "href":"f1/"
-          },
-          {  
-             "name":"Folder Reference2",
-             "href":"f1/a"
-          }
-       ]
+    {
+      "items":[
+        {
+          "name":"Toc Reference",
+          "items":[{ "name":"Index Reference", "href":"f1/" }]
+        },
+        { "name":"Folder Reference1", "href":"f1/" },
+        { "name":"Folder Reference2", "href":"f1/a" }
+      ]
     }
 ---
 # Reference to a folder, nested toc
@@ -496,13 +340,8 @@ inputs:
 outputs:
   docs/f1/index.json:
   docs/toc.json: |
-   {  
-       "items":[  
-          {  
-             "name":"Folder Reference",
-             "href": "f1/"
-          }
-       ]
+    {  
+      "items": [{ "name":"Folder Reference", "href": "f1/" }]
     }
   docs/f1/toc.json:
 ---
@@ -530,37 +369,31 @@ outputs:
   docs/f2/b.json:
   docs/f1/b.json:
   docs/toc.json: |
-   {  
-       "items":[  
-          {  
-             "name":"Folder Reference1",
-             "href":"f1/b"
-          },
-          {  
-             "name":"Folder Reference2",
-             "href":"f2/a"
-          }
-       ]
+    {  
+      "items":[  
+        { "name":"Folder Reference1", "href":"f1/b" },
+        { "name":"Folder Reference2", "href":"f2/a" }
+      ]
     }
   docs/f1/toc.json:
   docs/f2/toc.json:
   .dependencymap.json: |
     {
-        "dependencies": {
-            "docs/f1/TOC.md": [
-                { "source": "docs/f1/b.md", "type": "link" }
-            ],
-            "docs/f2/TOC.md": [
-                { "source": "docs/f2/a.md", "type": "link" },
-                { "source": "docs/f2/b.md", "type": "link" }
-            ],
-            "docs/TOC.md": [
-                { "source": "docs/f1/TOC.md", "type": "tocInclusion" },
-                { "source": "docs/f1/b.md", "type": "link" },
-                { "source": "docs/f2/TOC.md", "type": "tocInclusion" },
-                { "source": "docs/f2/a.md", "type": "link" }
-            ]
-        }
+      "dependencies": {
+        "docs/f1/TOC.md": [
+          { "source": "docs/f1/b.md", "type": "link" }
+        ],
+        "docs/f2/TOC.md": [
+          { "source": "docs/f2/a.md", "type": "link" },
+          { "source": "docs/f2/b.md", "type": "link" }
+        ],
+        "docs/TOC.md": [
+          { "source": "docs/f1/TOC.md", "type": "tocInclusion" },
+          { "source": "docs/f1/b.md", "type": "link" },
+          { "source": "docs/f2/TOC.md", "type": "tocInclusion" },
+          { "source": "docs/f2/a.md", "type": "link" }
+        ]
+      }
     }
 ---
 # Topic href can replace href
@@ -573,14 +406,8 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"File Reference",
-             "href":"f1/a",
-             "homepage": "f1/a"
-          }
-       ]
+    {
+      "items":[{ "name":"File Reference", "href":"f1/a", "homepage": "f1/a" }]
     }
 ---
 # Homepage only shows when topic href is set and href is not 
@@ -595,18 +422,10 @@ inputs:
 outputs:
   docs/toc.json: |
     {
-       "items":[
-          {
-             "name":"name1",
-             "href":"/f1/a",
-             "homepage": undefined
-          },
-          {
-             "name":"name2",
-             "href":"/f2/b",
-             "homepage": undefined
-          }
-       ]
+      "items":[
+         { "name":"name1", "href":"/f1/a", "homepage": undefined },
+         { "name":"name2", "href":"/f2/b", "homepage": undefined }
+      ]
     }
 ---
 # Toc href takes precedence over topic href
@@ -620,13 +439,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        {
-          "name": "Azure",
-          "href": "/azure/",
-          "tocHref": "/azure/",
-          "topicHref": "/azure/index",
-          "homepage": "/azure/index"
-        }
+        { "name": "Azure", "href": "/azure/", "tocHref": "/azure/", "topicHref": "/azure/index", "homepage": "/azure/index" }
       ]
     }
 ---
@@ -643,19 +456,14 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"href + items",
-             "href":"f1/a",
-             "items": [
-                {
-                  "name": "Reference a",
-                  "href": "f1/a"
-                }
-             ]
-          }
-       ]
+    {
+      "items":[
+         {
+            "name": "href + items",
+            "href": "f1/a",
+            "items": [{ "name": "Reference a", "href": "f1/a" }]
+         }
+      ]
     }
 ---
 # Combine toc href, href => href + items
@@ -671,19 +479,14 @@ inputs:
 outputs:
   docs/f1/a.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"href + items",
-             "href":"f1/a",
-             "items": [
-                {
-                  "name": "Reference a",
-                  "href": "f1/a"
-                }
-             ]
-          }
-       ]
+    {
+      "items":[
+        {  
+          "name": "href + items",
+          "href": "f1/a",
+          "items": [{ "name": "Reference a", "href": "f1/a" }]
+        }
+      ]
     }
 ---
 # Combine toc href, href(toc) => toc href > href + items
@@ -701,18 +504,14 @@ outputs:
   docs/f2/a.json:
   docs/f1/toc.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"toc href > href + items",
-             "items": [
-                {
-                  "name": "Reference a",
-                  "href": "f2/a"
-                }
-             ]
-          }
-       ]
+    {
+      "items":[
+        {
+          "name": "toc href > href + items",
+          "href": undefined,
+          "items": [{ "name": "Reference a", "href": "f2/a" }]
+        }
+      ]
     }
 ---
 # Combine topic href and href => topic href has higher priority
@@ -727,13 +526,8 @@ inputs:
       topicHref: ~/docs/f1/n2.md
 outputs:
   docs/f1/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"topic href has higher priority",
-             "href":"~/docs/f1/n2.md",
-          }
-       ]
+    {
+      "items": [{ "name":"topic href has higher priority", "href":"~/docs/f1/n2.md" }]
     }
   .errors.log: |
     ["warning","link-out-of-scope","File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in build scope","docs/f1/TOC.yml",3,14]
@@ -755,22 +549,17 @@ inputs:
 outputs:
   docs/f1/toc.json: |
     {  
-       "items":[  
-          {  
-             "items":[  
-                {  
-                   "name":"Index Reference",
-                   "href":"n1.md"
-                }
-             ],
-             "name":"Toc Reference 1",
-             "href":"f11/n1.md"
-          },
-          {  
-             "href":"n1.md",
-             "name":"Toc Reference 2"
-          }
-       ]
+      "items":[
+         {  
+            "items":[{ "name":"Index Reference", "href":"n1.md" }],
+            "name":"Toc Reference 1",
+            "href":"f11/n1.md"
+         },
+         {
+            "href":"n1.md",
+            "name":"Toc Reference 2"
+         }
+      ]
     }
   .errors.log: |
     ["warning","link-out-of-scope","File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in build scope","docs/f1/TOC.yml",3,14]
@@ -790,12 +579,7 @@ outputs:
   docs/f1/toc.json:
   docs/toc.json: |
     {  
-       "items":[  
-          {  
-             "name":"topic href has higher priority",
-             "href":"f1/a"
-          }
-       ]
+      "items": [{ "name":"topic href has higher priority", "href":"f1/a" }]
     }
 ---
 # Combine toc href(folder), href => href > toc href(folder)
@@ -814,13 +598,8 @@ outputs:
   docs/f1/b.json:
   docs/f1/toc.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"href has higher priority than toc href",
-             "href":"f1/a"
-          }
-       ]
+    {
+      "items": [{ "name":"href has higher priority than toc href", "href":"f1/a" }]
     }
 ---
 # Combine toc href(folder), topic href and href => href
@@ -842,13 +621,8 @@ outputs:
   docs/f1/b.json:
   docs/f1/toc.json:
   docs/toc.json: |
-    {  
-       "items":[  
-          {  
-             "name":"topic href has highest priority",
-             "href":"f1/a"
-          }
-       ]
+    {
+      "items": [{ "name":"topic href has highest priority", "href":"f1/a" }]
     }
 ---
 # Topic href cannot reference a local TOC file or folder
@@ -962,11 +736,11 @@ inputs:
 outputs:
   docs/index.json:
   docs/f1/toc.experimental.json: |
-    {"items":[{"name":"Index Reference","href":"../"}]}
+    { "items": [{ "name":"Index Reference","href":"../" }] }
   docs/f2/toc.experimental.json: |
-    {"items":[{"name":"Index Reference","href":"../"}]}
+    { "items": [{ "name":"Index Reference","href":"../" }] }
   docs/f3/toc.experimental.json: |
-    {"items":[{"name":"Index Reference","href":"../"}]}
+    { "items": [{ "name":"Index Reference","href":"../" }] }
 ---
 # Paired experimental TOC should be built 
 inputs:
@@ -979,7 +753,9 @@ outputs:
   docs/index.json:
   docs/f1/toc.json:
   docs/f1/toc.experimental.json: |
-    {"items":[{"name":"Index Reference","href":"../"}]}
+    {
+      "items": [{ "name":"Index Reference","href":"../" }]
+    }
 ---
 # Paired experimental markdown TOCs' metadata
 inputs:
@@ -999,9 +775,14 @@ inputs:
 outputs:
   docs/index.json:
   docs/f1/toc.json: |
-    {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
+    {
+      "metadata": { "experimental": true, "experiment_id": "d1c17cc0-2ae0-4b" }
+    }
   docs/f1/toc.experimental.json: |
-    {"items":[{"name":"Index Reference","href":"../"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+    {
+      "items":[{ "name":"Index Reference","href":"../" }],
+      "metadata": { "experimental": false, "experiment_id": "d1c17cc0-2ae0-4b" }
+    }
 ---
 # Paired experimental yml TOCs' metadata
 inputs:
@@ -1018,9 +799,14 @@ inputs:
       experiment_id: "d1c17cc0-2ae0-4b"
 outputs:
   docs/f1/toc.json: |
-    {"metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}}
+    {
+      "metadata": {"experimental": true, "experiment_id": "d1c17cc0-2ae0-4b"}
+    }
   docs/f1/toc.experimental.json: |
-    {"items":[{"name":"title"}], "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}}
+    {
+      "items": [{"name":"title"}],
+      "metadata": {"experimental": false, "experiment_id": "d1c17cc0-2ae0-4b"}
+    }
 ---
 # Experimental TOC should be removed from toc map
 inputs:
@@ -1051,7 +837,12 @@ inputs:
 outputs:
   docs/index.json:
   docs/f1/toc.json: |
-    {"items":[{"name":"TOC Reference","items":[{"name": "Index Reference", "href": "../"}]}]}
+    {
+      "items":[{
+        "name":"TOC Reference",
+        "items":[{"name": "Index Reference", "href": "../"}]
+      }]
+    }
 ---
 # Experimental TOC should be excluded using folder ref
 inputs:
@@ -1065,7 +856,7 @@ outputs:
   docs/index.json:
   docs/f2/toc.experimental.json:
   docs/f1/toc.json: |
-    {"items":[{"name":"TOC Reference"}]}
+    { "items":[{"name":"TOC Reference"}] }
 ---
 # Toc with null value
 inputs:
@@ -1095,6 +886,7 @@ inputs:
       additionalProperty: a
       name:
       items: []
+    - href: f1/b.md
   docs/f1/a.md:
   docs/f1/b.md:
 outputs:
@@ -1103,8 +895,9 @@ outputs:
   docs/toc.json:
   docs/f1/toc.json:
   .errors.log: |
-    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.yml",5,8]
-    ["warning","missing-toc-head","The toc head name is missing","docs/f1/TOC.md",1,1]
+    ["warning","missing-toc-name","TOC node is missing name (if it is toc.yml) or title (toc.md)","docs/TOC.yml",5,8]
+    ["warning","missing-toc-name","TOC node is missing name (if it is toc.yml) or title (toc.md)","docs/TOC.yml",7,3]
+    ["warning","missing-toc-name","TOC node is missing name (if it is toc.yml) or title (toc.md)","docs/f1/TOC.md",1,1]
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
@@ -1115,9 +908,9 @@ inputs:
 outputs:
   docs/dir1/toc.json:
   docs/file-with-no-toc.json: |
-    {"_tocRel": undefined}
+    { "_tocRel": undefined }
   docs/dir1/dir2/file-with-toc.json: |
-    {"_tocRel": "../toc.json"}
+    { "_tocRel": "../toc.json" }
 ---
 # File referenced by multiple toc, _tocRel uses relative file path first
 inputs:
@@ -1149,7 +942,7 @@ inputs:
       href: ../a.md
 outputs:
   dir1/a.json: |
-    {"_tocRel": "dir2/toc.json"}
+    { "_tocRel": "dir2/toc.json" }
   dir1/toc.json:
   dir1/dir2/toc.json:
 ---
@@ -1171,7 +964,7 @@ outputs:
   docs/dir1/b/toc.json:
   docs/dir1/aa/toc.json:
   docs/dir1/c/file1.json: |
-    {"_tocRel": "../a/toc.json"}
+    { "_tocRel": "../a/toc.json" }
 ---
 # Bad Toc markdown
 inputs:
@@ -1209,7 +1002,7 @@ outputs:
   .errors.log: |
     ["error","invalid-toc-level","The toc level can't be skipped from 0 to 1","TOC.md",2,1]
 ---
-# Missing TOC head name
+# Missing TOC heading name
 inputs:
   docfx.yml:
   docs/TOC.md: |
@@ -1218,7 +1011,7 @@ inputs:
 outputs:
   docs/toc.json:
   .errors.log: |
-    ["warning","missing-toc-head","The toc head name is missing","docs/TOC.md",2,1]
+    ["warning","missing-toc-name","TOC node is missing name (if it is toc.yml) or title (toc.md)","docs/TOC.md",2,1]
 ---
 # Multiple leaf inlines in toc title
 inputs:
@@ -1232,7 +1025,14 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json: |
-    {"items":[{"name":"Test <X> Y","href":"a"},{"name":"[Test <X> Y]"},{"name":"Test **Title2** Title3","href":"a"},{"name":"[Test **Title2** Title3]"}]}
+    {
+      "items": [
+        {"name":"Test <X> Y","href":"a"},
+        {"name":"[Test <X> Y]"},
+        {"name":"Test **Title2** Title3","href":"a"},
+        {"name":"[Test **Title2** Title3]"}
+      ]
+    }
 ---
 # Expanded, MaintainContext and DisplayName
 inputs:
@@ -1245,7 +1045,7 @@ inputs:
       displayName: "display name"
 outputs:
   docs/toc.json: |
-    {"items": [{"maintainContext": true, "expanded": true, "displayName": "display name"}]}
+    { "items": [{ "maintainContext": true, "expanded": true, "displayName": "display name" }] }
 ---
 # conflicted toc files will be removed from toc map
 inputs:
@@ -1451,7 +1251,13 @@ inputs:
 outputs:
   docs/a.json:
   docs/toc.json: |
-    {"items":[{"name":"TOC Ref","items":[{"name":"Uid Ref","href":"a","monikers": undefined}], "monikers": undefined}]}
+    {
+      "items":[{
+        "name":"TOC Ref",
+        "items":[{"name":"Uid Ref","href":"a","monikers": undefined}],
+        "monikers": undefined
+      }]
+    }
 ---
 # markdown toc using bad syntax(multiple inlines for one heading block)
 inputs:
@@ -1547,16 +1353,10 @@ outputs:
     ["warning","invalid-toc-level","The toc level can't be skipped from 1 to 3","docs/TOC.md",2,1]
   docs/toc.json: |
     {
-        "items": [
-            {
-                "name": "level 1",
-                "items": [
-                    {
-                        "name": "level 2"
-                    }
-                ]
-            }
-        ]
+      "items": [{
+        "name": "level 1",
+        "items": [{ "name": "level 2" }]
+      }]
     }
 ---
 # don't respect monikers of input toc model
@@ -1594,25 +1394,17 @@ outputs:
   336669db/docs/b.json:
   docs/toc.json: |
     {
-        "items": [
-            {
-                "name": "item with children",
-                "href": "/a",
-                "monikers": undefined,
-                "items": [
-                    {
-                        "name": "item with monikers",
-                        "href": "/b",
-                        "monikers": undefined
-                    }
-                ]
-            },
-            {
-                "name": "item with monikers references a file with monikers",
-                "href": "b",
-                "monikers": [
-                    "5.0"
-                ]
-            }
-        ]
+      "items": [
+        {
+          "name": "item with children",
+          "href": "/a",
+          "monikers": undefined,
+          "items": [{ "name": "item with monikers", "href": "/b", "monikers": undefined }]
+        },
+        {
+          "name": "item with monikers references a file with monikers",
+          "href": "b",
+          "monikers": ["5.0"]
+        }
+      ]
     }
