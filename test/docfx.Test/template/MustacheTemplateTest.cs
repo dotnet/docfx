@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Yunit;
@@ -38,6 +40,10 @@ namespace Microsoft.Docs.Build
             "include.tmpl",
             "{'description':'hello','tags':[1,2],'page':{'value':3}}",
             "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]
+        [InlineData(
+            "list.tmpl",
+            "{'list':['l1','l2'],'list-empty':[]}",
+            "list=' l1 l2' list=' l1 l2'")]
         public void RenderMustacheTemplate(string name, string json, string html)
         {
             var model = JToken.Parse(json.Replace('\'', '"'));

@@ -44,13 +44,11 @@ namespace Microsoft.Docs.Build
         {
             // JObject implements IEnumerable, stubble treats IEnumerable as array,
             // need to put it to section blacklist and overwrite the truthy check method.
-            var sectionBlacklist = RendererSettingsDefaults.DefaultSectionBlacklistTypes();
-            sectionBlacklist.Add(typeof(JObject));
-
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
+                           .AddValueGetter(typeof(JArray), GetJArrayValue)
                            .AddTruthyCheck<JObject>(value => value != null)
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
-                           .SetSectionBlacklistTypes(sectionBlacklist);
+                           .AddSectionBlacklistType(typeof(JObject));
 
             object? GetJObjectValue(object value, string key, bool ignoreCase)
             {
@@ -63,6 +61,23 @@ namespace Microsoft.Docs.Build
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
                 return childToken is JValue scalar ? scalar.Value ?? JValue.CreateNull() : childToken;
+            }
+
+            object? GetJArrayValue(object value, string key, bool ignoreCase)
+            {
+                _ = ignoreCase;
+                var jArr = (JArray)value;
+                switch (key.ToLowerInvariant())
+                {
+                    case "length":
+                        return jArr.Count.ToString();
+                    default:
+                        return int.TryParse(key, out var index) && index > -1 && jArr.Count > index
+                            ? jArr[index] is JValue scalar
+                                ? scalar.Value ?? JValue.CreateNull()
+                                : jArr[index]
+                            : JValue.CreateNull();
+                }
             }
         }
 
