@@ -59,10 +59,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         }
                         break;
                     case "lightbox":
-                        lightbox = value;
                         break;
                     default:
-                        logError($"Unexpected attribute \"{name}\". Image is invalid per the schema.");
+                        logError($"Image reference '{src}' is invalid per the schema. Unexpected attribute: '{name}'.");
                         return false;
                 }
             }
