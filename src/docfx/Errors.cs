@@ -372,7 +372,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error MissingTocName(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "missing-toc-name", $"The name(for .yml files name property of each node) or toc title(for .md files) is missing", source);
+                => new Error(ErrorLevel.Warning, "missing-toc-name", $"TOC node is missing name (if it is toc.yml) or title (toc.md)", source);
 
             /// <summary>
             /// In markdown-format toc, used wrong toc syntax.
