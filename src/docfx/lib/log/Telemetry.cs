@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     internal static class Telemetry
     {
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
-        private static readonly ConcurrentDictionary<Document, (string, string, string)> s_fileTypeCache = new ConcurrentDictionary<Document, (string, string, string)>();
+        private static readonly ConcurrentDictionary<FilePath, (string, string, string)> s_fileTypeCache = new ConcurrentDictionary<FilePath, (string, string, string)>();
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
@@ -78,15 +78,15 @@ namespace Microsoft.Docs.Build
             s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static void TrackBuildFileTypeCount(Document file)
+        public static void TrackBuildFileTypeCount(FilePath filePath, PublishItem publishItem)
         {
-            var (fileExtension, documentType, mimeType) = GetFileType(file);
+            var (fileExtension, documentType, mimeType) = GetFileType(filePath, publishItem.ContentType, publishItem.Mime);
             s_buildFileTypeCountMetric.TrackValue(1, fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackMarkdownElement(Document file, string? elementType, string? tokenType)
         {
-            var (fileExtension, documentType, mimeType) = GetFileType(file);
+            var (fileExtension, documentType, mimeType) = GetFileType(file.FilePath, file.ContentType, file.Mime.Value);
             s_markdownElementCountMetric.TrackValue(1, CoalesceEmpty(elementType), CoalesceEmpty(tokenType), fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
@@ -124,17 +124,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string fileExtension, string documentType, string mimeType) GetFileType(Document file)
+        private static (string fileExtension, string documentType, string mimeType) GetFileType(FilePath filePath, ContentType contentType, string? mime)
         {
-            return s_fileTypeCache.GetOrAdd(file, file =>
+            return s_fileTypeCache.GetOrAdd(filePath, filePath =>
             {
-                var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
-                var mimeType = CoalesceEmpty(file.Mime.Value);
-                if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
+                var fileExtension = CoalesceEmpty(Path.GetExtension(filePath.Path)?.ToLowerInvariant());
+                var mimeType = CoalesceEmpty(mime);
+                if (mimeType == "<null>" && contentType == ContentType.Page && fileExtension == ".md")
                 {
                     mimeType = "Conceptual";
                 }
-                return (fileExtension, file.ContentType.ToString(), mimeType);
+                return (fileExtension, contentType.ToString(), mimeType);
             });
         }
 

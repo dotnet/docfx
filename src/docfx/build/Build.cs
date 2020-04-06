@@ -89,18 +89,19 @@ namespace Microsoft.Docs.Build
                 () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
                 () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
 
-            foreach (var (filePath, publishItem) in fileManifests)
-            {
-                if (!publishItem.HasError)
-                {
-                    context.ContentValidator.ValidateManifest(filePath, publishItem);
-                }
-            }
-
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
             context.ErrorLog.Write(errors);
+
+            foreach (var (filePath, publishItem) in fileManifests)
+            {
+                if (!publishItem.HasError)
+                {
+                    Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
+                    context.ContentValidator.ValidateManifest(filePath, publishItem);
+                }
+            }
 
             if (context.Config.DryRun)
             {
@@ -134,7 +135,6 @@ namespace Microsoft.Docs.Build
                 };
 
                 context.ErrorLog.Write(errors);
-                Telemetry.TrackBuildFileTypeCount(file);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
