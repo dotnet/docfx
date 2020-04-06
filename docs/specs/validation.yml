@@ -575,173 +575,13 @@ outputs:
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
-    basePath: /basepath
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc",
-              "redirection"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-  folder0/folder1/index.md:
-  folder0/index.md:
-  folder0/folder1/a.md:
-  folder0/b.md:
-outputs:
-  basepath/folder0/folder1/index.json:
-  basepath/folder0/index.json:
-  basepath/folder0/folder1/a.json:
-  basepath/folder0/b.json:
-  .errors.log: |
-    ["suggestion","path-too-deep","Article URL '/basepath/folder0/folder1/' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "folder0/folder1/index.md"]
-    ["suggestion","path-too-deep","Article URL '/basepath/folder0/folder1/a' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "folder0/folder1/a.md"]
----
-# Content validation - Publish Url - src & dest
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
+    basePath: /docs
     content:
-    - src: docs/folder0/
-      dest: docs/
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc",
-              "redirection"
-            ],
-            "maxLevel": 4,
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-  docs/folder0/folder1/folder2/a.md:
-  docs/folder0/folder1/folder2/folder3/b.md:
-outputs:
-  docs/folder1/folder2/a.json:
-  docs/folder1/folder2/folder3/b.json:
-  .errors.log: |
-    ["suggestion","path-too-deep","Article URL '/docs/folder1/folder2/folder3/b' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "docs/folder0/folder1/folder2/folder3/b.md"]
----
-# Content validation - Publish Url - page with moniker
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-    monikerRange:
-      'docs/v1/**': '< netcore-2.0'
-      'docs/v2/**': '>= netcore-2.0'
-    hostName: docs.com
-    routes:
-      docs/v1/: docs/
-      docs/v2/: docs/
-    monikerDefinition: monikerDefinition.json
-  docs/v1/folder0/folder1/a.md: |
-    Moniker: netcore-1.0, netcore-1.1
-  docs/v2/folder0/folder1/a.md: |
-    Moniker: netcore-2.0, netcore-2.1
-  monikerDefinition.json: |
-    {
-      "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
-      ]
-    }
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc",
-              "redirection"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-outputs:
-  9d4e15fd/docs/folder0/folder1/a.json: |
-    {
-      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
-      "monikers": ["netcore-1.0", "netcore-1.1"]
-    }
-  23d205a5/docs/folder0/folder1/a.json: |
-    {
-      "conceptual": "<p>Moniker: netcore-2.0, netcore-2.1</p>",
-      "monikers": ["netcore-2.0", "netcore-2.1"]
-    }
-  .publish.json: |
-    {
-      "files":[
-        {"url":"/docs/folder0/folder1/a","moniker_group":"23d205a5", "config_moniker_range": ">= netcore-2.0" },
-        {"url":"/docs/folder0/folder1/a","moniker_group":"9d4e15fd", "config_moniker_range": "< netcore-2.0" }
-      ],
-      "moniker_groups": {
-        "23d205a5": ["netcore-2.0","netcore-2.1"],
-        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
-      }
-    }
-  .errors.log: |
-    ["suggestion","path-too-deep","Article URL '/docs/folder0/folder1/a' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "docs/v1/folder0/folder1/a.md"]
-    ["suggestion","path-too-deep","Article URL '/docs/folder0/folder1/a' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "docs/v2/folder0/folder1/a.md"]
----
-# Content validation -  Publish Url - exclude redirection
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
+    - src: folder0/
+      dest: folder/
   redirections.yml: |
     redirections:
-      docs/folder0/folder1/a.md: "/docs/folder0/a"
-      docs/folder0/b.md: "/docs/folder0/folder1/b"
+      folder0/folder1/folder2/c.md: "docs/folder/folder1/c"
   rules.json: |
     {
       "publishurls": {
@@ -755,243 +595,33 @@ inputs:
             "code": "path-too-deep",
             "severity": "SUGGESTION",
             "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc",
               "redirection"
             ],
             "excludedDocfxVersions": [
               "v2"
-            ]
-          }
-        ]
-      }
-    }
-  docs/folder0/a.md:
-  docs/folder0/folder1/b.md:
-outputs:
-  docs/folder0/a.json:
-  docs/folder0/folder1/b.json:
-  .errors.log: |
-    ["suggestion","path-too-deep","Article URL '/docs/folder0/folder1/b' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "docs/folder0/folder1/b.md"]
----
-# Content validation -  Publish Url - include redirection
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-  redirections.yml: |
-    redirections:
-      docs/folder0/folder1/a.md: "/docs/folder0/a"
-      docs/folder0/b.md: "/docs/folder0/folder1/b"
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-  docs/folder0/a.md:
-  docs/folder0/folder1/b.md:
-outputs:
-  docs/folder0/a.json:
-  docs/folder0/folder1/b.json:
-  .errors.log: |
-    ["suggestion","path-too-deep","Article URL '/docs/folder0/folder1/b' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "docs/folder0/folder1/b.md"]
-    ["suggestion","path-too-deep","Article URL '/docs/folder0/folder1/a' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "docs/folder0/folder1/a.md"]
----
-# Content validation -  Publish Url - exclude toc
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [
-              "toc",
             ],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
+            "maxLevel": 4
           }
         ]
       }
     }
-  docs/folder0/a/TOC.md:
-  docs/folder0/b/TOC.json: |
-    [
-      {
-        "name":"file",
-        "href":"../file.md"
-      }
-    ]
-  docs/folder0/file.md:
+  folder0/folder1/folder2/index.md:
+  folder0/folder1/folder2/a.md:
+  folder0/folder1/folder2/TOC.md:
+  folder0/b.md: '![](folder1/folder2/image.png)'
+  folder0/folder1/folder2/image.png:
 outputs:
-  docs/folder0/a/toc.json:
-  docs/folder0/b/toc.json:
-  docs/folder0/file.json:
----
-# Content validation -  Publish Url - include toc
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-  docs/folder0/a/TOC.md:
-  docs/folder0/b/TOC.json: |
-    [
-      {
-        "name":"file",
-        "href":"../file.md"
-      }
-    ]
-  docs/folder0/file.md:
-outputs:
-  docs/folder0/a/toc.json:
-  docs/folder0/b/toc.json:
-  docs/folder0/file.json:
+  docs/folder/folder1/folder2/index.json:
+  docs/folder/folder1/folder2/a.json:
+  docs/folder/folder1/folder2/toc.json:
+  docs/folder/b.json: |
+    {"conceptual": "<p><img src=\"../folder0/folder1/folder2/image.png\" alt=\"\" data-linktype=\"relative-path\"></p>"}
+  docs/folder0/folder1/folder2/image.png:
   .errors.log: |
-    ["suggestion","path-too-deep","Article URL '/docs/folder0/a/toc.json' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "docs/folder0/a/TOC.md"]
-    ["suggestion","path-too-deep","Article URL '/docs/folder0/b/toc.json' is '4' levels deep. For SEO, URLs should be '3' levels or fewer.", "docs/folder0/b/TOC.json"]
+    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "folder0/folder1/folder2/index.md"]
+    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "folder0/folder1/folder2/a.md"]
 ---
-# Content validation -  Publish Url - resource
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-  docs/folder0/imagepage.md: '![](b/image.png)'
-  docs/folder0/b/image.png:
-outputs:
-  docs/folder0/b/image.png:
-  docs/folder0/imagepage.json: |
-    {"conceptual": "<p><img src=\"b/image.png\" alt=\"\" data-linktype=\"relative-path\"></p>"}
----
-# Content validation -  Publish Url - SDP page
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-  docs/folder0/folder1/a.yml: |
-    #YamlMime:ContextObject
-    brand: azure
-  _themes/ContentTemplate/schemas/ContextObject.schema.json: |
-    {
-      "type": "object",
-      "properties": {
-          "brand": {"type": "string"},
-      }
-    }
-outputs:
-  docs/folder0/folder1/a.json: |
-    {
-      "brand": "azure",
-    }
----
-# Content validation -  Publish Url - included files
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-    content:
-      exclude:
-      - "**/includes/**"
-      src: docs
-      dest: docs
-  rules.json: |
-    {
-      "publishurls": {
-        "name": "PublishUrls",
-        "description": "Validates publish urls",
-        "aliases": null,
-        "rules": [
-          {
-            "type": "MaxLevel",
-            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
-            "code": "path-too-deep",
-            "severity": "SUGGESTION",
-            "exclusions": [],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
-    }
-  docs/folder0/a.md:
-  docs/folder0/includes/b.md:
-outputs:
-  docs/folder0/a.json:
-
