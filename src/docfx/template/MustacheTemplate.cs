@@ -2,10 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -48,15 +45,11 @@ namespace Microsoft.Docs.Build
             // JObject implements IEnumerable, stubble treats IEnumerable as array,
             // need to put it to section blacklist and overwrite the truthy check method.
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
-                           .AddValueGetter(typeof(JArray), GetJArrayValue)
-                           .AddValueGetter(typeof(IList), OverwriteValueGetter) // overwrite default value getters in stubble
-                           .AddValueGetter(typeof(IDictionary<string, object>), OverwriteValueGetter)
-                           .AddValueGetter(typeof(IDictionary), OverwriteValueGetter)
-                           .AddValueGetter(typeof(IDynamicMetaObjectProvider), OverwriteValueGetter)
-                           .AddValueGetter(typeof(object), OverwriteValueGetter)
+                           .AddValueGetter(typeof(JValue), GetJValueValue)
                            .AddTruthyCheck<JObject>(value => value != null)
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
-                           .AddSectionBlacklistType(typeof(JObject));
+                           .AddSectionBlacklistType(typeof(JObject))
+                           .AddSectionBlacklistType(typeof(JValue));
 
             object? GetJObjectValue(object value, string key, bool ignoreCase)
             {
@@ -64,32 +57,17 @@ namespace Microsoft.Docs.Build
                 {
                     return global;
                 }
-
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
                 return childToken is JValue scalar ? scalar.Value ?? JValue.CreateNull() : childToken;
             }
 
-            object? GetJArrayValue(object value, string key, bool ignoreCase)
+            object? GetJValueValue(object value, string key, bool ignoreCase)
             {
                 _ = ignoreCase;
-                var jArr = (JArray)value;
-                if (string.Equals(key, "length", StringComparison.OrdinalIgnoreCase))
-                {
-                    return jArr.Count.ToString();
-                }
-                else
-                {
-                    return int.TryParse(key, out var index) && index > -1 && jArr.Count > index
-                            ? jArr[index] is JValue scalar
-                                ? scalar.Value ?? JValue.CreateNull()
-                                : jArr[index]
-                            : null;
-                }
+                return key.Trim() == "." ? ((JValue)value).Value : null;
             }
-
-            object? OverwriteValueGetter(object value, string key, bool ignoreCase) => null;
         }
 
         private class PartialLoader : IStubbleLoader

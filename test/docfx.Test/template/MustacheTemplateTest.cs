@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         [InlineData(
             "list.tmpl",
             "{'list':['l1','l2'],'list-empty':[]}",
-            "list=' l1 l2' list=' l1 l2'")]
+            "list=' l1 l2'")]
         public void RenderMustacheTemplate(string name, string json, string html)
         {
             var model = JToken.Parse(json.Replace('\'', '"'));
