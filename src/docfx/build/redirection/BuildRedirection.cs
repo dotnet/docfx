@@ -22,7 +22,9 @@ namespace Microsoft.Docs.Build
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
+                context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
+                file.ContentType,
+                file.Mime.Value);
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 

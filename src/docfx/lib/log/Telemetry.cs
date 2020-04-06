@@ -75,15 +75,15 @@ namespace Microsoft.Docs.Build
             s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static void TrackBuildFileTypeCount(Document file)
+        public static void TrackBuildFileTypeCount(PublishItem publishItem)
         {
-            var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
-            var mimeType = CoalesceEmpty(file.Mime.Value);
-            if (mimeType == "<null>" && file.ContentType == ContentType.Page && fileExtension == ".md")
+            var fileExtension = CoalesceEmpty(Path.GetExtension(publishItem.SourcePath)?.ToLowerInvariant());
+            var mimeType = CoalesceEmpty(publishItem.Mime);
+            if (mimeType == "<null>" && publishItem.ContentType == ContentType.Page && fileExtension == ".md")
             {
                 mimeType = "Conceptual";
             }
-            s_buildFileTypeCountMetric.TrackValue(1, fileExtension, file.ContentType.ToString(), mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
+            s_buildFileTypeCountMetric.TrackValue(1, fileExtension, publishItem.ContentType.ToString(), mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildCommitCount(int count)

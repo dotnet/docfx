@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -85,6 +86,15 @@ namespace Microsoft.Docs.Build
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
             context.ErrorLog.Write(errors);
 
+            foreach (var (filePath, publishItem) in fileManifests)
+            {
+                if (!publishItem.HasError)
+                {
+                    Telemetry.TrackBuildFileTypeCount(publishItem);
+                    context.ContentValidator.ValidateManifest(filePath, publishItem);
+                }
+            }
+
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
 
@@ -128,8 +138,6 @@ namespace Microsoft.Docs.Build
                 };
 
                 context.ErrorLog.Write(errors);
-                Telemetry.TrackBuildFileTypeCount(file);
-                context.ContentValidator.ValidateManifest(file);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
