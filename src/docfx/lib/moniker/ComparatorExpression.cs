@@ -19,7 +19,10 @@ namespace Microsoft.Docs.Build
 
         public (List<Error>, IEnumerable<Moniker>) Accept(EvaluatorWithMonikersVisitor visitor, SourceInfo<string?> monikerRange)
         {
-            return visitor.Visit(this, monikerRange);
+            var errors = new List<Error>();
+            var (error, monikers) = visitor.Visit(this, monikerRange);
+            errors.AddIfNotNull(error);
+            return (errors, monikers);
         }
     }
 }

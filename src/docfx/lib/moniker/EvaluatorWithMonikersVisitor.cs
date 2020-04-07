@@ -22,23 +22,21 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, (string productName, int orderInProduct)> MonikerOrder { get; }
 
-        public (List<Error>, IEnumerable<Moniker>) Visit(ComparatorExpression expression, SourceInfo<string?> monikerRange)
+        public (Error?, IEnumerable<Moniker>) Visit(ComparatorExpression expression, SourceInfo<string?> monikerRange)
         {
-            var errors = new List<Error>();
             if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
             {
-                errors.Add(Errors.Versioning.MonikerRangeInvalid(monikerRange, $"Invalid moniker range '{monikerRange}': Moniker '{expression.Operand}' is not defined"));
-                return (errors, Array.Empty<Moniker>());
+                return (Errors.Versioning.MonikerRangeInvalid(monikerRange, $"Invalid moniker range '{monikerRange}': Moniker '{expression.Operand}' is not defined"), Array.Empty<Moniker>());
             }
 
             return expression.Operator switch
             {
-                ComparatorOperatorType.EqualTo => (errors, new List<Moniker> { MonikerMap[expression.Operand] }),
-                ComparatorOperatorType.GreaterThan => (errors, _productMoniker[moniker.productName].Skip(moniker.orderInProduct + 1)),
-                ComparatorOperatorType.GreaterThanOrEqualTo => (errors, _productMoniker[moniker.productName].Skip(moniker.orderInProduct)),
-                ComparatorOperatorType.LessThan => (errors, _productMoniker[moniker.productName].Take(moniker.orderInProduct)),
-                ComparatorOperatorType.LessThanOrEqualTo => (errors, _productMoniker[moniker.productName].Take(moniker.orderInProduct + 1)),
-                _ => (errors, Array.Empty<Moniker>()),
+                ComparatorOperatorType.EqualTo => (null, new List<Moniker> { MonikerMap[expression.Operand] }),
+                ComparatorOperatorType.GreaterThan => (null, _productMoniker[moniker.productName].Skip(moniker.orderInProduct + 1)),
+                ComparatorOperatorType.GreaterThanOrEqualTo => (null, _productMoniker[moniker.productName].Skip(moniker.orderInProduct)),
+                ComparatorOperatorType.LessThan => (null, _productMoniker[moniker.productName].Take(moniker.orderInProduct)),
+                ComparatorOperatorType.LessThanOrEqualTo => (null, _productMoniker[moniker.productName].Take(moniker.orderInProduct + 1)),
+                _ => (null, Array.Empty<Moniker>()),
             };
         }
 
