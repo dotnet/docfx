@@ -80,16 +80,6 @@ namespace Microsoft.Docs.Build
             return AppendLocale(repositoryUrl, locale);
         }
 
-        public static PackagePath GetLocalizedTheme(PackagePath theme, string locale)
-        {
-            return theme.Type switch
-            {
-                PackageType.Folder => new PackagePath(AppendLocale(theme.Path, locale)),
-                PackageType.Git => new PackagePath(AppendLocale(theme.Url, locale), theme.Branch),
-                _ => theme,
-            };
-        }
-
         public static void EnsureLocalizationContributionBranch(PreloadConfig config, Repository? repository)
         {
             // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
