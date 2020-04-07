@@ -13,9 +13,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, (List<Error>, string[])> _cache = new ConcurrentDictionary<string, (List<Error>, string[])>(StringComparer.OrdinalIgnoreCase);
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
-        public MonikerRangeParser(EvaluatorWithMonikersVisitor monikersEvaluator)
+        public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
         {
-            _monikersEvaluator = monikersEvaluator;
+            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
         public (List<Error>, string[]) Validate(SourceInfo<string?>[] monikers)

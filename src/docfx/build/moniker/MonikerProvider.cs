@@ -23,8 +23,6 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (List<Error>, string[])> _monikerCache
                    = new ConcurrentDictionary<FilePath, (List<Error>, string[])>();
 
-        public MonikerComparer Comparer { get; }
-
         public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, FileResolver fileResolver)
         {
             _config = config;
@@ -37,9 +35,7 @@ namespace Microsoft.Docs.Build
                 var content = fileResolver.ReadString(_config.MonikerDefinition);
                 monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, new FilePath(_config.MonikerDefinition));
             }
-            var monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
-            _rangeParser = new MonikerRangeParser(monikersEvaluator);
-            Comparer = new MonikerComparer(monikersEvaluator.MonikerOrder);
+            _rangeParser = new MonikerRangeParser(monikerDefinition);
 
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
         }

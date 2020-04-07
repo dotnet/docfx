@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -63,13 +62,10 @@ namespace Microsoft.Docs.Build
         };
 
         private readonly MonikerRangeParser _monikerRangeParser;
-        private readonly MonikerComparer _monikerComparer;
 
         public MonikerRangeParserTest()
         {
-            var monikersEvaluator = new EvaluatorWithMonikersVisitor(_monikerDefinition);
-            _monikerRangeParser = new MonikerRangeParser(monikersEvaluator);
-            _monikerComparer = new MonikerComparer(monikersEvaluator.MonikerOrder);
+            _monikerRangeParser = new MonikerRangeParser(_monikerDefinition);
         }
 
         [Theory]
@@ -84,13 +80,13 @@ namespace Microsoft.Docs.Build
             "netcore-1.0")]
         [InlineData(
             "netcore-1.0 || dotnet-3.0",
-             "netcore-1.0 dotnet-3.0")]
+             "dotnet-3.0 netcore-1.0")]
         [InlineData(
             "Netcore-1.0",
              "netcore-1.0")]
         [InlineData(
             "dotnet-3.0 || netcore-1.0",
-             "netcore-1.0 dotnet-3.0")]
+             "dotnet-3.0 netcore-1.0")]
         [InlineData(
             ">netcore-1.0<netcore-3.0",
             "netcore-2.0")]
@@ -102,10 +98,10 @@ namespace Microsoft.Docs.Build
             "netcore-1.0")]
         [InlineData(
             ">= netcore-1.0 < netcore-2.0 || dotnet-3.0",
-            "netcore-1.0 dotnet-3.0")]
+            "dotnet-3.0 netcore-1.0")]
         [InlineData(
             ">= netcore-2.0 || > dotnet-2.0",
-            "netcore-2.0 netcore-3.0 dotnet-3.0")]
+            "dotnet-3.0 netcore-2.0 netcore-3.0")]
         [InlineData(
             ">= netcore-2.0 > dotnet-2.0",
             "")]
@@ -116,7 +112,7 @@ namespace Microsoft.Docs.Build
         {
             var (_, monikers) = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString));
             var result = monikers.ToList();
-            result.Sort(_monikerComparer);
+            result.Sort(StringComparer.Ordinal);
             Assert.Equal(expectedMonikers, string.Join(' ', result));
         }
 
@@ -138,7 +134,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestNullDefinitionShouldFail()
         {
-            var monikerRangeParser = new MonikerRangeParser(new EvaluatorWithMonikersVisitor(new MonikerDefinitionModel()));
+            var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
             var (errors, _) = monikerRangeParser.Parse(new SourceInfo<string>("netcore-1.0"));
             Assert.Collection(errors, error =>
             {
