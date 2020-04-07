@@ -1403,7 +1403,7 @@ inputs:
     {}
 outputs:
   .errors.log: |
-    ["error","moniker-range-invalid","Invalid moniker range: '>= netcore-2.0': Moniker `netcore-2.0` is not defined","docfx.yml",2,17]
+    ["error","moniker-range-invalid","Invalid moniker range '>= netcore-2.0': Moniker 'netcore-2.0' is not defined","docfx.yml",2,17]
 ---
 # Invalid moniker range in file
 inputs:
@@ -1428,8 +1428,10 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-invalid","Invalid moniker range: 'netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/a.md",2,15]
-    ["error","moniker-range-invalid","Invalid moniker range: '<= netcore-1.2': Moniker `netcore-1.2` is not defined","docs/v1/b.md",2,1]
+    ["error","moniker-range-invalid","Invalid moniker range 'netcore-1.2': Moniker 'netcore-1.2' is not defined","docs/v1/a.md",2,15]
+    ["error","moniker-range-invalid","Invalid moniker range '<= netcore-1.2': Moniker 'netcore-1.2' is not defined","docs/v1/b.md",2,1]
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', while file moniker range 'netcore-1.2' is ''","docs/v1/a.md",2,15]
+    ["error","moniker-range-out-of-scope","No intersection between zone and file level monikers. The result of zone level range string '<= netcore-1.2' is '', while file level monikers is 'netcore-1.0'.","docs/v1/b.md",2,1]
 ---
 # Resolving moniker zone in token should base on root file's moniker
 inputs:
@@ -1692,7 +1694,8 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","moniker-range-invalid","Invalid moniker range: 'netcore-1.1': Moniker `netcore-1.1` is not defined","docs/v1/TOC.md",2,11]
+    ["error","moniker-range-invalid","Invalid monikers: Moniker 'netcore-1.1' is not defined","docs/v1/TOC.md",2,11]
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file monikers is ''","docs/v1/TOC.md",2,11]
 ---
 # Should take monikerRange as final monikers even it outputs empty
 inputs:
@@ -1718,7 +1721,7 @@ inputs:
 outputs:
   .errors.log: |
     ["warning","duplicate-moniker-config","Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored","docs/v1/TOC.md",2,11]
-    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', 'netcore-2.0', while file moniker range '>netcore-1.0 <netcore-1.0' is ","docs/v1/TOC.md",3,15]
+    ["error","moniker-range-out-of-scope","No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', 'netcore-2.0', while file moniker range '>netcore-1.0 <netcore-1.0' is ''","docs/v1/TOC.md",3,15]
 ---
 # Should take monikers as final monikers if user inputs empty string for monikerRange
 # and no duplicate-moniker-config warning

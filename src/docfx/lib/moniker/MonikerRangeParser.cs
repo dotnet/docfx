@@ -3,13 +3,14 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, string[]> _cache = new ConcurrentDictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, (List<Error>, string[])> _cache = new ConcurrentDictionary<string, (List<Error>, string[])>(StringComparer.OrdinalIgnoreCase);
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(EvaluatorWithMonikersVisitor monikersEvaluator)
@@ -17,28 +18,49 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = monikersEvaluator;
         }
 
-        public string[] Parse(SourceInfo<string?> rangeString)
+        public (List<Error>, string[]) Validate(SourceInfo<string?>[] monikers)
+        {
+            var errors = new List<Error>();
+            var result = new List<string>();
+            foreach (var moniker in monikers)
+            {
+                var key = moniker.Value;
+                if (key != null)
+                {
+                    if (!_monikersEvaluator.MonikerMap.ContainsKey(key))
+                    {
+                        errors.Add(Errors.Versioning.MonikerRangeInvalid(moniker, $"Invalid monikers: Moniker '{key}' is not defined"));
+                    }
+                    else
+                    {
+                        result.Add(key.ToLowerInvariant());
+                    }
+                }
+            }
+            return (errors, result.ToArray());
+        }
+
+        public (List<Error>, string[]) Parse(SourceInfo<string?> rangeString)
         {
             var key = rangeString.Value;
             if (string.IsNullOrWhiteSpace(key))
             {
-                return Array.Empty<string>();
+                return (new List<Error>(), Array.Empty<string>());
             }
 
             return _cache.GetOrAdd(key, value =>
             {
-                try
+                var (errors, result) = ExpressionCreator.Create(value, rangeString.Source);
+                if (result is null)
                 {
-                    return ExpressionCreator.Create(value)
-                        .Accept(_monikersEvaluator)
-                        .Select(x => x.MonikerName.ToLowerInvariant())
-                        .OrderBy(_ => _, StringComparer.Ordinal)
-                        .ToArray();
+                    return (errors, Array.Empty<string>());
                 }
-                catch (MonikerRangeException ex)
-                {
-                    throw Errors.Versioning.MonikerRangeInvalid(rangeString, ex).ToException();
-                }
+                var (evaluateErrors, monikers) = result.Accept(_monikersEvaluator, rangeString);
+                errors.AddRange(evaluateErrors);
+                return (errors, monikers
+                    .Select(x => x.MonikerName.ToLowerInvariant())
+                    .OrderBy(_ => _, StringComparer.Ordinal)
+                    .ToArray());
             });
         }
     }
