@@ -92,6 +92,7 @@ namespace Microsoft.Docs.Build
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
             context.ErrorLog.Write(errors);
+
             if (context.Config.DryRun)
             {
                 return;
