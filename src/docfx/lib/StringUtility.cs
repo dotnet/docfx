@@ -37,12 +37,9 @@ namespace Microsoft.Docs.Build
 
         public static string Join<T>(IEnumerable<T> source, int take = 5)
         {
-            if (!source.Any())
-            {
-                return "''";
-            }
             var formatSource = source.Select(item => $"'{item}'").OrderBy(_ => _, StringComparer.Ordinal);
-            return $"{string.Join(", ", formatSource.Take(take))}{(formatSource.Count() > 5 ? "..." : "")}";
+            var result = $"{string.Join(", ", formatSource.Take(take))}{(formatSource.Count() > 5 ? "..." : "")}";
+            return string.IsNullOrEmpty(result) ? "''" : result;
         }
 
         /// <summary>

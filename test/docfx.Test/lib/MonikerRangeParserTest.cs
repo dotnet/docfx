@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
         public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
             var (errors,_) = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString));
-            Assert.Contains(Errors.Versioning.MonikerRangeInvalid(null, errorMessage), errors, new ErrorEqualityComparer());
+            Assert.Contains(errorMessage, errors.Select(x => x.Message));
         }
 
         [Fact]
@@ -145,24 +145,6 @@ namespace Microsoft.Docs.Build
                 Assert.Equal("moniker-range-invalid", error.Code);
                 Assert.Equal("Invalid moniker range 'netcore-1.0': Moniker 'netcore-1.0' is not defined", error.Message);
             });
-        }
-
-        private class ErrorEqualityComparer : IEqualityComparer<Error>
-        {
-            public bool Equals(Error x, Error y)
-            {
-                return x.Level == y.Level &&
-                       x.Code == y.Code &&
-                       x.Message == y.Message;
-            }
-
-            public int GetHashCode(Error obj)
-            {
-                return HashCode.Combine(
-                    obj.Level,
-                    obj.Code,
-                    obj.Message);
-            }
         }
     }
 }
