@@ -1808,3 +1808,26 @@ inputs:
 outputs:
   136a42ac/docs/a.json: |
     {"metadata":{"monikers":["netcore-1.0"]}}
+---
+# Compatible for versioning docfx.json in v2
+inputs:
+  docfx.json: |
+    build:
+      content:
+      - group: netcore-1.0
+        files: **.md
+        src: docs/v1
+      - group: netcore-2.0
+        files: **.md
+        src: docs/v2
+    groups:
+      'docs/v1/**': 'netcore-1.0'
+      'docs/v2/**': 'netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: '{APP_BASE_PATH}/data/monikers.json'
+  docs/v1/a.md: |
+    Moniker: netcore-1.0
+  docs/v2/a.md: |
+    Moniker: netcore-2.0
