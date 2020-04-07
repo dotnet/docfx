@@ -15,17 +15,19 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Output _output;
         private readonly ErrorLog _errorLog;
+        private readonly ContentValidator _contentValidator;
         private readonly ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>> _outputsByPublishItem
             = new ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>>(new PublishItemComparer());
 
         private readonly Dictionary<FilePath, PublishItem> _publishItems = new Dictionary<FilePath, PublishItem>();
 
-        public PublishModelBuilder(string outputPath, Config config, Output output, ErrorLog errorLog)
+        public PublishModelBuilder(string outputPath, Config config, Output output, ErrorLog errorLog, ContentValidator contentValidator)
         {
             _config = config;
             _output = output;
             _errorLog = errorLog;
             _outputPath = PathUtility.NormalizeFolder(outputPath);
+            _contentValidator = contentValidator;
         }
 
         public bool HasOutput(FilePath file)
@@ -142,6 +144,15 @@ namespace Microsoft.Docs.Build
             foreach (var file in _errorLog.ErrorFiles)
             {
                 DeleteOutput(file);
+            }
+
+            foreach (var (filePath, publishItem) in _publishItems)
+            {
+                if (!publishItem.HasError)
+                {
+                    Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
+                    _contentValidator.ValidateManifest(filePath, publishItem);
+                }
             }
 
             var publishItems = (

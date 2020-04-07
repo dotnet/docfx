@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -93,16 +92,6 @@ namespace Microsoft.Docs.Build
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
             var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
             context.ErrorLog.Write(errors);
-
-            foreach (var (filePath, publishItem) in fileManifests)
-            {
-                if (!publishItem.HasError)
-                {
-                    Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
-                    context.ContentValidator.ValidateManifest(filePath, publishItem);
-                }
-            }
-
             if (context.Config.DryRun)
             {
                 return;
