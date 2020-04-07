@@ -22,11 +22,10 @@ namespace Microsoft.Docs.Build
 
         public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver)
         {
-            var template = buildOptions.IsLocalizedBuild ? LocalizationUtility.GetLocalizedTheme(config.Template, buildOptions.Locale) : config.Template;
             _templateDir = config.Template.Type switch
             {
                 PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
-                _ => packageResolver.ResolvePackage(template, PackageFetchOptions.DepthOne),
+                _ => packageResolver.ResolvePackage(config.Template, PackageFetchOptions.DepthOne),
             };
 
             _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");

@@ -96,8 +96,7 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                var template = buildOptions.IsLocalizedBuild ? LocalizationUtility.GetLocalizedTheme(config.Template, buildOptions.Locale) : config.Template;
-                yield return (template, PackageFetchOptions.DepthOne);
+                yield return (config.Template, PackageFetchOptions.DepthOne);
             }
         }
     }
