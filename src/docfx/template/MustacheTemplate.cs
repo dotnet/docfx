@@ -83,9 +83,9 @@ namespace Microsoft.Docs.Build
                 key => new Lazy<string>(() =>
                 {
                     var fileName = Path.Combine(_dir, name);
-                    if (File.Exists(fileName))
-                        return File.ReadAllText(fileName).Replace("\r", "");
-                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial")).Replace("\r", "");
+                    if (!File.Exists(fileName))
+                        fileName = Path.Combine(_dir, name + ".tmpl.partial");
+                    return MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
                 })).Value;
         }
     }
