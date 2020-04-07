@@ -33,7 +33,13 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject? ExtensionData { get; set; }
 
-        public PublishItem(string url, string? path, string? sourcePath, string locale, string[] monikers, string? configMonikerRange)
+        [JsonIgnore]
+        public ContentType ContentType { get; }
+
+        [JsonIgnore]
+        public string? Mime { get; }
+
+        public PublishItem(string url, string? path, string? sourcePath, string locale, string[] monikers, string? configMonikerRange, ContentType contentType, string? mime)
         {
             Url = url;
             Path = path;
@@ -42,6 +48,8 @@ namespace Microsoft.Docs.Build
             Monikers = monikers;
             ConfigMonikerRange = configMonikerRange;
             MonikerGroup = MonikerUtility.GetGroup(monikers);
+            ContentType = contentType;
+            Mime = mime;
         }
     }
 }
