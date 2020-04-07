@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         private static void RestorePackages(BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
             ParallelUtility.ForEach(
-                GetPackages(config, buildOptions).Distinct(),
+                GetPackages(config).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags),
                 Progress.Update,
                 maxDegreeOfParallelism: 8);
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
         }
 
-        private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(Config config, BuildOptions buildOptions)
+        private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(Config config)
         {
             foreach (var (_, package) in config.Dependencies)
             {
