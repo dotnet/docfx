@@ -64,10 +64,7 @@ namespace Microsoft.Docs.Build
             }
 
             object? GetJValueValue(object value, string key, bool ignoreCase)
-            {
-                _ = ignoreCase;
-                return key.Trim() == "." ? ((JValue)value).Value : null;
-            }
+                => key.Trim() == "." ? ((JValue)value).Value : null;
         }
 
         private class PartialLoader : IStubbleLoader
