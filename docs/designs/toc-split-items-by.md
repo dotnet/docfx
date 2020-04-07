@@ -18,7 +18,7 @@ The `JoinTOC` plugin is a collection of 3 seperate plugins: `FusionTOC`, `GlobTO
 
 To reduce TOC size for large reference pages, TOC node now has a new `string splitItemsBy` property. When set, docfx automatically splits the `items` property into seperate TOCs.
 
-- The splitted TOC output URL is `{toc_dir}/{value(spliItemsBy)}/toc.json` to be stable and CDN friendly.
+- The splitted TOC output URL is `{toc_dir}/{value(splitItemsBy)}/toc.json` to be stable and CDN friendly.
 - The splitted TOCs _MUST_ inherit the same metadata as the root TOC.
 - This property can only take effect for root TOC as a starting point.
 
