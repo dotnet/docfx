@@ -575,11 +575,23 @@ outputs:
 # Validation is only worked in the conceptual page
 inputs:
   docfx.yml: |
+    monikerRange:
+      'v1/**': '< netcore-2.0'
+      'v2/**': '>= netcore-2.0'
     markdownValidationRules: rules.json
     basePath: /docs
-    content:
-    - src: folder0/
-      dest: folder/
+    routes:
+      v1/: folder/
+      v2/: folder/
+      folder0/: folder/
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
   redirections.yml: |
     redirections:
       folder0/folder1/folder2/c.md: "docs/folder/folder1/c"
@@ -610,19 +622,24 @@ inputs:
         ]
       }
     }
-  folder0/folder1/folder2/index.md:
-  folder0/folder1/folder2/a.md:
+  folder0/folder1/folder2/index.md:  
+  v1/folder1/folder2/a.md: |
+    Moniker: netcore-1.0
+  v2/folder1/folder2/a.md: |
+    Moniker: netcore-2.0
   folder0/folder1/folder2/TOC.md:
   folder0/b.md: '![](folder1/folder2/image.png)'
   folder0/folder1/folder2/image.png:
 outputs:
   docs/folder/folder1/folder2/index.json:
-  docs/folder/folder1/folder2/a.json:
+  docs/136a42ac/folder/folder1/folder2/a.json: 
+  docs/4667fedf/folder/folder1/folder2/a.json: 
   docs/folder/folder1/folder2/toc.json:
   docs/folder/b.json: |
-    {"conceptual": "<p><img src=\"../folder0/folder1/folder2/image.png\" alt=\"\" data-linktype=\"relative-path\"></p>"}
-  docs/folder0/folder1/folder2/image.png:
+    {"conceptual": "<p><img src=\"folder1/folder2/image.png\" alt=\"\" data-linktype=\"relative-path\"></p>"}
+  docs/folder/folder1/folder2/image.png:
   .errors.log: |
     ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "folder0/folder1/folder2/index.md"]
-    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "folder0/folder1/folder2/a.md"]
+    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "v1/folder1/folder2/a.md"]
+    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "v2/folder1/folder2/a.md"]
 ---
