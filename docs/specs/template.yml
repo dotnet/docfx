@@ -241,7 +241,7 @@ repos:
   https://docs.com/loc-template-test.zh-cn:
     - files:
         docfx.yml: |
-          template: https://docs.com/loc-template
+          template: https://docs.com/loc-template.zh-cn
         a.yml: '#YamlMime:TestLocTemplate'
   https://docs.com/loc-template.zh-cn:
     - files:
