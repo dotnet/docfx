@@ -112,8 +112,8 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
-            TableOfContentsLoader = new TableOfContentsLoader(Input, LinkResolver, XrefResolver, new TableOfContentsParser(MarkdownEngine), MonikerProvider, DependencyMapBuilder);
+            MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
+            TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, new TableOfContentsParser(Input, MarkdownEngine), MonikerProvider, DependencyMapBuilder);
             TocMap = new TableOfContentsMap(ErrorLog, BuildScope, TableOfContentsLoader, DocumentProvider);
         }
 
