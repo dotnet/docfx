@@ -76,16 +76,15 @@ namespace Microsoft.Docs.Build
 
             public IStubbleLoader Clone() => new PartialLoader(_dir);
 
-            public ValueTask<string> LoadAsync(string name) => new ValueTask<string>(Load(name));
+            public ValueTask<string?> LoadAsync(string name) => new ValueTask<string?>(Load(name));
 
-            public string Load(string name) => _cache.GetOrAdd(
+            public string? Load(string name) => _cache.GetOrAdd(
                 name,
                 key => new Lazy<string>(() =>
                 {
                     var fileName = Path.Combine(_dir, name);
-                    if (File.Exists(fileName))
-                        return File.ReadAllText(fileName).Replace("\r", "");
-                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial")).Replace("\r", "");
+                    fileName = File.Exists(fileName) ? fileName : Path.Combine(_dir, name + ".tmpl.partial");
+                    return MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
                 })).Value;
         }
     }
