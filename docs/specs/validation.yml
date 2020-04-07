@@ -572,6 +572,7 @@ outputs:
     ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","b.md"]
 ---
 # Content validation - Publish Url - max level
+# Validation is only worked in the conceptual page
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
