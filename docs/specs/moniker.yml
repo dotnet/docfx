@@ -1809,56 +1809,6 @@ outputs:
   136a42ac/docs/a.json: |
     {"metadata":{"monikers":["netcore-1.0"]}}
 ---
-# Compatible for group in docfx.json of v2
-repos:
-inputs:
-  docfx.json: |
-    {
-      "build": 
-      {
-        "content": [
-          {
-            "group": "group-1",
-            "files": "**.md",
-            "src": "docs/v1"
-          },
-          {
-            "group": "group-2",
-            "file": "**.md",
-            "src": "docs/v2"
-          }
-        ],
-        "dest": "docs",
-        "groups": 
-        {
-          "group-1": 
-          {
-            "moniker_range": "netcore-1.0"
-          },
-          "group-2": 
-          {
-            "moniker_range": "netcore-2.0"
-          }
-
-        },
-        "monikerDefinition": "monikerDefinition.json"
-      }
-    }
-  monikerDefinition.json: |
-    {
-      "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
-      ]
-    }
-  docs/v1/a.md:
-  docs/v2/a.md:
-outputs:
-  136a42ac/a.json: |
-    {"monikers":["netcore-1.0"]}
-  4667fedf/a.json: |
-    {"monikers":["netcore-2.0"]}
----
 # Group config is ignored with groups missing in docfx.json of v2
 inputs:
   docfx.json: |
