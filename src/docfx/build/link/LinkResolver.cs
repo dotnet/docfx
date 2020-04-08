@@ -74,12 +74,12 @@ namespace Microsoft.Docs.Build
         {
             if (href.Value.StartsWith("xref:"))
             {
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
+                var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
                     new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
                     referencingFile,
                     inclusionRoot);
 
-                return (uidError, uidHref ?? href, declaringFile);
+                return (xrefError, resolvedHref ?? href, declaringFile);
             }
 
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile);
