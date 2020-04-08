@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             foreach (var node in nodes)
             {
                 // process
-                var (subChildren, subChildrenFirstItem) = ResolveToc(
+                var (subChildren, firstChild) = ResolveToc(
                     filePath, rootPath, node, referencedFiles, referencedTocs, errors);
                 var (resolvedTopicHref, resolvedTopicName, document) = ResolveTopic(
                     filePath, rootPath, node, referencedFiles, errors);
@@ -104,13 +104,13 @@ namespace Microsoft.Docs.Build
                 // set resolved href/document back
                 var newItem = new TableOfContentsNode(node)
                 {
-                    Href = resolvedTopicHref.Or(subChildrenFirstItem?.Href),
+                    Href = resolvedTopicHref.Or(firstChild?.Href),
                     TocHref = default,
                     TopicHref = default,
                     Homepage = string.IsNullOrEmpty(node.Value.Href) && !string.IsNullOrEmpty(node.Value.TopicHref)
                         ? resolvedTopicHref : default,
                     Name = node.Value.Name.Or(resolvedTopicName),
-                    Document = document ?? subChildrenFirstItem?.Document,
+                    Document = document ?? firstChild?.Document,
                     Items = items,
                 };
 
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
             return (new SourceInfo<string?>(link, href), default, resolvedFile);
         }
 
-        private (TableOfContentsNode? items, TableOfContentsNode? firstDecadant)
+        private (TableOfContentsNode? items, TableOfContentsNode? firstChild)
             ResolveToc(Document filePath, Document rootPath, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs, List<Error> errors)
         {
             var href = node.TocHref.Or(node.Href);
