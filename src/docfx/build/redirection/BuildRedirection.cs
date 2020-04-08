@@ -24,7 +24,9 @@ namespace Microsoft.Docs.Build
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                monikerRange);
+                monikerRange,
+                file.ContentType,
+                file.Mime.Value);
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 

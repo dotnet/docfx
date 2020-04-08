@@ -35,7 +35,9 @@ namespace Microsoft.Docs.Build
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                monikerRange);
+                monikerRange,
+                file.ContentType,
+                file.Mime);
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
