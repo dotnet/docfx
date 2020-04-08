@@ -430,6 +430,9 @@ namespace Microsoft.Docs.Build
 
         public static class Versioning
         {
+            public static Error DuplicateVersionConfig(SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "duplicate-version-config", $"Both 'version' and 'group' are defined, 'group' is ignored", source);
+
             public static Error DuplicateMonikerConfig(SourceInfo? source)
                 => new Error(ErrorLevel.Warning, "duplicate-moniker-config", $"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored", source);
 

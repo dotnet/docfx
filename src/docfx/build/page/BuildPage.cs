@@ -27,13 +27,15 @@ namespace Microsoft.Docs.Build
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
 
+            var (configMonikerErrors, monikerRange, _) = context.MonikerProvider.GetConfigMonikerRange(file.FilePath);
+            errors.AddRange(configMonikerErrors);
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 outputPath,
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
+                monikerRange);
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {

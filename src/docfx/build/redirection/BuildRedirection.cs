@@ -16,13 +16,15 @@ namespace Microsoft.Docs.Build
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
+            var (configMonikerErrors, monikerRange, _) = context.MonikerProvider.GetConfigMonikerRange(file.FilePath);
+            errors.AddRange(configMonikerErrors);
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath, monikers) : null,
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
+                monikerRange);
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
 

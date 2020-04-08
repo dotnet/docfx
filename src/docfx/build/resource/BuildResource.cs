@@ -30,13 +30,15 @@ namespace Microsoft.Docs.Build
                 publishPath = PathUtility.NormalizeFile(Path.GetRelativePath(context.Output.OutputPath, physicalPath));
             }
 
+            var (configMonikerErrors, monikerRange, _) = context.MonikerProvider.GetConfigMonikerRange(file.FilePath);
+            errors.AddRange(configMonikerErrors);
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 publishPath,
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
+                monikerRange);
 
             context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {

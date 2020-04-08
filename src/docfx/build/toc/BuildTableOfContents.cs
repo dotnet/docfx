@@ -39,13 +39,15 @@ namespace Microsoft.Docs.Build
             }
 
             // TODO: Add experimental and experiment_id to publish item
+            var (configMonikerErrors, monikerRange, _) = context.MonikerProvider.GetConfigMonikerRange(file.FilePath);
+            errors.AddRange(configMonikerErrors);
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 outputPath,
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath));
+                monikerRange);
 
             context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
