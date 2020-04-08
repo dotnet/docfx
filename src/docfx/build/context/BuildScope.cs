@@ -71,10 +71,6 @@ namespace Microsoft.Docs.Build
             }
 
             var name = Path.GetFileNameWithoutExtension(path);
-            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
-            {
-                return ContentType.TableOfContents;
-            }
             if (name.Equals("docfx", PathUtility.PathComparison))
             {
                 return ContentType.Unknown;
@@ -97,6 +93,11 @@ namespace Microsoft.Docs.Build
                 !path.EndsWith(".yml", PathUtility.PathComparison))
             {
                 return ContentType.Resource;
+            }
+
+            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
+            {
+                return ContentType.TableOfContents;
             }
 
             return ContentType.Page;

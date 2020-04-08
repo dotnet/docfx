@@ -1408,3 +1408,11 @@ outputs:
         }
       ]
     }
+---
+# should treat toc.{!md,json,yml} as resource
+inputs:
+  docfx.yml: |
+    files: '**/*.*'
+  toc.png:
+outputs:
+  toc.png:
