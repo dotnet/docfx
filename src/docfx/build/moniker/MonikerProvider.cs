@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string?> GetConfigMonikerRange(FilePath file)
         {
             // Fast pass to get config moniker range if the docset doesn't have any moniker config
-            if (_rules.Length == 0 && _config.Groups.Count == 0)
+            if (_rules.Length == 0 && _config.Groups.Count == 0 && _config.Content.All(x => x.Version.Value is null))
             {
                 return default;
             }
@@ -160,9 +160,16 @@ namespace Microsoft.Docs.Build
         {
             var (_, mapping) = _buildScope.MapPath(file.Path);
 
-            if (mapping != null && _config.Groups.TryGetValue(mapping.Group, out var group))
+            if (mapping != null)
             {
-                return group.MonikerRange;
+                if (mapping.Version.Value != null)
+                {
+                    return mapping.Version;
+                }
+                else if (mapping.Group != null && _config.Groups.TryGetValue(mapping.Group, out var group))
+                {
+                    return group.MonikerRange;
+                }
             }
 
             foreach (var (glob, monikerRange) in _rules)

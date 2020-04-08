@@ -33,6 +33,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the group name for v2 backward compact
         /// </summary>
-        public string Group { get; private set; } = "";
+        public string? Group { get; private set; }
+
+        /// <summary>
+        /// Gets the version name for v2 backward compact
+        /// </summary>
+        public SourceInfo<string?> Version { get; private set; }
     }
 }
