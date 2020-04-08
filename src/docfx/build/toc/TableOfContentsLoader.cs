@@ -174,17 +174,17 @@ namespace Microsoft.Docs.Build
             // Process uid
             if (!string.IsNullOrEmpty(node.Uid.Value))
             {
-                var (xrefError, xrefSpec, resolvedHref) = _xrefResolver.ResolveXrefSpec(new SourceInfo<string>(node.Uid.Value, node.Uid), filePath, rootPath);
+                var (xrefError, resolvedHref, display, declaringFile) = _xrefResolver.ResolveXrefByUid(new SourceInfo<string>(node.Uid.Value, node.Uid), filePath, rootPath);
                 errors.AddIfNotNull(xrefError);
 
-                if (xrefSpec?.DeclaringFile != null)
+                if (declaringFile != null)
                 {
-                    referencedFiles.Add(xrefSpec.DeclaringFile);
+                    referencedFiles.Add(declaringFile);
                 }
 
                 if (!string.IsNullOrEmpty(resolvedHref))
                 {
-                    return (new SourceInfo<string?>(resolvedHref, node.Uid), new SourceInfo<string?>(xrefSpec.Name, node.Uid), xrefSpec.DeclaringFile);
+                    return (new SourceInfo<string?>(resolvedHref, node.Uid), new SourceInfo<string?>(display, node.Uid), declaringFile);
                 }
             }
 
