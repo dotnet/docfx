@@ -439,7 +439,7 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name": "Azure", "href": "/azure/", "tocHref": "/azure/", "topicHref": "/azure/index", "homepage": "/azure/index" }
+        { "name": "Azure", "href": "/azure/", "tocHref": undefined, "topicHref": undefined, "homepage": "/azure/index" }
       ]
     }
 ---
@@ -874,7 +874,7 @@ outputs:
   docs/toc.json: |
     { "items":[{ "tocHref": undefined }] }
 ---
-# Toc with violation
+# Toc name missing
 inputs:
   docfx.yml:
   docs/f1/TOC.md: |
