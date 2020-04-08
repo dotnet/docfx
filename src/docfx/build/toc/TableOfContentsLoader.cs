@@ -138,19 +138,17 @@ namespace Microsoft.Docs.Build
                 {
                     return Array.Empty<string>();
                 }
-                else
-                {
-                    if (currentItem.Document != null)
-                    {
-                        var (monikerErrors, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
-                        errors.AddRange(monikerErrors);
 
-                        if (referenceFileMonikers.Length == 0)
-                        {
-                            return Array.Empty<string>();
-                        }
-                        monikers = referenceFileMonikers.ToList();
+                if (currentItem.Document != null)
+                {
+                    var (monikerErrors, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
+                    errors.AddRange(monikerErrors);
+
+                    if (referenceFileMonikers.Length == 0)
+                    {
+                        return Array.Empty<string>();
                     }
+                    monikers = referenceFileMonikers.ToList();
                 }
             }
 
@@ -192,13 +190,20 @@ namespace Microsoft.Docs.Build
 
             // Process topicHref or href
             var href = node.TopicHref.Or(node.Href);
-            if (string.IsNullOrEmpty(href) || GetTocLinkType(href) != TableOfContentsLinkType.Other)
+            if (string.IsNullOrEmpty(href))
             {
-                if (!string.IsNullOrEmpty(node.TopicHref))
-                {
-                    errors.Add(Errors.TableOfContents.InvalidTopicHref(node.TopicHref));
-                }
                 return default;
+            }
+
+            switch (GetTocLinkType(href))
+            {
+                case TableOfContentsLinkType.Folder:
+                case TableOfContentsLinkType.TocFile:
+                    if (!string.IsNullOrEmpty(node.TopicHref))
+                    {
+                        errors.Add(Errors.TableOfContents.InvalidTopicHref(node.TopicHref));
+                    }
+                    return default;
             }
 
             var (error, link, resolvedFile) = _linkResolver.ResolveLink(href!, filePath, rootPath);
@@ -242,6 +247,9 @@ namespace Microsoft.Docs.Build
                     var firstDecadant = GetFirstItem(linkedToc.Items);
                     _dependencyMapBuilder.AddDependencyItem(filePath, firstDecadant?.Document, DependencyType.Link);
                     return (default, default, firstDecadant);
+
+                case TableOfContentsLinkType.AbsolutePath:
+                    return default;
 
                 default:
                     if (!string.IsNullOrEmpty(node.TocHref))
@@ -298,24 +306,27 @@ namespace Microsoft.Docs.Build
                 return TableOfContentsLinkType.Other;
             }
 
-            var linkType = UrlUtility.GetLinkType(href);
-            if (linkType != LinkType.RelativePath)
+            switch (UrlUtility.GetLinkType(href))
             {
-                return TableOfContentsLinkType.Other;
-            }
+                case LinkType.AbsolutePath:
+                    return TableOfContentsLinkType.AbsolutePath;
 
-            var (path, _, _) = UrlUtility.SplitUrl(href);
-            if (path.EndsWith('/') || path.EndsWith('\\'))
-            {
-                return TableOfContentsLinkType.Folder;
-            }
+                case LinkType.RelativePath:
+                    var (path, _, _) = UrlUtility.SplitUrl(href);
+                    if (path.EndsWith('/') || path.EndsWith('\\'))
+                    {
+                        return TableOfContentsLinkType.Folder;
+                    }
 
-            if (s_tocFileNames.Contains(Path.GetFileName(path)))
-            {
-                return TableOfContentsLinkType.TocFile;
-            }
+                    if (s_tocFileNames.Contains(Path.GetFileName(path)))
+                    {
+                        return TableOfContentsLinkType.TocFile;
+                    }
+                    return TableOfContentsLinkType.Other;
 
-            return TableOfContentsLinkType.Other;
+                default:
+                    return TableOfContentsLinkType.Other;
+            }
         }
     }
 }

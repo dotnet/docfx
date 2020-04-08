@@ -16,6 +16,11 @@ namespace Microsoft.Docs.Build
         TocFile,
 
         /// <summary>
+        /// Breadcrumbs set tocHref to absolute path.
+        /// </summary>
+        AbsolutePath,
+
+        /// <summary>
         /// Other link types
         /// </summary>
         Other,
