@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                         var toc = context.TocMap.FindNearestToc(document);
                         if (toc != null)
                         {
-                            var (_, monikerRange, _) = context.MonikerProvider.GetConfigMonikerRange(document.FilePath);
+                            var monikerRange = context.MonikerProvider.GetConfigMonikerRange(document.FilePath);
                             legacyDependencyMap.Add(new LegacyDependencyMapItem(
                                 $"~/{document.FilePath.Path}",
                                 $"~/{toc.FilePath.Path}",
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                             continue;
                         }
 
-                        var (_, monikerRange, _) = context.MonikerProvider.GetConfigMonikerRange(source.FilePath);
+                        var monikerRange = context.MonikerProvider.GetConfigMonikerRange(source.FilePath);
                         legacyDependencyMap.Add(new LegacyDependencyMapItem(
                             $"~/{source.FilePath.Path}",
                             $"~/{dependencyItem.To.FilePath.Path}",

@@ -1947,7 +1947,7 @@ outputs:
   4667fedf/a.json: |
     {"monikers":["netcore-2.0"]}
 ---
-# Warn on duplciate version config in docfx.json of v2
+# Group is ignored when version configured in docfx.json of v2
 repos:
   https://github.com/ops/config-1:
   - files:
@@ -1985,8 +1985,6 @@ repos:
       docs/v1/a.md:
       docs/v2/a.md:
 outputs:
-  .errors.log: |
-    ["warning","duplicate-version-config","Both 'version' and 'group' are defined, 'group' is ignored","docfx.json",6,32]
   136a42ac/a.json: |
     {"monikers":["netcore-1.0"]}
   4667fedf/a.json: |

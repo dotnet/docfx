@@ -17,8 +17,8 @@ namespace Microsoft.Docs.Build
 
         private readonly (Func<string, bool> glob, SourceInfo<string?>)[] _rules;
 
-        private readonly ConcurrentDictionary<FilePath, (List<Error>, SourceInfo<string?>, string[])> _monikerRangeCache
-                   = new ConcurrentDictionary<FilePath, (List<Error>, SourceInfo<string?>, string[])>();
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _monikerRangeCache
+                   = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, string[])> _monikerCache
                    = new ConcurrentDictionary<FilePath, (List<Error>, string[])>();
@@ -40,8 +40,14 @@ namespace Microsoft.Docs.Build
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
         }
 
-        public (List<Error>, SourceInfo<string?>, string[]) GetConfigMonikerRange(FilePath file)
+        public SourceInfo<string?> GetConfigMonikerRange(FilePath file)
         {
+            // Fast pass to get config moniker range if the docset doesn't have any moniker config
+            if (_rules.Length == 0 && _config.Groups.Count == 0 && _config.Content.All(x => x.Version.Value is null))
+            {
+                return default;
+            }
+
             return _monikerRangeCache.GetOrAdd(file, GetConfigMonikerRangeCore);
         }
 
@@ -53,8 +59,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, string[] monikers) GetZoneLevelMonikers(FilePath file, SourceInfo<string?> rangeString)
         {
             var errors = new List<Error>();
-            var (configError, configMonikerRange, _) = GetConfigMonikerRange(file);
-            errors.AddRange(configError);
+            var configMonikerRange = GetConfigMonikerRange(file);
             var (_, fileLevelMonikers) = GetFileLevelMonikers(file);
 
             // For conceptual docset,
@@ -83,8 +88,9 @@ namespace Microsoft.Docs.Build
             var errors = new List<Error>();
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
-            var (configError, configMonikerRange, configMonikers) = GetConfigMonikerRange(file);
-            errors.AddRange(configError);
+            var configMonikerRange = GetConfigMonikerRange(file);
+            var (monikerErrors, configMonikers) = _rangeParser.Parse(configMonikerRange);
+            errors.AddRange(monikerErrors);
 
             if (metadata.MonikerRange != null)
             {
@@ -150,29 +156,19 @@ namespace Microsoft.Docs.Build
             return (error, intersection);
         }
 
-        private (List<Error>, SourceInfo<string?>, string[]) GetConfigMonikerRangeCore(FilePath file)
+        private SourceInfo<string?> GetConfigMonikerRangeCore(FilePath file)
         {
-            var errors = new List<Error>();
             var (_, mapping) = _buildScope.MapPath(file.Path);
 
             if (mapping != null)
             {
                 if (mapping.Version.Value != null)
                 {
-                    var (validationErrors, configMonikers) = _rangeParser.Validate(new SourceInfo<string?>[] { mapping.Version });
-                    errors.AddRange(validationErrors);
-                    if (mapping.Group != null)
-                    {
-                        errors.Add(Errors.Versioning.DuplicateVersionConfig(mapping.Version.Source));
-                        return (errors, mapping.Version, configMonikers);
-                    }
-                    return (errors, mapping.Version, configMonikers);
+                    return mapping.Version;
                 }
                 else if (mapping.Group != null && _config.Groups.TryGetValue(mapping.Group, out var group))
                 {
-                    var (monikerErrors, configMonikers) = _rangeParser.Parse(group.MonikerRange);
-                    errors.AddRange(monikerErrors);
-                    return (errors, group.MonikerRange, configMonikers);
+                    return group.MonikerRange;
                 }
             }
 
@@ -180,13 +176,11 @@ namespace Microsoft.Docs.Build
             {
                 if (glob(file.Path))
                 {
-                    var (monikerErrors, configMonikers) = _rangeParser.Parse(monikerRange);
-                    errors.AddRange(monikerErrors);
-                    return (errors, monikerRange, configMonikers);
+                    return monikerRange;
                 }
             }
 
-            return (errors, default(SourceInfo<string?>), Array.Empty<string>());
+            return default;
         }
     }
 }
