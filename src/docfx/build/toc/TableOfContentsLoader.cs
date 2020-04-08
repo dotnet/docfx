@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             foreach (var node in nodes)
             {
                 // process
-                var (resolvedTocHref, subChildren, subChildrenFirstItem) = ResolveToc(
+                var (subChildren, subChildrenFirstItem) = ResolveToc(
                     filePath, rootPath, node, referencedFiles, referencedTocs, errors);
                 var (resolvedTopicHref, resolvedTopicName, document) = ResolveTopic(
                     filePath, rootPath, node, referencedFiles, errors);
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
                 // set resolved href/document back
                 var newItem = new TableOfContentsNode(node)
                 {
-                    Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
+                    Href = resolvedTopicHref.Or(subChildrenFirstItem?.Href),
                     TocHref = default,
                     TopicHref = default,
                     Homepage = string.IsNullOrEmpty(node.Value.Href) && !string.IsNullOrEmpty(node.Value.TopicHref)
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
             return (new SourceInfo<string?>(link, href), default, resolvedFile);
         }
 
-        private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? items, TableOfContentsNode? firstDecadant)
+        private (TableOfContentsNode? items, TableOfContentsNode? firstDecadant)
             ResolveToc(Document filePath, Document rootPath, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs, List<Error> errors)
         {
             var href = node.TocHref.Or(node.Href);
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
 
                     referencedTocs.Add(nestedTocFile);
                     var nestedToc = LoadTocFile(nestedTocFile, rootPath, referencedFiles, referencedTocs, errors);
-                    return (default, nestedToc, default);
+                    return (nestedToc, default);
 
                 case TableOfContentsLinkType.Folder:
                     var linkedTocFile = FindTocInFolder(href!, filePath);
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
                     var linkedToc = LoadTocFile(linkedTocFile, rootPath, new List<Document>(), referencedTocs, errors);
                     var firstDecadant = GetFirstItem(linkedToc.Items);
                     _dependencyMapBuilder.AddDependencyItem(filePath, firstDecadant?.Document, DependencyType.Link);
-                    return (default, default, firstDecadant);
+                    return (default, firstDecadant);
 
                 case TableOfContentsLinkType.AbsolutePath:
                     return default;
