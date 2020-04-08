@@ -15,16 +15,13 @@ namespace Microsoft.Docs.Build
         public override string? ToString() => Value?.ToString();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SourceInfo<T> Or(SourceInfo<T> other)
-            => new SourceInfo<T>(Value != null ? Value : other.Value, other.Source ?? Source);
+        public SourceInfo<T> Or(SourceInfo<T> other) => Value is null && other.Value != null ? other : this;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SourceInfo<T> Or(SourceInfo<T>? other)
-            => new SourceInfo<T>(Value != null ? Value : (other != null ? other.Value : default), other?.Source ?? Source);
+        public SourceInfo<T> Or(SourceInfo<T>? other) => other is null ? this : Or(other.Value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SourceInfo<T> Or(T other)
-            => new SourceInfo<T>(Value != null ? Value : other, Source);
+        public SourceInfo<T> Or(T other) => Value is null ? new SourceInfo<T>(other, Source) : this;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator T(SourceInfo<T> value) => value.Value;
