@@ -37,11 +37,10 @@ namespace Microsoft.Docs.Build
                         var toc = context.TocMap.FindNearestToc(document);
                         if (toc != null)
                         {
-                            var monikerRange = context.MonikerProvider.GetConfigMonikerRange(document.FilePath);
                             legacyDependencyMap.Add(new LegacyDependencyMapItem(
                                 $"~/{document.FilePath.Path}",
                                 $"~/{toc.FilePath.Path}",
-                                monikerRange,
+                                context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
                                 LegacyDependencyMapType.Metadata));
                         }
                     });
@@ -55,11 +54,10 @@ namespace Microsoft.Docs.Build
                             continue;
                         }
 
-                        var monikerRange = context.MonikerProvider.GetConfigMonikerRange(source.FilePath);
                         legacyDependencyMap.Add(new LegacyDependencyMapItem(
                             $"~/{source.FilePath.Path}",
                             $"~/{dependencyItem.To.FilePath.Path}",
-                            monikerRange,
+                            context.MonikerProvider.GetConfigMonikerRange(source.FilePath),
                             dependencyItem.Type.ToLegacyDependencyMapType()));
                     }
                 }

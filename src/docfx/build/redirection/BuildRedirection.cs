@@ -16,14 +16,13 @@ namespace Microsoft.Docs.Build
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
-            var monikerRange = context.MonikerProvider.GetConfigMonikerRange(file.FilePath);
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath, monikers) : null,
                 file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
-                monikerRange,
+                context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
                 file.ContentType,
                 file.Mime.Value);
 
