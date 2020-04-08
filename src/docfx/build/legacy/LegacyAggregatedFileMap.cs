@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
 
             public string? Version { get; set; }
 
-            public LegacyDependencyMapType DependencyType { get; set; }
+            public DependencyType DependencyType { get; set; }
         }
     }
 }

@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
             var status = t_status.Value!.Peek();
             var referencingFile = (Document)relativeTo;
 
-            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), referencingFile, DependencyType.Inclusion);
+            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), referencingFile);
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);

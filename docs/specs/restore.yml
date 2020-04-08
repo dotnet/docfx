@@ -366,23 +366,8 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-        "crrb/a.md": [
-          {
-            "source": "crrb/b.md",
-            "type": "link"
-           }
-          ],
-          "crrc/a.md": [
-           {
-            "source": "crrc/b.md",
-            "type": "link"
-           }
-          ],
-          "docs/a.md": [
-           {
-            "source": "docs/b.md",
-            "type": "link"
-          }
-        ]
+        "crrb/a.md": [{ "source": "crrb/b.md", "type": "file" }],
+        "crrc/a.md": [{ "source": "crrc/b.md", "type": "file" }],
+        "docs/a.md": [{ "source": "docs/b.md", "type": "file" }]
       }
     }

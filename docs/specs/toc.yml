@@ -214,19 +214,19 @@ outputs:
     {
       "dependencies": {
         "docs/f1/f11/TOC.md": [
-            { "source": "docs/f1/f11/a.md", "type": "link" },
-            { "source": "docs/f1/f11/index.md", "type": "link" }
+            { "source": "docs/f1/f11/a.md", "type": "file" },
+            { "source": "docs/f1/f11/index.md", "type": "file" }
         ],
         "docs/f1/TOC.md": [
-            { "source": "docs/f1/f11/index.md", "type": "link" },
-            { "source": "docs/f2/TOC.yml", "type": "tocInclusion" }
+            { "source": "docs/f1/f11/index.md", "type": "file" },
+            { "source": "docs/f2/TOC.yml", "type": "include" }
         ],
         "docs/f2/TOC.yml": [
-            { "source": "docs/f1/f11/TOC.md", "type": "tocInclusion" }
+            { "source": "docs/f1/f11/TOC.md", "type": "include" }
         ],
         "docs/TOC.md": [
-            { "source": "docs/f1/TOC.md", "type": "tocInclusion" },
-            { "source": "docs/f2/TOC.yml", "type": "tocInclusion" },
+            { "source": "docs/f1/TOC.md", "type": "include" },
+            { "source": "docs/f2/TOC.yml", "type": "include" },
         ]
       }
     }
@@ -381,17 +381,17 @@ outputs:
     {
       "dependencies": {
         "docs/f1/TOC.md": [
-          { "source": "docs/f1/b.md", "type": "link" }
+          { "source": "docs/f1/b.md", "type": "file" }
         ],
         "docs/f2/TOC.md": [
-          { "source": "docs/f2/a.md", "type": "link" },
-          { "source": "docs/f2/b.md", "type": "link" }
+          { "source": "docs/f2/a.md", "type": "file" },
+          { "source": "docs/f2/b.md", "type": "file" }
         ],
         "docs/TOC.md": [
-          { "source": "docs/f1/TOC.md", "type": "tocInclusion" },
-          { "source": "docs/f1/b.md", "type": "link" },
-          { "source": "docs/f2/TOC.md", "type": "tocInclusion" },
-          { "source": "docs/f2/a.md", "type": "link" }
+          { "source": "docs/f1/TOC.md", "type": "include" },
+          { "source": "docs/f1/b.md", "type": "file" },
+          { "source": "docs/f2/TOC.md", "type": "include" },
+          { "source": "docs/f2/a.md", "type": "file" }
         ]
       }
     }

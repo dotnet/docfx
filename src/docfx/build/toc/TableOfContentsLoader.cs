@@ -254,7 +254,7 @@ namespace Microsoft.Docs.Build
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
                     var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
-                    _dependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.Link);
+                    _dependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.File);
                     return (default, default, nestedTocFirstItem, tocHrefType);
                 }
 
@@ -320,7 +320,7 @@ namespace Microsoft.Docs.Build
                     foreach (var name in s_tocFileNames)
                     {
                         var probingHref = new SourceInfo<string>(Path.Combine(href, name), href);
-                        var (_, subToc) = _linkResolver.ResolveContent(probingHref, filePath, DependencyType.TocInclusion);
+                        var (_, subToc) = _linkResolver.ResolveContent(probingHref, filePath);
                         if (subToc != null)
                         {
                             if (!subToc.FilePath.IsGitCommit)
@@ -336,7 +336,7 @@ namespace Microsoft.Docs.Build
                     return result;
 
                 case TocHrefType.TocFile:
-                    var (error, referencedToc) = _linkResolver.ResolveContent(href, filePath, DependencyType.TocInclusion);
+                    var (error, referencedToc) = _linkResolver.ResolveContent(href, filePath);
                     errors.AddIfNotNull(error);
                     referencedTocs.AddIfNotNull(referencedToc);
                     return referencedToc;

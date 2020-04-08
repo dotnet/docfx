@@ -16,12 +16,7 @@ namespace Microsoft.Docs.Build
 
         public void AddDependencyItem(Document from, Document? to, DependencyType type)
         {
-            if (to is null)
-            {
-                return;
-            }
-
-            if (from.FilePath.Origin == FileOrigin.Fallback)
+            if (to is null || from == to || from.FilePath.Origin == FileOrigin.Fallback)
             {
                 return;
             }
@@ -79,6 +74,6 @@ namespace Microsoft.Docs.Build
         }
 
         private bool CanTransit(DependencyItem dependencyItem)
-            => dependencyItem.Type == DependencyType.Inclusion;
+            => dependencyItem.Type == DependencyType.Include;
     }
 }
