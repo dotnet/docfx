@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             Interlocked.Increment(ref _remainingCount);
         }
 
-        public void Drain(Action<T> run, Action<int, int>? progress = null)
+        public void Drain(ErrorLog errorLog, Action<T> run)
         {
             if (Interlocked.Exchange(ref _drained, 1) == 1)
             {
@@ -114,10 +114,15 @@ namespace Microsoft.Docs.Build
                     run(item);
                     OnComplete();
                 }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    errorLog.Write(dex);
+                    OnComplete();
+                }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"Error processing '{item}'");
                     OnComplete(ex);
-                    return;
                 }
             }
 
@@ -127,7 +132,7 @@ namespace Microsoft.Docs.Build
 
                 try
                 {
-                    progress?.Invoke(Interlocked.Increment(ref _processedCount), _totalCount);
+                    Progress.Update(Interlocked.Increment(ref _processedCount), _totalCount);
                 }
                 catch (Exception ex)
                 {

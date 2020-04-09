@@ -53,13 +53,15 @@ namespace Microsoft.Docs.Build
                     {
                         // download dependencies to disk
                         Parallel.Invoke(
-                            () => RestoreFiles(config, fileResolver).GetAwaiter().GetResult(),
-                            () => RestorePackages(buildOptions, config, packageResolver));
+                            () => RestoreFiles(errorLog, config, fileResolver).GetAwaiter().GetResult(),
+                            () => RestorePackages(errorLog, buildOptions, config, packageResolver));
                     }
+                    return errorLog.ErrorCount > 0;
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    return errorLog.Write(dex);
+                    errorLog.Write(dex);
+                    return errorLog.ErrorCount > 0;
                 }
                 finally
                 {
@@ -67,21 +69,20 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
-                return false;
             }
         }
 
-        private static async Task RestoreFiles(Config config, FileResolver fileResolver)
+        private static async Task RestoreFiles(ErrorLog errorLog, Config config, FileResolver fileResolver)
         {
-            await ParallelUtility.ForEach(config.GetFileReferences(), fileResolver.Download);
+            await ParallelUtility.ForEach(errorLog, config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(BuildOptions buildOptions, Config config, PackageResolver packageResolver)
+        private static void RestorePackages(ErrorLog errorLog, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
             ParallelUtility.ForEach(
+                errorLog,
                 GetPackages(config).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags),
-                Progress.Update,
                 maxDegreeOfParallelism: 8);
 
             LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);

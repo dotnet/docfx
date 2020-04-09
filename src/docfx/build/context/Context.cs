@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
-            BuildScope = new BuildScope(Config, Input, buildOptions);
+            BuildScope = new BuildScope(ErrorLog, Config, Input, buildOptions);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, Input, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
