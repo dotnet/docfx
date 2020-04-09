@@ -112,7 +112,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var lighboxHtmlAttributes = new HtmlAttributes();
                     lighboxHtmlAttributes.AddProperty("href", $"{currentLightbox}#lightbox");
                     lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
-                    //renderer.WriteLine($"<a href=\"{currentLightbox}#lightbox\" data-linktype=\"relative-path\">");
                     renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
                 }
                 if(currentBorder)
