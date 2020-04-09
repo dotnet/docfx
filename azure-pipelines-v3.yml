@@ -184,7 +184,6 @@ jobs:
     displayName: Publish integration-test binary
     artifact: integration-test
 
-
 # Integration test
 - job: IntegrationTest
   dependsOn: IntegrationTestBuild
@@ -237,11 +236,11 @@ jobs:
     artifact: integration-test
 
   # Run integration tests
-  - powershell: '& "$(Pipeline.Workspace)/integration-test/integration-test" $(params)'
+  - powershell: |
+      $(Pipeline.Workspace)/integration-test/integration-test.exe $(params)
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
-      INTEGRATION_TEST_ROOT: D:/
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
