@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var queue = new WorkQueue<int>();
             queue.Enqueue(Enumerable.Range(0, 1000));
 
-            var exception = Assert.ThrowsAny<Exception>(() => queue.Drain(Run));
+            var exception = Assert.ThrowsAny<Exception>(() => queue.Drain(new ErrorLog(), Run));
             Assert.Equal(exceptionType, exception.GetType());
 
             void Run(int n)
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             var queue = new WorkQueue<int>();
             queue.Enqueue(Enumerable.Range(0, total));
 
-            queue.Drain(Run);
+            queue.Drain(new ErrorLog(), Run);
 
             void Run(int n)
             {

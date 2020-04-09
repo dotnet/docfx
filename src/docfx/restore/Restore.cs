@@ -56,10 +56,12 @@ namespace Microsoft.Docs.Build
                             () => RestoreFiles(errorLog, config, fileResolver).GetAwaiter().GetResult(),
                             () => RestorePackages(errorLog, buildOptions, config, packageResolver));
                     }
+                    return errorLog.ErrorCount > 0;
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    return errorLog.Write(dex);
+                    errorLog.Write(dex);
+                    return errorLog.ErrorCount > 0;
                 }
                 finally
                 {
@@ -67,7 +69,6 @@ namespace Microsoft.Docs.Build
                     Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                     errorLog.PrintSummary();
                 }
-                return false;
             }
         }
 

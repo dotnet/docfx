@@ -52,11 +52,12 @@ namespace Microsoft.Docs.Build
                 errorLog.Configure(config, buildOptions.OutputPath);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
                 Run(context);
-                return false;
+                return errorLog.ErrorCount > 0;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                return errorLog.Write(dex);
+                errorLog.Write(dex);
+                return errorLog.ErrorCount > 0;
             }
             finally
             {
@@ -76,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Building files"))
             {
-                context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
+                context.BuildQueue.Drain(context.ErrorLog, file => BuildFile(context, file));
             }
 
             Parallel.Invoke(
