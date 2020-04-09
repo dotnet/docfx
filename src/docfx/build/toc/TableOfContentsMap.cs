@@ -145,9 +145,9 @@ namespace Microsoft.Docs.Build
                 var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs)>();
 
                 ParallelUtility.ForEach(
+                    _errorLog,
                     _buildScope.GetFiles(ContentType.TableOfContents),
-                    file => LoadToc(file, tocReferences),
-                    Progress.Update);
+                    file => LoadToc(file, tocReferences));
 
                 var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
 
@@ -168,20 +168,13 @@ namespace Microsoft.Docs.Build
 
         private void LoadToc(FilePath path, ConcurrentDictionary<Document, (List<Document> files, List<Document> tocs)> tocReferences)
         {
-            try
-            {
-                var file = _documentProvider.GetDocument(path);
-                Debug.Assert(file.ContentType == ContentType.TableOfContents);
+            var file = _documentProvider.GetDocument(path);
+            Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
-                var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
-                _errorLog.Write(errors);
+            var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
+            _errorLog.Write(errors);
 
-                tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                _errorLog.Write(dex);
-            }
+            tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
         }
     }
 }

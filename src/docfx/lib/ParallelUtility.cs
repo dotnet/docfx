@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        public static void ForEach<T>(IEnumerable<T> source, Action<T> action, Action<int, int>? progress = null, int? maxDegreeOfParallelism = null)
+        public static void ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Action<T> action, int? maxDegreeOfParallelism = null)
         {
             Debug.Assert(maxDegreeOfParallelism == null || maxDegreeOfParallelism.Value > 0);
 
@@ -37,16 +37,30 @@ namespace Microsoft.Docs.Build
                 },
                 item =>
                 {
-                    action(item);
-                    progress?.Invoke(Interlocked.Increment(ref done), total);
+                    try
+                    {
+                        action(item);
+                    }
+                    catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                    {
+                        errorLog.Write(dex);
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Error processing '{item}'");
+                        throw;
+                    }
+
+                    Progress.Update(Interlocked.Increment(ref done), total);
                 });
         }
 
-        public static async Task ForEach<T>(IEnumerable<T> source, Func<T, Task> action, Action<int, int>? progress = null)
+        public static async Task ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Func<T, Task> action)
         {
             var done = 0;
             var total = 0;
             var queue = new ActionBlock<T>(Run, s_dataflowOptions);
+
             foreach (var item in source)
             {
                 var posted = queue.Post(item);
@@ -78,13 +92,23 @@ namespace Microsoft.Docs.Build
                 {
                     await action(item);
                 }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    errorLog.Write(dex);
+                }
                 catch (OperationCanceledException oce)
                 {
                     // Action block catches cancellation exceptions
                     // https://github.com/dotnet/corefx/blob/4b36fba308d8e2d3207773952c30268ac3365eed/src/System.Threading.Tasks.Dataflow/src/Blocks/ActionBlock.cs#L142
                     throw new WrapException(oce);
                 }
-                progress?.Invoke(Interlocked.Increment(ref done), total);
+                catch
+                {
+                    Console.WriteLine($"Error processing '{item}'");
+                    throw;
+                }
+
+                Progress.Update(Interlocked.Increment(ref done), total);
             }
         }
 

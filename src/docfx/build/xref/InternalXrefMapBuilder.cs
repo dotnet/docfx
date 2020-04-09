@@ -18,9 +18,9 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
+                    context.ErrorLog,
                     context.BuildScope.GetFiles(ContentType.Page),
-                    file => Load(context, builder, file),
-                    Progress.Update);
+                    file => Load(context, builder, file));
             }
 
             var result =
@@ -35,62 +35,50 @@ namespace Microsoft.Docs.Build
 
         private static void Load(Context context, ListBuilder<InternalXrefSpec> xrefs, FilePath path)
         {
-            try
+            var file = context.DocumentProvider.GetDocument(path);
+            if (file.ContentType != ContentType.Page)
             {
-                var file = context.DocumentProvider.GetDocument(path);
-                if (file.ContentType != ContentType.Page)
-                {
-                    return;
-                }
+                return;
+            }
 
-                var errors = new List<Error>();
-                var content = context.Input.ReadString(file.FilePath);
-                var callStack = new List<Document> { file };
+            var errors = new List<Error>();
+            var content = context.Input.ReadString(file.FilePath);
+            var callStack = new List<Document> { file };
 
-                switch (file.FilePath.Format)
-                {
-                    case FileFormat.Markdown:
-                        {
-                            var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-                            errors.AddRange(fileMetaErrors);
-                            var (markdownErrors, spec) = LoadMarkdown(context, fileMetadata, file);
-                            errors.AddRange(markdownErrors);
-                            if (spec != null)
-                            {
-                                xrefs.Add(spec);
-                            }
-                            break;
-                        }
-                    case FileFormat.Yaml:
-                        {
-                            var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
-                            errors.AddRange(yamlErrors);
-                            var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
-                            errors.AddRange(schemaErrors);
-                            xrefs.AddRange(specs);
-                            break;
-                        }
-                    case FileFormat.Json:
-                        {
-                            var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
-                            errors.AddRange(jsonErrors);
-                            var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
-                            errors.AddRange(schemaErrors);
-                            xrefs.AddRange(specs);
-                            break;
-                        }
-                }
-                context.ErrorLog.Write(errors);
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            switch (file.FilePath.Format)
             {
-                context.ErrorLog.Write(dex);
+                case FileFormat.Markdown:
+                    {
+                        var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+                        errors.AddRange(fileMetaErrors);
+                        var (markdownErrors, spec) = LoadMarkdown(context, fileMetadata, file);
+                        errors.AddRange(markdownErrors);
+                        if (spec != null)
+                        {
+                            xrefs.Add(spec);
+                        }
+                        break;
+                    }
+                case FileFormat.Yaml:
+                    {
+                        var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
+                        errors.AddRange(yamlErrors);
+                        var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                        errors.AddRange(schemaErrors);
+                        xrefs.AddRange(specs);
+                        break;
+                    }
+                case FileFormat.Json:
+                    {
+                        var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
+                        errors.AddRange(jsonErrors);
+                        var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                        errors.AddRange(schemaErrors);
+                        xrefs.AddRange(specs);
+                        break;
+                    }
             }
-            catch
-            {
-                Console.WriteLine($"Load {path} xref failed");
-                throw;
-            }
+            context.ErrorLog.Write(errors);
         }
 
         private static (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
