@@ -22,8 +22,7 @@ namespace Microsoft.DocAsCode
                 // TLS best practices for .NET: https://docs.microsoft.com/en-us/dotnet/framework/network-programming/tls
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                var result = ExecSubCommand(args);
-                return Logger.HasError ? 1 : result;
+                return ExecSubCommand(args);
             }
             finally
             {
@@ -90,7 +89,7 @@ namespace Microsoft.DocAsCode
                 }
 
                 command.Exec(context);
-                return 0;
+                return Logger.HasError ? -1 : 0;
             }
             catch (AggregateException ae)
             {
