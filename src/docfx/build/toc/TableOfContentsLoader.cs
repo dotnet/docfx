@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
             // process uid first
             if (!string.IsNullOrEmpty(uid.Value))
             {
-                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXref(new SourceInfo<string>(uid.Value, uid), filePath, rootPath);
+                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(uid!, filePath, rootPath);
                 errors.AddIfNotNull(uidError);
 
                 if (declaringFile != null)

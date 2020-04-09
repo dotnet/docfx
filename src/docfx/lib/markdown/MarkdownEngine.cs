@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
         private (string? href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, display, _) = _xrefResolver.ResolveXref(
+            var (error, link, display, _) = _xrefResolver.ResolveXrefByHref(
                 href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
             if (!isShorthand)

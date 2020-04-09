@@ -1122,6 +1122,46 @@ outputs:
       ]
     }
 ---
+# uid with fragment reference in yaml toc, treat as exact uid string
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: a title
+    uid: a
+    ---
+  docs/a-frag.md: |
+    ---
+    title: a-frag title
+    uid: a#frag
+    ---
+  docs/b-frag.md: |
+    ---
+    title: b-frag title
+    uid: b#frag
+    ---
+  docs/TOC.yml: |
+    - name: Uid Ref
+      uid: a
+    - name: Uid Ref 1
+      uid: a#frag
+    - name: Uid Not Found
+      uid: b
+outputs:
+  docs/a.json:
+  docs/a-frag.json:
+  docs/b-frag.json:
+  docs/toc.json: |
+    {
+      "items": [
+        { "name":"Uid Ref","href":"a","monikers": undefined },
+        { "name":"Uid Ref 1","href":"a-frag","monikers": undefined },
+        { "name":"Uid Not Found","href":undefined,"monikers": undefined }
+      ]
+    }
+  .errors.log: |
+    ["warning","xref-not-found","Cross reference not found: 'b'","docs/TOC.yml",6,8]
+---
 # uid reference first in yaml toc
 inputs:
   docfx.yml:

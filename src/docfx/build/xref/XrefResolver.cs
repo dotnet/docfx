@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
-        public (Error? error, string? href, string display, Document? declaringFile) ResolveXref(
+        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByHref(
             SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
@@ -82,6 +82,19 @@ namespace Microsoft.Docs.Build
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+        }
+
+        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByUid(
+            SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+        {
+            // need to url decode uid from input content
+            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot);
+            if (error != null || xrefSpec == null || href == null)
+            {
+                return (error, null, "", null);
+            }
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href);
+            return (null, href, xrefSpec.Name ?? "", xrefSpec.DeclaringFile);
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
