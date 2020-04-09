@@ -97,7 +97,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             var expected = @"<p>:::image type=&quot;icon&quot;:::</p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected, errors: new[] { "image-invalid" });
+            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image" });
         }
 
         [Fact]
@@ -110,7 +110,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             var expected = @"<p>:::image source=&quot;example.svg&quot;:::</p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected, errors: new[] { "image-invalid" });
+            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image" });
         }
 
         [Fact]

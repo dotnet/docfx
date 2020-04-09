@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var extensionName = "triple-colon";
             Action<string> logError = (string message) => _context.LogError(
-                $"{extensionName}-invalid",
+                $"invalid-{extensionName}",
                 $"{message}",
                 null,
                 line: processor.LineIndex);
