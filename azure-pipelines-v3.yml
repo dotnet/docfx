@@ -12,112 +12,8 @@ variables:
 
 jobs:
 
-# Test pull requests on linux and mac
-- job: LinuxBuild
-  pool:
-    vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  - bash: ./build.sh
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-
-- job: MacBuild
-  pool:
-    vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  - bash: ./build.sh
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-
-# Test and deploy on windows
-- job: WindowsBuild
-  pool:
-    vmImage: 'windows-latest'
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # Build and test
-  - powershell: ./build.ps1
-    displayName: Build
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
-
-  # Push to sandbox MyGet feed
-  - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
-    displayName: Push to Sandbox MyGet Feed
-    inputs:
-      command: push
-      packagesToPush: drop/**/*.nupkg
-      nuGetFeedType: external
-      publishFeedCredentials: myget.docfx-v3-sandbox
-
-  # Push to production MyGet feed
-  - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Push to Production MyGet Feed
-    inputs:
-      command: push
-      packagesToPush: drop/**/*.nupkg
-      nuGetFeedType: external
-      publishFeedCredentials: myget.docfx-v3
-
-  # Publish binary packages to sandbox
-  - task: AzureFileCopy@3
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
-    displayName: Publish Binary Packages To Sandbox
-    inputs:
-      azureSubscription: Open Publishing - Build Sandbox
-      sourcePath: drop/docfx-bin/staging
-      destination: AzureBlob
-      storage: opbuildstoragesandbox
-      containerName: docfx-bin
-
-  # Publish binary packages to production
-  - task: AzureFileCopy@3
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish Binary Packages To Production
-    inputs:
-      azureSubscription: Open Publishing - Build Production
-      sourcePath: drop/docfx-bin/staging
-      destination: AzureBlob
-      storage: opsbuildk8sprod
-      containerName: docfx-bin
-
 # Build integration test
 - job: IntegrationTestBuild
-  dependsOn: WindowsBuild
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
@@ -184,7 +80,6 @@ jobs:
     displayName: Publish integration-test binary
     artifact: integration-test
 
-
 # Integration test
 - job: IntegrationTest
   dependsOn: IntegrationTestBuild
@@ -194,29 +89,6 @@ jobs:
     matrix:
       DevSandbox:
         params: https://github.com/OPS-E2E-PPE/DevSandbox --branch v3-integration-test --timeout 30
-      docs-help-pr:
-        params: >
-          https://github.com/OPS-E2E-PPE/docs-help-pr --build-type PullRequest --branch v3-integration-test
-          --pull-request-url https://github.com/yufeih/docs-help-pr --pull-request-branch patch-1
-          --timeout 30
-      azure-docs-pr:
-        params: https://github.com/OPS-E2E-PPE/azure-docs-pr --branch v3-integration-test --timeout 150
-      Dynamics-365-Operations:
-        params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --branch v3-integration-test --timeout 65
-      SCCMDocs-pr:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr --branch v3-integration-test --timeout 35
-      SCCMDocs-pr.zh-cn:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch v3-integration-test-sxs --locale zh-cn --timeout 35
-      office-dev-O365API:
-        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
-      dynamics-crm-notinTOC_1.he-il:
-        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
-      mc-docs-pr:
-        params: https://github.com/opse2epr/mc-docs-pr --branch v3-integration-test --timeout 70
-      ATADocs-pr:
-        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
-      azure-docs-rest-apis:
-        params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
 
   steps:
   # Install .NET Core sdk
@@ -237,11 +109,12 @@ jobs:
     artifact: integration-test
 
   # Run integration tests
-  - powershell: '& "$(Pipeline.Workspace)/integration-test/integration-test" $(params)'
+  - powershell: |
+      dotnet --info
+      $(Pipeline.Workspace)/integration-test/integration-test.exe $(params)
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
-      INTEGRATION_TEST_ROOT: D:/
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
