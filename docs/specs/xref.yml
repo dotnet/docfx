@@ -1195,24 +1195,21 @@ outputs:
     { "conceptual": "<p>Link to <a href='a?displayname=xxx' data-linktype='relative-path'>Title from yaml header a</a></p>" }
 ---
 # resolve UID with fragment
-# conceptual 
-repos:
-  https://docs.com/unkown-query#live:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          ---
-          title: a frag
-          uid: a#frag
-          ---
-        docs/a-no-frag.md: |
-          ---
-          title: a
-          uid: a
-          ---
-        docs/b.md: |
-          Link to @a
-          Link to @a#frag
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: a frag
+    uid: a#frag
+    ---
+  docs/a-no-frag.md: |
+    ---
+    title: a
+    uid: a
+    ---
+  docs/b.md: |
+    Link to @a
+    Link to @a#frag
 outputs:
   docs/a.json:
   docs/a-no-frag.json:

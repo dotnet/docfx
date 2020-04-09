@@ -88,13 +88,13 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
             // need to url decode uid from input content
-            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, uid.Source), referencingFile, inclusionRoot);
-            if (xrefError != null || xrefSpec == null || resolvedHref == null)
+            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot);
+            if (error != null || xrefSpec == null || href == null)
             {
-                return (xrefError, null, "", null);
+                return (error, null, "", null);
             }
             _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href);
-            return (null, resolvedHref, xrefSpec.Name ?? "", xrefSpec.DeclaringFile);
+            return (null, href, xrefSpec.Name ?? "", xrefSpec.DeclaringFile);
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
