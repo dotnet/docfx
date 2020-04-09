@@ -192,7 +192,9 @@ namespace Microsoft.Docs.Build
                         return (null, file, query, fragment, LinkType.RelativePath);
                     }
 
-                    if (file is null)
+                    // Forbid links to generated contents as they are generated on the fly,
+                    // linking to them may produce unexpected, undeterministic behavior.
+                    if (file is null || file.FilePath.Origin == FileOrigin.Generated)
                     {
                         return (Errors.Config.FileNotFound(
                             new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath);

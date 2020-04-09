@@ -29,5 +29,10 @@ namespace Microsoft.Docs.Build
         /// Represents a redirection file.
         /// </summary>
         Redirection,
+
+        /// <summary>
+        /// Represents a content file generated from code.
+        /// </summary>
+        Generated,
     }
 }

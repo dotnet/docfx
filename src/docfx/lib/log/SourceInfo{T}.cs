@@ -26,6 +26,8 @@ namespace Microsoft.Docs.Build
         public SourceInfo<T> Or(T other)
             => new SourceInfo<T>(Value != null ? Value : other, Source);
 
+        public SourceInfo<T> With(T value) => new SourceInfo<T>(value, Source);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator T(SourceInfo<T> value) => value.Value;
 

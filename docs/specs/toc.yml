@@ -1456,3 +1456,48 @@ inputs:
   toc.png:
 outputs:
   toc.png:
+---
+# TOC splitItemsBy produces multiple output TOCs with correct link and _tocRel
+inputs:
+  docfx.yml:
+  TOC.yml: |
+    splitItemsBy: name
+    items:
+    - name: 1
+      items:
+      - name: 1-1
+        href: a.md
+    - name: 2
+      href: b.md
+  a.md:
+  b.md:
+outputs:
+  a.json: '{ "_tocRel": "_splitted/1/toc.json" }'
+  b.json: '{ "_tocRel": "toc.json" }'
+  toc.json: |
+    {
+      "items": [
+        { "name": "1", "href": undefined, "items": undefined },
+        { "name": "2", "href": "b", "items": undefined }
+      ],
+      "splitItemsBy": undefined
+    }
+  _splitted/1/toc.json: |
+    { "items": [{ "name": "1-1", "href": "../../a", "items": undefined }] }
+---
+# TOC splitItemsBy respect metadata config
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      key:
+        _splitted/**/toc.json: value
+  TOC.yml: |
+    splitItemsBy: name
+    items:
+    - name: 1
+      items:
+      - name: 1-1
+outputs:
+  toc.json:
+  _splitted/1/toc.json: |
+    { "metadata": { "key": "value" } }

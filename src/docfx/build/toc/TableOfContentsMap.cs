@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,17 +15,21 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class TableOfContentsMap
     {
+        private readonly Input _input;
         private readonly ErrorLog _errorLog;
         private readonly BuildScope _buildScope;
         private readonly TableOfContentsLoader _tocLoader;
+        private readonly TableOfContentsParser _tocParser;
         private readonly DocumentProvider _documentProvider;
 
         private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
-        public TableOfContentsMap(ErrorLog errorLog, BuildScope buildScope, TableOfContentsLoader tocLoader, DocumentProvider documentProvider)
+        public TableOfContentsMap(ErrorLog errorLog, Input input, BuildScope buildScope, TableOfContentsParser tocParser, TableOfContentsLoader tocLoader, DocumentProvider documentProvider)
         {
             _errorLog = errorLog;
+            _input = input;
             _buildScope = buildScope;
+            _tocParser = tocParser;
             _tocLoader = tocLoader;
             _documentProvider = documentProvider;
             _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
@@ -98,8 +102,7 @@ namespace Microsoft.Docs.Build
 
         private static (int subDirectoryCount, int parentDirectoryCount) GetRelativeDirectoryInfo(string pathA, string pathB)
         {
-            var relativePath = PathUtility.NormalizeFile(
-                Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
+            var relativePath = PathUtility.NormalizeFile(Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
             if (string.IsNullOrEmpty(relativePath))
             {
                 return default;
@@ -146,13 +149,31 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Loading TOC"))
             {
+                var tocs = new ConcurrentBag<FilePath>();
+
+                // Parse and split TOC
+                ParallelUtility.ForEach(_errorLog, _buildScope.GetFiles(ContentType.TableOfContents), file =>
+                {
+                    var errors = new List<Error>();
+                    var toc = _tocParser.Parse(file, errors);
+                    _errorLog.Write(errors);
+
+                    SplitToc(file, toc, tocs);
+                });
+
                 var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs)>();
 
-                ParallelUtility.ForEach(
-                    _errorLog,
-                    _buildScope.GetFiles(ContentType.TableOfContents),
-                    file => LoadToc(file, tocReferences));
+                // Load TOC
+                ParallelUtility.ForEach(_errorLog, tocs, path =>
+                {
+                    var file = _documentProvider.GetDocument(path);
+                    var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
+                    _errorLog.Write(errors);
 
+                    tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+                });
+
+                // Create TOC reference map
                 var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
 
                 var tocToTocs = (
@@ -170,15 +191,76 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void LoadToc(FilePath path, ConcurrentDictionary<Document, (List<Document> files, List<Document> tocs)> tocReferences)
+        private void SplitToc(FilePath file, TableOfContentsNode toc, ConcurrentBag<FilePath> result)
         {
-            var file = _documentProvider.GetDocument(path);
-            Debug.Assert(file.ContentType == ContentType.TableOfContents);
+            if (string.IsNullOrEmpty(toc.SplitItemsBy) || toc.Items.Count <= 0)
+            {
+                result.Add(file);
+                return;
+            }
 
-            var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
-            _errorLog.Write(errors);
+            var newToc = new TableOfContentsNode(toc) { Items = new List<SourceInfo<TableOfContentsNode>>() };
 
-            tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+            foreach (var item in toc.Items)
+            {
+                var child = item.Value;
+                if (child.Items.Count == 0)
+                {
+                    newToc.Items.Add(item);
+                    continue;
+                }
+
+                var newNode = SplitTocNode(child);
+                var newNodeToken = JsonUtility.ToJObject(newNode);
+                var name = newNodeToken.TryGetValue<JValue>(toc.SplitItemsBy, out var splitByValue) ? splitByValue.ToString() : null;
+                if (string.IsNullOrEmpty(name))
+                {
+                    newToc.Items.Add(item);
+                    continue;
+                }
+
+                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/toc.json"));
+                var newNodeFile = FilePath.Generated(newNodeFilePath, file.OriginalPath ?? file.Path);
+
+                _input.AddGeneratedContent(newNodeFile, newNodeToken);
+                result.Add(newNodeFile);
+
+                var newChild = new TableOfContentsNode(child)
+                {
+                    Href = child.Href.With($"{name}/"),
+                    Items = new List<SourceInfo<TableOfContentsNode>>(),
+                };
+
+                newToc.Items.Add(new SourceInfo<TableOfContentsNode>(newChild, item.Source));
+            }
+
+            var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".json"));
+            var newTocFile = FilePath.Generated(newTocFilePath, file.OriginalPath ?? file.Path);
+            _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc));
+            result.Add(newTocFile);
+        }
+
+        private TableOfContentsNode SplitTocNode(TableOfContentsNode node)
+        {
+            var newNode = new TableOfContentsNode(node)
+            {
+                TopicHref = node.TopicHref.With(FixHref(node.TopicHref)),
+                TocHref = node.TopicHref.With(FixHref(node.TocHref)),
+                Href = node.TopicHref.With(FixHref(node.Href)),
+                Items = new List<SourceInfo<TableOfContentsNode>>(),
+            };
+
+            foreach (var item in node.Items)
+            {
+                newNode.Items.Add(item.With(SplitTocNode(item)));
+            }
+
+            return newNode;
+
+            static string? FixHref(string? href)
+            {
+                return href != null && UrlUtility.GetLinkType(href) == LinkType.RelativePath ? Path.Combine("../../", href) : href;
+            }
         }
     }
 }
