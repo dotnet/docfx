@@ -185,6 +185,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     else
                     {
+                        int pageNumber = 0;
+
                         if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                         {
                             string filePath = GetFilePath(htmlModel.HtmlFilePath);
@@ -195,16 +197,23 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
                                 if (!pdfModel.PageNumber.HasValue)
                                 {
-                                    pdfModel.PageNumber = _currentNumberOfPages - 1;
+                                    pdfModel.PageNumber = _currentNumberOfPages;
                                     _currentNumberOfPages += pdfModel.NumberOfPages;
                                 }
 
-                                outline.Add("Action", "GoTo");
-
-                                // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
-                                outline.Add("Page", $"{pdfModel.PageNumber.Value} FitH");
+                                pageNumber = pdfModel.PageNumber.Value;
                             }
                         }
+                        else
+                        {
+                            // this is a parent node for the next topic
+                            pageNumber = _currentNumberOfPages;
+                        }
+
+                        outline.Add("Action", "GoTo");
+
+                        // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
+                        outline.Add("Page", $"{pageNumber} FitH");
                     }
 
                     ((List<Dictionary<string, object>>)rootOutline[OutLineKidsName]).Add(outline);
