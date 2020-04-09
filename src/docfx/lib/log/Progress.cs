@@ -29,7 +29,11 @@ namespace Microsoft.Docs.Build
 
         public static void Update(int done, int total)
         {
-            var scope = t_scope.Value!.Peek();
+            var scope = t_scope.Value?.Peek();
+            if (scope is null)
+            {
+                return;
+            }
 
             // Only write progress if it takes longer than 2 seconds
             var elapsedMs = scope.Stopwatch.ElapsedMilliseconds;
@@ -43,6 +47,7 @@ namespace Microsoft.Docs.Build
             {
                 return;
             }
+
             scope.LastElapsedMs = elapsedMs;
 
             var eol = done == total ? '\n' : '\r';
