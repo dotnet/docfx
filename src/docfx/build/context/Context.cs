@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
         {
             DependencyMapBuilder = new DependencyMapBuilder();
-            BuildQueue = new WorkQueue<FilePath>();
+            BuildQueue = new WorkQueue<FilePath>(errorLog);
 
             Config = config;
             ErrorLog = errorLog;
