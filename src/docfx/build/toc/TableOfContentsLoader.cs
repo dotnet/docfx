@@ -107,7 +107,8 @@ namespace Microsoft.Docs.Build
                 var newItem = new TableOfContentsNode(node)
                 {
                     Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
-                    TocHref = resolvedTocHref,
+                    TocHref = default,
+                    TopicHref = default,
                     Homepage = string.IsNullOrEmpty(node.Value.Href) && !string.IsNullOrEmpty(node.Value.TopicHref)
                         ? resolvedTopicHref : default,
                     Name = node.Value.Name.Or(resolvedTopicName),
