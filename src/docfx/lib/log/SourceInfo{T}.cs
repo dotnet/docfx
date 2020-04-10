@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Runtime.CompilerServices;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,30 +13,23 @@ namespace Microsoft.Docs.Build
 
         public override string? ToString() => Value?.ToString();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SourceInfo<T> Or(SourceInfo<T> other)
             => new SourceInfo<T>(Value != null ? Value : other.Value, other.Source ?? Source);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SourceInfo<T> Or(SourceInfo<T>? other)
             => new SourceInfo<T>(Value != null ? Value : (other != null ? other.Value : default), other?.Source ?? Source);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SourceInfo<T> Or(T other)
             => new SourceInfo<T>(Value != null ? Value : other, Source);
 
         public SourceInfo<T> With(T value) => new SourceInfo<T>(value, Source);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator T(SourceInfo<T> value) => value.Value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator T(SourceInfo<T>? value) => value != null ? value.Value : default;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator SourceInfo?(in SourceInfo<T> value) => value.Source;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator SourceInfo?(in SourceInfo<T>? value) => value?.Source;
 
         public override bool Equals(object? obj) => obj is SourceInfo<T> si && Equals(si);
