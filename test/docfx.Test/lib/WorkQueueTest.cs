@@ -17,10 +17,15 @@ namespace Microsoft.Docs.Build
         [InlineData(typeof(TaskCanceledException))]
         public static void ThrowsTheSameException(Type exceptionType)
         {
-            var queue = new WorkQueue<int>();
-            queue.Enqueue(Enumerable.Range(0, 1000));
+            var queue = new WorkQueue<int>(new ErrorLog());
 
-            var exception = Assert.ThrowsAny<Exception>(() => queue.Drain(new ErrorLog(), Run));
+            var exception = Assert.ThrowsAny<Exception>(() =>
+            {
+                queue.Start(Run);
+                queue.Enqueue(Enumerable.Range(0, 1000));
+                queue.WaitForCompletion();
+            });
+
             Assert.Equal(exceptionType, exception.GetType());
 
             void Run(int n)
@@ -36,10 +41,10 @@ namespace Microsoft.Docs.Build
             var done = 0;
             var total = 10;
 
-            var queue = new WorkQueue<int>();
+            var queue = new WorkQueue<int>(new ErrorLog());
+            queue.Start(Run);
             queue.Enqueue(Enumerable.Range(0, total));
-
-            queue.Drain(new ErrorLog(), Run);
+            queue.WaitForCompletion();
 
             void Run(int n)
             {

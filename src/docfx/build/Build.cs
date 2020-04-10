@@ -69,15 +69,17 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
-            Parallel.Invoke(
-                () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
-                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
-                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
-                () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
-
             using (Progress.Start("Building files"))
             {
-                context.BuildQueue.Drain(context.ErrorLog, file => BuildFile(context, file));
+                context.BuildQueue.Start(file => BuildFile(context, file));
+
+                Parallel.Invoke(
+                    () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
+                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
+                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
+                    () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
+
+                context.BuildQueue.WaitForCompletion();
             }
 
             Parallel.Invoke(
