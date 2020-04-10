@@ -84,7 +84,10 @@ namespace Microsoft.Docs.Build
                 {
                     var fileName = Path.Combine(_dir, name);
                     if (!File.Exists(fileName))
+                    {
                         fileName = Path.Combine(_dir, name + ".tmpl.partial");
+                    }
+
                     return MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
                 })).Value;
         }

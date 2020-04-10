@@ -101,7 +101,9 @@ namespace Microsoft.Docs.Build
         {
             var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot);
             if (xrefSpec == null)
+            {
                 return (error, null, null);
+            }
             return (error, xrefSpec, href);
         }
 
@@ -164,10 +166,14 @@ namespace Microsoft.Docs.Build
             var unescapedUid = Uri.UnescapeDataString(uid);
             var (xrefSpec, href) = ResolveInternalXrefSpec(unescapedUid, referencingFile, inclusionRoot);
             if (xrefSpec is null)
+            {
                 (xrefSpec, href) = ResolveExternalXrefSpec(unescapedUid);
+            }
 
             if (xrefSpec is null)
+            {
                 return (Errors.Xref.XrefNotFound(uid), null, null);
+            }
 
             return (null, xrefSpec, href);
         }

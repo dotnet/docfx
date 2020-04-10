@@ -159,8 +159,9 @@ namespace Microsoft.Docs.Build
                     currentItem.Href = new SourceInfo<string?>(linkInline.Url, linkInline.ToSourceInfo(file: filePath));
                 }
                 if (!string.IsNullOrEmpty(linkInline.Title))
+                {
                     currentItem.DisplayName = linkInline.Title;
-
+                }
                 currentItem.Name = GetLiteral(errors, filePath, linkInline);
             }
 

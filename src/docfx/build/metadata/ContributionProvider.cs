@@ -129,7 +129,9 @@ namespace Microsoft.Docs.Build
             var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
             var (repo, pathToRepo, commits) = _repositoryProvider.GetCommitHistory(fullPath);
             if (repo is null || pathToRepo is null)
+            {
                 return default;
+            }
 
             var (contentBranchUrlTemplate, contentCommitUrlTemplate) = GetContentGitUrlTemplate(repo.Remote, pathToRepo);
             var commit = commits.FirstOrDefault()?.Sha;

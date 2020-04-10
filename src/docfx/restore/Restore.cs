@@ -46,7 +46,9 @@ namespace Microsoft.Docs.Build
                     var configLoader = new ConfigLoader(errorLog);
                     var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options);
                     if (errorLog.Write(errors))
+                    {
                         return true;
+                    }
 
                     errorLog.Configure(config, buildOptions.OutputPath);
                     using (packageResolver)

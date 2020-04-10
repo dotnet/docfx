@@ -213,7 +213,9 @@ namespace Microsoft.Docs.Build
             {
                 item.HasError = true;
                 if (item.Path != null && IsInsideOutputFolder(item.Path))
+                {
                     _output.Delete(item.Path, _config.Legacy);
+                }
             }
         }
 

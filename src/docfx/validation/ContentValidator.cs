@@ -22,7 +22,9 @@ namespace Microsoft.Docs.Build
         public void ValidateH1(Document file, string? title)
         {
             if (string.IsNullOrEmpty(title))
+            {
                 return;
+            }
 
             if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, out var documentType))
             {

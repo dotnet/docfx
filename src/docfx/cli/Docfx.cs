@@ -146,10 +146,14 @@ namespace Microsoft.Docs.Build
             // https://github.com/Microsoft/console/issues/190
             var showEmoji = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             if (showEmoji)
+            {
                 Console.Write("🚘💥🚗 ");
+            }
             Console.Write("docfx has crashed");
             if (showEmoji)
+            {
                 Console.Write(" 🚘💥🚗");
+            }
             Console.WriteLine();
 
             var title = $"docfx crash report: {exception.GetType()}";

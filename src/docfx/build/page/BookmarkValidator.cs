@@ -44,15 +44,21 @@ namespace Microsoft.Docs.Build
             {
                 // #top is HTMl predefined URL, which points to the top of the page
                 if (bookmark == "top")
+                {
                     continue;
+                }
 
                 // Do not validate bookmark if the target file doesn't report bookmarks.
                 // When the target file does not have bookmarks, it'll still report with an empty array.
                 if (!bookmarksByFile.TryGetValue(reference, out var bookmarks))
+                {
                     continue;
+                }
 
                 if (bookmarks.Contains(bookmark))
+                {
                     continue;
+                }
 
                 _errorLog.Write(Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks));
             }

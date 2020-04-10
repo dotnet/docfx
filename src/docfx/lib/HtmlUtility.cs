@@ -35,10 +35,14 @@ namespace Microsoft.Docs.Build
         {
             // TODO: word count does not work for CJK locales...
             if (node.NodeType == HtmlNodeType.Comment)
+            {
                 return 0;
+            }
 
             if (node is HtmlTextNode textNode)
+            {
                 return CountWordInText(textNode.Text);
+            }
 
             var total = 0L;
             foreach (var child in node.ChildNodes)
@@ -86,7 +90,9 @@ namespace Microsoft.Docs.Build
                 var transformed = transform(HttpUtility.HtmlDecode(link.Value), columnOffset);
 
                 if (!string.IsNullOrEmpty(transformed))
+                {
                     link.Value = HttpUtility.HtmlEncode(transformed);
+                }
             }
 
             return html;

@@ -17,7 +17,9 @@ namespace Microsoft.Docs.Build
         static LibGit2()
         {
             if (git_libgit2_init() == 1)
+            {
                 git_openssl_set_locking();
+            }
 
             // Disable hash verification to drastically speed up object lookup.
             git_libgit2_opts(22 /*GIT_OPT_ENABLE_STRICT_HASH_VERIFICATION*/, 0);

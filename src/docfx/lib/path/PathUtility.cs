@@ -129,11 +129,17 @@ namespace Microsoft.Docs.Build
             foreach (var segment in path.Split('/'))
             {
                 if (segment == ".." && stack.Count > 0)
+                {
                     stack.RemoveAt(stack.Count - 1);
+                }
                 else if (segment == "..")
+                {
                     parentCount++;
+                }
                 else if (segment != "." && !string.IsNullOrEmpty(segment))
+                {
                     stack.Add(segment);
+                }
             }
 
             var res = new StringBuilder();

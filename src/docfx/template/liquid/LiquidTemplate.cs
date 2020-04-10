@@ -51,7 +51,9 @@ namespace Microsoft.Docs.Build
 
             // if liquid template not found, return the json
             if (template is null)
+            {
                 return JsonUtility.Serialize(model);
+            }
 
             var registers = new Hash
             {
@@ -106,19 +108,13 @@ namespace Microsoft.Docs.Build
 
         private static object? ToLiquidObject(JToken token)
         {
-            if (token is null)
-                return null;
-
-            if (token is JValue value)
-                return value.Value;
-
-            if (token is JArray arr)
-                return arr.Select(ToLiquidObject).ToArray();
-
-            if (token is JObject obj)
-                return obj.Cast<KeyValuePair<string, JToken>>().ToDictionary(prop => prop.Key, prop => ToLiquidObject(prop.Value));
-
-            throw new NotSupportedException($"Unknown jToken type {token.Type}");
+            return token switch
+            {
+                JValue value => value.Value,
+                JArray arr => arr.Select(ToLiquidObject).ToArray(),
+                JObject obj => obj.Cast<KeyValuePair<string, JToken>>().ToDictionary(prop => prop.Key, prop => ToLiquidObject(prop.Value)),
+                _ => throw new NotSupportedException($"Unknown jToken type {token.Type}"),
+            };
         }
 
         private class IncludeFileSystem : ITemplateFileSystem

@@ -150,13 +150,25 @@ namespace Microsoft.Docs.Build
         {
             var result = Path.CompareTo(other.Path);
             if (result == 0)
+            {
                 result = Origin.CompareTo(other.Origin);
+            }
+
             if (result == 0)
+            {
                 result = DependencyName.CompareTo(other.DependencyName);
+            }
+
             if (result == 0)
+            {
                 result = IsGitCommit.CompareTo(other.IsGitCommit);
+            }
+
             if (result == 0)
+            {
                 result = Nullable.Compare(OriginalPath, other.OriginalPath);
+            }
+
             return result;
         }
 

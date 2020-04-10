@@ -81,7 +81,9 @@ namespace Microsoft.Docs.Build
         {
             var schema = ReadSchema(reader, file);
             if (schema.Value is null)
+            {
                 return schema;
+            }
 
             // TODO: be more strict
             var mime = schema.Value.Split('/').LastOrDefault();
@@ -228,7 +230,9 @@ namespace Microsoft.Docs.Build
         public static void Merge(JObject container, JObject? overwrite, string[]? unionProperties = null)
         {
             if (overwrite is null)
+            {
                 return;
+            }
 
             foreach (var (key, value) in overwrite)
             {
@@ -410,7 +414,9 @@ namespace Microsoft.Docs.Build
         {
             var properties = new SortedList<string, JProperty>();
             foreach (var property in obj.Properties())
+            {
                 properties.Add(property.Name, !(property.Value is JObject childObj) ? property : new JProperty(property.Name, SortProperties(childObj)));
+            }
 
             return new JObject(properties.Values);
         }

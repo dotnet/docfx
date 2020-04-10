@@ -19,14 +19,14 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(ElementTypeTestData))]
         public static void GetElementTypeTest(MarkdownObject node, string expectedElementType)
         {
-            Assert.Equal(expectedElementType, MarkdownElementTelemetryExtension.GetElementType(node));
+            Assert.Equal(expectedElementType, MarkdownTelemetryExtension.GetElementType(node));
         }
 
         [Theory]
         [MemberData(nameof(TokenTypeTestData))]
         public static void GetTokenTypeTest(MarkdownObject node, string expectedElementType)
         {
-            Assert.Equal(expectedElementType, MarkdownElementTelemetryExtension.GetTokenType(node));
+            Assert.Equal(expectedElementType, MarkdownTelemetryExtension.GetTokenType(node));
         }
 
         public static IEnumerable<object[]> ElementTypeTestData =>

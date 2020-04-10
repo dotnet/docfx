@@ -35,9 +35,13 @@ namespace Microsoft.Docs.Build
             {
                 // TODO: uid may fallback to href in ProfileList
                 if (string.Equals(attribute.Name, "uid", StringComparison.OrdinalIgnoreCase))
+                {
                     uidName = attribute.Value.Trim(s_trimChars);
+                }
                 else if (string.Equals(attribute.Name, "template", StringComparison.OrdinalIgnoreCase))
+                {
                     partialName = attribute.Value.Trim(s_trimChars);
+                }
             }
 
             var resolvedTag = partialName == null

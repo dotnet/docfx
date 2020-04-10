@@ -349,7 +349,9 @@ namespace Microsoft.Docs.Build
             foreach (var item in items)
             {
                 if (!string.IsNullOrEmpty(item.Value.Href))
+                {
                     return item;
+                }
             }
 
             foreach (var item in items)

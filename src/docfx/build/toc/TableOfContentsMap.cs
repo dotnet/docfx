@@ -85,9 +85,13 @@ namespace Microsoft.Docs.Build
             {
                 var result = minCandidate.subCount - nextCandidate.subCount;
                 if (result == 0)
+                {
                     result = minCandidate.parentCount - nextCandidate.parentCount;
+                }
                 if (result == 0)
+                {
                     result = minCandidate.toc.CompareTo(nextCandidate.toc);
+                }
                 return result <= 0 ? minCandidate : nextCandidate;
             }).toc;
         }
