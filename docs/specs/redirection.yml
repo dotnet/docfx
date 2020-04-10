@@ -260,7 +260,7 @@ outputs:
         { "source_path": "docs/c.md", "redirect_url": "/docs/x#bookmark" },
         { "source_path": "docs/d.md", "redirect_url": "/docs/folder0" },
         { "source_path": "docs/f.md", "redirect_url": "/docs/folder0/" },
-        { "source_path": "docs/h.md", "redirect_url": "/docs/folder0/" }
+        { "source_path": "docs/h.md", "redirect_url": "/docs/folder0/index" }
       ]
     }
 ---

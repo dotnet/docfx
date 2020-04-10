@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             }
 
             var origin = file.FilePath.Origin;
-            if (origin != FileOrigin.Main && origin != FileOrigin.Fallback && origin != FileOrigin.Dependency)
+            if (origin == FileOrigin.Redirection || origin == FileOrigin.External)
             {
                 return default;
             }
@@ -192,9 +192,7 @@ namespace Microsoft.Docs.Build
                         return (null, file, query, fragment, LinkType.RelativePath);
                     }
 
-                    // Forbid links to generated contents as they are generated on the fly,
-                    // linking to them may produce unexpected, undeterministic behavior.
-                    if (file is null || file.FilePath.Origin == FileOrigin.Generated)
+                    if (file is null)
                     {
                         return (Errors.Config.FileNotFound(
                             new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath);
@@ -296,6 +294,13 @@ namespace Microsoft.Docs.Build
                         return _documentProvider.GetDocument(path);
                     }
                 }
+            }
+
+            // resolve generated content docset
+            path = FilePath.Generated(pathToDocset);
+            if (_input.Exists(path))
+            {
+                return _documentProvider.GetDocument(path);
             }
 
             return default;

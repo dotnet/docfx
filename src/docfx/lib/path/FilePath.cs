@@ -86,10 +86,10 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Dependency, path, default, dependencyName, default);
         }
 
-        public static FilePath Generated(PathString path, PathString originalPath)
+        public static FilePath Generated(PathString path)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Generated, path, originalPath, default, default);
+            return new FilePath(FileOrigin.Generated, path, default, default, default);
         }
 
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);

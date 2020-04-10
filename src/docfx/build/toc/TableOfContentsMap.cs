@@ -220,14 +220,14 @@ namespace Microsoft.Docs.Build
                 }
 
                 var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.json"));
-                var newNodeFile = FilePath.Generated(newNodeFilePath, file.OriginalPath ?? file.Path);
+                var newNodeFile = FilePath.Generated(newNodeFilePath);
 
                 _input.AddGeneratedContent(newNodeFile, newNodeToken);
                 result.Add(newNodeFile);
 
                 var newChild = new TableOfContentsNode(child)
                 {
-                    Href = child.Href.With($"{name}/"),
+                    Href = child.Href.With($"_splitted/{name}/"),
                     Items = new List<SourceInfo<TableOfContentsNode>>(),
                 };
 
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
             }
 
             var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".json"));
-            var newTocFile = FilePath.Generated(newTocFilePath, file.OriginalPath ?? file.Path);
+            var newTocFile = FilePath.Generated(newTocFilePath);
             _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc));
             result.Add(newTocFile);
         }
