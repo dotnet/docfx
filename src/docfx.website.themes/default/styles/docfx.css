@@ -1007,7 +1007,6 @@ div.embeddedvideo iframe {
 
 /* Major sections, increase visibility **/
 #fields, #properties, #methods, #events {
-    color: #337ac4;
     font-weight: bold;
     margin-top: 2em;
 }
