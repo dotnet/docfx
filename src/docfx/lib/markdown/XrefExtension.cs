@@ -42,20 +42,17 @@ namespace Microsoft.Docs.Build
                     {
                         // inside html block
                         // <p> <xref href="" uid=""/> </p>
-                        block.Lines = new StringLineGroup(ResolveXref(block.Lines.ToString(), block));
+                        block.Lines = new StringLineGroup(HtmlUtility.TransformXref(block.Lines.ToString(), block, resolveXref));
                     }
                     else if (node is HtmlInline inline)
                     {
                         // inside html inline
                         // text <xref href="" uid=""/> text
-                        inline.Tag = ResolveXref(inline.Tag, inline);
+                        inline.Tag = HtmlUtility.TransformXref(inline.Tag, inline, resolveXref);
                     }
                     return node;
                 });
             });
-
-            string ResolveXref(string html, MarkdownObject block)
-                => HtmlUtility.TransformXref(html, block, resolveXref);
         }
     }
 }

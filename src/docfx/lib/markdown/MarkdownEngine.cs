@@ -190,11 +190,17 @@ namespace Microsoft.Docs.Build
             var link = default(string);
             var display = "";
             if (href.HasValue)
+            {
                 (error, link, display, _) = _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            }
             else if (uid.HasValue)
+            {
                 (error, link, display, _) = _xrefResolver.ResolveXrefByUid(uid.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            }
             else
+            {
                 throw new ArgumentNullException(message: "href and uid can't be both null", null);
+            }
 
             if (!isShorthand)
             {

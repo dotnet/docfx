@@ -180,9 +180,14 @@ namespace Microsoft.Docs.Build
 
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
+                {
                     resolvedNode.LoadHtml(rawSource ?? $"<span class=\"xref\">{(href != null ? UrlUtility.SplitUrl(href).path : uid)}</span>");
+                }
                 else
+                {
                     resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
+                }
+
                 replacingNodes.Add((node, resolvedNode.DocumentNode));
                 columnOffset++;
             }
