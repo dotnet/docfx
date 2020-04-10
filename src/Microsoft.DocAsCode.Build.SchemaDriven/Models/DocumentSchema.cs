@@ -48,7 +48,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
             catch (Exception e) when (e is JSchemaException || e is JsonException)
             {
-                throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
+                var message = ($"{title} is not a valid schema: {e.Message}");
+                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
+                throw new InvalidSchemaException(message, e);
             }
 
             var validator = new SchemaValidator(jObject, jSchema);
@@ -67,26 +69,34 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
             catch (Exception e)
             {
-                throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
+                var message = $"{title} is not a valid schema: {e.Message}";
+                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
+                throw new InvalidSchemaException(message, e);
             }
 
             if (string.IsNullOrWhiteSpace(schema.Title))
             {
                 if (string.IsNullOrWhiteSpace(title))
                 {
-                    throw new InvalidSchemaException("Title of schema must be specified.");
+                    var message = "Title of schema must be specified.";
+                    Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
+                    throw new InvalidSchemaException(message);
                 }
                 schema.Title = title;
             }
 
             if (schema.Type != JSchemaType.Object)
             {
-                throw new InvalidSchemaException("Type for the root schema object must be object");
+                var message = "Type for the root schema object must be object";
+                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
+                throw new InvalidSchemaException(message);
             }
 
             if (!JsonPointer.TryCreate(schema.Metadata, out var pointer))
             {
-                throw new InvalidJsonPointerException($"Metadata's json pointer {schema.Metadata} is invalid.");
+                var message = $"Metadata's json pointer {schema.Metadata} is invalid.";
+                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
+                throw new InvalidSchemaException(message);
             }
 
             var metadataSchema = pointer.FindSchema(schema);

@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Common
     {
         public static class Build
         {
+            public const string ViolateSchema = "ViolateSchema";
             public const string InvalidPropertyFormat = "InvalidPropertyFormat";
             public const string InvalidInputFile = "InvalidInputFile";
             public const string InvalidRelativePath = "InvalidRelativePath";
