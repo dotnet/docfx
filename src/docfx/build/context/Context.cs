@@ -113,8 +113,10 @@ namespace Microsoft.Docs.Build
                 FileLinkMapBuilder);
 
             MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
-            TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, new TableOfContentsParser(Input, MarkdownEngine), MonikerProvider, DependencyMapBuilder);
-            TocMap = new TableOfContentsMap(ErrorLog, BuildScope, TableOfContentsLoader, DocumentProvider);
+
+            var tocParser = new TableOfContentsParser(Input, MarkdownEngine);
+            TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder);
+            TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, tocParser, TableOfContentsLoader, DocumentProvider);
         }
 
         public void Dispose()

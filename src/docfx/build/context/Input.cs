@@ -25,6 +25,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
+        private readonly ConcurrentDictionary<FilePath, JToken> _generatedContents = new ConcurrentDictionary<FilePath, JToken>();
 
         public Input(BuildOptions buildOptions, Config config, SourceMap sourceMap, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
         {
@@ -40,6 +41,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool Exists(FilePath file)
         {
+            if (file.Origin == FileOrigin.Generated)
+            {
+                return _generatedContents.ContainsKey(file);
+            }
+
             var fullPath = GetFullPath(file);
 
             return file.IsGitCommit ? ReadBytesFromGit(fullPath) != null : File.Exists(fullPath);
@@ -50,6 +56,7 @@ namespace Microsoft.Docs.Build
             switch (file.Origin)
             {
                 case FileOrigin.Main:
+                case FileOrigin.Generated:
                     return _buildOptions.DocsetPath.Concat(preferOriginalPath ? file.OriginalPath ?? file.Path : file.Path);
 
                 case FileOrigin.Dependency:
@@ -74,7 +81,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool TryGetPhysicalPath(FilePath file, [NotNullWhen(true)] out string? physicalPath)
         {
-            if (!file.IsGitCommit)
+            if (!file.IsGitCommit && file.Origin != FileOrigin.Generated)
             {
                 var fullPath = GetFullPath(file);
                 if (File.Exists(fullPath))
@@ -102,6 +109,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public (List<Error> errors, JToken token) ReadJson(FilePath file)
         {
+            if (file.Origin == FileOrigin.Generated)
+            {
+                return (new List<Error>(), _generatedContents[file]);
+            }
+
             return _jsonTokenCache.GetOrAdd(file, path =>
             {
                 using var reader = ReadText(path);
@@ -131,6 +143,11 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(FilePath file)
         {
+            if (file.Origin == FileOrigin.Generated)
+            {
+                throw new NotSupportedException();
+            }
+
             var fullPath = GetFullPath(file);
             if (!file.IsGitCommit)
             {
@@ -167,6 +184,13 @@ namespace Microsoft.Docs.Build
                 default:
                     throw new NotSupportedException($"{nameof(ListFilesRecursive)}: {origin}");
             }
+        }
+
+        public void AddGeneratedContent(FilePath file, JToken content)
+        {
+            Debug.Assert(file.Origin == FileOrigin.Generated);
+
+            _generatedContents.TryAdd(file, content);
         }
 
         private IEnumerable<PathString> GetFiles(string directory)

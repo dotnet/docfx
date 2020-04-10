@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
             }
 
             var origin = file.FilePath.Origin;
-            if (origin != FileOrigin.Main && origin != FileOrigin.Fallback && origin != FileOrigin.Dependency)
+            if (origin == FileOrigin.Redirection || origin == FileOrigin.External)
             {
                 return default;
             }
@@ -294,6 +294,13 @@ namespace Microsoft.Docs.Build
                         return _documentProvider.GetDocument(path);
                     }
                 }
+            }
+
+            // resolve generated content docset
+            path = FilePath.Generated(pathToDocset);
+            if (_input.Exists(path))
+            {
+                return _documentProvider.GetDocument(path);
             }
 
             return default;
