@@ -1490,7 +1490,7 @@ inputs:
   docfx.yml: |
     fileMetadata:
       key:
-        _splitted/**/toc.json: value
+        _splitted/**/TOC.json: value
   TOC.yml: |
     splitItemsBy: name
     items:
