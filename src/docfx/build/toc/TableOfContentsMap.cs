@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/toc.json"));
+                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.json"));
                 var newNodeFile = FilePath.Generated(newNodeFilePath, file.OriginalPath ?? file.Path);
 
                 _input.AddGeneratedContent(newNodeFile, newNodeToken);
