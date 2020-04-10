@@ -186,9 +186,10 @@ namespace Microsoft.Docs.Build
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand)
         {
             var status = t_status.Value!.Peek();
-            var error = default(Error);
-            var link = default(string);
-            var display = "";
+            Error? error;
+            string? link;
+            string display;
+
             if (href.HasValue)
             {
                 (error, link, display, _) = _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
