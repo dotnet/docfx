@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Markdig;
@@ -182,11 +183,25 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private (string? href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
+        private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, display, _) = _xrefResolver.ResolveXrefByHref(
-                href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            Error? error;
+            string? link;
+            string display;
+
+            if (href.HasValue)
+            {
+                (error, link, display, _) = _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            }
+            else if (uid.HasValue)
+            {
+                (error, link, display, _) = _xrefResolver.ResolveXrefByUid(uid.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            }
+            else
+            {
+                throw new ArgumentNullException(message: "href and uid can't be both null", null);
+            }
 
             if (!isShorthand)
             {

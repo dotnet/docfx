@@ -91,12 +91,17 @@ namespace Microsoft.Docs.Build
         [InlineData("", "a", "a", "")]
         [InlineData("<a href='hello'>", "a", "a", "<a href='hello'>")]
         [InlineData("<xref href='hello'>", "a", "b", "<a href='a'>b</a>")]
+        [InlineData("<xref uid='hello'>", "a", "b", "<a href='a'>b</a>")]
+        [InlineData("<xref href='hello' uid='hello'>", "a", "b", "<a href='a'>b</a>")]
         [InlineData(@"<xref href='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
+        [InlineData(@"<xref uid='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
         [InlineData(@"<xref href='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&")]
+        [InlineData(@"<xref uid='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&")]
         [InlineData(@"<xref href='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
+        [InlineData(@"<xref uid='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         public void TransformXrefs(string input, string xref, string display, string output)
         {
-            Assert.Equal(output, HtmlUtility.TransformXref(input, (href, isShorthand, _) => (xref, display)));
+            Assert.Equal(output, HtmlUtility.TransformXref(input, null, (href, uid, isShorthand) => (xref, display)));
         }
 
         [Theory]

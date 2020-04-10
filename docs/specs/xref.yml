@@ -925,6 +925,41 @@ outputs:
     ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",2,5]
     ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",7,2]
 ---
+# support <xref uid="uid"></xref>
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    str <xref uid="b"></xref>
+    query unsupported <xref uid="b?displayProperty=a"></xref>
+    bookmark unsupported <xref uid="b#bookmark"></xref>
+    use raw name 'html' no warning <xref uid="unexist" data-raw-html="@higher" data-raw-source="@mention"></xref>
+    use raw name 'source' no warning <xref uid="unexist" data-raw-source="@mention"></xref>
+    href higher priority <xref href="b" uid="unexist"></xref>
+    href higher priority even unexist <xref href="unexist" uid="b"></xref>
+  docs/b.md: |
+    ---
+    title: b title
+    uid: b
+    ---
+outputs:
+  docs/a.json: |
+    {
+      "conceptual" : "
+        <p>str <a href='b'>b title</a>
+        query unsupported <span class='xref'>b?displayProperty=a</span>
+        bookmark unsupported <span class='xref'>b#bookmark</span>
+        use raw name 'html' no warning  @higher
+        use raw name 'source' no warning  @mention
+        href higher priority <a href='b'>b title</a>
+        href higher priority even unexist <span class='xref'>unexist</span>
+        "
+    }
+  docs/b.json:
+  .errors.log: |
+    ["warning","xref-not-found","Cross reference not found: 'b?displayProperty=a'","docs/a.md",2,19]
+    ["warning","xref-not-found","Cross reference not found: 'b#bookmark'","docs/a.md",3,22]
+    ["warning","xref-not-found","Cross reference not found: 'unexist'","docs/a.md",7,35]
+---
 # support multiple uids with different xref properties
 repos:
   https://docs.com/test-multiple-uid-different-xref-property#live:
