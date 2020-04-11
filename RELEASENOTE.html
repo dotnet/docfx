@@ -72,7 +72,17 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="version-notes-current-version-v252">Version Notes (Current Version: v2.52)</h1>
 
-<h2 id="v252pre-release">v2.52(Pre-release)</h2>
+<h2 id="v252">v2.52</h2>
+<ol>
+<li>Improve readibility of default theme (#5156). Thanks @djee-ms!</li>
+<li>Support F# v4.5 language features (#3679). Thanks @smindinvern!</li>
+<li>DocFX returns <code>-1</code> for errors that cause notable result missing, <code>1</code> for crash or severe errors, <code>0</code> for success. Before, DocFX returns <code>1</code> when error happens no matter which kind it is. (#5734)</li>
+<li>Bug fix:
+<ol>
+<li>Fix TOC filter in statictoc template for Edge and IE browser (#5651). Thanks @Blake-Eryx!</li>
+</ol>
+</li>
+</ol>
 <h2 id="v251">v2.51</h2>
 <ol>
 <li>Support fetching xref map from fallback folder. (#5593)</li>
@@ -1027,7 +1037,7 @@ console.log('hello world');
 <li>Update documenation</li>
 <li>Remove debug build option in Release configuration</li>
 </ol>
-<h2 id="v252">v2.5.2</h2>
+<h2 id="v252-1">v2.5.2</h2>
 <ol>
 <li>Fix error message for invalid file link.</li>
 </ol>
