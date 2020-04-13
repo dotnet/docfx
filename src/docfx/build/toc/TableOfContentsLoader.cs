@@ -95,10 +95,10 @@ namespace Microsoft.Docs.Build
                 var topicHref = GetTopicHref(node, errors);
                 var topicUid = node.Value.Uid;
 
-                var (resolvedTocHref, subChildren, subChildrenFirstItem) = ProcessTocHref(
+                var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
                     filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
                 var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(
-                    filePath, rootPath, referencedFiles, topicUid, topicHref, errors);
+                    filePath, rootPath, referencedFiles, topicUid, topicHref, errors, addToReferencedFiles: !IsTocIncludeHref(tocHrefType));
 
                 // resolve children
                 var items = subChildren?.Items ?? LoadTocNode(node.Value.Items, filePath, rootPath, referencedFiles, referencedTocs, errors);
@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(tocInputModel.TocHref))
             {
                 var tocHrefType = GetHrefType(tocInputModel.TocHref);
-                if (IsIncludeHref(tocHrefType) || tocHrefType == TocHrefType.AbsolutePath)
+                if (IsTocIncludeHref(tocHrefType) || tocHrefType == TocHrefType.AbsolutePath)
                 {
                     return tocInputModel.TocHref;
                 }
@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (!string.IsNullOrEmpty(tocInputModel.Href) && IsIncludeHref(GetHrefType(tocInputModel.Href)))
+            if (!string.IsNullOrEmpty(tocInputModel.Href) && IsTocIncludeHref(GetHrefType(tocInputModel.Href)))
             {
                 return tocInputModel.Href;
             }
@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(tocInputModel.TopicHref))
             {
                 var topicHrefType = GetHrefType(tocInputModel.TopicHref);
-                if (IsIncludeHref(topicHrefType))
+                if (IsTocIncludeHref(topicHrefType))
                 {
                     errors.Add(Errors.TableOfContents.InvalidTopicHref(tocInputModel.TopicHref));
                 }
@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (string.IsNullOrEmpty(tocInputModel.Href) || !IsIncludeHref(GetHrefType(tocInputModel.Href)))
+            if (string.IsNullOrEmpty(tocInputModel.Href) || !IsTocIncludeHref(GetHrefType(tocInputModel.Href)))
             {
                 return tocInputModel.Href;
             }
@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? subChildren, TableOfContentsNode? subChildrenFirstItem)
+        private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? subChildren, TableOfContentsNode? subChildrenFirstItem, TocHrefType tocHrefType)
             ProcessTocHref(
                 Document filePath,
                 Document rootPath,
@@ -229,15 +229,15 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(tocHref))
             {
-                return (tocHref, default, default);
+                return (tocHref, default, default, default);
             }
 
             var tocHrefType = GetHrefType(tocHref);
-            Debug.Assert(tocHrefType == TocHrefType.AbsolutePath || IsIncludeHref(tocHrefType));
+            Debug.Assert(tocHrefType == TocHrefType.AbsolutePath || IsTocIncludeHref(tocHrefType));
 
             if (tocHrefType == TocHrefType.AbsolutePath)
             {
-                return (tocHref, default, default);
+                return (tocHref, default, default, default);
             }
 
             var (hrefPath, _, _) = UrlUtility.SplitUrl(tocHref.Value ?? "");
@@ -255,10 +255,10 @@ namespace Microsoft.Docs.Build
                 {
                     var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
                     _dependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.Link);
-                    return (default, default, nestedTocFirstItem);
+                    return (default, default, nestedTocFirstItem, tocHrefType);
                 }
 
-                return (default, nestedToc, default);
+                return (default, nestedToc, default, tocHrefType);
             }
 
             return default;
@@ -270,7 +270,8 @@ namespace Microsoft.Docs.Build
             List<Document> referencedFiles,
             SourceInfo<string?> uid,
             SourceInfo<string?> topicHref,
-            List<Error> errors)
+            List<Error> errors,
+            bool addToReferencedFiles = true)
         {
             // process uid first
             if (!string.IsNullOrEmpty(uid.Value))
@@ -278,7 +279,7 @@ namespace Microsoft.Docs.Build
                 var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(uid!, filePath, rootPath);
                 errors.AddIfNotNull(uidError);
 
-                if (declaringFile != null)
+                if (declaringFile != null && addToReferencedFiles)
                 {
                     referencedFiles.Add(declaringFile);
                 }
@@ -296,12 +297,12 @@ namespace Microsoft.Docs.Build
             }
 
             var topicHrefType = GetHrefType(topicHref);
-            Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsIncludeHref(topicHrefType));
+            Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsTocIncludeHref(topicHrefType));
 
             var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath);
             errors.AddIfNotNull(error);
 
-            if (resolvedFile != null)
+            if (resolvedFile != null && addToReferencedFiles)
             {
                 // add to referenced document list
                 referencedFiles.Add(resolvedFile);
@@ -363,7 +364,7 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static bool IsIncludeHref(TocHrefType tocHrefType)
+        private static bool IsTocIncludeHref(TocHrefType tocHrefType)
         {
             return tocHrefType == TocHrefType.TocFile || tocHrefType == TocHrefType.RelativeFolder;
         }

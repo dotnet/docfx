@@ -443,6 +443,33 @@ outputs:
       ]
     }
 ---
+# Parent(including) toc doesn't participate in _tocRel resolution
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: parent-a
+      tocHref: child-a/
+      topicHref: ../a.md
+    - name: parent-b
+      tocHref: child-b/
+      topicHref: ../b.md
+  docs/child-a/toc.yml: |
+    - name: child-a
+      topicHref: ../../a.md
+  docs/child-b/toc.yml: |
+    - name: child-b
+      topicHref: ../../b.md
+  a.md:
+  b.md:
+outputs:
+  docs/toc.json:
+  docs/child-a/toc.json:
+  docs/child-b/toc.json:
+  a.json: |
+    {"_tocRel": "docs/child-a/toc.json"}
+  b.json: |
+    {"_tocRel": "docs/child-b/toc.json"}
+---
 # Combine toc href, topic href => href + items
 inputs:
   docfx.yml:
