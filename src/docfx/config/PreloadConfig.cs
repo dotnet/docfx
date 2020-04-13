@@ -56,8 +56,21 @@ namespace Microsoft.Docs.Build
                         {
                             message.Headers.Add(header.Key, header.Value);
                         }
-                        break;
+                        return;
                     }
+                }
+
+                // For development usage
+                try
+                {
+                    if (url.StartsWith(OpsConfigAdapter.BuildServiceEndpoint))
+                    {
+                        message.Headers.Add("X-OP-BuildUserToken", KeyVaultSecret.OPBuildUserToken.Value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
                 }
             };
         }

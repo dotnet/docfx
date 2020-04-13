@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
-        public static string ValidationServiceEndpoint => s_docsEnvironment switch
+        public static string ValidationServiceEndpoint => DocsEnvironment switch
         {
             DocsEnvironment.Prod => "https://docs.microsoft.com",
             DocsEnvironment.PPE => "https://ppe.docs.microsoft.com",
@@ -26,14 +26,7 @@ namespace Microsoft.Docs.Build
             _ => throw new NotSupportedException(),
         };
 
-        public const string BuildConfigApi = "https://ops/buildconfig/";
-        private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
-        private const string MetadataSchemaApi = "https://ops/metadataschema/";
-        private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
-
-        private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
-
-        private static readonly string s_buildServiceEndpoint = s_docsEnvironment switch
+        public static string BuildServiceEndpoint = DocsEnvironment switch
         {
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
@@ -41,6 +34,13 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
             _ => throw new NotSupportedException(),
         };
+
+        public const string BuildConfigApi = "https://ops/buildconfig/";
+        private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
+        private const string MetadataSchemaApi = "https://ops/metadataschema/";
+        private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
+
+        public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             var xrefEndpoint = queries["xref_endpoint"];
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
-            var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
+            var fetchUrl = $"{BuildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
 
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            var environment = s_docsEnvironment;
+            var environment = DocsEnvironment;
             if (!string.IsNullOrEmpty(xrefEndpoint) && string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
                 environment = DocsEnvironment.Prod;
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
 
         private Task<string> GetMonikerDefinition(Uri url)
         {
-            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
+            return Fetch($"{BuildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
@@ -262,7 +262,7 @@ namespace Microsoft.Docs.Build
         {
             return siteName switch
             {
-                "DocsAzureCN" => s_docsEnvironment switch
+                "DocsAzureCN" => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
                     DocsEnvironment.PPE => "ppe.docs.azure.cn",
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "ppe.docs.azure.cn",
                     _ => throw new NotSupportedException(),
                 },
-                "dev.microsoft.com" => s_docsEnvironment switch
+                "dev.microsoft.com" => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "developer.microsoft.com",
                     DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
@@ -278,12 +278,12 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
                     _ => throw new NotSupportedException(),
                 },
-                "rd.microsoft.com" => s_docsEnvironment switch
+                "rd.microsoft.com" => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "rd.microsoft.com",
                     _ => throw new NotSupportedException(),
                 },
-                _ => s_docsEnvironment switch
+                _ => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",
                     DocsEnvironment.PPE => "ppe.docs.microsoft.com",
@@ -296,7 +296,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+            return !IsLive(branch) && DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)
