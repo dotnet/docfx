@@ -9,6 +9,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using Azure;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
@@ -17,9 +20,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
-        public static DocsEnvironment DocsEnvironment => GetDocsEnvironment();
-
-        public static string ValidationServiceEndpoint => DocsEnvironment switch
+        public static string ValidationServiceEndpoint => s_docsEnvironment switch
         {
             DocsEnvironment.Prod => "https://docs.microsoft.com",
             DocsEnvironment.PPE => "https://ppe.docs.microsoft.com",
@@ -33,7 +34,9 @@ namespace Microsoft.Docs.Build
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
 
-        private static readonly string s_buildServiceEndpoint = DocsEnvironment switch
+        private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
+
+        private static readonly string s_buildServiceEndpoint = s_docsEnvironment switch
         {
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
@@ -41,6 +44,20 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
             _ => throw new NotSupportedException(),
         };
+
+        private static readonly string s_keyVaultEndPoint = s_docsEnvironment switch
+        {
+            DocsEnvironment.Prod => "https://kv-docs-build-prod.vault.azure.net",
+            DocsEnvironment.PPE => "https://kv-docs-build-sandbox.vault.azure.net",
+            DocsEnvironment.Internal => "https://kv-docs-build-internal.vault.azure.net",
+            DocsEnvironment.Perf => "https://kv-docs-build-perf.vault.azure.net",
+            _ => throw new NotSupportedException(),
+        };
+
+        private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
+            => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
+
+        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -135,7 +152,7 @@ namespace Microsoft.Docs.Build
 
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            var environment = DocsEnvironment;
+            var environment = s_docsEnvironment;
             if (!string.IsNullOrEmpty(xrefEndpoint) && string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
                 environment = DocsEnvironment.Prod;
@@ -253,7 +270,7 @@ namespace Microsoft.Docs.Build
                     // For development usage
                     try
                     {
-                        request.Headers.Add("X-OP-BuildUserToken", (await KeyVaultSecrets.OPBuildUserToken.Value).Value.Value);
+                        request.Headers.Add("X-OP-BuildUserToken", (await s_opBuildUserToken.Value).Value.Value);
                     }
                     catch (Exception ex)
                     {
@@ -275,7 +292,7 @@ namespace Microsoft.Docs.Build
         {
             return siteName switch
             {
-                "DocsAzureCN" => DocsEnvironment switch
+                "DocsAzureCN" => s_docsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
                     DocsEnvironment.PPE => "ppe.docs.azure.cn",
@@ -283,7 +300,7 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "ppe.docs.azure.cn",
                     _ => throw new NotSupportedException(),
                 },
-                "dev.microsoft.com" => DocsEnvironment switch
+                "dev.microsoft.com" => s_docsEnvironment switch
                 {
                     DocsEnvironment.Prod => "developer.microsoft.com",
                     DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
@@ -291,12 +308,12 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
                     _ => throw new NotSupportedException(),
                 },
-                "rd.microsoft.com" => DocsEnvironment switch
+                "rd.microsoft.com" => s_docsEnvironment switch
                 {
                     DocsEnvironment.Prod => "rd.microsoft.com",
                     _ => throw new NotSupportedException(),
                 },
-                _ => DocsEnvironment switch
+                _ => s_docsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",
                     DocsEnvironment.PPE => "ppe.docs.microsoft.com",
@@ -309,7 +326,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return !IsLive(branch) && DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+            return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)
