@@ -213,7 +213,7 @@ jobs:
       mc-docs-pr:
         params: https://github.com/opse2epr/mc-docs-pr --branch v3-integration-test --timeout 70
       ATADocs-pr:
-        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
+        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 30
       azure-docs-rest-apis:
         params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
 
