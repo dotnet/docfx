@@ -2,16 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
+using System.Threading.Tasks;
+using Azure;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class KeyVaultSecret
+    internal static class KeyVaultSecrets
     {
-        private static readonly Lazy<KeyVaultClient> s_keyVaultClient = new Lazy<KeyVaultClient>(() => new KeyVaultClient(
-            new KeyVaultClient.AuthenticationCallback(new AzureServiceTokenProvider().KeyVaultTokenCallback)));
-
         private static readonly string s_keyVaultEndPoint = OpsConfigAdapter.DocsEnvironment switch
         {
             DocsEnvironment.Prod => "https://kv-docs-build-prod.vault.azure.net",
@@ -21,11 +20,14 @@ namespace Microsoft.Docs.Build
             _ => throw new NotSupportedException(),
         };
 
-        public static Lazy<string> OPBuildUserToken => GetSecret("opBuildUserToken");
+        private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
+            => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
 
-        private static Lazy<string> GetSecret(string key)
+        public static Lazy<Task<Response<KeyVaultSecret>>> OPBuildUserToken { get; } = GetSecret("opBuildUserToken");
+
+        private static Lazy<Task<Response<KeyVaultSecret>>> GetSecret(string key)
         {
-            return new Lazy<string>(() => s_keyVaultClient.Value.GetSecretAsync($"{s_keyVaultEndPoint}/secrets/{key}").Result.Value);
+            return new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync(key));
         }
     }
 }

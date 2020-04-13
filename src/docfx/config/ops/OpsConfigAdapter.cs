@@ -28,15 +28,6 @@ namespace Microsoft.Docs.Build
             _ => throw new NotSupportedException(),
         };
 
-        public static string BuildServiceEndpoint => DocsEnvironment switch
-        {
-            DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
-            DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
-            DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
-            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
-            _ => throw new NotSupportedException(),
-        };
-
         public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
@@ -46,6 +37,15 @@ namespace Microsoft.Docs.Build
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
+
+        private static readonly string s_buildServiceEndpoint = DocsEnvironment switch
+        {
+            DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
+            DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
+            DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
+            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
+            _ => throw new NotSupportedException(),
+        };
 
         public OpsConfigAdapter(ErrorLog errorLog, Action<HttpRequestMessage> credentialProvider)
         {
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             var xrefEndpoint = queries["xref_endpoint"];
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
-            var fetchUrl = $"{BuildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
+            var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
 
         private Task<string> GetMonikerDefinition(Uri url)
         {
-            return Fetch($"{BuildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
+            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
@@ -245,6 +245,19 @@ namespace Microsoft.Docs.Build
                     foreach (var (key, value) in headers)
                     {
                         request.Headers.TryAddWithoutValidation(key, value);
+                    }
+                }
+
+                if (url.StartsWith(s_buildServiceEndpoint) && !request.Headers.Contains("X-OP-BuildUserToken"))
+                {
+                    // For development usage
+                    try
+                    {
+                        request.Headers.Add("X-OP-BuildUserToken", (await KeyVaultSecrets.OPBuildUserToken.Value).Value.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
                     }
                 }
 
