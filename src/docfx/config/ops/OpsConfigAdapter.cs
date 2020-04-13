@@ -33,11 +33,6 @@ namespace Microsoft.Docs.Build
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
 
-        private readonly Action<HttpRequestMessage> _credentialProvider;
-        private readonly ErrorLog _errorLog;
-        private readonly HttpClient _http = new HttpClient();
-        private readonly (string, Func<Uri, Task<string>>)[] _apis;
-
         private static readonly string s_buildServiceEndpoint = DocsEnvironment switch
         {
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
@@ -46,6 +41,11 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
             _ => throw new NotSupportedException(),
         };
+
+        private readonly Action<HttpRequestMessage> _credentialProvider;
+        private readonly ErrorLog _errorLog;
+        private readonly HttpClient _http = new HttpClient();
+        private readonly (string, Func<Uri, Task<string>>)[] _apis;
 
         public OpsConfigAdapter(ErrorLog errorLog, Action<HttpRequestMessage> credentialProvider)
         {

@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                         {
                             message.Headers.Add(header.Key, header.Value);
                         }
-                        return;
+                        break;
                     }
                 }
             };
