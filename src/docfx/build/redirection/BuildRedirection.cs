@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -27,6 +28,11 @@ namespace Microsoft.Docs.Build
                 file.Mime.Value);
 
             publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
+            var (documentId, _) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
+            publishItem.ExtensionData = new JObject
+            {
+                ["document_id"] = documentId,
+            };
 
             context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
             {
