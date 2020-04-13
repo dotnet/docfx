@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
+        public static DocsEnvironment DocsEnvironment => GetDocsEnvironment();
+
         public static string ValidationServiceEndpoint => DocsEnvironment switch
         {
             DocsEnvironment.Prod => "https://docs.microsoft.com",
@@ -26,7 +28,7 @@ namespace Microsoft.Docs.Build
             _ => throw new NotSupportedException(),
         };
 
-        public static string BuildServiceEndpoint = DocsEnvironment switch
+        public static string BuildServiceEndpoint => DocsEnvironment switch
         {
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
@@ -39,8 +41,6 @@ namespace Microsoft.Docs.Build
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
-
-        public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
