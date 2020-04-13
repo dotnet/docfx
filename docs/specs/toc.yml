@@ -453,10 +453,10 @@ inputs:
     - name: parent-b
       tocHref: child-b/
       topicHref: ../b.md
-  docs/child-a/toc.yml: |
+  docs/child-a/TOC.yml: |
     - name: child-a
       topicHref: ../../a.md
-  docs/child-b/toc.yml: |
+  docs/child-b/TOC.yml: |
     - name: child-b
       topicHref: ../../b.md
   a.md:
