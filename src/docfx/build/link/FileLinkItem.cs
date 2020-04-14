@@ -13,18 +13,23 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public FilePath SourceFile { get; }
 
+        public string SourceFilePath { get; set; } = "";
+
+        public int SourceLine { get; }
+
         public string SourceUrl { get; }
 
         public string? SourceMonikerGroup { get; }
 
         public string TargetUrl { get; }
 
-        public FileLinkItem(FilePath sourceFile, string sourceUrl, string? sourceMonikerGroup, string targetUrl)
+        public FileLinkItem(FilePath sourceFile, string sourceUrl, string? sourceMonikerGroup, string targetUrl, int sourceLine)
         {
             SourceFile = sourceFile;
             SourceUrl = sourceUrl;
             SourceMonikerGroup = sourceMonikerGroup;
             TargetUrl = targetUrl;
+            SourceLine = sourceLine;
         }
 
         public int CompareTo(FileLinkItem other)

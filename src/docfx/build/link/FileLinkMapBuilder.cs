@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             _publishModelBuilder = publishModelBuilder;
         }
 
-        public void AddFileLink(FilePath file, string sourceUrl, string targetUrl)
+        public void AddFileLink(FilePath file, string sourceUrl, string targetUrl, SourceInfo? source)
         {
             if (string.IsNullOrEmpty(targetUrl) || sourceUrl == targetUrl)
             {
@@ -29,16 +29,27 @@ namespace Microsoft.Docs.Build
 
             var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file);
             _errorLog.Write(errors);
-
-            _links.TryAdd(new FileLinkItem(file, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl));
+            _links.TryAdd(new FileLinkItem(file, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl, source is null ? 1 : source.Line));
         }
 
-        public object Build()
+        public object Build(ContributionProvider contributionProvider)
         {
             return new
             {
-                Links = from link in _links where _publishModelBuilder.HasOutput(link.SourceFile) orderby link select link,
+                Links = _links
+                        .Where(x => _publishModelBuilder.HasOutput(x.SourceFile))
+                        .OrderBy(x => x)
+                        .Select(x =>
+                        {
+                            // TODO: cache this
+                            var (_, originalContentGitUrl, _, _) = contributionProvider.GetGitUrls(x.SourceFile);
+                            if (!string.IsNullOrEmpty(originalContentGitUrl))
+                            {
+                                x.SourceFilePath = originalContentGitUrl;
+                            }
+                            return x;
+                        }),
             };
+        }
     }
-}
 }
