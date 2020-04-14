@@ -15,8 +15,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
-            ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
+        private static readonly Func<HtmlAgilityPack.HtmlAttribute, int> s_getValueStartIndex =
+            ReflectionUtility.CreateInstanceFieldGetter<HtmlAgilityPack.HtmlAttribute, int>("_valuestartindex");
 
         private static readonly string[] s_allowedStyles = new[] { "text-align: right;", "text-align: left;", "text-align: center;" };
 
