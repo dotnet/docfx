@@ -9,6 +9,7 @@ using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
 {
@@ -22,6 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly string _markdownValidationRules;
 
         private readonly MarkdownContext _markdownContext;
+        private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider = null;
         private readonly MarkdownPipeline[] _pipelines;
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
@@ -43,6 +45,14 @@ namespace Microsoft.Docs.Build
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
             _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
+
+            if (!string.IsNullOrEmpty(_markdownValidationRules))
+            {
+                _validatorProvider = new OnlineServiceMarkdownValidatorProvider(
+                    new ContentValidationContext(_markdownValidationRules),
+                    new ContentValidationLogger(_markdownContext));
+            }
+
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
@@ -99,7 +109,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_markdownContext, _markdownValidationRules)
+                .UseContentValidation(_validatorProvider)
                 .Build();
         }
 
@@ -112,7 +122,7 @@ namespace Microsoft.Docs.Build
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_markdownContext, _markdownValidationRules)
+                .UseContentValidation(_validatorProvider)
                 .UseInlineOnly()
                 .Build();
         }
