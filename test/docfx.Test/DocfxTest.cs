@@ -202,7 +202,6 @@ namespace Microsoft.Docs.Build
             var fileJsonDiff = new JsonDiffBuilder()
                 .UseAdditionalProperties()
                 .UseNegate()
-                .UseRegex()
                 .UseWildcard()
                 .UseHtml(IsHtml)
                 .Use(IsHtml, RemoveDataLinkType)

@@ -218,7 +218,9 @@ namespace Microsoft.Docs.Build
                 if (colonIndex > 0
                     && link.IndexOfAny(s_queryFragmentLeadingChars) is var queryOrFragmentIndex
                     && (queryOrFragmentIndex < 0 || colonIndex < queryOrFragmentIndex))
+                {
                     return LinkType.External;
+                }
             }
 
             return LinkType.RelativePath;
@@ -258,11 +260,15 @@ namespace Microsoft.Docs.Build
             project = repo = default;
 
             if (string.IsNullOrEmpty(remoteUrl))
+            {
                 return false;
+            }
 
             var match = s_azureReposUrlRegex.Match(remoteUrl);
             if (!match.Success)
+            {
                 return false;
+            }
 
             project = match.Groups["project"].Value;
             repo = match.Groups["repository"].Value;

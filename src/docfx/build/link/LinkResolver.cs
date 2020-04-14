@@ -52,53 +52,54 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
-        public (Error? error, string? content, Document? file) ResolveContent(
-            SourceInfo<string> href, Document referencingFile, DependencyType dependencyType = DependencyType.Inclusion)
+        public (Error? error, Document? file) ResolveContent(SourceInfo<string> href, Document referencingFile, DependencyType dependencyType)
         {
-            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, inclusion: true);
-
-            if (file is null || file.ContentType == ContentType.Redirection)
+            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, true);
+            if (file is null)
             {
                 return default;
             }
 
-            var content = _input.ReadString(file.FilePath);
+            var origin = file.FilePath.Origin;
+            if (origin == FileOrigin.Redirection || origin == FileOrigin.External)
+            {
+                return default;
+            }
 
             _dependencyMapBuilder.AddDependencyItem(referencingFile, file, dependencyType);
-
-            return (error, content, file);
+            return (error, file);
         }
 
-        public (Error? error, string link, Document? file) ResolveLink(
-            SourceInfo<string> href, Document hrefRelativeTo, Document inclusionRoot)
+        public (Error? error, string link, Document? file) ResolveLink(SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
             {
-                var uid = new SourceInfo<string>(href.Value.Substring("xref:".Length), href);
-                var (uidError, uidHref, _, declaringFile) = _xrefResolver.ResolveXref(uid, hrefRelativeTo, inclusionRoot);
+                var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
+                    new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
+                    referencingFile,
+                    inclusionRoot);
 
-                return (uidError, uidHref ?? href, declaringFile);
+                return (xrefError, resolvedHref ?? href, declaringFile);
             }
 
-            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, hrefRelativeTo);
-
+            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile);
             if (file != null)
             {
                 _buildQueue.Enqueue(file.FilePath);
             }
 
-            inclusionRoot ??= hrefRelativeTo;
+            inclusionRoot ??= referencingFile;
             if (!isCrossReference)
             {
                 if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
-                    _bookmarkValidator.AddBookmarkReference(hrefRelativeTo, inclusionRoot, fragment, true, href);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
+                    _bookmarkValidator.AddBookmarkReference(referencingFile, inclusionRoot, fragment, true, href);
                 }
                 else if (file != null)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(hrefRelativeTo, file, UrlUtility.FragmentToDependencyType(fragment));
-                    _bookmarkValidator.AddBookmarkReference(hrefRelativeTo, file, fragment, false, href);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
+                    _bookmarkValidator.AddBookmarkReference(referencingFile, file, fragment, false, href);
                 }
             }
 
@@ -151,7 +152,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error? error, Document? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
-            Document referencingFile, SourceInfo<string> href, bool inclusion = false)
+            Document referencingFile, SourceInfo<string> href, bool lookupGitCommits = false)
         {
             href = new SourceInfo<string>(href.Value.Trim(), href.Source).Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -173,8 +174,8 @@ namespace Microsoft.Docs.Build
                     }
 
                     // resolve file
-                    var lookupFallbackCommits = inclusion || _buildScope.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupFallbackCommits);
+                    lookupGitCommits |= _buildScope.GetContentType(path) == ContentType.Resource;
+                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupGitCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -184,7 +185,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupFallbackCommits);
+                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupGitCommits);
                         }
 
                         // Do not report error for landing page
@@ -293,6 +294,13 @@ namespace Microsoft.Docs.Build
                         return _documentProvider.GetDocument(path);
                     }
                 }
+            }
+
+            // resolve generated content docset
+            path = FilePath.Generated(pathToDocset);
+            if (_input.Exists(path))
+            {
+                return _documentProvider.GetDocument(path);
             }
 
             return default;

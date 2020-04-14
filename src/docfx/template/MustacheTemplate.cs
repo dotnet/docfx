@@ -44,13 +44,12 @@ namespace Microsoft.Docs.Build
         {
             // JObject implements IEnumerable, stubble treats IEnumerable as array,
             // need to put it to section blacklist and overwrite the truthy check method.
-            var sectionBlacklist = RendererSettingsDefaults.DefaultSectionBlacklistTypes();
-            sectionBlacklist.Add(typeof(JObject));
-
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
+                           .AddValueGetter(typeof(JValue), GetJValueValue)
                            .AddTruthyCheck<JObject>(value => value != null)
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
-                           .SetSectionBlacklistTypes(sectionBlacklist);
+                           .AddSectionBlacklistType(typeof(JObject))
+                           .AddSectionBlacklistType(typeof(JValue));
 
             object? GetJObjectValue(object value, string key, bool ignoreCase)
             {
@@ -58,12 +57,14 @@ namespace Microsoft.Docs.Build
                 {
                     return global;
                 }
-
                 var token = (JObject)value;
                 var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
                 return childToken is JValue scalar ? scalar.Value ?? JValue.CreateNull() : childToken;
             }
+
+            object? GetJValueValue(object value, string key, bool ignoreCase)
+                => key.Trim() == "." ? ((JValue)value).Value : null;
         }
 
         private class PartialLoader : IStubbleLoader
@@ -82,9 +83,12 @@ namespace Microsoft.Docs.Build
                 key => new Lazy<string>(() =>
                 {
                     var fileName = Path.Combine(_dir, name);
-                    if (File.Exists(fileName))
-                        return File.ReadAllText(fileName).Replace("\r", "");
-                    return File.ReadAllText(Path.Combine(_dir, name + ".tmpl.partial")).Replace("\r", "");
+                    if (!File.Exists(fileName))
+                    {
+                        fileName = Path.Combine(_dir, name + ".tmpl.partial");
+                    }
+
+                    return MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
                 })).Value;
         }
     }

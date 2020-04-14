@@ -16,18 +16,20 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseXref(
             this MarkdownPipelineBuilder builder,
-            Func<SourceInfo<string>, bool, (string? href, string display)> resolveXref)
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {
                 document.Replace(node =>
                 {
+                    // <xref:uid>
+                    // @uid
                     if (node is XrefInline xref)
                     {
                         var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
                         var isShorthand = raw.StartsWith("@");
                         var source = new SourceInfo<string>(xref.Href, xref.ToSourceInfo());
-                        var (href, display) = resolveXref(source, isShorthand);
+                        var (href, display) = resolveXref(source, null, isShorthand);
 
                         if (href is null)
                         {
@@ -38,23 +40,19 @@ namespace Microsoft.Docs.Build
                     }
                     else if (node is HtmlBlock block)
                     {
-                        block.Lines = new StringLineGroup(ResolveXref(block.Lines.ToString(), block));
+                        // inside html block
+                        // <p> <xref href="" uid=""/> </p>
+                        block.Lines = new StringLineGroup(HtmlUtility.TransformXref(block.Lines.ToString(), block, resolveXref));
                     }
                     else if (node is HtmlInline inline)
                     {
-                        inline.Tag = ResolveXref(inline.Tag, inline);
+                        // inside html inline
+                        // text <xref href="" uid=""/> text
+                        inline.Tag = HtmlUtility.TransformXref(inline.Tag, inline, resolveXref);
                     }
                     return node;
                 });
             });
-
-            string ResolveXref(string html, MarkdownObject block)
-            {
-                return HtmlUtility.TransformXref(
-                    html,
-                    (href, isShorthand, columnOffset) => resolveXref(
-                        new SourceInfo<string>(href, block.ToSourceInfo(columnOffset: columnOffset)), isShorthand));
-            }
         }
     }
 }

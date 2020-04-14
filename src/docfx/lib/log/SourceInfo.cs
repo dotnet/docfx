@@ -77,17 +77,30 @@ namespace Microsoft.Docs.Build
         public int CompareTo(SourceInfo other)
         {
             if (other is null)
+            {
                 return 1;
+            }
 
             var result = File.CompareTo(other.File);
             if (result == 0)
+            {
                 result = Line - other.Line;
+            }
+
             if (result == 0)
+            {
                 result = Column - other.Column;
+            }
+
             if (result == 0)
+            {
                 result = EndLine - other.EndLine;
+            }
+
             if (result == 0)
+            {
                 result = EndColumn - other.EndColumn;
+            }
 
             return result;
         }

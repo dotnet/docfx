@@ -445,13 +445,11 @@ repos:
           - href: ../a/TOC.yml
             name: reference toc a
         docs/a/a.md:
-      author: a
     - files:
         docfx.yml:
         docs/a/TOC.yml: |
           - href: a.md
             name: reference markdown a
-      author: b
 outputs:
   docs/a/a.json:
   docs/b/toc.json: |

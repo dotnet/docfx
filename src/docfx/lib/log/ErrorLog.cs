@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> ErrorFiles => _errorFiles;
 
-        public ErrorLog(string? outputPath, bool legacy = false)
+        public ErrorLog(string? outputPath = null, bool legacy = false)
         {
             _legacy = legacy;
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
@@ -142,8 +142,7 @@ namespace Microsoft.Docs.Build
                                             : WarningCount > 0 ? ConsoleColor.Yellow
                                             : ConsoleColor.Magenta;
                     Console.WriteLine();
-                    Console.WriteLine(
-                        $"  {ErrorCount} Error(s), {WarningCount} Warning(s), {SuggestionCount} Suggestion(s)");
+                    Console.WriteLine($"  {ErrorCount} Error(s), {WarningCount} Warning(s), {SuggestionCount} Suggestion(s)");
                 }
 
                 Console.ResetColor();
@@ -240,16 +239,11 @@ namespace Microsoft.Docs.Build
 
         private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level)
         {
-            if (config == null)
-            {
-                return false;
-            }
-
             return level switch
             {
-                ErrorLevel.Error => Interlocked.Increment(ref _errorCount) > config.MaxErrors,
-                ErrorLevel.Warning => Interlocked.Increment(ref _warningCount) > config.MaxWarnings,
-                ErrorLevel.Suggestion => Interlocked.Increment(ref _suggestionCount) > config.MaxSuggestions,
+                ErrorLevel.Error => Interlocked.Increment(ref _errorCount) > (config?.MaxErrors ?? int.MaxValue),
+                ErrorLevel.Warning => Interlocked.Increment(ref _warningCount) > (config?.MaxWarnings ?? int.MaxValue),
+                ErrorLevel.Suggestion => Interlocked.Increment(ref _suggestionCount) > (config?.MaxSuggestions ?? int.MaxValue),
                 _ => false,
             };
         }

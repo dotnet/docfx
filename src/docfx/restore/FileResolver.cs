@@ -123,7 +123,9 @@ namespace Microsoft.Docs.Build
                 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
 
                 if (File.Exists(filePath))
+                {
                     File.Delete(filePath);
+                }
 
                 File.Move(tempFile, filePath);
 

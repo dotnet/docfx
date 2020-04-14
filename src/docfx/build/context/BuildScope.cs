@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public IEnumerable<FilePath> Files => _files.Keys;
 
-        public BuildScope(Config config, Input input, BuildOptions buildOptions)
+        public BuildScope(ErrorLog errorLog, Config config, Input input, BuildOptions buildOptions)
         {
             _config = config;
             _globs = CreateGlobs(config);
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 var (fileNames, allFiles) = ListFiles(config, input, buildOptions);
 
-                ParallelUtility.ForEach(allFiles, file =>
+                ParallelUtility.ForEach(errorLog, allFiles, file =>
                 {
                     if (Glob(file.Path))
                     {
@@ -71,10 +71,6 @@ namespace Microsoft.Docs.Build
             }
 
             var name = Path.GetFileNameWithoutExtension(path);
-            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
-            {
-                return ContentType.TableOfContents;
-            }
             if (name.Equals("docfx", PathUtility.PathComparison))
             {
                 return ContentType.Unknown;
@@ -97,6 +93,11 @@ namespace Microsoft.Docs.Build
                 !path.EndsWith(".yml", PathUtility.PathComparison))
             {
                 return ContentType.Resource;
+            }
+
+            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
+            {
+                return ContentType.TableOfContents;
             }
 
             return ContentType.Page;

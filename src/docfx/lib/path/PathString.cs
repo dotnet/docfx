@@ -55,20 +55,28 @@ namespace Microsoft.Docs.Build
         public PathString Concat(PathString path)
         {
             if (string.IsNullOrEmpty(_value))
+            {
                 return path;
+            }
 
             if (string.IsNullOrEmpty(path._value))
+            {
                 return this;
+            }
 
             if (path._value[0] == '/')
+            {
                 return path;
+            }
 
             var str = _value[^1] == '/'
                 ? _value + path._value
                 : _value + '/' + path._value;
 
             if (path._value[0] == '.')
+            {
                 return new PathString { _value = PathUtility.Normalize(str) };
+            }
 
             return new PathString { _value = str };
         }

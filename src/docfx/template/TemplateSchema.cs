@@ -26,7 +26,9 @@ namespace Microsoft.Docs.Build
         private bool GetIsPageCore(string schemaName, string contentTemplateDir)
         {
             if (string.Equals(schemaName, "LandingData"))
+            {
                 return true;
+            }
 
             return File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.tmpl"))
                 || File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));

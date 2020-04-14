@@ -19,12 +19,16 @@ namespace Microsoft.Docs.Build
             _errorLog = log;
         }
 
-        internal void ValidateH1(Document file, string? title)
+        public void ValidateH1(Document file, string? title)
         {
             if (string.IsNullOrEmpty(title))
+            {
                 return;
+            }
 
-            var headings = new List<Heading>
+            if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, out var documentType))
+            {
+                var headings = new List<Heading>
                 {
                     new Heading
                     {
@@ -35,17 +39,32 @@ namespace Microsoft.Docs.Build
                         SourceInfo = new SourceInfo(file.FilePath, 0, 0),
                     },
                 };
-
-            var validationContext = new ValidationContext { DocumentType = string.IsNullOrEmpty(file.Mime) ? "conceptual" : file.Mime.Value! };
-            Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
+            }
         }
 
-        internal void PostValidate()
+        public void ValidateManifest(FilePath filePath, PublishItem publishItem)
+        {
+            if (TryGetValidationDocumentType(publishItem.ContentType, publishItem.Mime, out var documentType))
+            {
+                var manifestItem = new ManifestItem()
+                {
+                    PublishUrl = publishItem.Url,
+                    SourceInfo = new SourceInfo(filePath, 0, 0),
+                };
+
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                Write(_validator.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void PostValidate()
         {
             Write(_validator.PostValidate().GetAwaiter().GetResult());
         }
 
-        internal static string GetMarkdownValidationRulesFilePath(FileResolver fileResolver, Config config)
+        public static string GetMarkdownValidationRulesFilePath(FileResolver fileResolver, Config config)
         {
             string filePath = config.MarkdownValidationRules;
             if (!string.IsNullOrEmpty(filePath))
@@ -71,6 +90,32 @@ namespace Microsoft.Docs.Build
                     ValidationSeverity.ERROR => ErrorLevel.Error,
                     _ => ErrorLevel.Off,
                 };
+        }
+
+        // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
+        private bool TryGetValidationDocumentType(ContentType contentType, string? mime, out string documentType)
+        {
+            documentType = string.Empty;
+            switch (contentType)
+            {
+                case ContentType.Page:
+                    if (!string.IsNullOrEmpty(mime))
+                    {
+                        return false;
+                    }
+                    documentType = "conceptual";
+                    return true;
+                case ContentType.Redirection:
+                    documentType = "redirection";
+                    return true;
+                case ContentType.TableOfContents:
+                    documentType = "toc";
+                    return true;
+                case ContentType.Resource:
+                case ContentType.Unknown:
+                default:
+                    return false;
+            }
         }
     }
 }

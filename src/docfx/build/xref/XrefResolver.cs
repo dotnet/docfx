@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
-        public (Error? error, string? href, string display, Document? declaringFile) ResolveXref(
+        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByHref(
             SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
@@ -84,11 +84,26 @@ namespace Microsoft.Docs.Build
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
+        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByUid(
+            SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+        {
+            // need to url decode uid from input content
+            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot);
+            if (error != null || xrefSpec == null || href == null)
+            {
+                return (error, null, "", null);
+            }
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href);
+            return (null, href, xrefSpec.Name ?? "", xrefSpec.DeclaringFile);
+        }
+
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
             var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot);
             if (xrefSpec == null)
+            {
                 return (error, null, null);
+            }
             return (error, xrefSpec, href);
         }
 
@@ -151,10 +166,14 @@ namespace Microsoft.Docs.Build
             var unescapedUid = Uri.UnescapeDataString(uid);
             var (xrefSpec, href) = ResolveInternalXrefSpec(unescapedUid, referencingFile, inclusionRoot);
             if (xrefSpec is null)
+            {
                 (xrefSpec, href) = ResolveExternalXrefSpec(unescapedUid);
+            }
 
             if (xrefSpec is null)
+            {
                 return (Errors.Xref.XrefNotFound(uid), null, null);
+            }
 
             return (null, xrefSpec, href);
         }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using HtmlAgilityPack;
+using Markdig.Syntax;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -35,10 +36,14 @@ namespace Microsoft.Docs.Build
         {
             // TODO: word count does not work for CJK locales...
             if (node.NodeType == HtmlNodeType.Comment)
+            {
                 return 0;
+            }
 
             if (node is HtmlTextNode textNode)
+            {
                 return CountWordInText(textNode.Text);
+            }
 
             var total = 0L;
             foreach (var child in node.ChildNodes)
@@ -86,7 +91,9 @@ namespace Microsoft.Docs.Build
                 var transformed = transform(HttpUtility.HtmlDecode(link.Value), columnOffset);
 
                 if (!string.IsNullOrEmpty(transformed))
+                {
                     link.Value = HttpUtility.HtmlEncode(transformed);
+                }
             }
 
             return html;
@@ -144,10 +151,11 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
-        public static string TransformXref(string html, Func<string, bool, int, (string? href, string display)> transform)
+        public static string TransformXref(string html, MarkdownObject block, Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             // Fast pass it does not have <xref> tag
-            if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase) && html.Contains("href", StringComparison.OrdinalIgnoreCase)))
+            if (!(html.Contains("<xref", StringComparison.OrdinalIgnoreCase)
+                && (html.Contains("href", StringComparison.OrdinalIgnoreCase) || html.Contains("uid", StringComparison.OrdinalIgnoreCase))))
             {
                 return html;
             }
@@ -165,24 +173,27 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var xref = HttpUtility.HtmlDecode(node.GetAttributeValue("href", ""));
+                var rawSource = HttpUtility.HtmlDecode(node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null));
+                var isShorthand = rawSource?.StartsWith("@") ?? false;
 
-                var raw = HttpUtility.HtmlDecode(
-                    node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null) ?? $"<span class=\"xref\">{HttpUtility.HtmlEncode(UrlUtility.SplitUrl(xref).path)}</span>");
+                var href = HttpUtility.HtmlDecode(node.GetAttributeValue("href", null));
+                var uid = href == null ? HttpUtility.HtmlDecode(node.GetAttributeValue("uid", null)) : default;
 
-                var isShorthand = raw.StartsWith("@");
-
-                var (resolvedHref, display) = transform(xref, isShorthand, columnOffset);
+                var (resolvedHref, display) = resolveXref(
+                    href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.ToSourceInfo(columnOffset: columnOffset)),
+                    uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.ToSourceInfo(columnOffset: columnOffset)),
+                    isShorthand);
 
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    resolvedNode.LoadHtml(raw);
+                    resolvedNode.LoadHtml(rawSource ?? $"<span class=\"xref\">{(href != null ? UrlUtility.SplitUrl(href).path : uid)}</span>");
                 }
                 else
                 {
                     resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
                 }
+
                 replacingNodes.Add((node, resolvedNode.DocumentNode));
                 columnOffset++;
             }

@@ -9,6 +9,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using Azure;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
@@ -41,6 +44,20 @@ namespace Microsoft.Docs.Build
             DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
             _ => throw new NotSupportedException(),
         };
+
+        private static readonly string s_keyVaultEndPoint = s_docsEnvironment switch
+        {
+            DocsEnvironment.Prod => "https://kv-docs-build-prod.vault.azure.net",
+            DocsEnvironment.PPE => "https://kv-docs-build-sandbox.vault.azure.net",
+            DocsEnvironment.Internal => "https://kv-docs-build-internal.vault.azure.net",
+            DocsEnvironment.Perf => "https://kv-docs-build-perf.vault.azure.net",
+            _ => throw new NotSupportedException(),
+        };
+
+        private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
+            => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
+
+        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -245,6 +262,19 @@ namespace Microsoft.Docs.Build
                     foreach (var (key, value) in headers)
                     {
                         request.Headers.TryAddWithoutValidation(key, value);
+                    }
+                }
+
+                if (url.StartsWith(s_buildServiceEndpoint) && !request.Headers.Contains("X-OP-BuildUserToken"))
+                {
+                    // For development usage
+                    try
+                    {
+                        request.Headers.Add("X-OP-BuildUserToken", (await s_opBuildUserToken.Value).Value.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
                     }
                 }
 

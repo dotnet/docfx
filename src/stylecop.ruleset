@@ -29,8 +29,6 @@
     <Rule Id="SA1414" Action="None" />
     <!-- SA1502ElementMustNotBeOnSingleLine -->
     <Rule Id="SA1502" Action="None" />
-    <!-- SA1503BracesMustNotBeOmitted -->
-    <Rule Id="SA1503" Action="None" />
     <!-- SA1513ClosingBraceMustBeFollowedByBlankLine -->
     <Rule Id="SA1513" Action="None" />
     <!-- SA1600ElementsMustBeDocumented -->

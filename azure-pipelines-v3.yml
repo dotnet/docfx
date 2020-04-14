@@ -184,7 +184,6 @@ jobs:
     displayName: Publish integration-test binary
     artifact: integration-test
 
-
 # Integration test
 - job: IntegrationTest
   dependsOn: IntegrationTestBuild
@@ -214,7 +213,7 @@ jobs:
       mc-docs-pr:
         params: https://github.com/opse2epr/mc-docs-pr --branch v3-integration-test --timeout 70
       ATADocs-pr:
-        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 25
+        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 30
       azure-docs-rest-apis:
         params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
 
@@ -237,11 +236,11 @@ jobs:
     artifact: integration-test
 
   # Run integration tests
-  - powershell: '& "$(Pipeline.Workspace)/integration-test/integration-test" $(params)'
+  - powershell: |
+      $(Pipeline.Workspace)/integration-test/integration-test.exe $(params)
     displayName: Run integration tests
     env:
       BUILD_REASON: $(Build.Reason)
-      INTEGRATION_TEST_ROOT: D:/
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)

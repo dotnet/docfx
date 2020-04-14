@@ -242,9 +242,14 @@ namespace Microsoft.Docs.Build
         {
             // Pick the user with a valid Id
             if (a.Id is null)
+            {
                 return b;
+            }
+
             if (b.Id is null)
+            {
                 return a;
+            }
 
             // otherwise pick the latest one
             return (a.UpdatedAt ?? DateTime.MinValue) >= (b.UpdatedAt ?? DateTime.MinValue) ? a : b;

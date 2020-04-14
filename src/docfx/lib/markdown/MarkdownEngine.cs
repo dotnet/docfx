@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
 {
@@ -16,23 +17,27 @@ namespace Microsoft.Docs.Build
     {
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
+        private readonly Input _input;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
         private readonly string _markdownValidationRules;
 
         private readonly MarkdownContext _markdownContext;
+        private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider = null;
         private readonly MarkdownPipeline[] _pipelines;
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
         public MarkdownEngine(
             Config config,
+            Input input,
             FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine)
         {
+            _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _monikerProvider = monikerProvider;
@@ -40,6 +45,14 @@ namespace Microsoft.Docs.Build
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
             _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
+
+            if (!string.IsNullOrEmpty(_markdownValidationRules))
+            {
+                _validatorProvider = new OnlineServiceMarkdownValidatorProvider(
+                    new ContentValidationContext(_markdownValidationRules),
+                    new ContentValidationLogger(_markdownContext));
+            }
+
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
@@ -92,11 +105,11 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
-                .UseMarkdownElementTelemetry()
+                .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_markdownContext, _markdownValidationRules)
+                .UseContentValidation(_validatorProvider)
                 .Build();
         }
 
@@ -105,11 +118,11 @@ namespace Microsoft.Docs.Build
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
-                .UseMarkdownElementTelemetry()
+                .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_markdownContext, _markdownValidationRules)
+                .UseContentValidation(_validatorProvider)
                 .UseInlineOnly()
                 .Build();
         }
@@ -162,26 +175,43 @@ namespace Microsoft.Docs.Build
         private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, content, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo);
+            var referencingFile = (Document)relativeTo;
+
+            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), referencingFile, DependencyType.Inclusion);
             status.Errors.AddIfNotNull(error);
-            return (content?.Replace("\r", ""), file);
+
+            return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);
         }
 
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, file) = _linkResolver.ResolveLink(
-                href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
+            var (error, link, _) = _linkResolver.ResolveLink(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
+
             return link;
         }
 
-        private (string? href, string display) GetXref(SourceInfo<string> href, bool isShorthand)
+        private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, display, _) = _xrefResolver.ResolveXref(
-                href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            Error? error;
+            string? link;
+            string display;
+
+            if (href.HasValue)
+            {
+                (error, link, display, _) = _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            }
+            else if (uid.HasValue)
+            {
+                (error, link, display, _) = _xrefResolver.ResolveXrefByUid(uid.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            }
+            else
+            {
+                throw new ArgumentNullException(message: "href and uid can't be both null", null);
+            }
 
             if (!isShorthand)
             {
@@ -193,8 +223,8 @@ namespace Microsoft.Docs.Build
         private IReadOnlyList<string> GetMonikerRange(SourceInfo<string?> monikerRange)
         {
             var status = t_status.Value!.Peek();
-            var (error, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);
-            status.Errors.AddIfNotNull(error);
+            var (monikerErrors, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);
+            status.Errors.AddRange(monikerErrors);
             return monikers;
         }
 

@@ -439,9 +439,36 @@ outputs:
   docs/toc.json: |
     {
       "items": [
-        { "name": "Azure", "href": "/azure/", "tocHref": "/azure/", "topicHref": "/azure/index", "homepage": "/azure/index" }
+        { "name": "Azure", "href": "/azure/", "tocHref": undefined, "topicHref": undefined, "homepage": "/azure/index" }
       ]
     }
+---
+# Parent(including) toc doesn't participate in _tocRel resolution
+inputs:
+  docfx.yml:
+  docs/TOC.yml: |
+    - name: parent-a
+      tocHref: child-a/
+      topicHref: ../a.md
+    - name: parent-b
+      tocHref: child-b/
+      topicHref: ../b.md
+  docs/child-a/TOC.yml: |
+    - name: child-a
+      topicHref: ../../a.md
+  docs/child-b/TOC.yml: |
+    - name: child-b
+      topicHref: ../../b.md
+  a.md:
+  b.md:
+outputs:
+  docs/toc.json:
+  docs/child-a/toc.json:
+  docs/child-b/toc.json:
+  a.json: |
+    {"_tocRel": "docs/child-a/toc.json"}
+  b.json: |
+    {"_tocRel": "docs/child-b/toc.json"}
 ---
 # Combine toc href, topic href => href + items
 inputs:
@@ -1122,6 +1149,46 @@ outputs:
       ]
     }
 ---
+# uid with fragment reference in yaml toc, treat as exact uid string
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    title: a title
+    uid: a
+    ---
+  docs/a-frag.md: |
+    ---
+    title: a-frag title
+    uid: a#frag
+    ---
+  docs/b-frag.md: |
+    ---
+    title: b-frag title
+    uid: b#frag
+    ---
+  docs/TOC.yml: |
+    - name: Uid Ref
+      uid: a
+    - name: Uid Ref 1
+      uid: a#frag
+    - name: Uid Not Found
+      uid: b
+outputs:
+  docs/a.json:
+  docs/a-frag.json:
+  docs/b-frag.json:
+  docs/toc.json: |
+    {
+      "items": [
+        { "name":"Uid Ref","href":"a","monikers": undefined },
+        { "name":"Uid Ref 1","href":"a-frag","monikers": undefined },
+        { "name":"Uid Not Found","href":undefined,"monikers": undefined }
+      ]
+    }
+  .errors.log: |
+    ["warning","xref-not-found","Cross reference not found: 'b'","docs/TOC.yml",6,8]
+---
 # uid reference first in yaml toc
 inputs:
   docfx.yml:
@@ -1408,3 +1475,56 @@ outputs:
         }
       ]
     }
+---
+# should treat toc.{!md,json,yml} as resource
+inputs:
+  docfx.yml: |
+    files: '**/*.*'
+  toc.png:
+outputs:
+  toc.png:
+---
+# TOC splitItemsBy produces multiple output TOCs with correct link and _tocRel
+inputs:
+  docfx.yml:
+  TOC.yml: |
+    splitItemsBy: name
+    items:
+    - name: 1
+      items:
+      - name: 1-1
+        href: a.md
+    - name: 2
+      href: b.md
+  a.md:
+  b.md:
+outputs:
+  a.json: '{ "_tocRel": "_splitted/1/toc.json" }'
+  b.json: '{ "_tocRel": "toc.json" }'
+  toc.json: |
+    {
+      "items": [
+        { "name": "1", "href": "a", "items": undefined },
+        { "name": "2", "href": "b", "items": undefined }
+      ],
+      "splitItemsBy": undefined
+    }
+  _splitted/1/toc.json: |
+    { "items": [{ "name": "1-1", "href": "../../a", "items": undefined }] }
+---
+# TOC splitItemsBy respect metadata config
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      key:
+        _splitted/**/TOC.json: value
+  TOC.yml: |
+    splitItemsBy: name
+    items:
+    - name: 1
+      items:
+      - name: 1-1
+outputs:
+  toc.json:
+  _splitted/1/toc.json: |
+    { "metadata": { "key": "value" } }

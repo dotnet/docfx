@@ -30,6 +30,10 @@ namespace Microsoft.Docs.Build
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
+        public string? SplitItemsBy { get; set; }
+
+        public bool ShouldSerializeSplitItemsBy() => false;
+
         public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
 
         public List<SourceInfo<TableOfContentsNode>> Items { get; set; } = new List<SourceInfo<TableOfContentsNode>>();
@@ -39,6 +43,8 @@ namespace Microsoft.Docs.Build
 
         [JsonIgnore]
         public Document? Document { get; set; }
+
+        public TableOfContentsNode() { }
 
         public TableOfContentsNode(TableOfContentsNode item)
         {
@@ -52,10 +58,9 @@ namespace Microsoft.Docs.Build
             Expanded = item.Expanded;
             MaintainContext = item.MaintainContext;
             ExtensionData = item.ExtensionData;
+            SplitItemsBy = item.SplitItemsBy;
             Items = item.Items;
             Document = item.Document;
         }
-
-        public TableOfContentsNode() { }
     }
 }

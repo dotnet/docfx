@@ -86,6 +86,12 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Dependency, path, default, dependencyName, default);
         }
 
+        public static FilePath Generated(PathString path)
+        {
+            Debug.Assert(!System.IO.Path.IsPathRooted(path));
+            return new FilePath(FileOrigin.Generated, path, default, default, default);
+        }
+
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
 
         public static bool operator !=(FilePath? a, FilePath? b) => !Equals(a, b);
@@ -150,13 +156,25 @@ namespace Microsoft.Docs.Build
         {
             var result = Path.CompareTo(other.Path);
             if (result == 0)
+            {
                 result = Origin.CompareTo(other.Origin);
+            }
+
             if (result == 0)
+            {
                 result = DependencyName.CompareTo(other.DependencyName);
+            }
+
             if (result == 0)
+            {
                 result = IsGitCommit.CompareTo(other.IsGitCommit);
+            }
+
             if (result == 0)
+            {
                 result = Nullable.Compare(OriginalPath, other.OriginalPath);
+            }
+
             return result;
         }
 

@@ -17,14 +17,20 @@ namespace Microsoft.Docs.Build
         {
             var path = file ?? (InclusionContext.File as Document)?.FilePath;
             if (path is null)
+            {
                 return default;
+            }
 
             // Line info in markdown object is zero based, turn it into one based.
             if (obj != null)
+            {
                 return new SourceInfo(path, obj.Line + 1, obj.Column + columnOffset + 1);
+            }
 
             if (line != null)
+            {
                 return new SourceInfo(path, line.Value + 1, 0);
+            }
 
             return default;
         }
@@ -32,13 +38,17 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Traverse the markdown object graph, returns true to skip the current node.
         /// </summary>
-        public static void Visit(this MarkdownObject obj, Func<MarkdownObject, bool> action)
+        public static void Visit(this MarkdownObject? obj, Func<MarkdownObject, bool> action)
         {
             if (obj is null)
+            {
                 return;
+            }
 
             if (action(obj))
+            {
                 return;
+            }
 
             if (obj is ContainerBlock block)
             {

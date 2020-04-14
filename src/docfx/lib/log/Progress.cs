@@ -29,7 +29,11 @@ namespace Microsoft.Docs.Build
 
         public static void Update(int done, int total)
         {
-            var scope = t_scope.Value!.Peek();
+            var scope = t_scope.Value?.Peek();
+            if (scope is null)
+            {
+                return;
+            }
 
             // Only write progress if it takes longer than 2 seconds
             var elapsedMs = scope.Stopwatch.ElapsedMilliseconds;
@@ -43,6 +47,7 @@ namespace Microsoft.Docs.Build
             {
                 return;
             }
+
             scope.LastElapsedMs = elapsedMs;
 
             var eol = done == total ? '\n' : '\r';
@@ -55,9 +60,15 @@ namespace Microsoft.Docs.Build
         public static string FormatTimeSpan(TimeSpan value)
         {
             if (value.TotalMinutes > 1)
+            {
                 return TimeSpan.FromSeconds(value.TotalSeconds).ToString();
+            }
+
             if (value.TotalSeconds > 1)
+            {
                 return Math.Round(value.TotalSeconds, digits: 2) + "s";
+            }
+
             return Math.Round(value.TotalMilliseconds, digits: 2) + "ms";
         }
 

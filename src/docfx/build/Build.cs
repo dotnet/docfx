@@ -47,16 +47,19 @@ namespace Microsoft.Docs.Build
                 var configLoader = new ConfigLoader(errorLog);
                 var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options);
                 if (errorLog.Write(errors))
+                {
                     return true;
+                }
 
                 errorLog.Configure(config, buildOptions.OutputPath);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
                 Run(context);
-                return false;
+                return errorLog.ErrorCount > 0;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                return errorLog.Write(dex);
+                errorLog.Write(dex);
+                return errorLog.ErrorCount > 0;
             }
             finally
             {
@@ -68,15 +71,17 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
-            Parallel.Invoke(
-                () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
-                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
-                () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
-                () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
-
             using (Progress.Start("Building files"))
             {
-                context.BuildQueue.Drain(file => BuildFile(context, file), Progress.Update);
+                context.BuildQueue.Start(file => BuildFile(context, file));
+
+                Parallel.Invoke(
+                    () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
+                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
+                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
+                    () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
+
+                context.BuildQueue.WaitForCompletion();
             }
 
             Parallel.Invoke(
@@ -112,30 +117,16 @@ namespace Microsoft.Docs.Build
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
+            var errors = file.ContentType switch
+            {
+                ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
+                ContentType.Resource when path.Origin != FileOrigin.Fallback => BuildResource.Build(context, file),
+                ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
+                ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
+                _ => new List<Error>(),
+            };
 
-            try
-            {
-                var errors = file.ContentType switch
-                {
-                    ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
-                    ContentType.Resource when path.Origin != FileOrigin.Fallback => BuildResource.Build(context, file),
-                    ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
-                    ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
-                    _ => new List<Error>(),
-                };
-
-                context.ErrorLog.Write(errors);
-                Telemetry.TrackBuildFileTypeCount(file);
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                context.ErrorLog.Write(dex);
-            }
-            catch
-            {
-                Console.WriteLine($"Build {file.FilePath} failed");
-                throw;
-            }
+            context.ErrorLog.Write(errors);
         }
     }
 }

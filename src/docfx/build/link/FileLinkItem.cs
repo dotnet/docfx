@@ -31,10 +31,13 @@ namespace Microsoft.Docs.Build
         {
             var result = string.CompareOrdinal(SourceUrl, other.SourceUrl);
             if (result == 0)
+            {
                 result = string.CompareOrdinal(TargetUrl, other.TargetUrl);
+            }
             if (result == 0)
+            {
                 result = string.CompareOrdinal(SourceMonikerGroup, other.SourceMonikerGroup);
-
+            }
             return result;
         }
 

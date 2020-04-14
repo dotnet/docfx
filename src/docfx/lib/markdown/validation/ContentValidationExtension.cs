@@ -10,16 +10,12 @@ namespace Microsoft.Docs.Build
     internal static class ContentValidationExtension
     {
         public static MarkdownPipelineBuilder UseContentValidation(
-            this MarkdownPipelineBuilder builder, MarkdownContext markdownContext, string markdownValidationRules)
+            this MarkdownPipelineBuilder builder, OnlineServiceMarkdownValidatorProvider? validatorProvider)
         {
-            if (string.IsNullOrEmpty(markdownValidationRules))
+            if (validatorProvider == null)
             {
                 return builder;
             }
-
-            var validatorProvider = new OnlineServiceMarkdownValidatorProvider(
-                new ContentValidationContext(markdownValidationRules),
-                new ContentValidationLogger(markdownContext));
 
             var validators = validatorProvider.GetValidators();
 

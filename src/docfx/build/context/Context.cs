@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
         {
             DependencyMapBuilder = new DependencyMapBuilder();
-            BuildQueue = new WorkQueue<FilePath>();
+            BuildQueue = new WorkQueue<FilePath>(errorLog);
 
             Config = config;
             ErrorLog = errorLog;
@@ -84,15 +84,15 @@ namespace Microsoft.Docs.Build
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
-            BuildScope = new BuildScope(Config, Input, buildOptions);
+            BuildScope = new BuildScope(ErrorLog, Config, Input, buildOptions);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, Input, TemplateEngine);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, DocumentProvider);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
-            PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog);
-            BookmarkValidator = new BookmarkValidator(errorLog);
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
+            PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog, ContentValidator);
+            BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
             XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder);
@@ -112,9 +112,11 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
-            TableOfContentsLoader = new TableOfContentsLoader(Input, LinkResolver, XrefResolver, new TableOfContentsParser(MarkdownEngine), MonikerProvider, DependencyMapBuilder);
-            TocMap = new TableOfContentsMap(ErrorLog, BuildScope, TableOfContentsLoader, DocumentProvider);
+            MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
+
+            var tocParser = new TableOfContentsParser(Input, MarkdownEngine);
+            TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder);
+            TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, tocParser, TableOfContentsLoader, DocumentProvider);
         }
 
         public void Dispose()

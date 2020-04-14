@@ -33,7 +33,9 @@ namespace Microsoft.Docs.Build
             };
 
             if (Output != null)
+            {
                 config["outputPath"] = Output;
+            }
 
             if (Legacy)
             {
@@ -42,7 +44,9 @@ namespace Microsoft.Docs.Build
             }
 
             if (Template != null)
+            {
                 config["template"] = Template;
+            }
 
             return config;
         }

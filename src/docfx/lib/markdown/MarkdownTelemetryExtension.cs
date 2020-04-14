@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Markdig;
 using Markdig.Extensions.Emoji;
 using Markdig.Extensions.Tables;
@@ -14,9 +12,9 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class MarkdownElementTelemetryExtension
+    internal static class MarkdownTelemetryExtension
     {
-        public static MarkdownPipelineBuilder UseMarkdownElementTelemetry(this MarkdownPipelineBuilder builder)
+        public static MarkdownPipelineBuilder UseTelemetry(this MarkdownPipelineBuilder builder)
         {
             return builder.Use(document =>
             {
