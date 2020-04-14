@@ -47,7 +47,7 @@ Docfx generate `links` information of each files into one single file `.links.js
   | `source_url`            | /dotnet/articles/a                      |
   | `source_moniker_group`  | 218c13d0                                |
   | `target_url`            | /dotnet/articles/b                      |
-  | `source_file_url`       | https://github.com/dotnet/articles/a.md |
+  | `source_git_url`        | https://github.com/dotnet/articles/a.md |
   | `source_line`           | 10                                      |
 
 
@@ -61,25 +61,25 @@ Example:
             "source_url": "/dotnet/articles/a",
             "source_moniker_group": "218c13d0",
             "target_url": "/dotnet/articles/b",
-            "source_file_url": "https://github.com/dotnet/articles/a.md",
+            "source_git_url": "https://github.com/dotnet/articles/a.md",
             "source_line": "10"
         },
         {
             "source_url": "/dotnet/articles/a",
             "source_moniker_group": "218c13d0",
             "target_url": "https://github.com",
-            "source_file_url": "https://github.com/dotnet/articles/a.md",
+            "source_git_url": "https://github.com/dotnet/articles/a.md",
             "source_line": "20"
         },
         {
             "source_url": "/dotnet/articles/a",
             "source_moniker_group": "218c13d0",
             "target_url": "./c.md",
-            "source_file_url": "https://github.com/dotnet/articles/a.md",
+            "source_git_url": "https://github.com/dotnet/articles/a.md",
             "source_line": "30"
         }
     ]
 }
 ```
-> Notice: `source_url` and `source_file_url` should be the root file for inclusion (TOC inclusion and markdown inclusion)
+> Notice: `source_url` should be the root file for inclusion (TOC inclusion and markdown inclusion), and `source_file_url` should be the included file
 
