@@ -81,5 +81,5 @@ Example:
     ]
 }
 ```
-> Notice: `source_url` should be the root file for inclusion (TOC inclusion and markdown inclusion), and `source_file_url` should be the included file
+> Notice: `source_url` should be the root file for inclusion (TOC inclusion and markdown inclusion), and `source_git_url` should be the included file
 
