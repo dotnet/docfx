@@ -80,7 +80,7 @@ outputs:
    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}
 ---
 # redirect to can start with https and hostname with locale
-# output document_id for redirection file as well
+# output document_id and canonical_url for redirection file as well
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
@@ -90,7 +90,10 @@ inputs:
       a.md: https://docs.microsoft.com/en-us/b?query#fragment
 outputs:
   .publish.json: |
-    {"files":[{"url":"/a", "document_id":"780484e9-a367-97ab-ba7d-a19f3b378a80"}, {"url":"/b", "document_id":"780484e9-a367-97ab-ba7d-a19f3b378a80"}]}
+    {"files":[
+      {"url":"/a", "document_id":"780484e9-a367-97ab-ba7d-a19f3b378a80", "canonical_url": "https://docs.microsoft.com/en-us/a", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}, 
+      {"url":"/b", "document_id":"780484e9-a367-97ab-ba7d-a19f3b378a80"}
+    ]}
   b.json: |
    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}
 ---
