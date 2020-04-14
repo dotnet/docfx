@@ -86,6 +86,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!obj.TryGetValue(xrefProperty, out var value))
                 {
+                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
                     continue;
                 }
 

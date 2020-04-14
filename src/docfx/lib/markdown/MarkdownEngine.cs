@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly string _markdownValidationRules;
 
         private readonly MarkdownContext _markdownContext;
-        private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider = null;
+        private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
         private readonly MarkdownPipeline[] _pipelines;
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
