@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Security.Cryptography;
     using System.Text;
 
@@ -110,7 +111,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if (!string.IsNullOrEmpty(currentLightbox))
                 {
                     var lighboxHtmlAttributes = new HtmlAttributes();
-                    lighboxHtmlAttributes.AddProperty("href", $"{currentLightbox}#lightbox");
+                    var fullPath = Path.GetDirectoryName(InclusionContext.File.ToString()).Replace("\\", "/");
+                    lighboxHtmlAttributes.AddProperty("href", $"{fullPath}/{currentLightbox}#lightbox");
                     lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
                     renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
                 }
