@@ -237,7 +237,9 @@ namespace Microsoft.Docs.Build
                            return response;
                        });
 
-                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                    var result = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                    _errorLog.Write(Errors.System.MetadataValidationRulesetContent(result));
+                    return result;
                 }
             }
             catch (Exception ex)

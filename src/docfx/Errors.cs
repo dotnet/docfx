@@ -88,6 +88,9 @@ namespace Microsoft.Docs.Build
 
             public static Error MetadataValidationRuleset(string ruleset)
                 => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}");
+
+            public static Error MetadataValidationRulesetContent(string rulesetContent)
+               => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset content: {rulesetContent}");
         }
 
         public static class Logging
