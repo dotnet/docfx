@@ -889,6 +889,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     str <xref href="c"></xref>
+    str <xref href="d?alt=altText&action=xxx"></xref>
     str <xref href="d?action=xxx"></xref>
     str <xref href="d" data-raw-source="@mention"></xref>
     some text
@@ -909,6 +910,7 @@ outputs:
     {
       "conceptual" : "
         <p>str <a href='c'>Title from yaml header c</a>
+        str <span class=\"xref\">altText</span>
         str <span class=\"xref\">d</span>
         str @mention
         some text
@@ -923,7 +925,8 @@ outputs:
   docs/c.json:
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",2,5]
-    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",7,2]
+    ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",3,5]
+    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",8,2]
 ---
 # support <xref uid="uid"></xref>
 inputs:
