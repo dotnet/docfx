@@ -18,11 +18,11 @@ namespace Microsoft.Docs.Build
 
         public (int start, int length) TokenRange => _tokenRange;
 
-        public ReadOnlySpan<char> Name => _html.AsSpan().Slice(_nameRange.start, _nameRange.length);
+        public ReadOnlySpan<char> Name => _html.AsSpan(_nameRange.start, _nameRange.length);
 
-        public ReadOnlySpan<char> Value => _html.AsSpan().Slice(_valueRange.start, _valueRange.length);
+        public ReadOnlySpan<char> Value => _html.AsSpan(_valueRange.start, _valueRange.length);
 
-        public ReadOnlySpan<char> Token => _html.AsSpan().Slice(_tokenRange.start, _tokenRange.length);
+        public ReadOnlySpan<char> Token => _html.AsSpan(_tokenRange.start, _tokenRange.length);
 
         public HtmlAttribute(
             string html,
@@ -34,6 +34,11 @@ namespace Microsoft.Docs.Build
             _nameRange = nameRange;
             _valueRange = valueRange;
             _tokenRange = tokenRange;
+        }
+
+        public bool NameIs(string name)
+        {
+            return _html.AsSpan(_nameRange.start, _nameRange.length).Equals(name, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

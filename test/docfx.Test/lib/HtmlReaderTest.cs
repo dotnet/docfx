@@ -124,8 +124,13 @@ namespace Microsoft.Docs.Build
 
             while (reader.Read())
             {
-                var content = reader.Type == HtmlTokenType.StartTag || reader.Type == HtmlTokenType.EndTag
-                    ? reader.Name.ToString() : reader.Token.ToString();
+                var content = reader.Token.ToString();
+                if (reader.Type == HtmlTokenType.StartTag || reader.Type == HtmlTokenType.EndTag)
+                {
+                    Assert.True(content.StartsWith('<'));
+                    Assert.True(content.EndsWith('>'));
+                    content = reader.Name.ToString();
+                }
 
                 if (reader.Attributes.Length > 0)
                 {

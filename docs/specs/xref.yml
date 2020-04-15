@@ -928,6 +928,18 @@ outputs:
     ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",3,5]
     ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",8,2]
 ---
+# Transform xref in HTML block should not auto close the parent tag
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    <table>
+    <tr>A=<xref href="Me" data-throw-if-not-resolved="False" data-raw-source="@Me"></xref></tr>
+    <tr>A</tr>
+    </table>
+outputs:
+  docs/a.json: |
+    { "conceptual": "<table><tr>A=@Me</tr><tr>A</tr></table>"}
+---
 # support <xref uid="uid"></xref>
 inputs:
   docfx.yml:

@@ -30,13 +30,13 @@ namespace Microsoft.Docs.Build
 
         public (int start, int length) NameRange => _nameRange;
 
-        public (int start, int length) ContentRange => _tokenRange;
+        public (int start, int length) TokenRange => _tokenRange;
 
-        public ReadOnlySpan<char> Name => _html.AsSpan().Slice(_nameRange.start, _nameRange.length);
+        public ReadOnlySpan<char> Name => _html.AsSpan(_nameRange.start, _nameRange.length);
 
-        public ReadOnlySpan<char> Token => _html.AsSpan().Slice(_tokenRange.start, _tokenRange.length);
+        public ReadOnlySpan<char> Token => _html.AsSpan(_tokenRange.start, _tokenRange.length);
 
-        public ReadOnlySpan<HtmlAttribute> Attributes => _attributes.AsSpan().Slice(0, _attributesLength);
+        public ReadOnlySpan<HtmlAttribute> Attributes => _attributes.AsSpan(0, _attributesLength);
 
         public HtmlReader(string html)
         {
@@ -51,6 +51,11 @@ namespace Microsoft.Docs.Build
             _attributeRange = default;
             _attributes = default;
             _attributesLength = default;
+        }
+
+        public bool NameIs(string name)
+        {
+            return _html.AsSpan(_nameRange.start, _nameRange.length).Equals(name, StringComparison.OrdinalIgnoreCase);
         }
 
         public bool Read()

@@ -196,22 +196,10 @@ namespace Microsoft.Docs.Build
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand)
         {
             var status = t_status.Value!.Peek();
-            Error? error;
-            string? link;
-            string display;
 
-            if (href.HasValue)
-            {
-                (error, link, display, _) = _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            }
-            else if (uid.HasValue)
-            {
-                (error, link, display, _) = _xrefResolver.ResolveXrefByUid(uid.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
-            }
-            else
-            {
-                throw new ArgumentNullException(message: "href and uid can't be both null", null);
-            }
+            var (error, link, display, _) = href.HasValue
+                ? _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile)
+                : _xrefResolver.ResolveXrefByUid(uid ?? throw new InvalidOperationException("href and uid can't be both null"), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
             if (!isShorthand)
             {
