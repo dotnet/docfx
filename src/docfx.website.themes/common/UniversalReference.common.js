@@ -116,13 +116,15 @@ function handleInheritance(tree) {
 function joinType(parameter) {
   // change type in syntax from array to string
   var joinTypeProperty = function (type, key) {
-    if (!type || !type[0] || !type[0][key]) return null;
+    if (!type) return null;
     var value = type.map(function (t) {
+      if (!t || !t[key]) return null;
       return t[key][0].value;
-    }).join(' | ');
+    });
+    if (value.includes(null)) return null;
     return [{
       lang: type[0][key][0].lang,
-      value: value
+      value: value.join(' | ')
     }];
   };
   if (parameter.type) {
