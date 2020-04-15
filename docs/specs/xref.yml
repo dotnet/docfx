@@ -1379,40 +1379,92 @@ outputs:
     ["error","file-not-found","Invalid file link: '1.xrefmap.json'.","docfx.yml",1,7]
 ---
 # Export all xrefProperties regardless of jschema properties
-repos:
-  https://docs.com/test-xref-sdp#live:
-    - files:
-        docfx.yml: |
-        docs/a.json: |
-          {
-            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-            "uid": "a",
-            "name": "test"
-          }
-        _themes/ContentTemplate/schemas/TestData.schema.json: |
-          {
-            "xrefProperties": ["name"],
-            "properties": { "uid": { "contentType": "uid" } }
-          }
+inputs:
+  docfx.yml: |
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "test"
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["name"],
+      "properties": { "uid": { "contentType": "uid" } }
+    }
 outputs:
   docs/a.json:
   .xrefmap.json: | 
     { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json", "name": "test" }] }
 ---
 # SDP with non-root uid, which is the only one
-repos:
-  https://docs.com/test-sdp-unique-uid#live:
-  - files:
-      docfx.yml:
-      docs/a.yml: |
-        #YamlMime:TestData
-        members:
-        - uid: a
-      _themes/ContentTemplate/schemas/TestData.schema.json: |
-        {
-          "properties": {"members": {"items": {"properties": {"uid": {"contentType": "uid"}}}}}
-        }
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    #YamlMime:TestData
+    members:
+    - uid: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {"members": {"items": {"properties": {"uid": {"contentType": "uid"}}}}}
+    }
 outputs:
   docs/a.json:
   .xrefmap.json: |
     { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json"}] }
+---
+# SDP with multiple-versioning uid of xref property conflicts
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+  docs/v1/a.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-1.0
+    uid: a
+    name: name 1
+    description: test 1
+  docs/v2/a.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers:
+      - netcore-2.0
+    uid: a
+    name: name 2
+    description: test 2
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["name", "description"],
+      "properties": { 
+        "metadata": {
+          "properties": {
+            "monikers": { "type": "array" }
+          }
+        },
+        "uid": { "contentType": "uid" } 
+      }
+    }
+outputs:
+  136a42ac/docs/a.json:
+  4667fedf/docs/a.json:
+  .errors.log: |
+    ["warning","duplicate-uid","UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'","docs/v1/a.yml",5,6]
+    ["warning","duplicate-uid","UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'","docs/v2/a.yml",5,6]
+    ["warning","xref-property-conflict","UID 'a' is defined with different names: 'name 1', 'name 2'"]
+    ["warning","xref-property-conflict","UID 'a' is defined with different descriptions: 'test 1', 'test 2'"]

@@ -419,7 +419,7 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}", uid);
 
             /// <summary>
-            /// Same uid defined within different versions with the different name.
+            /// Same uid defined within different versions with the different values of the same xref property.
             /// Examples:
             ///   - Same uid defined in multiple .md files with different versions have different titles.
             /// </summary>
