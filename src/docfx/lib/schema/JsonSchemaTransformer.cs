@@ -21,12 +21,6 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, Lazy<int>> _uidCountCache =
                      new ConcurrentDictionary<Document, Lazy<int>>(ReferenceEqualsComparer.Default);
 
-        private readonly ConcurrentDictionary<JObject, SourceInfo<string>> _xrefUidCache =
-                     new ConcurrentDictionary<JObject, SourceInfo<string>>(ReferenceEqualsComparer.Default);
-
-        private readonly ConcurrentDictionary<JObject, string> _xrefHrefCache =
-                     new ConcurrentDictionary<JObject, string>(ReferenceEqualsComparer.Default);
-
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
@@ -81,7 +75,7 @@ namespace Microsoft.Docs.Build
 
         private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj, Lazy<int> uidCount)
         {
-            var href = _xrefHrefCache.GetOrAdd(obj, (_) => GetXrefHref(file, uid, uidCount.Value, obj.Parent == null));
+            var href = GetXrefHref(file, uid, uidCount.Value, obj.Parent == null);
             var xref = new InternalXrefSpec(uid, href, file);
 
             foreach (var xrefProperty in schema.XrefProperties)
@@ -138,22 +132,14 @@ namespace Microsoft.Docs.Build
 
         private bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
         {
-            if (_xrefUidCache.TryGetValue(obj, out uid))
-            {
-                return true;
-            }
-            else
-            {
-                uid = default;
+            uid = default;
 
-                // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
-                if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
-                   schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
-                {
-                    uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
-                    _xrefUidCache.TryAdd(obj, uid);
-                    return true;
-                }
+            // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
+            if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
+                schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
+            {
+                uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
+                return true;
             }
             return false;
         }
@@ -230,7 +216,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (IsXrefSpec(obj, schema, out var uid))
                     {
-                        newObject["href"] = _xrefHrefCache.GetOrAdd(obj, (_) => GetXrefHref(file, uid, uidCount.Value, obj.Parent == null));
+                        newObject["href"] = GetXrefHref(file, uid, uidCount.Value, obj.Parent == null);
                     }
                     return (errors, newObject);
 
@@ -297,10 +283,6 @@ namespace Microsoft.Docs.Build
                         return (errors, specObj);
                     }
 
-                    return (errors, value);
-
-                case JsonSchemaContentType.Uid:
-                    context.XrefResolver.ResolveXrefSpec(content, file, file);
                     return (errors, value);
             }
 
