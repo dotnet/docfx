@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _xrefPropertiesCache =
                      new ConcurrentDictionary<JToken, (List<Error>, JToken)>(ReferenceEqualsComparer.Default);
 
-        private readonly ConcurrentDictionary<Document, Lazy<int>> _uidCountCache =
-                     new ConcurrentDictionary<Document, Lazy<int>>(ReferenceEqualsComparer.Default);
+        private readonly ConcurrentDictionary<Document, int> _uidCountCache =
+                     new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
 
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
-            var uidCount = _uidCountCache.GetOrAdd(file, new Lazy<int>(() => GetFileUidCount(_schema, token))).Value;
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(_schema, token));
             return TransformContentCore(file, context, _schema, token, uidCount);
         }
 
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var xrefSpecs = new List<InternalXrefSpec>();
-            var uidCount = _uidCountCache.GetOrAdd(file, new Lazy<int>(() => GetFileUidCount(_schema, token))).Value;
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(_schema, token));
             LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs, uidCount);
             return (errors, xrefSpecs);
         }
