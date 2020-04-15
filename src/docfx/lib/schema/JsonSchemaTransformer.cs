@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
-            var uidCount = _uidCountCache.GetOrAdd(file, new Lazy<int>(() => GetFileUidCount(_schema, token)));
+            var uidCount = _uidCountCache.GetOrAdd(file, new Lazy<int>(() => GetFileUidCount(_schema, token))).Value;
             return TransformContentCore(file, context, _schema, token, uidCount);
         }
 
@@ -40,12 +40,12 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             var xrefSpecs = new List<InternalXrefSpec>();
-            var uidCount = _uidCountCache.GetOrAdd(file, new Lazy<int>(() => GetFileUidCount(_schema, token)));
+            var uidCount = _uidCountCache.GetOrAdd(file, new Lazy<int>(() => GetFileUidCount(_schema, token))).Value;
             LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs, uidCount);
             return (errors, xrefSpecs);
         }
 
-        private void LoadXrefSpecsCore(Document file, Context context, JsonSchema schema, JToken node, List<Error> errors, List<InternalXrefSpec> xrefSpecs, Lazy<int> uidCount)
+        private void LoadXrefSpecsCore(Document file, Context context, JsonSchema schema, JToken node, List<Error> errors, List<InternalXrefSpec> xrefSpecs, int uidCount)
         {
             schema = _definitions.GetDefinition(schema);
             switch (node)
@@ -73,9 +73,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj, Lazy<int> uidCount)
+        private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj, int uidCount)
         {
-            var href = GetXrefHref(file, uid, uidCount.Value, obj.Parent == null);
+            var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var xref = new InternalXrefSpec(uid, href, file);
 
             foreach (var xrefProperty in schema.XrefProperties)
@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
         private string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
             => !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(file.SiteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : file.SiteUrl;
 
-        private JToken LoadXrefProperty(Document file, Context context, SourceInfo<string> uid, JToken value, JsonSchema schema, Lazy<int> uidCount)
+        private JToken LoadXrefProperty(Document file, Context context, SourceInfo<string> uid, JToken value, JsonSchema schema, int uidCount)
         {
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(uid))
@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (List<Error>, JToken) TransformContentCore(Document file, Context context, JsonSchema schema, JToken token, Lazy<int> uidCount)
+        private (List<Error>, JToken) TransformContentCore(Document file, Context context, JsonSchema schema, JToken token, int uidCount)
         {
             var errors = new List<Error>();
             schema = _definitions.GetDefinition(schema);
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (IsXrefSpec(obj, schema, out var uid))
                     {
-                        newObject["href"] = PathUtility.GetRelativePathToFile(file.SiteUrl, GetXrefHref(file, uid, uidCount.Value, obj.Parent == null));
+                        newObject["href"] = PathUtility.GetRelativePathToFile(file.SiteUrl, GetXrefHref(file, uid, uidCount, obj.Parent == null));
                     }
                     return (errors, newObject);
 
