@@ -166,7 +166,11 @@ namespace Microsoft.Docs.Build
                         SelfClosingStartTag();
                         return;
 
-                    case char c when IsWhiteSpace(c):
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                    case '\f':
+                    case ' ':
                         if (_nameRange.length == 0)
                         {
                             _nameRange.length = _position - 1 - _nameRange.start;
@@ -216,7 +220,11 @@ namespace Microsoft.Docs.Build
                         AfterAttributeName();
                         return;
 
-                    case char c when IsWhiteSpace(c):
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                    case '\f':
+                    case ' ':
                         break;
 
                     case '=':
@@ -240,10 +248,14 @@ namespace Microsoft.Docs.Build
             {
                 switch (Consume())
                 {
-                    case '\0':
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                    case '\f':
+                    case ' ':
                     case '/':
                     case '>':
-                    case char ch when IsWhiteSpace(ch):
+                    case '\0':
                         Back();
                         _attributeNameRange.length = _position - _attributeNameRange.start;
                         AfterAttributeName();
@@ -268,12 +280,18 @@ namespace Microsoft.Docs.Build
                         return;
 
                     case '>':
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        if (_attributeRange.length == 0)
+                        {
+                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                        }
                         AddAttribute();
                         return;
 
                     case '/':
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        if (_attributeRange.length == 0)
+                        {
+                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                        }
                         AddAttribute();
                         SelfClosingStartTag();
                         return;
@@ -282,7 +300,15 @@ namespace Microsoft.Docs.Build
                         BeforeAttributeValue();
                         return;
 
-                    case char c when IsWhiteSpace(c):
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                    case '\f':
+                    case ' ':
+                        if (_attributeRange.length == 0)
+                        {
+                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                        }
                         break;
 
                     default:
@@ -301,6 +327,13 @@ namespace Microsoft.Docs.Build
             {
                 switch (Consume())
                 {
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                    case '\f':
+                    case ' ':
+                        break;
+
                     case '\'':
                         AttributeValue('\'');
                         return;
@@ -314,9 +347,6 @@ namespace Microsoft.Docs.Build
                         _attributeRange.length = _position - 1 - _attributeRange.start;
                         AddAttribute();
                         return;
-
-                    case char ch when IsWhiteSpace(ch):
-                        break;
 
                     default:
                         Back();
@@ -366,7 +396,11 @@ namespace Microsoft.Docs.Build
                         _type = HtmlTokenType.Comment;
                         return;
 
-                    case char ch when IsWhiteSpace(ch):
+                    case '\t':
+                    case '\r':
+                    case '\n':
+                    case '\f':
+                    case ' ':
                         _attributeValueRange.length = _position - 1 - _attributeValueRange.start;
                         _attributeRange.length = _position - 1 - _attributeRange.start;
                         AddAttribute();
@@ -433,11 +467,6 @@ namespace Microsoft.Docs.Build
         private static bool IsASCIIAlpha(char c)
         {
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-        }
-
-        private static bool IsWhiteSpace(char c)
-        {
-            return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f';
         }
     }
 }

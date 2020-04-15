@@ -22,6 +22,8 @@ namespace Microsoft.Docs.Build
 
         public ReadOnlySpan<char> Value => _html.AsSpan().Slice(_valueRange.start, _valueRange.length);
 
+        public ReadOnlySpan<char> Token => _html.AsSpan().Slice(_tokenRange.start, _tokenRange.length);
+
         public HtmlAttribute(
             string html,
             (int start, int length) nameRange,
