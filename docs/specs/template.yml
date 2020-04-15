@@ -422,3 +422,57 @@ outputs:
           uid has no summary
         </p>"
     }
+---
+# Uid self reference 
+legacy: true
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "uid": {"contentType": "uid"},
+        "summary": {"type": "string"},
+        "description": {"type": "string"},
+        "uids": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": {"contentType": "uid"}
+            }
+          }
+        }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <p>
+      <xref uid="{{ uid }}" />
+      {{#uids}}
+        <xref uid="{{uid}}" />
+      {{/uids}}
+    </p>
+
+  # normal partial include syntax, with <xref /> in partial template
+ 
+  self-uid.yml: |
+    ### YamlMime: TestPage
+    uid: uid
+    name: root name
+    uids:
+      - uid: child-1
+        name: child-1 name
+      - uid: child-2
+        name: child-2 name
+
+outputs:
+  self-uid.mta.json:
+  self-uid.raw.page.json: |
+    {
+      "content": "
+        <p>
+            <a href=\"self-uid\" data-linktype=\"relative-path\"> root name </a>
+            <a href=\"self-uid#child_1\" data-linktype=\"relative-path\"> child-1 name </a>
+            <a href=\"self-uid#child_2\" data-linktype=\"relative-path\"> child-2 name </a>
+        </p>"
+    }

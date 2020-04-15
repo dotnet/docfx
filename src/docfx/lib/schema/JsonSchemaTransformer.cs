@@ -18,6 +18,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _xrefPropertiesCache =
                      new ConcurrentDictionary<JToken, (List<Error>, JToken)>(ReferenceEqualsComparer.Default);
 
+        private readonly ConcurrentDictionary<Document, int> _uidCountCache =
+                     new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
+
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
@@ -29,57 +32,50 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
         {
-            return TransformContentCore(file, context, _schema, token);
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(_schema, token));
+            return TransformContentCore(file, context, _schema, token, uidCount);
         }
 
         public (List<Error>, IReadOnlyList<InternalXrefSpec>) LoadXrefSpecs(Document file, Context context, JToken token)
         {
             var errors = new List<Error>();
             var xrefSpecs = new List<InternalXrefSpec>();
-            LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs);
-
-            // if only one uid defined in the file, remove the bookmark from href if any
-            if (xrefSpecs.Count == 1)
-            {
-                xrefSpecs[0].Href = xrefSpecs[0].Href.Split('#')[0];
-            }
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(_schema, token));
+            LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs, uidCount);
             return (errors, xrefSpecs);
         }
 
-        private void LoadXrefSpecsCore(Document file, Context context, JsonSchema schema, JToken node, List<Error> errors, List<InternalXrefSpec> xrefSpecs)
+        private void LoadXrefSpecsCore(Document file, Context context, JsonSchema schema, JToken node, List<Error> errors, List<InternalXrefSpec> xrefSpecs, int uidCount)
         {
             schema = _definitions.GetDefinition(schema);
             switch (node)
             {
                 case JObject obj:
-                    // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
-                    if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string uid &&
-                        schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
+                    if (IsXrefSpec(obj, schema, out var uid))
                     {
-                        xrefSpecs.Add(LoadXrefSpec(file, context, schema, new SourceInfo<string>(uid, uidValue.GetSourceInfo()), obj));
+                        xrefSpecs.Add(LoadXrefSpec(file, context, schema, uid, obj, uidCount));
                     }
 
                     foreach (var (key, value) in obj)
                     {
                         if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            LoadXrefSpecsCore(file, context, propertySchema, value, errors, xrefSpecs);
+                            LoadXrefSpecsCore(file, context, propertySchema, value, errors, xrefSpecs, uidCount);
                         }
                     }
                     break;
                 case JArray array when schema.Items.schema != null:
                     foreach (var item in array)
                     {
-                        LoadXrefSpecsCore(file, context, schema.Items.schema, item, errors, xrefSpecs);
+                        LoadXrefSpecsCore(file, context, schema.Items.schema, item, errors, xrefSpecs, uidCount);
                     }
                     break;
             }
         }
 
-        private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj)
+        private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj, int uidCount)
         {
-            var fragment = $"#{Regex.Replace(uid, @"\W", "_")}";
-            var href = obj.Parent is null ? file.SiteUrl : UrlUtility.MergeUrl(file.SiteUrl, "", fragment);
+            var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var xref = new InternalXrefSpec(uid, href, file);
 
             foreach (var xrefProperty in schema.XrefProperties)
@@ -97,14 +93,61 @@ namespace Microsoft.Docs.Build
                 }
 
                 xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(file, context, uid, value, propertySchema),
+                    () => LoadXrefProperty(file, context, uid, value, propertySchema, uidCount),
                     LazyThreadSafetyMode.PublicationOnly);
             }
 
             return xref;
         }
 
-        private JToken LoadXrefProperty(Document file, Context context, SourceInfo<string> uid, JToken value, JsonSchema schema)
+        private int GetFileUidCount(JsonSchema schema, JToken node)
+        {
+            schema = _definitions.GetDefinition(schema);
+            var count = 0;
+            switch (node)
+            {
+                case JObject obj:
+                    if (IsXrefSpec(obj, schema, out _))
+                    {
+                        count++;
+                    }
+
+                    foreach (var (key, value) in obj)
+                    {
+                        if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
+                        {
+                            count += GetFileUidCount(propertySchema, value);
+                        }
+                    }
+                    break;
+                case JArray array when schema.Items.schema != null:
+                    foreach (var item in array)
+                    {
+                        count += GetFileUidCount(schema.Items.schema, item);
+                    }
+                    break;
+            }
+            return count;
+        }
+
+        private bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
+        {
+            uid = default;
+
+            // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
+            if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
+                schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
+            {
+                uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
+                return true;
+            }
+            return false;
+        }
+
+        private string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
+            => !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(file.SiteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : file.SiteUrl;
+
+        private JToken LoadXrefProperty(Document file, Context context, SourceInfo<string> uid, JToken value, JsonSchema schema, int uidCount)
         {
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(uid))
@@ -115,7 +158,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 recursionDetector.Push(uid);
-                var (transformErrors, transformedToken) = _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, schema, value));
+                var (transformErrors, transformedToken) = _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, schema, value, uidCount));
                 context.ErrorLog.Write(transformErrors);
                 return transformedToken;
             }
@@ -126,7 +169,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (List<Error>, JToken) TransformContentCore(Document file, Context context, JsonSchema schema, JToken token)
+        private (List<Error>, JToken) TransformContentCore(Document file, Context context, JsonSchema schema, JToken token, int uidCount)
         {
             var errors = new List<Error>();
             schema = _definitions.GetDefinition(schema);
@@ -142,7 +185,7 @@ namespace Microsoft.Docs.Build
                     var newArray = new JArray();
                     foreach (var item in array)
                     {
-                        var (arrayErrors, newItem) = TransformContentCore(file, context, schema.Items.schema, item);
+                        var (arrayErrors, newItem) = TransformContentCore(file, context, schema.Items.schema, item, uidCount);
                         errors.AddRange(arrayErrors);
                         newArray.Add(newItem);
                     }
@@ -161,8 +204,8 @@ namespace Microsoft.Docs.Build
                         {
                             var isXrefProperty = schema.XrefProperties.Contains(key);
                             var (propertyErrors, transformedValue) = isXrefProperty
-                                ? _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, propertySchema, value))
-                                : TransformContentCore(file, context, propertySchema, value);
+                                ? _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, propertySchema, value, uidCount))
+                                : TransformContentCore(file, context, propertySchema, value, uidCount);
                             errors.AddRange(propertyErrors);
                             newObject[key] = transformedValue;
                         }
@@ -170,6 +213,10 @@ namespace Microsoft.Docs.Build
                         {
                             newObject[key] = value;
                         }
+                    }
+                    if (IsXrefSpec(obj, schema, out var uid))
+                    {
+                        newObject["href"] = PathUtility.GetRelativePathToFile(file.SiteUrl, GetXrefHref(file, uid, uidCount, obj.Parent == null));
                     }
                     return (errors, newObject);
 
