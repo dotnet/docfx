@@ -925,7 +925,8 @@ outputs:
   docs/c.json:
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",2,5]
-    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",7,2]
+    ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",3,5]
+    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",8,2]
 ---
 # support <xref uid="uid"></xref>
 inputs:
