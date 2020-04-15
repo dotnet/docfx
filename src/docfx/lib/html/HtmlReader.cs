@@ -98,9 +98,12 @@ namespace Microsoft.Docs.Build
             switch (Consume())
             {
                 case '!':
+                    MarkdownDeclarationOpen();
+                    break;
+
                 case '?':
-                    _type = HtmlTokenType.Comment;
-                    ConsumeUntil('>');
+                    Back();
+                    BogusComment();
                     break;
 
                 case '/':
@@ -117,6 +120,206 @@ namespace Microsoft.Docs.Build
                     _type = HtmlTokenType.Text;
                     ConsumeUntilNextIs('<');
                     break;
+            }
+        }
+
+        private void MarkdownDeclarationOpen()
+        {
+            switch (Consume())
+            {
+                case '-' when Peek() == '-':
+                    Consume();
+                    CommentStart();
+                    break;
+
+                default:
+                    BogusComment();
+                    break;
+            }
+        }
+
+        private void CommentStart()
+        {
+            _type = HtmlTokenType.Comment;
+            switch (Consume())
+            {
+                case '-':
+                    CommentStartDash();
+                    break;
+
+                case '>':
+                    break;
+
+                default:
+                    Back();
+                    Comment();
+                    break;
+            }
+        }
+
+        private void CommentStartDash()
+        {
+            switch (Consume())
+            {
+                case '-':
+                    CommentEnd();
+                    break;
+
+                case '\0':
+                case '>':
+                    break;
+
+                default:
+                    Back();
+                    Comment();
+                    break;
+            }
+        }
+
+        private void Comment()
+        {
+            while (true)
+            {
+                switch (Consume())
+                {
+                    case '<':
+                        CommentLessThanSign();
+                        return;
+
+                    case '-':
+                        CommendEndDash();
+                        return;
+
+                    case '\0':
+                        return;
+                }
+            }
+        }
+
+        private void CommentLessThanSign()
+        {
+            while (true)
+            {
+                switch (Consume())
+                {
+                    case '!':
+                        CommentLessThanSignBang();
+                        return;
+
+                    case '<':
+                        break;
+
+                    default:
+                        Back();
+                        Comment();
+                        return;
+                }
+            }
+        }
+
+        private void CommentLessThanSignBang()
+        {
+            switch (Consume())
+            {
+                case '-':
+                    CommentLessThanSignBangDash();
+                    return;
+
+                default:
+                    Back();
+                    Comment();
+                    return;
+            }
+        }
+
+        private void CommentLessThanSignBangDash()
+        {
+            switch (Consume())
+            {
+                case '-':
+                    Back();
+                    CommentEnd();
+                    return;
+
+                default:
+                    Back();
+                    Comment();
+                    return;
+            }
+        }
+
+        private void CommendEndDash()
+        {
+            switch (Consume())
+            {
+                case '-':
+                    CommentEnd();
+                    return;
+
+                case '\0':
+                    return;
+
+                default:
+                    Back();
+                    Comment();
+                    break;
+            }
+        }
+
+        private void CommentEnd()
+        {
+            while (true)
+            {
+                switch (Consume())
+                {
+                    case '\0':
+                    case '>':
+                        return;
+
+                    case '!':
+                        CommentEndBang();
+                        return;
+
+                    case '-':
+                        break;
+
+                    default:
+                        Back();
+                        Comment();
+                        return;
+                }
+            }
+        }
+
+        private void CommentEndBang()
+        {
+            switch (Consume())
+            {
+                case '-':
+                    CommentEnd();
+                    return;
+
+                case '>':
+                case '\0':
+                    return;
+
+                default:
+                    Back();
+                    Comment();
+                    break;
+            }
+        }
+
+        private void BogusComment()
+        {
+            _type = HtmlTokenType.Comment;
+            while (true)
+            {
+                switch (Consume())
+                {
+                    case '>':
+                        return;
+                }
             }
         }
 
@@ -138,8 +341,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 default:
-                    _type = HtmlTokenType.Comment;
-                    ConsumeUntil('>');
+                    BogusComment();
                     break;
             }
         }
@@ -441,15 +643,9 @@ namespace Microsoft.Docs.Build
             return _position < _length ? _html[_position++] : '\0';
         }
 
-        private void ConsumeUntil(char c)
+        private char Peek()
         {
-            while (_position < _length)
-            {
-                if (_html[_position++] == c)
-                {
-                    break;
-                }
-            }
+            return _position < _length ? _html[_position] : '\0';
         }
 
         private void ConsumeUntilNextIs(char c)

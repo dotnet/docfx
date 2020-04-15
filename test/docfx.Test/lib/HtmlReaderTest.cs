@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a/", "Comment:<a/")]
         [InlineData("<a b='cd>", "Comment:<a b='cd>")]
         [InlineData("<a b=\"cd>", "Comment:<a b=\"cd>")]
+        [InlineData("<!-- <p><a>Visual C++</a></p> -->", "Comment:<!-- <p><a>Visual C++</a></p> -->")]
 
         // StartTag
         [InlineData("<a>", "StartTag:a")]
