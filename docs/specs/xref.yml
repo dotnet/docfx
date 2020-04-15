@@ -1395,7 +1395,7 @@ inputs:
 outputs:
   docs/a.json:
   .xrefmap.json: | 
-    { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json", "name": "test" }] }
+    { "references": [{ "uid": "a", "name": "test" }] }
 ---
 # SDP with non-root uid, which is the only one
 inputs:
@@ -1411,7 +1411,7 @@ inputs:
 outputs:
   docs/a.json:
   .xrefmap.json: |
-    { "references": [{ "uid": "a", "href": "https://docs.com/docs/a.json"}] }
+    { "references": [{ "uid": "a"}] }
 ---
 # SDP with multiple-versioning uid of xref property conflicts
 inputs:
