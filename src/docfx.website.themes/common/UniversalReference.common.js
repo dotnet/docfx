@@ -116,19 +116,16 @@ function handleInheritance(tree) {
 function joinType(parameter) {
   // change type in syntax from array to string
   var joinTypeProperty = function (type, key) {
-    if (!type) return null;
-    if (type.some((t) => { return t && t[key] })) {
-      var value = type.map(function (t) {
-        if (!t) return null;
-        if (!t[key]) return t.uid;
-        return t[key][0].value;
-      }).join(' | ');
-      return [{
-        lang: type[0][key][0].lang,
-        value: value
-      }];
-    }
-    return null;
+    if (!type || !type[0] || !type[0][key]) return null;
+    var value = type.map(function (t) {
+      if (!t) return null;
+      if (!t[key]) return t.uid;
+      return t[key][0].value;
+    }).join(' | ');
+    return [{
+      lang: type[0][key][0].lang,
+      value: value
+    }];
   };
   if (parameter.type) {
     parameter.type = {
