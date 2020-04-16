@@ -117,15 +117,18 @@ function joinType(parameter) {
   // change type in syntax from array to string
   var joinTypeProperty = function (type, key) {
     if (!type) return null;
-    var value = type.map(function (t) {
-      if (!t || !t[key]) return null;
-      return t[key][0].value;
-    });
-    if (value.includes(null)) return null;
-    return [{
-      lang: type[0][key][0].lang,
-      value: value.join(' | ')
-    }];
+    if (type.some((t) => { !t && !t[key] })) {
+      var value = type.map(function (t) {
+        if (!t) return undefined;
+        if (!t[key]) return t.uid;
+        return t[key][0].value;
+      }).join(' | ');
+      return [{
+        lang: type[0][key][0].lang,
+        value: value
+      }];
+    }
+    return null;
   };
   if (parameter.type) {
     parameter.type = {
