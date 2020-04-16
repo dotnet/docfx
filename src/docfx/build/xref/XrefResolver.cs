@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
             string? moniker = null;
             string? text = null;
+            string? alt = null;
             var queries = new NameValueCollection();
             if (!string.IsNullOrEmpty(query))
             {
@@ -54,6 +55,8 @@ namespace Microsoft.Docs.Build
                 queries.Remove("view");
                 text = queries["text"];
                 queries.Remove("text");
+                alt = queries["alt"];
+                queries.Remove("alt");
             }
             var displayProperty = queries["displayProperty"];
             queries.Remove("displayProperty");
@@ -62,7 +65,7 @@ namespace Microsoft.Docs.Build
             var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
             if (xrefError != null || xrefSpec is null || resolvedHref == null)
             {
-                return (xrefError, null, "", null);
+                return (xrefError, null, alt ?? "", null);
             }
 
             var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
