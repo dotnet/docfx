@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_buildCommitCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildCommitCount", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_buildFileTypeCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_markdownElementCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "MarkdownElement", "ElementType", "TokenType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_markdownElementCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "MarkdownElement", "ElementType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
@@ -84,10 +85,13 @@ namespace Microsoft.Docs.Build
             s_buildFileTypeCountMetric.TrackValue(1, fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static void TrackMarkdownElement(Document file, string? elementType, string? tokenType)
+        public static void TrackMarkdownElement(Document file, Dictionary<string, int> elementCount)
         {
             var (fileExtension, documentType, mimeType) = GetFileType(file.FilePath, file.ContentType, file.Mime.Value);
-            s_markdownElementCountMetric.TrackValue(1, CoalesceEmpty(elementType), CoalesceEmpty(tokenType), fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
+            foreach (var (elementType, value) in elementCount)
+            {
+                s_markdownElementCountMetric.TrackValue(value, CoalesceEmpty(elementType), fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
+            }
         }
 
         public static void TrackBuildCommitCount(int count)
