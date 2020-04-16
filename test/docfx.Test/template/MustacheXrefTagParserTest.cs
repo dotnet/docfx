@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
             "    <a href=\"{{href}}\"> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{.}} </span>" +
+            "    <span> {{uid}} </span>" +
             "  {{/href}}" +
             "{{/uid}}"
             )]
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             "    <a href=\"{{href}}\"> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{.}} </span>" +
+            "    <span> {{uid}} </span>" +
             "  {{/href}}" +
             "{{/uid}}"
             )]
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             "    <a href='{{href}}'> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{.}} </span>" +
+            "    <span> {{uid}} </span>" +
             "  {{/href}}" +
             "{{/namespace}}"
             )]
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             "    {{> partials/dotnet/xref-name.tmpl}}" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{.}} </span>" +
+            "    <span> {{uid}} </span>" +
             "  {{/href}}" +
             "{{/uid}}"
             )]
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             "  <a href=\"{{href}}\"> {{name}} </a>" +
             "{{/href}}" +
             "{{^href}}" +
-            "  <span> {{.}} </span>" +
+            "  <span> {{uid}} </span>" +
             "{{/href}}"
             )]
         public void ProcessXrefTag(string template, string expected)

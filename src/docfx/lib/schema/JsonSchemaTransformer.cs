@@ -277,13 +277,9 @@ namespace Microsoft.Docs.Build
                     var (xrefError, xrefSpec, href) = context.XrefResolver.ResolveXrefSpec(content, file, file);
                     errors.AddIfNotNull(xrefError);
 
-                    if (xrefSpec != null)
-                    {
-                        var specObj = JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
-                        return (errors, specObj);
-                    }
-
-                    return (errors, value);
+                    return xrefSpec != null
+                        ? (errors, JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href)))
+                        : (errors, new JObject { ["uid"] = value, ["href"] = null });
             }
 
             return (errors, value);
