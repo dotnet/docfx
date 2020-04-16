@@ -33,7 +33,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var type = string.Empty;
             var loc_scope = string.Empty;
             var border = true;
-            var lightbox = string.Empty;
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -59,10 +58,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         }
                         break;
                     case "lightbox":
-                        lightbox = value;
                         break;
                     default:
-                        logError($"Unexpected attribute \"{name}\". Image is invalid per the schema.");
+                        logError($"Image reference '{src}' is invalid per the schema. Unexpected attribute: '{name}'.");
                         return false;
                 }
             }
@@ -86,6 +84,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             htmlAttributes = new HtmlAttributes();
             htmlAttributes.AddProperty("src", src);
+
             if (type == "icon")
             {
                 htmlAttributes.AddProperty("role", "presentation");
@@ -110,7 +109,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (!string.IsNullOrEmpty(currentLightbox))
                 {
-                    renderer.WriteLine($"<a href=\"{currentLightbox}#lightbox\" data-linktype=\"relative-path\">");
+                    var lighboxHtmlAttributes = new HtmlAttributes();
+                    lighboxHtmlAttributes.AddProperty("href", $"{currentLightbox}#lightbox");
+                    lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
+                    renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
                 }
                 if(currentBorder)
                 {
