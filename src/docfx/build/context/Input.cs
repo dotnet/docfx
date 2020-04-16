@@ -57,6 +57,7 @@ namespace Microsoft.Docs.Build
             {
                 case FileOrigin.Main:
                 case FileOrigin.Generated:
+                case FileOrigin.External:
                     return _buildOptions.DocsetPath.Concat(preferOriginalPath ? file.OriginalPath ?? file.Path : file.Path);
 
                 case FileOrigin.Dependency:

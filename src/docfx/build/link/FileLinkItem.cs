@@ -11,7 +11,14 @@ namespace Microsoft.Docs.Build
     internal class FileLinkItem : IEquatable<FileLinkItem>, IComparable<FileLinkItem>
     {
         [JsonIgnore]
-        public FilePath SourceFile { get; }
+        public FilePath InclusionRoot { get; }
+
+        [JsonIgnore]
+        public FilePath ReferencingFile { get; }
+
+        public string SourceGitUrl { get; set; } = "";
+
+        public int SourceLine { get; }
 
         public string SourceUrl { get; }
 
@@ -19,12 +26,14 @@ namespace Microsoft.Docs.Build
 
         public string TargetUrl { get; }
 
-        public FileLinkItem(FilePath sourceFile, string sourceUrl, string? sourceMonikerGroup, string targetUrl)
+        public FileLinkItem(FilePath inclusionRoot, FilePath referencingFile, string sourceUrl, string? sourceMonikerGroup, string targetUrl, int sourceLine)
         {
-            SourceFile = sourceFile;
+            InclusionRoot = inclusionRoot;
+            ReferencingFile = referencingFile;
             SourceUrl = sourceUrl;
             SourceMonikerGroup = sourceMonikerGroup;
             TargetUrl = targetUrl;
+            SourceLine = sourceLine;
         }
 
         public int CompareTo(FileLinkItem other)

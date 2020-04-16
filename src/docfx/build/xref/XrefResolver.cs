@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
 
             query = queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries);
             var fileLink = UrlUtility.MergeUrl(xrefSpec.Href, query, fragment);
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, fileLink);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             {
                 return (error, null, "", null);
             }
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href, uid.Source);
             return (null, href, xrefSpec.Name ?? "", xrefSpec.DeclaringFile);
         }
 

@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog, ContentValidator);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider);
-            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder);
+            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder, ContributionProvider);
             XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder);
 
             LinkResolver = new LinkResolver(

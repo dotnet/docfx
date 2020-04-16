@@ -11,34 +11,46 @@ namespace Microsoft.Docs.Build
         private readonly ErrorLog _errorLog;
         private readonly MonikerProvider _monikerProvider;
         private readonly PublishModelBuilder _publishModelBuilder;
+        private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
 
-        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, PublishModelBuilder publishModelBuilder)
+        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, PublishModelBuilder publishModelBuilder, ContributionProvider contributionProvider)
         {
             _errorLog = errorLog;
             _monikerProvider = monikerProvider;
             _publishModelBuilder = publishModelBuilder;
+            _contributionProvider = contributionProvider;
         }
 
-        public void AddFileLink(FilePath file, string sourceUrl, string targetUrl)
+        public void AddFileLink(FilePath inclusionRoot, FilePath referecningFile, string sourceUrl, string targetUrl, SourceInfo? source)
         {
             if (string.IsNullOrEmpty(targetUrl) || sourceUrl == targetUrl)
             {
                 return;
             }
 
-            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(inclusionRoot);
             _errorLog.Write(errors);
-
-            _links.TryAdd(new FileLinkItem(file, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl));
+            _links.TryAdd(new FileLinkItem(inclusionRoot, referecningFile, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl, source is null ? 1 : source.Line));
         }
 
         public object Build()
         {
             return new
             {
-                Links = from link in _links where _publishModelBuilder.HasOutput(link.SourceFile) orderby link select link,
+                Links = _links
+                        .Where(x => _publishModelBuilder.HasOutput(x.InclusionRoot))
+                        .OrderBy(x => x)
+                        .Select(x =>
+                        {
+                            var (_, originalContentGitUrl, _, _) = _contributionProvider.GetGitUrls(x.ReferencingFile);
+                            if (!string.IsNullOrEmpty(originalContentGitUrl))
+                            {
+                                x.SourceGitUrl = originalContentGitUrl;
+                            }
+                            return x;
+                        }),
             };
+        }
     }
-}
 }

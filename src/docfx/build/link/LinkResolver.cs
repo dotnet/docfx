@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, inclusionRoot.SiteUrl, link);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, link, href.Source);
 
             if (file != null)
             {
