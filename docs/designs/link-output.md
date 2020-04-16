@@ -42,11 +42,14 @@ Docfx generate `links` information of each files into one single file `.links.js
 
 *link model*:
 
-  |                         |                      |
-  |-------------------------|----------------------|
-  | `source_url`            | /dotnet/articles/a   |
-  | `source_moniker_group`  | 218c13d0             |
-  | `target_url`            | /dotnet/articles/b   |
+  |                         |                                         |
+  |-------------------------|----------------------                   |
+  | `source_url`            | /dotnet/articles/a                      |
+  | `source_moniker_group`  | 218c13d0                                |
+  | `target_url`            | /dotnet/articles/b                      |
+  | `source_git_url`        | https://github.com/dotnet/articles/a.md |
+  | `source_line`           | 10                                      |
+
 
 Example:
 
@@ -57,20 +60,26 @@ Example:
         {
             "source_url": "/dotnet/articles/a",
             "source_moniker_group": "218c13d0",
-            "target_url": "/dotnet/articles/b"
+            "target_url": "/dotnet/articles/b",
+            "source_git_url": "https://github.com/dotnet/articles/a.md",
+            "source_line": "10"
         },
         {
             "source_url": "/dotnet/articles/a",
             "source_moniker_group": "218c13d0",
-            "target_url": "https://github.com"
+            "target_url": "https://github.com",
+            "source_git_url": "https://github.com/dotnet/articles/a.md",
+            "source_line": "20"
         },
         {
             "source_url": "/dotnet/articles/a",
             "source_moniker_group": "218c13d0",
-            "target_url": "./c.md"
+            "target_url": "./c.md",
+            "source_git_url": "https://github.com/dotnet/articles/a.md",
+            "source_line": "30"
         }
     ]
 }
 ```
-> Notice: `source_url` should be the root file for inclusion (TOC inclusion and markdown inclusion)
+> Notice: `source_url` should be the root file for inclusion (TOC inclusion and markdown inclusion), and `source_git_url` should be the included file
 

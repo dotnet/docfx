@@ -131,12 +131,16 @@ namespace Microsoft.Docs.Build
                 context.ErrorLog.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
-            // uid conflicts with different names
+            // uid conflicts with different values of the same xref property
             // log an warning and take the first one order by the declaring file
-            var conflictingNames = specsWithSameUid.Select(x => x.Name).Distinct();
-            if (conflictingNames.Count() > 1)
+            var xrefProperties = specsWithSameUid.SelectMany(x => x.XrefProperties.Keys).Distinct();
+            foreach (var xrefProperty in xrefProperties)
             {
-                context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, "name", conflictingNames));
+                var conflictingNames = specsWithSameUid.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
+                if (conflictingNames.Count() > 1)
+                {
+                    context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, xrefProperty, conflictingNames));
+                }
             }
 
             return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).First();

@@ -176,6 +176,47 @@ outputs:
   ce/basics/teams-integration.json: |
     { "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48" }
 ---
+# redirect_document_id is false
+# document_id should be different
+repos:
+  https://github.com/ops/redirect-2:
+  - files:
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {
+              "source_path": "admin/integrate-with-microsoft-teams.md",
+              "redirect_url": "basics/teams-integration",
+              "redirect_document_id": "false"
+            },
+          ]
+        }
+      docfx.yml: |
+        name: customer-engagement-ppe
+        product: MSDN
+      basics/teams-integration.md:
+outputs:
+  .publish.json: |
+    {
+      "files": [
+        {
+            "url": "/admin/integrate-with-microsoft-teams",
+            "redirect_url": "basics/teams-integration",
+            "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48",
+            "document_version_independent_id": "b0ccab65-c087-a7f8-5067-92fe325727bb",
+            "canonical_url": "https://docs.com/en-us/admin/integrate-with-microsoft-teams"
+        },
+        {
+            "url": "/basics/teams-integration",
+            "canonical_url": "https://docs.com/en-us/basics/teams-integration",
+            "document_id": "a68002c2-0287-708f-80f0-04292dc0a0b3",
+            "document_version_independent_id": "b017c64d-16c2-701d-3118-e5a54dfddbc5",
+        }
+      ]
+    }
+  basics/teams-integration.json: |
+    { "document_id": "a68002c2-0287-708f-80f0-04292dc0a0b3" }
+---
 # Supports fusion TOC ops config
 repos:
   https://github.com/ops/fusion-toc:

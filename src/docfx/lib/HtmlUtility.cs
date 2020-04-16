@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
                 var resolvedNode = new HtmlDocument();
                 if (string.IsNullOrEmpty(resolvedHref))
                 {
-                    resolvedNode.LoadHtml(rawSource ?? $"<span class=\"xref\">{(href != null ? UrlUtility.SplitUrl(href).path : uid)}</span>");
+                    resolvedNode.LoadHtml(rawSource ?? $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>");
                 }
                 else
                 {
