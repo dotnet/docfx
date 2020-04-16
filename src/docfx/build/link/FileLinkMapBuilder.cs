@@ -20,16 +20,16 @@ namespace Microsoft.Docs.Build
             _publishModelBuilder = publishModelBuilder;
         }
 
-        public void AddFileLink(FilePath file, string sourceUrl, string targetUrl, SourceInfo? source)
+        public void AddFileLink(FilePath inclusionRoot, FilePath referecningFile, string sourceUrl, string targetUrl, SourceInfo? source)
         {
             if (string.IsNullOrEmpty(targetUrl) || sourceUrl == targetUrl)
             {
                 return;
             }
 
-            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file);
+            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(inclusionRoot);
             _errorLog.Write(errors);
-            _links.TryAdd(new FileLinkItem(file, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl, source is null ? 1 : source.Line));
+            _links.TryAdd(new FileLinkItem(inclusionRoot, referecningFile, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl, source is null ? 1 : source.Line));
         }
 
         public object Build(ContributionProvider contributionProvider)
@@ -37,15 +37,14 @@ namespace Microsoft.Docs.Build
             return new
             {
                 Links = _links
-                        .Where(x => _publishModelBuilder.HasOutput(x.SourceFile))
+                        .Where(x => _publishModelBuilder.HasOutput(x.InlcusionRoot))
                         .OrderBy(x => x)
                         .Select(x =>
                         {
-                            // TODO: cache this
-                            var (_, originalContentGitUrl, _, _) = contributionProvider.GetGitUrls(x.SourceFile);
+                            var (_, originalContentGitUrl, _, _) = contributionProvider.GetGitUrls(x.ReferencingFile);
                             if (!string.IsNullOrEmpty(originalContentGitUrl))
                             {
-                                x.SourceFilePath = originalContentGitUrl;
+                                x.SourceGitUrl = originalContentGitUrl;
                             }
                             return x;
                         }),

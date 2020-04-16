@@ -69,6 +69,11 @@ namespace Microsoft.Docs.Build
                 return path;
             }
 
+            if (path._value.Contains(':'))
+            {
+                return path;
+            }
+
             var str = _value[^1] == '/'
                 ? _value + path._value
                 : _value + '/' + path._value;
