@@ -1,8 +1,16 @@
-Version Notes (Current Version: v2.52)
+Version Notes (Current Version: v2.53)
 =======================================
 
-v2.52(Pre-release)
+v2.53(Pre-release)
 -----------
+
+v2.52
+-----------
+1. Improve readibility of default theme (#5156). Thanks @djee-ms!
+2. Support F# v4.5 language features (#3679). Thanks @smindinvern!
+3. DocFX returns `-1` for errors that cause notable result missing, `1` for crash or severe errors, `0` for success. Before, DocFX returns `1` when error happens no matter which kind it is. (#5734)
+3. Bug fix:
+    1. Fix TOC filter in statictoc template for Edge and IE browser (#5651). Thanks @Blake-Eryx!
 
 v2.51
 -----------
