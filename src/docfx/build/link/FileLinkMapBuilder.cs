@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             return new
             {
                 Links = _links
-                        .Where(x => _publishModelBuilder.HasOutput(x.InlcusionRoot))
+                        .Where(x => _publishModelBuilder.HasOutput(x.InclusionRoot))
                         .OrderBy(x => x)
                         .Select(x =>
                         {
