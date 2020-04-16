@@ -114,8 +114,7 @@ namespace Microsoft.Docs.Build
         [InlineData("a", "c:/b", "c:/b")]
         public static void PathConcatTest(string a, string b, string match)
         {
-            var result = new PathString(a).Concat(new PathString(b));
-            Assert.Equal(match, result);
+            Assert.Equal(match, new PathString(a).Concat(new PathString(b)));
         }
 
         [Theory]
