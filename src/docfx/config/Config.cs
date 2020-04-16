@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ECMA2Yaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -278,6 +279,11 @@ namespace Microsoft.Docs.Build
         /// Determines if validate the moniker confguration.
         /// </summary>
         public bool SkipMonikerValidation { get; private set; }
+
+        /// <summary>
+        /// Determines and configures build to consume XML files produced from monodoc
+        /// </summary>
+        public ECMA2YamlRepoConfig? Monodoc { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

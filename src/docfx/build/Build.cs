@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
+using ECMA2Yaml;
 
 namespace Microsoft.Docs.Build
 {
@@ -52,6 +54,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 errorLog.Configure(config, buildOptions.OutputPath);
+
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
                 Run(context);
                 return errorLog.ErrorCount > 0;
@@ -71,6 +74,8 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
+            context.OpsPreProcessor.Run();
+
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));

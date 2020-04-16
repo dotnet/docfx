@@ -68,6 +68,8 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsMap TocMap { get; }
 
+        public OpsPreProcessor OpsPreProcessor { get; }
+
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
         {
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -117,6 +119,8 @@ namespace Microsoft.Docs.Build
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, tocParser, TableOfContentsLoader, DocumentProvider);
+
+            OpsPreProcessor = new OpsPreProcessor(config, buildOptions);
         }
 
         public void Dispose()
