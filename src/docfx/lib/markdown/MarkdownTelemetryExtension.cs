@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Markdig;
 using Markdig.Extensions.Emoji;
 using Markdig.Extensions.Tables;
@@ -18,15 +19,20 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
+                var elementCount = new Dictionary<string, int>();
+
                 document.Visit(node =>
                 {
-                    Telemetry.TrackMarkdownElement((Document)InclusionContext.File, GetElementType(node), GetTokenType(node));
+                    var elementType = GetElementType(node);
+                    elementCount[elementType] = elementCount.TryGetValue(elementType, out var value) ? value + 1 : 1;
                     return false;
                 });
+
+                Telemetry.TrackMarkdownElement((Document)InclusionContext.File, elementCount);
             });
         }
 
-        public static string? GetElementType(MarkdownObject node)
+        public static string GetElementType(MarkdownObject node)
         {
             return node switch
             {
@@ -46,7 +52,7 @@ namespace Microsoft.Docs.Build
                         QuoteSectionNoteType.DFMSection => "SectionDefinition",
                         QuoteSectionNoteType.DFMVideo => "Video",
                         QuoteSectionNoteType.MarkdownQuote => "BlockQuote",
-                        _ => throw new NotSupportedException(),
+                        _ => quoteSectionNoteBlock.QuoteType.ToString(),
                     },
                 ListBlock listBlock => "List",
                 CodeSnippet codeSnippet => "CodeSnippet",
@@ -71,32 +77,8 @@ namespace Microsoft.Docs.Build
                 LineBreakInline linkBreakInline => linkBreakInline.IsHard ? "HardLineBreak" : "SoftLineBreak",
                 XrefInline xrefInline => "Xref",
                 NolocInline nolocInline => "Noloc",
-                _ => null,
+                _ => node.GetType().Name,
             };
-        }
-
-        public static string? GetTokenType(MarkdownObject node)
-        {
-            var tokenType = node.GetType().Name;
-            tokenType += node switch
-            {
-                HtmlBlock htmlBlock => $"-{htmlBlock.Type}",
-                QuoteSectionNoteBlock quoteSectionNoteBlock => GetQuoteSectionNoteBlockSubType(quoteSectionNoteBlock),
-                TripleColonBlock tripleColonBlock => $"-{StringUtility.UpperCaseFirstChar(tripleColonBlock.Extension.Name)}",
-                _ => null,
-            };
-
-            return tokenType;
-
-            string GetQuoteSectionNoteBlockSubType(QuoteSectionNoteBlock quoteSectionNote)
-            {
-                var subType = $"-{quoteSectionNote.QuoteType}";
-                if (quoteSectionNote.QuoteType == QuoteSectionNoteType.DFMNote)
-                {
-                    subType += $"-{StringUtility.UpperCaseFirstChar(quoteSectionNote.NoteTypeString)}";
-                }
-                return subType;
-            }
         }
     }
 }
