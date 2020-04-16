@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
-                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.ContributionProvider)),
+                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build()),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
         }
 

@@ -11,13 +11,15 @@ namespace Microsoft.Docs.Build
         private readonly ErrorLog _errorLog;
         private readonly MonikerProvider _monikerProvider;
         private readonly PublishModelBuilder _publishModelBuilder;
+        private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
 
-        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, PublishModelBuilder publishModelBuilder)
+        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, PublishModelBuilder publishModelBuilder, ContributionProvider contributionProvider)
         {
             _errorLog = errorLog;
             _monikerProvider = monikerProvider;
             _publishModelBuilder = publishModelBuilder;
+            _contributionProvider = contributionProvider;
         }
 
         public void AddFileLink(FilePath inclusionRoot, FilePath referecningFile, string sourceUrl, string targetUrl, SourceInfo? source)
@@ -32,7 +34,7 @@ namespace Microsoft.Docs.Build
             _links.TryAdd(new FileLinkItem(inclusionRoot, referecningFile, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl, source is null ? 1 : source.Line));
         }
 
-        public object Build(ContributionProvider contributionProvider)
+        public object Build()
         {
             return new
             {
@@ -41,7 +43,7 @@ namespace Microsoft.Docs.Build
                         .OrderBy(x => x)
                         .Select(x =>
                         {
-                            var (_, originalContentGitUrl, _, _) = contributionProvider.GetGitUrls(x.ReferencingFile);
+                            var (_, originalContentGitUrl, _, _) = _contributionProvider.GetGitUrls(x.ReferencingFile);
                             if (!string.IsNullOrEmpty(originalContentGitUrl))
                             {
                                 x.SourceGitUrl = originalContentGitUrl;
