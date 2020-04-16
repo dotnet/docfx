@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 templateLoader,
                 templateLoader,
                 maxRecursionDepth: 256,
-                RenderSettings.GetDefaultRenderSettings(),
+                new RenderSettings { SkipRecursiveLookup = true },
                 enumerationConverters,
                 ignoreCaseOnLookup: true,
                 new CachedMustacheParser(),
@@ -96,15 +96,11 @@ namespace Microsoft.Docs.Build
 
         private object? GetValue(object token, string key, bool ignoreCase)
         {
-            if (key == ".")
-            {
-                return token;
-            }
-
             return token switch
             {
                 JObject obj => key == "__global" && _global != null
                     ? _global : obj.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal),
+                JArray array when int.TryParse(key, out var index) && index >= 0 && index < array.Count => array[index],
                 _ => null,
             };
         }
