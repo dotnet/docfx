@@ -282,8 +282,14 @@ namespace Microsoft.Docs.Build
                         var specObj = JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
                         return (errors, specObj);
                     }
-
-                    return (errors, value);
+                    else
+                    {
+                        return (errors, new JObject
+                        {
+                            ["uid"] = value,
+                            ["href"] = null,
+                        });
+                    }
             }
 
             return (errors, value);
