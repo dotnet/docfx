@@ -2,79 +2,121 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Stubble.Core;
 using Stubble.Core.Builders;
+using Stubble.Core.Classes;
 using Stubble.Core.Interfaces;
+using Stubble.Core.Parser;
+using Stubble.Core.Renderers;
 using Stubble.Core.Settings;
 
 namespace Microsoft.Docs.Build
 {
     internal class MustacheTemplate
     {
-        private readonly string _templateDir;
+        private readonly JObject? _global;
         private readonly IStubbleRenderer _renderer;
-        private readonly ConcurrentDictionary<string, Lazy<string?>> _templates = new ConcurrentDictionary<string, Lazy<string?>>();
 
         public MustacheTemplate(string templateDir, JObject? global = null)
         {
-            _templateDir = templateDir;
-            _renderer = new StubbleBuilder().Configure(
-                settings => UseJson(settings, global).SetPartialTemplateLoader(new PartialLoader(templateDir))).Build();
+            var templateLoader = new TemplateLoader(templateDir);
+
+            var valueGetters = new Dictionary<Type, RendererSettingsDefaults.ValueGetterDelegate>
+            {
+                [typeof(JToken)] = GetValue,
+            };
+
+            var truthyCheck = new List<Func<object, bool>> { IsTruthy };
+            var truthyChecks = new Dictionary<Type, List<Func<object, bool>>>
+            {
+                [typeof(JObject)] = truthyCheck,
+                [typeof(JArray)] = truthyCheck,
+                [typeof(JValue)] = truthyCheck,
+            };
+
+            var enumerationConverters = new Dictionary<Type, Func<object, IEnumerable>>();
+
+            // JObject implements IEnumerable, stubble treats IEnumerable as array,
+            // need to put it to section blacklist and overwrite the truthy check method.
+            var sectionBlacklistTypes = new HashSet<Type>
+            {
+                typeof(JObject), typeof(JValue), typeof(string), typeof(IDictionary),
+            };
+
+            var rendererSettings = new RendererSettings(
+                valueGetters,
+                truthyChecks,
+                templateLoader,
+                templateLoader,
+                maxRecursionDepth: 256,
+                RenderSettings.GetDefaultRenderSettings(),
+                enumerationConverters,
+                ignoreCaseOnLookup: true,
+                new CachedMustacheParser(),
+                new TokenRendererPipeline<Stubble.Core.Contexts.Context>(RendererSettingsDefaults.DefaultTokenRenderers()),
+                new Tags("{{", "}}"),
+                new ParserPipelineBuilder().Build(),
+                sectionBlacklistTypes,
+                EncodingFunctions.WebUtilityHtmlEncoding);
+
+            _global = global;
+            _renderer = new StubbleVisitorRenderer(rendererSettings);
         }
 
         public string Render(string templateFileName, JToken model)
         {
-            var template = _templates.GetOrAdd(
-                templateFileName,
-                key => new Lazy<string?>(() =>
-                {
-                    var fileName = Path.Combine(_templateDir, templateFileName);
-                    return File.Exists(fileName)
-                    ? MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""))
-                    : null;
-                })).Value;
-
-            return template == null ? JsonUtility.Serialize(model) : _renderer.Render(template, model);
+            return _renderer.Render(templateFileName, model);
         }
 
-        private static RendererSettingsBuilder UseJson(RendererSettingsBuilder settings, JObject? global)
+        private bool IsTruthy(object token)
         {
-            // JObject implements IEnumerable, stubble treats IEnumerable as array,
-            // need to put it to section blacklist and overwrite the truthy check method.
-            return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
-                           .AddValueGetter(typeof(JValue), GetJValueValue)
-                           .AddTruthyCheck<JObject>(value => value != null)
-                           .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
-                           .AddSectionBlacklistType(typeof(JObject))
-                           .AddSectionBlacklistType(typeof(JValue));
-
-            object? GetJObjectValue(object value, string key, bool ignoreCase)
+            return token switch
             {
-                if (key == "__global" && global != null)
+                JArray array => array.Count > 0,
+                JValue value => value.Value switch
                 {
-                    return global;
-                }
-                var token = (JObject)value;
-                var childToken = token.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+                    null => false,
+                    string stringValue => stringValue.Length > 0,
+                    bool boolValue => boolValue,
+                    int intValue => intValue != 0,
+                    long longValue => longValue != 0,
+                    float floatValue => floatValue != 0,
+                    double doubleValue => doubleValue != 0,
+                    _ => true,
+                },
+                _ => true,
+            };
+        }
 
-                return childToken is JValue scalar ? scalar.Value ?? JValue.CreateNull() : childToken;
+        private object? GetValue(object token, string key, bool ignoreCase)
+        {
+            if (key == ".")
+            {
+                return token;
             }
 
-            object? GetJValueValue(object value, string key, bool ignoreCase)
-                => key.Trim() == "." ? ((JValue)value).Value : null;
+            return token switch
+            {
+                JObject obj => key == "__global" && _global != null
+                    ? _global : obj.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal),
+                _ => null,
+            };
         }
 
-        private class PartialLoader : IStubbleLoader
+        private class TemplateLoader : IStubbleLoader
         {
             private readonly string _dir;
             private readonly ConcurrentDictionary<string, Lazy<string>> _cache = new ConcurrentDictionary<string, Lazy<string>>();
 
-            public PartialLoader(string dir) => _dir = dir;
+            public TemplateLoader(string dir) => _dir = dir;
 
-            public IStubbleLoader Clone() => new PartialLoader(_dir);
+            public IStubbleLoader Clone() => new TemplateLoader(_dir);
 
             public ValueTask<string> LoadAsync(string name) => new ValueTask<string>(Load(name));
 
