@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             "{'uid':{'name':'uid-name-resolve','href':'https://domain/path'}}",
             "<a class=\"xref\" href=\"https://domain/path\">uid-name-resolve</a>")]
         [InlineData("xref-list.tmpl",
-            "{'uids': [{'name':'uid-name-resolve', 'href': 'https://domain/path'}, 'uid-name-unresolve']}",
+            "{'uids': [{'name':'uid-name-resolve', 'href': 'https://domain/path'}, {'uid':'uid-name-unresolve', 'href':null}]}",
             "<a href=\"https://domain/path\"> uid-name-resolve </a>\n<span> uid-name-unresolve </span>")]
         [InlineData(
             "include.tmpl",
