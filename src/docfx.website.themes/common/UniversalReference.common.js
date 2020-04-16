@@ -117,7 +117,7 @@ function joinType(parameter) {
   // change type in syntax from array to string
   var joinTypeProperty = function (type, key) {
     if (!type) return null;
-    if (type.some((t) => { !t && !t[key] })) {
+    if (type.some((t) => { t && t[key] })) {
       var value = type.map(function (t) {
         if (!t) return undefined;
         if (!t[key]) return t.uid;
