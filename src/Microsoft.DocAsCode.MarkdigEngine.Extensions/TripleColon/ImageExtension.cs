@@ -111,8 +111,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if (!string.IsNullOrEmpty(currentLightbox))
                 {
                     var lighboxHtmlAttributes = new HtmlAttributes();
-                    var fullPath = Path.GetDirectoryName(InclusionContext.File.ToString()).Replace("\\", "/");
-                    lighboxHtmlAttributes.AddProperty("href", $"{fullPath}/{currentLightbox}#lightbox");
+                    var path = currentLightbox;
+                    if (InclusionContext.File.ToString().Contains("~/") && !currentLightbox.Contains("~/"))
+                    {
+                        path = Path.Combine(Path.GetDirectoryName(InclusionContext.File.ToString()), currentLightbox).Replace("\\", "/");
+                    }
+                    lighboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
                     lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
                     renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
                 }
