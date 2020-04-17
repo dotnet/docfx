@@ -82,6 +82,10 @@ namespace Microsoft.Docs.Build
                             case JValue value when !IsTruthy(value):
                                 break;
 
+                            case JValue value:
+                                Render(section, result, context);
+                                break;
+
                             case JArray array:
                                 foreach (var item in array)
                                 {
