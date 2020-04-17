@@ -49,6 +49,11 @@ namespace Microsoft.Docs.Build
             return mime is null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
         }
 
+        public bool IsConceptual(string? mime)
+        {
+            return string.Equals(mime, "Conceptual", StringComparison.OrdinalIgnoreCase);
+        }
+
         public TemplateSchema GetSchema(SourceInfo<string?> schemaName)
         {
             var name = schemaName.Value;

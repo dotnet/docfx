@@ -72,8 +72,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsPage { get; }
 
-        public bool IsConceptual => Mime == "Conceptual";
-
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
         /// </summary>
