@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
-            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath, monikers);
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
             var monikerGroup = MonikerUtility.GetGroup(monikers);
 
             // enable pdf
