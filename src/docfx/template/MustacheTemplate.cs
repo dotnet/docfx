@@ -2,132 +2,192 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Net;
+using System.Text;
 using Newtonsoft.Json.Linq;
-using Stubble.Core;
 using Stubble.Core.Builders;
 using Stubble.Core.Classes;
-using Stubble.Core.Interfaces;
 using Stubble.Core.Parser;
-using Stubble.Core.Renderers;
-using Stubble.Core.Settings;
+using Stubble.Core.Tokens;
 
 namespace Microsoft.Docs.Build
 {
     internal class MustacheTemplate
     {
+        private static readonly Tags s_defaultTags = new Tags("{{", "}}");
+        private static readonly ConcurrentBag<StringBuilder> s_pool = new ConcurrentBag<StringBuilder>();
+
         private readonly JObject? _global;
-        private readonly IStubbleRenderer _renderer;
+        private readonly string _templateDir;
+        private readonly ParserPipeline _parserPipeline;
+        private readonly ConcurrentDictionary<string, Lazy<BlockToken>> _templates = new ConcurrentDictionary<string, Lazy<BlockToken>>(PathUtility.PathComparer);
 
         public MustacheTemplate(string templateDir, JObject? global = null)
         {
-            var templateLoader = new TemplateLoader(templateDir);
-
-            var valueGetters = new Dictionary<Type, RendererSettingsDefaults.ValueGetterDelegate>
-            {
-                [typeof(JToken)] = GetValue,
-            };
-
-            var truthyCheck = new List<Func<object, bool>> { IsTruthy };
-            var truthyChecks = new Dictionary<Type, List<Func<object, bool>>>
-            {
-                [typeof(JObject)] = truthyCheck,
-                [typeof(JArray)] = truthyCheck,
-                [typeof(JValue)] = truthyCheck,
-            };
-
-            var enumerationConverters = new Dictionary<Type, Func<object, IEnumerable>>();
-
-            // JObject implements IEnumerable, stubble treats IEnumerable as array,
-            // need to put it to section blacklist and overwrite the truthy check method.
-            var sectionBlacklistTypes = new HashSet<Type>
-            {
-                typeof(JObject), typeof(JValue), typeof(string), typeof(IDictionary),
-            };
-
-            var rendererSettings = new RendererSettings(
-                valueGetters,
-                truthyChecks,
-                templateLoader,
-                templateLoader,
-                maxRecursionDepth: 256,
-                new RenderSettings { SkipRecursiveLookup = true },
-                enumerationConverters,
-                ignoreCaseOnLookup: true,
-                new CachedMustacheParser(),
-                new TokenRendererPipeline<Stubble.Core.Contexts.Context>(RendererSettingsDefaults.DefaultTokenRenderers()),
-                new Tags("{{", "}}"),
-                new ParserPipelineBuilder().Build(),
-                sectionBlacklistTypes,
-                EncodingFunctions.WebUtilityHtmlEncoding);
-
             _global = global;
-            _renderer = new StubbleVisitorRenderer(rendererSettings);
+            _templateDir = templateDir;
+            _parserPipeline = new ParserPipelineBuilder().Build();
         }
 
         public string Render(string templateFileName, JToken model)
         {
-            return _renderer.Render(templateFileName, model);
+            var context = new Stack<JToken>();
+            var template = GetTemplate(templateFileName);
+
+            var result = s_pool.TryTake(out var sb) ? sb : new StringBuilder(1024);
+            result.Length = 0;
+            context.Push(model);
+            Render(template, result, context);
+            var text = result.ToString();
+            s_pool.Add(result);
+            return text;
         }
 
-        private bool IsTruthy(object token)
+        public void Render(BlockToken block, StringBuilder result, Stack<JToken> context)
         {
-            return token switch
+            foreach (var child in block.Children)
             {
-                JArray array => array.Count > 0,
-                JValue value => value.Value switch
+                switch (child)
                 {
-                    null => false,
-                    string stringValue => stringValue.Length > 0,
-                    bool boolValue => boolValue,
-                    int intValue => intValue != 0,
-                    long longValue => longValue != 0,
-                    float floatValue => floatValue != 0,
-                    double doubleValue => doubleValue != 0,
-                    _ => true,
-                },
-                _ => true,
-            };
+                    case LiteralToken literal:
+                        foreach (var content in literal.Content)
+                        {
+                            result.Append(content.Text, content.Start, content.Length);
+                        }
+                        break;
+
+                    case PartialToken partial:
+                        Render(GetTemplate(partial.Content.ToString()), result, context);
+                        break;
+
+                    case InvertedSectionToken invertedSection:
+                        switch (Lookup(context, invertedSection.SectionName))
+                        {
+                            case null:
+                            case JValue value when !IsTruthy(value):
+                            case JArray array when array.Count == 0:
+                                Render(invertedSection, result, context);
+                                break;
+                        }
+                        break;
+
+                    case SectionToken section:
+                        var property = Lookup(context, section.SectionName);
+                        switch (property)
+                        {
+                            case null:
+                            case JValue value when !IsTruthy(value):
+                                break;
+
+                            case JArray array:
+                                foreach (var item in array)
+                                {
+                                    context.Push(item);
+                                    Render(section, result, context);
+                                    context.Pop();
+                                }
+                                break;
+
+                            default:
+                                context.Push(property);
+                                Render(section, result, context);
+                                context.Pop();
+                                break;
+                        }
+                        break;
+
+                    case InterpolationToken interpolationToken:
+                        if (Lookup(context, interpolationToken.Content.ToString()) is JToken text)
+                        {
+                            var content = interpolationToken.EscapeResult
+                                ? WebUtility.HtmlEncode(text.ToString())
+                                : text.ToString();
+
+                            result.Append(content);
+                        }
+                        break;
+                }
+            }
         }
 
-        private object? GetValue(object token, string key, bool ignoreCase)
+        private JToken? Lookup(Stack<JToken> tokens, string name)
+        {
+            foreach (var token in tokens)
+            {
+                var result = Lookup(token, name);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        private JToken? Lookup(JToken token, string name)
+        {
+            if (!name.Contains('.'))
+            {
+                return GetProperty(token, name);
+            }
+
+            foreach (var key in name.Split('.', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var value = GetProperty(token, key);
+                if (value is null)
+                {
+                    return null;
+                }
+
+                token = value;
+            }
+
+            return token;
+        }
+
+        private JToken? GetProperty(JToken token, string key)
         {
             return token switch
             {
                 JObject obj => key == "__global" && _global != null
-                    ? _global : obj.GetValue(key, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal),
+                    ? _global : obj.GetValue(key, StringComparison.Ordinal),
                 JArray array when int.TryParse(key, out var index) && index >= 0 && index < array.Count => array[index],
                 _ => null,
             };
         }
 
-        private class TemplateLoader : IStubbleLoader
+        private static bool IsTruthy(JValue value)
         {
-            private readonly string _dir;
-            private readonly ConcurrentDictionary<string, Lazy<string>> _cache = new ConcurrentDictionary<string, Lazy<string>>();
+            return value.Value switch
+            {
+                null => false,
+                string stringValue => stringValue.Length > 0,
+                bool boolValue => boolValue,
+                int intValue => intValue != 0,
+                long longValue => longValue != 0,
+                float floatValue => floatValue != 0,
+                double doubleValue => doubleValue != 0,
+                _ => true,
+            };
+        }
 
-            public TemplateLoader(string dir) => _dir = dir;
-
-            public IStubbleLoader Clone() => new TemplateLoader(_dir);
-
-            public ValueTask<string> LoadAsync(string name) => new ValueTask<string>(Load(name));
-
-            public string Load(string name) => _cache.GetOrAdd(
-                name,
-                key => new Lazy<string>(() =>
+        private BlockToken GetTemplate(string name)
+        {
+            return _templates.GetOrAdd(name, key => new Lazy<BlockToken>(() =>
+            {
+                var fileName = Path.Combine(_templateDir, name);
+                if (!File.Exists(fileName))
                 {
-                    var fileName = Path.Combine(_dir, name);
-                    if (!File.Exists(fileName))
-                    {
-                        fileName = Path.Combine(_dir, name + ".tmpl.partial");
-                    }
+                    fileName = Path.Combine(_templateDir, name + ".tmpl.partial");
+                }
 
-                    return MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
-                })).Value;
+                var template = MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
+
+                return MustacheParser.Parse(template, s_defaultTags, 0, _parserPipeline);
+            })).Value;
         }
     }
 }
