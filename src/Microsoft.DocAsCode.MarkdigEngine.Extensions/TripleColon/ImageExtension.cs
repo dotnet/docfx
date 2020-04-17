@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     var lighboxHtmlAttributes = new HtmlAttributes();
                     var path = currentLightbox;
-                    if (InclusionContext.File.ToString().Contains("~/") && !currentLightbox.Contains("~/"))
+                    if (InclusionContext.IsInclude && !currentLightbox.Contains("~/"))
                     {
                         path = Path.Combine(Path.GetDirectoryName(InclusionContext.File.ToString()), currentLightbox).Replace("\\", "/");
                     }
