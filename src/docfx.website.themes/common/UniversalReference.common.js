@@ -118,6 +118,8 @@ function joinType(parameter) {
   var joinTypeProperty = function (type, key) {
     if (!type || !type[0] || !type[0][key]) return null;
     var value = type.map(function (t) {
+      if (!t) return null;
+      if (!t[key]) return t.uid;
       return t[key][0].value;
     }).join(' | ');
     return [{
