@@ -934,6 +934,7 @@ inputs:
   docs/a.md: |
     <table>
     <tr>A=<xref href="Me" data-throw-if-not-resolved="False" data-raw-source="@Me"></xref></tr>
+
     <tr>A</tr>
     </table>
 outputs:
