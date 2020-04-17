@@ -12,10 +12,10 @@ namespace Microsoft.Docs.Build
     internal class DocumentProvider
     {
         private readonly Config _config;
-        private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly BuildOptions _buildOptions;
         private readonly TemplateEngine _templateEngine;
+        private readonly MonikerProvider _monikerProvider;
 
         private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
@@ -24,13 +24,13 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, BuildOptions buildOptions, BuildScope buildScope, Input input, TemplateEngine templateEngine)
+            Config config, BuildOptions buildOptions, BuildScope buildScope, TemplateEngine templateEngine, MonikerProvider monikerProvider)
         {
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
-            _input = input;
             _templateEngine = templateEngine;
+            _monikerProvider = monikerProvider;
 
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
@@ -43,10 +43,11 @@ namespace Microsoft.Docs.Build
             return _documents.GetOrAdd(path, GetDocumentCore);
         }
 
-        public string GetOutputPath(FilePath path, string[] monikers)
+        public string GetOutputPath(FilePath path)
         {
             var file = GetDocument(path);
 
+            var (_, monikers) = _monikerProvider.GetFileLevelMonikers(path);
             var outputPath = UrlUtility.Combine(_config.BasePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
 
             return _config.Legacy && file.IsPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
@@ -108,7 +109,7 @@ namespace Microsoft.Docs.Build
         private Document GetDocumentCore(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
-            var mime = contentType == ContentType.Page ? ReadMimeFromFile(_input, path) : default;
+            var mime = _buildScope.GetMime(contentType, path);
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path);
@@ -228,30 +229,6 @@ namespace Microsoft.Docs.Build
                 }
             }
             return path;
-        }
-
-        private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath)
-        {
-            switch (filePath.Format)
-            {
-                // TODO: we could have not depend on this exists check, but currently
-                //       LinkResolver works with Document and return a Document for token files,
-                //       thus we are forced to get the mime type of a token file here even if it's not useful.
-                //
-                //       After token resolve does not create Document, this Exists check can be removed.
-                case FileFormat.Json when input.Exists(filePath):
-                    using (var reader = input.ReadText(filePath))
-                    {
-                        return JsonUtility.ReadMime(reader, filePath);
-                    }
-                case FileFormat.Yaml when input.Exists(filePath):
-                    using (var reader = input.ReadText(filePath))
-                    {
-                        return new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
-                    }
-                default:
-                    return default;
-            }
         }
     }
 }

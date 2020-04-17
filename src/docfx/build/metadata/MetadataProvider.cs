@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly bool _hasMonikerRangeFileMetadata;
-        private readonly DocumentProvider _documentProvider;
+        private readonly BuildScope _buildScope;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
         private readonly HashSet<string> _reservedMetadata;
@@ -30,11 +30,11 @@ namespace Microsoft.Docs.Build
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
         public MetadataProvider(
-            Config config, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, DocumentProvider documentProvider)
+            Config config, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, BuildScope buildScope)
         {
             _input = input;
-            _documentProvider = documentProvider;
             _globalMetadata = config.GlobalMetadata.ExtensionData;
+            _buildScope = buildScope;
 
             MetadataSchemas = Array.ConvertAll(
                 config.MetadataSchema,
@@ -73,9 +73,9 @@ namespace Microsoft.Docs.Build
 
         public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath path)
         {
-            var file = _documentProvider.GetDocument(path);
+            var contentType = _buildScope.GetContentType(path);
 
-            switch (file.ContentType)
+            switch (contentType)
             {
                 case ContentType.Unknown:
                 case ContentType.Redirection when !_hasMonikerRangeFileMetadata:
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                     return (new List<Error>(), new UserMetadata());
 
                 default:
-                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(file));
+                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(path, contentType));
             }
         }
 
@@ -98,27 +98,27 @@ namespace Microsoft.Docs.Build
             return errors;
         }
 
-        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(Document file)
+        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath filePath, ContentType contentType)
         {
             var result = new JObject();
             var errors = new List<Error>();
 
-            JsonUtility.SetSourceInfo(result, new SourceInfo(file.FilePath, 1, 1));
+            JsonUtility.SetSourceInfo(result, new SourceInfo(filePath, 1, 1));
             JsonUtility.Merge(result, _globalMetadata);
 
             var fileMetadata = new JObject();
             foreach (var (glob, key, value) in _rules)
             {
-                if (glob(file.FilePath.Path))
+                if (glob(filePath.Path))
                 {
                     fileMetadata.SetProperty(key, value);
                 }
             }
             JsonUtility.Merge(result, fileMetadata);
 
-            if (file.ContentType == ContentType.Page || file.ContentType == ContentType.TableOfContents)
+            if (contentType == ContentType.Page || contentType == ContentType.TableOfContents)
             {
-                var (yamlHeaderErrors, yamlHeader) = LoadYamlHeader(file.FilePath);
+                var (yamlHeaderErrors, yamlHeader) = LoadYamlHeader(filePath);
                 errors.AddRange(yamlHeaderErrors);
 
                 if (yamlHeader.Count > 0)
@@ -144,10 +144,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            var mime = _buildScope.GetMime(contentType, filePath);
             foreach (var schemaValidator in _schemaValidators)
             {
                 // Only validate conceptual files
-                if (file.ContentType == ContentType.Page && string.IsNullOrEmpty(file.Mime) && !result.ContainsKey("layout"))
+                if (contentType == ContentType.Page && string.IsNullOrEmpty(mime) && !result.ContainsKey("layout"))
                 {
                     errors.AddRange(schemaValidator.Validate(result));
                 }
