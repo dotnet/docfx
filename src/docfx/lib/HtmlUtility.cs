@@ -15,9 +15,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        private static readonly Func<HtmlAttribute, int> s_getValueStartIndex =
-            ReflectionUtility.CreateInstanceFieldGetter<HtmlAttribute, int>("_valuestartindex");
-
         private static readonly string[] s_allowedStyles = new[] { "text-align: right;", "text-align: left;", "text-align: center;" };
 
         public static HtmlNode LoadHtml(string html)
@@ -74,31 +71,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static HtmlNode TransformLinks(HtmlNode html, Func<string, int, string> transform)
-        {
-            var columnOffset = 0;
-            foreach (var node in html.Descendants())
-            {
-                var link = node.Name == "a" ? node.Attributes["href"]
-                    : node.Name == "img" ? node.Attributes["src"]
-                    : null;
-
-                if (link is null)
-                {
-                    continue;
-                }
-
-                var transformed = transform(HttpUtility.HtmlDecode(link.Value), columnOffset);
-
-                if (!string.IsNullOrEmpty(transformed))
-                {
-                    link.Value = HttpUtility.HtmlEncode(transformed);
-                }
-            }
-
-            return html;
-        }
-
         public static string TransformLinks(string html, Func<string, int, string> transform)
         {
             // Fast pass it does not have <a> tag or <img> tag
@@ -111,37 +83,48 @@ namespace Microsoft.Docs.Build
             // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
             // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.
             // The following code ensures we preserve the original html when changing links.
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-
             var pos = 0;
             var result = new StringBuilder(html.Length + 64);
+            var reader = new HtmlReader(html);
 
             // TODO: remove this column offset hack while we have accurate line info for link in HTML block
             var columnOffset = 0;
-            foreach (var node in doc.DocumentNode.Descendants())
-            {
-                var link = node.Name == "a" ? node.Attributes["href"]
-                         : node.Name == "img" ? node.Attributes["src"]
-                         : null;
 
-                if (link is null)
+            while (reader.Read())
+            {
+                if (reader.Type != HtmlTokenType.StartTag)
                 {
                     continue;
                 }
 
-                var valueStartIndex = s_getValueStartIndex(link);
-                if (valueStartIndex > pos)
+                var attributeName = reader.NameIs("a") ? "href" : reader.NameIs("img") ? "src" : null;
+                if (attributeName is null)
                 {
-                    result.Append(html, pos, valueStartIndex - pos);
+                    continue;
                 }
-                var transformed = transform(HttpUtility.HtmlDecode(link.Value), columnOffset);
-                if (!string.IsNullOrEmpty(transformed))
+
+                foreach (var attribute in reader.Attributes)
                 {
-                    result.Append(HttpUtility.HtmlEncode(transformed));
+                    if (!attribute.NameIs(attributeName))
+                    {
+                        continue;
+                    }
+
+                    var start = attribute.ValueRange.start;
+                    if (start > pos)
+                    {
+                        result.Append(html, pos, start - pos);
+                    }
+
+                    var transformed = transform(HttpUtility.HtmlDecode(attribute.Value.ToString()), columnOffset);
+                    if (!string.IsNullOrEmpty(transformed))
+                    {
+                        result.Append(HttpUtility.HtmlEncode(transformed));
+                    }
+
+                    pos = attribute.ValueRange.start + attribute.ValueRange.length;
+                    columnOffset++;
                 }
-                pos = valueStartIndex + link.Value.Length;
-                columnOffset++;
             }
 
             if (html.Length > pos)
@@ -160,50 +143,76 @@ namespace Microsoft.Docs.Build
                 return html;
             }
 
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
+            var pos = 0;
+            var result = new StringBuilder(html.Length + 64);
+            var reader = new HtmlReader(html);
 
             // TODO: remove this column offset hack while we have accurate line info for link in HTML block
             var columnOffset = 0;
-            var replacingNodes = new List<(HtmlNode, HtmlNode)>();
-            foreach (var node in doc.DocumentNode.Descendants())
+
+            while (reader.Read())
             {
-                if (node.Name != "xref")
+                if (!reader.NameIs("xref"))
                 {
                     continue;
                 }
 
-                var rawSource = HttpUtility.HtmlDecode(node.GetAttributeValue("data-raw-html", null) ?? node.GetAttributeValue("data-raw-source", null));
-                var isShorthand = rawSource?.StartsWith("@") ?? false;
-
-                var href = HttpUtility.HtmlDecode(node.GetAttributeValue("href", null));
-                var uid = href == null ? HttpUtility.HtmlDecode(node.GetAttributeValue("uid", null)) : default;
-
-                var (resolvedHref, display) = resolveXref(
-                    href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.ToSourceInfo(columnOffset: columnOffset)),
-                    uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.ToSourceInfo(columnOffset: columnOffset)),
-                    isShorthand);
-
-                var resolvedNode = new HtmlDocument();
-                if (string.IsNullOrEmpty(resolvedHref))
+                var start = reader.TokenRange.start;
+                if (start > pos)
                 {
-                    resolvedNode.LoadHtml(rawSource ?? $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>");
-                }
-                else
-                {
-                    resolvedNode.LoadHtml($"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>");
+                    result.Append(html, pos, start - pos);
                 }
 
-                replacingNodes.Add((node, resolvedNode.DocumentNode));
+                if (reader.Type == HtmlTokenType.StartTag)
+                {
+                    var rawHtml = default(string);
+                    var rawSource = default(string);
+                    var href = default(string);
+                    var uid = default(string);
+
+                    foreach (var attribute in reader.Attributes)
+                    {
+                        if (attribute.NameIs("data-raw-html"))
+                        {
+                            rawHtml = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                        }
+                        else if (attribute.NameIs("data-raw-source"))
+                        {
+                            rawSource = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                        }
+                        else if (attribute.NameIs("href"))
+                        {
+                            href = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                        }
+                        else if (attribute.NameIs("uid"))
+                        {
+                            uid = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                        }
+                    }
+
+                    var isShorthand = (rawHtml ?? rawSource)?.StartsWith("@") ?? false;
+
+                    var (resolvedHref, display) = resolveXref(
+                        href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block.ToSourceInfo(columnOffset: columnOffset)),
+                        uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block.ToSourceInfo(columnOffset: columnOffset)),
+                        isShorthand);
+
+                    var resolvedNode = string.IsNullOrEmpty(resolvedHref)
+                        ? rawHtml ?? rawSource ?? $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>"
+                        : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
+
+                    result.Append(resolvedNode);
+                }
+
+                pos = reader.TokenRange.start + reader.TokenRange.length;
                 columnOffset++;
             }
 
-            foreach (var (node, resolvedNode) in replacingNodes)
+            if (html.Length > pos)
             {
-                node.ParentNode.ReplaceChild(resolvedNode, node);
+                result.Append(html, pos, html.Length - pos);
             }
-
-            return doc.DocumentNode.WriteTo();
+            return result.ToString();
         }
 
         /// <summary>
