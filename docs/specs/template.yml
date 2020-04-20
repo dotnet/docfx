@@ -126,7 +126,7 @@ inputs:
         content: JSON.stringify(model)
       };
     }
-  _themes/ContentTemplate/Conceptual.html.liquid: |
+  _themes/Conceptual.html.liquid: |
     <!DOCTYPE html>
       <div>
           {{content}}
@@ -163,7 +163,7 @@ inputs:
         content: JSON.stringify(model)
       };
     }
-  _themes/ContentTemplate/Conceptual.html.liquid:
+  _themes/Conceptual.html.liquid:
   a.md:
 outputs:
   a.html:
@@ -193,7 +193,7 @@ inputs:
     exports.transform = function (model) {
       return model.prop;
     }
-  _themes/ContentTemplate/test.html.liquid: |
+  _themes/test.html.liquid: |
     <!DOCTYPE html>
       <div>
           {{content}}
