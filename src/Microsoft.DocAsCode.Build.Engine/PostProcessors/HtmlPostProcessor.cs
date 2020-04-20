@@ -36,9 +36,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 bool keepDebugInfo = false;
                 // get keepDebugInfo from environment
                 var docfxKeepDebugInfo = Environment.GetEnvironmentVariable("DOCFX_KEEP_DEBUG_INFO");
-                if (!string.IsNullOrEmpty(docfxKeepDebugInfo) && bool.TryParse(docfxKeepDebugInfo, out bool docfxKeepDebugInfoFromEnv))
+                if (!string.IsNullOrEmpty(docfxKeepDebugInfo) && bool.TryParse(docfxKeepDebugInfo, out keepDebugInfo))
                 {
-                    keepDebugInfo = docfxKeepDebugInfoFromEnv;
                     Logger.LogInfo($"DOCFX_KEEP_DEBUG_INFO is set to {keepDebugInfo}");
                 }
                 // get keepDebugInfo from docfx config globalMetadata
