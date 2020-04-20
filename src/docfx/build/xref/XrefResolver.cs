@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, DependencyType.UidInclusion);
+                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, DependencyType.Uid);
                 var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
                 return (spec, href);
             }

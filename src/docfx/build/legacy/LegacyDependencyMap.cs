@@ -1,50 +1,21 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal static class LegacyDependencyMap
     {
         public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(
-            string docsetPath,
-            Context context,
-            List<Document> documents,
-            DependencyMap dependencyMap)
+            string docsetPath, Context context, DependencyMap dependencyMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {
                 var legacyDependencyMap = new ListBuilder<LegacyDependencyMapItem>();
-
-                // process toc map
-                Parallel.ForEach(
-                    documents,
-                    document =>
-                    {
-                        if (document.ContentType == ContentType.Resource ||
-                            document.ContentType == ContentType.TableOfContents ||
-                            document.ContentType == ContentType.Redirection ||
-                            document.ContentType == ContentType.Unknown)
-                        {
-                            return;
-                        }
-                        var toc = context.TocMap.FindNearestToc(document);
-                        if (toc != null)
-                        {
-                            legacyDependencyMap.Add(new LegacyDependencyMapItem(
-                                $"~/{document.FilePath.Path}",
-                                $"~/{toc.FilePath.Path}",
-                                context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
-                                LegacyDependencyMapType.Metadata));
-                        }
-                    });
-
                 foreach (var (source, dependencies) in dependencyMap)
                 {
                     foreach (var dependencyItem in dependencies)
@@ -58,7 +29,7 @@ namespace Microsoft.Docs.Build
                             $"~/{source.FilePath.Path}",
                             $"~/{dependencyItem.To.FilePath.Path}",
                             context.MonikerProvider.GetConfigMonikerRange(source.FilePath),
-                            dependencyItem.Type.ToLegacyDependencyMapType()));
+                            dependencyItem.Type));
                     }
                 }
 
@@ -85,24 +56,6 @@ namespace Microsoft.Docs.Build
                 return sorted.Select(x => new LegacyDependencyMapItem(x.From.Substring(2), x.To.Substring(2), x.Version, x.Type))
                              .GroupBy(x => x.From)
                              .ToDictionary(g => g.Key, g => g.ToList());
-            }
-        }
-
-        private static LegacyDependencyMapType ToLegacyDependencyMapType(this DependencyType dependencyType)
-        {
-            switch (dependencyType)
-            {
-                case DependencyType.Link:
-                    return LegacyDependencyMapType.File;
-                case DependencyType.Inclusion:
-                case DependencyType.TocInclusion:
-                    return LegacyDependencyMapType.Include;
-                case DependencyType.UidInclusion:
-                    return LegacyDependencyMapType.Uid;
-                case DependencyType.Bookmark:
-                    return LegacyDependencyMapType.Bookmark;
-                default:
-                    throw new NotSupportedException($"Legacy dependency type not supported: {dependencyType}");
             }
         }
     }

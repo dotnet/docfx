@@ -3,13 +3,21 @@
 
 namespace Microsoft.Docs.Build
 {
-    public enum DependencyType
+    internal enum DependencyType
     {
-        Link, // file reference
-        Bookmark, // file reference with fragment
-        UidInclusion, // uid reference with display property
-        Inclusion, // token or codesnippet
-        Overwrite, // overwrite markdown reference
-        TocInclusion, // toc includes toc
+        /// <summary>
+        /// Reference another file using link
+        /// </summary>
+        File,
+
+        /// <summary>
+        /// Reference another file using uid
+        /// </summary>
+        Uid,
+
+        /// <summary>
+        /// Include another file.
+        /// </summary>
+        Include,
     }
 }
