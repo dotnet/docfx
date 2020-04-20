@@ -13,10 +13,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public FilePath InclusionRoot { get; }
 
-        [JsonIgnore]
-        public FilePath ReferencingFile { get; }
-
-        public string SourceGitUrl { get; set; } = "";
+        public string? SourceGitUrl { get; }
 
         public int SourceLine { get; }
 
@@ -26,11 +23,12 @@ namespace Microsoft.Docs.Build
 
         public string TargetUrl { get; }
 
-        public FileLinkItem(FilePath inclusionRoot, FilePath referencingFile, string sourceUrl, string? sourceMonikerGroup, string targetUrl, int sourceLine)
+        public FileLinkItem(
+            FilePath inclusionRoot, string sourceUrl, string? sourceMonikerGroup, string targetUrl, string? sourceGitUrl, int sourceLine)
         {
             InclusionRoot = inclusionRoot;
-            ReferencingFile = referencingFile;
             SourceUrl = sourceUrl;
+            SourceGitUrl = sourceGitUrl;
             SourceMonikerGroup = sourceMonikerGroup;
             TargetUrl = targetUrl;
             SourceLine = sourceLine;
