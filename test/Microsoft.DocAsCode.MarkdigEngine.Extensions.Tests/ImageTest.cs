@@ -172,7 +172,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         [Fact]
         public void ImageBlockTestBlockClosed()
         {
-            var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::Lorem Ipsum
+            var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::
+Lorem Ipsum
 :::image-end:::";
 
             TestUtility.VerifyMarkup(source, null);
