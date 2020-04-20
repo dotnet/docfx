@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [InlineData("test", "{'description':'hello','tags':[1,2],'page':{'value':3}}", "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]
+        [InlineData("test", "{'description':'hello-1','Description':'hello-2','tags':[1,2],'page':{'value':3}}", "<div>hello-2<div>a b<p>1</p><p>2</p></div>3</div>")]
+        [InlineData("test", "{'description':'hello','tags':[1,2],'page':{'value':3, 'Value':4}}", "<div>hello<div>a b<p>1</p><p>2</p></div>4</div>")]
         public void RenderLiquidTemplate(string name, string json, string html)
         {
             var model = JObject.Parse(json.Replace('\'', '"'));

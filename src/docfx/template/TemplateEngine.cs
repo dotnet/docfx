@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             _global = LoadGlobalTokens();
             _schemas = LoadSchemas(schemaDir, _contentTemplateDir);
-            _liquid = new LiquidTemplate(_contentTemplateDir);
+            _liquid = new LiquidTemplate(_templateDir);
 
             // TODO: remove JINT after Microsoft.CharkraCore NuGet package
             // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578

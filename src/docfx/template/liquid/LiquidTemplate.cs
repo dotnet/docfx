@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
 
             var environments = new List<Hash>
             {
-                Hash.FromDictionary(model.Cast<KeyValuePair<string, JToken>>().ToDictionary(prop => prop.Key, prop => ToLiquidObject(prop.Value))),
+                Hash.FromDictionary((Dictionary<string, object>)ToLiquidObject(model)!),
             };
 
             var parameters = new RenderParameters(CultureInfo.InvariantCulture)
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             {
                 JValue value => value.Value,
                 JArray arr => arr.Select(ToLiquidObject).ToArray(),
-                JObject obj => obj.Cast<KeyValuePair<string, JToken>>().ToDictionary(prop => prop.Key, prop => ToLiquidObject(prop.Value)),
+                JObject obj => obj.Cast<KeyValuePair<string, JToken>>().GroupBy(prop => prop.Key, StringComparer.OrdinalIgnoreCase).ToDictionary(group => group.Key, group => ToLiquidObject(group.Last().Value)),
                 _ => throw new NotSupportedException($"Unknown jToken type {token.Type}"),
             };
         }
