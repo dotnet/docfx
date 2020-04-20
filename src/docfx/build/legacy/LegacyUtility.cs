@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
             var outputPath = manifestItem.Path;
             if (outputPath is null || (doc.ContentType == ContentType.Resource && !context.Config.CopyResources))
             {
-                outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath, manifestItem.Monikers);
+                outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath);
             }
             var legacyOutputFilePathRelativeToBasePath = Path.GetRelativePath(
                 string.IsNullOrEmpty(context.Config.BasePath) ? "." : context.Config.BasePath, outputPath);

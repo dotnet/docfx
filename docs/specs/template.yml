@@ -126,7 +126,7 @@ inputs:
         content: JSON.stringify(model)
       };
     }
-  _themes/ContentTemplate/Conceptual.html.liquid: |
+  _themes/Conceptual.html.liquid: |
     <!DOCTYPE html>
       <div>
           {{content}}
@@ -163,7 +163,7 @@ inputs:
         content: JSON.stringify(model)
       };
     }
-  _themes/ContentTemplate/Conceptual.html.liquid:
+  _themes/Conceptual.html.liquid:
   a.md:
 outputs:
   a.html:
@@ -193,7 +193,7 @@ inputs:
     exports.transform = function (model) {
       return model.prop;
     }
-  _themes/ContentTemplate/test.html.liquid: |
+  _themes/test.html.liquid: |
     <!DOCTYPE html>
       <div>
           {{content}}
@@ -401,7 +401,6 @@ inputs:
     {{#summary}} uid summary: {{summary}} {{/summary}}
     {{^summary}} uid has no summary {{/summary}}
 
-  # normal partial include syntax, with <xref /> in partial template
   uid-declaration.yml: |
     ### YamlMime: XrefDeclaration
     uid: uid
@@ -429,15 +428,10 @@ inputs:
   docfx.yml:
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "type": "object",
       "properties": {
         "uid": {"contentType": "uid"},
-        "summary": {"type": "string"},
-        "description": {"type": "string"},
         "uids": {
-          "type": "array",
           "items": {
-            "type": "object",
             "properties": {
               "uid": {"contentType": "uid"}
             }
@@ -476,3 +470,53 @@ outputs:
             <a href=\"self-uid#child_2\" data-linktype=\"relative-path\"> child-2 name </a>
         </p>"
     }
+---
+# Parent-contexted uid decalaration should NOT leak into child-context
+legacy: true
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": {
+        "uid": {"contentType": "uid"},
+        "uids": {
+          "items": {
+            "properties": {
+              "uid": {"contentType": "xref"}
+            }
+          }
+        }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <p>
+      <xref uid="{{ uid }}" />
+      {{#uids}}
+        <xref uid="{{uid}}" />
+      {{/uids}}
+    </p>
+ 
+  a.yml: |
+    ### YamlMime: TestPage
+    uid: uid
+    name: root name
+    uids:
+      - uid: unresolved1
+        name: unresolved1 name
+      - uid: unresolved2
+        name: unresolved2 name
+
+outputs:
+  a.mta.json:
+  a.raw.page.json: |
+    {
+      "content": "
+        <p>
+            <a href=\"a\" data-linktype=\"relative-path\"> root name </a>
+            <span> unresolved1 </span>
+            <span> unresolved2 </span>
+        </p>"
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolved1'","file":"a.yml","line":5,"end_line":5,"column":10,"end_column":21}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolved2'","file":"a.yml","line":7,"end_line":7,"column":10,"end_column":21}

@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             _global = LoadGlobalTokens();
             _schemas = LoadSchemas(schemaDir, _contentTemplateDir);
-            _liquid = new LiquidTemplate(_contentTemplateDir);
+            _liquid = new LiquidTemplate(_templateDir);
 
             // TODO: remove JINT after Microsoft.CharkraCore NuGet package
             // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
@@ -47,6 +47,11 @@ namespace Microsoft.Docs.Build
         public bool IsPage(string? mime)
         {
             return mime is null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
+        }
+
+        public static bool IsConceptual(string? mime)
+        {
+            return string.Equals(mime, "Conceptual", StringComparison.OrdinalIgnoreCase);
         }
 
         public TemplateSchema GetSchema(SourceInfo<string?> schemaName)

@@ -22,13 +22,6 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expectedElementType, MarkdownTelemetryExtension.GetElementType(node));
         }
 
-        [Theory]
-        [MemberData(nameof(TokenTypeTestData))]
-        public static void GetTokenTypeTest(MarkdownObject node, string expectedElementType)
-        {
-            Assert.Equal(expectedElementType, MarkdownTelemetryExtension.GetTokenType(node));
-        }
-
         public static IEnumerable<object[]> ElementTypeTestData =>
             new List<object[]>
             {
@@ -75,18 +68,6 @@ namespace Microsoft.Docs.Build
                 new object[] { new XrefInline (), "Xref" },
                 new object[] { new EmojiInline (), "Emoji" },
                 new object[] { new NolocInline (), "Noloc" },
-            };
-
-        public static IEnumerable<object[]> TokenTypeTestData =>
-            new List<object[]>
-            {
-                new object[] { new HtmlBlock(null) { Type = HtmlBlockType.CData }, "HtmlBlock-CData" },
-                new object[] { new HtmlBlock(null) { Type = HtmlBlockType.Comment }, "HtmlBlock-Comment" },
-                new object[] { new QuoteSectionNoteBlock (null) { QuoteType = QuoteSectionNoteType.MarkdownQuote }, "QuoteSectionNoteBlock-MarkdownQuote" },
-                new object[] { new QuoteSectionNoteBlock (null) { QuoteType = QuoteSectionNoteType.DFMNote, NoteTypeString = "NOTE" }, "QuoteSectionNoteBlock-DFMNote-Note" },
-                new object[] { new QuoteSectionNoteBlock (null) { QuoteType = QuoteSectionNoteType.DFMNote, NoteTypeString = "waRNing" }, "QuoteSectionNoteBlock-DFMNote-Warning" },
-                new object[] { new TripleColonBlock (null) { Extension = new ZoneExtension () }, "TripleColonBlock-Zone" },
-                new object[] { new TripleColonBlock (null) { Extension = new ChromelessFormExtension () }, "TripleColonBlock-Form" },
             };
     }
 }
