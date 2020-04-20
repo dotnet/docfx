@@ -66,7 +66,7 @@ items:
     engines:
       docfx: ">=2.40.0"
     thumbnail: ~/templates-and-plugins/images/darkfx.screenshot.png
-    homepage: https://steffen-wilke.github.io/darkfx/
+    homepage: https://github.com/steffen-wilke/darkfx
     repository:
       type: git
       url: "https://github.com/steffen-wilke/darkfx.git"
