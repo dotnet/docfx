@@ -156,9 +156,12 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         [Fact]
         public void ImageWithIconTypeTestBlockGeneral()
         {
-            var source = @":::image type=""icon"" source=""example.svg"":::";
+            var source = @":::image type=""icon"" source=""example.svg"":::
 
-            var expected = @"<div class=""mx-imgBorder""><p>
+:::image type=""icon"" source=""example.svg"" border=""true"":::";
+
+            var expected = @"<img src=""example.svg"" role=""presentation"">
+<div class=""mx-imgBorder""><p>
 <img src=""example.svg"" role=""presentation"">
 </p></div>
 ";
