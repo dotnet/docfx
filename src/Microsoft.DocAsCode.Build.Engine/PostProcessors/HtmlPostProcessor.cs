@@ -38,13 +38,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var docfxKeepDebugInfo = Environment.GetEnvironmentVariable("DOCFX_KEEP_DEBUG_INFO");
                 if (!string.IsNullOrEmpty(docfxKeepDebugInfo) && bool.TryParse(docfxKeepDebugInfo, out keepDebugInfo))
                 {
-                    Logger.LogInfo($"DOCFX_KEEP_DEBUG_INFO is set to {keepDebugInfo}");
+                    Logger.LogVerbose($"DOCFX_KEEP_DEBUG_INFO is set to {keepDebugInfo}");
                 }
                 // get keepDebugInfo from docfx config globalMetadata
                 if (metadata.ContainsKey("_keepDebugInfo"))
                 {
                     keepDebugInfo = (bool)metadata["_keepDebugInfo"];
-                    Logger.LogInfo($"_keepDebugInfo is set to {keepDebugInfo}");
+                    Logger.LogVerbose($"_keepDebugInfo is set to {keepDebugInfo}");
                 }
                 if (!keepDebugInfo)
                 {
