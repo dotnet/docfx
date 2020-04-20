@@ -184,8 +184,9 @@ namespace Microsoft.Docs.Build
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
                 = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
 
-            (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate,
-                systemMetadata.Gitcommit) = context.ContributionProvider.GetGitUrls(file.FilePath);
+            (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate)
+                = context.ContributionProvider.GetGitUrl(file.FilePath);
+            systemMetadata.Gitcommit = context.ContributionProvider.GetGitCommitUrl(file.FilePath);
 
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
