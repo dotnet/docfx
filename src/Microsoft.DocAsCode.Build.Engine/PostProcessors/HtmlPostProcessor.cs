@@ -34,17 +34,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Handlers.Add(new ValidateBookmark());
 
                 bool keepDebugInfo = false;
-                // get keepDebugInfo from environment
                 var docfxKeepDebugInfo = Environment.GetEnvironmentVariable("DOCFX_KEEP_DEBUG_INFO");
                 if (!string.IsNullOrEmpty(docfxKeepDebugInfo) && bool.TryParse(docfxKeepDebugInfo, out keepDebugInfo))
                 {
                     Logger.LogVerbose($"DOCFX_KEEP_DEBUG_INFO is set to {keepDebugInfo}");
-                }
-                // get keepDebugInfo from docfx config globalMetadata
-                if (metadata.ContainsKey("_keepDebugInfo"))
-                {
-                    keepDebugInfo = (bool)metadata["_keepDebugInfo"];
-                    Logger.LogVerbose($"_keepDebugInfo is set to {keepDebugInfo}");
                 }
                 if (!keepDebugInfo)
                 {
