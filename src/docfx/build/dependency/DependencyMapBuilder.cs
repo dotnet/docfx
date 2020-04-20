@@ -74,6 +74,9 @@ namespace Microsoft.Docs.Build
         }
 
         private bool CanTransit(DependencyItem dependencyItem)
-            => dependencyItem.Type == DependencyType.Include;
+        {
+            // NOTE: to keep v2 parity, TOC include does not transit.
+            return dependencyItem.Type == DependencyType.Include && dependencyItem.From.ContentType != ContentType.TableOfContents;
+        }
     }
 }
