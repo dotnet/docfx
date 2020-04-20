@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             _contributionProvider = contributionProvider;
         }
 
-        public void AddFileLink(FilePath inclusionRoot, FilePath referecningFile, string sourceUrl, string targetUrl, SourceInfo? source)
+        public void AddFileLink(FilePath inclusionRoot, FilePath referencingFile, string sourceUrl, string targetUrl, SourceInfo? source)
         {
             if (string.IsNullOrEmpty(targetUrl) || sourceUrl == targetUrl)
             {
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(inclusionRoot);
-            var sourceGitUrl = _contributionProvider.GetGitUrl(referecningFile).originalContentGitUrl;
+            var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
 
             _errorLog.Write(errors);
             _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
