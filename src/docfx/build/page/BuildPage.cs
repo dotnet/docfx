@@ -88,14 +88,14 @@ namespace Microsoft.Docs.Build
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The current bookmark validation for SDP validates against HTML produced from mustache,
             // so we need to run the full template for SDP even in --dry-run mode.
-            if (context.Config.DryRun && string.IsNullOrEmpty(file.Mime))
+            if (context.Config.DryRun && TemplateEngine.IsConceptual(file.Mime))
             {
                 return (errors, new JObject(), new JObject());
             }
 
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
-            if (string.IsNullOrEmpty(file.Mime))
+            if (TemplateEngine.IsConceptual(file.Mime))
             {
                 // conceptual raw metadata and raw model
                 JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
@@ -328,7 +328,7 @@ namespace Microsoft.Docs.Build
                 content = "<div></div>";
             }
 
-            var jsName = string.IsNullOrEmpty(file.Mime) ? "Conceptual.mta.json.js" : $"{file.Mime}.mta.json.js";
+            var jsName = $"{file.Mime}.mta.json.js";
             var templateMetadata = context.TemplateEngine.RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
 
             if (TemplateEngine.IsLandingData(file.Mime))
@@ -366,7 +366,7 @@ namespace Microsoft.Docs.Build
 
         private static string CreateContent(Context context, Document file, JObject pageModel)
         {
-            if (string.IsNullOrEmpty(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
+            if (TemplateEngine.IsConceptual(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
             {
                 // Conceptual and Landing Data
                 return pageModel.Value<string>("conceptual");

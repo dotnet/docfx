@@ -134,10 +134,6 @@ namespace Microsoft.Docs.Build
             {
                 var fileExtension = CoalesceEmpty(Path.GetExtension(filePath.Path)?.ToLowerInvariant());
                 var mimeType = CoalesceEmpty(mime);
-                if (mimeType == "<null>" && contentType == ContentType.Page && fileExtension == ".md")
-                {
-                    mimeType = "Conceptual";
-                }
                 return (fileExtension, contentType.ToString(), mimeType);
             });
         }

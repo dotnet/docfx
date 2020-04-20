@@ -233,8 +233,10 @@ namespace Microsoft.Docs.Build
                     {
                         return new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
                     }
+                case FileFormat.Markdown:
+                    return new SourceInfo<string?>("Conceptual", new SourceInfo(filePath, 1, 1));
                 default:
-                    return default;
+                    throw new NotSupportedException();
             }
         }
     }

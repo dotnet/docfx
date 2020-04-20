@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.Page:
-                    if (!string.IsNullOrEmpty(mime))
+                    if (mime != "Conceptual")
                     {
                         return false;
                     }

@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
             foreach (var schemaValidator in _schemaValidators)
             {
                 // Only validate conceptual files
-                if (contentType == ContentType.Page && string.IsNullOrEmpty(mime) && !result.ContainsKey("layout"))
+                if (contentType == ContentType.Page && mime == "Conceptual" && !result.ContainsKey("layout"))
                 {
                     errors.AddRange(schemaValidator.Validate(result));
                 }
