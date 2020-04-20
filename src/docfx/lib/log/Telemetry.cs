@@ -28,8 +28,8 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildLog", "Code", "Level", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_buildCommitCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildCommitCount", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_buildFileTypeCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_markdownElementCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "MarkdownElement", "ElementType", "FileExtension", "DocuemntType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_buildFileTypeCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_markdownElementCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "MarkdownElement", "ElementType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
 
         private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
