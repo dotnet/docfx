@@ -36,7 +36,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 (code, message, origin, line) => Logger.LogSuggestion(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
                 (code, message, origin, line) => Logger.LogWarning(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
                 (code, message, origin, line) => Logger.LogError(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
-                ReadFile);
+                ReadFile,
+                GetLink);
         }
 
         public MarkupResult Markup(string content, string filePath)
@@ -142,7 +143,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
             builder.UseDocfxExtensions(_context);
             builder.Extensions.Insert(0, new YamlHeaderExtension(_context));
-            builder.Extensions.Add(new ResolveLinkExtension());
 
             if (enableSourceInfo)
             {
@@ -183,6 +183,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePathWithoutWorkingFolder);
 
             return (content, includedFilePath);
+        }
+
+        private static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
+        {
+            if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#", StringComparison.Ordinal))
+            {
+                return ((RelativePath)relativeTo + (RelativePath)path).GetPathFromWorkingFolder();
+            }
+            return path;
         }
 
         private void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)

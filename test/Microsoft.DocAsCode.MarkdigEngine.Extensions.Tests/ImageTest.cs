@@ -37,47 +37,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         }
 
         [Fact]
-        public void ImageTestBlockGeneralWithInclude()
-        {
-            var source = @"[!include[](includes/source.md)]";
-            var includeContent = @":::image type=""content"" source=""../media/example.jpg"" alt-text=""example"" lightbox=""../media/example.jpg"":::
-
-:::image type=""content"" source=""~/media/example.jpg"" alt-text=""example"" lightbox=""~/media/example.jpg"":::
-
-:::image type=""content"" source=""~/media/example.jpg"" alt-text=""example"" lightbox=""../media/example.jpg"":::
-
-:::image type=""content"" source=""../media/example.jpg"" alt-text=""example"" lightbox=""~/media/example.jpg"":::";
-            
-            
-            
-            var expected = @"<a href=""~/includes/../media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""../media/example.jpg"" alt=""example"">
-</p></div>
-</a>
-<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""~/media/example.jpg"" alt=""example"">
-</p></div>
-</a>
-<a href=""~/includes/../media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""~/media/example.jpg"" alt=""example"">
-</p></div>
-</a>
-<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""../media/example.jpg"" alt=""example"">
-</p></div>
-</a>";
-
-            TestUtility.VerifyMarkup(source, expected, filePath:"~/test.md", files: new Dictionary<string, string>
-            {
-                { "~/includes/source.md", includeContent }
-            });
-        }
-
-        [Fact]
         public void ComplexImageTestBlockGeneral()
         {
             var source = @"
