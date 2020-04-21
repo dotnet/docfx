@@ -269,9 +269,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error FileNotFound(SourceInfo<string> source)
                 => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
-
-            public static Error FileNotFound(string message, SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "file-not-found", message, source);
         }
 
         public static class UrlPath
@@ -369,6 +366,9 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error InvalidTocHref(SourceInfo<string?> source)
                 => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path", source);
+
+            public static Error FileNotFound(SourceInfo<string> source)
+                => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists", source);
 
             /// <summary>
             /// In markdown-format toc, defined an empty node(# ) with no content.

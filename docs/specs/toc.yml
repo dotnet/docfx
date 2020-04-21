@@ -707,7 +707,7 @@ outputs:
     {"items":[{"name":"Duplicated keys","href":"f1/b"}]}
   .errors.log: |
     ["suggestion","yaml-duplicate-key","Key 'topicHref' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.","docs/TOC.yml",3,3]
-    ["warning","file-not-found","Unable to find either toc.yml or toc.md inside f1//. Please make sure the file exists","docs/TOC.yml",4,12]
+    ["warning","file-not-found","Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists","docs/TOC.yml",4,12]
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
@@ -886,7 +886,7 @@ outputs:
   docs/f1/toc.json: |
     { "items":[{"name":"TOC Reference"}] }
   .errors.log: |
-    ["warning","file-not-found","Unable to find either toc.yml or toc.md inside ../f2//. Please make sure the file exists","docs/f1/TOC.md",1,3]
+    ["warning","file-not-found","Unable to find either toc.yml or toc.md inside ../f2/ Please make sure the file exists","docs/f1/TOC.md",1,3]
 ---
 # Toc with null value
 inputs:
