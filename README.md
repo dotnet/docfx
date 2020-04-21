@@ -1,4 +1,4 @@
-# Build your docs with DocFX
+# Build your docs with Docfx
 
 [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release) [![MyGet](https://img.shields.io/myget/docfx-v3/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-v3)
 

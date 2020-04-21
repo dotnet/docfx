@@ -410,7 +410,7 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core"  },
         { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
       ]
     }
