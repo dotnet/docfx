@@ -161,24 +161,24 @@ outputs:
           <del>removed</del>
         </p>
       </div>
-  toc.html: |
+  toc/index.html: |
     <!DOCTYPE html>
       <div>
         <li>
-          <a class="normal" href="a/">A</a> 
+          <a class="normal" href="../a/">A</a> 
         </li>
       </div>
-  toc.json: |
+  toc/index.json: |
     {
-      "items": [{"name": "A","href": "a/"}],
-      "_path": "toc.html"
+      "items": [{"name": "A","href": "../a/"}],
+      "_path": "toc/index.html"
     }
-  toc.mta.json:
+  toc/index.mta.json:
   .publish.json: |
     {
       "files": [
         {"additional": "additional"},
-        {"url": "/toc.html"}
+        {"url": "/toc/"}
       ]
     }
 ---
