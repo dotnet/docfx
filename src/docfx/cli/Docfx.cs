@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
 
         private static void DefineCommonOptions(ArgumentSyntax syntax, ref string workingDirectory, CommandLineOptions options)
         {
-            syntax.DefineOption("t|template", ref options.Template, "The directory or git repository that contains website template.");
+            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
             syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
             syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
