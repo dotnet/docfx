@@ -333,6 +333,10 @@ namespace Microsoft.Docs.Build
                             }
                         }
                     }
+                    if (result == null)
+                    {
+                        errors.Add(Errors.Link.FileNotFound($"Unable to find either toc.yml or toc.md inside {href}/. Please make sure the file exists", href));
+                    }
                     return result;
 
                 case TocHrefType.TocFile:

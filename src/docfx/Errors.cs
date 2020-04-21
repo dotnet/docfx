@@ -209,16 +209,6 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "locale-invalid", $"Invalid locale: '{locale}'.");
 
             /// <summary>
-            /// Can't find a file referenced by configuration, or user writes a non-existing link.
-            /// Examples:
-            ///   - define user_profile.json file in config, while the file doesn't exist
-            ///   - href referencing a non-existing file
-            /// </summary>
-            /// Behavior: ✔️ Message: ✔️
-            public static Error FileNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
-
-            /// <summary>
             /// Can't find a folder.
             /// Examples: pointing template to a local folder that does not exist
             /// </summary>
@@ -269,6 +259,19 @@ namespace Microsoft.Docs.Build
                 var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{display(file)}'"));
                 return new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}", source);
             }
+
+            /// <summary>
+            /// Can't find a file referenced by configuration, or user writes a non-existing link.
+            /// Examples:
+            ///   - define user_profile.json file in config, while the file doesn't exist
+            ///   - href referencing a non-existing file
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error FileNotFound(SourceInfo<string> source)
+                => new Error(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
+
+            public static Error FileNotFound(string message, SourceInfo<string> source)
+                => new Error(ErrorLevel.Warning, "file-not-found", message, source);
         }
 
         public static class UrlPath
