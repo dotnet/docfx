@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                     return localFilePath;
                 }
 
-                throw Errors.Config.FileNotFound(file).ToException();
+                throw Errors.Link.FileNotFound(file).ToException();
             }
 
             var filePath = GetRestorePathFromUrl(file);

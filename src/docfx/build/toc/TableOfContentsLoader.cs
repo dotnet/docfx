@@ -333,6 +333,10 @@ namespace Microsoft.Docs.Build
                             }
                         }
                     }
+                    if (result == null)
+                    {
+                        errors.Add(Errors.TableOfContents.FileNotFound(href));
+                    }
                     return result;
 
                 case TocHrefType.TocFile:
