@@ -367,6 +367,10 @@ namespace Microsoft.Docs.Build
             public static Error InvalidTocHref(SourceInfo<string?> source)
                 => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path", source);
 
+            /// <summary>
+            /// Toc inclusion with relative folder, no toc.{md,yml} file in corresponding folder.
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
             public static Error FileNotFound(SourceInfo<string> source)
                 => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists", source);
 
