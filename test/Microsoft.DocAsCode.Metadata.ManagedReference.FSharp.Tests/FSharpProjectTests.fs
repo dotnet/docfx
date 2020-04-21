@@ -3,11 +3,11 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.Tests
 
+open System
 open System.IO
 open System.Collections.Generic
 open Xunit
 open Xunit.Abstractions
-open FSharp.Compiler.SourceCodeServices
 
 open Microsoft.DocAsCode.Metadata.ManagedReference
 open Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
@@ -17,19 +17,17 @@ open Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
 type FSharpProjectTests  (output: ITestOutputHelper) =
     let printfn format = Printf.kprintf (fun msg -> output.WriteLine(msg)) format 
    
-    let loaderCheckerProps () =
+    let makeLoader () =
         let msBuildProps = Dictionary<string, string> ()
         let fsLoader = FSharpProjectLoader (msBuildProps)
-        let loader = AbstractProjectLoader ([fsLoader])
-        let checker = FSharpChecker.Create()    
-        loader, checker, msBuildProps    
+        AbstractProjectLoader ([fsLoader])
 
     [<Fact>]
     let NetCoreProjectInfo () =
-        let loader, checker, msBuildProps = loaderCheckerProps()
+        let loader = makeLoader ()
         let projPath = "TestData/NetCoreProject/NetCoreProject.fsproj"
 
-        let proj = FSharpProject (projPath, msBuildProps, loader, checker)
+        let proj = loader.Load(projPath)
         Assert.Equal (Path.GetFullPath projPath, proj.FilePath)
         Assert.True (proj.HasDocuments)
         let docs = List.ofSeq proj.Documents
@@ -44,19 +42,19 @@ type FSharpProjectTests  (output: ITestOutputHelper) =
                                   
     [<Fact>]
     let NetCoreProjectCompilation () =
-        let loader, checker, msBuildProps = loaderCheckerProps()
+        let loader = makeLoader ()
         let projPath = "TestData/NetCoreProject/NetCoreProject.fsproj"
 
-        let proj = FSharpProject (projPath, msBuildProps, loader, checker)
+        let proj = loader.Load(projPath)
         let comp = proj.GetCompilationAsync().Result
         Assert.IsType<FSharpCompilation> comp |> ignore
 
     [<Fact>]
     let NetCoreLibProjectInfo () =
-        let loader, checker, msBuildProps = loaderCheckerProps()
+        let loader = makeLoader ()
         let projPath = "TestData/NetCoreLibProject/NetCoreLibProject.fsproj"
 
-        let proj = FSharpProject (projPath, msBuildProps, loader, checker)
+        let proj = loader.Load(projPath)
         Assert.Equal (Path.GetFullPath projPath, proj.FilePath)
         Assert.True (proj.HasDocuments)
         let docs = List.ofSeq proj.Documents
@@ -64,5 +62,30 @@ type FSharpProjectTests  (output: ITestOutputHelper) =
         Assert.Equal (Path.GetFullPath "TestData/NetCoreLibProject/Library.fs", docs.[1].FilePath)
         let refs = List.ofSeq proj.ProjectReferences
         Assert.Equal (0, refs.Length)
-        
-        
+
+    [<Fact>]
+    let ProjectInfosAreCached () =
+        let loader = makeLoader ()
+        let projDir = "TestData/NetCoreLibProjectCopy"
+        let projPath = "TestData/NetCoreLibProjectCopy/NetCoreLibProjectCopy.fsproj"
+
+        let assertProjectInfo () =
+            let proj = loader.Load(projPath)
+            Assert.True (proj.HasDocuments)
+            let docs = List.ofSeq proj.Documents
+            Assert.Equal (2, docs.Length)
+            Assert.Equal (Path.GetFullPath "TestData/NetCoreLibProjectCopy/Library.fs", docs.[1].FilePath)
+
+        assertProjectInfo ()
+
+        // Check multiple projects can be loaded and they don't interfere
+        let otherProj = loader.Load("TestData/NetCoreProject/NetCoreProject.fsproj")
+        Assert.Equal (4, Seq.length otherProj.Documents)
+
+        // Now move the original project to a different directory
+        Directory.Move(projDir, projDir + ".old")
+        use _cleanup = { new IDisposable with override __.Dispose () = Directory.Move(projDir + ".old", projDir) }
+
+        // Assert that we can still load the original project (as its project info is cached)
+        Assert.False (File.Exists projPath)
+        assertProjectInfo ()
