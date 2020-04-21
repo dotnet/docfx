@@ -158,6 +158,8 @@ namespace Microsoft.Docs.Build
                     dryRun ? "--dry-run" : null,
                     spec.Legacy ? "--legacy" : null,
                     spec.NoRestore ? "--no-restore" : null,
+                    spec.StaticOutput ? "--static-output" : null,
+                    spec.UglifyUrl ? "--uglify-url" : null,
                 };
 
                 Docfx.Run(commandLine.Where(arg => arg != null).ToArray());
@@ -230,7 +232,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsHtml(JToken expected, JToken actual, string name)
         {
-            if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+            if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && name.Length > ".html".Length)
             {
                 return true;
             }

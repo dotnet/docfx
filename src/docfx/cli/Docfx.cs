@@ -110,6 +110,8 @@ namespace Microsoft.Docs.Build
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
+                    syntax.DefineOption("static-output", ref options.StaticOutput, "Generate static HTML output");
+                    syntax.DefineOption("uglify-url", ref options.UglifyUrl, "Use ugly url");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before building.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
@@ -130,7 +132,7 @@ namespace Microsoft.Docs.Build
 
         private static void DefineCommonOptions(ArgumentSyntax syntax, ref string workingDirectory, CommandLineOptions options)
         {
-            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
+            syntax.DefineOption("t|template", ref options.Template, "The directory or git repository that contains website template.");
             syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
             syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");

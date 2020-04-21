@@ -18,5 +18,8 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("resource", NullValueHandling = NullValueHandling.Ignore)]
         public LegacyManifestOutputItem? ResourceOutput { get; set; }
+
+        [JsonProperty(".html", NullValueHandling = NullValueHandling.Ignore)]
+        public LegacyManifestOutputItem? HtmlOutput { get; set; }
     }
 }

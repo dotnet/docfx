@@ -21,6 +21,10 @@ namespace Microsoft.Docs.Build
 
         public bool Temp { get; set; }
 
+        public bool StaticOutput { get; set; }
+
+        public bool UglifyUrl { get; set; }
+
         public string Locale { get; set; }
 
         public string[] Environments { get; set; } = Array.Empty<string>();

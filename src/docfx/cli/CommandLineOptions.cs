@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
         public bool Stdin;
         public bool UseCache;
         public bool NoRestore;
+        public bool StaticOutput;
+        public bool UglifyUrl;
         public string? Template;
 
         public JObject? StdinConfig;
@@ -30,6 +32,8 @@ namespace Microsoft.Docs.Build
             {
                 ["legacy"] = Legacy,
                 ["dryRun"] = DryRun,
+                ["staticOutput"] = StaticOutput,
+                ["uglifyUrl"] = UglifyUrl,
             };
 
             if (Output != null)
@@ -39,13 +43,18 @@ namespace Microsoft.Docs.Build
 
             if (Legacy)
             {
-                config["outputJson"] = true;
+                config["staticOutput"] = false;
                 config["copyResources"] = false;
             }
 
             if (Template != null)
             {
                 config["template"] = Template;
+            }
+
+            if (StaticOutput)
+            {
+                config["copyResources"] = true;
             }
 
             return config;

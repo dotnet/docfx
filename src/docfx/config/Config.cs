@@ -60,9 +60,9 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, GroupConfig> Groups { get; } = new Dictionary<string, GroupConfig>();
 
         /// <summary>
-        /// Gets whether to output JSON model.
+        /// Gets whether to generate static HTML output
         /// </summary>
-        public bool OutputJson { get; private set; } = false;
+        public bool StaticOutput { get; private set; } = true;
 
         /// <summary>
         /// For backward compatibility.

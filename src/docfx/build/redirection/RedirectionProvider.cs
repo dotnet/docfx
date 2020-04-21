@@ -172,6 +172,7 @@ namespace Microsoft.Docs.Build
             RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
+            // TODO: handle `redirection-url-not-found` warning for static-output mode
             var renameHistory = new Dictionary<FilePath, FilePath>();
             var publishUrlMap = GetPublishUrlMap(redirectUrls.Keys);
 

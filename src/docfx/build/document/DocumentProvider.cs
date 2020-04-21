@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -46,9 +45,17 @@ namespace Microsoft.Docs.Build
         public string GetOutputPath(FilePath path)
         {
             var file = GetDocument(path);
+            string outputPath;
 
-            var (_, monikers) = _monikerProvider.GetFileLevelMonikers(path);
-            var outputPath = UrlUtility.Combine(_config.BasePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
+            if (_config.StaticOutput)
+            {
+                outputPath = UrlUtility.Combine(_config.BasePath, file.SitePath);
+            }
+            else
+            {
+                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(path);
+                outputPath = UrlUtility.Combine(_config.BasePath, MonikerUtility.GetGroup(monikers) ?? "", file.SitePath);
+            }
 
             return _config.Legacy && file.IsPage ? LegacyUtility.ChangeExtension(outputPath, ".raw.page.json") : outputPath;
         }
@@ -113,56 +120,56 @@ namespace Microsoft.Docs.Build
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path);
-            var sitePath = FilePathToSitePath(routedFilePath, contentType, mime, _config.OutputJson, _config.UglifyUrl, isPage);
-            if (_config.LowerCaseUrl)
-            {
-                sitePath = sitePath.ToLowerInvariant();
-            }
-
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, mime, _config.OutputJson, isPage);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, mime, isPage);
+            var sitePath = FilePathToSitePath(routedFilePath, path, contentType, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.StaticOutput, _config.UglifyUrl, isPage);
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isPage);
 
             return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
 
-        private static string FilePathToSitePath(string path, ContentType contentType, string? mime, bool json, bool uglifyUrl, bool isPage)
+        private string FilePathToSitePath(string path, FilePath filePath, ContentType contentType, bool isPage)
         {
-            switch (contentType)
+            var sitePath = path;
+
+            if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
             {
-                case ContentType.Page:
-                    if (mime is null || isPage)
-                    {
-                        if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
-                        {
-                            var extension = json ? ".json" : ".html";
-                            return Path.Combine(Path.GetDirectoryName(path) ?? "", "index" + extension).Replace('\\', '/');
-                        }
-                        if (json)
-                        {
-                            return Path.ChangeExtension(path, ".json");
-                        }
-                        if (uglifyUrl)
-                        {
-                            return Path.ChangeExtension(path, ".html");
-                        }
-                        var fileName = Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.');
-                        return Path.Combine(Path.GetDirectoryName(path) ?? "", fileName, "index.html").Replace('\\', '/');
-                    }
-                    return Path.ChangeExtension(path, ".json");
-                case ContentType.TableOfContents:
-                    return Path.ChangeExtension(path, ".json");
-                default:
-                    return path;
+                if ((contentType == ContentType.Page && !isPage) || !_config.StaticOutput)
+                {
+                    sitePath = Path.ChangeExtension(path, ".json");
+                }
+                else if (_config.UglifyUrl)
+                {
+                    sitePath = Path.ChangeExtension(path, ".html");
+                }
+                else
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.');
+                    sitePath = Path.Combine(Path.GetDirectoryName(path) ?? "", fileName, "index.html").Replace('\\', '/');
+                }
             }
+
+            if (_config.StaticOutput)
+            {
+                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
+                if (monikers.Length > 0)
+                {
+                    sitePath = $"{MonikerUtility.GetGroup(monikers)}/{sitePath}";
+                }
+            }
+            if (_config.LowerCaseUrl)
+            {
+                sitePath = sitePath.ToLowerInvariant();
+            }
+            return sitePath;
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, string? mime, bool json, bool isPage)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, bool staticOutput, bool uglifyUrl, bool isPage)
         {
-            var url = PathToRelativeUrl(path, contentType, mime, json, isPage);
+            var url = PathToRelativeUrl(path, contentType, staticOutput, uglifyUrl, isPage);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, string? mime, bool json, bool isPage)
+        private static string PathToRelativeUrl(string path, ContentType contentType, bool staticOutput, bool uglifyUrl, bool isPage)
         {
             var url = path.Replace('\\', '/');
 
@@ -170,20 +177,31 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Redirection:
                 case ContentType.Page:
-                    if (mime is null || isPage)
+                    if (isPage)
                     {
-                        var fileName = Path.GetFileNameWithoutExtension(path);
-                        if (fileName.Equals("index", PathUtility.PathComparison))
+                        if (!staticOutput || !uglifyUrl)
                         {
-                            var i = url.LastIndexOf('/');
-                            return i >= 0 ? url.Substring(0, i + 1) : "./";
+                            var fileName = Path.GetFileNameWithoutExtension(path);
+                            if (fileName.Equals("index", PathUtility.PathComparison))
+                            {
+                                var i = url.LastIndexOf('/');
+                                return i >= 0 ? url.Substring(0, i + 1) : "./";
+                            }
                         }
-                        if (json)
+                        if (!staticOutput)
                         {
                             var i = url.LastIndexOf('.');
                             return i >= 0 ? url.Substring(0, i) : url;
                         }
+
                         return url;
+                    }
+                    return url;
+                case ContentType.TableOfContents:
+                    if (staticOutput && !uglifyUrl)
+                    {
+                        var i = url.LastIndexOf('/');
+                        return url.Substring(0, i + 1);
                     }
                     return url;
                 default:
@@ -195,12 +213,12 @@ namespace Microsoft.Docs.Build
         /// In docs, canonical URL is later overwritten by template JINT code.
         /// TODO: need to handle the logic difference when template code is removed.
         /// </summary>
-        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, string? mime, bool isPage)
+        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, bool isPage)
         {
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, mime, _config.OutputJson, isPage);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.StaticOutput, _config.UglifyUrl, isPage);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";

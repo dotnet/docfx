@@ -110,13 +110,13 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (context.Config.OutputJson && !context.Config.Legacy)
+            if (!context.Config.StaticOutput && !context.Config.Legacy)
             {
                 return (errors, outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, JsonUtility.SortProperties(outputModel), file);
-            if (context.Config.OutputJson)
+            if (!context.Config.StaticOutput)
             {
                 return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
             }

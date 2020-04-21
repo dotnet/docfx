@@ -431,9 +431,9 @@ outputs:
     {"metadata": {"href": "b"}}
 ---
 # metadata need to be transformed for SDP
+staticOutput: true
 inputs:
-  docfx.yml: |
-    outputJson: false
+  docfx.yml:
   a.yml: |
     #YamlMime:TestPage
     key: value
