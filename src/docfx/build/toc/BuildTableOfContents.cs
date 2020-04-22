@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.Config.DryRun)
                 {
-                    if (context.Config.Legacy || context.Config.StaticOutput)
+                    if (context.Config.Legacy || context.Config.OutputType == OutputType.Html)
                     {
                         var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                         context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                         context.Output.WriteJson(outputPath, model);
                     }
 
-                    if (context.Config.StaticOutput)
+                    if (context.Config.OutputType == OutputType.Html)
                     {
                         var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
                         var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);

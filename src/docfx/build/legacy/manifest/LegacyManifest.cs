@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
-                        if (context.Config.StaticOutput)
+                        if (context.Config.OutputType == OutputType.Html)
                         {
                             output.HtmlOutput = new LegacyManifestOutputItem
                             {
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetType(Context context, ContentType type, Document doc)
         {
-            if (!context.Config.StaticOutput && type == ContentType.Page && !doc.IsPage)
+            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !doc.IsPage)
             {
                 return "Toc";
             }

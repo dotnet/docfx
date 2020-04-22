@@ -1,8 +1,9 @@
 ---
-# Apply template in none-legacy mode and produce html page when static-output is enabled
-staticOutput: true
+# Apply template in none-legacy mode and produce html page when output type is html
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: static
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -36,11 +37,11 @@ outputs:
       ]
     }
 ---
-# Apply template in none-legacy mode and produce html page when static-output and ugly-url is enabled
-staticOutput: true
-uglifyUrl: true
+# Apply template in none-legacy mode and produce html page when output type is html and outputUrlType is staticUgly
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: staticUgly
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -54,10 +55,10 @@ outputs:
   a.html:
 ---
 # Link should be resolved to the physical relative path when static-output and ugly-url is enabled
-staticOutput: true
-uglifyUrl: true
 inputs:
   docfx.yml: |
+    outputType: html
+    outputUrlType: staticUgly
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     routes:
@@ -140,9 +141,10 @@ outputs:
 # Set config.output.json to false to run *.html.liquid to output static HTML
 # Provide *.mta.json.js to transform metadata
 # Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
-staticOutput: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: static
   _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
   a.yml: |
     #YamlMime:TestData

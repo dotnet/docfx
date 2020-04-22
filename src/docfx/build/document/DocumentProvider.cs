@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly BuildOptions _buildOptions;
         private readonly TemplateEngine _templateEngine;
         private readonly MonikerProvider _monikerProvider;
+        private readonly ErrorLog _errorLog;
 
         private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
@@ -23,13 +25,14 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, BuildOptions buildOptions, BuildScope buildScope, TemplateEngine templateEngine, MonikerProvider monikerProvider)
+            Config config, BuildOptions buildOptions, BuildScope buildScope, TemplateEngine templateEngine, MonikerProvider monikerProvider, ErrorLog errorLog)
         {
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
             _templateEngine = templateEngine;
             _monikerProvider = monikerProvider;
+            _errorLog = errorLog;
 
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
@@ -47,7 +50,7 @@ namespace Microsoft.Docs.Build
             var file = GetDocument(path);
             string outputPath;
 
-            if (_config.StaticOutput)
+            if (_config.OutputUrlType != OutputUrlType.Docs)
             {
                 outputPath = UrlUtility.Combine(_config.BasePath, file.SitePath);
             }
@@ -121,7 +124,7 @@ namespace Microsoft.Docs.Build
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var routedFilePath = ApplyRoutes(path.Path);
             var sitePath = FilePathToSitePath(routedFilePath, path, contentType, isPage);
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.StaticOutput, _config.UglifyUrl, isPage);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isPage);
 
             return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
@@ -129,33 +132,35 @@ namespace Microsoft.Docs.Build
 
         private string FilePathToSitePath(string path, FilePath filePath, ContentType contentType, bool isPage)
         {
-            var sitePath = path;
-
-            if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
+            var pathExtension = contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents
+                ? _config.OutputType switch
+                {
+                    OutputType.Html when contentType == ContentType.Page && !isPage => ".json",
+                    OutputType.Html => ".html",
+                    OutputType.Json => ".json",
+                    _ => throw new NotSupportedException(),
+                }
+                : Path.GetExtension(path);
+            var directoryName = Path.GetDirectoryName(path) ?? "";
+            var fileName = Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.');
+            var monikers = Array.Empty<string>();
+            try
             {
-                if ((contentType == ContentType.Page && !isPage) || !_config.StaticOutput)
-                {
-                    sitePath = Path.ChangeExtension(path, ".json");
-                }
-                else if (_config.UglifyUrl)
-                {
-                    sitePath = Path.ChangeExtension(path, ".html");
-                }
-                else
-                {
-                    var fileName = Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.');
-                    sitePath = Path.Combine(Path.GetDirectoryName(path) ?? "", fileName, "index.html").Replace('\\', '/');
-                }
+                (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
             }
-
-            if (_config.StaticOutput)
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
-                if (monikers.Length > 0)
-                {
-                    sitePath = $"{MonikerUtility.GetGroup(monikers)}/{sitePath}";
-                }
+                _errorLog.Write(dex);
             }
+            var group = MonikerUtility.GetGroup(monikers) ?? "";
+            var sitePath = _config.OutputUrlType switch
+            {
+                OutputUrlType.Docs => Path.Combine(directoryName, fileName + pathExtension).Replace('\\', '/'),
+                OutputUrlType.Static => Path.Combine(group, directoryName, fileName, "index" + pathExtension).Replace('\\', '/'),
+                OutputUrlType.StaticUgly => Path.Combine(group, directoryName, fileName + pathExtension).Replace('\\', '/'),
+                _ => throw new NotSupportedException(),
+            };
+
             if (_config.LowerCaseUrl)
             {
                 sitePath = sitePath.ToLowerInvariant();
@@ -163,50 +168,34 @@ namespace Microsoft.Docs.Build
             return sitePath;
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, bool staticOutput, bool uglifyUrl, bool isPage)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isPage)
         {
-            var url = PathToRelativeUrl(path, contentType, staticOutput, uglifyUrl, isPage);
+            var url = PathToRelativeUrl(path, contentType, outputUrlType, isPage);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, bool staticOutput, bool uglifyUrl, bool isPage)
+        private static string PathToRelativeUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isPage)
         {
             var url = path.Replace('\\', '/');
 
-            switch (contentType)
+            if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isPage))
             {
-                case ContentType.Redirection:
-                case ContentType.Page:
-                    if (isPage)
-                    {
-                        if (!staticOutput || !uglifyUrl)
-                        {
-                            var fileName = Path.GetFileNameWithoutExtension(path);
-                            if (fileName.Equals("index", PathUtility.PathComparison))
-                            {
-                                var i = url.LastIndexOf('/');
-                                return i >= 0 ? url.Substring(0, i + 1) : "./";
-                            }
-                        }
-                        if (!staticOutput)
-                        {
-                            var i = url.LastIndexOf('.');
-                            return i >= 0 ? url.Substring(0, i) : url;
-                        }
-
-                        return url;
-                    }
-                    return url;
-                case ContentType.TableOfContents:
-                    if (staticOutput && !uglifyUrl)
+                if (outputUrlType == OutputUrlType.Docs || outputUrlType == OutputUrlType.Static)
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(path);
+                    if (fileName.Equals("index", PathUtility.PathComparison))
                     {
                         var i = url.LastIndexOf('/');
-                        return url.Substring(0, i + 1);
+                        return i >= 0 ? url.Substring(0, i + 1) : "./";
                     }
-                    return url;
-                default:
-                    return url;
+                }
+                if (outputUrlType == OutputUrlType.Docs && contentType != ContentType.TableOfContents)
+                {
+                    var i = url.LastIndexOf('.');
+                    return i >= 0 ? url.Substring(0, i) : url;
+                }
             }
+            return url;
         }
 
         /// <summary>
@@ -218,7 +207,7 @@ namespace Microsoft.Docs.Build
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.StaticOutput, _config.UglifyUrl, isPage);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.OutputUrlType, isPage);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";

@@ -67,9 +67,9 @@ namespace Microsoft.Docs.Build
         public string RunLiquid(Document file, TemplateModel model)
         {
             var layout = model.RawMetadata?.Value<string>("layout") ?? "";
-            var themeRelativePath = _config.StaticOutput
-                                        ? _templateDir
-                                        : PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
+            var themeRelativePath = _config.OutputUrlType == OutputUrlType.Docs
+                                        ? PathUtility.GetRelativePathToFile(file.SitePath, "_themes")
+                                        : _templateDir;
 
             var liquidModel = new JObject
             {

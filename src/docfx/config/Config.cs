@@ -60,9 +60,9 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, GroupConfig> Groups { get; } = new Dictionary<string, GroupConfig>();
 
         /// <summary>
-        /// Gets whether to generate static HTML output
+        /// Gets output file type
         /// </summary>
-        public bool StaticOutput { get; private set; } = true;
+        public OutputType OutputType { get; private set; } = OutputType.Html;
 
         /// <summary>
         /// For backward compatibility.
@@ -72,11 +72,9 @@ namespace Microsoft.Docs.Build
         public bool OutputPdf { get; private set; } = false;
 
         /// <summary>
-        /// Gets whether to use ugly url or pretty url when <see cref="Json"/> is set to false.
-        ///  - Pretty url:      a.md --> a/index.html
-        ///  - Ugly url:        a.md --> a.html
+        /// Gets Output Url type
         /// </summary>
-        public bool UglifyUrl { get; private set; } = false;
+        public OutputUrlType OutputUrlType { get; private set; } = OutputUrlType.Static;
 
         /// <summary>
         /// Gets whether to lowercase all URLs and output file path.
@@ -84,6 +82,7 @@ namespace Microsoft.Docs.Build
         public bool LowerCaseUrl { get; private set; } = true;
 
         /// <summary>
+        /// TODO: whether need to copy resource should be determined by OutputUrlType
         /// Gets whether resources are copied to output.
         /// </summary>
         public bool CopyResources { get; private set; } = false;

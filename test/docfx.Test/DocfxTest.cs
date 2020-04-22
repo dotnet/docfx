@@ -158,8 +158,6 @@ namespace Microsoft.Docs.Build
                     dryRun ? "--dry-run" : null,
                     spec.Legacy ? "--legacy" : null,
                     spec.NoRestore ? "--no-restore" : null,
-                    spec.StaticOutput ? "--static-output" : null,
-                    spec.UglifyUrl ? "--uglify-url" : null,
                 };
 
                 Docfx.Run(commandLine.Where(arg => arg != null).ToArray());

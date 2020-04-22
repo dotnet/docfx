@@ -110,8 +110,6 @@ namespace Microsoft.Docs.Build
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
-                    syntax.DefineOption("static-output", ref options.StaticOutput, "Generate static HTML output");
-                    syntax.DefineOption("uglify-url", ref options.UglifyUrl, "Use ugly url");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before building.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });

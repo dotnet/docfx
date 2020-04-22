@@ -110,17 +110,18 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (!context.Config.StaticOutput && !context.Config.Legacy)
+            if (context.Config.OutputType == OutputType.Json && !context.Config.Legacy)
             {
                 return (errors, outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, JsonUtility.SortProperties(outputModel), file);
-            if (!context.Config.StaticOutput)
+            if (context.Config.OutputType == OutputType.Json)
             {
                 return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
             }
 
+            // TODO: report a warnign if the liquid is not existed
             var html = context.TemplateEngine.RunLiquid(file, templateModel);
             return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }

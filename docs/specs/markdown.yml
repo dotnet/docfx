@@ -626,17 +626,19 @@ outputs:
     }
 ---
 # Liquid template file missing should not crash
-staticOutput: true
 inputs: 
-  docfx.yml:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: static
   docs/a.md: Hello `docfx`! 
 outputs: 
   docs/a/index.html:
 ---
 # Source file name ending with spaces should not crash
-staticOutput: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: static
   docs/a b.. ..md:
 outputs:
   docs/a b/index.html:
