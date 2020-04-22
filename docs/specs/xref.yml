@@ -555,7 +555,7 @@ outputs:
 # href shouldn't be defined at same level with uid
 inputs:
   docfx.yml: |
-  docs/a.yml: |
+  a.yml: |
     ###YamlMime: TestData
     uid: a
     href: user-defined
@@ -566,8 +566,9 @@ inputs:
       }
     }
 outputs:
+  a.json:
   .errors.log: |
-    ["error","uid-overwrite-href","'UID' and 'href' defined at the same level is not allowed, the href value will be overwritten","docs/a.yml",3,1]
+    ["warning","uid-overwrite-href","'UID' and 'href' defined at the same level is not allowed, the href value will be overwritten","a.yml",3,1]
 ---
 # Xref property field which supports markdown content
 inputs:
