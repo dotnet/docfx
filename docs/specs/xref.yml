@@ -566,7 +566,7 @@ inputs:
       }
     }
 outputs:
-  a.json:
+  a.json: '{"href": "a.json"}'
   .errors.log: |
     ["warning","uid-overwrite-href","'UID' and 'href' are not allowed to define at the same level. The input 'href' will be ignored","a.yml",3,1]
 ---
