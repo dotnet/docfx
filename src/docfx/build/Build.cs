@@ -52,6 +52,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 errorLog.Configure(config, buildOptions.OutputPath);
+                new OpsPreProcessor(config, buildOptions).Run();
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
                 Run(context);
                 return errorLog.ErrorCount > 0;

@@ -68,8 +68,6 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsMap TocMap { get; }
 
-        public OpsPreProcessor OpsPreProcessor { get; }
-
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
         {
             DependencyMapBuilder = new DependencyMapBuilder();
@@ -88,8 +86,6 @@ namespace Microsoft.Docs.Build
             TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
 
-            // OpsPreProcessor needs to be constructed before BuildScope
-            OpsPreProcessor = new OpsPreProcessor(config, buildOptions);
             BuildScope = new BuildScope(ErrorLog, Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);

@@ -1,5 +1,5 @@
 # Support ECMA2Yaml ops config
-inputCouldChange: true
+inputCouldBeChanged: true
 repos:
   https://github.com/ops/ecma-yaml:
   - files:    
