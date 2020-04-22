@@ -439,7 +439,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error UidOverwriteHref(SourceInfo source)
-                => new Error(ErrorLevel.Warning, "uid-overwrite-href", $"'UID' and 'href' defined at the same level is not allowed, the href value will be overwritten", source);
+                => new Error(ErrorLevel.Warning, "uid-overwrite-href", $"'UID' and 'href' are not allowed to define at the same level. The input 'href' will be ignored", source);
         }
 
         public static class Versioning
