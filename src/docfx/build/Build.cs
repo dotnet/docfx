@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
-using ECMA2Yaml;
 
 namespace Microsoft.Docs.Build
 {
@@ -75,6 +73,7 @@ namespace Microsoft.Docs.Build
         private static void Run(Context context)
         {
             context.OpsPreProcessor.Run();
+            context.BuildScope.Build();
 
             using (Progress.Start("Building files"))
             {

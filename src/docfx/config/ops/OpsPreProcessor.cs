@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
                     ECMA2YamlConverter.Run(
                         Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.SourceXmlFolder),
-                        Path.Combine(_buildOptions.OutputPath, _config.Monodoc.OutputYamlFolder),
+                        Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.OutputYamlFolder),
                         fallbackXmlPath,
                         null,
                         _buildOptions.DocsetPath,
