@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");
 
-            using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.InputCouldChange))
+            using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.InputCouldBeChanged))
             {
                 var commandLine = new[]
                 {

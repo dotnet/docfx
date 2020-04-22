@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static IDisposable EnsureFilesNotChanged(string path, bool inputCouldChange)
+        public static IDisposable EnsureFilesNotChanged(string path, bool inputCouldBeChanged)
         {
             var before = GetFileLastWriteTimes(path);
 
@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
             {
                 var after = GetFileLastWriteTimes(path);
 
-                if (!inputCouldChange)
+                if (!inputCouldBeChanged)
                 {
                     new JsonDiff().Verify(before, after, "Input files changes");
                 }

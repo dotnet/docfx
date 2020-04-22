@@ -16,9 +16,11 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly Func<string, bool>[] _resourceGlobs;
         private readonly HashSet<string> _configReferences;
-        private readonly BuildOptions _buildOptions;
-        private readonly ErrorLog _errorLog;
 
+        // On a case insensitive system, cannot simply get the actual file casing:
+        // https://github.com/dotnet/corefx/issues/1086
+        // This lookup table stores a list of actual filenames.
+        private readonly HashSet<PathString> _fileNames = new HashSet<PathString>();
         private readonly ConcurrentDictionary<FilePath, ContentType> _files = new ConcurrentDictionary<FilePath, ContentType>();
 
         private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
@@ -26,11 +28,6 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _mimeTypeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
-
-        // On a case insensitive system, cannot simply get the actual file casing:
-        // https://github.com/dotnet/corefx/issues/1086
-        // This lookup table stores a list of actual filenames.
-        private HashSet<PathString> _fileNames = new HashSet<PathString>();
 
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
@@ -42,16 +39,14 @@ namespace Microsoft.Docs.Build
             _config = config;
             _globs = CreateGlobs(config);
             _input = input;
-            _buildOptions = buildOptions;
-            _errorLog = errorLog;
             _resourceGlobs = CreateResourceGlob(config);
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
 
             using (Progress.Start("Globing files"))
             {
-                var (fileNames, allFiles) = ListFiles(_config, _input, _buildOptions);
+                var (fileNames, allFiles) = ListFiles(config, input, buildOptions);
 
-                ParallelUtility.ForEach(_errorLog, allFiles, file =>
+                ParallelUtility.ForEach(errorLog, allFiles, file =>
                 {
                     if (Glob(file.Path))
                     {

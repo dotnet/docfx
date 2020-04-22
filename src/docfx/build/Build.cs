@@ -52,7 +52,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 errorLog.Configure(config, buildOptions.OutputPath);
-
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
                 Run(context);
                 return errorLog.ErrorCount > 0;
