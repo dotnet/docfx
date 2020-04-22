@@ -552,6 +552,24 @@ outputs:
     ["warning","duplicate-uid","UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'","docs/a.json",6,14]
     ["warning","duplicate-uid","UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'","docs/b.json",3,12]
 ---
+# href shouldn't be defined at same level with uid
+inputs:
+  docfx.yml: |
+  a.yml: |
+    ###YamlMime: TestData
+    uid: a
+    href: user-defined
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" }
+      }
+    }
+outputs:
+  a.json: '{"href": "a.json"}'
+  .errors.log: |
+    ["warning","uid-overwrite-href","'UID' and 'href' are not allowed to define at the same level. The input 'href' will be ignored","a.yml",3,1]
+---
 # Xref property field which supports markdown content
 inputs:
   docfx.yml: |
