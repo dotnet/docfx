@@ -104,11 +104,6 @@ namespace Microsoft.Docs.Build
             return targetPath + query + fragment;
         }
 
-        public static DependencyType FragmentToDependencyType(string? fragment)
-        {
-            return fragment != null && fragment.Length > 1 ? DependencyType.Bookmark : DependencyType.Link;
-        }
-
         public static string GetRelativeUrl(string relativeToUrl, string url)
         {
             if (!relativeToUrl.StartsWith('/'))

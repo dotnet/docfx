@@ -390,7 +390,6 @@ outputs:
     }
 ---
 # Orphan file, with multiple toc of same site path, look up by file path(sub then parent)
-os: windows
 legacy: true # only legacy has toc dependency for orphan file
 inputs:
   docfx.yml: |
@@ -426,11 +425,7 @@ outputs:
   docs/4667fedf/f1/a.mta.json:
   docs/4667fedf/f1/a.raw.page.json: |
     {"rawMetadata":{"_tocRel": "../toc.json"}}
-  docs/.manifest.json:
   docs/filemap.json:
-  full-dependent-list.txt: |
-    {"dependency_type":"metadata","from_file_path":"*docs\\v1\\f1\\a.md*","to_file_path":"*docs\\v1\\TOC.md*","version":"netcore-1.0"}
-    {"dependency_type":"metadata","from_file_path":"*docs\\v2\\f1\\a.md*","to_file_path":"*docs\\v2\\TOC.md*","version":"netcore-2.0"}
 ---
 # legacy errors from source repo [repo mapping]
 locale: zh-cn

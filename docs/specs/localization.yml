@@ -409,7 +409,11 @@ outputs:
   .errors.log: |
     ["warning","file-not-found","Invalid file link: 'b.md'.","docs/a.md",2,1]
   .dependencymap.json: |
-    {"dependencies":{"docs/a.md":[{"source":"docs/resource.png","type":"link"}]}}
+    {
+      "dependencies": {
+        "docs/a.md": [{ "source":"docs/resource.png","type":"file" }]
+      }
+    }
 ---
 # fallback to deleted toc
 locale: zh-cn

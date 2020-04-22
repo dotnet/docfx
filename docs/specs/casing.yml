@@ -143,8 +143,8 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-          "a.md": [{ "source": "mEDia/imAge.png", "type": "link" }],
-          "b.md": [{ "source": "mEDia/imAge.png", "type": "link" }],
-          "c.md": [{ "source": "mEDia/imAge.png", "type": "link" }]
+          "a.md": [{ "source": "mEDia/imAge.png", "type": "file" }],
+          "b.md": [{ "source": "mEDia/imAge.png", "type": "file" }],
+          "c.md": [{ "source": "mEDia/imAge.png", "type": "file" }]
       }
     }
