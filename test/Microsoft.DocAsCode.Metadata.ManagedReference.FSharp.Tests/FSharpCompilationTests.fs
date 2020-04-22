@@ -23,9 +23,7 @@ type FSharpCompilationTests (output: ITestOutputHelper) =
         let msBuildProps = Dictionary<string, string> ()
         let fsLoader = FSharpProjectLoader (msBuildProps)
         let loader = AbstractProjectLoader ([fsLoader])
-        let checker = FSharpChecker.Create()    
-        let proj = FSharpProject (projPath, msBuildProps, loader, checker)
-        proj
+        loader.Load(projPath)
 
     let getCompilation projPath =
         let proj = getProject projPath
