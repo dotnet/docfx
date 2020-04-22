@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static IDisposable EnsureFilesNotChanged(string path)
+        public static IDisposable EnsureFilesNotChanged(string path, bool inputCouldChange)
         {
             var before = GetFileLastWriteTimes(path);
 
@@ -154,7 +154,10 @@ namespace Microsoft.Docs.Build
             {
                 var after = GetFileLastWriteTimes(path);
 
-                //new JsonDiff().Verify(before, after, "Input files changes");
+                if (!inputCouldChange)
+                {
+                    new JsonDiff().Verify(before, after, "Input files changes");
+                }
             });
 
             Dictionary<string, DateTime> GetFileLastWriteTimes(string dir)
