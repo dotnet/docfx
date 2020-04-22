@@ -83,12 +83,18 @@ repos:
             </Type>
           </Namespace>
         </Framework>
+      _themes/ContentTemplate/schemas/NetNamespace.schema.json: |
+        {}
+      _themes/ContentTemplate/schemas/NetMember.schema.json: |
+        {}
+      _themes/ContentTemplate/schemas/NetType.schema.json: |
+        {}
 outputs:
   .errors.log: |
-    ["error","schema-not-found","Unknown schema 'NetNamespace'","api/CatLibrary.yml",1,1]
-    ["error","schema-not-found","Unknown schema 'NetMember'","api/CatLibrary.Cat-2.-ctor.yml",1,1]
-    ["error","schema-not-found","Unknown schema 'NetType'","api/CatLibrary.Cat-2.yml",1,1]
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary'","api/toc.yml",3,8]
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2'","api/toc.yml",6,10]
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2.#ctor*'","api/toc.yml",9,12]
   api/toc.json:
+  api/catlibrary.cat-2.-ctor.json:
+  api/catlibrary.cat-2.json:
+  api/catlibrary.json:

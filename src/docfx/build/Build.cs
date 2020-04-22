@@ -72,9 +72,6 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
-            context.OpsPreProcessor.Run();
-            context.BuildScope.Build();
-
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));

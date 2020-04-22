@@ -46,10 +46,7 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _resourceGlobs = CreateResourceGlob(config);
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
-        }
 
-        public void Build()
-        {
             using (Progress.Start("Globing files"))
             {
                 var (fileNames, allFiles) = ListFiles(_config, _input, _buildOptions);

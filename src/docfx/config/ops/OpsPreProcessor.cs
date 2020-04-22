@@ -17,10 +17,6 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
             _buildOptions = buildOptions;
-        }
-
-        public void Run()
-        {
             PreProcessMonoDocXml();
         }
 
