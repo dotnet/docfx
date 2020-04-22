@@ -216,6 +216,10 @@ namespace Microsoft.Docs.Build
                     }
                     if (IsXrefSpec(obj, schema, out var uid))
                     {
+                        if (obj.TryGetValue("href", out var href))
+                        {
+                            errors.Add(Errors.Xref.UidOverwriteHref(href.GetSourceInfo()?.KeySourceInfo!));
+                        }
                         newObject["href"] = PathUtility.GetRelativePathToFile(file.SiteUrl, GetXrefHref(file, uid, uidCount, obj.Parent == null));
                     }
                     return (errors, newObject);

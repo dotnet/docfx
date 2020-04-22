@@ -433,6 +433,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
                 => new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}");
+
+            /// <summary>
+            /// Define href property at the same level with uid, href value will be overwritten.
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error UidOverwriteHref(SourceInfo source)
+                => new Error(ErrorLevel.Error, "uid-overwrite-href", $"'UID' and 'href' defined at the same level is not allowed, the href value will be overwritten", source);
         }
 
         public static class Versioning
