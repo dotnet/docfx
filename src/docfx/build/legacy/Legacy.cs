@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
                     k => context.DocumentProvider.GetDocument(k.Key), v => v.Value);
 
                 LegacyManifest.Convert(docsetPath, context, documents);
-                var legacyDependencyMap = LegacyDependencyMap.Convert(docsetPath, context, documents.Keys.ToList(), dependencyMap);
+                var legacyDependencyMap = LegacyDependencyMap.Convert(docsetPath, context, dependencyMap);
                 LegacyFileMap.Convert(context, legacyDependencyMap, documents);
             }
         }

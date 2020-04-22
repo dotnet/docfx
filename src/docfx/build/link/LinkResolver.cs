@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder = fileLinkMapBuilder;
         }
 
-        public (Error? error, Document? file) ResolveContent(SourceInfo<string> href, Document referencingFile, DependencyType dependencyType)
+        public (Error? error, Document? file) ResolveContent(SourceInfo<string> href, Document referencingFile)
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, true);
             if (file is null)
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            _dependencyMapBuilder.AddDependencyItem(referencingFile, file, dependencyType);
+            _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.Include);
             return (error, file);
         }
 
@@ -93,12 +93,12 @@ namespace Microsoft.Docs.Build
             {
                 if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.File);
                     _bookmarkValidator.AddBookmarkReference(referencingFile, inclusionRoot, fragment, true, href);
                 }
                 else if (file != null)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, UrlUtility.FragmentToDependencyType(fragment));
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.File);
                     _bookmarkValidator.AddBookmarkReference(referencingFile, file, fragment, false, href);
                 }
             }
@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.Config.FileNotFound(
+                        return (Errors.Link.FileNotFound(
                             new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath);
                     }
 

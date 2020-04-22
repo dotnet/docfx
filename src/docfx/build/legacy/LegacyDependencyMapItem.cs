@@ -11,9 +11,9 @@ namespace Microsoft.Docs.Build
 
         public string? Version { get; }
 
-        public LegacyDependencyMapType Type { get; }
+        public DependencyType Type { get; }
 
-        public LegacyDependencyMapItem(string from, string to, string? version, LegacyDependencyMapType type)
+        public LegacyDependencyMapItem(string from, string to, string? version, DependencyType type)
         {
             From = from;
             To = to;

@@ -175,8 +175,7 @@ outputs:
           "name": "Title from yaml header b"
         }
       ],
-      "properties":
-      {
+      "properties": {
           "tags": ["/base_path", "public"]
       }
     }
@@ -184,10 +183,7 @@ outputs:
     {
       "dependencies": {
           "docs/c.md": [
-              {
-                  "source": "docs/a.md",
-                  "type": "uidInclusion"
-              }
+              { "source": "docs/a.md", "type": "uid" }
           ]
       }
     }
@@ -293,7 +289,7 @@ outputs:
           "docs/c.md": [
               {
                   "source": "docs/a.json",
-                  "type": "uidInclusion"
+                  "type": "uid"
               }
           ]
       }
@@ -383,7 +379,7 @@ outputs:
           "docs/f1/f2/b.json": [
               {
                   "source": "docs/a.json",
-                  "type": "uidInclusion"
+                  "type": "uid"
               }
           ]
       }
@@ -731,20 +727,11 @@ outputs:
     {
       "dependencies": {
         "docs/1/b.md": [
-          {
-            "source": "docs/c.md",
-            "type": "uidInclusion"
-          }
+          { "source": "docs/c.md", "type": "uid" }
         ],
         "docs/a.md": [
-          {
-            "source": "docs/1/b.md",
-            "type": "inclusion"
-          },
-          {
-            "source": "docs/c.md",
-            "type": "uidInclusion"
-          }
+          { "source": "docs/1/b.md", "type": "include" },
+          { "source": "docs/c.md", "type": "uid" }
         ]
       }
     }
