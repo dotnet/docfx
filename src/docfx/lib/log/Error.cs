@@ -61,6 +61,8 @@ namespace Microsoft.Docs.Build
             return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn);
         }
 
+        public override string ToString() => ToString(Level, null);
+
         public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
             var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath.Path);
