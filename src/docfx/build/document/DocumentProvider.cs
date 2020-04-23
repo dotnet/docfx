@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Microsoft.Docs.Build
 {
