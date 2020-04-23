@@ -625,24 +625,6 @@ outputs:
       "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div><div class=\"mx-imgBorder\"><p><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>"
     }
 ---
-# Liquid template file missing should not crash
-inputs: 
-  docfx.yml: |
-    outputType: html
-    outputUrlType: pretty
-  docs/a.md: Hello `docfx`! 
-outputs: 
-  docs/a/index.html:
----
-# Source file name ending with spaces should not crash
-inputs:
-  docfx.yml: |
-    outputType: html
-    outputUrlType: pretty
-  docs/a b.. ..md:
-outputs:
-  docs/a b/index.html:
----
 # Invalid Link
 inputs: 
   docfx.yml:

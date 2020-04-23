@@ -1,4 +1,32 @@
 ---
+# Liquid template file missing should not crash
+inputs: 
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  docs/a.md: Hello `docfx`!
+outputs: 
+  docs/a/index.json:
+  .errors.log: |
+    ["warning","liquid-not-found","Liquid used to genenrate HTML is not found for mimeType 'Conceptual'","docs/a.md",1,1]
+---
+# Source file name ending with spaces should not crash
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  docs/a b.. ..md:
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/Conceptual.html.liquid:
+outputs:
+  docs/a b/index.html:
+---
 # Apply template and produce html page when output type is html
 # Index page should be handled specially
 # Resource file should not be prettify
