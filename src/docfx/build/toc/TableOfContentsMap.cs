@@ -51,12 +51,13 @@ namespace Microsoft.Docs.Build
         public string? FindTocRelativePath(Document file)
         {
             var nearestToc = FindNearestToc(file);
-            if (nearestToc != null)
+            if (nearestToc is null)
             {
-                _dependencyMapBuilder.AddDependencyItem(file, nearestToc, DependencyType.Metadata);
+                return null;
             }
 
-            return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath)) : null;
+            _dependencyMapBuilder.AddDependencyItem(file, nearestToc, DependencyType.Metadata);
+            return PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath));
         }
 
         /// <summary>
