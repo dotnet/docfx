@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public string Locale { get; set; }
 
-        public bool InputCouldBeChanged { get; set; }
+        public bool SkipInputCheck { get; set; }
 
         public string[] Environments { get; set; } = Array.Empty<string>();
 

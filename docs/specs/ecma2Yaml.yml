@@ -1,6 +1,6 @@
 # Support ECMA2Yaml ops config
 os: windows, osx
-inputCouldBeChanged: true
+skipInputCheck: true
 repos:
   https://github.com/ops/ecma-yaml:
   - files:    
