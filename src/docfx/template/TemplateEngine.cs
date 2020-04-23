@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                : throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
         }
 
-        public string RunLiquid(Document file, TemplateModel model)
+        public string RunLiquid(TemplateModel model)
         {
             var layout = model.RawMetadata?.Value<string>("layout") ?? "";
             var themeRelativePath = _templateDir;

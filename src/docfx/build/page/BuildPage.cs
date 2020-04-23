@@ -121,8 +121,8 @@ namespace Microsoft.Docs.Build
                 return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
             }
 
-            // TODO: report a warnign if the liquid is not existed
-            var html = context.TemplateEngine.RunLiquid(file, templateModel);
+            // TODO: report a warning if the liquid does not exist
+            var html = context.TemplateEngine.RunLiquid(templateModel);
             return (errors, html, JsonUtility.SortProperties(templateMetadata));
         }
 
