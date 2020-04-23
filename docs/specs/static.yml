@@ -1,5 +1,7 @@
 ---
-# Apply template in none-legacy mode and produce html page when output type is html
+# Apply template and produce html page when output type is html
+# Index page should be handled specially
+# Resource file should not be prettify
 inputs:
   docfx.yml: |
     outputType: html
@@ -21,6 +23,9 @@ inputs:
     # title
     **strong**
     ~~removed~~
+    ![](b.png)
+  index.md:
+  b.png:
 outputs:
   a/index.html: |
     <!DOCTYPE html>
@@ -28,20 +33,25 @@ outputs:
         <p>
           <strong>strong</strong>
           <del>removed</del>
+          <img alt="" src="../b.png"></img>
         </p>
       </div>
+  b.png:
+  index.html:
   .publish.json: |
     {
       "files": [
-        {"additional": "additional"}
+        {"url": "/a/", "additional": "additional"},
+        {"url": "/b.png"},
+        {"url": "/"}
       ]
     }
 ---
-# Apply template in none-legacy mode and produce html page when output type is html and outputUrlType is Ugly
+# Apply template and produce html page when output type is html and outputUrlType is Ugly
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: Ugly
+    outputUrlType: ugly
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -54,11 +64,13 @@ inputs:
 outputs:
   a.html:
 ---
-# Link should be resolved to the physical relative path when output type is html and outputUrlType is Ugly
+# Apply template and produce html page with versioning
+# 1. Link should be resolved to the physical relative path
+# 2. Asset_id should should contains group prefix
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: Ugly
+    outputUrlType: ugly
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     routes:
@@ -130,7 +142,7 @@ outputs:
           "group": "1dd7adba",
           "version":"< netcore-2.0",
           "is_moniker_range": true,
-          "source_relative_path": "docs/v1/toc.md"
+          "source_relative_path": "docs/v1/TOC.md"
         },
         {"asset_id": "218c13d0/b.html"}
       ]
@@ -174,3 +186,24 @@ outputs:
         <div>value</div>
 
       </div>
+---
+# Static Build mode for `Data` type SDP
+# Should generate json output
+# Url should not be prettify
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}

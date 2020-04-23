@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(ErrorLog, Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, ErrorLog);
+            DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
