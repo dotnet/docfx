@@ -171,7 +171,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     | `site-path` | dotnet/01ddf122/api/thumbnail.png |
     | `output-path` | dotnet/01ddf122/api/thumbnail.png |
 
-> Note: For static page versioning, the ideal output path should use the human readable `moniker` instead of monikerHash, but that require coping the same content to different output folder of each version. For the time been, the static output is only for generating PDF, the URL does not appear in PDF now, so we can still use the monikerHash.
+> Note: For static page versioning, the ideal output path should use the human readable `moniker` instead of monikerHash, but that require coping the same content to different output folder of each version. For the time being, the static output is only for generating PDF, the URL does not appear in PDF now, so we can still use the monikerHash.
 
 ## System Generated Outputs
 
