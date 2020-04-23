@@ -31,10 +31,11 @@ type FSharpProjectTests  (output: ITestOutputHelper) =
         Assert.Equal (Path.GetFullPath projPath, proj.FilePath)
         Assert.True (proj.HasDocuments)
         let docs = List.ofSeq proj.Documents
-        Assert.Equal (4, docs.Length)
+        Assert.Equal (5, docs.Length)
         Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/Module1.fs", docs.[1].FilePath)
         Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/Module2.fs", docs.[2].FilePath)
-        Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/Program.fs", docs.[3].FilePath)
+        Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/InterfaceImpls.fs", docs.[3].FilePath)
+        Assert.Equal (Path.GetFullPath "TestData/NetCoreProject/Program.fs", docs.[4].FilePath)
         let refs = List.ofSeq proj.ProjectReferences
         Assert.Equal (1, refs.Length)
         Assert.IsType<FSharpProject> refs.[0] |> ignore
@@ -80,7 +81,7 @@ type FSharpProjectTests  (output: ITestOutputHelper) =
 
         // Check multiple projects can be loaded and they don't interfere
         let otherProj = loader.Load("TestData/NetCoreProject/NetCoreProject.fsproj")
-        Assert.Equal (4, Seq.length otherProj.Documents)
+        Assert.Equal (5, Seq.length otherProj.Documents)
 
         // Now move the original project to a different directory
         Directory.Move(projDir, projDir + ".old")

@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Module1.fs" />
     <Compile Include="Module2.fs" />
+    <Compile Include="InterfaceImpls.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

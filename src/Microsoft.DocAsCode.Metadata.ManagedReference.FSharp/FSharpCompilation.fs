@@ -221,7 +221,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     /// Full name of an F# type.
     let typeFullName (t: FSharpType) =
         if t.IsAbbreviation then
-            t.TypeDefinition.AccessPath + "." + t.TypeDefinition.DisplayName
+            t.TypeDefinition.AbbreviatedType.TypeDefinition.FullName
         else
             t.TypeDefinition.FullName
 
@@ -341,7 +341,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             let iasName =
                 if mem.IsOverrideOrExplicitInterfaceImplementation then 
                     match Seq.tryHead mem.ImplementedAbstractSignatures with
-                    | Some ias -> ias.DeclaringType.TypeDefinition.FullName + "." 
+                    | Some ias -> typeFullName ias.DeclaringType + "."
                     | _ -> ""
                  else ""                
             let baseName = 
@@ -369,7 +369,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     match Seq.tryHead mem.ImplementedAbstractSignatures with
                     | Some ias when ias.DeclaringType.TypeDefinition.IsInterface -> 
                         sprintf "interface %s with " (typeSyntax fullType ias.DeclaringType)
-                    | Some ias when ias.DeclaringType.TypeDefinition.FullName = encEnt.FullName -> 
+                    | Some ias when typeFullName ias.DeclaringType = encEnt.FullName ->
                         "default "
                     | Some _ -> "override "
                     | None -> ""
@@ -758,7 +758,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 encMd.Name + "." + 
                 (if mem.IsExtensionMember then "___" + logicalName + "." else "") +
                 (match Seq.tryHead mem.ImplementedAbstractSignatures with
-                    | Some ias -> ias.DeclaringType.TypeDefinition.FullName + "." 
+                    | Some ias -> typeFullName ias.DeclaringType + "."
                     | None -> "") +
                 (if mem.IsConstructor then "#ctor" else mem.DisplayName)
             symMd.Syntax.Parameters <- curriedParamsMetadata mem.CurriedParameterGroups
@@ -833,7 +833,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 match Seq.tryHead mem.ImplementedAbstractSignatures with
                 | Some ias when ias.DeclaringType.TypeDefinition.IsInterface -> 
                     sprintf "interface %s with " (typeSyntax fullType ias.DeclaringType)
-                | Some ias when ias.DeclaringType.TypeDefinition.FullName = encEnt.FullName -> 
+                | Some ias when typeFullName ias.DeclaringType = encEnt.FullName ->
                     "default "
                 | Some _ -> "override "
                 | None -> ""
@@ -970,7 +970,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                                       |> Seq.filter (fun i -> not (fsFilteredIfs |> List.contains i.TypeDefinition.DisplayName))
                                       |> Seq.map typeRef |> Seq.sort)
             elif ent.IsInterface then
-                let implIfs = ent.AllInterfaces |> Seq.filter (fun ift -> ift.TypeDefinition.FullName <> ent.FullName)
+                let implIfs = ent.AllInterfaces |> Seq.filter (fun ift -> typeFullName ift <> ent.FullName)
                 md.InheritedMembers <- List(implIfs |> Seq.collect inhertiableMembers |> Seq.sort)
                 md.Implements <- List(implIfs |> Seq.map typeRef |> Seq.sort)
             else
@@ -1000,7 +1000,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             | _ -> ""
         let ifStr filter =
             ent.AllInterfaces
-            |> Seq.filter (fun itf -> not ent.IsInterface || itf.TypeDefinition.FullName <> ent.FullName)
+            |> Seq.filter (fun itf -> not ent.IsInterface || typeFullName itf <> ent.FullName)
             |> Seq.filter (fun itf -> not (filter |> List.contains itf.TypeDefinition.DisplayName))
             |> Seq.map (fun itf -> "\n    " + (if ent.IsInterface then "inherit " else "interface ") + typeSyntax false itf)
             |> String.concat ""
