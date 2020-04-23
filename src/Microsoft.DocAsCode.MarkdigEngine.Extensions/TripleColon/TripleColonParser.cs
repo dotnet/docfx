@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
- 
+
     public class TripleColonParser : BlockParser
     {
         private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
@@ -22,11 +22,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _context = context;
             _extensions = extensions;
         }
-        
+
         public override BlockState TryOpen(BlockProcessor processor)
         {
             var slice = processor.Line;
-            var column = processor.Column;
             var sourcePosition = processor.Start;
 
             if (processor.IsCodeIndent
@@ -44,25 +43,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 null,
                 line: processor.LineIndex);
 
+            var block = new TripleColonBlock(this)
+            {
+                Closed = false,
+                Column = processor.Column,
+                Line = processor.LineIndex,
+                Span = new SourceSpan(sourcePosition, slice.End),
+            };
+
             if (!TryMatchIdentifier(ref slice, out extensionName)
                 || !_extensions.TryGetValue(extensionName, out var extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
                 || !TryMatchAttributes(ref slice, out var attributes, extensionName, extension.SelfClosing, logError)
-                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, processor))
+                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, block))
             {
                 return BlockState.None;
             }
 
-            var block = new TripleColonBlock(this)
-            {
-                Closed = false,
-                Column = column,
-                Line = processor.LineIndex,
-                Span = new SourceSpan(sourcePosition, slice.End),
-                Extension = extension,
-                RenderProperties = renderProperties,
-                Attributes = attributes
-            };
+            block.Extension = extension;
+            block.Attributes = attributes;
+            block.RenderProperties = renderProperties;
 
             if (htmlAttributes != null)
             {
@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 && htmlAttributes != null
                 && ImageExtension.RequiresClosingTripleColon(attributes))
             {
-                ((TripleColonBlock)block).EndingTripleColons = true;
+                block.EndingTripleColons = true;
                 return BlockState.ContinueDiscard;
             }
 

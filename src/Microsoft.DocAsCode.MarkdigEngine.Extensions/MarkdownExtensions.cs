@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UsePipeTables()
                 .UseAutoLinks()
                 .UseHeadingIdRewriter()
+                .UseResolveLink(context)
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
                 .UseDFMCodeInfoPrefix()
@@ -88,6 +89,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, Func<object, string> getFilePath = null)
         {
             pipeline.Extensions.Add(new LineNumberExtension(getFilePath));
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseResolveLink(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+        {
+            pipeline.Extensions.Insert(0, new ResolveLinkExtension(context));
             return pipeline;
         }
 
