@@ -100,7 +100,7 @@ inputs:
     ---
     monikerRange: netcore-1.1
     ---
-  docs/v1/toc.md: |
+  docs/v1/TOC.md: |
     # [A](a.md)
 outputs:
   1dd7adba/toc.html: |
