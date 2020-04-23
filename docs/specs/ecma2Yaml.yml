@@ -18,7 +18,8 @@ repos:
             },
           }],
         }
-      docfx.yml:
+      docfx.yml: |
+          sourceMap: .sourceMap.json
       xml/ns-CatLibrary.xml: |
         <Namespace Name="CatLibrary">
           <Docs>
@@ -88,14 +89,12 @@ repos:
         {}
       _themes/ContentTemplate/schemas/NetMember.schema.json: |
         {}
-      _themes/ContentTemplate/schemas/NetType.schema.json: |
-        {}
 outputs:
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary'","api/toc.yml",3,8]
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2'","api/toc.yml",6,10]
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2.#ctor*'","api/toc.yml",9,12]
+    ["error","schema-not-found","Unknown schema 'NetType'","xml/CatLibrary/Cat%602.xml"]
   api/toc.json:
   api/catlibrary.cat-2.-ctor.json:
-  api/catlibrary.cat-2.json:
   api/catlibrary.json:

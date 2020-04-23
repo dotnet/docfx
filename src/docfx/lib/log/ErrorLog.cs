@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
 
         private Lazy<TextWriter> _output;
         private Config? _config;
+        private SourceMap? _sourceMap;
 
         private int _errorCount;
         private int _warningCount;
@@ -41,9 +42,10 @@ namespace Microsoft.Docs.Build
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
-        public void Configure(Config config, string outputPath)
+        public void Configure(Config config, string outputPath, SourceMap? sourceMap)
         {
             _config = config;
+            _sourceMap = sourceMap;
 
             lock (_outputLock)
             {
@@ -185,7 +187,7 @@ namespace Microsoft.Docs.Build
 
             if (_output != null)
             {
-                var line = _legacy ? LegacyReport(error, level) : error.ToString(level);
+                var line = _legacy ? LegacyReport(error, level) : error.ToString(level, _sourceMap);
                 lock (_outputLock)
                 {
                     _output.Value.WriteLine(line);
@@ -259,12 +261,12 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static string LegacyReport(Error error, ErrorLevel level)
+        private string LegacyReport(Error error, ErrorLevel level)
         {
             var message_severity = level;
             var code = error.Code;
             var message = error.Message;
-            var file = error.FilePath?.OriginalPath ?? error.FilePath?.Path;
+            var file = error.FilePath is null ? error.FilePath?.Path : _sourceMap?.GetOriginalFilePath(error.FilePath.Path) ?? error.FilePath?.Path;
             var line = error.Line;
             var end_line = error.EndLine;
             var column = error.Column;

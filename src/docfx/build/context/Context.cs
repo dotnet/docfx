@@ -24,8 +24,6 @@ namespace Microsoft.Docs.Build
 
         public Input Input { get; }
 
-        public SourceMap SourceMap { get; }
-
         public BuildScope BuildScope { get; }
 
         public RedirectionProvider RedirectionProvider { get; }
@@ -68,7 +66,7 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsMap TocMap { get; }
 
-        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
+        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder();
             BuildQueue = new WorkQueue<FilePath>(errorLog);
@@ -79,9 +77,8 @@ namespace Microsoft.Docs.Build
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
 
-            SourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), Config, FileResolver);
             RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
-            Input = new Input(buildOptions, config, SourceMap, packageResolver, RepositoryProvider);
+            Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
@@ -95,7 +92,7 @@ namespace Microsoft.Docs.Build
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
             PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog, ContentValidator);
             BookmarkValidator = new BookmarkValidator(errorLog);
-            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider);
+            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder, ContributionProvider);
             XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder);
 
@@ -103,7 +100,6 @@ namespace Microsoft.Docs.Build
                 config,
                 Input,
                 BuildOptions,
-                SourceMap,
                 BuildScope,
                 BuildQueue,
                 RedirectionProvider,

@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                         return true;
                     }
 
-                    errorLog.Configure(config, buildOptions.OutputPath);
+                    errorLog.Configure(config, buildOptions.OutputPath, null);
                     using (packageResolver)
                     {
                         // download dependencies to disk

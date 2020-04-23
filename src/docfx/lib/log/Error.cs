@@ -61,13 +61,13 @@ namespace Microsoft.Docs.Build
             return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn);
         }
 
-        public override string ToString() => ToString(Level);
-
-        public string ToString(ErrorLevel level)
+        public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
-            object?[] payload = { level, Code, Message, FilePath?.OriginalPath ?? FilePath?.Path, Line, Column };
-
-            var i = payload.Length - 1;
+            var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath.Path);
+            var payload = originalPath is null
+                ? new List<object?> { level, Code, Message, FilePath?.Path, Line, Column }
+                : new List<object?> { level, Code, Message, originalPath };
+            var i = payload.Count - 1;
             while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Main)))
             {
                 i--;

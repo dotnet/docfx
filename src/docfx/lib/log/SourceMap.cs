@@ -15,10 +15,10 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(config.SourceMap))
             {
                 var content = fileResolver.ReadString(config.SourceMap);
-                var map = JsonUtility.Deserialize<Dictionary<PathString, PathString?>>(content, new FilePath(config.SourceMap));
+                var map = JsonUtility.Deserialize<SourceMapModel>(content, new FilePath(config.SourceMap));
                 var sourceMapDirectory = Path.GetDirectoryName(fileResolver.ResolveFilePath(config.SourceMap)) ?? "";
 
-                foreach (var (path, originalPath) in map)
+                foreach (var (path, originalPath) in map.Files)
                 {
                     if (originalPath != null)
                     {
@@ -33,6 +33,11 @@ namespace Microsoft.Docs.Build
         public PathString? GetOriginalFilePath(PathString path)
         {
             return _map.TryGetValue(path, out var originalPath) ? (PathString?)originalPath : null;
+        }
+
+        private class SourceMapModel
+        {
+            public Dictionary<PathString, PathString?> Files { get; } = new Dictionary<PathString, PathString?>();
         }
     }
 }

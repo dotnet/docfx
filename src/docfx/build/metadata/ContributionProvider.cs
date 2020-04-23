@@ -15,25 +15,26 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly GitHubAccessor _githubAccessor;
         private readonly BuildOptions _buildOptions;
-
         private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
-
         private readonly RepositoryProvider _repositoryProvider;
+        private readonly SourceMap _sourceMap;
 
         public ContributionProvider(
-            Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider)
+            Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider, SourceMap sourceMap)
         {
             _input = input;
             _config = config;
             _buildOptions = buildOptions;
             _githubAccessor = githubAccessor;
             _repositoryProvider = repositoryProvider;
+            _sourceMap = sourceMap;
         }
 
         public (List<Error> errors, ContributionInfo?) GetContributionInfo(FilePath file, SourceInfo<string> authorName)
         {
             var errors = new List<Error>();
-            var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
+
+            var fullPath = GetOriginalFullPath(file);
             var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath);
             if (repo is null)
             {
@@ -126,8 +127,8 @@ namespace Microsoft.Docs.Build
             GetGitUrl(FilePath file)
         {
             var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
-            var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
-            var (repo, pathToRepo) = _repositoryProvider.GetRepository(fullPath);
+
+            var (repo, pathToRepo) = _repositoryProvider.GetRepository(GetOriginalFullPath(file));
             if (repo is null || pathToRepo is null)
             {
                 return default;
@@ -145,8 +146,7 @@ namespace Microsoft.Docs.Build
 
         public string? GetGitCommitUrl(FilePath file)
         {
-            var fullPath = _input.GetFullPath(file, preferOriginalPath: true);
-            var (repo, pathToRepo, commits) = _repositoryProvider.GetCommitHistory(fullPath);
+            var (repo, pathToRepo, commits) = _repositoryProvider.GetCommitHistory(GetOriginalFullPath(file));
             if (repo is null || pathToRepo is null)
             {
                 return default;
@@ -167,6 +167,12 @@ namespace Microsoft.Docs.Build
             {
                 commitBuildTimeProvider.Value.Save();
             }
+        }
+
+        private PathString GetOriginalFullPath(FilePath file)
+        {
+            var originalPath = _sourceMap.GetOriginalFilePath(file.Path);
+            return _input.GetFullPath(string.IsNullOrEmpty(originalPath) ? file : new FilePath(originalPath));
         }
 
         private string? GetContentGitUrl(string repo, string branch, string pathToRepo)
