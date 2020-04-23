@@ -8,25 +8,25 @@ repos:
         {
           "docsets_to_publish": [
           { 
-            "build_source_folder": ".",
-            "ECMA2Yaml":
-            {
-              "SourceXmlFolder": "xml",
-              "OutputYamlFolder": "api",
-              "Flatten": true,
-              "SDPMode": true,
-            },
+            "build_source_folder": "cat",
           }],
+          "ECMA2Yaml": {
+            "SourceXmlFolder": "cat/xml",
+            "OutputYamlFolder": "cat/api",
+            "Flatten": true,
+            "SDPMode": true,
+          },
         }
-      docfx.yml:
-      xml/ns-CatLibrary.xml: |
+      cat/docfx.yml: |
+        template: ../_themes
+      cat/xml/ns-CatLibrary.xml: |
         <Namespace Name="CatLibrary">
           <Docs>
             <summary>To be added.</summary>
             <remarks>To be added.</remarks>
           </Docs>
         </Namespace>
-      xml/CatLibrary/Cat`2.xml: |
+      cat/xml/CatLibrary/Cat`2.xml: |
         <Type Name="Cat&lt;T,K&gt;" FullName="CatLibrary.Cat&lt;T,K&gt;">
           <TypeSignature Language="C#" Value="public class Cat&lt;T,K&gt; where T : class, new() where K : struct" />
           <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable beforefieldinit Cat`2&lt;class .ctor T, struct .ctor (class System.ValueType) K&gt; extends System.Object" />
@@ -72,7 +72,7 @@ repos:
             </Member>
           </Members>
         </Type>
-      xml/FrameworksIndex/cat-1.0.xml: |
+      cat/xml/FrameworksIndex/cat-1.0.xml: |
         <?xml version="1.0" encoding="utf-8"?>
         <Framework Name="cat-1.0">
           <Assemblies>
@@ -91,11 +91,11 @@ repos:
       _themes/ContentTemplate/schemas/NetType.schema.json: |
         {}
 outputs:
-  .errors.log: |
+  cat/.errors.log: |
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary'","api/toc.yml",3,8]
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2'","api/toc.yml",6,10]
     ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2.#ctor*'","api/toc.yml",9,12]
-  api/toc.json:
-  api/catlibrary.cat-2.-ctor.json:
-  api/catlibrary.cat-2.json:
-  api/catlibrary.json:
+  cat/api/toc.json:
+  cat/api/catlibrary.cat-2.-ctor.json:
+  cat/api/catlibrary.cat-2.json:
+  cat/api/catlibrary.json:
