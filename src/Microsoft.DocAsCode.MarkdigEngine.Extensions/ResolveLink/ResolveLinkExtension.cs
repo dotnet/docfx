@@ -30,6 +30,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             if (markdownObject == null) return;
 
+            if (markdownObject is LinkInline linkInline && !linkInline.IsAutoLink)
+            {
+                linkInline.Url = _context.GetLink(linkInline.Url, InclusionContext.File, InclusionContext.RootFile, linkInline);
+            }
+
             if (markdownObject is ContainerBlock containerBlock)
             {
                 foreach (var subBlock in containerBlock)
@@ -52,11 +57,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 foreach (var subInline in containerInline)
                 {
                     UpdateLinks(subInline);
-                }
-
-                if (markdownObject is LinkInline linkInline && !linkInline.IsAutoLink)
-                {
-                    linkInline.Url = _context.GetLink(linkInline.Url, InclusionContext.File, InclusionContext.RootFile, linkInline);
                 }
             }
         }
