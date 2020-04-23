@@ -1531,3 +1531,20 @@ outputs:
   toc.json:
   _splitted/1/toc.json: |
     { "metadata": { "key": "value" } }
+---
+# Generate metadata dependency for PR comment preview link
+inputs:
+  docfx.yml:
+  TOC.yml: |
+    - name: a
+      href: a.md
+  a.md:
+outputs:
+  a.json:
+  toc.json:
+  .dependencymap.json: |
+    {
+      "dependencies": {
+        "a.md": [{ "source": "TOC.yml", "type": "metadata" }]
+      }
+    }
