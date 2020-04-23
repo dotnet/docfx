@@ -30,9 +30,12 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
 
-            var redirections = LoadRedirectionModel(docsetPath, repository);
-            _redirectUrls = GetRedirectUrls(redirections, hostName);
-            _renameHistory = GetRenameHistory(redirections, _redirectUrls);
+            using (Progress.Start("Loading redirections"))
+            {
+                var redirections = LoadRedirectionModel(docsetPath, repository);
+                _redirectUrls = GetRedirectUrls(redirections, hostName);
+                _renameHistory = GetRenameHistory(redirections, _redirectUrls);
+            }
         }
 
         public bool Contains(FilePath file)
@@ -219,17 +222,7 @@ namespace Microsoft.Docs.Build
         {
             var fileUrls = new ConcurrentBag<(FilePath file, string url)>();
             var allSources = _buildScope.Files.Concat(redirectUrlSources);
-            Parallel.ForEach(allSources, file =>
-            {
-                try
-                {
-                    fileUrls.Add((file, _documentProvider.GetDocument(file).SiteUrl));
-                }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    _errorLog.Write(dex);
-                }
-            });
+            ParallelUtility.ForEach(_errorLog, allSources, file => fileUrls.Add((file, _documentProvider.GetDocument(file).SiteUrl)));
 
             var publishUrlMap = fileUrls.GroupBy(fileUrl => fileUrl.url)
                                 .ToDictionary(group => group.Key, group => group.Select(g => g.file).ToList(), PathUtility.PathComparer);
