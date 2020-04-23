@@ -142,21 +142,14 @@ namespace Microsoft.Docs.Build
                 : Path.GetExtension(path);
             var directoryName = Path.GetDirectoryName(path) ?? "";
             var fileName = Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.');
-            var monikers = Array.Empty<string>();
-            try
-            {
-                (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                _errorLog.Write(dex);
-            }
+            var (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
+
             var group = MonikerUtility.GetGroup(monikers) ?? "";
             var sitePath = _config.OutputUrlType switch
             {
                 OutputUrlType.Docs => Path.Combine(directoryName, fileName + pathExtension).Replace('\\', '/'),
-                OutputUrlType.Static => Path.Combine(group, directoryName, fileName, "index" + pathExtension).Replace('\\', '/'),
-                OutputUrlType.StaticUgly => Path.Combine(group, directoryName, fileName + pathExtension).Replace('\\', '/'),
+                OutputUrlType.Pretty => Path.Combine(group, directoryName, fileName, "index" + pathExtension).Replace('\\', '/'),
+                OutputUrlType.Ugly => Path.Combine(group, directoryName, fileName + pathExtension).Replace('\\', '/'),
                 _ => throw new NotSupportedException(),
             };
 
@@ -179,7 +172,7 @@ namespace Microsoft.Docs.Build
 
             if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isPage))
             {
-                if (outputUrlType == OutputUrlType.Docs || outputUrlType == OutputUrlType.Static)
+                if (outputUrlType == OutputUrlType.Docs || outputUrlType == OutputUrlType.Pretty)
                 {
                     var fileName = Path.GetFileNameWithoutExtension(path);
                     if (fileName.Equals("index", PathUtility.PathComparison))

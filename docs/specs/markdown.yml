@@ -629,7 +629,7 @@ outputs:
 inputs: 
   docfx.yml: |
     outputType: html
-    outputUrlType: static
+    outputUrlType: pretty
   docs/a.md: Hello `docfx`! 
 outputs: 
   docs/a/index.html:
@@ -638,7 +638,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: static
+    outputUrlType: pretty
   docs/a b.. ..md:
 outputs:
   docs/a b/index.html:

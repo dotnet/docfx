@@ -219,7 +219,17 @@ namespace Microsoft.Docs.Build
         {
             var fileUrls = new ConcurrentBag<(FilePath file, string url)>();
             var allSources = _buildScope.Files.Concat(redirectUrlSources);
-            Parallel.ForEach(allSources, file => fileUrls.Add((file, _documentProvider.GetDocument(file).SiteUrl)));
+            Parallel.ForEach(allSources, file =>
+            {
+                try
+                {
+                    fileUrls.Add((file, _documentProvider.GetDocument(file).SiteUrl));
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    _errorLog.Write(dex);
+                }
+            });
 
             var publishUrlMap = fileUrls.GroupBy(fileUrl => fileUrl.url)
                                 .ToDictionary(group => group.Key, group => group.Select(g => g.file).ToList(), PathUtility.PathComparer);

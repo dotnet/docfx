@@ -434,7 +434,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: static
+    outputUrlType: pretty
   a.yml: |
     #YamlMime:TestPage
     key: value

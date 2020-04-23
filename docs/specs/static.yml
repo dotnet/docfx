@@ -3,7 +3,7 @@
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: static
+    outputUrlType: pretty
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -37,11 +37,11 @@ outputs:
       ]
     }
 ---
-# Apply template in none-legacy mode and produce html page when output type is html and outputUrlType is staticUgly
+# Apply template in none-legacy mode and produce html page when output type is html and outputUrlType is Ugly
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: staticUgly
+    outputUrlType: Ugly
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -54,11 +54,11 @@ inputs:
 outputs:
   a.html:
 ---
-# Link should be resolved to the physical relative path when static-output and ugly-url is enabled
+# Link should be resolved to the physical relative path when output type is html and outputUrlType is Ugly
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: staticUgly
+    outputUrlType: Ugly
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     routes:
@@ -144,7 +144,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: static
+    outputUrlType: pretty
   _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
   a.yml: |
     #YamlMime:TestData

@@ -13,11 +13,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// a.md --> /xxx/a/
         /// </summary>
-        Static,
+        Pretty,
 
         /// <summary>
         /// a.md --> /xxx/a.html
         /// </summary>
-        StaticUgly,
+        Ugly,
     }
 }
