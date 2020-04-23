@@ -387,7 +387,7 @@ outputs:
 ---
 # Define uid with error
 inputs:
-  docfx.yml: |
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",

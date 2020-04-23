@@ -628,7 +628,8 @@ outputs:
 # Liquid template file missing should not crash
 inputs: 
   docfx.yml: |
-    outputJson: false
+    outputType: html
+    outputUrlType: pretty
   docs/a.md: Hello `docfx`! 
 outputs: 
   docs/a/index.html:
@@ -636,7 +637,8 @@ outputs:
 # Source file name ending with spaces should not crash
 inputs:
   docfx.yml: |
-    outputJson: false
+    outputType: html
+    outputUrlType: pretty
   docs/a b.. ..md:
 outputs:
   docs/a b/index.html:

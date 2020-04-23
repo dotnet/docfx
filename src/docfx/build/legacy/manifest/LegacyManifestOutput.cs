@@ -18,5 +18,9 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("resource", NullValueHandling = NullValueHandling.Ignore)]
         public LegacyManifestOutputItem? ResourceOutput { get; set; }
+
+        // TODO: remove this when PDF does not depend on .manifest.json
+        [JsonProperty(".html", NullValueHandling = NullValueHandling.Ignore)]
+        public LegacyManifestOutputItem? HtmlOutput { get; set; }
     }
 }

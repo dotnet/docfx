@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                             output.TocOutput = new LegacyManifestOutputItem
                             {
                                 IsRawPage = false,
-                                RelativePath = legacyOutputPathRelativeToBasePath,
+                                RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToBasePath, ".json"),
                             };
                         }
 
@@ -84,17 +84,28 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
+                        if (context.Config.OutputType == OutputType.Html)
+                        {
+                            output.HtmlOutput = new LegacyManifestOutputItem
+                            {
+                                IsRawPage = false,
+                                RelativePath = LegacyUtility.ChangeExtension(legacyOutputPathRelativeToBasePath, ".html"),
+                            };
+                        }
+
                         var file = new LegacyManifestItem
                         {
                             AssetId = legacySiteUrlRelativeToBasePath,
                             Original = fileManifest.Value.SourcePath,
                             SourceRelativePath = document.FilePath.Path,
                             OriginalType = GetOriginalType(document.ContentType),
-                            Type = GetType(document.ContentType, document),
+                            Type = GetType(context, document.ContentType, document),
                             Output = output,
                             SkipNormalization = !(document.ContentType == ContentType.Resource),
                             SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
                             Group = fileManifest.Value.MonikerGroup,
+                            Version = context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
+                            IsMonikerRange = true,
                         };
 
                         listBuilder.Add((file, document, fileManifest.Value.Monikers));
@@ -147,9 +158,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetType(ContentType type, Document doc)
+        private static string GetType(Context context, ContentType type, Document doc)
         {
-            if (type == ContentType.Page && !doc.IsPage)
+            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !doc.IsPage)
             {
                 return "Toc";
             }

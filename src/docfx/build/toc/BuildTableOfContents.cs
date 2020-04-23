@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
             errors.AddRange(validationErrors);
 
-            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata);
+            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata, file.SitePath);
 
             // TODO: improve error message for toc monikers overlap
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
@@ -53,15 +53,22 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.Config.DryRun)
                 {
-                    if (context.Config.Legacy)
+                    if (context.Config.Legacy || context.Config.OutputType == OutputType.Html)
                     {
                         var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
-                        context.Output.WriteJson(outputPath, output);
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
                         context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
                     }
                     else
                     {
                         context.Output.WriteJson(outputPath, model);
+                    }
+
+                    if (context.Config.OutputType == OutputType.Html)
+                    {
+                        var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
+                        var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);
+                        context.Output.WriteText(outputPath, html);
                     }
                 }
             });
