@@ -22,14 +22,11 @@ type FSharpDocument (docPath: string) =
 /// <param name="msbuildProps">MsBuild properties to set.</param>
 /// <param name="loader">Project loader to use for loading referenced projects.</param>
 /// <param name="checker">F# compiler service instance.</param>
-type FSharpProject (projPath: string, 
-                    msbuildProps: IDictionary<string, string>,
+type internal FSharpProject (projPath: string,
                     loader: AbstractProjectLoader,
+                    projInfo: FSharpProjectInfo,
                     checker: FSharpChecker) =
     inherit AbstractProject()
-
-    let projPath = Path.GetFullPath(projPath)
-    let projInfo = FSharpProjectInfo.fromProjectFile projPath msbuildProps
 
     override __.FilePath = 
         projPath
@@ -73,12 +70,22 @@ type FSharpProject (projPath: string,
 /// <param name="msbuildProps">MsBuild properties to set.</param>
 type FSharpProjectLoader (msbuildProps: IDictionary<string,string>) =
     let checker = FSharpChecker.Create()
+    let projInfoCache = Dictionary<string, FSharpProjectInfo>()
 
     interface IProjectLoader with
         member __.TryLoad(path, loader) =
+            let path = Path.GetFullPath(path)
             let ext = Path.GetExtension(path).ToLowerInvariant()
-            if ext = ".fsproj" then
-                FSharpProject(path, msbuildProps, loader, checker) :> AbstractProject
-            else
-                null
 
+            // We only care about fsproj
+            if ext <> ".fsproj" then null else
+
+            let projInfo =
+                match projInfoCache.TryGetValue path with
+                | true, projInfo -> projInfo
+                | false, _ ->
+                    let projInfo = FSharpProjectInfo.fromProjectFile path msbuildProps
+                    projInfoCache.Add(path, projInfo)
+                    projInfo
+
+            FSharpProject(path, loader, projInfo, checker) :> _
