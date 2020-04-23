@@ -1,6 +1,7 @@
 # Sanitize HTML
 
 [Feature 178608](https://dev.azure.com/ceapex/Engineering/_workitems/edit/178608/)
+[Feature 192183](https://dev.azure.com/ceapex/Engineering/_workitems/edit/192183/)
 
 ## Overview
 
@@ -11,67 +12,33 @@ Content authors can embed arbitrary HTML tags to markdown documents. These HTML 
 - Remove HTML tags and attributes from user content that may alter site style
 - Remove HTML tags and attributes from user content that may allow javascript execution
 - Apply HTML sanitization consistently for all user content
+- Report warnings for removing disallowed HTML tags and attributes
+- Sanitize URL, it is tracked by 
 
 ### Out of scope
 
-- Report warnings for removing disallowed HTML tags and attributes
+- Sanitize links. It is tracked by a seperate feature
 - Refactor HTML processing pipeline
 
 ## Technical Design
 
 The sanitization is performed against user HTML, that is in most cases HTML tags inside markdown files. It does not sanitize HTML produced from the system, including markdown extension, jint, mustache or liquid template.
 
-#### Sanitize URL
+#### Sanitize HTML tags and attributes
 
-To prevent script execution like `<a href="javascript://void">`, URL schemas are sanitized using a _disallow list_. Restricting URL schemas to `http:` or `https:` only is not the scope of this feature. The _disallow list_ is:
-
-- `javascript:`
-
-#### Sanitize HTML Tags
-
-Keep using the existing _disallow list_ approach for HTML tags. The disallowed HTML tags are:
-
-- `<script>`
-- `<link>`
-- `<style>`
-
-#### Sanitize HTML attribute
-
-HTML attribute that may trigger javascript exeuction is an open set. For reference, https://developer.mozilla.org/en-US/docs/Web/Events lists all the possible DOM events, some of them are standard events, some of them are non-standard events or browser specific (like `moz-*`).
-
-The HTML attribute _allow list_ is defined as the sum of:
+Use an _allow list_ to sanitize HTML tags and attributes. HTML tags can contain the follow common attributes:
 
 - Attribute names starting with `data-`.
 - Accessibility attributes: `role` and names starting with `aria-`.
-- Standard HTML5 attributes for allowed HTML tag names:
-  ```csharp
-  "class", "dir", "hidden", "id", "itemid", "itemprop", "itemref", "itemscope", "itemtype,",
-  "lang", "part", "slot", "spellcheck", "tabindex", "title", "cite", "value", "reversed",
-  "start", "download", "href", "hreflang", "ping", "rel", "target", "type", "datetime",
-  "alt", "decoding", "height", "intrinsicsize", "loading", "sizes", "src", "width",
-  "abbr", "colspan", "headers", "rowspan", "scope", "allow", "allowfullscreen", "allowpaymentrequest",
-  "name", "referrerpolicy", "sandbox", "srcdoc", "role",
+- Standard HTML5 global attributes:
+
+  ```html
+  id, itemid, itemprop, itemref, itemscope, itemtype,
+  part, slot, spellcheck, title
   ```
 
-#### HTML5 attribute name allowlist
+Each allowed HTML tag can have additional attributes as follows:
 
-The HTML5 attribute name allowlist is generated using the following method:
-
-- Based on https://developer.mozilla.org/en-US/docs/Web/HTML/Element.
-- Excludes experimental and obsolete attributes.
-- Excludes user interactive DOM elements and attributes (like `<button>`, `<menu>`).
-- Excludes media DOM elements (like `<video>`, `<audio>`).
-- Excludes DOM elements that affect main site structure (like `<body>` and `<header>`)
-
-**Global attributes**
-
-```html
-class, dir, hidden, id,
-itemid, itemprop, itemref, itemscope, itemtype,
-lang, part, slot, spellcheck, tabindex, title
-```
-
-**Attributes by element name**
 
 ```html
 <!-- Content sectioning -->
@@ -142,3 +109,8 @@ lang, part, slot, spellcheck, tabindex, title
 <pre>:
 <iframe>: allow, allowfullscreen, allowpaymentrequest, height, name, referrerpolicy, sandbox, src, srcdoc, width
 ```
+
+> The above table is based on https://developer.mozilla.org/en-US/docs/Web/HTML/Element. It
+> - Excludes experimental and obsolete attributes, excludes user interactive DOM elements and attributes (like `<button>`, `<menu>`).
+> - Excludes media DOM elements (like `<video>`, `<audio>`).
+> - Excludes DOM elements that affect main site structure (like `<body>` and `<header>`)
