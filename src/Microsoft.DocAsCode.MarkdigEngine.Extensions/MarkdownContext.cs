@@ -23,11 +23,25 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <returns>An stream and the opened file, or default if such file does not exists.</returns>
         public delegate (string content, object file) ReadFileDelegate(string path, object relativeTo, MarkdownObject origin);
 
+        /// <summary>
+        /// Allows late binding of urls.
+        /// </summary>
+        /// <param name="path">Path of the link</param>
+        /// <param name="relativeTo">The source file that path is based on.</param>
+        /// <param name="resultRelativeTo">The entry file that returned URL should be rebased upon.</param>
+        /// <param name="origin">The original markdown element that triggered the read request.</param>
+        /// <returns>Url bound to the path</returns>
+        public delegate string GetLinkDelegate(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin);
 
         /// <summary>
         /// Reads a file as text.
         /// </summary>
         public ReadFileDelegate ReadFile { get; }
+
+        /// <summary>
+        /// Get the link for a given url.
+        /// </summary>
+        public GetLinkDelegate GetLink { get; }
 
         /// <summary>
         /// Log info
@@ -62,10 +76,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             LogActionDelegate logSuggestion = null,
             LogActionDelegate logWarning = null,
             LogActionDelegate logError = null,
-            ReadFileDelegate readFile = null)
+            ReadFileDelegate readFile = null,
+            GetLinkDelegate getLink = null)
         {
             _getToken = getToken ?? (_ => null);
             ReadFile = readFile ?? ReadFileDefault;
+            GetLink = getLink ?? ((path, a, b, c) => path);
             LogInfo = logInfo ?? ((a, b, c, d) => { });
             LogSuggestion = logSuggestion ?? ((a, b, c, d) => { });
             LogWarning = logWarning ?? ((a, b, c, d) => { });

@@ -14,9 +14,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class ImageExtension : ITripleColonExtensionInfo
     {
+        private readonly MarkdownContext _context;
+
         public string Name => "image";
         public bool SelfClosing => true;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+
+        public ImageExtension(MarkdownContext context)
+        {
+            _context = context;
+        }
 
         public bool Render(HtmlRenderer renderer, TripleColonBlock block)
         {
@@ -25,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, BlockProcessor processor)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, TripleColonBlock block)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
@@ -84,7 +91,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", src);
+            htmlAttributes.AddProperty("src", _context.GetLink(src, InclusionContext.File, InclusionContext.RootFile, block));
 
             if (type == "icon")
             {
@@ -93,7 +100,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 htmlAttributes.AddProperty("alt", alt);
             }
-            var id = GetHtmlId(processor.LineIndex, processor.Column);
+            var id = GetHtmlId(block.Line, block.Column);
             if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             RenderDelegate = (renderer, obj) =>
@@ -111,11 +118,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if (!string.IsNullOrEmpty(currentLightbox))
                 {
                     var lighboxHtmlAttributes = new HtmlAttributes();
-                    var path = currentLightbox;
-                    if (InclusionContext.IsInclude && !currentLightbox.Contains("~/"))
-                    {
-                        path = Path.Combine(Path.GetDirectoryName(InclusionContext.File.ToString()), currentLightbox).Replace("\\", "/");
-                    }
+                    var path = _context.GetLink(currentLightbox, InclusionContext.File, InclusionContext.RootFile, obj);
                     lighboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
                     lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
                     renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");

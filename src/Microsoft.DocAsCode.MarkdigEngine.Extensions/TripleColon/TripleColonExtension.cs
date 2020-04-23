@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 new ZoneExtension(),
                 new ChromelessFormExtension(),
-                new ImageExtension(),
+                new ImageExtension(context),
                 new CodeExtension(context)
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         string Name { get; }
         bool SelfClosing { get; }
-        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, BlockProcessor processor);
+        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, TripleColonBlock block);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
         bool Render(HtmlRenderer renderer, TripleColonBlock block);
     }
