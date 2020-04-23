@@ -21,8 +21,8 @@ The output URL schema and output path schema are controlled by two config items:
 
 - OutputUrlType:
     - `Docs`: a.md -> `/xxx/a`
-    - `StaticPretty`: a.md -> `/xxx/a/`
-    - `StaticUgly`: a.md -> `/xxx/a.html`(or `/xxx/a.json`)
+    - `Pretty`: a.md -> `/xxx/a/`
+    - `Ugly`: a.md -> `/xxx/a.html`(or `/xxx/a.json`)
 
 ## URL Schema
 
