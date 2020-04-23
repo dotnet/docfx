@@ -32,24 +32,5 @@ namespace System.Collections.Generic
         {
             _length = 0;
         }
-
-        public T[] ToArray()
-        {
-            if (_array is null)
-            {
-                return Array.Empty<T>();
-            }
-
-            if (_length == _array.Length)
-            {
-                return _array;
-            }
-
-            var result = new T[_length];
-
-            Array.Copy(_array, result, _length);
-
-            return result;
-        }
     }
 }

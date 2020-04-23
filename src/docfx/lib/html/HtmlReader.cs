@@ -47,15 +47,6 @@ namespace Microsoft.Docs.Build
         {
             _html = html;
             _length = html.Length;
-            _position = default;
-            _type = HtmlTokenType.Text;
-            _nameRange = default;
-            _tokenRange = default;
-            _attributeNameRange = default;
-            _attributeValueRange = default;
-            _attributeRange = default;
-            _attributes = default;
-            _attributesLength = default;
         }
 
         public bool NameIs(string name)
