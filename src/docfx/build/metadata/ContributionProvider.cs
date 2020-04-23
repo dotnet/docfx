@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -171,6 +172,7 @@ namespace Microsoft.Docs.Build
 
         private PathString GetOriginalFullPath(FilePath file)
         {
+            Debug.Assert(file.Origin == FileOrigin.Main);
             var originalPath = _sourceMap.GetOriginalFilePath(file.Path);
             return _input.GetFullPath(string.IsNullOrEmpty(originalPath) ? file : new FilePath(originalPath));
         }
