@@ -21,7 +21,7 @@ The output URL schema and output path schema are controlled by two config items:
 
 - OutputUrlType:
     - `Docs`: a.md -> `/xxx/a`
-    - `Static`: a.md -> `/xxx/a/`
+    - `StaticPretty`: a.md -> `/xxx/a/`
     - `StaticUgly`: a.md -> `/xxx/a.html`(or `/xxx/a.json`)
 
 ## URL Schema
@@ -66,7 +66,7 @@ https://docs.microsoft.com/en-us/dotnet/api/system.string.html#Instantiation
 
 ## Content Outputs
 
-Each input file transforms to zero or more output files depending on its content type. `docfx` places output files in `output-path` relative to output directory.:
+Each input file transforms to zero or more output files depending on its content type. `docfx` places output files in `output-path` relative to output directory:
 
 ### Docs hosting output path schema:
 
@@ -86,10 +86,6 @@ _site/dotnet/01ddf122/api/system.string.json
   base-path     site-path (relative-to-base-path)
       |--^-| |------------------^-----------------|
 _site/dotnet/01ddf122/api/system.string/index.html
-
-  base-path     site-path (relative-to-base-path)
-      |--^-| |------------------^----------|
-_site/dotnet/01ddf122/api/system.string.html
 ```
 
 Different files can share the same `{site-url}` or `{site-path}` due to versioning and localization.
@@ -175,6 +171,8 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
     | `site-path` | dotnet/01ddf122/api/thumbnail.png |
     | `output-path` | dotnet/01ddf122/api/thumbnail.png |
 
+> Note: For static page versioning, the ideal output path should use the human readable `moniker` instead of monikerHash, but that require coping the same content to different output folder of each version. For the time been, the static output is only for generating PDF, the URL does not appear in PDF now, so we can still use the monikerHash.
+
 ## System Generated Outputs
 
 Besides content files, `docfx` generates miscellaneous files during the build. The name of these system generated files starts with `.`. The extension MUST be `.json` for files in json format.
@@ -185,7 +183,16 @@ File name           | Description
 .xrefmap.json        | A manifest of `uid` and xref specs as described in [xref](xref.md)
 .errors.log          | A report file that contains build errors and warnings. Each line is a json array: `[{level}, {code}, {message}, {file?}, {line?}, {column?}]`.
 
-## Copy Resource
+## Dependency Copy
+
+As the requirements mentioned, `Static build output xcopy deployable`, the output folder should be self-contained in static build.
+
+# Resource
 
 To improve docs publish performance, there is feature to skip copy resource files to the output folder.
 With those two new configs(`OutputType` and `OutputUrlType`) involved, whether need to copy resource should be determined  by `OutputUrlType`: skip copy resource files when it is `Docs`.
+
+# Template
+
+For Docs hosting, `_themes` resources is published separately, so we don't need to copy them into the output folder.
+With those two new configs(`OutputType` and `OutputUrlType`) involved, whether need to copy used resources(`.css` files) should be determined  by `OutputUrlType`: skip copy resource files when it is `Docs`.
