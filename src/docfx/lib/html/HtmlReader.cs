@@ -7,16 +7,17 @@ using System.Buffers;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// Provides a high-performance, near-zero-allocation, fault-tolerant, standard-compliant API
+    /// Provides a high-performance, fault-tolerant, standard-compliant API
     /// for forward-only, read-only access to HTML text.
     /// </summary>
-    internal ref struct HtmlReader
+    internal class HtmlReader
     {
         private string _html;
         private int _length;
         private int _position;
 
         private HtmlTokenType _type;
+        private bool _isSelfClosing;
         private (int start, int length) _nameRange;
         private (int start, int length) _tokenRange;
 
@@ -26,7 +27,11 @@ namespace Microsoft.Docs.Build
         private HtmlAttribute[]? _attributes;
         private int _attributesLength;
 
+        public string Html => _html;
+
         public HtmlTokenType Type => _type;
+
+        public bool IsSelfClosing => _isSelfClosing;
 
         public (int start, int length) NameRange => _nameRange;
 
@@ -62,19 +67,20 @@ namespace Microsoft.Docs.Build
         {
             // Simplified pasing algorithm based on https://html.spec.whatwg.org/multipage/parsing.html
             _attributesLength = 0;
-            if (_attributes != null)
-            {
-                ArrayPool<HtmlAttribute>.Shared.Return(_attributes);
-                _attributes = null;
-            }
+            _tokenRange.start = _position;
+            _tokenRange.length = 0;
+            _nameRange = default;
+            _isSelfClosing = false;
 
             if (_position >= _length)
             {
+                if (_attributes != null)
+                {
+                    ArrayPool<HtmlAttribute>.Shared.Return(_attributes);
+                    _attributes = null;
+                }
                 return false;
             }
-
-            _tokenRange.start = _position;
-            _nameRange = default;
 
             switch (Consume())
             {
@@ -397,6 +403,7 @@ namespace Microsoft.Docs.Build
             switch (Consume())
             {
                 case '>':
+                    _isSelfClosing = true;
                     break;
 
                 case '\0':
