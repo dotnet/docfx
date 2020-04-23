@@ -78,12 +78,14 @@ namespace Microsoft.Docs.Build
             BuildOptions = buildOptions;
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
+
             SourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), Config, FileResolver);
             RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
             Input = new Input(buildOptions, config, SourceMap, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
+
             BuildScope = new BuildScope(ErrorLog, Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);

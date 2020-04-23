@@ -79,6 +79,12 @@ namespace Microsoft.Docs.Build
 
             result["fileMetadata"] = GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>());
 
+            var monodoc = docsetConfig?.ECMA2Yaml ?? opsConfig.ECMA2Yaml;
+            if (monodoc != null)
+            {
+                result["monodoc"] = JsonUtility.ToJObject(monodoc);
+            }
+
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 

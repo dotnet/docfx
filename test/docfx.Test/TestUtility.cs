@@ -146,15 +146,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static IDisposable EnsureFilesNotChanged(string path)
+        public static IDisposable EnsureFilesNotChanged(string path, bool skipInputCheck)
         {
             var before = GetFileLastWriteTimes(path);
 
             return new Disposable(() =>
             {
-                var after = GetFileLastWriteTimes(path);
-
-                new JsonDiff().Verify(before, after, "Input files changes");
+                if (!skipInputCheck)
+                {
+                    var after = GetFileLastWriteTimes(path);
+                    new JsonDiff().Verify(before, after, "Input files changes");
+                }
             });
 
             Dictionary<string, DateTime> GetFileLastWriteTimes(string dir)
