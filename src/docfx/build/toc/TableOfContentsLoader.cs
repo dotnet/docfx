@@ -88,8 +88,8 @@ namespace Microsoft.Docs.Build
             List<Document> referencedTocs,
             List<Error> errors)
         {
-            var newItems = new List<SourceInfo<TableOfContentsNode>>();
-            Parallel.ForEach(nodes, (node) =>
+            var newItems = new List<(long index, SourceInfo<TableOfContentsNode> node)>();
+            Parallel.ForEach(nodes, (node, state, index) =>
             {
                 // process
                 var tocHref = GetTocHref(node, errors);
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
 
                 // resolve monikers
                 newItem.Monikers = GetMonikers(newItem, errors);
-                newItems.Add(new SourceInfo<TableOfContentsNode>(newItem, node.Source));
+                newItems.Add((index, new SourceInfo<TableOfContentsNode>(newItem, node.Source)));
 
                 // validate
                 if (string.IsNullOrEmpty(newItem.Name))
@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                 }
             });
 
-            return newItems;
+            return newItems.OrderBy(i => i.index).Select(i => i.node).ToList();
         }
 
         private IReadOnlyList<string> GetMonikers(TableOfContentsNode currentItem, List<Error> errors)
