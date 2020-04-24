@@ -53,14 +53,9 @@ namespace Microsoft.Docs.Build
 
         public void Enqueue(T item)
         {
-            if (!_duplicationDetector.TryAdd(item))
+            if (!_duplicationDetector.TryAdd(item) || _drainTcs.Task.IsCompleted)
             {
                 return;
-            }
-
-            if (_drainTcs.Task.IsCompleted)
-            {
-                throw new InvalidOperationException();
             }
 
             _queue.Enqueue(item);
