@@ -19,7 +19,6 @@ repos:
         }
       cat/docfx.yml: |
         template: ../_themes
-        sourceMap: .sourceMap.json
       cat/xml/ns-CatLibrary.xml: |
         <Namespace Name="CatLibrary">
           <Docs>
