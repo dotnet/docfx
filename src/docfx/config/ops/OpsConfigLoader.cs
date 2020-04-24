@@ -84,6 +84,7 @@ namespace Microsoft.Docs.Build
             if (monodoc != null)
             {
                 result["monodoc"] = JsonUtility.ToJObject(monodoc);
+                result["sourceMap"] = ".sourcemap.json";
             }
 
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);

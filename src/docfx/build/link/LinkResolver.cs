@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Input _input;
         private readonly BuildOptions _buildOptions;
-        private readonly SourceMap _sourceMap;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
         private readonly WorkQueue<FilePath> _buildQueue;
@@ -26,7 +25,6 @@ namespace Microsoft.Docs.Build
             Config config,
             Input input,
             BuildOptions buildOptions,
-            SourceMap sourceMap,
             BuildScope buildScope,
             WorkQueue<FilePath> buildQueue,
             RedirectionProvider redirectionProvider,
@@ -40,7 +38,6 @@ namespace Microsoft.Docs.Build
             _config = config;
             _input = input;
             _buildOptions = buildOptions;
-            _sourceMap = sourceMap;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
             _redirectionProvider = redirectionProvider;
@@ -270,7 +267,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from entry docset
-            path = FilePath.Content(pathToDocset, _sourceMap.GetOriginalFilePath(pathToDocset));
+            path = FilePath.Content(pathToDocset);
             if (_input.Exists(path))
             {
                 return _documentProvider.GetDocument(path);
