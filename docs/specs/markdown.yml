@@ -294,6 +294,11 @@ inputs:
 outputs:
   docs/a.json: |
     { "conceptual": "<div></div><p>body</p>" }
+  .errors.log: |
+    ["warning","disallowed-html","HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","docs/a.md"]
+    ["warning","disallowed-html","HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","docs/a.md"]
+    ["warning","disallowed-html","HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","docs/a.md"]
+    ["warning","disallowed-html","HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","docs/a.md"]
 ---
 # markdown table with styles is allowed
 inputs:
