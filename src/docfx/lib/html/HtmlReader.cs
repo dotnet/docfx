@@ -70,15 +70,13 @@ namespace Microsoft.Docs.Build
 
             _range.length = _position - _range.start;
 
-            token = new HtmlToken
-            {
-                Type = _type,
-                IsSelfClosing = _isSelfClosing,
-                Name = _html.AsMemory(_nameRange.start, _nameRange.length),
-                RawText = _html.AsMemory(_range.start, _range.length),
-                Attributes = _attributes.AsMemory(0, _attributesLength),
-                Range = _range,
-            };
+            token = new HtmlToken(
+                _type,
+                _isSelfClosing,
+                _html.AsMemory(_nameRange.start, _nameRange.length),
+                _html.AsMemory(_range.start, _range.length),
+                _attributes.AsMemory(0, _attributesLength),
+                _range);
 
             return true;
         }
@@ -630,15 +628,13 @@ namespace Microsoft.Docs.Build
                 _attributes = newAttributes;
             }
 
-            _attributes[_attributesLength++] = new HtmlAttribute
-            {
-                Type = _attributeType,
-                Name = _html.AsMemory(_attributeNameRange.start, _attributeNameRange.length),
-                Value = _html.AsMemory(_attributeValueRange.start, _attributeValueRange.length),
-                RawText = _html.AsMemory(_attributeRange.start, _attributeRange.length),
-                Range = _attributeRange,
-                ValueRange = _attributeValueRange,
-            };
+            _attributes[_attributesLength++] = new HtmlAttribute(
+                _attributeType,
+                _html.AsMemory(_attributeNameRange.start, _attributeNameRange.length),
+                _html.AsMemory(_attributeValueRange.start, _attributeValueRange.length),
+                _html.AsMemory(_attributeRange.start, _attributeRange.length),
+                _attributeRange,
+                _attributeValueRange);
         }
 
         private char Consume()

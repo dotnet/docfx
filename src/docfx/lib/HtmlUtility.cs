@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                     var source = block?.ToSourceInfo(columnOffset: attribute.Range.start);
                     var link = HttpUtility.HtmlEncode(transform(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source)));
 
-                    attribute.Value = link.AsMemory();
+                    attribute = attribute.WithValue(link);
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                 ? rawHtml ?? rawSource ?? $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>"
                 : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
 
-            token.RawText = resolvedNode.AsMemory();
+            token = token.WithRawText(resolvedNode);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (attribute.NameIs("src") && attribute.Value.Span.Contains("codepen.io", StringComparison.OrdinalIgnoreCase))
                     {
-                        attribute.Value = (attribute.Value.ToString() + "&rerun-position=hidden&").AsMemory();
+                        attribute = attribute.WithValue(attribute.Value.ToString() + "&rerun-position=hidden&");
                     }
                 }
             }

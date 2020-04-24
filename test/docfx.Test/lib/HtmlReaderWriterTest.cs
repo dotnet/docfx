@@ -168,10 +168,10 @@ namespace Microsoft.Docs.Build
                 "a",
                 new []
                 {
-                    new HtmlAttribute { Name = "b".AsMemory() },
-                    new HtmlAttribute { Name = "b".AsMemory(), Value = "c".AsMemory(), Type = HtmlAttributeType.DoubleQuoted },
-                    new HtmlAttribute { Name = "b".AsMemory(), Value = "c".AsMemory(), Type = HtmlAttributeType.SingleQuoted },
-                    new HtmlAttribute { Name = "b".AsMemory(), Value = "c".AsMemory(), Type = HtmlAttributeType.Unquoted },
+                    new HtmlAttribute("b"),
+                    new HtmlAttribute("b", "c"),
+                    new HtmlAttribute("b", "c", HtmlAttributeType.SingleQuoted),
+                    new HtmlAttribute("b", "c", HtmlAttributeType.Unquoted),
                 },
                 isSelfClosing: false);
 

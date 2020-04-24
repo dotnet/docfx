@@ -5,23 +5,54 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal struct HtmlAttribute
+    internal readonly struct HtmlAttribute
     {
-        public HtmlAttributeType Type { get; set; }
+        public readonly HtmlAttributeType Type { get; }
 
-        public ReadOnlyMemory<char> Name { get; set; }
+        public readonly ReadOnlyMemory<char> Name { get; }
 
-        public ReadOnlyMemory<char> Value { get; set; }
+        public readonly ReadOnlyMemory<char> Value { get; }
 
-        public ReadOnlyMemory<char> RawText { get; set; }
+        public readonly ReadOnlyMemory<char> RawText { get; }
 
-        public (int start, int length) ValueRange { get; set; }
+        public readonly (int start, int length) Range { get; }
 
-        public (int start, int length) Range { get; set; }
+        public readonly (int start, int length) ValueRange { get; }
 
         public bool NameIs(string name)
         {
             return Name.Span.Equals(name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public HtmlAttribute(
+            HtmlAttributeType type,
+            ReadOnlyMemory<char> name,
+            ReadOnlyMemory<char> value,
+            ReadOnlyMemory<char> rawText,
+            (int start, int length) range,
+            (int start, int length) valueRange)
+        {
+            Type = type;
+            Name = name;
+            Value = value;
+            RawText = rawText;
+            Range = range;
+            ValueRange = valueRange;
+        }
+
+        public HtmlAttribute(string name, string? value = default, HtmlAttributeType? type = null)
+        {
+            Type = value is null ? HtmlAttributeType.NameOnly : (type ?? HtmlAttributeType.DoubleQuoted);
+            Name = name.AsMemory();
+            Value = value.AsMemory();
+            RawText = default;
+            Range = default;
+            ValueRange = default;
+        }
+
+        public HtmlAttribute WithValue(string value)
+        {
+            return new HtmlAttribute(Type, Name, value.AsMemory(), default, Range, ValueRange);
         }
     }
 }

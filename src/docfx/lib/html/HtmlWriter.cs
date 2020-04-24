@@ -17,13 +17,30 @@ namespace Microsoft.Docs.Build
 
         public void Write(in HtmlToken token)
         {
-            if (token.RawText.Length > 0)
+            if (token.Type == HtmlTokenType.StartTag)
+            {
+                // Detect if attributes have changed
+                var raw = true;
+                foreach (ref readonly var attribute in token.Attributes.Span)
+                {
+                    if (attribute.RawText.Length == 0)
+                    {
+                        raw = false;
+                    }
+                }
+
+                if (raw)
+                {
+                    _writer.Write(token.RawText.Span);
+                }
+                else
+                {
+                    WriteStartTag(token.Name.Span, token.Attributes.Span, token.IsSelfClosing);
+                }
+            }
+            else if (token.RawText.Length > 0)
             {
                 _writer.Write(token.RawText.Span);
-            }
-            else if (token.Type == HtmlTokenType.StartTag)
-            {
-                WriteStartTag(token.Name.Span, token.Attributes.Span, token.IsSelfClosing);
             }
         }
 
@@ -57,6 +74,11 @@ namespace Microsoft.Docs.Build
 
             foreach (ref readonly var attribute in attributes)
             {
+                if (attribute.Name.Length == 0 && attribute.Value.Length == 0)
+                {
+                    continue;
+                }
+
                 span[pos++] = ' ';
 
                 if (attribute.RawText.Length > 0)

@@ -76,12 +76,12 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='hello'>", null, "<a href=''>")]
         [InlineData("<a href='hello'>", "~!@#$%^&*()<>?:,./][{}|", "<a href='~!@#$%^&amp;*()&lt;&gt;?:,./][{}|'>")]
         [InlineData("<A hrEf=''>", "666", "<A hrEf='666'>")]
-        [InlineData("<a href = 'hello'>", "666", "<a href = '666'>")]
-        [InlineData("<a   target='_blank'   href='h'>", "666", "<a   target='_blank'   href='666'>")]
-        [InlineData("<img src='a/b.png' />", "666", "<img src='666' />")]
-        [InlineData("<iMg sRc = 'a/b.png' />", "666", "<iMg sRc = '666' />")]
-        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "666", "<div><a href='666'><img src='666' /></div>")]
-        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666' /><a href='666'></div>")]
+        [InlineData("<a href = 'hello'>", "666", "<a href='666'>")]
+        [InlineData("<a   target='_blank'   href='h'>", "666", "<a target='_blank' href='666'>")]
+        [InlineData("<img src='a/b.png' />", "666", "<img src='666'/>")]
+        [InlineData("<iMg sRc = 'a/b.png' />", "666", "<iMg sRc='666'/>")]
+        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "666", "<div><a href='666'><img src='666'/></div>")]
+        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666'/><a href='666'></div>")]
         public void TransformLinks(string input, string link, string output)
         {
             var actual = HtmlUtility.TransformHtml(input, (ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
