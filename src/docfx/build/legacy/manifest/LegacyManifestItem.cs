@@ -29,6 +29,12 @@ namespace Microsoft.Docs.Build
 
         public bool SkipSchemaCheck { get; set; }
 
+        public bool IsMonikerRange { get; set; }
+
         public string? Group { get; set; }
+
+        public string? Version { get; set; }
+
+        public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
     }
 }

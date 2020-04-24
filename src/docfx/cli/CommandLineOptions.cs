@@ -39,7 +39,8 @@ namespace Microsoft.Docs.Build
 
             if (Legacy)
             {
-                config["outputJson"] = true;
+                config["outputType"] = "Json";
+                config["outputUrlType"] = "Docs";
                 config["copyResources"] = false;
             }
 

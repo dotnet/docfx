@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
 
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder);
-            TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, tocParser, TableOfContentsLoader, DocumentProvider);
+            TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
         }
 
         public void Dispose()

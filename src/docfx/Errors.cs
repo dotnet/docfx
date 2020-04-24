@@ -433,13 +433,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
                 => new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}");
-
-            /// <summary>
-            /// Define href property at the same level with uid, href value will be overwritten.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error UidOverwriteHref(SourceInfo source)
-                => new Error(ErrorLevel.Warning, "uid-overwrite-href", $"'UID' and 'href' are not allowed to define at the same level. The input 'href' will be ignored", source);
         }
 
         public static class Versioning
@@ -647,11 +640,12 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID", login);
 
             /// <summary>
-            /// Used docfx output model property which are not defined in input model.
+            /// - Used docfx output model property which are not defined in input model.
+            /// - Define href property at the same level with uid, href value will be overwritten.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error AttributeReserved(SourceInfo? source, string name)
-                => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs. Remove it from your file metadata.", source);
+                => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs.", source);
 
             /// <summary>
             /// Metadata value must be scalar or arrays of scalars.

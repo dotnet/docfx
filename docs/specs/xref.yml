@@ -387,7 +387,7 @@ outputs:
 ---
 # Define uid with error
 inputs:
-  docfx.yml: |
+  docfx.yml:
   docs/a.json: |
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
@@ -568,7 +568,7 @@ inputs:
 outputs:
   a.json: '{"href": "a.json"}'
   .errors.log: |
-    ["warning","uid-overwrite-href","'UID' and 'href' are not allowed to define at the same level. The input 'href' will be ignored","a.yml",3,1]
+    ["warning","attribute-reserved","Attribute href is reserved for use by Docs.","a.yml",3,1]
 ---
 # Xref property field which supports markdown content
 inputs:

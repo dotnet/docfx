@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsHtml(JToken expected, JToken actual, string name)
         {
-            if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+            if (name.EndsWith(".html", StringComparison.OrdinalIgnoreCase) && name.Length > ".html".Length)
             {
                 return true;
             }

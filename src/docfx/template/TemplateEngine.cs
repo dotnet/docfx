@@ -19,9 +19,11 @@ namespace Microsoft.Docs.Build
         private readonly IJavaScriptEngine _js;
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
+        private readonly Config _config;
 
         public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver)
         {
+            _config = config;
             _templateDir = config.Template.Type switch
             {
                 PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
@@ -62,10 +64,10 @@ namespace Microsoft.Docs.Build
                : throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
         }
 
-        public string RunLiquid(Document file, TemplateModel model)
+        public string RunLiquid(TemplateModel model)
         {
             var layout = model.RawMetadata?.Value<string>("layout") ?? "";
-            var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
+            var themeRelativePath = _templateDir;
 
             var liquidModel = new JObject
             {

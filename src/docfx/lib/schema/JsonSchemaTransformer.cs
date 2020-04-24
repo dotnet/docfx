@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (obj.TryGetValue("href", out var href))
                         {
-                            errors.Add(Errors.Xref.UidOverwriteHref(href.GetSourceInfo()?.KeySourceInfo!));
+                            errors.Add(Errors.Metadata.AttributeReserved(href.GetSourceInfo()?.KeySourceInfo!, "href"));
                         }
                         newObject["href"] = PathUtility.GetRelativePathToFile(file.SiteUrl, GetXrefHref(file, uid, uidCount, obj.Parent == null));
                     }
