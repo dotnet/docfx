@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
             var message_severity = level;
             var code = error.Code;
             var message = error.Message;
-            var file = error.FilePath is null ? error.FilePath?.Path : _sourceMap?.GetOriginalFilePath(error.FilePath.Path) ?? error.FilePath?.Path;
+            var file = error.FilePath is null ? error.FilePath?.Path : _sourceMap?.GetOriginalFilePath(error.FilePath) ?? error.FilePath?.Path;
             var line = error.Line;
             var end_line = error.EndLine;
             var column = error.Column;

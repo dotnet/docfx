@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
-            var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath.Path);
+            var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath);
             var payload = originalPath is null
                 ? new List<object?> { level, Code, Message, FilePath?.Path, Line, Column }
                 : new List<object?> { level, Code, Message, originalPath };

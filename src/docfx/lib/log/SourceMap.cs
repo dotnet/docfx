@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -30,9 +31,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public PathString? GetOriginalFilePath(PathString path)
+        public PathString? GetOriginalFilePath(FilePath path)
         {
-            return _map.TryGetValue(path, out var originalPath) ? (PathString?)originalPath : null;
+            if (path.Origin == FileOrigin.Main && _map.TryGetValue(path.Path, out var originalPath))
+            {
+                return originalPath;
+            }
+            return null;
         }
 
         private class SourceMapModel

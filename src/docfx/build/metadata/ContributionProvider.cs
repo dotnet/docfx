@@ -172,9 +172,8 @@ namespace Microsoft.Docs.Build
 
         private PathString GetOriginalFullPath(FilePath file)
         {
-            Debug.Assert(file.Origin == FileOrigin.Main);
-            var originalPath = _sourceMap.GetOriginalFilePath(file.Path);
-            return _input.GetFullPath(string.IsNullOrEmpty(originalPath) ? file : new FilePath(originalPath));
+            var originalPath = _sourceMap.GetOriginalFilePath(file);
+            return _input.GetFullPath(originalPath is null ? file : new FilePath(originalPath));
         }
 
         private string? GetContentGitUrl(string repo, string branch, string pathToRepo)
