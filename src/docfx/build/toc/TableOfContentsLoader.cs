@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -19,8 +20,8 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
 
-        private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
-                     new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
+        private readonly ConcurrentDictionary<FilePath, Lazy<(List<Error>, TableOfContentsNode, List<Document>, List<Document>)>> _cache =
+                     new ConcurrentDictionary<FilePath, Lazy<(List<Error>, TableOfContentsNode, List<Document>, List<Document>)>>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
@@ -44,7 +45,7 @@ namespace Microsoft.Docs.Build
         public (List<Error> errors, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
             Load(Document file)
         {
-            return _cache.GetOrAdd(file.FilePath, _ =>
+            return _cache.GetOrAdd(file.FilePath, new Lazy<(List<Error>, TableOfContentsNode, List<Document>, List<Document>)>(() =>
             {
                 var referencedFiles = new List<Document>();
                 var referencedTocs = new List<Document>();
@@ -52,7 +53,7 @@ namespace Microsoft.Docs.Build
                 var node = LoadTocFile(file, file, referencedFiles, referencedTocs, errors);
 
                 return (errors, node, referencedFiles, referencedTocs);
-            });
+            })).Value;
         }
 
         private TableOfContentsNode LoadTocFile(
@@ -88,7 +89,7 @@ namespace Microsoft.Docs.Build
             List<Error> errors)
         {
             var newItems = new List<SourceInfo<TableOfContentsNode>>();
-            foreach (var node in nodes)
+            Parallel.ForEach(nodes, (node) =>
             {
                 // process
                 var tocHref = GetTocHref(node, errors);
@@ -125,7 +126,7 @@ namespace Microsoft.Docs.Build
                 {
                     errors.Add(Errors.TableOfContents.MissingTocName(newItem.Name.Source ?? node.Source));
                 }
-            }
+            });
 
             return newItems;
         }
