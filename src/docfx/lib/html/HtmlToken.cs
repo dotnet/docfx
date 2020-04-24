@@ -5,17 +5,17 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal struct HtmlAttribute
+    internal struct HtmlToken
     {
-        public HtmlAttributeType Type { get; set; }
+        public HtmlTokenType Type { get; set; }
+
+        public bool IsSelfClosing { get; set; }
 
         public ReadOnlyMemory<char> Name { get; set; }
 
-        public ReadOnlyMemory<char> Value { get; set; }
-
         public ReadOnlyMemory<char> RawText { get; set; }
 
-        public (int start, int length) ValueRange { get; set; }
+        public Memory<HtmlAttribute> Attributes { get; set; }
 
         public (int start, int length) Range { get; set; }
 

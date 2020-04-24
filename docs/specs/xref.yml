@@ -936,7 +936,7 @@ outputs:
   .errors.log: |
     ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",2,5]
     ["warning","xref-not-found","Cross reference not found: 'd'","docs/a.md",3,5]
-    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",8,2]
+    ["warning","xref-not-found","Cross reference not found: 'f'","docs/a.md",8,67]
 ---
 # Transform xref in HTML block should not auto close the parent tag
 inputs:

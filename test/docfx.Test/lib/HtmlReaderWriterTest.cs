@@ -1,12 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Buffers;
 using System.Collections.Generic;
 using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class HtmlReaderTest
+    public class HtmlReaderWriterTest
     {
         [Theory]
 
@@ -118,35 +120,62 @@ namespace Microsoft.Docs.Build
         [InlineData("<div foo=\"bar\" =\"baz\">", "StartTag:div(foo:bar[foo=\"bar\"], =\"baz\":[=\"baz\"])")]
         [InlineData("<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>", "Comment:<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>")]
         [InlineData("<div / id=\"foo\">", "StartTag:div(id:foo[id=\"foo\"])")]
-        public void ReadHtml(string html, string expected)
+        public void ReadWriteHtml(string html, string expected)
         {
             var actual = new List<string>();
+            var htmlWriter = new ArrayBufferWriter<char>();
+            var writer = new HtmlWriter(htmlWriter);
             var reader = new HtmlReader(html);
 
-            while (reader.Read())
+            while (reader.Read(out var token))
             {
-                var content = reader.Token.ToString();
-                if (reader.Type == HtmlTokenType.StartTag || reader.Type == HtmlTokenType.EndTag)
+                var content = token.RawText.ToString();
+                if (token.Type == HtmlTokenType.StartTag || token.Type == HtmlTokenType.EndTag)
                 {
                     Assert.True(content.StartsWith('<'));
                     Assert.True(content.EndsWith('>'));
-                    content = reader.Name.ToString();
+                    content = token.Name.ToString();
                 }
 
-                if (reader.Attributes.Length > 0)
+                if (token.Attributes.Length > 0)
                 {
                     var attributes = new List<string>();
-                    foreach (var attribute in reader.Attributes)
+                    foreach (ref var attribute in token.Attributes.Span)
                     {
-                        attributes.Add($"{attribute.Name.ToString()}:{attribute.Value.ToString()}[{attribute.Token.ToString()}]");
+                        attributes.Add($"{attribute.Name.ToString()}:{attribute.Value.ToString()}[{attribute.RawText.ToString()}]");
                     }
                     content += $"({string.Join(", ", attributes)})";
                 }
 
-                actual.Add($"{reader.Type}:{content}");
+                actual.Add($"{token.Type}:{content}");
+
+                writer.Write(token);
             }
 
             Assert.Equal(expected, string.Join(", ", actual));
+            Assert.Equal(html, htmlWriter.WrittenSpan.ToString());
+        }
+
+        [Fact]
+        public void WriteStartTag()
+        {
+            var htmlWriter = new ArrayBufferWriter<char>();
+            var writer = new HtmlWriter(htmlWriter);
+
+            writer.WriteStartTag("a", attributes: default, isSelfClosing: true);
+            writer.WriteStartTag("a", attributes: default, isSelfClosing: false);
+            writer.WriteStartTag(
+                "a",
+                new []
+                {
+                    new HtmlAttribute { Name = "b".AsMemory() },
+                    new HtmlAttribute { Name = "b".AsMemory(), Value = "c".AsMemory(), Type = HtmlAttributeType.DoubleQuoted },
+                    new HtmlAttribute { Name = "b".AsMemory(), Value = "c".AsMemory(), Type = HtmlAttributeType.SingleQuoted },
+                    new HtmlAttribute { Name = "b".AsMemory(), Value = "c".AsMemory(), Type = HtmlAttributeType.Unquoted },
+                },
+                isSelfClosing: false);
+
+            Assert.Equal("<a/><a><a b b=\"c\" b='c' b=c>", htmlWriter.WrittenSpan.ToString());
         }
     }
 }

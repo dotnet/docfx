@@ -7,74 +7,53 @@ using System.Buffers;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// Provides a high-performance, near-zero-allocation, fault-tolerant, standard-compliant API
+    /// Provides a high-performance, fault-tolerant, standard-compliant API
     /// for forward-only, read-only access to HTML text.
     /// </summary>
-    internal ref struct HtmlReader
+    internal class HtmlReader
     {
-        private string _html;
-        private int _length;
+        private readonly string _html;
+        private readonly int _length;
+
         private int _position;
 
         private HtmlTokenType _type;
+        private bool _isSelfClosing;
+        private (int start, int length) _range;
         private (int start, int length) _nameRange;
-        private (int start, int length) _tokenRange;
 
+        private HtmlAttributeType _attributeType;
         private (int start, int length) _attributeNameRange;
         private (int start, int length) _attributeValueRange;
         private (int start, int length) _attributeRange;
         private HtmlAttribute[]? _attributes;
         private int _attributesLength;
 
-        public HtmlTokenType Type => _type;
-
-        public (int start, int length) NameRange => _nameRange;
-
-        public (int start, int length) TokenRange => _tokenRange;
-
-        public ReadOnlySpan<char> Name => _html.AsSpan(_nameRange.start, _nameRange.length);
-
-        public ReadOnlySpan<char> Token => _html.AsSpan(_tokenRange.start, _tokenRange.length);
-
-        public ReadOnlySpan<HtmlAttribute> Attributes => _attributes.AsSpan(0, _attributesLength);
-
         public HtmlReader(string html)
         {
             _html = html;
             _length = html.Length;
-            _position = default;
-            _type = HtmlTokenType.Text;
-            _nameRange = default;
-            _tokenRange = default;
-            _attributeNameRange = default;
-            _attributeValueRange = default;
-            _attributeRange = default;
-            _attributes = default;
-            _attributesLength = default;
         }
 
-        public bool NameIs(string name)
-        {
-            return _html.AsSpan(_nameRange.start, _nameRange.length).Equals(name, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public bool Read()
+        public bool Read(out HtmlToken token)
         {
             // Simplified pasing algorithm based on https://html.spec.whatwg.org/multipage/parsing.html
             _attributesLength = 0;
-            if (_attributes != null)
-            {
-                ArrayPool<HtmlAttribute>.Shared.Return(_attributes);
-                _attributes = null;
-            }
+            _range.start = _position;
+            _range.length = 0;
+            _nameRange = default;
+            _isSelfClosing = false;
 
             if (_position >= _length)
             {
+                if (_attributes != null)
+                {
+                    ArrayPool<HtmlAttribute>.Shared.Return(_attributes);
+                    _attributes = null;
+                }
+                token = default;
                 return false;
             }
-
-            _tokenRange.start = _position;
-            _nameRange = default;
 
             switch (Consume())
             {
@@ -89,7 +68,18 @@ namespace Microsoft.Docs.Build
                     break;
             }
 
-            _tokenRange.length = _position - _tokenRange.start;
+            _range.length = _position - _range.start;
+
+            token = new HtmlToken
+            {
+                Type = _type,
+                IsSelfClosing = _isSelfClosing,
+                Name = _html.AsMemory(_nameRange.start, _nameRange.length),
+                RawText = _html.AsMemory(_range.start, _range.length),
+                Attributes = _attributes.AsMemory(0, _attributesLength),
+                Range = _range,
+            };
+
             return true;
         }
 
@@ -397,6 +387,7 @@ namespace Microsoft.Docs.Build
             switch (Consume())
             {
                 case '>':
+                    _isSelfClosing = true;
                     break;
 
                 case '\0':
@@ -412,6 +403,7 @@ namespace Microsoft.Docs.Build
 
         private void BeforeAttributeName()
         {
+            _attributeType = HtmlAttributeType.NameOnly;
             _attributeNameRange = default;
             _attributeRange = default;
             _attributeValueRange = default;
@@ -542,10 +534,12 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case '\'':
+                        _attributeType = HtmlAttributeType.SingleQuoted;
                         AttributeValue('\'');
                         return;
 
                     case '"':
+                        _attributeType = HtmlAttributeType.DoubleQuoted;
                         AttributeValue('"');
                         return;
 
@@ -556,6 +550,7 @@ namespace Microsoft.Docs.Build
                         return;
 
                     default:
+                        _attributeType = HtmlAttributeType.Unquoted;
                         Back();
                         AttributeValueUnquoted();
                         return;
@@ -635,7 +630,15 @@ namespace Microsoft.Docs.Build
                 _attributes = newAttributes;
             }
 
-            _attributes[_attributesLength++] = new HtmlAttribute(_html, _attributeNameRange, _attributeValueRange, _attributeRange);
+            _attributes[_attributesLength++] = new HtmlAttribute
+            {
+                Type = _attributeType,
+                Name = _html.AsMemory(_attributeNameRange.start, _attributeNameRange.length),
+                Value = _html.AsMemory(_attributeValueRange.start, _attributeValueRange.length),
+                RawText = _html.AsMemory(_attributeRange.start, _attributeRange.length),
+                Range = _attributeRange,
+                ValueRange = _attributeValueRange,
+            };
         }
 
         private char Consume()
