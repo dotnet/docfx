@@ -163,6 +163,7 @@ namespace Microsoft.Docs.Build
 docfx: `{GetDocfxVersion()}`
 dotnet: `{GetDotnetVersion()}`
 x64: `{Environment.Is64BitProcess}`
+os: `{RuntimeInformation.OSDescription}`
 git: `{GetGitVersion()}`
 {GetDocfxEnvironmentVariables()}
 ## repro steps
