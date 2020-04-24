@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
 
             var rawHtmlDom = HtmlUtility.LoadHtml(html);
 
-            if (file.ContentType == ContentType.Page && file.Mime.Value == "Conceptual")
+            if (file.ContentType == ContentType.Page && TemplateEngine.IsConceptual(file.Mime))
             {
                 var htmlErrors = HtmlUtility.SecurityScan(rawHtmlDom, file);
                 errors.AddRange(htmlErrors);
