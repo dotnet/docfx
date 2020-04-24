@@ -88,13 +88,14 @@ namespace Microsoft.Docs.Build
             List<Document> referencedTocs,
             List<Error> errors)
         {
-            var newItems = new List<(long index, SourceInfo<TableOfContentsNode> node)>();
-            Parallel.ForEach(nodes, (node, state, index) =>
+            var newItems = new List<SourceInfo<TableOfContentsNode>>(nodes.Count);
+
+            Parallel.For(0, nodes.Count, (i) =>
             {
                 // process
-                var tocHref = GetTocHref(node, errors);
-                var topicHref = GetTopicHref(node, errors);
-                var topicUid = node.Value.Uid;
+                var tocHref = GetTocHref(nodes[i], errors);
+                var topicHref = GetTopicHref(nodes[i], errors);
+                var topicUid = nodes[i].Value.Uid;
 
                 var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
                     filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
@@ -102,33 +103,33 @@ namespace Microsoft.Docs.Build
                     filePath, rootPath, referencedFiles, topicUid, topicHref, errors, addToReferencedFiles: !IsTocIncludeHref(tocHrefType));
 
                 // resolve children
-                var items = subChildren?.Items ?? LoadTocNode(node.Value.Items, filePath, rootPath, referencedFiles, referencedTocs, errors);
+                var items = subChildren?.Items ?? LoadTocNode(nodes[i].Value.Items, filePath, rootPath, referencedFiles, referencedTocs, errors);
 
                 // set resolved href/document back
-                var newItem = new TableOfContentsNode(node)
+                var newItem = new TableOfContentsNode(nodes[i])
                 {
                     Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
                     TocHref = default,
                     TopicHref = default,
-                    Homepage = string.IsNullOrEmpty(node.Value.Href) && !string.IsNullOrEmpty(node.Value.TopicHref)
+                    Homepage = string.IsNullOrEmpty(nodes[i].Value.Href) && !string.IsNullOrEmpty(nodes[i].Value.TopicHref)
                         ? resolvedTopicHref : default,
-                    Name = node.Value.Name.Or(resolvedTopicName),
+                    Name = nodes[i].Value.Name.Or(resolvedTopicName),
                     Document = document ?? subChildrenFirstItem?.Document,
                     Items = items,
                 };
 
                 // resolve monikers
                 newItem.Monikers = GetMonikers(newItem, errors);
-                newItems.Add((index, new SourceInfo<TableOfContentsNode>(newItem, node.Source)));
+                newItems[i] = new SourceInfo<TableOfContentsNode>(newItem, nodes[i].Source);
 
                 // validate
                 if (string.IsNullOrEmpty(newItem.Name))
                 {
-                    errors.Add(Errors.TableOfContents.MissingTocName(newItem.Name.Source ?? node.Source));
+                    errors.Add(Errors.TableOfContents.MissingTocName(newItem.Name.Source ?? nodes[i].Source));
                 }
             });
 
-            return newItems.OrderBy(i => i.index).Select(i => i.node).ToList();
+            return newItems;
         }
 
         private IReadOnlyList<string> GetMonikers(TableOfContentsNode currentItem, List<Error> errors)
