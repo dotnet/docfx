@@ -24,7 +24,25 @@ Content authors can embed arbitrary HTML tags to markdown documents. These HTML 
 
 The sanitization is performed against user HTML, that is in most cases HTML tags inside markdown files. It does not sanitize HTML produced from the system, including markdown extension, jint, mustache or liquid template.
 
-#### Sanitize HTML tags and attributes
+### Sanitization Modes
+
+There are 3 sanitization modes:
+
+- `standard` (*default*): Described below
+- `strict`: Disallow html
+- `loose`: This is based on the `standard` mode, with a few more allowed HTML attributes like `class`, `style`. The final list came from the telemetry of the old hub/landing pages and archived contents.
+
+Sanitization mode is automatically set to `loose` for old hub pages, landing pages and archived contents.
+
+Sanitization mode can be configured per JSON schema property:
+```json
+{
+  "contentType": "markdown",
+  "htmlSanitizationMode": "strict",
+}
+```
+
+### Standard HTML tags and attributes sanitization
 
 Use an _allow list_ to sanitize HTML tags and attributes. HTML tags can contain the follow common attributes:
 
