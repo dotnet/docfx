@@ -17,6 +17,85 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_allowedStyles = new[] { "text-align: right;", "text-align: left;", "text-align: center;" };
 
+        private static readonly string[] s_globalAllowedAttributes = new[] { "id", "itemid", "itemprop", "itemref", "itemscope", "itemtype", "part", "slot", "spellcheck", "title", "role" };
+
+        // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+        private static readonly Dictionary<string, string[]> s_allowedTagAtrributeMap = new Dictionary<string, string>()
+        {
+            // Content sectioning
+            { "address", "" },
+            { "h1", "" },
+            { "h2", "" },
+            { "h3", "" },
+            { "h4", "" },
+            { "h5", "" },
+            { "h6", "" },
+            { "section", "" },
+
+            // Text content
+            { "blockquote", "cite" },
+            { "dd", "" },
+            { "div", "" },
+            { "dl", "" },
+            { "dt", "" },
+            { "figcaption", "" },
+            { "figure", "" },
+            { "hr", "" },
+            { "li", "value" },
+            { "ol", "reversed, start, type" },
+            { "p", "" },
+            { "pre", "" },
+            { "ul", "" },
+
+            // Inline text semantics
+            { "a", "download, href, hreflang, ping, rel, target, type" },
+            { "abbr", "" },
+            { "b", "" },
+            { "bdi", "" },
+            { "bdo", "" },
+            { "br", "" },
+            { "cite", "" },
+            { "code", "" },
+            { "data", "value" },
+            { "dfn", "" },
+            { "em", "" },
+            { "i", "" },
+            { "mark", "" },
+            { "q", "cite" },
+            { "s", "" },
+            { "samp", "" },
+            { "small", "" },
+            { "span", "" },
+            { "strong", "" },
+            { "sub", "" },
+            { "sup", "" },
+            { "time", "datetime" },
+            { "u", "" },
+            { "var", "" },
+
+            // Image and multimedia
+            { "img", "alt, decoding, height, intrinsicsize, loading, sizes, src, width" },
+
+            // Demarcating edits
+            { "del", "cite, datetime" },
+            { "ins", "cite, datetime" },
+
+            // table
+            { "caption", "" },
+            { "col", "" },
+            { "colgroup", "" },
+            { "table", "" },
+            { "tbody", "" },
+            { "td", "" },
+            { "tfoot", "" },
+            { "th", "" },
+            { "thead", "" },
+            { "tr", "" },
+
+            // other
+            { "iframe", "allow, allowfullscreen, allowpaymentrequest, height, name, referrerpolicy, sandbox, src, srcdoc, width" },
+        }.ToDictionary(item => item.Key, item => item.Value.Split(",").Select(p => p.Trim()).ToArray());
+
         public static HtmlNode LoadHtml(string html)
         {
             var doc = new HtmlDocument();
@@ -359,6 +438,44 @@ namespace Microsoft.Docs.Build
                 node.Remove();
             }
             return html;
+        }
+
+        internal static List<Error> SecurityScan(this HtmlNode html, Document file)
+        {
+            var errors = new List<Error>();
+
+            foreach (var node in html.DescendantsAndSelf())
+            {
+                if (node.NodeType != HtmlNodeType.Element)
+                {
+                    continue;
+                }
+
+                if (s_allowedTagAtrributeMap.TryGetValue(node.Name, out var additionalAttributes))
+                {
+                    foreach (var attribute in node.Attributes)
+                    {
+                        if (attribute.Name.StartsWith("data-", StringComparison.OrdinalIgnoreCase) ||
+                                attribute.Name.StartsWith("aria-", StringComparison.OrdinalIgnoreCase) ||
+                                s_globalAllowedAttributes.Contains(attribute.Name))
+                        {
+                            continue;
+                        }
+                        else if (!additionalAttributes.Contains(attribute.Name))
+                        {
+                            var errorMessage = $"HTML attribute '{attribute.Name}' on tag '{node.Name}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.";
+                            errors.Add(new Error(ErrorLevel.Warning, "disallowed-html", errorMessage, file.FilePath));
+                        }
+                    }
+                }
+                else
+                {
+                    var errorMessage = $"HTML tag '{node.Name}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.";
+                    errors.Add(new Error(ErrorLevel.Warning, "disallowed-html", errorMessage, file.FilePath));
+                }
+            }
+
+            return errors;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)
