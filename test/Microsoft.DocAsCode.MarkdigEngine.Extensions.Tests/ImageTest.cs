@@ -57,9 +57,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image-end:::
 ";
 
-            var expected = @"<div class=""mx-imgBorder""><p>
-<img src=""example.svg"" role=""presentation"">
-</p></div>
+            var expected = @"<img src=""example.svg"" role=""presentation"">
 <div class=""mx-imgBorder""><p>
 <img src=""example.jpg"" alt=""example"" aria-describedby=""42570"">
 <div id=""42570"" class=""visually-hidden"">
@@ -117,9 +115,12 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         [Fact]
         public void ImageWithIconTypeTestBlockGeneral()
         {
-            var source = @":::image type=""icon"" source=""example.svg"":::";
+            var source = @":::image type=""icon"" source=""example.svg"":::
 
-            var expected = @"<div class=""mx-imgBorder""><p>
+:::image type=""icon"" source=""example.svg"" border=""true"":::";
+
+            var expected = @"<img src=""example.svg"" role=""presentation"">
+<div class=""mx-imgBorder""><p>
 <img src=""example.svg"" role=""presentation"">
 </p></div>
 ";
@@ -130,7 +131,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         [Fact]
         public void ImageBlockTestBlockClosed()
         {
-            var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::Lorem Ipsum
+            var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::
+Lorem Ipsum
 :::image-end:::";
 
             TestUtility.VerifyMarkup(source, null);

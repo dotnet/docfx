@@ -40,7 +40,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var alt = string.Empty;
             var type = string.Empty;
             var loc_scope = string.Empty;
-            var border = true;
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -60,10 +59,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         src = value;
                         break;
                     case "border":
-                        if(!bool.TryParse(value, out border))
-                        {
-                            border = true;
-                        }
                         break;
                     case "lightbox":
                         break;
@@ -105,14 +100,25 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             RenderDelegate = (renderer, obj) =>
             {
+                var currentType = string.Empty;
                 var currentLightbox = string.Empty;
                 var currentBorderStr = string.Empty;
                 var currentBorder = true;
+                if(!obj.Attributes.TryGetValue("type", out currentType))
+                {
+                    currentType = "content";
+                }
                 obj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
                 obj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
                 if(!bool.TryParse(currentBorderStr, out currentBorder))
                 {
-                    currentBorder = true;
+                    if(currentType == "icon")
+                    {
+                        currentBorder = false;
+                    } else
+                    {
+                        currentBorder = true;
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(currentLightbox))
@@ -127,13 +133,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     renderer.WriteLine("<div class=\"mx-imgBorder\"><p>");
                 }
-                //if obj.Count == 0, this signifies that there is no long description for the image.
-                if(obj.Count == 0)
+                if(currentType != "complex")
                 {
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 } else
                 {
-                    if(type == "complex" && obj.Count == 0)
+                    if(currentType == "complex" && obj.Count == 0)
                     {
                         logError("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
