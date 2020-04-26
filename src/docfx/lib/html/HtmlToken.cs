@@ -24,7 +24,12 @@ namespace Microsoft.Docs.Build
             return Name.Span.Equals(name, StringComparison.OrdinalIgnoreCase);
         }
 
-        public HtmlToken(
+        public HtmlToken WithRawText(string rawText)
+        {
+            return new HtmlToken(default, default, default, rawText: rawText.AsMemory(), default, default);
+        }
+
+        internal HtmlToken(
             HtmlTokenType type,
             bool isSelfClosing,
             ReadOnlyMemory<char> name,
@@ -38,11 +43,6 @@ namespace Microsoft.Docs.Build
             RawText = rawText;
             Attributes = attributes;
             Range = range;
-        }
-
-        public HtmlToken WithRawText(string rawText)
-        {
-            return new HtmlToken(default, default, default, rawText: rawText.AsMemory(), default, default);
         }
     }
 }

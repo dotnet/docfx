@@ -6,7 +6,7 @@ using System.Buffers;
 
 namespace Microsoft.Docs.Build
 {
-    internal class HtmlWriter
+    internal ref struct HtmlWriter
     {
         private readonly IBufferWriter<char> _writer;
 

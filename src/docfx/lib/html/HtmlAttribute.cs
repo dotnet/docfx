@@ -24,7 +24,17 @@ namespace Microsoft.Docs.Build
             return Name.Span.Equals(name, StringComparison.OrdinalIgnoreCase);
         }
 
-        public HtmlAttribute(
+        public HtmlAttribute(string name, string? value = default, HtmlAttributeType? type = null)
+        {
+            Type = value is null ? HtmlAttributeType.NameOnly : (type ?? HtmlAttributeType.DoubleQuoted);
+            Name = name.AsMemory();
+            Value = value.AsMemory();
+            RawText = default;
+            Range = default;
+            ValueRange = default;
+        }
+
+        internal HtmlAttribute(
             HtmlAttributeType type,
             ReadOnlyMemory<char> name,
             ReadOnlyMemory<char> value,
@@ -38,16 +48,6 @@ namespace Microsoft.Docs.Build
             RawText = rawText;
             Range = range;
             ValueRange = valueRange;
-        }
-
-        public HtmlAttribute(string name, string? value = default, HtmlAttributeType? type = null)
-        {
-            Type = value is null ? HtmlAttributeType.NameOnly : (type ?? HtmlAttributeType.DoubleQuoted);
-            Name = name.AsMemory();
-            Value = value.AsMemory();
-            RawText = default;
-            Range = default;
-            ValueRange = default;
         }
 
         public HtmlAttribute WithValue(string value)

@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     /// Provides a high-performance, fault-tolerant, standard-compliant API
     /// for forward-only, read-only access to HTML text.
     /// </summary>
-    internal class HtmlReader
+    internal ref struct HtmlReader
     {
         private readonly string _html;
         private readonly int _length;
@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
         private int _attributesLength;
 
         public HtmlReader(string html)
+            : this()
         {
             _html = html;
             _length = html.Length;
