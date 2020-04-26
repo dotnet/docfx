@@ -46,6 +46,11 @@ gulp.task("build", () => {
     return Common.execAsync("powershell", ["./build.ps1", "-prod"], config.docfx.home);
 });
 
+gulp.task("pack", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
+    return Common.execAsync("powershell", ["./pack.ps1", config.docfx.home);
+});
+
 gulp.task("build:release", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
     return Common.execAsync("powershell", ["./build.ps1", "-prod", "-release"], config.docfx.home);
@@ -245,7 +250,8 @@ gulp.task("syncBranchCore", () => {
 });
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
-gulp.task("dev:release", gulp.series("clean", "build", "e2eTest", "publish:myget-dev", "publish:azdevops-perf-login", "publish:azdevops-perf", "publish:azdevops-internal-login", "publish:azdevops-internal", "publish:azdevops-ppe-login", "publish:azdevops-ppe"));
+gulp.task("dev:release", gulp.series("clean", "build", "e2eTest"));
+gulp.task("dev:pack", gulp.series("pack", "publish:myget-dev", "publish:azdevops-perf-login", "publish:azdevops-perf", "publish:azdevops-internal-login", "publish:azdevops-internal", "publish:azdevops-ppe-login", "publish:azdevops-ppe"));
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
 gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:azdevops-prod-login", "publish:azdevops-prod", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
