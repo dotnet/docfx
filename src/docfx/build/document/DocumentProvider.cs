@@ -62,10 +62,10 @@ namespace Microsoft.Docs.Build
             return UrlUtility.Combine(_config.BasePath, outputPath);
         }
 
-        public string GetDocsSiteUrl(FilePath path, OutputUrlType outputUrlType)
+        public string GetDocsSiteUrl(FilePath path)
         {
             var file = GetDocument(path);
-            if (outputUrlType == OutputUrlType.Docs)
+            if (_config.OutputUrlType == OutputUrlType.Docs)
             {
                 return file.SiteUrl;
             }
