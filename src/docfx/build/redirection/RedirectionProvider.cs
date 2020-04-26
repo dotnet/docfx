@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
-            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, Repository? repository, DocumentProvider documentProvider, MonikerProvider monikerProvider)
+            string docsetPath, string hostName, OutputUrlType outputUrlType, ErrorLog errorLog, BuildScope buildScope, Repository? repository, DocumentProvider documentProvider, MonikerProvider monikerProvider)
         {
             _errorLog = errorLog;
             _buildScope = buildScope;
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             {
                 var redirections = LoadRedirectionModel(docsetPath, repository);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
-                _renameHistory = GetRenameHistory(redirections, _redirectUrls);
+                _renameHistory = GetRenameHistory(redirections, _redirectUrls, outputUrlType);
             }
         }
 
@@ -172,12 +172,12 @@ namespace Microsoft.Docs.Build
         }
 
         private IReadOnlyDictionary<FilePath, FilePath> GetRenameHistory(
-            RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
+            RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls, OutputUrlType outputUrlType)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
             // TODO: handle `redirection-url-not-found` warning for static-output mode
             var renameHistory = new Dictionary<FilePath, FilePath>();
-            var publishUrlMap = GetPublishUrlMap(redirectUrls.Keys);
+            var publishUrlMap = GetPublishUrlMap(redirectUrls.Keys, outputUrlType);
 
             foreach (var item in redirections.Where(item => item.RedirectDocumentId))
             {
@@ -218,11 +218,11 @@ namespace Microsoft.Docs.Build
             return renameHistory;
         }
 
-        private Dictionary<string, List<FilePath>> GetPublishUrlMap(IEnumerable<FilePath> redirectUrlSources)
+        private Dictionary<string, List<FilePath>> GetPublishUrlMap(IEnumerable<FilePath> redirectUrlSources, OutputUrlType outputUrlType)
         {
             var fileUrls = new ConcurrentBag<(FilePath file, string url)>();
             var allSources = _buildScope.Files.Concat(redirectUrlSources);
-            ParallelUtility.ForEach(_errorLog, allSources, file => fileUrls.Add((file, _documentProvider.GetDocument(file).SiteUrl)));
+            ParallelUtility.ForEach(_errorLog, allSources, file => fileUrls.Add((file, _documentProvider.GetDocsSiteUrl(file, outputUrlType))));
 
             var publishUrlMap = fileUrls.GroupBy(fileUrl => fileUrl.url)
                                 .ToDictionary(group => group.Key, group => group.Select(g => g.file).ToList(), PathUtility.PathComparer);

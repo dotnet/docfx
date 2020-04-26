@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
-            RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, Config.OutputUrlType, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
             PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog, ContentValidator);
