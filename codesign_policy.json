@@ -5,8 +5,7 @@
       {
         "MatchedPath": [
             "Microsoft.DocAsCode*.dll",
-            "docfx.exe",
-            "*.ps1"
+            "docfx.exe"
         ],
         "SigningInfo" : {
             "Operations" : [
