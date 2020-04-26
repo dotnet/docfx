@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
 
         public static bool IsMigratedFromMarkdown(string? mime)
         {
-            var migratedMimeTypes = new string[] { "Hub", "Landing" };
+            var migratedMimeTypes = new string[] { "Hub", "Landing", nameof(LandingData) };
             return mime != null && migratedMimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase);
         }
 
