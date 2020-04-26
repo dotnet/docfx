@@ -64,6 +64,33 @@ inputs:
 outputs:
   a.html:
 ---
+# Always ues Docs URL to check redirection rule with document_id as true
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: Ugly
+  redirections.yml: |
+    renames:
+      a.md: /b
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/Conceptual.html.liquid: |
+  b.md:
+outputs:
+  b.html:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/a.html", "redirect_url": "/b" },
+        { "url": "/b.html"}
+      ]
+    }
+---
 # Apply template and produce html page with versioning
 # 1. Link should be resolved to the physical relative path
 # 2. Asset_id should should contains group prefix
