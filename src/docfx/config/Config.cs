@@ -83,10 +83,9 @@ namespace Microsoft.Docs.Build
         public bool LowerCaseUrl { get; private set; } = true;
 
         /// <summary>
-        /// TODO: whether need to copy resource should be determined by OutputUrlType
         /// Gets whether resources are copied to output.
         /// </summary>
-        public bool CopyResources { get; private set; } = false;
+        public bool CopyResources { get; private set; } = true;
 
         /// <summary>
         /// Gets the maximum errors to output.
