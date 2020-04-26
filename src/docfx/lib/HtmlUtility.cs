@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                 ? rawHtml ?? rawSource ?? $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>"
                 : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
 
-            token = token.WithRawText(resolvedNode);
+            token = new HtmlToken(resolvedNode);
         }
 
         /// <summary>
