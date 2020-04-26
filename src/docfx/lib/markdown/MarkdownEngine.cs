@@ -92,7 +92,6 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    var ast = Markdown.Parse(markdown, _pipelines[(int)pipelineType]);
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
 
                     return (status.Errors, html);

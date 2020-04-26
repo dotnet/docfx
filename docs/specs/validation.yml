@@ -719,7 +719,7 @@ inputs:
   docfx.yml:
   a.md: |
     # title 1
-    # [title 2](links)
+    # [title 2](b.md)
     #
     title 3
     ===
@@ -728,6 +728,7 @@ inputs:
     title multiple line 1
     title multiple line 2
     ===
+  b.md:
 outputs:
   a.json:
-  .errors.log:
+  b.json:
