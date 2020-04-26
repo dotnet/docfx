@@ -49,7 +49,6 @@ namespace Microsoft.Docs.Build
                     return LoadTemplate(Path.Combine(_templateDir, fileName));
                 })).Value;
 
-            // if liquid template not found, return the json
             if (template is null)
             {
                 throw Errors.System.LiquidNotFound(mimeType).ToException(isError: false);
