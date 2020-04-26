@@ -368,6 +368,30 @@ outputs:
   azure/active-directory-b2c/test.json: |
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
 ---
+# Hub/Landing page is treated as *.md when calculating document id
+inputs:
+  docfx.yml: |
+    product: Azure
+    name: azure-documents
+    files: "**/*"
+    hostName: docs.com
+    basePath: /azure
+    routes:
+      articles/: .
+  articles/active-directory-b2c/index.yml : |
+    ### YamlMime:Hub
+  articles/active-directory-b2c/test.yml : |
+    ### YamlMime:Landing
+  _themes/ContentTemplate/schemas/Hub.schema.json:
+  _themes/ContentTemplate/Hub.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Landing.schema.json:
+  _themes/ContentTemplate/Landing.html.primary.tmpl:
+outputs:
+  azure/active-directory-b2c/index.json: |
+    {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
+  azure/active-directory-b2c/test.json: |
+    {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
+---
 # index.yml's document id also follows the redirection rules
 # trailing 'index' redirect-to will be trimmed
 inputs:
