@@ -44,6 +44,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void ValidateHeadings(Document file, List<Heading> headings)
+        {
+            if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, out var documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
         public void ValidateManifest(FilePath filePath, PublishItem publishItem)
         {
             if (TryGetValidationDocumentType(publishItem.ContentType, publishItem.Mime, out var documentType))

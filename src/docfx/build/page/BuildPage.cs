@@ -231,8 +231,6 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Heading.HeadingNotFound(file));
             }
 
-            context.ContentValidator.ValidateH1(file, title);
-
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
