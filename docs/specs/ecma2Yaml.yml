@@ -19,6 +19,14 @@ repos:
         }
       cat/docfx.yml: |
         template: ../_themes
+        monikerDefinition: monikerDefinition.json
+        skipMonikerValidation: true
+      cat/monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "cat-1.0", "product_name": "CAT" }
+          ]
+        }
       cat/xml/ns-CatLibrary.xml: |
         <Namespace Name="CatLibrary">
           <Docs>
@@ -90,10 +98,11 @@ repos:
         {}
 outputs:
   cat/.errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'CatLibrary'","api/toc.yml",3,8]
-    ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2'","api/toc.yml",6,10]
-    ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2.#ctor*'","api/toc.yml",9,12]
+    ["warning","xref-not-found","Cross reference not found: 'CatLibrary'"]
+    ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2'"]
+    ["warning","xref-not-found","Cross reference not found: 'CatLibrary.Cat`2.#ctor*'"]
     ["error","schema-not-found","Unknown schema 'NetType'","xml/CatLibrary/Cat%602.xml"]
+  cat/api/_splitted/catlibrary/toc.json:
+  cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
+  cat/8069edc7/api/catlibrary.json:
   cat/api/toc.json:
-  cat/api/catlibrary.cat-2.-ctor.json:
-  cat/api/catlibrary.json:
