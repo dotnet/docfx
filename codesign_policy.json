@@ -5,7 +5,8 @@
       {
         "MatchedPath": [
             "Microsoft.DocAsCode*.dll",
-            "docfx.exe"
+            "docfx.exe",
+            "*.ps1"
         ],
         "SigningInfo" : {
             "Operations" : [
@@ -34,8 +35,23 @@
       },
       {
         "MatchedPath": [
-            "*.dll",
-            "!Microsoft*.dll"
+            "DotLiquid.resources.dll",
+            "AutoMapper.dll",
+            "CommandLine.dll",
+            "DotLiquid.dll",
+            "Dotnet.ProjInfo.dll",
+            "Dotnet.ProjInfo.Helpers.dll",
+            "FSharp.Compiler.*.dll",
+            "HtmlAgilityPack.dll",
+            "itextsharp.dll",
+            "Jint.dll",
+            "Markdig.dll",
+            "Newtonsoft.Json.dll",
+            "Newtonsoft.Json.Schema.dll",
+            "Nustache.Core.dll",
+            "Owin.dll",
+            "SQLitePCLRaw.core.dll",
+            "YamlDotNet.dll"
         ],
         "SigningInfo" : {
             "Operations" : [
