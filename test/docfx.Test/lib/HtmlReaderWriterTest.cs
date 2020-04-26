@@ -120,11 +120,9 @@ namespace Microsoft.Docs.Build
         [InlineData("<div foo=\"bar\" =\"baz\">", "StartTag:div(foo:bar[foo=\"bar\"], =\"baz\":[=\"baz\"])")]
         [InlineData("<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>", "Comment:<?xml-stylesheet type=\"text/css\" href=\"style.css\"?>")]
         [InlineData("<div / id=\"foo\">", "StartTag:div(id:foo[id=\"foo\"])")]
-        public void ReadWriteHtml(string html, string expected)
+        public void ReadHtml(string html, string expected)
         {
             var actual = new List<string>();
-            var htmlWriter = new ArrayBufferWriter<char>();
-            var writer = new HtmlWriter(htmlWriter);
             var reader = new HtmlReader(html);
 
             while (reader.Read(out var token))
@@ -148,12 +146,9 @@ namespace Microsoft.Docs.Build
                 }
 
                 actual.Add($"{token.Type}:{content}");
-
-                writer.Write(token);
             }
 
             Assert.Equal(expected, string.Join(", ", actual));
-            Assert.Equal(html, htmlWriter.WrittenSpan.ToString());
         }
 
         [Fact]

@@ -19,24 +19,7 @@ namespace Microsoft.Docs.Build
         {
             if (token.Type == HtmlTokenType.StartTag)
             {
-                // Detect if attributes have changed
-                var raw = true;
-                foreach (ref readonly var attribute in token.Attributes.Span)
-                {
-                    if (attribute.RawText.Length == 0)
-                    {
-                        raw = false;
-                    }
-                }
-
-                if (raw)
-                {
-                    _writer.Write(token.RawText.Span);
-                }
-                else
-                {
-                    WriteStartTag(token.Name.Span, token.Attributes.Span, token.IsSelfClosing);
-                }
+                WriteStartTag(token.Name.Span, token.Attributes.Span, token.IsSelfClosing);
             }
             else if (token.RawText.Length > 0)
             {

@@ -24,9 +24,10 @@ namespace Microsoft.Docs.Build
             return Name.Span.Equals(name, StringComparison.OrdinalIgnoreCase);
         }
 
-        public HtmlToken WithRawText(string rawText)
+        public HtmlToken(string rawText)
+            : this()
         {
-            return new HtmlToken(default, default, default, rawText: rawText.AsMemory(), default, default);
+            RawText = rawText.AsMemory();
         }
 
         internal HtmlToken(
