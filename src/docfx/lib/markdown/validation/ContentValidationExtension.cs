@@ -3,10 +3,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Markdig;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
+using SimpleInjector;
 using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
@@ -16,38 +19,44 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseContentValidation(
             this MarkdownPipelineBuilder builder, OnlineServiceMarkdownValidatorProvider? validatorProvider, ContentValidator contentValidator)
         {
-            if (validatorProvider == null)
+            if (validatorProvider == null && contentValidator == null)
             {
                 return builder;
             }
 
-            var validators = validatorProvider.GetValidators();
-            var headings = new List<Heading>();
+            var validators = validatorProvider?.GetValidators();
             return builder.Use(document =>
             {
-                document.Visit(node =>
-                {
-                    if (node is HeadingBlock headingBlock)
-                    {
-                        headings.Add(new Heading
-                        {
-                            Level = headingBlock.Level,
-                            SourceInfo = headingBlock.ToSourceInfo(),
-                            Content = GetHeadingContent(headingBlock),
-                            // HeadingChar = headingBlock.HeadingChar
-                        });
-                    }
-
-                    return false;
-                });
-
-                contentValidator.ValidateHeadings((Document)InclusionContext.File, headings);
-
                 if (((Document)InclusionContext.File).FilePath.Format == FileFormat.Markdown)
                 {
-                    foreach (var validator in validators)
+                    if (contentValidator != null)
                     {
-                        validator.Validate(document);
+                        var headings = new List<Heading>();
+                        document.Visit(node =>
+                        {
+                            if (node is HeadingBlock headingBlock)
+                            {
+                                headings.Add(new Heading
+                                {
+                                    Level = headingBlock.Level,
+                                    SourceInfo = headingBlock.ToSourceInfo(),
+                                    Content = GetHeadingContent(headingBlock),
+                                    // HeadingChar = headingBlock.HeadingChar
+                                });
+                            }
+
+                            return false;
+                        });
+
+                        contentValidator.ValidateHeadings((Document)InclusionContext.File, headings);
+                    }
+
+                    if (validators != null)
+                    {
+                        foreach (var validator in validators)
+                        {
+                            validator.Validate(document);
+                        }
                     }
                 }
             });
@@ -60,7 +69,28 @@ namespace Microsoft.Docs.Build
                 return string.Empty;
             }
 
-            return "TODO";
+            return GetContainerInlineContent(headingBlock.Inline);
+            static string GetContainerInlineContent(ContainerInline containerInline)
+            {
+                var content = new StringBuilder();
+                var child = containerInline.FirstChild;
+                while (child != null)
+                {
+                    if (child is LiteralInline childLiteralInline)
+                    {
+                        content.Append(childLiteralInline.Content.Text, childLiteralInline.Content.Start, childLiteralInline.Content.Length);
+                    }
+
+                    if (child is ContainerInline childContainerInline)
+                    {
+                        content.Append(GetContainerInlineContent(childContainerInline));
+                    }
+
+                    child = child.NextSibling;
+                }
+
+                return content.ToString();
+            }
         }
     }
 }

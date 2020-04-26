@@ -714,3 +714,20 @@ outputs:
     ["suggestion","path-duplication","Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.", "v2/duplicatedword/folder1/DuplicatedWord.md"]
     ["suggestion","path-duplication","Article URL '/docs/folder/duplicated-base-path/docs/a' contains duplicated text 'docs'. For SEO, article URLs should not contain duplication.", "folder0/duplicated-base-path/docs/a.md"]
 ---
+# Headings Validation
+inputs:
+  docfx.yml:
+  a.md: |
+    # title 1
+    # [title 2](links)
+    #
+    title 3
+    ===
+    titie 4
+    ---
+    title multiple line 1
+    title multiple line 2
+    ===
+outputs:
+  a.json:
+  .errors.log:
