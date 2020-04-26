@@ -84,8 +84,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // if source is redirection or landing page, change it to *.md
-            if (file.ContentType == ContentType.Redirection || TemplateEngine.IsLandingData(file.Mime))
+            // if source is redirection or migrated from markdown, change it to *.md
+            if (file.ContentType == ContentType.Redirection || TemplateEngine.IsMigratedFromMarkdown(file.Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }

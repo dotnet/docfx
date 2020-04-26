@@ -114,6 +114,12 @@ namespace Microsoft.Docs.Build
             return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
         }
 
+        public static bool IsMigratedFromMarkdown(string? mime)
+        {
+            var migratedMimeTypes = new string[] { "Hub", "Landing" };
+            return mime != null && migratedMimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase);
+        }
+
         public string? GetToken(string key)
         {
             return _global[key]?.ToString();
