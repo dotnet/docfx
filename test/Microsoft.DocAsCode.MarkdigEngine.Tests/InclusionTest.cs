@@ -791,13 +791,53 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             var marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
 
             var expected = @"<div class=""mx-imgBorder""><p>
-<img alt=""example"" aria-describedby=""e68bf"" src=""~/r/b/example.jpg"">
+<img src=""~/r/b/example.jpg"" alt=""example"" aria-describedby=""e68bf"">
 <div id=""e68bf"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 </p></div>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        }
+
+        [Fact]
+        public void ImageTestBlockGeneralWithInclude()
+        {
+            var source = @"[!include[](includes/source.md)]";
+            var includeContent = @":::image type=""content"" source=""../media/example.jpg"" alt-text=""example"" lightbox=""../media/example.jpg"":::
+
+:::image type=""content"" source=""~/media/example.jpg"" alt-text=""example"" lightbox=""~/media/example.jpg"":::
+
+:::image type=""content"" source=""~/media/example.jpg"" alt-text=""example"" lightbox=""../media/example.jpg"":::
+
+:::image type=""content"" source=""../media/example.jpg"" alt-text=""example"" lightbox=""~/media/example.jpg"":::";
+
+            TestUtility.WriteToFile("a.md", source);
+            TestUtility.WriteToFile("includes/source.md", includeContent);
+            var marked = TestUtility.MarkupWithoutSourceInfo(source, "a.md");
+
+            var expected = @"<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
+<div class=""mx-imgBorder""><p>
+<img src=""~/media/example.jpg"" alt=""example"">
+</p></div>
+</a>
+<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
+<div class=""mx-imgBorder""><p>
+<img src=""~/media/example.jpg"" alt=""example"">
+</p></div>
+</a>
+<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
+<div class=""mx-imgBorder""><p>
+<img src=""~/media/example.jpg"" alt=""example"">
+</p></div>
+</a>
+<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
+<div class=""mx-imgBorder""><p>
+<img src=""~/media/example.jpg"" alt=""example"">
+</p></div>
+</a>";
+
+            Assert.Equal(expected.Replace("\r\n", "\n").Replace("\n", ""), marked.Html.Replace("\r\n", "\n").Replace("\n", ""));
         }
 
         [Fact]
@@ -818,10 +858,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             TestUtility.WriteToFile("r/r.md", r);
             TestUtility.WriteToFile("r/b/token.md", token);
             var marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
-
-            var expected = @"<div class=""mx-imgBorder""><p>
-<img role=""presentation"" src=""~/r/b/example.svg"">
-</p></div>
+            var expected = @"<img src=""~/r/b/example.svg"" role=""presentation"">
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }

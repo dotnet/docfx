@@ -37,47 +37,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         }
 
         [Fact]
-        public void ImageTestBlockGeneralWithInclude()
-        {
-            var source = @"[!include[](includes/source.md)]";
-            var includeContent = @":::image type=""content"" source=""../media/example.jpg"" alt-text=""example"" lightbox=""../media/example.jpg"":::
-
-:::image type=""content"" source=""~/media/example.jpg"" alt-text=""example"" lightbox=""~/media/example.jpg"":::
-
-:::image type=""content"" source=""~/media/example.jpg"" alt-text=""example"" lightbox=""../media/example.jpg"":::
-
-:::image type=""content"" source=""../media/example.jpg"" alt-text=""example"" lightbox=""~/media/example.jpg"":::";
-            
-            
-            
-            var expected = @"<a href=""~/includes/../media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""../media/example.jpg"" alt=""example"">
-</p></div>
-</a>
-<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""~/media/example.jpg"" alt=""example"">
-</p></div>
-</a>
-<a href=""~/includes/../media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""~/media/example.jpg"" alt=""example"">
-</p></div>
-</a>
-<a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""../media/example.jpg"" alt=""example"">
-</p></div>
-</a>";
-
-            TestUtility.VerifyMarkup(source, expected, filePath:"~/test.md", files: new Dictionary<string, string>
-            {
-                { "~/includes/source.md", includeContent }
-            });
-        }
-
-        [Fact]
         public void ComplexImageTestBlockGeneral()
         {
             var source = @"
@@ -98,9 +57,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image-end:::
 ";
 
-            var expected = @"<div class=""mx-imgBorder""><p>
-<img src=""example.svg"" role=""presentation"">
-</p></div>
+            var expected = @"<img src=""example.svg"" role=""presentation"">
 <div class=""mx-imgBorder""><p>
 <img src=""example.jpg"" alt=""example"" aria-describedby=""42570"">
 <div id=""42570"" class=""visually-hidden"">
@@ -158,9 +115,12 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         [Fact]
         public void ImageWithIconTypeTestBlockGeneral()
         {
-            var source = @":::image type=""icon"" source=""example.svg"":::";
+            var source = @":::image type=""icon"" source=""example.svg"":::
 
-            var expected = @"<div class=""mx-imgBorder""><p>
+:::image type=""icon"" source=""example.svg"" border=""true"":::";
+
+            var expected = @"<img src=""example.svg"" role=""presentation"">
+<div class=""mx-imgBorder""><p>
 <img src=""example.svg"" role=""presentation"">
 </p></div>
 ";
@@ -171,7 +131,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         [Fact]
         public void ImageBlockTestBlockClosed()
         {
-            var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::Lorem Ipsum
+            var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::
+Lorem Ipsum
 :::image-end:::";
 
             TestUtility.VerifyMarkup(source, null);

@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, BlockProcessor processor)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, TripleColonBlock block)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
