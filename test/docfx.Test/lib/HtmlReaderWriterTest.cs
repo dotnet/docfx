@@ -4,6 +4,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Text;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -150,6 +151,26 @@ namespace Microsoft.Docs.Build
             }
 
             Assert.Equal(expected, string.Join(", ", actual));
+        }
+
+        [Theory]
+        [InlineData("<a/>b", "b")]
+        [InlineData("</a>b", "b")]
+        [InlineData("<a>b</a>c", "c")]
+        [InlineData("<a></a>b</a>c", "b</a>c")]
+        [InlineData("<a><a></a>b</a>c", "b</a>c")]
+        public void ReadToCloseTag(string html, string expected)
+        {
+            var reader = new HtmlReader(html);
+            Assert.True(reader.Read(out var token));
+            Assert.True(reader.ReadToEndTag(token.Name.Span));
+
+            var actual = new StringBuilder();
+            while (reader.Read(out token))
+            {
+                actual.Append(token.RawText);
+            }
+            Assert.Equal(expected, actual.ToString());
         }
 
         [Fact]

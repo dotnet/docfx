@@ -35,7 +35,9 @@ namespace Microsoft.Docs.Build
         [InlineData("<iframe src='//codepen.io/a' />", "<iframe src='//codepen.io/a&rerun-position=hidden&' />")]
         public void HtmlRemoveRerunCodepenIframes(string input, string output)
         {
-            var actual = HtmlUtility.TransformHtml(input, HtmlUtility.RemoveRerunCodepenIframes);
+            var actual = HtmlUtility.TransformHtml(
+                input,
+                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.RemoveRerunCodepenIframes(ref token));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -48,7 +50,9 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void HtmlStripTags(string input, string output)
         {
-            var actual = HtmlUtility.TransformHtml(input, HtmlUtility.StripTags);
+            var actual = HtmlUtility.TransformHtml(
+                input,
+                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.StripTags(ref reader, ref token));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -68,7 +72,9 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666'/><a href='666'></div>")]
         public void TransformLinks(string input, string link, string output)
         {
-            var actual = HtmlUtility.TransformHtml(input, (ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
+            var actual = HtmlUtility.TransformHtml(
+                input,
+                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
 
             Assert.Equal(output, actual);
         }
@@ -78,6 +84,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='hello'>", "a", "a", "<a href='hello'>")]
         [InlineData("<xref href='hello'>", "a", "b", "<a href='a'>b</a>")]
         [InlineData("<xref uid='hello'>", "a", "b", "<a href='a'>b</a>")]
+        [InlineData("<xref href='hello'>x</xref>", "a", "b", "<a href='a'>b</a>")]
         [InlineData("<xref href='hello' uid='hello'>", "a", "b", "<a href='a'>b</a>")]
         [InlineData(@"<xref href='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
         [InlineData(@"<xref uid='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
@@ -87,7 +94,9 @@ namespace Microsoft.Docs.Build
         [InlineData(@"<xref uid='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         public void TransformXrefs(string input, string xref, string display, string output)
         {
-            var actual = HtmlUtility.TransformHtml(input, (ref HtmlToken token) => HtmlUtility.TransformXref(ref token, null, (href, uid, isShorthand) => (xref, display)));
+            var actual = HtmlUtility.TransformHtml(
+                input,
+                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.TransformXref(ref reader, ref token, null, (href, uid, isShorthand) => (xref, display)));
 
             Assert.Equal(output, actual);
         }

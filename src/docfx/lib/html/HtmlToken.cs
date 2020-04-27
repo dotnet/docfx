@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public (int start, int length) Range { get; }
 
-        public bool NameIs(string name)
+        public bool NameIs(ReadOnlySpan<char> name)
         {
             return Name.Span.Equals(name, StringComparison.OrdinalIgnoreCase);
         }

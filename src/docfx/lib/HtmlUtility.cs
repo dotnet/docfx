@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class HtmlUtility
     {
-        public delegate void TransformHtmlDelegate(ref HtmlToken token);
+        public delegate void TransformHtmlDelegate(ref HtmlReader reader, ref HtmlToken token);
 
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
             while (reader.Read(out var token))
             {
-                transform(ref token);
+                transform(ref reader, ref token);
                 writer.Write(token);
             }
 
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void TransformXref(ref HtmlToken token, MarkdownObject? block, Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        public static void TransformXref(ref HtmlReader reader, ref HtmlToken token, MarkdownObject? block, Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             if (!token.NameIs("xref"))
             {
@@ -108,6 +108,8 @@ namespace Microsoft.Docs.Build
                 token = default;
                 return;
             }
+
+            reader.ReadToEndTag(token.Name.Span);
 
             var rawHtml = default(string);
             var rawSource = default(string);
@@ -263,10 +265,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static void StripTags(ref HtmlToken token)
+        internal static void StripTags(ref HtmlReader reader, ref HtmlToken token)
         {
             if (token.NameIs("script") || token.NameIs("link") || token.NameIs("style"))
             {
+                reader.ReadToEndTag(token.Name.Span);
                 token = default;
                 return;
             }
