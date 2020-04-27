@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
+        public string? Name { get; }
+
         public FilePath? FilePath { get; }
 
         public int Line { get; }
@@ -27,11 +29,11 @@ namespace Microsoft.Docs.Build
 
         public int EndColumn { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source)
-            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
+        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null)
+            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name)
         { }
 
-        public Error(ErrorLevel level, string code, string message, FilePath? file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
+        public Error(ErrorLevel level, string code, string message, FilePath? file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0, string? name = null)
         {
             Level = level;
             Code = code;
@@ -41,6 +43,7 @@ namespace Microsoft.Docs.Build
             Column = column;
             EndLine = endLine;
             EndColumn = endColumn;
+            Name = name;
         }
 
         public Error WithCustomError(CustomError customError)
@@ -53,12 +56,13 @@ namespace Microsoft.Docs.Build
                 Line,
                 Column,
                 EndLine,
-                EndColumn);
+                EndColumn,
+                Name);
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn);
+            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn, Name);
         }
 
         public override string ToString() => ToString(Level, null);
@@ -89,6 +93,7 @@ namespace Microsoft.Docs.Build
                 return x.Level == y.Level &&
                        x.Code == y.Code &&
                        x.Message == y.Message &&
+                       x.Name == y.Name &&
                        x.FilePath == y.FilePath &&
                        x.Line == y.Line &&
                        x.Column == y.Column;
@@ -100,6 +105,7 @@ namespace Microsoft.Docs.Build
                     obj.Level,
                     obj.Code,
                     obj.Message,
+                    obj.Name,
                     obj.FilePath,
                     obj.Line,
                     obj.Column);
