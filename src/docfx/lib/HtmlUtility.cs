@@ -18,8 +18,6 @@ namespace Microsoft.Docs.Build
     {
         public delegate void TransformHtmlDelegate(ref HtmlToken token);
 
-        private static readonly string[] s_allowedStyles = new[] { "text-align: right;", "text-align: left;", "text-align: center;" };
-
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
             var result = new ArrayBufferWriter<char>(html.Length + 64);
@@ -40,11 +38,6 @@ namespace Microsoft.Docs.Build
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             return doc.DocumentNode;
-        }
-
-        public static HtmlNode PostMarkup(this HtmlNode node, bool dryRun)
-        {
-            return dryRun ? node : node.StripTags();
         }
 
         public static long CountWord(this HtmlNode node)
@@ -270,36 +263,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static HtmlNode StripTags(this HtmlNode html)
+        internal static void StripTags(ref HtmlToken token)
         {
-            var nodesToRemove = new List<HtmlNode>();
-
-            foreach (var node in html.DescendantsAndSelf())
+            if (token.NameIs("script") || token.NameIs("link") || token.NameIs("style"))
             {
-                if (node.Name.Equals("script", StringComparison.OrdinalIgnoreCase) ||
-                    node.Name.Equals("link", StringComparison.OrdinalIgnoreCase) ||
-                    node.Name.Equals("style", StringComparison.OrdinalIgnoreCase))
-                {
-                    nodesToRemove.Add(node);
-                }
-                else
-                {
-                    if (node.Name != "th" && node.Name != "td" && node.Attributes.Contains("style"))
-                    {
-                        var value = node.Attributes["style"].Value ?? "";
-                        if (!s_allowedStyles.Any(l => l == value))
-                        {
-                            node.Attributes.Remove("style");
-                        }
-                    }
-                }
+                token = default;
+                return;
             }
 
-            foreach (var node in nodesToRemove)
+            foreach (ref var attribute in token.Attributes.Span)
             {
-                node.Remove();
+                if (attribute.NameIs("style"))
+                {
+                    attribute = default;
+                }
             }
-            return html;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)

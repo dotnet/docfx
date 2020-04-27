@@ -47,6 +47,7 @@ namespace Microsoft.Docs.Build
                     HtmlUtility.TransformLink(ref token, block, getLink);
                     HtmlUtility.TransformXref(ref token, block, resolveXref);
                     HtmlUtility.RemoveRerunCodepenIframes(ref token);
+                    HtmlUtility.StripTags(ref token);
                 });
             }
         }
