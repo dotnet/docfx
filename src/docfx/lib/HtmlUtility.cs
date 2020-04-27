@@ -442,10 +442,8 @@ namespace Microsoft.Docs.Build
             return html;
         }
 
-        internal static List<Error> SecurityScan(this HtmlNode html, Document file)
+        internal static void SecurityScan(this HtmlNode html)
         {
-            var errors = new List<Error>();
-
             foreach (var node in html.DescendantsAndSelf())
             {
                 if (node.NodeType != HtmlNodeType.Element)
@@ -465,17 +463,15 @@ namespace Microsoft.Docs.Build
                         }
                         else if (additionalAttributes == null || !additionalAttributes.Contains(attribute.Name))
                         {
-                            errors.Add(Errors.Content.DisallowedHTMLAttribute(file, node.Name, attribute.Name));
+                            Telemetry.TrackDisallowedHtmlCount($"'{attribute.Name}' on tag '{node.Name}'");
                         }
                     }
                 }
                 else
                 {
-                    errors.Add(Errors.Content.DisallowedHTMLTag(file, node.Name));
+                    Telemetry.TrackDisallowedHtmlCount($"tag '{node.Name}'");
                 }
             }
-
-            return errors;
         }
 
         private static void AddLinkType(this HtmlNode html, string tag, string attribute, string locale)

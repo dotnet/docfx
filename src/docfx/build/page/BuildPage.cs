@@ -225,11 +225,9 @@ namespace Microsoft.Docs.Build
             errors.AddRange(markupErrors);
 
             var rawHtmlDom = HtmlUtility.LoadHtml(html);
-
             if (file.ContentType == ContentType.Page && TemplateEngine.IsConceptual(file.Mime))
             {
-                var htmlErrors = HtmlUtility.SecurityScan(rawHtmlDom, file);
-                errors.AddRange(htmlErrors);
+                HtmlUtility.SecurityScan(rawHtmlDom);
             }
 
             var htmlDom = rawHtmlDom.PostMarkup(context.Config.DryRun);

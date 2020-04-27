@@ -685,18 +685,6 @@ namespace Microsoft.Docs.Build
             /// </summary>
             public static Error Custom404Page(Document file)
                 => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning", file.FilePath);
-
-            /// <summary>
-            /// Html Tag value must be in allowed list
-            /// </summary>
-            public static Error DisallowedHTMLTag(Document file, string tag)
-                => new Error(ErrorLevel.Warning, "disallowed-html", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", file.FilePath);
-
-            /// <summary>
-            /// Html Attribute value must be in allowed list
-            /// </summary>
-            public static Error DisallowedHTMLAttribute(Document file, string tag, string attribute)
-                => new Error(ErrorLevel.Warning, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", file.FilePath);
         }
     }
 }
