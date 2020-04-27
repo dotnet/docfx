@@ -1488,7 +1488,6 @@ outputs:
   toc.png:
 ---
 # TOC splitItemsBy produces multiple output TOCs with correct link and _tocRel
-os: windows, osx
 inputs:
   docfx.yml:
   TOC.yml: |
@@ -1517,12 +1516,11 @@ outputs:
     { "items": [{ "name": "1-1", "href": "../../a", "items": undefined }] }
 ---
 # TOC splitItemsBy respect metadata config
-os: windows, osx
 inputs:
   docfx.yml: |
     fileMetadata:
       key:
-        _splitted/**/toc.yml: value
+        _splitted/**/TOC.yml: value
   TOC.yml: |
     splitItemsBy: name
     items:
@@ -1535,13 +1533,12 @@ outputs:
     { "metadata": { "key": "value" } }
 ---
 # TOC splitItemsBy respect content route config
-os: windows, osx
 inputs:
   docfx.json: |
     {
       "content":[
         {
-          "files": ["**/toc.yml"],
+          "files": ["**/TOC.yml"],
           "src": ".",
           "dest": "toc-dest"
         }

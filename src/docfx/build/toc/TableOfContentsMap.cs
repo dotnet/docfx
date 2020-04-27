@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/toc.yml"));
+                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
                 var newNodeFile = FilePath.Generated(newNodeFilePath);
 
                 _input.AddGeneratedContent(newNodeFile, newNodeToken);
