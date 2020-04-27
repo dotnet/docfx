@@ -426,8 +426,8 @@ outputs:
   a.json: |
     { "conceptual": "<p>Link to <a href=\"b.md\" href=\"c.md\">b</a></p>\n" }
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: 'b.md'.","a.md",1,9]
-    ["warning","file-not-found","Invalid file link: 'c.md'.","a.md",1,10]
+    ["warning","file-not-found","Invalid file link: 'b.md'.","a.md",1,12]
+    ["warning","file-not-found","Invalid file link: 'c.md'.","a.md",1,24]
 ---
 # Markdown inclusion using links starting with ~
 inputs:

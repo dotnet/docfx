@@ -560,8 +560,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,1]
-    ["warning","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,2]
+    ["warning","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,23]
+    ["warning","bookmark-not-found","Cannot find bookmark '#bookmark' in 'docs/a.md'","docs/a.md",2,69]
 ---
 # Report warning for custom 404 page
 inputs:
