@@ -402,11 +402,6 @@ namespace Microsoft.Docs.Build
 
         private void BeforeAttributeName()
         {
-            _attributeType = HtmlAttributeType.NameOnly;
-            _attributeNameRange = default;
-            _attributeRange = default;
-            _attributeValueRange = default;
-
             while (true)
             {
                 switch (Consume())
@@ -426,22 +421,24 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case '=':
-                        _attributeNameRange.start = _attributeRange.start = _position - 1;
-                        AttributeName();
+                        AttributeName(-1);
                         return;
 
                     default:
                         Back();
-
-                        _attributeNameRange.start = _attributeRange.start = _position;
                         AttributeName();
                         return;
                 }
             }
         }
 
-        private void AttributeName()
+        private void AttributeName(int offset = 0)
         {
+            _attributeType = HtmlAttributeType.NameOnly;
+            _attributeNameRange.length = _attributeRange.length = 0;
+            _attributeNameRange.start = _attributeRange.start = _position + offset;
+            _attributeValueRange = default;
+
             while (true)
             {
                 switch (Consume())
@@ -512,7 +509,6 @@ namespace Microsoft.Docs.Build
                     default:
                         AddAttribute();
                         Back();
-                        _attributeNameRange.start = _attributeRange.start = _position;
                         AttributeName();
                         return;
                 }
@@ -636,6 +632,8 @@ namespace Microsoft.Docs.Build
                 _html.AsMemory(_attributeRange.start, _attributeRange.length),
                 _attributeRange,
                 _attributeValueRange);
+
+            _attributeNameRange = default;
         }
 
         private char Consume()

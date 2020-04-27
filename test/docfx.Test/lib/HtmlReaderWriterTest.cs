@@ -95,6 +95,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<!--a-->   </b>", "Comment:<!--a-->, Text:   , EndTag:b")]
         [InlineData("a < b <c>", "Text:a , Text:< b , StartTag:c")]
         [InlineData("<a b='cd>'></a>", "StartTag:a(b:cd>[b='cd>']), EndTag:a")]
+        [InlineData("<HTTP Setting name>", "StartTag:HTTP(Setting:[Setting], name:[name])")]
 
         // Parsing errors https://html.spec.whatwg.org/multipage/parsing.html#parse-errors
         // CDATA, DOCTYPE and script tag specialties are ignored
