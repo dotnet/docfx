@@ -9,7 +9,6 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
-using SimpleInjector;
 using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
@@ -39,7 +38,7 @@ namespace Microsoft.Docs.Build
                                 headings.Add(new Heading
                                 {
                                     Level = headingBlock.Level,
-                                    SourceInfo = headingBlock.ToSourceInfo(),
+                                    SourceInfo = new SourceInfo(((Document)InclusionContext.File).FilePath, 0, 0),
                                     Content = GetHeadingContent(headingBlock),
                                     // HeadingChar = headingBlock.HeadingChar
                                 });
