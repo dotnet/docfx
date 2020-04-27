@@ -48,7 +48,7 @@ gulp.task("build", () => {
 
 gulp.task("pack", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
-    return Common.execAsync("powershell", ["./pack.ps1", config.docfx.home);
+    return Common.execAsync("powershell", ["./pack.ps1"], config.docfx.home);
 });
 
 gulp.task("build:release", () => {
