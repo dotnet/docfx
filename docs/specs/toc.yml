@@ -1520,7 +1520,7 @@ inputs:
   docfx.yml: |
     fileMetadata:
       key:
-        _splitted/**/TOC.json: value
+        _splitted/**/toc.yml: value
   TOC.yml: |
     splitItemsBy: name
     items:
@@ -1531,6 +1531,29 @@ outputs:
   toc.json:
   _splitted/1/toc.json: |
     { "metadata": { "key": "value" } }
+---
+# TOC splitItemsBy respect content route config
+inputs:
+  docfx.json: |
+    {
+      "content":[
+        {
+          "files": ["**/toc.yml"],
+          "src": ".",
+          "dest": "toc-dest"
+        }
+      ]
+    }
+    
+  TOC.yml: |
+    splitItemsBy: name
+    items:
+    - name: 1
+      items:
+      - name: 1-1
+outputs:
+  toc.json:
+  toc-dest/_splitted/1/toc.json:
 ---
 # Generate metadata dependency for PR comment preview link
 inputs:

@@ -125,6 +125,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public (List<Error> errors, JToken token) ReadYaml(FilePath file)
         {
+            if (file.Origin == FileOrigin.Generated)
+            {
+                return (new List<Error>(), _generatedContents[file]);
+            }
+
             return _yamlTokenCache.GetOrAdd(file, path =>
             {
                 using var reader = ReadText(path);
