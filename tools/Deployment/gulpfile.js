@@ -248,8 +248,8 @@ gulp.task("syncBranchCore", () => {
     let docfxHome = path.resolve(config.docfx.home);
     return SyncBranch.runAsync(repoUrl, docfxHome, config.sync.fromBranch, config.sync.targetBranch);
 });
-gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
-gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
+gulp.task("test", gulp.series("clean", "build", "e2eTest", "pack", "publish:myget-test"));
+gulp.task("dev", gulp.series("clean", "build", "e2eTest", "pack"));
 gulp.task("dev:release", gulp.series("clean", "build", "e2eTest"));
 gulp.task("dev:pack", gulp.series("pack", "publish:myget-dev", "publish:azdevops-perf-login", "publish:azdevops-perf", "publish:azdevops-internal-login", "publish:azdevops-internal", "publish:azdevops-ppe-login", "publish:azdevops-ppe"));
 
