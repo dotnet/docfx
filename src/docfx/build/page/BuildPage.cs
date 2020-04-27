@@ -238,7 +238,8 @@ namespace Microsoft.Docs.Build
             var rawHtmlDom = HtmlUtility.LoadHtml(html);
             if (file.ContentType == ContentType.Page && TemplateEngine.IsConceptual(file.Mime))
             {
-                HtmlUtility.SecurityScan(rawHtmlDom);
+                var htmlErrors = HtmlUtility.SecurityScan(rawHtmlDom, file);
+                errors.AddRange(htmlErrors);
             }
 
             var htmlDom = rawHtmlDom.PostMarkup(context.Config.DryRun);

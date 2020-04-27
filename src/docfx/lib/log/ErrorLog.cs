@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
 
         private void WriteCore(Error error, ErrorLevel level)
         {
-            Telemetry.TrackErrorCount(error.Code, level);
+            Telemetry.TrackErrorCount(error.Code, error.Message, level);
 
             if (level == ErrorLevel.Error && error.FilePath != null)
             {
