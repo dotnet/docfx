@@ -30,7 +30,7 @@ steps:
   displayName: 'gulp build'
   inputs:
     filename: node
-    arguments: '.\node_modules\gulp\bin\gulp.js dev:release'
+    arguments: '.\node_modules\gulp\bin\gulp.js dev:build'
     workingFolder: tools/Deployment
 
 - task: EsrpCodeSigning@1
@@ -48,7 +48,7 @@ steps:
   displayName: 'gulp pack'
   inputs:
     filename: node
-    arguments: '.\node_modules\gulp\bin\gulp.js dev:pack'
+    arguments: '.\node_modules\gulp\bin\gulp.js dev:release'
     workingFolder: tools/Deployment
 
 - task: PublishBuildArtifacts@1

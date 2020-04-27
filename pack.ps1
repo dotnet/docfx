@@ -1,25 +1,24 @@
 param([string] $configuration = "Release")
 
+# Include
+$scriptRoot = $($MyInvocation.MyCommand.Definition) | Split-Path
+. "$scriptRoot/common.ps1"
+
 $ErrorActionPreference = 'Stop'
 $framework = "net472"
 $packageVersionFilePath = ".\package_version_temp.txt" # build.ps1 saves the package version to this temp file
-$packageVersion = Get-Content -Path $packageVersionFilePath
 
-if ([environment]::OSVersion.Platform -eq "Win32NT") {
-    $os = "Windows"
+if (Test-Path $packageVersionFilePath){
+    $packageVersion = Get-Content -Path $packageVersionFilePath
+    Write-Host "Package version: $packageVersion"
 }
-else {
-    $os = "Linux"
+else{
+    ProcessLastExitCode 1 "$packageVersionFilePath is not found. Please run build.ps1 to generate the file."
 }
+
+$os = GetOperatingSystemName
 Write-Host "Running on OS $os"
-
-if ($os -eq "Windows") {
-    $nugetCommand = "$env:LOCALAPPDATA/Nuget/Nuget.exe"
-}
-else {
-    $nugetCommand = "nuget"
-}
-
+$nugetCommand = GetNuGetCommand ($os)
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 
@@ -33,25 +32,6 @@ function NugetPack {
         & $nugetCommand pack $nuspec -Version $version -OutputDirectory artifacts/$configuration -BasePath $basepath
         ProcessLastExitCode $lastexitcode "$nugetCommand pack $nuspec -Version $version -OutputDirectory artifacts/$configuration -BasePath $basepath"
     }
-}
-
-function ProcessLastExitCode {
-    param($exitCode, $msg)
-    if ($exitCode -eq 0) {
-        Write-Host "Success: $msg
-        " -ForegroundColor Green
-    }
-    else {
-        Write-Host "Error $($exitCode): $msg
-        " -ForegroundColor Red
-        Pop-Location
-        Exit 1
-    }
-}
-
-function ValidateCommand {
-    param($command)
-    return (Get-Command $command -ErrorAction SilentlyContinue) -ne $null
 }
 
 # Check if dotnet cli exists globally

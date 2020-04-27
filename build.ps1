@@ -14,6 +14,10 @@ param(
 #   [-skipTests]: If it's set, running unit tests will be skipped
 ################################################################################################
 
+# Include
+$scriptRoot = $($MyInvocation.MyCommand.Definition) | Split-Path
+. "$scriptRoot/common.ps1"
+
 $ErrorActionPreference = 'Stop'
 $releaseBranch = "master"
 $gitCommand = "git"
@@ -21,21 +25,9 @@ $framework = "net472"
 $packageVersion = "1.0.0"
 $assemblyVersion = "1.0.0.0"
 
-if ([environment]::OSVersion.Platform -eq "Win32NT") {
-    $os = "Windows"
-}
-else {
-    $os = "Linux"
-}
+$os = GetOperatingSystemName
 Write-Host "Running on OS $os"
-
-if ($os -eq "Windows") {
-    $nugetCommand = "$env:LOCALAPPDATA/Nuget/Nuget.exe"
-}
-else {
-    $nugetCommand = "nuget"
-}
-
+$nugetCommand = GetNuGetCommand ($os)
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 $versionCsFolderPath = $scriptHome + "/TEMP/"
@@ -45,25 +37,6 @@ $versionFsFilePath = $versionCsFolderPath + "version.fs"
 $global:LASTEXITCODE = $null
 
 Push-Location $scriptHome
-
-function ProcessLastExitCode {
-    param($exitCode, $msg)
-    if ($exitCode -eq 0) {
-        Write-Host "Success: $msg
-        " -ForegroundColor Green
-    }
-    else {
-        Write-Host "Error $($exitCode): $msg
-        " -ForegroundColor Red
-        Pop-Location
-        Exit 1
-    }
-}
-
-function ValidateCommand {
-    param($command)
-    return (Get-Command $command -ErrorAction SilentlyContinue) -ne $null
-}
 
 # Check if dotnet cli exists globally
 if (-not(ValidateCommand("dotnet"))) {
