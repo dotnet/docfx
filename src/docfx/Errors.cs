@@ -88,6 +88,13 @@ namespace Microsoft.Docs.Build
 
             public static Error MetadataValidationRuleset(string ruleset)
                 => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}");
+
+            /// <summary>
+            /// Liquid is not found for current mime type.
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error LiquidNotFound(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template used to generate HTML is not found for mimeType '{source}', the output HTML will not be generated", source);
         }
 
         public static class Logging
