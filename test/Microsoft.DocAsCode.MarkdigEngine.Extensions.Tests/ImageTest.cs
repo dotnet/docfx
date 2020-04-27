@@ -87,6 +87,30 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         }
 
         [Fact]
+        public void ContentImageTestBlock_LinkAttribute()
+        {
+            var source = @"
+:::image source=""example.svg"" alt-text=""Lorum Ipsom"" link=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"":::
+
+:::image source=""example.svg"" lightbox=""example.svg"" alt-text=""Lorum Ipsom"" link=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"":::
+";
+
+            var expected = @"<a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
+<div class=""mx-imgBorder""><p>
+<img src=""example.svg"" alt=""Lorum Ipsom"">
+</p></div>
+</a>
+<a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
+<div class=""mx-imgBorder""><p>
+<img src=""example.svg"" alt=""Lorum Ipsom"">
+</p></div>
+</a>
+";
+
+            TestUtility.VerifyMarkup(source, expected);
+        }
+
+        [Fact]
         public void ImageTestBlock_InvalidImage_MissingSource()
         {
             var source = @"

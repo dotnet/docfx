@@ -62,6 +62,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         break;
                     case "lightbox":
                         break;
+                    case "link":
+                        break;
                     default:
                         logError($"Image reference '{src}' is invalid per the schema. Unexpected attribute: '{name}'.");
                         return false;
@@ -104,13 +106,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var currentLightbox = string.Empty;
                 var currentBorderStr = string.Empty;
                 var currentBorder = true;
+                var currentLink = string.Empty;
                 if(!obj.Attributes.TryGetValue("type", out currentType))
                 {
                     currentType = "content";
                 }
                 obj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
                 obj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
-                if(!bool.TryParse(currentBorderStr, out currentBorder))
+                obj.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
+                if (!bool.TryParse(currentBorderStr, out currentBorder))
                 {
                     if(currentType == "icon")
                     {
@@ -121,7 +125,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                 }
 
-                if (!string.IsNullOrEmpty(currentLightbox))
+                if(!string.IsNullOrEmpty(currentLink))
+                {
+                    var linkHtmlAttributes = new HtmlAttributes();
+                    linkHtmlAttributes.AddProperty("href", $"{currentLink}");
+                    renderer.Write("<a").WriteAttributes(linkHtmlAttributes).WriteLine(">");
+                } else if (!string.IsNullOrEmpty(currentLightbox))
                 {
                     var lighboxHtmlAttributes = new HtmlAttributes();
                     var path = _context.GetLink(currentLightbox, InclusionContext.File, InclusionContext.RootFile, obj);
@@ -154,7 +163,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     renderer.WriteLine("</p></div>");
                 }
-                if (!string.IsNullOrEmpty(currentLightbox))
+                if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
                 {
                     renderer.WriteLine($"</a>");
                 }
