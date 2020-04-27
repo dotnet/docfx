@@ -40,6 +40,7 @@ namespace Microsoft.Docs.Build
                                     Level = headingBlock.Level,
                                     SourceInfo = new SourceInfo(((Document)InclusionContext.File).FilePath, 0, 0),
                                     Content = GetHeadingContent(headingBlock),
+
                                     // HeadingChar = headingBlock.HeadingChar
                                 });
                             }
