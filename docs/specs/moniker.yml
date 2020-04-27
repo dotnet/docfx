@@ -1798,7 +1798,8 @@ inputs:
           }
         }
       }
-    }
+    }  
+  _themes/ContentTemplate/TestData.html.primary.tmpl:
   monikerDefinition.json: |
     {
       "monikers": [
@@ -1808,7 +1809,7 @@ inputs:
     }
 outputs:
   e2dfe8fd/docs/a.json: |
-    {"metadata":{"monikers":["NETcore-2.0","netcore-1.0"]}}
+    {"metadata":{"monikers":["netcore-1.0","netcore-2.0"]}}
 ---
 # Group config is ignored with groups missing in docfx.json of v2
 inputs:
