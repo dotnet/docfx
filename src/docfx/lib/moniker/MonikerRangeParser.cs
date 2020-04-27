@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            return (errors, result.ToArray());
+            return (errors, result.OrderBy(_ => _, StringComparer.Ordinal).ToArray());
         }
 
         public (List<Error>, string[]) Parse(SourceInfo<string?> rangeString)
