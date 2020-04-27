@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             _localizedStrings = LoadLocalizedStrings(templateDir);
         }
 
-        public string Render(string templateName, JObject model)
+        public string Render(string templateName, SourceInfo<string?> mimeType, JObject model)
         {
             var template = _templates.GetOrAdd(
                 templateName,
@@ -49,10 +49,9 @@ namespace Microsoft.Docs.Build
                     return LoadTemplate(Path.Combine(_templateDir, fileName));
                 })).Value;
 
-            // if liquid template not found, return the json
             if (template is null)
             {
-                return JsonUtility.Serialize(model);
+                throw Errors.System.LiquidNotFound(mimeType).ToException(isError: false);
             }
 
             var registers = new Hash

@@ -649,9 +649,12 @@ repos:
           sourceMap: a/sourceMap.json
         a/sourceMap.json: |
           {
-            "../a.yml": "original.xml",
-            "..\\b.md": "original.xml",
-            "..\\c.md": "original.xml",
+            "files": 
+            {
+              "../a.yml": "original.xml",
+              "..\\b.md": "original.xml",
+              "..\\c.md": "original.xml",
+            }
           }
         a/original.xml:
         a.yml:
@@ -665,4 +668,4 @@ outputs:
     }
   c.json:
   .errors.log: |
-    ["error","schema-not-found","Unknown schema ''","a/original.xml",1,1]
+    ["error","schema-not-found","Unknown schema ''","a/original.xml"]

@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                : throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
         }
 
-        public string RunLiquid(TemplateModel model)
+        public string RunLiquid(Document file, TemplateModel model)
         {
             var layout = model.RawMetadata?.Value<string>("layout") ?? "";
             var themeRelativePath = _templateDir;
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                 ["theme_rel"] = themeRelativePath,
             };
 
-            return _liquid.Render(layout, liquidModel);
+            return _liquid.Render(layout, file.Mime, liquidModel);
         }
 
         public string RunMustache(string templateName, JToken pageModel)
@@ -112,6 +112,12 @@ namespace Microsoft.Docs.Build
         public static bool IsLandingData(string? mime)
         {
             return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool IsMigratedFromMarkdown(string? mime)
+        {
+            var migratedMimeTypes = new string[] { "Hub", "Landing", nameof(LandingData) };
+            return mime != null && migratedMimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase);
         }
 
         public string? GetToken(string key)

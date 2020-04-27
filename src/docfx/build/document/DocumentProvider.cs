@@ -62,6 +62,17 @@ namespace Microsoft.Docs.Build
             return UrlUtility.Combine(_config.BasePath, outputPath);
         }
 
+        public string GetDocsSiteUrl(FilePath path)
+        {
+            var file = GetDocument(path);
+            if (_config.OutputUrlType == OutputUrlType.Docs)
+            {
+                return file.SiteUrl;
+            }
+            var sitePath = FilePathToSitePath(path, file.ContentType, OutputUrlType.Docs, file.IsPage);
+            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, OutputUrlType.Docs, file.IsPage);
+        }
+
         public (string documentId, string versionIndependentId) GetDocumentId(FilePath path)
         {
             var file = GetDocument(path);
@@ -84,8 +95,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // if source is redirection or landing page, change it to *.md
-            if (file.ContentType == ContentType.Redirection || TemplateEngine.IsLandingData(file.Mime))
+            // if source is redirection or migrated from markdown, change it to *.md
+            if (file.ContentType == ContentType.Redirection || TemplateEngine.IsMigratedFromMarkdown(file.Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
@@ -121,38 +132,37 @@ namespace Microsoft.Docs.Build
             var mime = _buildScope.GetMime(contentType, path);
             var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
-            var routedFilePath = ApplyRoutes(path.Path);
-            var sitePath = FilePathToSitePath(routedFilePath, path, contentType, isPage);
+            var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isPage);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isPage);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isPage);
 
             return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
         }
 
-        private string FilePathToSitePath(string path, FilePath filePath, ContentType contentType, bool isPage)
+        private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isPage)
         {
-            string sitePath = path;
+            var sitePath = ApplyRoutes(filePath.Path).Value;
             if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
             {
                 if (contentType == ContentType.Page && !isPage)
                 {
-                    sitePath = Path.ChangeExtension(path, ".json");
+                    sitePath = Path.ChangeExtension(sitePath, ".json");
                 }
                 else
                 {
-                    sitePath = _config.OutputUrlType switch
+                    sitePath = outputUrlType switch
                     {
-                        OutputUrlType.Docs => Path.ChangeExtension(path, ".json"),
-                        OutputUrlType.Pretty => Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison)
-                            ? Path.Combine(Path.GetDirectoryName(path) ?? "", "index.html")
-                            : Path.Combine(Path.GetDirectoryName(path) ?? "", Path.GetFileNameWithoutExtension(path).TrimEnd(' ', '.'), "index.html"),
-                        OutputUrlType.Ugly => Path.ChangeExtension(path, ".html"),
+                        OutputUrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
+                        OutputUrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
+                            ? Path.Combine(Path.GetDirectoryName(sitePath) ?? "", "index.html")
+                            : Path.Combine(Path.GetDirectoryName(sitePath) ?? "", Path.GetFileNameWithoutExtension(sitePath).TrimEnd(' ', '.'), "index.html"),
+                        OutputUrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
                         _ => throw new NotSupportedException(),
                     };
                 }
             }
 
-            if (_config.OutputUrlType != OutputUrlType.Docs)
+            if (outputUrlType != OutputUrlType.Docs)
             {
                 var (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
                 var group = MonikerUtility.GetGroup(monikers) ?? "";

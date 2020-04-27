@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Markdig.Syntax.Inlines;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -266,12 +267,14 @@ namespace Microsoft.Docs.Build
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
-                    var htmlWithLinks = HtmlUtility.TransformLinks(content, (href, _) =>
+                    var htmlWithLinks = HtmlUtility.TransformHtml(content, (ref HtmlToken token) =>
                     {
-                        var (htmlError, htmlLink, _) = context.LinkResolver.ResolveLink(
-                            new SourceInfo<string>(href, content), file, file);
-                        errors.AddIfNotNull(htmlError);
-                        return htmlLink;
+                        HtmlUtility.TransformLink(ref token, null, href =>
+                        {
+                            var (htmlError, htmlLink, _) = context.LinkResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
+                            errors.AddIfNotNull(htmlError);
+                            return htmlLink;
+                        });
                     });
 
                     return (errors, htmlWithLinks);
