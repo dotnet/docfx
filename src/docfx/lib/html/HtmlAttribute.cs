@@ -15,9 +15,11 @@ namespace Microsoft.Docs.Build
 
         public readonly ReadOnlyMemory<char> RawText { get; }
 
-        public readonly (int start, int end) Range { get; }
+        public readonly HtmlTextRange Range { get; }
 
-        public readonly (int start, int end) ValueRange { get; }
+        public readonly HtmlTextRange NameRange { get; }
+
+        public readonly HtmlTextRange ValueRange { get; }
 
         public bool NameIs(string name)
         {
@@ -31,6 +33,7 @@ namespace Microsoft.Docs.Build
             Value = value.AsMemory();
             RawText = default;
             Range = default;
+            NameRange = default;
             ValueRange = default;
         }
 
@@ -39,20 +42,22 @@ namespace Microsoft.Docs.Build
             ReadOnlyMemory<char> name,
             ReadOnlyMemory<char> value,
             ReadOnlyMemory<char> rawText,
-            (int start, int end) range,
-            (int start, int end) valueRange)
+            in HtmlTextRange range,
+            in HtmlTextRange nameRange,
+            in HtmlTextRange valueRange)
         {
             Type = type;
             Name = name;
             Value = value;
             RawText = rawText;
             Range = range;
+            NameRange = nameRange;
             ValueRange = valueRange;
         }
 
         public HtmlAttribute WithValue(string value)
         {
-            return new HtmlAttribute(Type, Name, value.AsMemory(), default, Range, ValueRange);
+            return new HtmlAttribute(Type, Name, value.AsMemory(), default, Range, NameRange, ValueRange);
         }
     }
 }

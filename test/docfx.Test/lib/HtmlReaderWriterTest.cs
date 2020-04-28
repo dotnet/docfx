@@ -152,6 +152,24 @@ namespace Microsoft.Docs.Build
             Assert.Equal(expected, string.Join(", ", actual));
         }
 
+        [Theory]
+        [InlineData("a", "(0,0)-(0,1)")]
+        [InlineData("<a>", "(0,0)-(0,3)")]
+        [InlineData("\n<a>", "(1,0)-(1,3)")]
+        [InlineData("\n  \t  <asdf>", "(1,5)-(1,11)")]
+        [InlineData("\n  \t  <asdf \n\n\n\n >", "(1,5)-(5,2)")]
+        public void ReadHtmlTextRange(string html, string range)
+        {
+            var reader = new HtmlReader(html);
+            while (reader.Read(out var token))
+            {
+                if (token.Type == HtmlTokenType.StartTag)
+                {
+                    Assert.Equal(range, token.Range.ToString());
+                }
+            }
+        }
+
         [Fact]
         public void WriteStartTag()
         {

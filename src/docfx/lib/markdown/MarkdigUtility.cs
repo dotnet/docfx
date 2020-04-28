@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null, int columnOffset = 0)
+        public static SourceInfo? ToSourceInfo(this MarkdownObject? obj, int? line = null, FilePath? file = null)
         {
             var path = file ?? (InclusionContext.File as Document)?.FilePath;
             if (path is null)
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             // Line info in markdown object is zero based, turn it into one based.
             if (obj != null)
             {
-                return new SourceInfo(path, obj.Line + 1, obj.Column + columnOffset + 1);
+                return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
             }
 
             if (line != null)
@@ -33,6 +33,30 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
+
+        public static SourceInfo? ToSourceInfo(this MarkdownObject? obj, in HtmlTextRange html)
+        {
+            if (obj is null)
+            {
+                return default;
+            }
+
+            var path = (InclusionContext.File as Document)?.FilePath;
+            if (path is null)
+            {
+                return default;
+            }
+
+            var start = OffSet(obj.Line, obj.Column, html.Start.Line, html.Start.Column);
+            var end = OffSet(obj.Line, obj.Column, html.End.Line, html.End.Column);
+
+            return new SourceInfo(path, start.line + 1, start.column + 1, end.line + 1, end.column + 1);
+
+            static (int line, int column) OffSet(int line1, int column1, int line2, int column2)
+            {
+                return line2 == 0 ? (line1, column1 + column2) : (line1 + line2, column2);
+            }
         }
 
         /// <summary>
