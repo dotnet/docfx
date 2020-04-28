@@ -75,32 +75,32 @@ Copy-Item -Path "src/nuspec/docfx.console/build" -Destination $docfxTarget -Forc
 Copy-Item -Path "src/nuspec/docfx.console/content" -Destination $docfxTarget -Force -Recurse
 
 $packages = @{
-    "docfx"                     = @{
-        "proj"    = $null;
+    "docfx" = @{
+        "proj" = $null;
         "nuspecs" = @("src/nuspec/docfx.console/docfx.console.nuspec");
     };
-    "MergeDeveloperComments"    = @{
-        "proj"    = $null;
+    "MergeDeveloperComments" = @{
+        "proj" = $null;
         "nuspecs" = @("src/nuspec/MergeDeveloperComments/MergeDeveloperComments.nuspec");
     };
-    "MergeSourceInfo"           = @{
-        "proj"    = $null;
+    "MergeSourceInfo" = @{
+        "proj" = $null;
         "nuspecs" = @("src/nuspec/MergeSourceInfo/MergeSourceInfo.nuspec");
     };
-    "TocConverter"              = @{
-        "proj"    = $null;
+    "TocConverter" = @{
+        "proj" = $null;
         "nuspecs" = @("src/nuspec/TocConverter/TocConverter.nuspec");
     };
-    "MarkdownMigrateTool"       = @{
-        "proj"    = $null;
+    "MarkdownMigrateTool" = @{
+        "proj" = $null;
         "nuspecs" = @("src/nuspec/MarkdownMigrateTool/MarkdownMigrateTool.nuspec");
     };
-    "YamlSplitter"              = @{
-        "proj"    = $null;
+    "YamlSplitter" = @{
+        "proj" = $null;
         "nuspecs" = @("src/nuspec/YamlSplitter/YamlSplitter.nuspec");
     };
-	"SandcastleRefMapper"       = @{
-		"proj"    = $null;
+    "SandcastleRefMapper" = @{
+		"proj" = $null;
 		"nuspecs" = @("src/nuspec/SandcastleRefMapper/SandcastleRefMapper.nuspec")
 	};
 }
