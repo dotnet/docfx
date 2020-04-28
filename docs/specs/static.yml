@@ -89,8 +89,17 @@ inputs:
     }
   _themes/Conceptual.html.liquid: |
   a.md:
+  index.md:
 outputs:
   a.html:
+  index.html:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/a.html" },
+        { "url": "/index.html"}
+      ]
+    }
 ---
 # Always ues Docs URL to check redirection rule with document_id as true
 inputs:
@@ -182,7 +191,6 @@ outputs:
       "items": [{"name": "A","href": "../136a42ac/a.html"}],
       "_path": "1dd7adba/toc.html"
     }
-  1dd7adba/toc.mta.json:
   136a42ac/a.html: |
     <!DOCTYPE html>
     <div><p><a href="../218c13d0/b.html" data-linktype="relative-path">B</a></p></div>

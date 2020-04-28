@@ -187,11 +187,13 @@ namespace Microsoft.Docs.Build
 
             if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isPage))
             {
-                var fileName = Path.GetFileNameWithoutExtension(path);
-                if (fileName.Equals("index", PathUtility.PathComparison))
+                if (outputUrlType != OutputUrlType.Ugly)
                 {
-                    var i = url.LastIndexOf('/');
-                    return i >= 0 ? url.Substring(0, i + 1) : "./";
+                    if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
+                    {
+                        var i = url.LastIndexOf('/');
+                        return i >= 0 ? url.Substring(0, i + 1) : "./";
+                    }
                 }
                 if (outputUrlType == OutputUrlType.Docs && contentType != ContentType.TableOfContents)
                 {
