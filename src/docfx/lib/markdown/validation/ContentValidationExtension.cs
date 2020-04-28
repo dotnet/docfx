@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                                 headings.Add(new Heading
                                 {
                                     Level = headingBlock.Level,
-                                    SourceInfo = new SourceInfo(((Document)InclusionContext.File).FilePath, 0, 0),
+                                    SourceInfo = headingBlock.ToSourceInfo(),
                                     Content = GetHeadingContent(headingBlock),
 
                                     // HeadingChar = headingBlock.HeadingChar
@@ -79,6 +79,11 @@ namespace Microsoft.Docs.Build
                     if (child is LiteralInline childLiteralInline)
                     {
                         content.Append(childLiteralInline.Content.Text, childLiteralInline.Content.Start, childLiteralInline.Content.Length);
+                    }
+
+                    if (child is HtmlInline childHtmlInline)
+                    {
+                        content.Append(childHtmlInline.Tag);
                     }
 
                     if (child is ContainerInline childContainerInline)
