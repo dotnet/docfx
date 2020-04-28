@@ -15,9 +15,9 @@ namespace Microsoft.Docs.Build
 
         public readonly ReadOnlyMemory<char> RawText { get; }
 
-        public readonly (int start, int length) Range { get; }
+        public readonly (int start, int end) Range { get; }
 
-        public readonly (int start, int length) ValueRange { get; }
+        public readonly (int start, int end) ValueRange { get; }
 
         public bool NameIs(string name)
         {
@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
             ReadOnlyMemory<char> name,
             ReadOnlyMemory<char> value,
             ReadOnlyMemory<char> rawText,
-            (int start, int length) range,
-            (int start, int length) valueRange)
+            (int start, int end) range,
+            (int start, int end) valueRange)
         {
             Type = type;
             Name = name;
