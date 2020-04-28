@@ -18,38 +18,30 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseContentValidation(
             this MarkdownPipelineBuilder builder, OnlineServiceMarkdownValidatorProvider? validatorProvider, ContentValidator contentValidator)
         {
-            if (validatorProvider == null && contentValidator == null)
-            {
-                return builder;
-            }
-
             var validators = validatorProvider?.GetValidators();
             return builder.Use(document =>
             {
                 if (((Document)InclusionContext.File).FilePath.Format == FileFormat.Markdown)
                 {
-                    if (contentValidator != null)
+                    var headings = new List<Heading>();
+                    document.Visit(node =>
                     {
-                        var headings = new List<Heading>();
-                        document.Visit(node =>
+                        if (node is HeadingBlock headingBlock)
                         {
-                            if (node is HeadingBlock headingBlock)
+                            headings.Add(new Heading
                             {
-                                headings.Add(new Heading
-                                {
-                                    Level = headingBlock.Level,
-                                    SourceInfo = headingBlock.ToSourceInfo(),
-                                    Content = GetHeadingContent(headingBlock),
+                                Level = headingBlock.Level,
+                                SourceInfo = headingBlock.ToSourceInfo(),
+                                Content = GetHeadingContent(headingBlock),
 
-                                    // HeadingChar = headingBlock.HeadingChar
-                                });
-                            }
+                                // HeadingChar = headingBlock.HeadingChar
+                            });
+                        }
 
-                            return false;
-                        });
+                        return false;
+                    });
 
-                        contentValidator.ValidateHeadings((Document)InclusionContext.File, headings, InclusionContext.IsInclude);
-                    }
+                    contentValidator.ValidateHeadings((Document)InclusionContext.File, headings, InclusionContext.IsInclude);
 
                     if (validators != null)
                     {
