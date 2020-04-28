@@ -481,8 +481,7 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case '=':
-                        Consume();
-                        AttributeName(-1);
+                        AttributeName(consumeOnce: true);
                         return;
 
                     default:
@@ -492,11 +491,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void AttributeName(int offset = 0)
+        private void AttributeName(bool consumeOnce = false)
         {
             _attributeType = HtmlAttributeType.NameOnly;
-            _attributeNameStart = _attributeNameEnd = _attributeStart = _attributeEnd = _position + offset;
+            _attributeNameStart = _attributeNameEnd = _attributeStart = _attributeEnd = _position;
             _attributeValueStart = _attributeValueEnd = default;
+
+            if (consumeOnce)
+            {
+                Consume();
+            }
 
             while (true)
             {
@@ -721,7 +725,10 @@ namespace Microsoft.Docs.Build
 
         private void Consume()
         {
-            _position++;
+            if (_position < _length)
+            {
+                _position++;
+            }
         }
 
         private char Current()
