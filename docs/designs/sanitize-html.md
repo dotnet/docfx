@@ -51,17 +51,17 @@ Use an _allow list_ to sanitize HTML tags and attributes. HTML tags can contain 
 - Standard HTML5 global attributes:
 
   ```html
-  id, itemid, itemprop, itemref, itemscope, itemtype,
+  name, id, itemid, itemprop, itemref, itemscope, itemtype,
   part, slot, spellcheck, title
   ```
 
 Each allowed HTML tag can have additional attributes as follows:
 
+> NOTE: This list may be adjustmented based on docs usage collected from telemetry
 
 ```html
 <!-- Content sectioning -->
 <address>: 
-<h1>-<h6>: 
 <section>:
 
 <!-- Text content -->
@@ -80,7 +80,7 @@ Each allowed HTML tag can have additional attributes as follows:
 <ul>:
 
 <!-- Inline text semantics -->
-<a>: download, href, hreflang, ping, rel, target, type
+<a>: href
 <abbr>:
 <b>:
 <bdi>:
@@ -88,7 +88,6 @@ Each allowed HTML tag can have additional attributes as follows:
 <br>:
 <cite>:
 <code>:
-<data>: value
 <dfn>:
 <em>:
 <i>:
@@ -106,7 +105,7 @@ Each allowed HTML tag can have additional attributes as follows:
 <var>:
 
 <!-- Image and multimedia -->
-<img>: alt, decoding, height, intrinsicsize, loading, sizes, src, width
+<img>: alt, height, src, width
 
 <!-- Demarcating edits -->
 <del>: cite, datetime
@@ -118,14 +117,14 @@ Each allowed HTML tag can have additional attributes as follows:
 <colgroup>:
 <table>:
 <tbody>:
-<td>: colspan, headers, rowspan
+<td>: colspan, rowspan
 <tfoot>:
-<th>: abbr, colspan, headers, rowspan, scope
+<th>: colspan, rowspan, scope
 <thead>:
 <tr>:
 
 <pre>:
-<iframe>: allow, allowfullscreen, allowpaymentrequest, height, name, referrerpolicy, sandbox, src, srcdoc, width
+<iframe>: allowfullscreen, height, src, width
 ```
 
 > The above table is based on https://developer.mozilla.org/en-US/docs/Web/HTML/Element. It
