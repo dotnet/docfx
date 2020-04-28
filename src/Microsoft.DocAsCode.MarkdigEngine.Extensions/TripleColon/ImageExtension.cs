@@ -128,6 +128,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if(!string.IsNullOrEmpty(currentLink))
                 {
                     var linkHtmlAttributes = new HtmlAttributes();
+                    currentLink = _context.GetLink(currentLink, InclusionContext.File, InclusionContext.RootFile, obj);
                     linkHtmlAttributes.AddProperty("href", $"{currentLink}");
                     renderer.Write("<a").WriteAttributes(linkHtmlAttributes).WriteLine(">");
                 } else if (!string.IsNullOrEmpty(currentLightbox))
