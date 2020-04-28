@@ -19,15 +19,22 @@ namespace Microsoft.Docs.Build
 
         private HtmlTokenType _type;
         private bool _isSelfClosing;
-        private (int start, int length) _range;
-        private (int start, int length) _nameRange;
 
-        private HtmlAttributeType _attributeType;
-        private (int start, int length) _attributeNameRange;
-        private (int start, int length) _attributeValueRange;
-        private (int start, int length) _attributeRange;
-        private HtmlAttribute[]? _attributes;
+        private int _tokenStart;
+        private int _tokenEnd;
+        private int _nameStart;
+        private int _nameEnd;
+
         private int _attributesLength;
+        private HtmlAttribute[]? _attributes;
+        private HtmlAttributeType _attributeType;
+
+        private int _attributeNameStart;
+        private int _attributeNameEnd;
+        private int _attributeValueStart;
+        private int _attributeValueEnd;
+        private int _attributeStart;
+        private int _attributeEnd;
 
         public HtmlReader(string html)
             : this()
@@ -40,9 +47,8 @@ namespace Microsoft.Docs.Build
         {
             // Simplified pasing algorithm based on https://html.spec.whatwg.org/multipage/parsing.html
             _attributesLength = 0;
-            _range.start = _position;
-            _range.length = 0;
-            _nameRange = default;
+            _tokenStart = _tokenEnd = _position;
+            _nameStart = _nameEnd = default;
             _isSelfClosing = false;
 
             if (_position >= _length)
@@ -69,15 +75,15 @@ namespace Microsoft.Docs.Build
                     break;
             }
 
-            _range.length = _position - _range.start;
+            _tokenEnd = _position;
 
             token = new HtmlToken(
                 _type,
                 _isSelfClosing,
-                _html.AsMemory(_nameRange.start, _nameRange.length),
-                _html.AsMemory(_range.start, _range.length),
+                _html.AsMemory(_nameStart, _nameEnd - _nameStart),
+                _html.AsMemory(_tokenStart, _tokenEnd - _tokenStart),
                 _attributes.AsMemory(0, _attributesLength),
-                _range);
+                (_tokenStart, _tokenEnd));
 
             return true;
         }
@@ -317,7 +323,7 @@ namespace Microsoft.Docs.Build
             switch (Consume())
             {
                 case '>':
-                    _nameRange.length = 0;
+                    _nameEnd = _nameStart;
                     break;
 
                 case '\0':
@@ -337,7 +343,7 @@ namespace Microsoft.Docs.Build
 
         private void TagName(bool readAttributes)
         {
-            _nameRange.start = _position;
+            _nameStart = _nameEnd = _position;
 
             while (true)
             {
@@ -348,16 +354,16 @@ namespace Microsoft.Docs.Build
                         return;
 
                     case '>':
-                        if (_nameRange.length == 0)
+                        if (_nameEnd == _nameStart)
                         {
-                            _nameRange.length = _position - 1 - _nameRange.start;
+                            _nameEnd = _position - 1;
                         }
                         return;
 
                     case '/':
-                        if (_nameRange.length == 0)
+                        if (_nameEnd == _nameStart)
                         {
-                            _nameRange.length = _position - 1 - _nameRange.start;
+                            _nameEnd = _position - 1;
                         }
                         SelfClosingStartTag();
                         return;
@@ -367,9 +373,9 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
-                        if (_nameRange.length == 0)
+                        if (_nameEnd == _nameStart)
                         {
-                            _nameRange.length = _position - 1 - _nameRange.start;
+                            _nameEnd = _position - 1;
                         }
                         if (readAttributes)
                         {
@@ -435,9 +441,8 @@ namespace Microsoft.Docs.Build
         private void AttributeName(int offset = 0)
         {
             _attributeType = HtmlAttributeType.NameOnly;
-            _attributeNameRange.length = _attributeRange.length = 0;
-            _attributeNameRange.start = _attributeRange.start = _position + offset;
-            _attributeValueRange = default;
+            _attributeNameStart = _attributeNameEnd = _attributeStart = _attributeEnd = _position + offset;
+            _attributeValueStart = _attributeValueEnd = default;
 
             while (true)
             {
@@ -452,12 +457,12 @@ namespace Microsoft.Docs.Build
                     case '>':
                     case '\0':
                         Back();
-                        _attributeNameRange.length = _position - _attributeNameRange.start;
+                        _attributeNameEnd = _position;
                         AfterAttributeName();
                         return;
 
                     case '=':
-                        _attributeNameRange.length = _position - 1 - _attributeNameRange.start;
+                        _attributeNameEnd = _position - 1;
                         BeforeAttributeValue();
                         return;
                 }
@@ -475,17 +480,17 @@ namespace Microsoft.Docs.Build
                         return;
 
                     case '>':
-                        if (_attributeRange.length == 0)
+                        if (_attributeEnd == _attributeStart)
                         {
-                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                            _attributeEnd = _position - 1;
                         }
                         AddAttribute();
                         return;
 
                     case '/':
-                        if (_attributeRange.length == 0)
+                        if (_attributeEnd == _attributeStart)
                         {
-                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                            _attributeEnd = _position - 1;
                         }
                         AddAttribute();
                         SelfClosingStartTag();
@@ -500,9 +505,9 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
-                        if (_attributeRange.length == 0)
+                        if (_attributeEnd == _attributeStart)
                         {
-                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                            _attributeEnd = _position - 1;
                         }
                         break;
 
@@ -539,8 +544,8 @@ namespace Microsoft.Docs.Build
                         return;
 
                     case '>':
-                        _attributeValueRange.length = 0;
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        _attributeValueEnd = _attributeValueStart;
+                        _attributeEnd = _position - 1;
                         AddAttribute();
                         return;
 
@@ -555,7 +560,7 @@ namespace Microsoft.Docs.Build
 
         private void AttributeValue(char quote)
         {
-            _attributeValueRange.start = _position;
+            _attributeValueStart = _position;
 
             while (true)
             {
@@ -566,8 +571,8 @@ namespace Microsoft.Docs.Build
                         return;
 
                     case char c when c == quote:
-                        _attributeValueRange.length = _position - 1 - _attributeValueRange.start;
-                        _attributeRange.length = _position - _attributeRange.start;
+                        _attributeValueEnd = _position - 1;
+                        _attributeEnd = _position;
                         AddAttribute();
                         BeforeAttributeName();
                         return;
@@ -577,15 +582,15 @@ namespace Microsoft.Docs.Build
 
         private void AttributeValueUnquoted()
         {
-            _attributeValueRange.start = _position;
+            _attributeValueStart = _position;
 
             while (true)
             {
                 switch (Consume())
                 {
                     case '>':
-                        _attributeValueRange.length = _position - 1 - _attributeValueRange.start;
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        _attributeValueEnd = _position - 1;
+                        _attributeEnd = _position - 1;
                         AddAttribute();
                         return;
 
@@ -598,8 +603,8 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
-                        _attributeValueRange.length = _position - 1 - _attributeValueRange.start;
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        _attributeValueEnd = _position - 1;
+                        _attributeEnd = _position - 1;
                         AddAttribute();
                         BeforeAttributeName();
                         return;
@@ -609,7 +614,7 @@ namespace Microsoft.Docs.Build
 
         private void AddAttribute()
         {
-            if (_attributeNameRange.length <= 0)
+            if (_attributeNameEnd == _attributeNameStart)
             {
                 return;
             }
@@ -627,13 +632,13 @@ namespace Microsoft.Docs.Build
 
             _attributes[_attributesLength++] = new HtmlAttribute(
                 _attributeType,
-                _html.AsMemory(_attributeNameRange.start, _attributeNameRange.length),
-                _html.AsMemory(_attributeValueRange.start, _attributeValueRange.length),
-                _html.AsMemory(_attributeRange.start, _attributeRange.length),
-                _attributeRange,
-                _attributeValueRange);
+                _html.AsMemory(_attributeNameStart, _attributeNameEnd - _attributeNameStart),
+                _html.AsMemory(_attributeValueStart, _attributeValueEnd - _attributeValueStart),
+                _html.AsMemory(_attributeStart, _attributeEnd - _attributeStart),
+                (_attributeStart, _attributeEnd),
+                (_attributeValueStart, _attributeValueEnd));
 
-            _attributeNameRange = default;
+            _attributeNameStart = _attributeNameEnd = default;
         }
 
         private char Consume()

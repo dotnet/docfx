@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public Memory<HtmlAttribute> Attributes { get; }
 
-        public (int start, int length) Range { get; }
+        public (int start, int end) Range { get; }
 
         public bool NameIs(string name)
         {
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             ReadOnlyMemory<char> name,
             ReadOnlyMemory<char> rawText,
             Memory<HtmlAttribute> attributes,
-            (int start, int length) range)
+            (int start, int end) range)
         {
             Type = type;
             IsSelfClosing = isSelfClosing;
