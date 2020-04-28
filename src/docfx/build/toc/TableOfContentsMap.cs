@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
                 var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
                 var newNodeFile = FilePath.Generated(newNodeFilePath);
 
-                _input.AddGeneratedContent(newNodeFile, newNodeToken);
+                _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken });
                 result.Add(newNodeFile);
 
                 var newChild = new TableOfContentsNode(child)
