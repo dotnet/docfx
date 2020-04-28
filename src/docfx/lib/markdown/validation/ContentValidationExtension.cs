@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                             return false;
                         });
 
-                        contentValidator.ValidateHeadings((Document)InclusionContext.File, headings);
+                        contentValidator.ValidateHeadings((Document)InclusionContext.File, headings, InclusionContext.IsInclude);
                     }
 
                     if (validators != null)
