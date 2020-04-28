@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -14,11 +15,16 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseHtml(
             this MarkdownPipelineBuilder builder,
+            Func<List<Error>> getErrors,
             Func<SourceInfo<string>, string> getLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {
+                var errors = getErrors();
+                var file = InclusionContext.File as Document;
+                var scanTags = file != null && file.ContentType == ContentType.Page && TemplateEngine.IsConceptual(file.Mime);
+
                 document.Visit(node =>
                 {
                     switch (node)
@@ -26,10 +32,10 @@ namespace Microsoft.Docs.Build
                         case TabTitleBlock _:
                             return true;
                         case HtmlBlock block:
-                            block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block));
+                            block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block, errors, scanTags));
                             return false;
                         case HtmlInline inline:
-                            inline.Tag = ProcessHtml(inline.Tag, inline);
+                            inline.Tag = ProcessHtml(inline.Tag, inline, errors, scanTags);
                             return false;
                         default:
                             return false;
@@ -37,7 +43,7 @@ namespace Microsoft.Docs.Build
                 });
             });
 
-            string ProcessHtml(string html, MarkdownObject block)
+            string ProcessHtml(string html, MarkdownObject block, List<Error> errors, bool scanTags)
             {
                 // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
                 // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.
@@ -47,6 +53,11 @@ namespace Microsoft.Docs.Build
                     HtmlUtility.TransformLink(ref token, block, getLink);
                     HtmlUtility.TransformXref(ref token, block, resolveXref);
                     HtmlUtility.RemoveRerunCodepenIframes(ref token);
+
+                    if (scanTags)
+                    {
+                        HtmlUtility.ScanTags(ref token, block, errors);
+                    }
                 });
             }
         }

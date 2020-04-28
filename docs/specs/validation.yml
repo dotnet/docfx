@@ -714,7 +714,7 @@ outputs:
     ["suggestion","path-duplication","Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.", "v2/duplicatedword/folder1/DuplicatedWord.md"]
     ["suggestion","path-duplication","Article URL '/docs/folder/duplicated-base-path/docs/a' contains duplicated text 'docs'. For SEO, article URLs should not contain duplication.", "folder0/duplicated-base-path/docs/a.md"]
 ---
-# Validate embed html
+# Validate user html
 inputs:
   docfx.yml:
   a.md: |
@@ -726,7 +726,8 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["info","disallowed-html","HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
-    ["info","disallowed-html","HTML attribute 'height' on tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
-    ["info","disallowed-html","HTML tag 'button' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
+    ["info","disallowed-html","HTML tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",1,2]
+    ["info","disallowed-html","HTML tag 'BUTTON' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",2,2]
+    ["info","disallowed-html","HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",4,2]
+    ["info","disallowed-html","HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",5,6]
 ---

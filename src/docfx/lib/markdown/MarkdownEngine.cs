@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
-                .UseHtml(GetLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
                 .UseContentValidation(_validatorProvider)
                 .Build();
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
-                .UseHtml(GetLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
                 .UseContentValidation(_validatorProvider)
                 .UseInlineOnly()
@@ -172,6 +172,11 @@ namespace Microsoft.Docs.Build
         private static void LogSuggestion(string code, string message, MarkdownObject origin, int? line)
         {
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
+        }
+
+        private static List<Error> GetErrors()
+        {
+            return t_status.Value!.Peek().Errors;
         }
 
         private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
