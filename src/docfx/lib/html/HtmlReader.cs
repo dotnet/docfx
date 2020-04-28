@@ -62,13 +62,15 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            switch (Consume())
+            switch (Current())
             {
                 case '<':
+                    Consume();
                     TagOpen();
                     break;
 
                 default:
+                    Consume();
                     Data();
                     break;
             }
@@ -92,16 +94,17 @@ namespace Microsoft.Docs.Build
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
+                        Consume();
                         return;
 
                     case '<':
-                        Back();
                         return;
 
                     default:
+                        Consume();
                         break;
                 }
             }
@@ -111,24 +114,23 @@ namespace Microsoft.Docs.Build
         {
             _type = HtmlTokenType.StartTag;
 
-            switch (Consume())
+            switch (Current())
             {
                 case '!':
+                    Consume();
                     MarkdownDeclarationOpen();
                     break;
 
                 case '?':
-                    Back();
                     BogusComment();
                     break;
 
                 case '/':
-                    _type = HtmlTokenType.EndTag;
+                    Consume();
                     EndTagOpen();
                     break;
 
                 case char c when IsASCIIAlpha(c):
-                    Back();
                     TagName(readAttributes: true);
                     break;
 
@@ -140,14 +142,16 @@ namespace Microsoft.Docs.Build
 
         private void MarkdownDeclarationOpen()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-' when Peek() == '-':
+                    Consume();
                     Consume();
                     CommentStart();
                     break;
 
                 default:
+                    Consume();
                     BogusComment();
                     break;
             }
@@ -156,17 +160,18 @@ namespace Microsoft.Docs.Build
         private void CommentStart()
         {
             _type = HtmlTokenType.Comment;
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentStartDash();
                     break;
 
                 case '>':
+                    Consume();
                     break;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -174,18 +179,19 @@ namespace Microsoft.Docs.Build
 
         private void CommentStartDash()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentEnd();
                     break;
 
                 case '\0':
                 case '>':
+                    Consume();
                     break;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -195,18 +201,25 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '<':
+                        Consume();
                         CommentLessThanSign();
                         return;
 
                     case '-':
+                        Consume();
                         CommendEndDash();
                         return;
 
                     case '\0':
+                        Consume();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
@@ -215,17 +228,18 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '!':
+                        Consume();
                         CommentLessThanSignBang();
                         return;
 
                     case '<':
+                        Consume();
                         break;
 
                     default:
-                        Back();
                         Comment();
                         return;
                 }
@@ -234,14 +248,14 @@ namespace Microsoft.Docs.Build
 
         private void CommentLessThanSignBang()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentLessThanSignBangDash();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     return;
             }
@@ -249,15 +263,13 @@ namespace Microsoft.Docs.Build
 
         private void CommentLessThanSignBangDash()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
-                    Back();
                     CommentEnd();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     return;
             }
@@ -265,17 +277,18 @@ namespace Microsoft.Docs.Build
 
         private void CommendEndDash()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentEnd();
                     return;
 
                 case '\0':
+                    Consume();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -285,21 +298,23 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                     case '>':
+                        Consume();
                         return;
 
                     case '!':
+                        Consume();
                         CommentEndBang();
                         return;
 
                     case '-':
+                        Consume();
                         break;
 
                     default:
-                        Back();
                         Comment();
                         return;
                 }
@@ -308,18 +323,19 @@ namespace Microsoft.Docs.Build
 
         private void CommentEndBang()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentEnd();
                     return;
 
                 case '>':
                 case '\0':
+                    Consume();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -330,32 +346,41 @@ namespace Microsoft.Docs.Build
             _type = HtmlTokenType.Comment;
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '>':
+                        Consume();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
 
         private void EndTagOpen()
         {
-            switch (Consume())
+            _type = HtmlTokenType.EndTag;
+
+            switch (Current())
             {
                 case '>':
+                    Consume();
                     _nameEnd = _nameStart;
                     break;
 
                 case '\0':
+                    Consume();
                     _type = HtmlTokenType.Text;
                     break;
 
                 case char c when IsASCIIAlpha(c):
-                    Back();
                     TagName(readAttributes: false);
                     break;
 
                 default:
+                    Consume();
                     BogusComment();
                     break;
             }
@@ -367,24 +392,27 @@ namespace Microsoft.Docs.Build
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case '>':
                         if (_nameEnd == _nameStart)
                         {
-                            _nameEnd = _position - 1;
+                            _nameEnd = _position;
                         }
+                        Consume();
                         return;
 
                     case '/':
                         if (_nameEnd == _nameStart)
                         {
-                            _nameEnd = _position - 1;
+                            _nameEnd = _position;
                         }
+                        Consume();
                         SelfClosingStartTag();
                         return;
 
@@ -395,13 +423,18 @@ namespace Microsoft.Docs.Build
                     case ' ':
                         if (_nameEnd == _nameStart)
                         {
-                            _nameEnd = _position - 1;
+                            _nameEnd = _position;
                         }
+                        Consume();
                         if (readAttributes)
                         {
                             BeforeAttributeName();
                             return;
                         }
+                        break;
+
+                    default:
+                        Consume();
                         break;
                 }
             }
@@ -409,18 +442,19 @@ namespace Microsoft.Docs.Build
 
         private void SelfClosingStartTag()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '>':
                     _isSelfClosing = true;
+                    Consume();
                     break;
 
                 case '\0':
                     _type = HtmlTokenType.Comment;
+                    Consume();
                     break;
 
                 default:
-                    Back();
                     BeforeAttributeName();
                     break;
             }
@@ -430,12 +464,11 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                     case '/':
                     case '>':
-                        Back();
                         AfterAttributeName();
                         return;
 
@@ -444,14 +477,15 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
+                        Consume();
                         break;
 
                     case '=':
+                        Consume();
                         AttributeName(-1);
                         return;
 
                     default:
-                        Back();
                         AttributeName();
                         return;
                 }
@@ -466,7 +500,7 @@ namespace Microsoft.Docs.Build
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\t':
                     case '\r':
@@ -476,15 +510,19 @@ namespace Microsoft.Docs.Build
                     case '/':
                     case '>':
                     case '\0':
-                        Back();
                         _attributeNameEnd = _position;
                         AfterAttributeName();
                         return;
 
                     case '=':
-                        _attributeNameEnd = _position - 1;
+                        _attributeNameEnd = _position;
+                        Consume();
                         BeforeAttributeValue();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
@@ -493,30 +531,34 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case '>':
                         if (_attributeEnd == _attributeStart)
                         {
-                            _attributeEnd = _position - 1;
+                            _attributeEnd = _position;
                         }
+                        Consume();
                         AddAttribute();
                         return;
 
                     case '/':
                         if (_attributeEnd == _attributeStart)
                         {
-                            _attributeEnd = _position - 1;
+                            _attributeEnd = _position;
                         }
+                        Consume();
                         AddAttribute();
                         SelfClosingStartTag();
                         return;
 
                     case '=':
+                        Consume();
                         BeforeAttributeValue();
                         return;
 
@@ -527,13 +569,13 @@ namespace Microsoft.Docs.Build
                     case ' ':
                         if (_attributeEnd == _attributeStart)
                         {
-                            _attributeEnd = _position - 1;
+                            _attributeEnd = _position;
                         }
+                        Consume();
                         break;
 
                     default:
                         AddAttribute();
-                        Back();
                         AttributeName();
                         return;
                 }
@@ -544,34 +586,37 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\t':
                     case '\r':
                     case '\n':
                     case '\f':
                     case ' ':
+                        Consume();
                         break;
 
                     case '\'':
                         _attributeType = HtmlAttributeType.SingleQuoted;
+                        Consume();
                         AttributeValue('\'');
                         return;
 
                     case '"':
                         _attributeType = HtmlAttributeType.DoubleQuoted;
+                        Consume();
                         AttributeValue('"');
                         return;
 
                     case '>':
                         _attributeValueEnd = _attributeValueStart;
-                        _attributeEnd = _position - 1;
+                        _attributeEnd = _position;
+                        Consume();
                         AddAttribute();
                         return;
 
                     default:
                         _attributeType = HtmlAttributeType.Unquoted;
-                        Back();
                         AttributeValueUnquoted();
                         return;
                 }
@@ -584,18 +629,24 @@ namespace Microsoft.Docs.Build
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case char c when c == quote:
-                        _attributeValueEnd = _position - 1;
+                        _attributeValueEnd = _position;
+                        Consume();
                         _attributeEnd = _position;
                         AddAttribute();
                         BeforeAttributeName();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
@@ -606,16 +657,18 @@ namespace Microsoft.Docs.Build
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '>':
-                        _attributeValueEnd = _position - 1;
-                        _attributeEnd = _position - 1;
+                        _attributeValueEnd = _position;
+                        _attributeEnd = _position;
+                        Consume();
                         AddAttribute();
                         return;
 
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case '\t':
@@ -623,11 +676,16 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
-                        _attributeValueEnd = _position - 1;
-                        _attributeEnd = _position - 1;
+                        _attributeValueEnd = _position;
+                        _attributeEnd = _position;
+                        Consume();
                         AddAttribute();
                         BeforeAttributeName();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
@@ -661,19 +719,19 @@ namespace Microsoft.Docs.Build
             _attributeNameStart = _attributeNameEnd = default;
         }
 
-        private char Consume()
+        private void Consume()
         {
-            return _position < _length ? _html[_position++] : '\0';
+            _position++;
         }
 
-        private char Peek()
+        private char Current()
         {
             return _position < _length ? _html[_position] : '\0';
         }
 
-        private void Back()
+        private char Peek()
         {
-            _position--;
+            return _position + 1 < _length ? _html[_position + 1] : '\0';
         }
 
         private static bool IsASCIIAlpha(char c)
