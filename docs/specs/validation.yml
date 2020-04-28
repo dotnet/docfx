@@ -717,4 +717,20 @@ outputs:
     ["suggestion","path-duplication","Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.", "v1/duplicatedword/folder1/DuplicatedWord.md"]
     ["suggestion","path-duplication","Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.", "v2/duplicatedword/folder1/DuplicatedWord.md"]
     ["suggestion","path-duplication","Article URL '/docs/folder/duplicated-base-path/docs/a' contains duplicated text 'docs'. For SEO, article URLs should not contain duplication.", "folder0/duplicated-base-path/docs/a.md"]
-
+---
+# Validate embed html
+inputs:
+  docfx.yml:
+  a.md: |
+    <H2 id="head" TITLE="HEAD"></H2>
+    <BUTTON>click</BUTTON>
+    <img height="docs"></img>
+    <h1 height="docs"></h1>
+    <div onclick="alert();" data-source="docs"></div>
+outputs:
+  a.json:
+  .errors.log: |
+    ["info","disallowed-html","HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
+    ["info","disallowed-html","HTML attribute 'height' on tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
+    ["info","disallowed-html","HTML tag 'button' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
+---

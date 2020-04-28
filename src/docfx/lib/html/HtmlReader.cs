@@ -7,132 +7,154 @@ using System.Buffers;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// Provides a high-performance, near-zero-allocation, fault-tolerant, standard-compliant API
+    /// Provides a high-performance, fault-tolerant, standard-compliant API
     /// for forward-only, read-only access to HTML text.
     /// </summary>
     internal ref struct HtmlReader
     {
-        private string _html;
-        private int _length;
+        private readonly string _html;
+        private readonly int _length;
+
         private int _position;
+        private int _line;
+        private int _column;
 
         private HtmlTokenType _type;
-        private (int start, int length) _nameRange;
-        private (int start, int length) _tokenRange;
+        private bool _isSelfClosing;
 
-        private (int start, int length) _attributeNameRange;
-        private (int start, int length) _attributeValueRange;
-        private (int start, int length) _attributeRange;
-        private HtmlAttribute[]? _attributes;
+        private HtmlTextPosition _tokenStart;
+        private HtmlTextPosition _tokenEnd;
+        private HtmlTextPosition _nameStart;
+        private HtmlTextPosition _nameEnd;
+
         private int _attributesLength;
+        private HtmlAttribute[]? _attributes;
+        private HtmlAttributeType _attributeType;
 
-        public HtmlTokenType Type => _type;
-
-        public (int start, int length) NameRange => _nameRange;
-
-        public (int start, int length) TokenRange => _tokenRange;
-
-        public ReadOnlySpan<char> Name => _html.AsSpan(_nameRange.start, _nameRange.length);
-
-        public ReadOnlySpan<char> Token => _html.AsSpan(_tokenRange.start, _tokenRange.length);
-
-        public ReadOnlySpan<HtmlAttribute> Attributes => _attributes.AsSpan(0, _attributesLength);
+        private HtmlTextPosition _attributeNameStart;
+        private HtmlTextPosition _attributeNameEnd;
+        private HtmlTextPosition _attributeValueStart;
+        private HtmlTextPosition _attributeValueEnd;
+        private HtmlTextPosition _attributeStart;
+        private HtmlTextPosition _attributeEnd;
 
         public HtmlReader(string html)
+            : this()
         {
             _html = html;
             _length = html.Length;
-            _position = default;
-            _type = HtmlTokenType.Text;
-            _nameRange = default;
-            _tokenRange = default;
-            _attributeNameRange = default;
-            _attributeValueRange = default;
-            _attributeRange = default;
-            _attributes = default;
-            _attributesLength = default;
         }
 
-        public bool NameIs(string name)
-        {
-            return _html.AsSpan(_nameRange.start, _nameRange.length).Equals(name, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public bool Read()
+        public bool Read(out HtmlToken token)
         {
             // Simplified pasing algorithm based on https://html.spec.whatwg.org/multipage/parsing.html
             _attributesLength = 0;
-            if (_attributes != null)
-            {
-                ArrayPool<HtmlAttribute>.Shared.Return(_attributes);
-                _attributes = null;
-            }
+            _tokenStart = _tokenEnd = Position();
+            _nameStart = _nameEnd = default;
+            _isSelfClosing = false;
 
             if (_position >= _length)
             {
+                if (_attributes != null)
+                {
+                    ArrayPool<HtmlAttribute>.Shared.Return(_attributes);
+                    _attributes = null;
+                }
+                token = default;
                 return false;
             }
 
-            _tokenRange.start = _position;
-            _nameRange = default;
-
-            switch (Consume())
+            switch (Current())
             {
                 case '<':
-                    _type = HtmlTokenType.StartTag;
+                    Consume();
                     TagOpen();
                     break;
 
                 default:
-                    _type = HtmlTokenType.Text;
-                    ConsumeUntilNextIs('<');
+                    Consume();
+                    Data();
                     break;
             }
 
-            _tokenRange.length = _position - _tokenRange.start;
+            _tokenEnd = Position();
+
+            token = new HtmlToken(
+                _type,
+                _isSelfClosing,
+                _html.AsMemory(_nameStart.Index, _nameEnd.Index - _nameStart.Index),
+                _html.AsMemory(_tokenStart.Index, _tokenEnd.Index - _tokenStart.Index),
+                _attributes.AsMemory(0, _attributesLength),
+                new HtmlTextRange(_tokenStart, _tokenEnd),
+                new HtmlTextRange(_nameStart, _nameEnd));
+
             return true;
+        }
+
+        private void Data()
+        {
+            _type = HtmlTokenType.Text;
+
+            while (true)
+            {
+                switch (Current())
+                {
+                    case '\0':
+                        Consume();
+                        return;
+
+                    case '<':
+                        return;
+
+                    default:
+                        Consume();
+                        break;
+                }
+            }
         }
 
         private void TagOpen()
         {
-            switch (Consume())
+            _type = HtmlTokenType.StartTag;
+
+            switch (Current())
             {
                 case '!':
+                    Consume();
                     MarkdownDeclarationOpen();
                     break;
 
                 case '?':
-                    Back();
                     BogusComment();
                     break;
 
                 case '/':
-                    _type = HtmlTokenType.EndTag;
+                    Consume();
                     EndTagOpen();
                     break;
 
                 case char c when IsASCIIAlpha(c):
-                    Back();
                     TagName(readAttributes: true);
                     break;
 
                 default:
-                    _type = HtmlTokenType.Text;
-                    ConsumeUntilNextIs('<');
+                    Data();
                     break;
             }
         }
 
         private void MarkdownDeclarationOpen()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-' when Peek() == '-':
+                    Consume();
                     Consume();
                     CommentStart();
                     break;
 
                 default:
+                    Consume();
                     BogusComment();
                     break;
             }
@@ -141,17 +163,18 @@ namespace Microsoft.Docs.Build
         private void CommentStart()
         {
             _type = HtmlTokenType.Comment;
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentStartDash();
                     break;
 
                 case '>':
+                    Consume();
                     break;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -159,18 +182,19 @@ namespace Microsoft.Docs.Build
 
         private void CommentStartDash()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentEnd();
                     break;
 
                 case '\0':
                 case '>':
+                    Consume();
                     break;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -180,18 +204,25 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '<':
+                        Consume();
                         CommentLessThanSign();
                         return;
 
                     case '-':
+                        Consume();
                         CommendEndDash();
                         return;
 
                     case '\0':
+                        Consume();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
@@ -200,17 +231,18 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '!':
+                        Consume();
                         CommentLessThanSignBang();
                         return;
 
                     case '<':
+                        Consume();
                         break;
 
                     default:
-                        Back();
                         Comment();
                         return;
                 }
@@ -219,14 +251,14 @@ namespace Microsoft.Docs.Build
 
         private void CommentLessThanSignBang()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentLessThanSignBangDash();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     return;
             }
@@ -234,15 +266,13 @@ namespace Microsoft.Docs.Build
 
         private void CommentLessThanSignBangDash()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
-                    Back();
                     CommentEnd();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     return;
             }
@@ -250,17 +280,18 @@ namespace Microsoft.Docs.Build
 
         private void CommendEndDash()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentEnd();
                     return;
 
                 case '\0':
+                    Consume();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -270,21 +301,23 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                     case '>':
+                        Consume();
                         return;
 
                     case '!':
+                        Consume();
                         CommentEndBang();
                         return;
 
                     case '-':
+                        Consume();
                         break;
 
                     default:
-                        Back();
                         Comment();
                         return;
                 }
@@ -293,18 +326,19 @@ namespace Microsoft.Docs.Build
 
         private void CommentEndBang()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '-':
+                    Consume();
                     CommentEnd();
                     return;
 
                 case '>':
                 case '\0':
+                    Consume();
                     return;
 
                 default:
-                    Back();
                     Comment();
                     break;
             }
@@ -315,32 +349,41 @@ namespace Microsoft.Docs.Build
             _type = HtmlTokenType.Comment;
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '>':
+                        Consume();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
 
         private void EndTagOpen()
         {
-            switch (Consume())
+            _type = HtmlTokenType.EndTag;
+
+            switch (Current())
             {
                 case '>':
-                    _nameRange.length = 0;
+                    Consume();
+                    _nameEnd = _nameStart;
                     break;
 
                 case '\0':
+                    Consume();
                     _type = HtmlTokenType.Text;
                     break;
 
                 case char c when IsASCIIAlpha(c):
-                    Back();
                     TagName(readAttributes: false);
                     break;
 
                 default:
+                    Consume();
                     BogusComment();
                     break;
             }
@@ -348,28 +391,31 @@ namespace Microsoft.Docs.Build
 
         private void TagName(bool readAttributes)
         {
-            _nameRange.start = _position;
+            _nameStart = _nameEnd = Position();
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case '>':
-                        if (_nameRange.length == 0)
+                        if (_nameEnd.Index == _nameStart.Index)
                         {
-                            _nameRange.length = _position - 1 - _nameRange.start;
+                            _nameEnd = Position();
                         }
+                        Consume();
                         return;
 
                     case '/':
-                        if (_nameRange.length == 0)
+                        if (_nameEnd.Index == _nameStart.Index)
                         {
-                            _nameRange.length = _position - 1 - _nameRange.start;
+                            _nameEnd = Position();
                         }
+                        Consume();
                         SelfClosingStartTag();
                         return;
 
@@ -378,15 +424,20 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
-                        if (_nameRange.length == 0)
+                        if (_nameEnd.Index == _nameStart.Index)
                         {
-                            _nameRange.length = _position - 1 - _nameRange.start;
+                            _nameEnd = Position();
                         }
+                        Consume();
                         if (readAttributes)
                         {
                             BeforeAttributeName();
                             return;
                         }
+                        break;
+
+                    default:
+                        Consume();
                         break;
                 }
             }
@@ -394,17 +445,19 @@ namespace Microsoft.Docs.Build
 
         private void SelfClosingStartTag()
         {
-            switch (Consume())
+            switch (Current())
             {
                 case '>':
+                    _isSelfClosing = true;
+                    Consume();
                     break;
 
                 case '\0':
                     _type = HtmlTokenType.Comment;
+                    Consume();
                     break;
 
                 default:
-                    Back();
                     BeforeAttributeName();
                     break;
             }
@@ -412,18 +465,13 @@ namespace Microsoft.Docs.Build
 
         private void BeforeAttributeName()
         {
-            _attributeNameRange = default;
-            _attributeRange = default;
-            _attributeValueRange = default;
-
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                     case '/':
                     case '>':
-                        Back();
                         AfterAttributeName();
                         return;
 
@@ -432,28 +480,34 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
+                        Consume();
                         break;
 
                     case '=':
-                        _attributeNameRange.start = _attributeRange.start = _position - 1;
-                        AttributeName();
+                        AttributeName(consumeOnce: true);
                         return;
 
                     default:
-                        Back();
-
-                        _attributeNameRange.start = _attributeRange.start = _position;
                         AttributeName();
                         return;
                 }
             }
         }
 
-        private void AttributeName()
+        private void AttributeName(bool consumeOnce = false)
         {
+            _attributeType = HtmlAttributeType.NameOnly;
+            _attributeNameStart = _attributeNameEnd = _attributeStart = _attributeEnd = Position();
+            _attributeValueStart = _attributeValueEnd = default;
+
+            if (consumeOnce)
+            {
+                Consume();
+            }
+
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\t':
                     case '\r':
@@ -463,15 +517,19 @@ namespace Microsoft.Docs.Build
                     case '/':
                     case '>':
                     case '\0':
-                        Back();
-                        _attributeNameRange.length = _position - _attributeNameRange.start;
+                        _attributeNameEnd = Position();
                         AfterAttributeName();
                         return;
 
                     case '=':
-                        _attributeNameRange.length = _position - 1 - _attributeNameRange.start;
+                        _attributeNameEnd = Position();
+                        Consume();
                         BeforeAttributeValue();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
@@ -480,30 +538,34 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case '>':
-                        if (_attributeRange.length == 0)
+                        if (_attributeEnd.Index == _attributeStart.Index)
                         {
-                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                            _attributeEnd = Position();
                         }
+                        Consume();
                         AddAttribute();
                         return;
 
                     case '/':
-                        if (_attributeRange.length == 0)
+                        if (_attributeEnd.Index == _attributeStart.Index)
                         {
-                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                            _attributeEnd = Position();
                         }
+                        Consume();
                         AddAttribute();
                         SelfClosingStartTag();
                         return;
 
                     case '=':
+                        Consume();
                         BeforeAttributeValue();
                         return;
 
@@ -512,16 +574,15 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
-                        if (_attributeRange.length == 0)
+                        if (_attributeEnd.Index == _attributeStart.Index)
                         {
-                            _attributeRange.length = _position - 1 - _attributeRange.start;
+                            _attributeEnd = Position();
                         }
+                        Consume();
                         break;
 
                     default:
                         AddAttribute();
-                        Back();
-                        _attributeNameRange.start = _attributeRange.start = _position;
                         AttributeName();
                         return;
                 }
@@ -532,31 +593,37 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\t':
                     case '\r':
                     case '\n':
                     case '\f':
                     case ' ':
+                        Consume();
                         break;
 
                     case '\'':
+                        _attributeType = HtmlAttributeType.SingleQuoted;
+                        Consume();
                         AttributeValue('\'');
                         return;
 
                     case '"':
+                        _attributeType = HtmlAttributeType.DoubleQuoted;
+                        Consume();
                         AttributeValue('"');
                         return;
 
                     case '>':
-                        _attributeValueRange.length = 0;
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        _attributeValueEnd = _attributeValueStart;
+                        _attributeEnd = Position();
+                        Consume();
                         AddAttribute();
                         return;
 
                     default:
-                        Back();
+                        _attributeType = HtmlAttributeType.Unquoted;
                         AttributeValueUnquoted();
                         return;
                 }
@@ -565,42 +632,50 @@ namespace Microsoft.Docs.Build
 
         private void AttributeValue(char quote)
         {
-            _attributeValueRange.start = _position;
+            _attributeValueStart = Position();
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case char c when c == quote:
-                        _attributeValueRange.length = _position - 1 - _attributeValueRange.start;
-                        _attributeRange.length = _position - _attributeRange.start;
+                        _attributeValueEnd = Position();
+                        Consume();
+                        _attributeEnd = Position();
                         AddAttribute();
                         BeforeAttributeName();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
 
         private void AttributeValueUnquoted()
         {
-            _attributeValueRange.start = _position;
+            _attributeValueStart = Position();
 
             while (true)
             {
-                switch (Consume())
+                switch (Current())
                 {
                     case '>':
-                        _attributeValueRange.length = _position - 1 - _attributeValueRange.start;
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        _attributeValueEnd = Position();
+                        _attributeEnd = Position();
+                        Consume();
                         AddAttribute();
                         return;
 
                     case '\0':
                         _type = HtmlTokenType.Comment;
+                        Consume();
                         return;
 
                     case '\t':
@@ -608,18 +683,23 @@ namespace Microsoft.Docs.Build
                     case '\n':
                     case '\f':
                     case ' ':
-                        _attributeValueRange.length = _position - 1 - _attributeValueRange.start;
-                        _attributeRange.length = _position - 1 - _attributeRange.start;
+                        _attributeValueEnd = Position();
+                        _attributeEnd = Position();
+                        Consume();
                         AddAttribute();
                         BeforeAttributeName();
                         return;
+
+                    default:
+                        Consume();
+                        break;
                 }
             }
         }
 
         private void AddAttribute()
         {
-            if (_attributeNameRange.length <= 0)
+            if (_attributeNameEnd.Index == _attributeNameStart.Index)
             {
                 return;
             }
@@ -635,34 +715,48 @@ namespace Microsoft.Docs.Build
                 _attributes = newAttributes;
             }
 
-            _attributes[_attributesLength++] = new HtmlAttribute(_html, _attributeNameRange, _attributeValueRange, _attributeRange);
+            _attributes[_attributesLength++] = new HtmlAttribute(
+                _attributeType,
+                _html.AsMemory(_attributeNameStart.Index, _attributeNameEnd.Index - _attributeNameStart.Index),
+                _html.AsMemory(_attributeValueStart.Index, _attributeValueEnd.Index - _attributeValueStart.Index),
+                _html.AsMemory(_attributeStart.Index, _attributeEnd.Index - _attributeStart.Index),
+                new HtmlTextRange(_attributeStart, _attributeEnd),
+                new HtmlTextRange(_attributeNameStart, _attributeNameEnd),
+                new HtmlTextRange(_attributeValueStart, _attributeValueEnd));
+
+            _attributeNameStart = _attributeNameEnd = default;
         }
 
-        private char Consume()
+        private void Consume()
         {
-            return _position < _length ? _html[_position++] : '\0';
-        }
-
-        private char Peek()
-        {
-            return _position < _length ? _html[_position] : '\0';
-        }
-
-        private void ConsumeUntilNextIs(char c)
-        {
-            while (_position < _length)
+            if (_position < _length)
             {
-                if (_html[_position] == c)
+                if (_html[_position] == '\n')
                 {
-                    break;
+                    _column = 0;
+                    _line++;
+                }
+                else
+                {
+                    _column++;
                 }
                 _position++;
             }
         }
 
-        private void Back()
+        private char Current()
         {
-            _position--;
+            return _position < _length ? _html[_position] : '\0';
+        }
+
+        private char Peek()
+        {
+            return _position + 1 < _length ? _html[_position + 1] : '\0';
+        }
+
+        private HtmlTextPosition Position()
+        {
+            return new HtmlTextPosition(_position, _line, _column);
         }
 
         private static bool IsASCIIAlpha(char c)

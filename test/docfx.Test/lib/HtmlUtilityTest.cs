@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<iframe src='//codepen.io/a' />", "<iframe src='//codepen.io/a&rerun-position=hidden&' />")]
         public void HtmlRemoveRerunCodepenIframes(string input, string output)
         {
-            var actual = HtmlUtility.LoadHtml(input).RemoveRerunCodepenIframes().WriteTo();
+            var actual = HtmlUtility.TransformHtml(input, HtmlUtility.RemoveRerunCodepenIframes);
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -76,15 +76,17 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='hello'>", null, "<a href=''>")]
         [InlineData("<a href='hello'>", "~!@#$%^&*()<>?:,./][{}|", "<a href='~!@#$%^&amp;*()&lt;&gt;?:,./][{}|'>")]
         [InlineData("<A hrEf=''>", "666", "<A hrEf='666'>")]
-        [InlineData("<a href = 'hello'>", "666", "<a href = '666'>")]
-        [InlineData("<a   target='_blank'   href='h'>", "666", "<a   target='_blank'   href='666'>")]
-        [InlineData("<img src='a/b.png' />", "666", "<img src='666' />")]
-        [InlineData("<iMg sRc = 'a/b.png' />", "666", "<iMg sRc = '666' />")]
-        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "666", "<div><a href='666'><img src='666' /></div>")]
-        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666' /><a href='666'></div>")]
+        [InlineData("<a href = 'hello'>", "666", "<a href='666'>")]
+        [InlineData("<a   target='_blank'   href='h'>", "666", "<a target='_blank' href='666'>")]
+        [InlineData("<img src='a/b.png' />", "666", "<img src='666'/>")]
+        [InlineData("<iMg sRc = 'a/b.png' />", "666", "<iMg sRc='666'/>")]
+        [InlineData("<div><a href='hello'><img src='a/b.png' /></div>", "666", "<div><a href='666'><img src='666'/></div>")]
+        [InlineData("<div><img src='a/b.png' /><a href='hello'></div>", "666", "<div><img src='666'/><a href='666'></div>")]
         public void TransformLinks(string input, string link, string output)
         {
-            Assert.Equal(output, HtmlUtility.TransformLinks(input, (href, _) => link));
+            var actual = HtmlUtility.TransformHtml(input, (ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
+
+            Assert.Equal(output, actual);
         }
 
         [Theory]
@@ -101,7 +103,9 @@ namespace Microsoft.Docs.Build
         [InlineData(@"<xref uid='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         public void TransformXrefs(string input, string xref, string display, string output)
         {
-            Assert.Equal(output, HtmlUtility.TransformXref(input, null, (href, uid, isShorthand) => (xref, display)));
+            var actual = HtmlUtility.TransformHtml(input, (ref HtmlToken token) => HtmlUtility.TransformXref(ref token, null, (href, uid, isShorthand) => (xref, display)));
+
+            Assert.Equal(output, actual);
         }
 
         [Theory]

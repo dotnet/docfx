@@ -111,6 +111,7 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
+                .UseHtml(GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
                 .UseContentValidation(_validatorProvider, _contentValidator)
                 .Build();
@@ -124,6 +125,7 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
+                .UseHtml(GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
                 .UseContentValidation(_validatorProvider, _contentValidator)
                 .UseInlineOnly()
