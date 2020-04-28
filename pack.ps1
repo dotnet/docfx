@@ -5,7 +5,6 @@ $scriptRoot = $($MyInvocation.MyCommand.Definition) | Split-Path
 . "$scriptRoot/common.ps1"
 
 $ErrorActionPreference = 'Stop'
-$framework = "net472"
 $packageVersionFilePath = ".\package_version_temp.txt" # build.ps1 saves the package version to this temp file
 
 if (Test-Path $packageVersionFilePath){
@@ -51,12 +50,18 @@ if (-not(ValidateCommand($nugetCommand))) {
 # dotnet pack first
 foreach ($proj in (Get-ChildItem -Path ("src", "plugins") -Include *.[cf]sproj -Exclude 'docfx.msbuild.csproj' -Recurse)) {
     if ($os -eq "Windows") {
-        & dotnet pack $proj.FullName -c $configuration -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion
-        ProcessLastExitCode $lastexitcode "dotnet pack $($proj.FullName) -c $configuration -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion"
+        if ($proj.FullName -like "*.csproj"){
+            & dotnet pack $proj.FullName -c $configuration --no-build -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion /p:OutputPath=$scriptHome/target/$configuration/$($proj.BaseName)
+            ProcessLastExitCode $lastexitcode "dotnet pack $($proj.FullName) -c $configuration --no-build -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion /p:OutputPath=$scriptHome/target/$configuration/$($proj.BaseName)"    
+        }
+        else {
+            & dotnet pack $proj.FullName -c $configuration -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion
+            ProcessLastExitCode $lastexitcode "dotnet pack $($proj.FullName) -c $configuration -o $scriptHome/artifacts/$configuration /p:Version=$packageVersion"
+        }
     }
- else {
-        & nuget pack $($proj.FullName) -Properties Configuration=$configuration -OutputDirectory $scriptHome/artifacts/$configuration -Version $packageVersion
-        ProcessLastExitCode $lastexitcode "nuget pack $($proj.FullName) -Properties Configuration=$configuration -OutputDirectory $scriptHome/artifacts/$configuration -Version $packageVersion"
+    else {
+        & nuget pack $($proj.FullName) -Properties Configuration=$configuration -OutputDirectory $scriptHome/artifacts/$configuration -Version $packageVersion -BasePath $scriptHome/target/$configuration/$($proj.BaseName)
+        ProcessLastExitCode $lastexitcode "nuget pack $($proj.FullName) -Properties Configuration=$configuration -OutputDirectory $scriptHome/artifacts/$configuration -Version $packageVersion -BasePath $scriptHome/target/$configuration/$($proj.BaseName)"
     }
 }
 
@@ -130,10 +135,6 @@ foreach ($name in $packages.Keys) {
     }
 
     $outputFolder = "$scriptHome/target/$configuration/$name"
-    # publish to target folder before pack
-    & dotnet publish $proj.FullName -c $configuration -f $framework -o $outputFolder
-    ProcessLastExitCode $lastexitcode "dotnet publish $($proj.FullName) -c $configuration -f $framework -o $outputFolder"
-
     $nuspecs = $val.nuspecs
     foreach ($nuspec in $nuspecs) {
         NugetPack $outputFolder $nuspec $packageVersion
@@ -142,4 +143,3 @@ foreach ($name in $packages.Keys) {
 
 Write-Host "Pack succeeds." -ForegroundColor Green
 Pop-Location
-

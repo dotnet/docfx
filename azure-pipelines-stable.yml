@@ -37,7 +37,7 @@ steps:
   displayName: Sign executables and dlls
   inputs:
     ConnectedServiceName: 'CodeSigning-APEX'
-    FolderPath: '$(Build.SourcesDirectory)/src/docfx/bin/Release'
+    FolderPath: '$(Build.SourcesDirectory)/target/Release'
     signType: 'batchSigning'
     batchSignPolicyFile: '$(Build.SourcesDirectory)/codesign_policy.json'
     SessionTimeout: '60'

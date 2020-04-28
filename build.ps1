@@ -162,6 +162,14 @@ if (-not $skipTests) {
     }
 }
 
+foreach ($proj in (Get-ChildItem -Path ("src", "plugins", "tools") -Include *.csproj -Recurse))
+{
+    $name = $proj.BaseName
+    $outputFolder = "$scriptHome/target/$configuration/$name"
+    # publish to target folder
+    & dotnet publish $proj.FullName -c $configuration --no-build -f $framework -o $outputFolder
+    ProcessLastExitCode $lastexitcode "dotnet publish $($proj.FullName) -c $configuration --no-build -f $framework -o $outputFolder"
+}
+
 Write-Host "Build succeeds." -ForegroundColor Green
 Pop-Location
-
