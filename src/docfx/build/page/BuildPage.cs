@@ -235,7 +235,14 @@ namespace Microsoft.Docs.Build
             var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
-            var htmlDom = HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun);
+            var rawHtmlDom = HtmlUtility.LoadHtml(html);
+            if (file.ContentType == ContentType.Page && TemplateEngine.IsConceptual(file.Mime))
+            {
+                var htmlErrors = HtmlUtility.SecurityScan(rawHtmlDom, file);
+                errors.AddRange(htmlErrors);
+            }
+
+            var htmlDom = rawHtmlDom.PostMarkup(context.Config.DryRun);
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
