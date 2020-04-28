@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.ToSourceInfo(columnOffset: attribute.Range.start);
+                    var source = block?.ToSourceInfo(attribute.ValueRange);
                     var link = HttpUtility.HtmlEncode(transform(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source)));
 
                     attribute = attribute.WithValue(link);
@@ -225,8 +225,8 @@ namespace Microsoft.Docs.Build
             var isShorthand = (rawHtml ?? rawSource)?.StartsWith("@") ?? false;
 
             var (resolvedHref, display) = resolveXref(
-                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.ToSourceInfo(columnOffset: token.Range.start)),
-                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.ToSourceInfo(columnOffset: token.Range.start)),
+                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.ToSourceInfo(token.Range)),
+                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.ToSourceInfo(token.Range)),
                 isShorthand);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
