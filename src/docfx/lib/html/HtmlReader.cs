@@ -65,13 +65,11 @@ namespace Microsoft.Docs.Build
             switch (Consume())
             {
                 case '<':
-                    _type = HtmlTokenType.StartTag;
                     TagOpen();
                     break;
 
                 default:
-                    _type = HtmlTokenType.Text;
-                    ConsumeUntilNextIs('<');
+                    Data();
                     break;
             }
 
@@ -88,8 +86,31 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
+        private void Data()
+        {
+            _type = HtmlTokenType.Text;
+
+            while (true)
+            {
+                switch (Consume())
+                {
+                    case '\0':
+                        return;
+
+                    case '<':
+                        Back();
+                        return;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
         private void TagOpen()
         {
+            _type = HtmlTokenType.StartTag;
+
             switch (Consume())
             {
                 case '!':
@@ -112,8 +133,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 default:
-                    _type = HtmlTokenType.Text;
-                    ConsumeUntilNextIs('<');
+                    Data();
                     break;
             }
         }
@@ -649,18 +669,6 @@ namespace Microsoft.Docs.Build
         private char Peek()
         {
             return _position < _length ? _html[_position] : '\0';
-        }
-
-        private void ConsumeUntilNextIs(char c)
-        {
-            while (_position < _length)
-            {
-                if (_html[_position] == c)
-                {
-                    break;
-                }
-                _position++;
-            }
         }
 
         private void Back()
