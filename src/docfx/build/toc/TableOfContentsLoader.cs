@@ -165,11 +165,23 @@ namespace Microsoft.Docs.Build
                     {
                         return Array.Empty<string>();
                     }
-                    monikers = monikers.Union(item.Value.Monikers).Distinct().ToList();
+                    monikers = monikers.Union(item.Value.Monikers).ToList();
                 }
             }
+            monikers = monikers.Distinct().ToList();
             monikers.Sort(StringComparer.OrdinalIgnoreCase);
-            return monikers.ToArray();
+
+            if (monikers.Count > 0 && currentItem.Items?.Count > 0)
+            {
+                foreach (var item in currentItem.Items)
+                {
+                    if (Enumerable.SequenceEqual(item.Value.Monikers, monikers, StringComparer.OrdinalIgnoreCase))
+                    {
+                        item.Value.Monikers = Array.Empty<string>();
+                    }
+                }
+            }
+            return monikers;
         }
 
         private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, List<Error> errors)
