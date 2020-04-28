@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static SourceInfo? ToSourceInfo(this MarkdownObject? obj, int? line = null, FilePath? file = null)
+        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null)
         {
             var path = file ?? (InclusionContext.File as Document)?.FilePath;
             if (path is null)
@@ -21,27 +21,17 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            // Line info in markdown object is zero based, turn it into one based.
-            if (obj != null)
-            {
-                return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
-            }
-
             if (line != null)
             {
                 return new SourceInfo(path, line.Value + 1, 0);
             }
 
-            return default;
+            // Line info in markdown object is zero based, turn it into one based.
+            return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
         }
 
-        public static SourceInfo? ToSourceInfo(this MarkdownObject? obj, in HtmlTextRange html)
+        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
         {
-            if (obj is null)
-            {
-                return default;
-            }
-
             var path = (InclusionContext.File as Document)?.FilePath;
             if (path is null)
             {
