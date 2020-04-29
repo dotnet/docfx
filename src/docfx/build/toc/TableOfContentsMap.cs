@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
                 newToc.Items.Add(new SourceInfo<TableOfContentsNode>(newChild, item.Source));
             }
 
-            var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".json"));
+            var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
             var newTocFile = FilePath.Generated(newTocFilePath);
             _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc));
             result.Add(newTocFile);
