@@ -1569,7 +1569,7 @@ inputs:
       items:
       - name: 1-1
 outputs:
-  toc.json:
+  toc-dest/toc.json:
   toc-dest/_splitted/1/toc.json:
 ---
 # Generate metadata dependency for PR comment preview link
