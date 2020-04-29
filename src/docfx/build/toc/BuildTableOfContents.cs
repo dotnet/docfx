@@ -53,7 +53,17 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.Config.DryRun)
                 {
-                    if (context.Config.Legacy || context.Config.OutputType == OutputType.Html)
+                    if (context.Config.OutputType == OutputType.Html)
+                    {
+                        // Just for current PDF build. toc.json is used for generate PDF outline
+                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
+
+                        var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
+                        var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);
+                        context.Output.WriteText(outputPath, html);
+                    }
+                    else if (context.Config.Legacy)
                     {
                         var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                         context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
@@ -62,13 +72,6 @@ namespace Microsoft.Docs.Build
                     else
                     {
                         context.Output.WriteJson(outputPath, model);
-                    }
-
-                    if (context.Config.OutputType == OutputType.Html)
-                    {
-                        var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
-                        var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);
-                        context.Output.WriteText(outputPath, html);
                     }
                 }
             });
