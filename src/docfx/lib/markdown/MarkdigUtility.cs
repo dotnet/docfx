@@ -137,16 +137,9 @@ namespace Microsoft.Docs.Build
             return builder;
         }
 
-        public static string ToPlainText(this MarkdownObject containerblock)
+        public static string ToPlainText(this MarkdownObject containerBlock)
         {
             using var writer = new StringWriter();
-            ToPlainText(containerblock, writer);
-
-            return writer.ToString();
-        }
-
-        private static void ToPlainText(MarkdownObject containerBlock, TextWriter writer)
-        {
             var renderer = new HtmlRenderer(writer)
             {
                 EnableHtmlForBlock = false,
@@ -156,6 +149,8 @@ namespace Microsoft.Docs.Build
 
             renderer.Render(containerBlock);
             writer.Flush();
+
+            return writer.ToString();
         }
 
         private class DelegatingExtension : IMarkdownExtension
