@@ -532,7 +532,6 @@ outputs:
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
-    exclude: d.md
   rules.json: |
     {
       "headings": {
@@ -564,9 +563,6 @@ inputs:
     # Title 1
   c.md: |
     # Title 2
-    [!include[](d.md)]
-  d.md: |
-    # Title 1
 outputs:
   a.json:
   b.json:
