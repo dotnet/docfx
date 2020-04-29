@@ -202,10 +202,8 @@ jobs:
         params: https://github.com/OPS-E2E-PPE/azure-docs-pr --branch v3-integration-test --timeout 150
       Dynamics-365-Operations:
         params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --branch v3-integration-test --timeout 65
-      SCCMDocs-pr:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr --branch v3-integration-test --timeout 35
-      SCCMDocs-pr.zh-cn:
-        params: https://github.com/OPS-E2E-PPE/SCCMDocs-pr.zh-cn --branch v3-integration-test-sxs --locale zh-cn --timeout 35
+      biztalk-docs.zh-cn:
+        params: https://github.com/OPS-E2E-PPE/biztalk-docs.zh-cn --branch v3-integration-test-sxs --locale zh-cn --timeout 50
       office-dev-O365API:
         params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
       dynamics-crm-notinTOC_1.he-il:
