@@ -50,8 +50,8 @@ steps:
     arguments: '.\node_modules\gulp\bin\gulp.js master:pack'
     workingFolder: tools/Deployment
 
-- task: SFP.build-tasks.custom-build-task-1.EsrpCodeSigning@1
-  displayName: 'ESRP CodeSigning'
+- task: EsrpCodeSigning@1
+  displayName: 'Sign NuGet packages'
   inputs:
     ConnectedServiceName: 'CodeSigning-APEX'
     FolderPath: 'artifacts\Release'
