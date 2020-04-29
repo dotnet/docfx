@@ -228,7 +228,10 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value!.Peek();
 
-            status.Headings.Add((Document)InclusionContext.File, (headings, InclusionContext.IsInclude));
+            if (!status.Headings.ContainsKey((Document)InclusionContext.File))
+            {
+                status.Headings.Add((Document)InclusionContext.File, (headings, InclusionContext.IsInclude));
+            }
 
             return status.Headings;
         }
