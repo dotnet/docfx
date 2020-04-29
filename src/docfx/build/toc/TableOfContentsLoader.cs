@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsParser _parser;
         private readonly MonikerProvider _monikerProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
+        private readonly bool _reduceTOCChildMonikers;
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
                      new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
@@ -32,13 +33,15 @@ namespace Microsoft.Docs.Build
             XrefResolver xrefResolver,
             TableOfContentsParser parser,
             MonikerProvider monikerProvider,
-            DependencyMapBuilder dependencyMapBuilder)
+            DependencyMapBuilder dependencyMapBuilder,
+            bool reduceTOCChildMonikers)
         {
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _parser = parser;
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
+            _reduceTOCChildMonikers = reduceTOCChildMonikers;
         }
 
         public (List<Error> errors, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
@@ -163,12 +166,11 @@ namespace Microsoft.Docs.Build
                 {
                     return Array.Empty<string>();
                 }
-                monikers = monikers.Union(item.Value.Monikers).ToList();
+                monikers = monikers.Union(item.Value.Monikers, StringComparer.OrdinalIgnoreCase).ToList();
             }
-            monikers = monikers.Distinct().ToList();
             monikers.Sort(StringComparer.OrdinalIgnoreCase);
 
-            if (monikers.Count > 0)
+            if (_reduceTOCChildMonikers && monikers.Count > 0)
             {
                 foreach (var item in currentItem.Items)
                 {
