@@ -733,4 +733,67 @@ outputs:
     ["info","disallowed-html","HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
     ["info","disallowed-html","HTML attribute 'height' on tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
     ["info","disallowed-html","HTML tag 'button' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
+---
+# Content Validation - Setex Headings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude: b.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "SetexHeadings",
+            "message": "Bad {0} format: '{1}'. Use hashes to create H1(#) or H2(##)",
+            "code": "headings-with-underline",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1 With Hashe
+    ## Title 2 With Hashes
 
+    Title 1
+    =======
+
+    Title 2
+    -------
+
+    Multiple Title2 Line 1
+    Multiple Title2 Line 2
+    -------
+
+    # Title With Hash and underline
+    ======
+
+        Not A title 1
+    ======
+
+    Not A Title 2
+        ------
+
+    [!include[](b.md)]
+  b.md: |
+    Title 2
+    ------
+outputs:
+  a.json:
+  .errors.log: |
+    ["suggestion","headings-with-underline","Bad 1 format: 'Title 1'. Use hashes to create H1(#) or H2(##)","a.md",5,1]
+    ["suggestion","headings-with-underline","Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","a.md",8,1]
+    ["suggestion","headings-with-underline","Bad 2 format: 'Multiple Title2 Line 1\nMultiple Title2 Line 2'. Use hashes to create H1(#) or H2(##)","a.md",12,1]
+    ["suggestion","headings-with-underline","Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","b.md",2,1]
