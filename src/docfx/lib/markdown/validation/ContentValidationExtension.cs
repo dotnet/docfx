@@ -33,9 +33,8 @@ namespace Microsoft.Docs.Build
                                 Level = headingBlock.Level,
                                 SourceInfo = headingBlock.ToSourceInfo(),
                                 Content = GetHeadingContent(headingBlock), // used for reporting
-
-                                // HeadingChar = headingBlock.HeadingChar
-                                // RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
+                                HeadingChar = headingBlock.HeaderChar,
+                                RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
                             });
                         }
 
