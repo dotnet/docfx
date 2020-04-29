@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
         private readonly string _markdownValidationRules;
+        private readonly ContentValidator _contentValidator;
 
         private readonly MarkdownContext _markdownContext;
         private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
@@ -35,13 +36,15 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MonikerProvider monikerProvider,
-            TemplateEngine templateEngine)
+            TemplateEngine templateEngine,
+            ContentValidator contentValidator)
         {
             _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _monikerProvider = monikerProvider;
             _templateEngine = templateEngine;
+            _contentValidator = contentValidator;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
             _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
@@ -110,7 +113,7 @@ namespace Microsoft.Docs.Build
                 .UseXref(GetXref)
                 .UseHtml(GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider)
+                .UseContentValidation(_validatorProvider, _contentValidator)
                 .Build();
         }
 
@@ -124,7 +127,7 @@ namespace Microsoft.Docs.Build
                 .UseXref(GetXref)
                 .UseHtml(GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider)
+                .UseContentValidation(_validatorProvider, _contentValidator)
                 .UseInlineOnly()
                 .Build();
         }

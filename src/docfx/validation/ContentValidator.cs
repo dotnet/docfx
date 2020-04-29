@@ -19,26 +19,10 @@ namespace Microsoft.Docs.Build
             _errorLog = log;
         }
 
-        public void ValidateH1(Document file, string? title)
+        public void ValidateHeadings(Document file, List<Heading> headings, bool isIncluded)
         {
-            if (string.IsNullOrEmpty(title))
+            if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, isIncluded, out var documentType))
             {
-                return;
-            }
-
-            if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, out var documentType))
-            {
-                var headings = new List<Heading>
-                {
-                    new Heading
-                    {
-                        Level = 1,
-                        Content = title,
-
-                        // todo: get title precise line info
-                        SourceInfo = new SourceInfo(file.FilePath, 0, 0),
-                    },
-                };
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
             }
@@ -46,7 +30,7 @@ namespace Microsoft.Docs.Build
 
         public void ValidateManifest(FilePath filePath, PublishItem publishItem)
         {
-            if (TryGetValidationDocumentType(publishItem.ContentType, publishItem.Mime, out var documentType))
+            if (TryGetValidationDocumentType(publishItem.ContentType, publishItem.Mime, false, out var documentType))
             {
                 var manifestItem = new ManifestItem()
                 {
@@ -93,7 +77,7 @@ namespace Microsoft.Docs.Build
         }
 
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
-        private bool TryGetValidationDocumentType(ContentType contentType, string? mime, out string documentType)
+        private bool TryGetValidationDocumentType(ContentType contentType, string? mime, bool isIncluded, out string documentType)
         {
             documentType = string.Empty;
             switch (contentType)
@@ -103,7 +87,7 @@ namespace Microsoft.Docs.Build
                     {
                         return false;
                     }
-                    documentType = "conceptual";
+                    documentType = isIncluded ? "includes" : "conceptual";
                     return true;
                 case ContentType.Redirection:
                     documentType = "redirection";

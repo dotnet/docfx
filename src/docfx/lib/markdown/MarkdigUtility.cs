@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -134,6 +135,22 @@ namespace Microsoft.Docs.Build
         {
             builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
             return builder;
+        }
+
+        public static string ToPlainText(this MarkdownObject containerBlock)
+        {
+            using var writer = new StringWriter();
+            var renderer = new HtmlRenderer(writer)
+            {
+                EnableHtmlForBlock = false,
+                EnableHtmlForInline = false,
+                EnableHtmlEscape = false,
+            };
+
+            renderer.Render(containerBlock);
+            writer.Flush();
+
+            return writer.ToString();
         }
 
         private class DelegatingExtension : IMarkdownExtension

@@ -532,6 +532,7 @@ outputs:
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
+    exclude: d.md
   rules.json: |
     {
       "headings": {
@@ -563,13 +564,16 @@ inputs:
     # Title 1
   c.md: |
     # Title 2
+    [!include[](d.md)]
+  d.md: |
+    # Title 1
 outputs:
   a.json:
   b.json:
   c.json:
   .errors.log: |
-    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","a.md"]
-    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","b.md"]
+    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","a.md",1,1]
+    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","b.md",1,1]
 ---
 # Content validation - Publish Url - max level
 # Validation is only worked in the conceptual page
@@ -729,4 +733,4 @@ outputs:
     ["info","disallowed-html","HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
     ["info","disallowed-html","HTML attribute 'height' on tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
     ["info","disallowed-html","HTML tag 'button' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md"]
----
+
