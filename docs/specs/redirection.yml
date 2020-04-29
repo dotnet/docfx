@@ -491,4 +491,6 @@ outputs:
       ]
     }
   .errors.log: |
+    ["warning","circular-redirection","Build has identified circular redirection: b.md [redirection] --> b.md [redirection]","redirections.json",10,26]
+    ["warning","circular-redirection","Build has identified circular redirection: a.md [redirection] --> a.md [redirection]","redirections.json",5,26]
     ["warning","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"]

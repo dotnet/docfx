@@ -355,6 +355,9 @@ namespace Microsoft.Docs.Build
                             "Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.";
                 return new Error(ErrorLevel.Suggestion, "redirection-url-not-found", message, source);
             }
+
+            public static Error CircularRedirection(SourceInfo? source, IEnumerable<FilePath> redirectionChain)
+                => new Error(ErrorLevel.Warning, "circular-redirection", $"Build has identified circular redirection: {string.Join(" --> ", redirectionChain)}", source);
         }
 
         public static class TableOfContents

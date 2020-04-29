@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly BuildScope _buildScope;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
-        private readonly IReadOnlyDictionary<FilePath, FilePath> _renameHistory;
+        private readonly IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> _renameHistory;
 
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
@@ -48,18 +47,20 @@ namespace Microsoft.Docs.Build
             return _redirectUrls[file];
         }
 
-        public FilePath GetOriginalFile(FilePath file)
+        public (Error?, FilePath) GetOriginalFile(FilePath file)
         {
-            var redirectionChain = new HashSet<FilePath>();
-            while (_renameHistory.TryGetValue(file, out var renamedFrom))
+            var redirectionChain = new Stack<FilePath>();
+            while (_renameHistory.TryGetValue(file, out var item))
             {
-                if (!redirectionChain.Add(file))
+                var (renamedFrom, source) = item;
+                if (redirectionChain.Contains(file))
                 {
-                    return file;
+                    return (Errors.Redirection.CircularRedirection(source, new[] { file }.Concat(redirectionChain.Reverse())), file);
                 }
+                redirectionChain.Push(file);
                 file = renamedFrom;
             }
-            return file;
+            return (null, file);
         }
 
         private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
@@ -171,11 +172,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private IReadOnlyDictionary<FilePath, FilePath> GetRenameHistory(
+        private IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> GetRenameHistory(
             RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
-            var renameHistory = new Dictionary<FilePath, FilePath>();
+            var renameHistory = new Dictionary<FilePath, (FilePath, SourceInfo?)>();
             var publishUrlMap = GetPublishUrlMap(redirectUrls.Keys);
 
             foreach (var item in redirections.Where(item => item.RedirectDocumentId))
@@ -208,7 +209,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var candidate in candidates)
                 {
-                    if (!renameHistory.TryAdd(candidate, file))
+                    if (!renameHistory.TryAdd(candidate, (file, item.RedirectUrl.Source)))
                     {
                         _errorLog.Write(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
                     }
