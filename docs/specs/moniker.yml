@@ -993,7 +993,7 @@ outputs:
               "name": "Text",
               "monikers": [ "netcore-1.0", "netcore-1.1" ],
               "items": [
-                { "name": "A", "href": "a" }
+                { "name": "A", "href": "a" , "monikers": undefined}
               ]
             },
             { 

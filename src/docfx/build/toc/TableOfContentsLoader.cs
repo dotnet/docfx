@@ -157,21 +157,18 @@ namespace Microsoft.Docs.Build
             }
 
             // Union with children's monikers
-            if (currentItem.Items?.Count > 0)
+            foreach (var item in currentItem.Items)
             {
-                foreach (var item in currentItem.Items)
+                if (item.Value.Monikers.Count == 0)
                 {
-                    if (item.Value.Monikers.Count == 0)
-                    {
-                        return Array.Empty<string>();
-                    }
-                    monikers = monikers.Union(item.Value.Monikers).ToList();
+                    return Array.Empty<string>();
                 }
+                monikers = monikers.Union(item.Value.Monikers).ToList();
             }
             monikers = monikers.Distinct().ToList();
             monikers.Sort(StringComparer.OrdinalIgnoreCase);
 
-            if (monikers.Count > 0 && currentItem.Items?.Count > 0)
+            if (monikers.Count > 0)
             {
                 foreach (var item in currentItem.Items)
                 {
