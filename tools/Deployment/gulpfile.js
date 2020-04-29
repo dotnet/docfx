@@ -254,6 +254,7 @@ gulp.task("dev:build", gulp.series("clean", "build", "e2eTest"));
 gulp.task("dev:release", gulp.series("pack", "publish:myget-dev", "publish:azdevops-perf-login", "publish:azdevops-perf", "publish:azdevops-internal-login", "publish:azdevops-internal", "publish:azdevops-ppe-login", "publish:azdevops-ppe"));
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
+gulp.task("master:pack", gulp.series("pack"));
 gulp.task("master:release", gulp.series("packAssetZip", "publish:myget-master", "publish:azdevops-prod-login", "publish:azdevops-prod", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
 
 gulp.task("default", gulp.series("dev"));
