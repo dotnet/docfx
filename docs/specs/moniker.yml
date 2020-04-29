@@ -925,15 +925,16 @@ inputs:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
     outputPdf: true
+    reduceTOCChildMonikers: true
   docs/v1/a.md: |
     ---
-    monikerRange: netcore-1.0 || netcore-1.1
+    monikerRange: netcore-1.1 || netcore-1.0
     uid: a
     ---
     Moniker: netcore-1.0, netcore-1.1
   docs/v1/b.md: |
     ---
-    monikerRange: netcore-1.1 || netcore-1.2
+    monikerRange: netcore-1.2 || netcore-1.1
     ---
     Moniker: netcore-1.1, netcore-1.2
   docs/v1/TOC.md: |
@@ -993,7 +994,7 @@ outputs:
               "name": "Text",
               "monikers": [ "netcore-1.0", "netcore-1.1" ],
               "items": [
-                { "name": "A", "href": "a", "monikers": [ "netcore-1.0", "netcore-1.1" ] }
+                { "name": "A", "href": "a", "monikers": undefined}
               ]
             },
             { 
