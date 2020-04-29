@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
             }
             monikers.Sort(StringComparer.OrdinalIgnoreCase);
 
-            // TODO: remove _reduceTOCChildMonikers flag add apply it to all toc
+            // TODO: remove _reduceTOCChildMonikers flag and apply it to all toc after more e2e-testing
             if (_reduceTOCChildMonikers && monikers.Count > 0)
             {
                 foreach (var item in currentItem.Items)
