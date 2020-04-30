@@ -67,11 +67,18 @@ namespace Microsoft.Docs.Build
                         var rootFileHeadings = allHeadings.TryGetValue(rootFile, out var headings) ? headings.headings : null;
                         if (rootFileHeadings != null)
                         {
-                            var headingPlaceHolders = rootFileHeadings.Where(h => h.Level == -1 && h.Content == ((Document)InclusionContext.File).FilePath.ToString()).ToList();
-                            foreach (var headingPlaceHolder in headingPlaceHolders)
+                            var index = 0;
+                            while (index < rootFileHeadings.Count)
                             {
-                                rootFileHeadings.InsertRange(rootFileHeadings.IndexOf(headingPlaceHolder), documentHeadings);
-                                rootFileHeadings.Remove(headingPlaceHolder);
+                                var current = rootFileHeadings[index];
+                                if (current.Level == -1 && current.Content == $"{((Document)InclusionContext.File).FilePath}")
+                                {
+                                    rootFileHeadings.RemoveAt(index);
+                                    rootFileHeadings.InsertRange(index, documentHeadings);
+                                    index += documentHeadings.Count - 1;
+                                }
+
+                                index++;
                             }
                         }
                     }
