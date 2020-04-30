@@ -9,6 +9,7 @@ using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
@@ -94,6 +95,8 @@ namespace Microsoft.Docs.Build
 
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
 
+                    ValidateHeadings();
+
                     return (status.Errors, html);
                 }
                 finally
@@ -113,7 +116,7 @@ namespace Microsoft.Docs.Build
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, _contentValidator)
+                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
                 .Build();
         }
 
@@ -127,7 +130,7 @@ namespace Microsoft.Docs.Build
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, _contentValidator)
+                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
                 .UseInlineOnly()
                 .Build();
         }
@@ -226,9 +229,32 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
+        private Dictionary<Document, (List<Heading> headings, bool isIncluded)> GetHeadings(List<Heading> headings)
+        {
+            var status = t_status.Value!.Peek();
+
+            if (!status.Headings.ContainsKey((Document)InclusionContext.File))
+            {
+                status.Headings.Add((Document)InclusionContext.File, (headings, InclusionContext.IsInclude));
+            }
+
+            return status.Headings;
+        }
+
+        private void ValidateHeadings()
+        {
+            var status = t_status.Value!.Peek();
+            foreach (var (document, (headings, isIncluded)) in status.Headings)
+            {
+                _contentValidator.ValidateHeadings(document, headings, isIncluded);
+            }
+        }
+
         private class Status
         {
             public List<Error> Errors { get; } = new List<Error>();
+
+            public Dictionary<Document, (List<Heading> headings, bool isIncluded)> Headings { get; } = new Dictionary<Document, (List<Heading> headings, bool isIncluded)>();
         }
     }
 }
