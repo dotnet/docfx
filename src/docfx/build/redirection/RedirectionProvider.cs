@@ -44,33 +44,38 @@ namespace Microsoft.Docs.Build
 
         public (Error?, string) GetRedirectUrl(FilePath file)
         {
-            var (error, _) = GetOriginalFileCore(file, forDocumentId: false);
+            var redirectionChain =
+                _renameHistory.GroupBy(kvp => kvp.Value.Item1).ToDictionary(
+                    g => g.Key,
+                    g =>
+                    {
+                        var chosen = g.OrderBy(x => x.Key).Last();
+                        return (chosen.Key, chosen.Value.Item2);
+                    });
+            var (error, _) = GetOriginalFileCore(file, redirectionChain);
             return (error, _redirectUrls[file]);
         }
 
         public FilePath GetOriginalFile(FilePath file)
         {
-            var (_, originalFile) = GetOriginalFileCore(file);
+            var renameHistory = _renameHistory.Where(kvp => kvp.Value.Item3).ToDictionary(kvp => kvp.Key, kvp => (kvp.Value.Item1, kvp.Value.Item2));
+            var (_, originalFile) = GetOriginalFileCore(file, renameHistory);
             return originalFile;
         }
 
-        private (Error?, FilePath) GetOriginalFileCore(FilePath file, bool forDocumentId = true)
+        private (Error?, FilePath) GetOriginalFileCore(FilePath file, Dictionary<FilePath, (FilePath, SourceInfo?)> chain)
         {
             var redirectionChain = new Stack<FilePath>();
-            while (_renameHistory.TryGetValue(file, out var item))
+            while (chain.TryGetValue(file, out var item))
             {
-                var (renamedFrom, source, redirectDocumentId) = item;
+                var (renamedFrom, source) = item;
                 if (redirectionChain.Contains(file))
                 {
-                    redirectionChain.Push(renamedFrom);
+                    redirectionChain.Push(file);
                     return (Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()), file);
                 }
-                redirectionChain.Push(renamedFrom);
-
-                if (!forDocumentId || redirectDocumentId)
-                {
-                    file = renamedFrom;
-                }
+                redirectionChain.Push(file);
+                file = renamedFrom;
             }
             return (null, file);
         }
@@ -201,7 +206,10 @@ namespace Microsoft.Docs.Build
                 redirectUrl = RemoveTrailingIndex(redirectUrl);
                 if (!publishUrlMap.TryGetValue(redirectUrl, out var docs))
                 {
-                    _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                    if (item.RedirectDocumentId)
+                    {
+                        _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                    }
                     continue;
                 }
 
@@ -222,7 +230,10 @@ namespace Microsoft.Docs.Build
                 {
                     if (!renameHistory.TryAdd(candidate, (file, item.RedirectUrl.Source, item.RedirectDocumentId)))
                     {
-                        _errorLog.Write(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
+                        if (item.RedirectDocumentId)
+                        {
+                            _errorLog.Write(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
+                        }
                     }
                 }
             }

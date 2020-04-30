@@ -506,8 +506,8 @@ inputs:
 outputs:
   .errors.log: |
     ["warning","circular-redirection","Build has identified circular redirection: a.md [redirection] --> b.md [redirection] --> c.md [redirection] --> a.md [redirection]","redirections.yml",2,9]
-    ["warning","circular-redirection","Build has identified circular redirection: b.md [redirection] --> c.md [redirection] --> a.md [redirection] --> b.md [redirection]","redirections.yml",4,9]
-    ["warning","circular-redirection","Build has identified circular redirection: c.md [redirection] --> a.md [redirection] --> b.md [redirection] --> c.md [redirection]","redirections.yml",3,9]
+    ["warning","circular-redirection","Build has identified circular redirection: b.md [redirection] --> c.md [redirection] --> a.md [redirection] --> b.md [redirection]","redirections.yml",3,9]
+    ["warning","circular-redirection","Build has identified circular redirection: c.md [redirection] --> a.md [redirection] --> b.md [redirection] --> c.md [redirection]","redirections.yml",4,9]
 
 
 
