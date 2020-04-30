@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             // need to put it to section blacklist and overwrite the truthy check method.
             return settings.AddValueGetter(typeof(JObject), GetJObjectValue)
                            .AddValueGetter(typeof(JValue), GetJValueValue)
-                           .AddTruthyCheck<string>(value => !string.IsNullOrEmpty(value.Trim()) && !value.Trim().Equals("0", StringComparison.OrdinalIgnoreCase))
+                           .AddTruthyCheck<string>(value => !string.IsNullOrEmpty(value.Trim()) && value.Trim() != "0")
                            .AddTruthyCheck<JObject>(value => value != null)
                            .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
                            .AddSectionBlacklistType(typeof(JObject))
