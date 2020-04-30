@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public bool Verbose;
         public bool DryRun;
         public bool Stdin;
-        public bool UseCache;
+        public bool NoCache;
         public bool NoRestore;
         public string? Template;
 
@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
 
         public FetchOptions FetchOptions => NoRestore
             ? FetchOptions.NoFetch
-            : (UseCache ? FetchOptions.UseCache : FetchOptions.Latest);
+            : (NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
 
         public JObject ToJObject()
         {
