@@ -193,8 +193,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.EnableLocSxs = context.BuildOptions.EnableSideBySide;
             systemMetadata.SiteName = context.Config.SiteName;
 
-            var (error, originalFile) = context.RedirectionProvider.GetOriginalFile(file.FilePath);
-            errors.AddIfNotNull(error);
+            var originalFile = context.RedirectionProvider.GetOriginalFile(file.FilePath);
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
                 = context.DocumentProvider.GetDocumentId(originalFile);
 

@@ -16,8 +16,8 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly BuildScope _buildScope;
 
-        private readonly IReadOnlyDictionary<FilePath, (string, FilePath, SourceInfo?, bool)> _redirectUrls;
-        //private readonly IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> _renameHistory;
+        private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
+        private readonly IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?, bool)> _renameHistory;
 
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
@@ -42,30 +42,40 @@ namespace Microsoft.Docs.Build
             return _redirectUrls.ContainsKey(file);
         }
 
-        public string GetRedirectUrl(FilePath file)
+        public (Error?, string) GetRedirectUrl(FilePath file)
         {
-            // TODO: detect circular redirection
-            var (url, redirectFile, source) = _redirectUrls[file];
-            return url;
+            var (error, _) = GetOriginalFileCore(file, forDocumentId: false);
+            return (error, _redirectUrls[file]);
         }
 
-        public (Error?, FilePath) GetOriginalFile(FilePath file)
+        public FilePath GetOriginalFile(FilePath file)
+        {
+            var (_, originalFile) = GetOriginalFileCore(file);
+            return originalFile;
+        }
+
+        private (Error?, FilePath) GetOriginalFileCore(FilePath file, bool forDocumentId = true)
         {
             var redirectionChain = new Stack<FilePath>();
             while (_renameHistory.TryGetValue(file, out var item))
             {
-                var (renamedFrom, source) = item;
+                var (renamedFrom, source, redirectDocumentId) = item;
                 if (redirectionChain.Contains(file))
                 {
-                    return (Errors.Redirection.CircularRedirection(source, new[] { file }.Concat(redirectionChain.Reverse())), file);
+                    redirectionChain.Push(renamedFrom);
+                    return (Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()), file);
                 }
-                redirectionChain.Push(file);
-                file = renamedFrom;
+                redirectionChain.Push(renamedFrom);
+
+                if (!forDocumentId || redirectDocumentId)
+                {
+                    file = renamedFrom;
+                }
             }
             return (null, file);
         }
 
-        private Dictionary<FilePath, (string, FilePath, SourceInfo?)> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
+        private IReadOnlyDictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
         {
             var redirectUrls = new Dictionary<FilePath, string>();
 
@@ -119,10 +129,6 @@ namespace Microsoft.Docs.Build
                     _errorLog.Write(Errors.Redirection.RedirectionConflict(redirectUrl, path));
                 }
             }
-
-            var renameHistory = GetRenameHistory(redirections, redirectUrls);
-            var result = 
-
             return redirectUrls;
         }
 
