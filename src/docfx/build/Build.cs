@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
+                options.NoCache = false;
                 if (BuildDocset(docset.docsetPath, docset.outputPath, options))
                 {
                     hasError = true;
