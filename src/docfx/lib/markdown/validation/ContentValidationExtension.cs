@@ -42,15 +42,16 @@ namespace Microsoft.Docs.Build
                             });
                         }
 
-                        if (node is InclusionBlock inclusionBlock)
+                        if (node is InclusionBlock || node is InclusionInline)
                         {
-                            var inclusionDocument = (Document?)readFile(inclusionBlock.IncludedFilePath, InclusionContext.File, inclusionBlock).file;
+                            var includedFilePath = node is InclusionInline inline ? inline.IncludedFilePath : ((InclusionBlock)node).IncludedFilePath;
+                            var inclusionDocument = (Document?)readFile(includedFilePath, InclusionContext.File, node).file;
                             if (inclusionDocument != null)
                             {
                                 documentHeadings.Add(new Heading
                                 {
                                     Level = -1,
-                                    SourceInfo = inclusionBlock.ToSourceInfo(),
+                                    SourceInfo = node.ToSourceInfo(),
                                     Content = inclusionDocument.FilePath.ToString(),
                                 });
                             }
