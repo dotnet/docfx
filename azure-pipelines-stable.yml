@@ -30,6 +30,24 @@ steps:
   displayName: 'gulp build'
   inputs:
     filename: node
+    arguments: '.\node_modules\gulp\bin\gulp.js dev:build'
+    workingFolder: tools/Deployment
+
+- task: EsrpCodeSigning@1
+  displayName: Sign executables and dlls
+  inputs:
+    ConnectedServiceName: 'CodeSigning-APEX'
+    FolderPath: '$(Build.SourcesDirectory)/target/Release'
+    signType: 'batchSigning'
+    batchSignPolicyFile: '$(Build.SourcesDirectory)/codesign_policy.json'
+    SessionTimeout: '60'
+    MaxConcurrency: '50'
+    MaxRetryAttempts: '5'
+
+- task: CmdLine@1
+  displayName: 'gulp pack'
+  inputs:
+    filename: node
     arguments: '.\node_modules\gulp\bin\gulp.js dev:release'
     workingFolder: tools/Deployment
 

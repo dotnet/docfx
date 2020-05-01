@@ -1,0 +1,125 @@
+{
+  "Version": "1.0.0",
+  "UseMinimatch": true,
+  "SignBatches": [
+    {
+      "MatchedPath": [
+        "Microsoft.DocAsCode*.dll",
+        "*.exe"
+      ],
+      "SigningInfo": {
+        "Operations": [
+          {
+            "KeyCode": "CP-230012",
+            "OperationSetCode": "SigntoolSign",
+            "parameters": [
+              {
+                "parameterName": "OpusName",
+                "parameterValue": "Microsoft"
+              },
+              {
+                "parameterName": "OpusInfo",
+                "parameterValue": "http://www.microsoft.com"
+              },
+              {
+                "parameterName": "PageHash",
+                "parameterValue": "/NPH"
+              },
+              {
+                "parameterName": "TimeStamp",
+                "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+              },
+              {
+                "parameterName": "FileDigest",
+                "parameterValue": "/fd \"SHA256\""
+              }
+            ],
+            "ToolName": "sign",
+            "ToolVersion": "1.0"
+          },
+          {
+            "KeyCode": "CP-230012",
+            "OperationSetCode": "SigntoolVerify",
+            "Parameters": [
+              {
+                "parameterName": "VerifyAll",
+                "parameterValue": "/all"
+              }
+            ],
+            "ToolName": "sign",
+            "ToolVersion": "1.0"
+          }
+        ]
+      }
+    },
+    {
+      "MatchedPath": [
+          "DotLiquid.resources.dll",
+          "AutoMapper.dll",
+          "CommandLine.dll",
+          "DotLiquid.dll",
+          "Dotnet.ProjInfo.dll",
+          "Dotnet.ProjInfo.Helpers.dll",
+          "FSharp.Compiler.*.dll",
+          "HtmlAgilityPack.dll",
+          "itextsharp.dll",
+          "Jint.dll",
+          "Markdig.dll",
+          "Newtonsoft.Json.dll",
+          "Newtonsoft.Json.Schema.dll",
+          "Nustache.Core.dll",
+          "Owin.dll",
+          "SQLitePCLRaw.core.dll",
+          "YamlDotNet.dll"
+      ],
+      "SigningInfo": {
+        "Operations": [
+          {
+            "KeyCode": "CP-231522",
+            "OperationSetCode": "SigntoolSign",
+            "parameters": [
+              {
+                "parameterName": "OpusName",
+                "parameterValue": "Microsoft"
+              },
+              {
+                "parameterName": "OpusInfo",
+                "parameterValue": "http://www.microsoft.com"
+              },
+              {
+                "parameterName": "Append",
+                "parameterValue": "/as"
+              },
+              {
+                "parameterName": "PageHash",
+                "parameterValue": "/NPH"
+              },
+              {
+                "parameterName": "TimeStamp",
+                "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+              },
+              {
+                "parameterName": "FileDigest",
+                "parameterValue": "/fd \"SHA256\""
+              }
+            ],
+            "ToolName": "sign",
+            "ToolVersion": "1.0"
+          },
+          {
+            "KeyCode": "CP-231522",
+            "OperationSetCode": "SigntoolVerify",
+            "Parameters": [
+              {
+                "parameterName": "VerifyAll",
+                "parameterValue": "/all"
+              }
+            ],
+            "ToolName": "sign",
+            "ToolVersion": "1.0"
+          }
+        ]
+      }
+    }
+  ]
+}
