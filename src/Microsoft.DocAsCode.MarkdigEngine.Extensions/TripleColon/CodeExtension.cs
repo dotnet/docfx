@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, TripleColonBlock block)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, obj);
                 if (string.IsNullOrEmpty(code))
                 {
-                    logError($"The code snippet \"{currentSource}\" could not be found.");
+                    logWarning($"The code snippet \"{currentSource}\" could not be found.");
                     return false;
                 }
                 var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
