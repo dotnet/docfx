@@ -47,17 +47,18 @@ namespace Microsoft.Docs.Build
         {
             var redirectionChain = new Stack<FilePath>();
             Error? error = null;
-            while (_redirectionHistory.TryGetValue(file, out var item))
+            var redirectionFile = file;
+            while (_redirectionHistory.TryGetValue(redirectionFile, out var item))
             {
                 var (renamedFrom, source) = item;
-                if (redirectionChain.Contains(file))
+                if (redirectionChain.Contains(redirectionFile))
                 {
-                    redirectionChain.Push(file);
+                    redirectionChain.Push(redirectionFile);
                     error = Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse());
                     break;
                 }
-                redirectionChain.Push(file);
-                file = renamedFrom;
+                redirectionChain.Push(redirectionFile);
+                redirectionFile = renamedFrom;
             }
 
             return (error, _redirectUrls[file]);
@@ -224,7 +225,7 @@ namespace Microsoft.Docs.Build
                     candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
                 }
 
-                redirectionHistory.Add(file, (candidates.OrderBy(x => x).Last(), item.RedirectUrl.Source));
+                redirectionHistory.TryAdd(file, (candidates.OrderBy(x => x).Last(), item.RedirectUrl.Source));
                 foreach (var candidate in candidates)
                 {
                     if (item.RedirectDocumentId && !renameHistory.TryAdd(candidate, file))
