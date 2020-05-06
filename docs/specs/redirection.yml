@@ -491,4 +491,23 @@ outputs:
       ]
     }
   .errors.log: |
+    ["warning","circular-redirection","Build has identified circular redirection: a.md [redirection] --> a.md [redirection]","redirections.json",5,26]
+    ["warning","circular-redirection","Build has identified circular redirection: b.md [redirection] --> b.md [redirection]","redirections.json",10,26]
     ["warning","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"]
+---
+# Warn on circular redirection without document id
+inputs:
+  docfx.yml:
+  redirections.yml: |
+    redirections:
+      a.md: /b
+      b.md: /c
+      c.md: /a
+outputs:
+  .errors.log: |
+    ["warning","circular-redirection","Build has identified circular redirection: a.md [redirection] --> b.md [redirection] --> c.md [redirection] --> a.md [redirection]","redirections.yml",2,9]
+    ["warning","circular-redirection","Build has identified circular redirection: b.md [redirection] --> c.md [redirection] --> a.md [redirection] --> b.md [redirection]","redirections.yml",3,9]
+    ["warning","circular-redirection","Build has identified circular redirection: c.md [redirection] --> a.md [redirection] --> b.md [redirection] --> c.md [redirection]","redirections.yml",4,9]
+
+
+
