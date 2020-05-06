@@ -669,7 +669,7 @@ outputs:
     }
   c.json:
   .errors.log: |
-    ["error","schema-not-found","Unknown schema ''","a/original.xml"]
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"a/original.xml"}
   .dependencymap.json: |
     {"dependencies":{"a/b.original.xml":[{"source":"a/original.xml","type":"file"}]}}
 ---
