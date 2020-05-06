@@ -846,6 +846,7 @@ inputs:
     ###### <a href="image.png">abc</a>
     [!include[](b.md)]
   b.md: |
+  ## 
   image.png:
 outputs:
   a.json:
@@ -861,3 +862,4 @@ outputs:
     {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 9,"column": 1}
     {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 10,"column": 1}
     {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 11,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h2. Headings must have content.","file": "b.md","line": 1,"column": 1}
