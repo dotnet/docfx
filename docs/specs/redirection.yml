@@ -493,7 +493,7 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: a.md [redirection] --> a.md [redirection]","file":"redirections.json","line":5,"column":26}
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: b.md [redirection] --> b.md [redirection]","file":"redirections.json","line":10,"column":26}
-    ["warning","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"]
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"}
 ---
 # Warn on circular redirection without document id
 inputs:
