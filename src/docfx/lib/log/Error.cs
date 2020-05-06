@@ -69,16 +69,19 @@ namespace Microsoft.Docs.Build
 
         public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
+            var message_severity = level;
+            int line = Line;
+            int end_line = EndLine;
+            int column = Column;
+            int end_column = EndColumn;
             var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath);
-            var payload = originalPath is null
-                ? new List<object?> { level, Code, Message, FilePath?.Path, Line, Column }
-                : new List<object?> { level, Code, Message, originalPath };
-            var i = payload.Count - 1;
-            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Main)))
-            {
-                i--;
-            }
-            return JsonUtility.Serialize(payload.Take(i + 1));
+            var file = originalPath == null ? FilePath?.Path : originalPath;
+            var date_time = DateTime.UtcNow;
+            var log_item_type = "user";
+
+            return originalPath == null
+                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, date_time })
+                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)

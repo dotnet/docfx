@@ -187,10 +187,9 @@ namespace Microsoft.Docs.Build
 
             if (_output != null)
             {
-                var line = _legacy ? LegacyReport(error, level) : error.ToString(level, _sourceMap);
                 lock (_outputLock)
                 {
-                    _output.Value.WriteLine(line);
+                    _output.Value.WriteLine(error.ToString(level, _sourceMap));
                 }
             }
 
@@ -259,22 +258,6 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Suggestion => ConsoleColor.Magenta,
                 _ => ConsoleColor.Cyan,
             };
-        }
-
-        private string LegacyReport(Error error, ErrorLevel level)
-        {
-            var message_severity = level;
-            var code = error.Code;
-            var message = error.Message;
-            var file = error.FilePath is null ? error.FilePath?.Path : _sourceMap?.GetOriginalFilePath(error.FilePath) ?? error.FilePath?.Path;
-            var line = error.Line;
-            var end_line = error.EndLine;
-            var column = error.Column;
-            var end_column = error.EndColumn;
-            var date_time = DateTime.UtcNow;
-            var log_item_type = "user";
-
-            return JsonUtility.Serialize(new { message_severity, log_item_type, code, message, file, line, end_line, column, end_column, date_time });
         }
     }
 }
