@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -144,7 +145,9 @@ namespace Microsoft.Docs.Build
                 return (new List<Error>(), new JObject(), new JObject());
             }
 
-            return (new List<Error>(), context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel), new JObject());
+            var output = JToken.Parse(context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel.ToString(Formatting.None), grepContent: true));
+
+            return (new List<Error>(), output, new JObject());
         }
 
         private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
@@ -325,7 +328,9 @@ namespace Microsoft.Docs.Build
 
         private static (TemplateModel model, JObject metadata) CreateTemplateModel(Context context, JObject pageModel, Document file)
         {
-            var content = CreateContent(context, file, pageModel);
+            var pageModelJson = pageModel.ToString(Formatting.None);
+
+            var content = CreateContent(context, file, pageModel, pageModelJson);
 
             if (context.Config.DryRun)
             {
@@ -339,7 +344,7 @@ namespace Microsoft.Docs.Build
             }
 
             var jsName = $"{file.Mime}.mta.json.js";
-            var templateMetadata = context.TemplateEngine.RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
+            var templateMetadata = JObject.Parse(context.TemplateEngine.RunJavaScript(jsName, pageModelJson, grepContent: true));
 
             if (TemplateEngine.IsLandingData(file.Mime))
             {
@@ -374,7 +379,7 @@ namespace Microsoft.Docs.Build
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
         }
 
-        private static string CreateContent(Context context, Document file, JObject pageModel)
+        private static string CreateContent(Context context, Document file, JObject pageModel, string pageModelJson)
         {
             if (TemplateEngine.IsConceptual(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
             {
@@ -383,7 +388,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Generate SDP content
-            var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
+            var model = JToken.Parse(context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModelJson));
             var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model);
 
             var htmlDom = HtmlUtility.LoadHtml(content);

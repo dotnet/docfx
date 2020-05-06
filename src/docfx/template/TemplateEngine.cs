@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
             return _mustacheTemplate.Render(templateName, pageModel);
         }
 
-        public JToken RunJavaScript(string scriptName, JObject model, string methodName = "transform")
+        public string RunJavaScript(string scriptName, string model, string methodName = "transform", bool grepContent = false)
         {
             var scriptPath = Path.Combine(_contentTemplateDir, scriptName);
             if (!File.Exists(scriptPath))
@@ -93,20 +93,7 @@ namespace Microsoft.Docs.Build
                 return model;
             }
 
-            var result = _js.Run(scriptPath, methodName, model);
-            if (result is JObject obj && obj.TryGetValue("content", out var token) &&
-                token is JValue value && value.Value is string content)
-            {
-                try
-                {
-                    return JObject.Parse(content);
-                }
-                catch
-                {
-                    return result;
-                }
-            }
-            return result;
+            return _js.Run(scriptPath, methodName, model, grepContent);
         }
 
         public static bool IsLandingData(string? mime)

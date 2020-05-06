@@ -51,7 +51,7 @@ outputs:
   a.json: |
     {"result": "value has run js data transform"}
 ---
-# Run data-transform if provided, and return raw object if content property is not serialized json object
+# Run data-transform if provided, MUST return an object with a content JSON string
 inputs:
   docfx.yml:
   a.yml: |
@@ -59,18 +59,15 @@ inputs:
     prop: value
   _themes/ContentTemplate/TestData.json.js: |
     exports.transform = function (model) {
+      model.a = model.__global.a
       return {
-        result: model.prop + " has run js data transform",
-        content: "raw string"
+        content: JSON.stringify(model)
       }
     }
   _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
   a.json: |
-    {
-      "result": "value has run js data transform",
-      "content": "raw string"
-    }
+    { "prop": "value" }
 ---
 # Don't run data-transform if corresponding js not provided
 inputs:

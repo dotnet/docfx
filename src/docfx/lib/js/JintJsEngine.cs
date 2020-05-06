@@ -28,21 +28,26 @@ namespace Microsoft.Docs.Build
         public JintJsEngine(string scriptDir, JObject? global = null)
         {
             _scriptDir = scriptDir;
-            _global = ToJsValue(global ?? new JObject());
+            _global = Parse(global?.ToString() ?? "{}");
         }
 
-        public JToken Run(string scriptPath, string methodName, JToken arg)
+        public string Run(string scriptPath, string methodName, string arg, bool grepContent = false)
         {
             var scriptFullPath = Path.GetFullPath(Path.Combine(_scriptDir, scriptPath));
             var exports = _scripts.GetOrAdd(scriptFullPath, file => new ThreadLocal<JsValue>(() => Run(file))).Value!;
             var method = exports.AsObject().Get(methodName);
 
-            var jsArg = ToJsValue(arg);
+            var jsArg = Parse(arg);
             jsArg.AsObject()?.Put("__global", _global, throwOnError: true);
 
             try
             {
-                return ToJToken(method.Invoke(jsArg));
+                var result = method.Invoke(jsArg);
+                if (grepContent)
+                {
+                    return result.AsObject().Get("content").ToString();
+                }
+                return Stringify(result);
             }
             catch (JavaScriptException jse)
             {
@@ -99,41 +104,18 @@ namespace Microsoft.Docs.Build
             return s_engine.Array.Construct(Arguments.Empty);
         }
 
-        private static JsValue ToJsValue(JToken token)
+        private static JsValue Parse(string token)
         {
-            if (token is JArray arr)
-            {
-                var result = MakeArray();
-                foreach (var item in arr)
-                {
-                    s_engine.Array.PrototypeObject.Push(result, Arguments.From(ToJsValue(item)));
-                }
-                return result;
-            }
-
-            if (token is JObject obj)
-            {
-                var result = MakeObject();
-                foreach (var (key, value) in obj)
-                {
-                    if (value != null)
-                    {
-                        result.Put(key, ToJsValue(value), throwOnError: true);
-                    }
-                }
-                return result;
-            }
-
-            return JsValue.FromObject(s_engine, ((JValue)token).Value);
+            return s_engine.Json.Parse(null, new[] { new JsValue(token) });
         }
 
-        private static JToken ToJToken(JsValue token)
+        private static string Stringify(JsValue token)
         {
             if (token.IsObject())
             {
                 token.AsObject().Delete("__global", throwOnError: false);
             }
-            return JToken.Parse(s_engine.Json.Stringify(null, new[] { token }).AsString());
+            return s_engine.Json.Stringify(null, new[] { token }).AsString();
         }
     }
 }

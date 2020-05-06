@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -46,7 +45,7 @@ namespace Microsoft.Docs.Build
             _global = global;
         }
 
-        public JToken Run(string scriptPath, string methodName, JToken arg)
+        public string Run(string scriptPath, string methodName, string arg, bool grepContent = false)
         {
             s_contextThrottler.Wait();
 
@@ -58,23 +57,31 @@ namespace Microsoft.Docs.Build
 
                 try
                 {
+                    var json = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("JSON"));
+                    var parse = json.GetProperty(JavaScriptPropertyId.FromString("parse"));
+                    var stringify = json.GetProperty(JavaScriptPropertyId.FromString("stringify"));
+                    var input = parse.CallFunction(JavaScriptValue.Undefined, JavaScriptValue.FromString(arg));
+
                     var exports = GetScriptExports(context, Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
                     var global = GetGlobal(context);
                     var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
-                    var input = ToJavaScriptValue(arg);
 
                     if (global.IsValid)
                     {
                         input.SetProperty(JavaScriptPropertyId.FromString("__global"), global, useStrictRules: true);
                     }
 
-                    var output = method.CallFunction(JavaScriptValue.Undefined, input);
+                    var result = method.CallFunction(JavaScriptValue.Undefined, input);
+                    if (grepContent)
+                    {
+                        return result.GetProperty(JavaScriptPropertyId.FromString("content")).ToString();
+                    }
 
-                    return ToJToken(output);
+                    return stringify.CallFunction(JavaScriptValue.Undefined, result).ToString();
                 }
                 catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
                 {
-                    throw new JavaScriptEngineException($"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
+                    throw new JavaScriptEngineException($"{ex.ErrorCode}:\n{Stringify(ex.Error)}");
                 }
                 finally
                 {
@@ -122,12 +129,12 @@ namespace Microsoft.Docs.Build
         {
             if (_global is null)
             {
-                return JavaScriptValue.Invalid;
+                return JavaScriptValue.Undefined;
             }
 
             return _globals.GetOrAdd(context, key =>
             {
-                var global = ToJavaScriptValue(_global);
+                var global = Parse(_global.ToString());
 
                 // Avoid exports been GCed by javascript garbarge collector.
                 global.AddRef();
@@ -192,108 +199,33 @@ namespace Microsoft.Docs.Build
             return Run(scriptPath);
         }
 
-        private static JavaScriptValue ToJavaScriptValue(JToken token)
+        private static JavaScriptValue Parse(string value)
         {
-            switch (token)
-            {
-                case JArray arr:
-                    var resultArray = JavaScriptValue.CreateArray((uint)arr.Count);
-                    for (var i = 0; i < arr.Count; i++)
-                    {
-                        resultArray.SetIndexedProperty(
-                            JavaScriptValue.FromInt32(i), ToJavaScriptValue(arr[i]));
-                    }
-                    return resultArray;
-
-                case JObject obj:
-                    var resultObj = JavaScriptValue.CreateObject();
-                    foreach (var (name, value) in obj)
-                    {
-                        if (value != null)
-                        {
-                            resultObj.SetProperty(
-                                JavaScriptPropertyId.FromString(name), ToJavaScriptValue(value), useStrictRules: true);
-                        }
-                    }
-                    return resultObj;
-
-                case JValue scalar:
-                    switch (scalar.Value)
-                    {
-                        case null:
-                            return JavaScriptValue.Null;
-
-                        case bool aBool:
-                            return JavaScriptValue.FromBoolean(aBool);
-
-                        case string aString:
-                            return JavaScriptValue.FromString(aString);
-
-                        case DateTime aDate:
-                            var constructor = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("Date"));
-                            var args = new[] { JavaScriptValue.Undefined, JavaScriptValue.FromString(aDate.ToString("o", CultureInfo.InvariantCulture)) };
-                            Native.ThrowIfError(Native.JsConstructObject(constructor, args, 2, out var date));
-                            return date;
-
-                        case long aInt:
-                            return JavaScriptValue.FromInt32((int)aInt);
-
-                        case double aDouble:
-                            return JavaScriptValue.FromDouble(aDouble);
-                    }
-                    break;
-            }
-
-            throw new NotSupportedException($"Cannot marshal JToken type '{token.Type}'");
+            var json = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("JSON"));
+            var parse = json.GetProperty(JavaScriptPropertyId.FromString("parse"));
+            var stringify = json.GetProperty(JavaScriptPropertyId.FromString("stringify"));
+            return parse.CallFunction(JavaScriptValue.Undefined, JavaScriptValue.FromString(value));
         }
 
-        private static JToken ToJToken(JavaScriptValue value)
+        private static string Stringify(JavaScriptValue value)
         {
             switch (value.ValueType)
             {
-                case JavaScriptValueType.Boolean:
-                    return value.ToBoolean();
-
-                case JavaScriptValueType.Null:
-                    return JValue.CreateNull();
-
-                case JavaScriptValueType.Undefined:
-                    return JValue.CreateUndefined();
-
-                case JavaScriptValueType.String:
-                    return value.ToString();
-
-                case JavaScriptValueType.Number:
-                    var intNumber = value.ToInt32();
-                    var doubleNumber = value.ToDouble();
-                    return intNumber == doubleNumber ? (JValue)intNumber : (JValue)doubleNumber;
-
-                case JavaScriptValueType.Array:
-                    var arr = new JArray();
-                    var arrLength = value.GetProperty(JavaScriptPropertyId.FromString("length")).ToInt32();
-                    for (var i = 0; i < arrLength; i++)
-                    {
-                        arr.Add(ToJToken(value.GetIndexedProperty(JavaScriptValue.FromInt32(i))));
-                    }
-                    return arr;
-
-                case JavaScriptValueType.Object:
                 case JavaScriptValueType.Error:
-                    var obj = new JObject();
+                    var obj = JavaScriptValue.CreateObject();
                     var names = value.GetOwnPropertyNames();
                     var namesLength = names.GetProperty(JavaScriptPropertyId.FromString("length")).ToInt32();
                     for (var i = 0; i < namesLength; i++)
                     {
-                        var name = names.GetIndexedProperty(JavaScriptValue.FromInt32(i)).ToString();
-                        if (name != "__global")
-                        {
-                            obj[name] = ToJToken(value.GetProperty(JavaScriptPropertyId.FromString(name)));
-                        }
+                        var name = JavaScriptPropertyId.FromString(names.GetIndexedProperty(JavaScriptValue.FromInt32(i)).ToString());
+                        obj.SetProperty(name, value.GetProperty(name), useStrictRules: true);
                     }
-                    return obj;
+                    return Stringify(obj);
 
                 default:
-                    throw new NotSupportedException($"Cannot marshal javascript type '{value.ValueType}'");
+                    var json = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("JSON"));
+                    var stringify = json.GetProperty(JavaScriptPropertyId.FromString("stringify"));
+                    return stringify.CallFunction(JavaScriptValue.Undefined, value).ToString();
             }
         }
     }

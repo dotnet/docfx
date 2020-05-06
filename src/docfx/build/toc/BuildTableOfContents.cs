@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -53,25 +54,27 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.Config.DryRun)
                 {
+                    var modelJson = JsonUtility.Serialize(model);
+
                     if (context.Config.OutputType == OutputType.Html)
                     {
                         // Just for current PDF build. toc.json is used for generate PDF outline
-                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
-                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
+                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", modelJson, grepContent: true);
+                        context.Output.WriteText(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
 
-                        var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
+                        var viewModel = JToken.Parse(context.TemplateEngine.RunJavaScript($"toc.html.js", modelJson));
                         var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);
                         context.Output.WriteText(outputPath, html);
                     }
                     else if (context.Config.Legacy)
                     {
-                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
-                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
+                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", modelJson, grepContent: true);
+                        context.Output.WriteText(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
                         context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
                     }
                     else
                     {
-                        context.Output.WriteJson(outputPath, model);
+                        context.Output.WriteText(outputPath, modelJson);
                     }
                 }
             });

@@ -1,10 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -20,12 +17,9 @@ namespace Microsoft.Docs.Build
         [InlineData("{'a':true}", "['a','b']")]
         public void RunJavascript(string input, string output)
         {
-            var inputJson = JObject.Parse(input.Replace('\'', '"'));
-
             foreach (var engine in _engines)
             {
-                var outputJson = engine.Run("index.js", "main", inputJson);
-                Assert.Equal(output.Replace('\'', '"'), outputJson.ToString(Formatting.None));
+                Assert.Equal(output.Replace('\'', '"'), engine.Run("index.js", "main", input.Replace('\'', '"')));
             }
         }
 
@@ -33,11 +27,9 @@ namespace Microsoft.Docs.Build
         [InlineData("{'error': true}")]
         public void RunJavascriptError(string input)
         {
-            var inputJson = JObject.Parse(input.Replace('\'', '"'));
-
             foreach (var engine in _engines)
             {
-                Assert.Throws<JavaScriptEngineException>(() => engine.Run("index.js", "main", inputJson));
+                Assert.Throws<JavaScriptEngineException>(() => engine.Run("index.js", "main", input.Replace('\'', '"')));
             }
         }
     }
