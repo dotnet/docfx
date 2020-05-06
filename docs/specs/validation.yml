@@ -799,3 +799,65 @@ outputs:
     ["suggestion","headings-with-underline","Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","a.md",8,1]
     ["suggestion","headings-with-underline","Bad 2 format: 'Multiple Title2 Line 1\nMultiple Title2 Line 2'. Use hashes to create H1(#) or H2(##)","a.md",12,1]
     ["suggestion","headings-with-underline","Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","b.md",2,1]
+---
+# Content Validation - EmptyHeadings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude: b.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "HeadingEmpty",
+            "message": "Empty h{0}. Headings must have content.",
+            "code": "heading-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # 
+    ## 
+    ###
+    #### <div></div>
+    #####            
+    ###### &nbsp;
+    ###### &#160;
+    ###### <a href="image.png"></a>
+    ###### <a href="image.png"> &nbsp; </a>
+    ###### <div><a href="image.png"> &nbsp; </a><div>
+    ###### <img src="image.png" alt="xxx"/>
+
+    ###### <span>abc</span>
+    ###### <a href="image.png">abc</a>
+    [!include[](b.md)]
+  b.md: |
+  image.png:
+outputs:
+  a.json:
+  image.png:
+  .errors.log: |
+    ["suggestion","heading-empty","Empty h2. Headings must have content.","a.md",2,1]
+    ["suggestion","heading-empty","Empty h3. Headings must have content.","a.md",3,1]
+    ["suggestion","heading-empty","Empty h4. Headings must have content.","a.md",4,1]
+    ["suggestion","heading-empty","Empty h5. Headings must have content.","a.md",5,1]
+    ["suggestion","heading-empty","Empty h6. Headings must have content.","a.md",6,1]
+    ["suggestion","heading-empty","Empty h6. Headings must have content.","a.md",7,1]
+    ["suggestion","heading-empty","Empty h6. Headings must have content.","a.md",8,1]
+    ["suggestion","heading-empty","Empty h6. Headings must have content.","a.md",9,1]
+    ["suggestion","heading-empty","Empty h6. Headings must have content.","a.md",10,1]
+    ["suggestion","heading-empty","Empty h6. Headings must have content.","a.md",11,1]
