@@ -6,7 +6,7 @@ inputs:
       docs/TOC.md: /absolute/path
 outputs:
   .errors.log: |
-    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","redirections.yml",2,16]
+    {"message_severity":"error","code":"redirection-invalid","message":"File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","file":"redirections.yml","line":2,"column":16}
 ---
 # Redirection url conflict
 inputs:
@@ -20,7 +20,7 @@ inputs:
 outputs:
   docs/b.json:
   .errors.log: |
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","redirections.yml",4,14]
+    {"message_severity":"error","code":"redirection-conflict","message":"The 'docs/a.md' appears twice or more in the redirection mappings","file":"redirections.yml","line":4,"column":14}
 ---
 # Redirection file out of build scope
 inputs:
@@ -55,8 +55,8 @@ inputs:
 outputs:
   docs/b.json:
   .errors.log: |
-    ["error","redirection-invalid","File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","redirections.yml",2,16]
-    ["error","redirection-conflict","The 'docs/a.md' appears twice or more in the redirection mappings","redirections.yml",5,14]
+    {"message_severity":"error","code":"redirection-invalid","message":"File 'docs/TOC.md' is redirected to '/absolute/path'. Only content files can be redirected.","file":"redirections.yml","line":2,"column":16}
+    {"message_severity":"error","code":"redirection-conflict","message":"The 'docs/a.md' appears twice or more in the redirection mappings","file":"redirections.yml","line":5,"column":14}
 ---
 # redirect to not starting with '/' is allowed in config.redirectionWithoutIds
 inputs:
@@ -109,7 +109,7 @@ inputs:
   docs/path1.md:
 outputs:
   .errors.log: |
-    ["warning","redirection-url-conflict","The '/docs/path1' appears twice or more in the redirection mappings","redirections.yml",3,9]
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/docs/path1' appears twice or more in the redirection mappings","file":"redirections.yml","line":3,"column":9}
   .publish.json: |
     {
         "files": [
@@ -224,7 +224,7 @@ outputs:
   sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
   sccm/.errors.log: |
-    ["warning","redirection-url-conflict","The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings","redirections.yml",3,18]
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings","file":"redirections.yml","line":3,"column":18}
 ---
 # redirect to empty URL
 inputs:
@@ -236,8 +236,8 @@ inputs:
       a.md:
 outputs:
   .errors.log: |
-    ["error","redirection-is-empty","The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","redirections.yml",2,22]
-    ["error","redirection-is-empty","The key or value of redirection 'a.md: ' is null or empty","redirections.yml",4,8]
+    {"message_severity":"error","code":"redirection-is-empty","message":"The key or value of redirection 'sccm/mdm/index.md: ' is null or empty","file":"redirections.yml","line":2,"column":22}
+    {"message_severity":"error","code":"redirection-is-empty","message":"The key or value of redirection 'a.md: ' is null or empty","file":"redirections.yml","line":4,"column":8}
 ---
 # The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
 inputs:
@@ -252,12 +252,12 @@ inputs:
       docs/h.md: "/docs/folder0/index"
 outputs:
   .errors.log: |
-    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/b.md' because redirect URL 'http://hostname/test' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","redirections.yml",4,14]
-    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/a.md' because redirect URL '/docs/x' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","redirections.yml",2,14]
-    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/c.md' because redirect URL '/docs/x#bookmark' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","redirections.yml",3,14]
-    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/d.md' because redirect URL '/docs/folder0' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","redirections.yml",5,14]
-    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/f.md' because redirect URL '/docs/folder0/' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","redirections.yml",6,14]
-    ["suggestion","redirection-url-not-found","Can't preserve document ID for redirected file 'docs/h.md' because redirect URL '/docs/folder0/index' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","redirections.yml",7,14]
+    {"message_severity":"suggestion","code":"redirection-url-not-found","message":"Can't preserve document ID for redirected file 'docs/b.md' because redirect URL 'http://hostname/test' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.yml","line":4,"column":14}
+    {"message_severity":"suggestion","code":"redirection-url-not-found","message":"Can't preserve document ID for redirected file 'docs/a.md' because redirect URL '/docs/x' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.yml","line":2,"column":14}
+    {"message_severity":"suggestion","code":"redirection-url-not-found","message":"Can't preserve document ID for redirected file 'docs/c.md' because redirect URL '/docs/x#bookmark' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.yml","line":3,"column":14}
+    {"message_severity":"suggestion","code":"redirection-url-not-found","message":"Can't preserve document ID for redirected file 'docs/d.md' because redirect URL '/docs/folder0' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.yml","line":5,"column":14}
+    {"message_severity":"suggestion","code":"redirection-url-not-found","message":"Can't preserve document ID for redirected file 'docs/f.md' because redirect URL '/docs/folder0/' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.yml","line":6,"column":14}
+    {"message_severity":"suggestion","code":"redirection-url-not-found","message":"Can't preserve document ID for redirected file 'docs/h.md' because redirect URL '/docs/folder0/index' is invalid or is a relative path to a file in another repo. Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.yml","line":7,"column":14}
   .publish.json: |
     {
       "files": [
@@ -425,8 +425,8 @@ inputs:
     ---
 outputs:
   .errors.log: |
-    ["warning","attribute-reserved","Attribute redirect_url is reserved for use by Docs.","docs/a.md",2,1]
-    ["warning","publish-url-conflict","Two or more files publish to the same url '/docs/a': 'docs/a.md [redirection]', 'docs/a.md'"]
+    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute redirect_url is reserved for use by Docs.","file":"docs/a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a': 'docs/a.md [redirection]', 'docs/a.md'"}
 ---
 # document_id of .yml redirections are calculated as .md
 inputs:
@@ -491,4 +491,4 @@ outputs:
       ]
     }
   .errors.log: |
-    ["warning","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"]
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"}

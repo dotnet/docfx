@@ -298,8 +298,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["warning","attribute-reserved","Attribute content_type is reserved for use by Docs.","docfx.yml",2,3]
-    ["warning","attribute-reserved","Attribute ms.contentlang is reserved for use by Docs.","docs/a.md",2,1]
+    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute content_type is reserved for use by Docs.","file":"docfx.yml","line":2,"column":3}
+    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute ms.contentlang is reserved for use by Docs.","file":"docs/a.md","line":2,"column":1}
 ---
 # Context object type is TOC
 legacy: true
