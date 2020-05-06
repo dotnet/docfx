@@ -491,8 +491,8 @@ outputs:
       ]
     }
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a.md [redirection]' --> 'a.md [redirection]'","redirections.json",5,26]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'b.md [redirection]' --> 'b.md [redirection]'","redirections.json",10,26]
+    ["warning","circular-redirection","Build has identified circular redirection: a.md [redirection] --> a.md [redirection]","redirections.json",5,26]
+    ["warning","circular-redirection","Build has identified circular redirection: b.md [redirection] --> b.md [redirection]","redirections.json",10,26]
     ["warning","publish-url-conflict","Two or more files publish to the same url '/a': 'a.md [redirection]', 'a.md'"]
 ---
 # Warn on circular redirection without document id
@@ -505,9 +505,9 @@ inputs:
       c.md: /a
 outputs:
   .errors.log: |
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'a.md [redirection]' --> 'b.md [redirection]' --> 'c.md [redirection]' --> 'a.md [redirection]'","redirections.yml",2,9]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'b.md [redirection]' --> 'c.md [redirection]' --> 'a.md [redirection]' --> 'b.md [redirection]'","redirections.yml",3,9]
-    ["error","circular-reference","Build has identified file(s) referencing each other: 'c.md [redirection]' --> 'a.md [redirection]' --> 'b.md [redirection]' --> 'c.md [redirection]'","redirections.yml",4,9]
+    ["warning","circular-redirection","Build has identified circular redirection: a.md [redirection] --> b.md [redirection] --> c.md [redirection] --> a.md [redirection]","redirections.yml",2,9]
+    ["warning","circular-redirection","Build has identified circular redirection: b.md [redirection] --> c.md [redirection] --> a.md [redirection] --> b.md [redirection]","redirections.yml",3,9]
+    ["warning","circular-redirection","Build has identified circular redirection: c.md [redirection] --> a.md [redirection] --> b.md [redirection] --> c.md [redirection]","redirections.yml",4,9]
 
 
 

@@ -52,7 +52,8 @@ namespace Microsoft.Docs.Build
                 var (renamedFrom, source) = item;
                 if (redirectionChain.Contains(redirectionFile))
                 {
-                    return (Errors.Link.CircularReference(source, redirectionFile, redirectionChain), _redirectUrls[file]);
+                    redirectionChain.Push(redirectionFile);
+                    return (Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()), _redirectUrls[file]);
                 }
                 redirectionChain.Push(redirectionFile);
                 redirectionFile = renamedFrom;
