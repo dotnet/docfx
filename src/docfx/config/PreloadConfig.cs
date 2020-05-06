@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 var url = message.RequestUri.ToString();
                 foreach (var (baseUrl, rule) in rules)
                 {
-                    if (url.StartsWith(baseUrl))
+                    if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
                     {
                         foreach (var header in rule.Headers)
                         {
