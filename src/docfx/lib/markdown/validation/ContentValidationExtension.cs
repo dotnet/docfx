@@ -64,18 +64,22 @@ namespace Microsoft.Docs.Build
 
                     if (InclusionContext.IsInclude && documentHeadings.Any())
                     {
-                        var rootFile = (Document)InclusionContext.RootFile;
-                        var rootFileHeadings = allHeadings.TryGetValue(rootFile, out var headings) ? headings.headings : null;
-                        if (rootFileHeadings != null)
+                        foreach (var (doc, (headings, _)) in allHeadings)
                         {
-                            var index = 0;
-                            while (index < rootFileHeadings.Count)
+                            var currentFile = (Document)InclusionContext.File;
+                            if (doc == currentFile)
                             {
-                                var current = rootFileHeadings[index];
-                                if (current.Level == -1 && current.Content == $"{((Document)InclusionContext.File).FilePath}")
+                                continue;
+                            }
+
+                            var index = 0;
+                            while (index < headings.Count)
+                            {
+                                var current = headings[index];
+                                if (current.Level == -1 && current.Content == $"{currentFile.FilePath}")
                                 {
-                                    rootFileHeadings.RemoveAt(index);
-                                    rootFileHeadings.InsertRange(index, documentHeadings.Select(d => new Heading
+                                    headings.RemoveAt(index);
+                                    headings.InsertRange(index, documentHeadings.Select(d => new Heading
                                     {
                                         Content = d.Content,
                                         Level = d.Level,

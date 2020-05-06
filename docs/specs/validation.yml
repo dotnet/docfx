@@ -804,6 +804,7 @@ inputs:
       - b.md
       - c.md
       - d.md
+      - e.md
   rules.json: |
     {
       "headings": {
@@ -842,6 +843,8 @@ inputs:
     [!include[](c.md)]
 
     [!include[](d.md)]
+
+    [!include[](e.md)]
   normal-1.md: |
     # Title 1-3
     ## Title 2
@@ -857,6 +860,11 @@ inputs:
   d.md: |
     ### Title 3-d
     ##### Title 5-d
+  e.md: |
+    [!include[](b.md)]
+    [!include[](c.md)]
+
+    [!include[](d.md)]
 outputs:
   a.json:
   normal-1.json:
@@ -867,6 +875,55 @@ outputs:
     ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-b'(b.md) followed by heading: h5 'Title 5'. Headings must increment with no skipped levels","a.md",8,1]
     ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-b'(b.md) followed by heading: h5 'Title 5-c'(c.md). Headings must increment with no skipped levels","a.md",11,1]
     ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-d'(d.md) followed by heading: h5 'Title 5-d'(d.md(2,1)). Headings must increment with no skipped levels","a.md",13,1]
+    ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-b'(b.md) followed by heading: h5 'Title 5-c'(c.md). Headings must increment with no skipped levels","a.md",15,1]
+    ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-d'(d.md) followed by heading: h5 'Title 5-d'(d.md(2,1)). Headings must increment with no skipped levels","a.md",15,1]
     ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-d' followed by heading: h5 'Title 5-d'. Headings must increment with no skipped levels","d.md",2,1]
-
-
+    ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-b'(b.md) followed by heading: h5 'Title 5-c'(c.md). Headings must increment with no skipped levels","e.md",2,1]
+    ["suggestion","heading-skipped","Skipped heading: h3 'Title 3-d'(d.md) followed by heading: h5 'Title 5-d'(d.md(2,1)). Headings must increment with no skipped levels","e.md",4,1]
+---
+# Content validation - h1 in inclusion
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - b.md
+      - c.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "InclusionH1",
+            "message": "H1 headings aren't allowed in included files. Every parent file should have an H1.",
+            "code": "h1-in-include",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # H1 -a
+    [!include[](b.md)]
+  b.md: |
+    # H1 -b
+    [!include[](c.md)]
+  c.md: |
+    # H1 -c
+    ------
+outputs:
+  a.json:
+  .errors.log: |
+    ["suggestion","h1-in-include","H1 headings aren't allowed in included files. Every parent file should have an H1.","b.md",1,1]
+    ["suggestion","h1-in-include","H1 headings aren't allowed in included files. Every parent file should have an H1.","b.md",2,1]
+    ["suggestion","h1-in-include","H1 headings aren't allowed in included files. Every parent file should have an H1.","c.md",1,1]
