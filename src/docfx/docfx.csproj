@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.1.1" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.0.3" />
-    <PackageReference Include="docs.validation" Version="1.0.0-beta-00090-bd801c2" />
+    <PackageReference Include="docs.validation" Version="1.0.0-beta-00093-b6a030e" />
     <PackageReference Include="DotLiquid" Version="2.0.325" />
     <PackageReference Include="Glob" Version="1.1.6" />
     <!-- To keep HTML intact during v3 migration, keep using HtmlAgilityPack 1.4.9 -->

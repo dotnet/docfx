@@ -75,7 +75,15 @@ namespace Microsoft.Docs.Build
                                 if (current.Level == -1 && current.Content == $"{((Document)InclusionContext.File).FilePath}")
                                 {
                                     rootFileHeadings.RemoveAt(index);
-                                    rootFileHeadings.InsertRange(index, documentHeadings);
+                                    rootFileHeadings.InsertRange(index, documentHeadings.Select(d => new Heading
+                                    {
+                                        Content = d.Content,
+                                        Level = d.Level,
+                                        SourceInfo = current.SourceInfo,
+                                        HeadingChar = d.HeadingChar,
+                                        RenderedPlainText = d.RenderedPlainText,
+                                        InclusionSourceInfo = d.SourceInfo,
+                                    }));
                                     index += documentHeadings.Count - 1;
                                 }
 
