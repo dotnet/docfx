@@ -70,13 +70,18 @@ namespace Microsoft.Docs.Build
         public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
             var message_severity = level;
-            var file = FilePath is null ? FilePath?.Path : sourceMap?.GetOriginalFilePath(FilePath) ?? FilePath?.Path;
+            int line = Line;
+            int end_line = EndLine;
+            int column = Column;
+            int end_column = EndColumn;
+            var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath);
+            var file = originalPath == null ? FilePath?.Path : originalPath;
             var date_time = DateTime.UtcNow;
             var log_item_type = "user";
-            var end_line = EndLine;
-            var end_column = EndColumn;
 
-            return JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, Line, end_line, Column, end_column, date_time });
+            return originalPath == null
+                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, date_time })
+                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
