@@ -77,8 +77,8 @@ environments:
   - DOCS_OPS_TOKEN
 outputs:
   .errors.log: |
-    ["warning","docset-not-provisioned","*"]
-    ["warning","docset-not-provisioned","*"]
+    {"message_severity":"warning","code":"docset-not-provisioned","message":"*"}
+    {"message_severity":"warning","code":"docset-not-provisioned","message":"*"}
 ---
 # Specify editLink repo and branch in .openpublishing.publish.config.json
 repos:

@@ -11,7 +11,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    ["suggestion","merge-conflict","File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.","docs/a.md",1,1]
+    {"message_severity":"suggestion","code":"merge-conflict","message":"File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.","file":"docs/a.md","line":1,"column":1}
 ---
 # Ignore git merge conflict marker inside code blocks
 inputs:
@@ -41,8 +41,8 @@ inputs:
   a.md:
 outputs:
   .errors.log: |
-    ["error","invalid-metadata-type","Metadata 'key1' can only be a scalar value or string array","docfx.yml",2,9]
-    ["error","invalid-metadata-type","Metadata 'key2' can only be a scalar value or string array","docfx.yml",6,7]
+    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key1' can only be a scalar value or string array","file":"docfx.yml","line":2,"column":9}
+    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key2' can only be a scalar value or string array","file":"docfx.yml","line":6,"column":7}
 ---
 # Additional metadata validation from external JSON schema
 inputs:
@@ -73,9 +73,9 @@ outputs:
       "key3": "net462"
     }
   .errors.log: |
-    ["warning","unexpected-type","Expected type 'String' but got 'Array'","docfx.yml",3,9]
-    ["warning","invalid-value","Invalid value for 'key2': 'XNAGameStudio'","docfx.yml",6,13]
-    ["warning","unexpected-type","Expected type 'Integer' but got 'String'","a.md",2,7]
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'","file":"docfx.yml","line":3,"column":9}
+    {"message_severity":"warning","code":"invalid-value","message":"Invalid value for 'key2': 'XNAGameStudio'","file":"docfx.yml","line":6,"column":13}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Integer' but got 'String'","file":"a.md","line":2,"column":7}
 ---
 # Report missing-attribute at file level when yaml header missing
 inputs:
@@ -91,8 +91,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    ["warning","missing-attribute","Missing required attribute: 'a'","a.md",1,1]
-    ["warning","missing-attribute","Missing required attribute: 'a'","b.md",1,1]
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"b.md","line":1,"column":1}
 ---
 # Allow multiple metadata schema definitions
 inputs:
@@ -111,8 +111,8 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","missing-attribute","Missing required attribute: 'a'","a.md",2,1]
-    ["warning","unexpected-type","Expected type 'String' but got 'Array'","a.md",2,6]
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'","file":"a.md","line":2,"column":6}
 ---
 # Validate each metadata schema individually for multiple metadata schema definitions
 inputs:
@@ -131,10 +131,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","missing-attribute","Missing required attribute: 'a'","a.md",2,1]
-    ["warning","unexpected-type","Expected type 'String' but got 'Integer'","a.md",2,6]
-    ["warning","missing-attribute","Missing required attribute: 'b'","a.md",2,1]
-    ["warning","unexpected-type","Expected type 'Array' but got 'Integer'","a.md",2,6]
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Integer'","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'b'","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Array' but got 'Integer'","file":"a.md","line":2,"column":6}
 ---
 # Json schema microsoft alias rule: Mute error, when no connection with Graph API
 inputs:
@@ -321,7 +321,7 @@ environments:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","ms-alias-invalid","Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","a.md",2,12]
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
 ---
 # Content validation end to end scenario 
 inputs:
@@ -349,7 +349,7 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["warning","h1-missing","H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","a.md",1]
+    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":1}
 ---
 # Validate included markdown files within Yaml file
 inputs:
@@ -387,7 +387,7 @@ outputs:
     }
   docs/b.json:
   .errors.log: |
-    ["warning","h1-missing","H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","docs/b.md",1]
+    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"docs/b.md","line":1}
 ---
 # Skip content validation for yaml files
 inputs:
@@ -445,8 +445,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","b.md",2,14]
-    ["suggestion","duplicate-attribute","Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","a.md",3,14]
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","file":"b.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","file":"a.md","line":3,"column":14}
 ---
 # Json schema docset unique: null/empty values are not in-scope
 inputs:
@@ -491,8 +491,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    ["suggestion","duplicate-attribute","Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","a.md",2,14]
-    ["suggestion","duplicate-attribute","Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","docfx.yml",4,16]
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","file":"a.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","file":"docfx.yml","line":4,"column":16}
 ---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
@@ -525,8 +525,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    ["warning","string-length-invalid","String 'description' length should be >= 2","a.md",2,14]
-    ["warning","string-length-invalid","String 'description' length should be <= 10","b.md",2,14]
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' length should be >= 2","file":"a.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' length should be <= 10","file":"b.md","line":2,"column":14}
 ---
 # Content validation - H1 unique
 inputs:
@@ -572,9 +572,9 @@ outputs:
   b.json:
   c.json:
   .errors.log: |
-    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","a.md",1,1]
-    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","d.md",1,1]
-    ["suggestion","duplicate-h1","H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","b.md",1,1]
+    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","file":"a.md","line":1,"column":1}
+    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","file":"d.md","line":1,"column":1}
+    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","file":"b.md","line":1,"column":1}
 ---
 # Content validation - Publish Url - max level
 # Validation is only worked in the conceptual page
@@ -644,9 +644,9 @@ outputs:
     {"conceptual": "<p><img src=\"folder1/folder2/image.png\" alt=\"\" data-linktype=\"relative-path\"></p>"}
   docs/folder/folder1/folder2/image.png:
   .errors.log: |
-    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "folder0/folder1/folder2/index.md"]
-    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "v1/folder1/folder2/a.md"]
-    ["suggestion","path-too-deep","Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.", "v2/folder1/folder2/a.md"]
+    {"message_severity":"suggestion","code":"path-too-deep","message":"Article URL '/docs/folder/folder1/folder2/' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.","file":"folder0/folder1/folder2/index.md"}
+    {"message_severity":"suggestion","code":"path-too-deep","message":"Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.","file":"v1/folder1/folder2/a.md"}
+    {"message_severity":"suggestion","code":"path-too-deep","message":"Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.","file":"v2/folder1/folder2/a.md"}
 ---
 # Content validation - Publish Url - segment uniqueness
 # Validation is only worked in the conceptual page
@@ -714,10 +714,10 @@ outputs:
   docs/folder/duplicatedword/duplicatedword/image.png:
   docs/folder/duplicated-base-path/docs/a.json:
   .errors.log: |
-    ["suggestion","path-duplication","Article URL '/docs/folder/duplicatedword/duplicatedword/' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.", "folder0/duplicatedword/duplicatedword/index.md"]
-    ["suggestion","path-duplication","Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.", "v1/duplicatedword/folder1/DuplicatedWord.md"]
-    ["suggestion","path-duplication","Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.", "v2/duplicatedword/folder1/DuplicatedWord.md"]
-    ["suggestion","path-duplication","Article URL '/docs/folder/duplicated-base-path/docs/a' contains duplicated text 'docs'. For SEO, article URLs should not contain duplication.", "folder0/duplicated-base-path/docs/a.md"]
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicatedword/duplicatedword/' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.","file":"folder0/duplicatedword/duplicatedword/index.md"}
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.","file":"v1/duplicatedword/folder1/DuplicatedWord.md"}
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.","file":"v2/duplicatedword/folder1/DuplicatedWord.md"}
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicated-base-path/docs/a' contains duplicated text 'docs'. For SEO, article URLs should not contain duplication.","file":"folder0/duplicated-base-path/docs/a.md"}
 ---
 # Validate user html
 inputs:
@@ -731,10 +731,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["info","disallowed-html","HTML tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",1,2]
-    ["info","disallowed-html","HTML tag 'BUTTON' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",2,2]
-    ["info","disallowed-html","HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",4,2]
-    ["info","disallowed-html","HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","a.md",5,6]
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":2}
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'BUTTON' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"column":2}
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":4,"column":2}
+    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
 ---
 # Content Validation - Setex Headings
 inputs:
@@ -795,7 +795,7 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    ["suggestion","headings-with-underline","Bad 1 format: 'Title 1'. Use hashes to create H1(#) or H2(##)","a.md",5,1]
-    ["suggestion","headings-with-underline","Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","a.md",8,1]
-    ["suggestion","headings-with-underline","Bad 2 format: 'Multiple Title2 Line 1\nMultiple Title2 Line 2'. Use hashes to create H1(#) or H2(##)","a.md",12,1]
-    ["suggestion","headings-with-underline","Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","b.md",2,1]
+    {"message_severity":"suggestion","code":"headings-with-underline","message":"Bad 1 format: 'Title 1'. Use hashes to create H1(#) or H2(##)","file":"a.md","line":5,"column":1}
+    {"message_severity":"suggestion","code":"headings-with-underline","message":"Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","file":"a.md","line":8,"column":1}
+    {"message_severity":"suggestion","code":"headings-with-underline","message":"Bad 2 format: 'Multiple Title2 Line 1\nMultiple Title2 Line 2'. Use hashes to create H1(#) or H2(##)","file":"a.md","line":12,"column":1}
+    {"message_severity":"suggestion","code":"headings-with-underline","message":"Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","file":"b.md","line":2,"column":1}
