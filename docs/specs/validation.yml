@@ -572,8 +572,9 @@ outputs:
   b.json:
   c.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"column":1}
-    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"column":1}
+    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","file":"a.md","line":1,"column":1}
+    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","file":"d.md","line":1,"column":1}
+    {"message_severity":"suggestion","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, d.md'","file":"b.md","line":1,"column":1}
 ---
 # Content validation - Publish Url - max level
 # Validation is only worked in the conceptual page

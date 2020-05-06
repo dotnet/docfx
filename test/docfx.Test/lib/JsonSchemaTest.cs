@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         [Theory]
 
         // type validation
-                [InlineData("{'type': 'boolean'}", "true", "")]
+        [InlineData("{'type': 'boolean'}", "true", "")]
         [InlineData("{'type': 'array'}", "[]", "")]
         [InlineData("{'type': 'object'}", "{}", "")]
         [InlineData("{'type': 'string'}", "'text'", "")]

@@ -27,7 +27,9 @@ namespace Microsoft.Docs.Build
                 file.ContentType,
                 file.Mime.Value);
 
-            publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
+            var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
+            errors.AddIfNotNull(redirectError);
+            publishItem.RedirectUrl = redirectUrl;
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
             publishItem.ExtensionData = new JObject
             {
