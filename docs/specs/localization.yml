@@ -19,7 +19,7 @@ repos:
 outputs:
   docs/loc.json:
   .errors.log: |
-    ["warning","link-out-of-scope","File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","docs/loc.md",1,1]
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","file":"docs/loc.md","line":1,"column":1}
 ---
 # restore loc repo with dependencies 2
 # [bilingual]
@@ -46,7 +46,7 @@ repos:
 outputs:
   docs/loc.json:
   .errors.log: |
-    ["warning","link-out-of-scope","File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","docs/loc.md",1,1]
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","file":"docs/loc.md","line":1,"column":1}
 ---
 # edit url convention without source locale 1
 locale: zh-cn
@@ -407,7 +407,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"resource.png\">link to deleted resource</a>\n<a href=\"b.md\">link to deleted markdown doesn't work</a></p>\n"}
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: 'b.md'.","docs/a.md",2,1]
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'b.md'.","file":"docs/a.md","line":2,"column":1}
   .dependencymap.json: |
     {
       "dependencies": {
@@ -477,8 +477,8 @@ repos:
         docs/resource.png:
 outputs:
   .errors.log: |
-    ["warning","file-not-found","Invalid file link: 'resource.png'.","docs/a.md",2,1]
-    ["error","include-not-found","Cannot resolve 'tokena.md' relative to 'docs/a.md'.","docs/a.md",1,1]
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'resource.png'.","file":"docs/a.md","line":2,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokena.md' relative to 'docs/a.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # fallback to inclusion parent toc
 locale: zh-cn
@@ -610,9 +610,9 @@ repos:
           [!include[include deleted tokena](tokenx.md)]
 outputs:
   .errors.log: |
-    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/1.md'.","docs/1.md",1,1]
-    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/2.md'.","docs/2.md",1,1]
-    ["error","include-not-found","Cannot resolve 'tokenx.md' relative to 'docs/3.md'.","docs/3.md",1,1]
+    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokenx.md' relative to 'docs/1.md'.","file":"docs/1.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokenx.md' relative to 'docs/2.md'.","file":"docs/2.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokenx.md' relative to 'docs/3.md'.","file":"docs/3.md","line":1,"column":1}
 ---
 # fallback to corresponding source branch 1
 locale: zh-cn

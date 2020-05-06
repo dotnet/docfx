@@ -112,8 +112,8 @@ outputs:
   a&b.json:
   a&amp;b.json:
   .errors.log: |
-    ["error","include-not-found","Cannot resolve 'a%20b.md' relative to 'includes.md'.","includes.md",1,1]
-    ["error","include-not-found","Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","includes.md",4,1]
+    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'a%20b.md' relative to 'includes.md'.","file":"includes.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'a&amp;amp;b.md' relative to 'includes.md'.","file":"includes.md","line":4,"column":1}
   .publish.json:
 ---
 # Handle encoding in xref resolving
@@ -157,4 +157,4 @@ outputs:
           </p>"
     }
   .errors.log: |
-    ["warning","xref-not-found","Cross reference not found: 'a%2A'","html-xref.md",6,9]
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a%2A'","file":"html-xref.md","line":6,"column":9}

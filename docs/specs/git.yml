@@ -77,7 +77,7 @@ cache:
 outputs:
   docs/index.json:
   .errors.log: |
-    ["warning","author-not-found","Invalid value for author: 'invalid_user' is not a valid GitHub ID","docs/index.md",2,9]
+    {"message_severity":"warning","code":"author-not-found","message":"Invalid value for author: 'invalid_user' is not a valid GitHub ID","file":"docs/index.md","line":2,"column":9}
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
 repos:
@@ -387,7 +387,7 @@ repos:
         a.md:
 outputs:
   .errors.log: |
-    ["error","committish-not-found","Can't find branch, tag, or commit 'live' for repo *"]
+    {"message_severity":"error","code":"committish-not-found","message":"Can't find branch, tag, or commit 'live' for repo *"}
 ---
 # Use current repo's branch when edit branch isn't specified in contribution config,
 # and contribution config's repository equals to current repo's
