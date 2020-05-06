@@ -42,6 +42,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 $"{message}",
                 null,
                 line: processor.LineIndex);
+            Action<string> logWarning = (string message) => _context.LogWarning(
+                $"invalid-{extensionName}",
+                $"{message}",
+                null,
+                line: processor.LineIndex);
 
             var block = new TripleColonBlock(this)
             {
@@ -55,7 +60,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 || !_extensions.TryGetValue(extensionName, out var extension)
                 || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
                 || !TryMatchAttributes(ref slice, out var attributes, extensionName, extension.SelfClosing, logError)
-                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, block))
+                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, logWarning, block))
             {
                 return BlockState.None;
             }
