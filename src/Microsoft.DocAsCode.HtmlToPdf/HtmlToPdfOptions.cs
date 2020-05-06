@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.HtmlToPdf
 {
     using System;
+    using System.IO;
     using System.Text;
 
     public class HtmlToPdfOptions
@@ -94,7 +95,10 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
             if (string.IsNullOrEmpty(UserStyleSheet))
             {
-                sb.Append(" --user-style-sheet \"").Append(DefaultStyleSheet).Append("\"");
+                if (File.Exists(DefaultStyleSheet))
+                {
+                    sb.Append(" --user-style-sheet \"").Append(DefaultStyleSheet).Append("\"");
+                }
             }
             else
             {
