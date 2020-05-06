@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            _dependencyMapBuilder.AddDependencyItem(file, nearestToc, DependencyType.Metadata);
+            _dependencyMapBuilder.AddDependencyItem(file.FilePath, nearestToc.FilePath, DependencyType.Metadata, file.ContentType);
             return PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath));
         }
 

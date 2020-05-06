@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.Include);
+            _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.Include, referencingFile.ContentType);
             return (error, file);
         }
 
@@ -90,12 +90,12 @@ namespace Microsoft.Docs.Build
             {
                 if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.File);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file?.FilePath, DependencyType.File, referencingFile.ContentType);
                     _bookmarkValidator.AddBookmarkReference(referencingFile, inclusionRoot, fragment, true, href);
                 }
                 else if (file != null)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.File);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.File, referencingFile.ContentType);
                     _bookmarkValidator.AddBookmarkReference(referencingFile, file, fragment, false, href);
                 }
             }

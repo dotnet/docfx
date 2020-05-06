@@ -652,11 +652,12 @@ repos:
             "files": 
             {
               "../a.yml": "original.xml",
-              "..\\b.md": "original.xml",
+              "..\\b.md": "b.original.xml",
               "..\\c.md": "original.xml",
             }
           }
         a/original.xml:
+        a/b.original.xml:
         a.yml:
         b.md: '[](c.md)'
         c.md:
@@ -664,8 +665,38 @@ outputs:
   b.json: |
     {
       "conceptual": "<p><a href='c'></a></p>",
-      "content_git_url": "https://github.com/relocate/source-file/blob/master/a/original.xml"
+      "content_git_url": "https://github.com/relocate/source-file/blob/master/a/b.original.xml"
     }
   c.json:
   .errors.log: |
     ["error","schema-not-found","Unknown schema ''","a/original.xml"]
+  .dependencymap.json: |
+    {"dependencies":{"a/b.original.xml":[{"source":"a/original.xml","type":"file"}]}}
+---
+# Reference between the same original file, dependencies should be ignored
+repos:
+  https://github.com/relocate/source-file:
+    - files:
+        docfx.yml: |
+          sourceMap: a/sourceMap.json
+        a/sourceMap.json: |
+          {
+            "files": 
+            {
+              "../a.yml": "original.xml",
+              "..\\b.md": "original.xml",
+              "..\\c.md": "original.xml",
+            }
+          }
+        a/original.xml:
+        a/b.original.xml:
+        a.yml:
+        b.md: '[](c.md)'
+        c.md:
+outputs:
+  b.json:
+  c.json:
+  .errors.log: |
+    ["error","schema-not-found","Unknown schema ''","a/original.xml"]
+  .dependencymap.json: |
+    {"dependencies":undefined}
