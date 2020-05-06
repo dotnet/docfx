@@ -830,7 +830,7 @@ inputs:
       }
     }
   a.md: |
-    # 
+    Empty headings
     ## 
     ###
     #### <div></div>
@@ -841,12 +841,14 @@ inputs:
     ###### <a href="image.png"> &nbsp; </a>
     ###### <div><a href="image.png"> &nbsp; </a><div>
     ###### <img src="image.png" alt="xxx"/>
-
+    Ignore empty h1
+    # 
+    Headings below are not empty.
     ###### <span>abc</span>
     ###### <a href="image.png">abc</a>
     [!include[](b.md)]
   b.md: |
-  ## 
+    ## 
   image.png:
 outputs:
   a.json:
