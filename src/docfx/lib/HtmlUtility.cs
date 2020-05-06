@@ -325,10 +325,7 @@ namespace Microsoft.Docs.Build
         internal static string Encode(string s)
         {
             return s.Replace("&", "&amp;")
-                    .Replace("<", "&lt;")
-                    .Replace(">", "&gt;")
-                    .Replace("\"", "&quot;")
-                    .Replace("'", "&#39;");
+                    .Replace("\"", "&quot;");
         }
 
         internal static void RemoveRerunCodepenIframes(ref HtmlToken token)
