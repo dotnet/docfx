@@ -525,8 +525,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1,"date_time":"2020-05-06T08:17:25.6410284Z"}
-    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1,"date_time":"2020-05-06T08:17:25.6411877Z"}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' length should be >= 2","file":"a.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' length should be <= 10","file":"b.md","line":2,"column":14}
 ---
 # Content validation - H1 unique
 inputs:
