@@ -46,22 +46,19 @@ namespace Microsoft.Docs.Build
         public (Error?, string) GetRedirectUrl(FilePath file)
         {
             var redirectionChain = new Stack<FilePath>();
-            Error? error = null;
             var redirectionFile = file;
             while (_redirectionHistory.TryGetValue(redirectionFile, out var item))
             {
                 var (renamedFrom, source) = item;
                 if (redirectionChain.Contains(redirectionFile))
                 {
-                    redirectionChain.Push(redirectionFile);
-                    error = Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse());
-                    break;
+                    return (Errors.Link.CircularReference(source, redirectionFile, redirectionChain), _redirectUrls[file]);
                 }
                 redirectionChain.Push(redirectionFile);
                 redirectionFile = renamedFrom;
             }
 
-            return (error, _redirectUrls[file]);
+            return (null, _redirectUrls[file]);
         }
 
         public FilePath GetOriginalFile(FilePath file)
