@@ -42,8 +42,8 @@ inputs:
     }
 outputs:
   .errors.log: |
-   ["error","schema-not-found","Unknown schema ''","docs/a.yml",1,1]
-   ["error","schema-not-found","Unknown schema ''","docs/b.json",1,1]
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"docs/a.yml","line":1,"column":1}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"docs/b.json","line":1,"column":1}
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:
@@ -72,9 +72,9 @@ inputs:
     { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
   .errors.log: |
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/a.yml",1,1]
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/b.json",2,95]
-   ["error","schema-not-found","Unknown schema 'SchemaNotExisting'","docs/c.json",1,95]
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'","file":"docs/a.yml","line":1,"column":1}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'","file":"docs/b.json","line":2,"column":95}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'","file":"docs/c.json","line":1,"column":95}
 ---
 # Support schema documents with Href content
 inputs:
@@ -135,7 +135,7 @@ outputs:
   toc.json:
   docs/toc.json:
   .errors.log: |
-    ["error","unexpected-type","Expected type 'String' but got 'Object'","docs/a.yml",3,18]
+    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'String' but got 'Object'","file":"docs/a.yml","line":3,"column":18}
 ---
 # Schema documents with Href content referencing resource file, the resource file should be outputed
 inputs:
@@ -193,7 +193,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","unexpected-type","Expected type 'String' but got 'Null'","docs/a.yml",2,13]
+    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'String' but got 'Null'","file":"docs/a.yml","line":2,"column":13}
 ---
 # Support schema documents with inline markdown content
 inputs:
@@ -301,8 +301,8 @@ inputs:
     {
 outputs:
   .errors.log: |
-    ["error","yaml-syntax-error","Mapping values are not allowed in this context.","docs/a.yml",2,5]
-    ["error","json-syntax-error","Error reading JObject from JsonReader.","docs/b.json",2]
+    {"message_severity":"error","code":"yaml-syntax-error","message":"Mapping values are not allowed in this context.","file":"docs/a.yml","line":2,"column":5}
+    {"message_severity":"error","code":"json-syntax-error","message":"Error reading JObject from JsonReader.","file":"docs/b.json","line":2}
 ---
 # Invalid JSON
 inputs:
@@ -311,7 +311,7 @@ inputs:
     {a}/{b}/{c}
 outputs:
   .errors.log: |
-    ["error","json-syntax-error","Invalid JavaScript property identifier character: }.","docs/a.json",1,2]
+    {"message_severity":"error","code":"json-syntax-error","message":"Invalid JavaScript property identifier character: }.","file":"docs/a.json","line":1,"column":2}
 ---
 # Data-model output should only contains input(or transformed input)
 inputs:
@@ -350,7 +350,7 @@ inputs:
     - array
 outputs:
   .errors.log: |
-    ["error","unexpected-type","Expected type 'Object' but got 'Array'","a.yml",1,1]
+    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Array'","file":"a.yml","line":1,"column":1}
 ---
 # Validate bookmark against content HTML after applying template for SDP 
 legacy: true
@@ -456,6 +456,6 @@ inputs:
     }
 outputs:
   .errors.log: |
-    ["error","missing-attribute","Missing required attribute: 'authors'","a.yml",2,1]
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'","file":"a.yml","line":2,"column":1}
   .publish.json: |
     {"files":[{"url":"/a/","path":"a/index.html","source_path":"a.yml","has_error":true}]}
