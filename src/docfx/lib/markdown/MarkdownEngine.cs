@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
 
             var (error, link, display, _) = href.HasValue
                 ? _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile)
-                : _xrefResolver.ResolveXrefByUid(uid ?? throw new InvalidOperationException("href and uid can't be both null"), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+                : _xrefResolver.ResolveXrefByUid(uid ?? new SourceInfo<string>(""), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
             if (!isShorthand)
             {
