@@ -17,9 +17,9 @@ namespace Microsoft.Docs.Build
         {
             var aggregatedFileMapItems = new List<(string path, object item)>();
 
-            foreach (var (path, item) in items.GroupBy(x => x.legacyFilePathRelativeToBaseFolder).ToDictionary(g => g.Key, g => g.ToList().First()))
+            foreach (var (path, fileMapItem) in items.GroupBy(x => x.legacyFilePathRelativeToBaseFolder).ToDictionary(g => g.Key, g => g.ToList().First().fileMapItem))
             {
-                if (item.fileMapItem.Type == "Resource")
+                if (fileMapItem.Type == "Resource")
                 {
                     continue;
                 }
@@ -36,10 +36,10 @@ namespace Microsoft.Docs.Build
                                             Version = x.Version,
                                         })
                                     : new List<DependencyItem>(),
-                    aggregated_monikers = item.fileMapItem.Monikers,
+                    aggregated_monikers = fileMapItem.Monikers,
                     docset_names = new[] { context.Config.Name },
-                    has_non_moniker_url = item.fileMapItem.Monikers.Count == 0,
-                    type = item.fileMapItem.Type,
+                    has_non_moniker_url = fileMapItem.Monikers.Count == 0,
+                    type = fileMapItem.Type,
                 };
 
                 aggregatedFileMapItems.Add((path, aggregatedFileMapItem));
