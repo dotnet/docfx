@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                         {
                             AssetId = legacySiteUrlRelativeToBasePath,
                             Original = fileManifest.Value.SourcePath,
-                            SourceRelativePath = document.FilePath.Path,
+                            SourceRelativePath = context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path,
                             OriginalType = GetOriginalType(document.ContentType),
                             Type = GetType(context, document.ContentType, document),
                             Output = output,

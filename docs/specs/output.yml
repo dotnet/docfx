@@ -672,6 +672,13 @@ outputs:
     {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"a/original.xml"}
   .dependencymap.json: |
     {"dependencies":{"a/b.original.xml":[{"source":"a/original.xml","type":"file"}]}}
+  .publish.json: |
+    {
+      "files": [
+        {"url": "/b", "source_path": "a/b.original.xml"},
+        {"url": "/c", "source_path": "a/original.xml"},
+      ]
+    }
 ---
 # Reference between the same original file, dependencies should be ignored
 repos:
@@ -700,3 +707,74 @@ outputs:
     {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"a/original.xml"}
   .dependencymap.json: |
     {"dependencies":undefined}
+---
+# verify legacy output with source map
+legacy: true
+repos:
+  https://github.com/relocate/source-file:
+    - files:
+        docfx.yml: |
+          sourceMap: a/sourceMap.json
+        a/sourceMap.json: |
+          {
+            "files": 
+            {
+              "../a.yml": "original.xml",
+              "..\\b.md": "b.original.xml",
+              "..\\c.md": "original.xml",
+            }
+          }
+        a/original.xml:
+        a/b.original.xml:
+        a.yml:
+        b.md: '[](c.md)'
+        c.md:
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"a/original.xml"}
+  b.mta.json:
+  b.raw.page.json:
+  c.mta.json:
+  c.raw.page.json:
+  op_aggregated_file_map_info.json: |
+    {
+      "aggregated_file_map_items": 
+      {
+        "a/b.original.xml": 
+        {
+            "dependencies": [
+                {
+                    "from_file_path": "a/b.original.xml",
+                    "to_file_path": "a/original.xml",
+                    "dependency_type": "file"
+                }
+            ],
+        },
+        "a/original.xml": { "type": "Content" }
+      }
+    }
+  filemap.json: |
+    {
+      "file_mapping": 
+      {
+          "b.md": 
+          {
+              "type": "Content",
+              "output_relative_path": "b.html",
+              "asset_id": "b"
+          },
+          "c.md": 
+          {
+              "type": "Content",
+              "output_relative_path": "c.html",
+              "asset_id": "c"
+          }
+      }
+    }
+  .manifest.json: |
+    {
+      "files": [
+        {"asset_id": "b", "original": "a/b.original.xml", "source_relative_path": "a/b.original.xml"},
+        {"asset_id": "c", "original": "a/original.xml", "source_relative_path": "a/original.xml"},
+      ]
+    }

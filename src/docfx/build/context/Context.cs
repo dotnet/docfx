@@ -66,6 +66,8 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsMap TocMap { get; }
 
+        public SourceMap SourceMap { get; }
+
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
@@ -76,6 +78,7 @@ namespace Microsoft.Docs.Build
             BuildOptions = buildOptions;
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
+            SourceMap = sourceMap;
 
             RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
