@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
                     var allHeadings = getHeadings(documentHeadings);
 
-                    if (InclusionContext.IsInclude && documentHeadings.Any())
+                    if (InclusionContext.IsInclude)
                     {
                         foreach (var (doc, (headings, _)) in allHeadings)
                         {

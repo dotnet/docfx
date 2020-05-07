@@ -805,6 +805,7 @@ inputs:
       - c.md
       - d.md
       - e.md
+      - f.md
   rules.json: |
     {
       "headings": {
@@ -845,6 +846,9 @@ inputs:
     [!include[](d.md)]
 
     [!include[](e.md)]
+
+    [!include[](f.md)]
+    ## Title 2
   normal-1.md: |
     # Title 1-3
     ## Title 2
@@ -865,6 +869,7 @@ inputs:
     [!include[](c.md)]
 
     [!include[](d.md)]
+  f.md:
 outputs:
   a.json:
   normal-1.json:
