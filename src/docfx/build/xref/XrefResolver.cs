@@ -90,6 +90,11 @@ namespace Microsoft.Docs.Build
         public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByUid(
             SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
+            if (string.IsNullOrEmpty(uid))
+            {
+                return default;
+            }
+
             // need to url decode uid from input content
             var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot);
             if (error != null || xrefSpec == null || href == null)
