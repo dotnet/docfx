@@ -799,3 +799,69 @@ outputs:
     {"message_severity":"suggestion","code":"headings-with-underline","message":"Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","file":"a.md","line":8,"column":1}
     {"message_severity":"suggestion","code":"headings-with-underline","message":"Bad 2 format: 'Multiple Title2 Line 1\nMultiple Title2 Line 2'. Use hashes to create H1(#) or H2(##)","file":"a.md","line":12,"column":1}
     {"message_severity":"suggestion","code":"headings-with-underline","message":"Bad 2 format: 'Title 2'. Use hashes to create H1(#) or H2(##)","file":"b.md","line":2,"column":1}
+---
+# Content Validation - EmptyHeadings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude: b.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "HeadingEmpty",
+            "message": "Empty h{0}. Headings must have content.",
+            "code": "heading-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    Empty headings
+    ## 
+    ###
+    #### <div></div>
+    #####            
+    ###### &nbsp;
+    ###### &#160;
+    ###### <a href="image.png"></a>
+    ###### <a href="image.png"> &nbsp; </a>
+    ###### <div><a href="image.png"> &nbsp; </a><div>
+    ###### <img src="image.png" alt="xxx"/>
+    Ignore empty h1
+    # 
+    Headings below are not empty.
+    ###### <span>abc</span>
+    ###### <a href="image.png">abc</a>
+    [!include[](b.md)]
+  b.md: |
+    ## 
+  image.png:
+outputs:
+  a.json:
+  image.png:
+  .errors.log: |
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h2. Headings must have content.","file": "a.md","line": 2,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h3. Headings must have content.","file": "a.md","line": 3,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h4. Headings must have content.","file": "a.md","line": 4,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h5. Headings must have content.","file": "a.md","line": 5,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 6,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 7,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 8,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 9,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 10,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h6. Headings must have content.","file": "a.md","line": 11,"column": 1}
+    {"message_severity": "suggestion","code": "heading-empty","message": "Empty h2. Headings must have content.","file": "b.md","line": 1,"column": 1}
