@@ -41,9 +41,6 @@ items:
       init: "nuget install rest.operationpage -OutputDirectory <output>"
       command: "-t default,<output>/rest.operationpage.<version>/content"
       config: 'template: ["default", "<output>/rest.operationpage.<version>/content"]'
-description: |
-  # Dashboard for Plugins
-  The plugins listed here mainly focus on the functionality of the generated website, it often contains a *plugins* folder containing assemblies for advanced processing of the data model. It usually also contains corresponding renderer files to further transform the processed data model to web pages. You can follow [How to Create Custom Document Processors](../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [How to Create Custom PostProcessor](../tutorial/howto_add_a_customized_post_processor.md) to create your own plugins. Add your own customized templates and plugins here for others to view and use!
   - name: docfx-lightbox-plugin (Featherlight)
     description: A template which adds a lightbox to each image, using the jquery plugin Featherlight.
     type: External
@@ -95,3 +92,6 @@ description: |
       init: "nuget install DocFx.Plugins.PlantUml -ExcludeVersion -OutputDirectory ."
       command: "-t default,DocFx.Plugins.PlantUml/template"
       config: '"template":["default","DocFx.Plugins.PlantUml/template"]'
+description: |
+  # Dashboard for Plugins
+  The plugins listed here mainly focus on the functionality of the generated website, it often contains a *plugins* folder containing assemblies for advanced processing of the data model. It usually also contains corresponding renderer files to further transform the processed data model to web pages. You can follow [How to Create Custom Document Processors](../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [How to Create Custom PostProcessor](../tutorial/howto_add_a_customized_post_processor.md) to create your own plugins. Add your own customized templates and plugins here for others to view and use!
