@@ -75,10 +75,5 @@ namespace Microsoft.Docs.Build
             return new LegacyFileMapItem(
                 legacyOutputFilePathRelativeToBasePath, legacySiteUrlRelativeToBasePath, contentType, version, monikers);
         }
-
-        private static string RemoveExtension(string path)
-        {
-            return path.Substring(0, path.LastIndexOf('.'));
-        }
     }
 }
