@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
             return writer.ToString();
         }
 
-        public static string ToHtml(this MarkdownObject containerBlock)
+        public static string ToHtml(this MarkdownObject markdownObject)
         {
             using var writer = new StringWriter();
             var renderer = new HtmlRenderer(writer)
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
                 EnableHtmlEscape = true,
             };
 
-            renderer.Render(containerBlock);
+            renderer.Render(markdownObject);
             writer.Flush();
 
             return writer.ToString();
