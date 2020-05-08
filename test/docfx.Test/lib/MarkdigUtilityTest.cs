@@ -31,11 +31,11 @@ namespace Microsoft.Docs.Build
         [InlineData("<a/>", false)]
         [InlineData("<a href=\"https://www.microsoft.com\"></a>", false)]
         [InlineData("<a href=\"https://www.microsoft.com\"/>", false)]
-        public static void IsVisiableTest(string markdownContent, bool expectedVisiable)
+        public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
             var markdownDoucment = Markdown.Parse(markdownContent, _markdownPipeline);
 
-            Assert.Equal(expectedVisiable, MarkdigUtility.IsVisiable(markdownDoucment));
+            Assert.Equal(expectedVisible, MarkdigUtility.IsVisible(markdownDoucment));
         }
     }
 }

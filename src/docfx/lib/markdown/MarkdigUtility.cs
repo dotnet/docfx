@@ -170,13 +170,13 @@ namespace Microsoft.Docs.Build
             return writer.ToString();
         }
 
-        public static bool IsVisiable(this MarkdownObject markdownObject)
+        public static bool IsVisible(this MarkdownObject markdownObject)
         {
             var html = markdownObject.ToHtml();
 
-            return Visiable(html);
+            return Visible(html);
 
-            bool Visiable(string html)
+            bool Visible(string html)
             {
                 var reader = new HtmlReader(html);
                 while (reader.Read(out var token))
