@@ -147,6 +147,7 @@ namespace Microsoft.Docs.Build
                 },
                 xref = xrefMaps,
                 skipMonikerValidation = docset.use_template,
+                reduceTOCChildMonikers = docset.use_template,
             });
         }
 

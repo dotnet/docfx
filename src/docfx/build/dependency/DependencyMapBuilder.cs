@@ -13,15 +13,32 @@ namespace Microsoft.Docs.Build
     internal class DependencyMapBuilder
     {
         private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new ConcurrentHashSet<DependencyItem>();
+        private readonly SourceMap _sourceMap;
 
-        public void AddDependencyItem(Document from, Document? to, DependencyType type)
+        public DependencyMapBuilder(SourceMap sourceMap)
         {
-            if (to is null || from == to || from.FilePath.Origin == FileOrigin.Fallback)
+            _sourceMap = sourceMap;
+        }
+
+        public void AddDependencyItem(FilePath from, FilePath? to, DependencyType type, ContentType fromContentType)
+        {
+            if (to is null || from == to || from.Origin == FileOrigin.Fallback)
             {
                 return;
             }
 
-            _dependencyItems.TryAdd(new DependencyItem(from, to, type));
+            var fromOriginalPath = _sourceMap.GetOriginalFilePath(from);
+            var toOriginalPath = _sourceMap.GetOriginalFilePath(to);
+            if (fromOriginalPath != null && toOriginalPath != null && fromOriginalPath == toOriginalPath)
+            {
+                return;
+            }
+
+            _dependencyItems.TryAdd(new DependencyItem(
+                                        fromOriginalPath is null ? from : new FilePath(fromOriginalPath),
+                                        toOriginalPath is null ? to : new FilePath(toOriginalPath),
+                                        type,
+                                        fromContentType));
         }
 
         public DependencyMap Build()
@@ -29,9 +46,9 @@ namespace Microsoft.Docs.Build
             return new DependencyMap(Flatten());
         }
 
-        private Dictionary<Document, HashSet<DependencyItem>> Flatten()
+        private Dictionary<FilePath, HashSet<DependencyItem>> Flatten()
         {
-            var result = new Dictionary<Document, HashSet<DependencyItem>>();
+            var result = new Dictionary<FilePath, HashSet<DependencyItem>>();
             var graph = _dependencyItems
                 .GroupBy(k => k.From)
                 .ToDictionary(k => k.Key);
@@ -43,17 +60,17 @@ namespace Microsoft.Docs.Build
                 {
                     var stack = new Stack<DependencyItem>();
                     stack.Push(item);
-                    var visited = new HashSet<Document> { from };
+                    var visited = new HashSet<FilePath> { from };
                     while (stack.TryPop(out var current))
                     {
-                        dependencies.Add(new DependencyItem(from, current.To, current.Type));
+                        dependencies.Add(new DependencyItem(from, current.To, current.Type, current.FromContentType));
 
                         // if the dependency destination is already in the result set, we can reuse it
                         if (current.To != from && CanTransit(current) && result.TryGetValue(current.To, out var nextDependencies))
                         {
                             foreach (var dependency in nextDependencies)
                             {
-                                dependencies.Add(new DependencyItem(from, dependency.To, dependency.Type));
+                                dependencies.Add(new DependencyItem(from, dependency.To, dependency.Type, dependency.FromContentType));
                             }
                             continue;
                         }
@@ -76,7 +93,7 @@ namespace Microsoft.Docs.Build
         private bool CanTransit(DependencyItem dependencyItem)
         {
             // NOTE: to keep v2 parity, TOC include does not transit.
-            return dependencyItem.Type == DependencyType.Include && dependencyItem.From.ContentType != ContentType.TableOfContents;
+            return dependencyItem.Type == DependencyType.Include && dependencyItem.FromContentType != ContentType.TableOfContents;
         }
     }
 }

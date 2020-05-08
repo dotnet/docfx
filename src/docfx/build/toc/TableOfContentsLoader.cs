@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsParser _parser;
         private readonly MonikerProvider _monikerProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
+        private readonly bool _reduceTOCChildMonikers;
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
                      new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
@@ -32,13 +33,15 @@ namespace Microsoft.Docs.Build
             XrefResolver xrefResolver,
             TableOfContentsParser parser,
             MonikerProvider monikerProvider,
-            DependencyMapBuilder dependencyMapBuilder)
+            DependencyMapBuilder dependencyMapBuilder,
+            bool reduceTOCChildMonikers)
         {
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _parser = parser;
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
+            _reduceTOCChildMonikers = reduceTOCChildMonikers;
         }
 
         public (List<Error> errors, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
@@ -157,19 +160,28 @@ namespace Microsoft.Docs.Build
             }
 
             // Union with children's monikers
-            if (currentItem.Items?.Count > 0)
+            foreach (var item in currentItem.Items)
+            {
+                if (item.Value.Monikers.Count == 0)
+                {
+                    return Array.Empty<string>();
+                }
+                monikers = monikers.Union(item.Value.Monikers, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            monikers.Sort(StringComparer.OrdinalIgnoreCase);
+
+            // TODO: remove _reduceTOCChildMonikers flag and apply it to all toc after more e2e-testing
+            if (_reduceTOCChildMonikers && monikers.Count > 0)
             {
                 foreach (var item in currentItem.Items)
                 {
-                    if (item.Value.Monikers.Count == 0)
+                    if (Enumerable.SequenceEqual(item.Value.Monikers, monikers, StringComparer.OrdinalIgnoreCase))
                     {
-                        return Array.Empty<string>();
+                        item.Value.Monikers = Array.Empty<string>();
                     }
-                    monikers = monikers.Union(item.Value.Monikers).Distinct().ToList();
                 }
             }
-            monikers.Sort(StringComparer.OrdinalIgnoreCase);
-            return monikers.ToArray();
+            return monikers;
         }
 
         private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, List<Error> errors)
@@ -254,7 +266,7 @@ namespace Microsoft.Docs.Build
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
                     var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
-                    _dependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.File);
+                    _dependencyMapBuilder.AddDependencyItem(filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File, filePath.ContentType);
                     return (default, default, nestedTocFirstItem, tocHrefType);
                 }
 

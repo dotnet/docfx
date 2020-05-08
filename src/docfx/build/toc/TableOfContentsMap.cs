@@ -21,10 +21,12 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsLoader _tocLoader;
         private readonly TableOfContentsParser _tocParser;
         private readonly DocumentProvider _documentProvider;
+        private readonly DependencyMapBuilder _dependencyMapBuilder;
 
         private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
-        public TableOfContentsMap(ErrorLog errorLog, Input input, BuildScope buildScope, TableOfContentsParser tocParser, TableOfContentsLoader tocLoader, DocumentProvider documentProvider)
+        public TableOfContentsMap(
+            ErrorLog errorLog, Input input, BuildScope buildScope, DependencyMapBuilder dependencyMapBuilder, TableOfContentsParser tocParser, TableOfContentsLoader tocLoader, DocumentProvider documentProvider)
         {
             _errorLog = errorLog;
             _input = input;
@@ -32,6 +34,7 @@ namespace Microsoft.Docs.Build
             _tocParser = tocParser;
             _tocLoader = tocLoader;
             _documentProvider = documentProvider;
+            _dependencyMapBuilder = dependencyMapBuilder;
             _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
         }
 
@@ -48,8 +51,13 @@ namespace Microsoft.Docs.Build
         public string? FindTocRelativePath(Document file)
         {
             var nearestToc = FindNearestToc(file);
+            if (nearestToc is null)
+            {
+                return null;
+            }
 
-            return nearestToc != null ? PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath)) : null;
+            _dependencyMapBuilder.AddDependencyItem(file.FilePath, nearestToc.FilePath, DependencyType.Metadata, file.ContentType);
+            return PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath));
         }
 
         /// <summary>
@@ -59,7 +67,7 @@ namespace Microsoft.Docs.Build
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
         /// when the file is not referenced, return only toc in the same or higher folder level.
         /// </summary>
-        public Document? FindNearestToc(Document file)
+        internal Document? FindNearestToc(Document file)
         {
             return FindNearestToc(
                 file,
@@ -219,10 +227,10 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.json"));
+                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
                 var newNodeFile = FilePath.Generated(newNodeFilePath);
 
-                _input.AddGeneratedContent(newNodeFile, newNodeToken);
+                _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken });
                 result.Add(newNodeFile);
 
                 var newChild = new TableOfContentsNode(child)
@@ -234,7 +242,7 @@ namespace Microsoft.Docs.Build
                 newToc.Items.Add(new SourceInfo<TableOfContentsNode>(newChild, item.Source));
             }
 
-            var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".json"));
+            var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
             var newTocFile = FilePath.Generated(newTocFilePath);
             _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc));
             result.Add(newTocFile);

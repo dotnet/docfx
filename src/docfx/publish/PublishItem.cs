@@ -14,6 +14,10 @@ namespace Microsoft.Docs.Build
 
         public string? Path { get; }
 
+        /// <summary>
+        /// File source relative path to docset root
+        /// will be used for PR comments
+        /// </summary>
         public string? SourcePath { get; }
 
         [JsonIgnore]

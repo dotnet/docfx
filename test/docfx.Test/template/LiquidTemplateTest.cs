@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         public void RenderLiquidTemplate(string name, string json, string html)
         {
             var model = JObject.Parse(json.Replace('\'', '"'));
-            var result = _template.Render(name, model);
+            var result = _template.Render(name, new SourceInfo<string>("test"), model);
 
             Assert.Equal(
                 JsonDiff.NormalizeHtml(html),

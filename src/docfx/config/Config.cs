@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ECMA2Yaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -60,9 +61,9 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, GroupConfig> Groups { get; } = new Dictionary<string, GroupConfig>();
 
         /// <summary>
-        /// Gets whether to output JSON model.
+        /// Gets output file type
         /// </summary>
-        public bool OutputJson { get; private set; } = false;
+        public OutputType OutputType { get; private set; } = OutputType.Html;
 
         /// <summary>
         /// For backward compatibility.
@@ -72,11 +73,9 @@ namespace Microsoft.Docs.Build
         public bool OutputPdf { get; private set; } = false;
 
         /// <summary>
-        /// Gets whether to use ugly url or pretty url when <see cref="Json"/> is set to false.
-        ///  - Pretty url:      a.md --> a/index.html
-        ///  - Ugly url:        a.md --> a.html
+        /// Gets Output Url type
         /// </summary>
-        public bool UglifyUrl { get; private set; } = false;
+        public OutputUrlType OutputUrlType { get; private set; } = OutputUrlType.Pretty;
 
         /// <summary>
         /// Gets whether to lowercase all URLs and output file path.
@@ -86,7 +85,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets whether resources are copied to output.
         /// </summary>
-        public bool CopyResources { get; private set; } = false;
+        public bool CopyResources { get; private set; } = true;
 
         /// <summary>
         /// Gets the maximum errors to output.
@@ -278,6 +277,16 @@ namespace Microsoft.Docs.Build
         /// Determines if validate the moniker confguration.
         /// </summary>
         public bool SkipMonikerValidation { get; private set; }
+
+        /// <summary>
+        /// Determines if remove TOC child node monikers when it's the same as its parent's.
+        /// </summary>
+        public bool ReduceTOCChildMonikers { get; private set; }
+
+        /// <summary>
+        /// Determines and configures build to consume XML files produced from monodoc
+        /// </summary>
+        public ECMA2YamlRepoConfig? Monodoc { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

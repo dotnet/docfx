@@ -4,9 +4,7 @@
 using System;
 using System.Linq;
 using Markdig;
-using Markdig.Helpers;
 using Markdig.Renderers.Html;
-using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -37,18 +35,6 @@ namespace Microsoft.Docs.Build
                         }
 
                         return new LinkInline(href, null).AppendChild(new LiteralInline(display));
-                    }
-                    else if (node is HtmlBlock block)
-                    {
-                        // inside html block
-                        // <p> <xref href="" uid=""/> </p>
-                        block.Lines = new StringLineGroup(HtmlUtility.TransformXref(block.Lines.ToString(), block, resolveXref));
-                    }
-                    else if (node is HtmlInline inline)
-                    {
-                        // inside html inline
-                        // text <xref href="" uid=""/> text
-                        inline.Tag = HtmlUtility.TransformXref(inline.Tag, inline, resolveXref);
                     }
                     return node;
                 });

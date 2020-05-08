@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -13,7 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null, int columnOffset = 0)
+        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null)
         {
             var path = file ?? (InclusionContext.File as Document)?.FilePath;
             if (path is null)
@@ -21,18 +22,32 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            // Line info in markdown object is zero based, turn it into one based.
-            if (obj != null)
-            {
-                return new SourceInfo(path, obj.Line + 1, obj.Column + columnOffset + 1);
-            }
-
             if (line != null)
             {
                 return new SourceInfo(path, line.Value + 1, 0);
             }
 
-            return default;
+            // Line info in markdown object is zero based, turn it into one based.
+            return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
+        }
+
+        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
+        {
+            var path = (InclusionContext.File as Document)?.FilePath;
+            if (path is null)
+            {
+                return default;
+            }
+
+            var start = OffSet(obj.Line, obj.Column, html.Start.Line, html.Start.Column);
+            var end = OffSet(obj.Line, obj.Column, html.End.Line, html.End.Column);
+
+            return new SourceInfo(path, start.line + 1, start.column + 1, end.line + 1, end.column + 1);
+
+            static (int line, int column) OffSet(int line1, int column1, int line2, int column2)
+            {
+                return line2 == 0 ? (line1, column1 + column2) : (line1 + line2, column2);
+            }
         }
 
         /// <summary>
@@ -120,6 +135,22 @@ namespace Microsoft.Docs.Build
         {
             builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
             return builder;
+        }
+
+        public static string ToPlainText(this MarkdownObject containerBlock)
+        {
+            using var writer = new StringWriter();
+            var renderer = new HtmlRenderer(writer)
+            {
+                EnableHtmlForBlock = false,
+                EnableHtmlForInline = false,
+                EnableHtmlEscape = false,
+            };
+
+            renderer.Render(containerBlock);
+            writer.Flush();
+
+            return writer.ToString();
         }
 
         private class DelegatingExtension : IMarkdownExtension

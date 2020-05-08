@@ -26,9 +26,9 @@ namespace Microsoft.Docs.Build
                         }
 
                         legacyDependencyMap.Add(new LegacyDependencyMapItem(
-                            $"~/{source.FilePath.Path}",
-                            $"~/{dependencyItem.To.FilePath.Path}",
-                            context.MonikerProvider.GetConfigMonikerRange(source.FilePath),
+                            $"~/{source.Path}",
+                            $"~/{dependencyItem.To.Path}",
+                            context.MonikerProvider.GetConfigMonikerRange(source),
                             dependencyItem.Type));
                     }
                 }

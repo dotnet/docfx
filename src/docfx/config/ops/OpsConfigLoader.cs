@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using ECMA2Yaml;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -79,6 +80,13 @@ namespace Microsoft.Docs.Build
 
             result["fileMetadata"] = GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>());
 
+            var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
+            if (monodoc != null)
+            {
+                result["monodoc"] = JsonUtility.ToJObject(monodoc);
+                result["sourceMap"] = ".sourcemap.json";
+            }
+
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
@@ -95,6 +103,22 @@ namespace Microsoft.Docs.Build
                     ["branch"] = depBranch,
                 }
                 select (obj, path, dep.PathToRoot)).ToArray();
+        }
+
+        private static JObject? GetMonodocConfig(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
+        {
+            var result = default(JObject);
+            if (docsetConfig?.ECMA2Yaml != null)
+            {
+                result = JsonUtility.ToJObject(docsetConfig.ECMA2Yaml);
+            }
+            else if (opsConfig.ECMA2Yaml != null)
+            {
+                result = JsonUtility.ToJObject(opsConfig.ECMA2Yaml);
+                result[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, opsConfig.ECMA2Yaml.SourceXmlFolder);
+                result[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, opsConfig.ECMA2Yaml.OutputYamlFolder);
+            }
+            return result;
         }
 
         private static JObject GenerateJoinTocMetadata(OpsJoinTocConfig[] configs)

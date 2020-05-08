@@ -19,9 +19,11 @@ namespace Microsoft.Docs.Build
         private readonly IJavaScriptEngine _js;
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
+        private readonly Config _config;
 
         public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver)
         {
+            _config = config;
             _templateDir = config.Template.Type switch
             {
                 PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
@@ -65,7 +67,7 @@ namespace Microsoft.Docs.Build
         public string RunLiquid(Document file, TemplateModel model)
         {
             var layout = model.RawMetadata?.Value<string>("layout") ?? "";
-            var themeRelativePath = PathUtility.GetRelativePathToFile(file.SitePath, "_themes");
+            var themeRelativePath = _templateDir;
 
             var liquidModel = new JObject
             {
@@ -75,7 +77,7 @@ namespace Microsoft.Docs.Build
                 ["theme_rel"] = themeRelativePath,
             };
 
-            return _liquid.Render(layout, liquidModel);
+            return _liquid.Render(layout, file.Mime, liquidModel);
         }
 
         public string RunMustache(string templateName, JToken pageModel)
@@ -110,6 +112,12 @@ namespace Microsoft.Docs.Build
         public static bool IsLandingData(string? mime)
         {
             return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool IsMigratedFromMarkdown(string? mime)
+        {
+            var migratedMimeTypes = new string[] { "Hub", "Landing", nameof(LandingData) };
+            return mime != null && migratedMimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase);
         }
 
         public string? GetToken(string key)

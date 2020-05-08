@@ -7,38 +7,57 @@ namespace Microsoft.Docs.Build
 {
     internal readonly struct HtmlAttribute
     {
-        private readonly string _html;
-        private readonly (int start, int length) _nameRange;
-        private readonly (int start, int length) _valueRange;
-        private readonly (int start, int length) _tokenRange;
+        public readonly HtmlAttributeType Type { get; }
 
-        public (int start, int length) NameRange => _nameRange;
+        public readonly ReadOnlyMemory<char> Name { get; }
 
-        public (int start, int length) ValueRange => _valueRange;
+        public readonly ReadOnlyMemory<char> Value { get; }
 
-        public (int start, int length) TokenRange => _tokenRange;
+        public readonly ReadOnlyMemory<char> RawText { get; }
 
-        public ReadOnlySpan<char> Name => _html.AsSpan(_nameRange.start, _nameRange.length);
+        public readonly HtmlTextRange Range { get; }
 
-        public ReadOnlySpan<char> Value => _html.AsSpan(_valueRange.start, _valueRange.length);
+        public readonly HtmlTextRange NameRange { get; }
 
-        public ReadOnlySpan<char> Token => _html.AsSpan(_tokenRange.start, _tokenRange.length);
-
-        public HtmlAttribute(
-            string html,
-            (int start, int length) nameRange,
-            (int start, int length) valueRange,
-            (int start, int length) tokenRange)
-        {
-            _html = html;
-            _nameRange = nameRange;
-            _valueRange = valueRange;
-            _tokenRange = tokenRange;
-        }
+        public readonly HtmlTextRange ValueRange { get; }
 
         public bool NameIs(string name)
         {
-            return _html.AsSpan(_nameRange.start, _nameRange.length).Equals(name, StringComparison.OrdinalIgnoreCase);
+            return Name.Span.Equals(name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public HtmlAttribute(string name, string? value = default, HtmlAttributeType? type = null)
+        {
+            Type = value is null ? HtmlAttributeType.NameOnly : (type ?? HtmlAttributeType.DoubleQuoted);
+            Name = name.AsMemory();
+            Value = value.AsMemory();
+            RawText = default;
+            Range = default;
+            NameRange = default;
+            ValueRange = default;
+        }
+
+        internal HtmlAttribute(
+            HtmlAttributeType type,
+            ReadOnlyMemory<char> name,
+            ReadOnlyMemory<char> value,
+            ReadOnlyMemory<char> rawText,
+            in HtmlTextRange range,
+            in HtmlTextRange nameRange,
+            in HtmlTextRange valueRange)
+        {
+            Type = type;
+            Name = name;
+            Value = value;
+            RawText = rawText;
+            Range = range;
+            NameRange = nameRange;
+            ValueRange = valueRange;
+        }
+
+        public HtmlAttribute WithValue(string value)
+        {
+            return new HtmlAttribute(Type, Name, value.AsMemory(), default, Range, NameRange, ValueRange);
         }
     }
 }

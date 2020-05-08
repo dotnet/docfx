@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 outputPath,
-                file.FilePath.Path,
+                context.SourceMap.GetOriginalFilePath(file.FilePath) ?? file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
@@ -53,13 +53,17 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.Config.DryRun)
                 {
-                    if (output is string str)
+                    if (context.Config.OutputType == OutputType.Json)
+                    {
+                        context.Output.WriteJson(outputPath, output);
+                    }
+                    else if (output is string str)
                     {
                         context.Output.WriteText(outputPath, str);
                     }
                     else
                     {
-                        context.Output.WriteJson(outputPath, output);
+                        context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
                     }
 
                     if (context.Config.Legacy && file.IsPage)
@@ -88,7 +92,7 @@ namespace Microsoft.Docs.Build
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The current bookmark validation for SDP validates against HTML produced from mustache,
             // so we need to run the full template for SDP even in --dry-run mode.
-            if (context.Config.DryRun && TemplateEngine.IsConceptual(file.Mime))
+            if (context.Config.DryRun && TemplateEngine.IsConceptual(file.Mime) && context.Config.OutputType != OutputType.Html)
             {
                 return (errors, new JObject(), new JObject());
             }
@@ -110,19 +114,27 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (context.Config.OutputJson && !context.Config.Legacy)
+            if (context.Config.OutputType == OutputType.Json && !context.Config.Legacy)
             {
                 return (errors, outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, JsonUtility.SortProperties(outputModel), file);
-            if (context.Config.OutputJson)
+            if (context.Config.OutputType == OutputType.Json)
             {
                 return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
             }
 
-            var html = context.TemplateEngine.RunLiquid(file, templateModel);
-            return (errors, html, JsonUtility.SortProperties(templateMetadata));
+            try
+            {
+                var html = context.TemplateEngine.RunLiquid(file, templateModel);
+                return (errors, html, JsonUtility.SortProperties(templateMetadata));
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                errors.AddRange(dex.Select(ex => ex.Error));
+                return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
+            }
         }
 
         private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
@@ -229,8 +241,6 @@ namespace Microsoft.Docs.Build
             {
                 errors.Add(Errors.Heading.HeadingNotFound(file));
             }
-
-            context.ContentValidator.ValidateH1(file, title);
 
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);

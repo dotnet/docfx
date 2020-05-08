@@ -2,20 +2,25 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
     internal class DependencyItem
     {
-        public Document From { get; }
+        public FilePath From { get; }
 
-        public Document To { get; }
+        [JsonIgnore]
+        public ContentType FromContentType { get; }
+
+        public FilePath To { get; }
 
         public DependencyType Type { get; }
 
-        public DependencyItem(Document from, Document to, DependencyType type)
+        public DependencyItem(FilePath from, FilePath to, DependencyType type, ContentType fromContentType)
         {
             From = from;
+            FromContentType = fromContentType;
             To = to;
             Type = type;
         }

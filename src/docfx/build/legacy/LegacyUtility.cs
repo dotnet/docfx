@@ -32,11 +32,12 @@ namespace Microsoft.Docs.Build
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 
-            return PathUtility.NormalizeFile(
-                Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison)
-                && doc.ContentType != ContentType.Resource
-                ? $"{legacySiteUrlRelativeToBasePath}/index"
-                : legacySiteUrlRelativeToBasePath);
+            if (context.Config.OutputUrlType == OutputUrlType.Docs && Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison) && doc.ContentType != ContentType.Resource)
+            {
+                legacySiteUrlRelativeToBasePath = $"{legacySiteUrlRelativeToBasePath}/index";
+            }
+
+            return PathUtility.NormalizeFile(legacySiteUrlRelativeToBasePath);
         }
 
         public static string ChangeExtension(string filePath, string extension, string[]? acceptableExtension = null)

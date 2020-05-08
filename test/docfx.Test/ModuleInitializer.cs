@@ -18,7 +18,8 @@ namespace Microsoft.Docs.Build
         {
             Environment.SetEnvironmentVariable("DOCFX_APPDATA_PATH", Path.GetFullPath("appdata"));
             Environment.SetEnvironmentVariable("DOCFX_HOST_NAME", "docs.com");
-            Environment.SetEnvironmentVariable("DOCFX_OUTPUT_JSON", "true");
+            Environment.SetEnvironmentVariable("DOCFX_OUTPUT_TYPE", "Json");
+            Environment.SetEnvironmentVariable("DOCFX_OUTPUT_URL_TYPE", "Docs");
             Environment.SetEnvironmentVariable("DOCFX_COPY_RESOURCES", "true");
 
             TestQuirks.Verbose = true;

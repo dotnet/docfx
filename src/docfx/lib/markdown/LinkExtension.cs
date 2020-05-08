@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Markdig;
-using Markdig.Helpers;
 using Markdig.Renderers.Html;
-using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -30,14 +28,6 @@ namespace Microsoft.Docs.Build
                         var href = new SourceInfo<string>(link.Url, link.ToSourceInfo());
                         link.Url = getLink(href);
                     }
-                    else if (node is HtmlBlock block)
-                    {
-                        block.Lines = new StringLineGroup(ResolveLinks(block.Lines.ToString(), block));
-                    }
-                    else if (node is HtmlInline inline)
-                    {
-                        inline.Tag = ResolveLinks(inline.Tag, inline);
-                    }
                     else if (node is TripleColonBlock tripleColonBlock && tripleColonBlock.Extension is ImageExtension)
                     {
                         var blockProperties = tripleColonBlock.GetAttributes().Properties;
@@ -54,14 +44,6 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
             });
-
-            string ResolveLinks(string html, MarkdownObject block)
-            {
-                return HtmlUtility.TransformLinks(
-                    html,
-                    (href, columnOffset) => getLink(
-                        new SourceInfo<string>(href, block.ToSourceInfo(columnOffset: columnOffset))));
-            }
         }
     }
 }

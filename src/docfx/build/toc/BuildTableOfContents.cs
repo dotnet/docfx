@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
             errors.AddRange(validationErrors);
 
-            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata);
+            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata, file.SitePath);
 
             // TODO: improve error message for toc monikers overlap
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 outputPath,
-                file.FilePath.Path,
+                context.SourceMap.GetOriginalFilePath(file.FilePath) ?? file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
@@ -53,10 +53,20 @@ namespace Microsoft.Docs.Build
             {
                 if (!context.Config.DryRun)
                 {
-                    if (context.Config.Legacy)
+                    if (context.Config.OutputType == OutputType.Html)
+                    {
+                        // Just for current PDF build. toc.json is used for generate PDF outline
+                        var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
+
+                        var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
+                        var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);
+                        context.Output.WriteText(outputPath, html);
+                    }
+                    else if (context.Config.Legacy)
                     {
                         var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
-                        context.Output.WriteJson(outputPath, output);
+                        context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
                         context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
                     }
                     else

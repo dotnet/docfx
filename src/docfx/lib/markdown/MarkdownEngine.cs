@@ -9,6 +9,7 @@ using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
@@ -21,6 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
         private readonly string _markdownValidationRules;
+        private readonly ContentValidator _contentValidator;
 
         private readonly MarkdownContext _markdownContext;
         private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
@@ -35,13 +37,15 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             MonikerProvider monikerProvider,
-            TemplateEngine templateEngine)
+            TemplateEngine templateEngine,
+            ContentValidator contentValidator)
         {
             _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _monikerProvider = monikerProvider;
             _templateEngine = templateEngine;
+            _contentValidator = contentValidator;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
             _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
@@ -91,6 +95,8 @@ namespace Microsoft.Docs.Build
 
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
 
+                    ValidateHeadings();
+
                     return (status.Errors, html);
                 }
                 finally
@@ -108,8 +114,9 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider)
+                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
                 .Build();
         }
 
@@ -121,8 +128,9 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseLink(GetLink)
                 .UseXref(GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider)
+                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
                 .UseInlineOnly()
                 .Build();
         }
@@ -172,6 +180,11 @@ namespace Microsoft.Docs.Build
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
         }
 
+        private static List<Error> GetErrors()
+        {
+            return t_status.Value!.Peek().Errors;
+        }
+
         private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
@@ -199,7 +212,7 @@ namespace Microsoft.Docs.Build
 
             var (error, link, display, _) = href.HasValue
                 ? _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile)
-                : _xrefResolver.ResolveXrefByUid(uid ?? throw new InvalidOperationException("href and uid can't be both null"), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+                : _xrefResolver.ResolveXrefByUid(uid ?? default, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
 
             if (!isShorthand)
             {
@@ -216,9 +229,32 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
+        private Dictionary<Document, (List<Heading> headings, bool isIncluded)> GetHeadings(List<Heading> headings)
+        {
+            var status = t_status.Value!.Peek();
+
+            if (!status.Headings.ContainsKey((Document)InclusionContext.File))
+            {
+                status.Headings.Add((Document)InclusionContext.File, (headings, InclusionContext.IsInclude));
+            }
+
+            return status.Headings;
+        }
+
+        private void ValidateHeadings()
+        {
+            var status = t_status.Value!.Peek();
+            foreach (var (document, (headings, isIncluded)) in status.Headings)
+            {
+                _contentValidator.ValidateHeadings(document, headings, isIncluded);
+            }
+        }
+
         private class Status
         {
             public List<Error> Errors { get; } = new List<Error>();
+
+            public Dictionary<Document, (List<Heading> headings, bool isIncluded)> Headings { get; } = new Dictionary<Document, (List<Heading> headings, bool isIncluded)>();
         }
     }
 }

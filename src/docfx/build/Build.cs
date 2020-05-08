@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     {
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
-            options.UseCache = true;
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
@@ -29,6 +28,7 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
+                options.NoCache = false;
                 if (BuildDocset(docset.docsetPath, docset.outputPath, options))
                 {
                     hasError = true;
@@ -51,8 +51,10 @@ namespace Microsoft.Docs.Build
                     return true;
                 }
 
-                errorLog.Configure(config, buildOptions.OutputPath);
-                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver);
+                new OpsPreProcessor(config, buildOptions).Run();
+                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
+                errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
+                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
                 Run(context);
                 return errorLog.ErrorCount > 0;
             }

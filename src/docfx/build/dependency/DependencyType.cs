@@ -19,5 +19,10 @@ namespace Microsoft.Docs.Build
         /// Include another file.
         /// </summary>
         Include,
+
+        /// <summary>
+        /// To generate the correct preview link for TOC files in PR comment.
+        /// </summary>
+        Metadata,
     }
 }

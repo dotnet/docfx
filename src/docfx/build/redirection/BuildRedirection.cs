@@ -20,14 +20,16 @@ namespace Microsoft.Docs.Build
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath) : null,
-                file.FilePath.Path,
+                context.SourceMap.GetOriginalFilePath(file.FilePath) ?? file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
                 file.ContentType,
                 file.Mime.Value);
 
-            publishItem.RedirectUrl = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
+            var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
+            errors.AddIfNotNull(redirectError);
+            publishItem.RedirectUrl = redirectUrl;
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
             publishItem.ExtensionData = new JObject
             {

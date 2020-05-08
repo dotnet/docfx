@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Convert Legacy File Map"))
             {
                 var listBuilder = new ListBuilder<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
+                var filemapBuilder = new ListBuilder<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)>();
 
                 Parallel.ForEach(
                     fileManifests,
@@ -40,13 +41,13 @@ namespace Microsoft.Docs.Build
                             fileManifest.Value.Monikers);
                         if (fileItem != null)
                         {
-                            listBuilder.Add((document.FilePath.Path, fileItem));
+                            listBuilder.Add((context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path, fileItem));
+                            filemapBuilder.Add((document.FilePath.Path, fileItem));
                         }
                     });
 
-                var fileMapItems = listBuilder.ToList();
-                Convert(context, fileMapItems);
-                LegacyAggregatedFileMap.Convert(context, fileMapItems, dependencyMap);
+                Convert(context, filemapBuilder.ToList());
+                LegacyAggregatedFileMap.Convert(context, listBuilder.ToList(), dependencyMap);
             }
         }
 

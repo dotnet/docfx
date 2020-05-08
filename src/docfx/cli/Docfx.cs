@@ -110,7 +110,8 @@ namespace Microsoft.Docs.Build
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
-                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before building.");
+                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
+                    syntax.DefineOption("no-cache", ref options.NoCache, "Do not use cache dependencies in build, always fetch latest dependencies.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 
@@ -163,6 +164,7 @@ namespace Microsoft.Docs.Build
 docfx: `{GetDocfxVersion()}`
 dotnet: `{GetDotnetVersion()}`
 x64: `{Environment.Is64BitProcess}`
+os: `{RuntimeInformation.OSDescription}`
 git: `{GetGitVersion()}`
 {GetDocfxEnvironmentVariables()}
 ## repro steps

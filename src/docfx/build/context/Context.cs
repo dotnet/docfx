@@ -24,8 +24,6 @@ namespace Microsoft.Docs.Build
 
         public Input Input { get; }
 
-        public SourceMap SourceMap { get; }
-
         public BuildScope BuildScope { get; }
 
         public RedirectionProvider RedirectionProvider { get; }
@@ -68,9 +66,11 @@ namespace Microsoft.Docs.Build
 
         public TableOfContentsMap TocMap { get; }
 
-        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
+        public SourceMap SourceMap { get; }
+
+        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
-            DependencyMapBuilder = new DependencyMapBuilder();
+            DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
             BuildQueue = new WorkQueue<FilePath>(errorLog);
 
             Config = config;
@@ -78,12 +78,14 @@ namespace Microsoft.Docs.Build
             BuildOptions = buildOptions;
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
-            SourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), Config, FileResolver);
+            SourceMap = sourceMap;
+
             RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
-            Input = new Input(buildOptions, config, SourceMap, packageResolver, RepositoryProvider);
+            Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
+
             BuildScope = new BuildScope(ErrorLog, Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
@@ -93,7 +95,7 @@ namespace Microsoft.Docs.Build
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
             PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog, ContentValidator);
             BookmarkValidator = new BookmarkValidator(errorLog);
-            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider);
+            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder, ContributionProvider);
             XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder);
 
@@ -101,7 +103,6 @@ namespace Microsoft.Docs.Build
                 config,
                 Input,
                 BuildOptions,
-                SourceMap,
                 BuildScope,
                 BuildQueue,
                 RedirectionProvider,
@@ -112,11 +113,11 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine);
+            MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, MonikerProvider, TemplateEngine, ContentValidator);
 
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine);
-            TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder);
-            TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, tocParser, TableOfContentsLoader, DocumentProvider);
+            TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers);
+            TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
         }
 
         public void Dispose()

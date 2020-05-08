@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
+        public string? Name { get; }
+
         public FilePath? FilePath { get; }
 
         public int Line { get; }
@@ -27,11 +29,11 @@ namespace Microsoft.Docs.Build
 
         public int EndColumn { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source)
-            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0)
+        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null)
+            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name)
         { }
 
-        public Error(ErrorLevel level, string code, string message, FilePath? file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0)
+        public Error(ErrorLevel level, string code, string message, FilePath? file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0, string? name = null)
         {
             Level = level;
             Code = code;
@@ -41,6 +43,7 @@ namespace Microsoft.Docs.Build
             Column = column;
             EndLine = endLine;
             EndColumn = endColumn;
+            Name = name;
         }
 
         public Error WithCustomError(CustomError customError)
@@ -53,26 +56,32 @@ namespace Microsoft.Docs.Build
                 Line,
                 Column,
                 EndLine,
-                EndColumn);
+                EndColumn,
+                Name);
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn);
+            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn, Name);
         }
 
-        public override string ToString() => ToString(Level);
+        public override string ToString() => ToString(Level, null);
 
-        public string ToString(ErrorLevel level)
+        public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
-            object?[] payload = { level, Code, Message, FilePath?.OriginalPath ?? FilePath?.Path, Line, Column };
+            var message_severity = level;
+            int line = Line;
+            int end_line = EndLine;
+            int column = Column;
+            int end_column = EndColumn;
+            var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath);
+            var file = originalPath == null ? FilePath?.Path : originalPath;
+            var date_time = DateTime.UtcNow;
+            var log_item_type = "user";
 
-            var i = payload.Length - 1;
-            while (i >= 0 && (Equals(payload[i], null) || Equals(payload[i], "") || Equals(payload[i], 0) || Equals(payload[i], FileOrigin.Main)))
-            {
-                i--;
-            }
-            return JsonUtility.Serialize(payload.Take(i + 1));
+            return originalPath == null
+                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, date_time })
+                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
@@ -87,6 +96,7 @@ namespace Microsoft.Docs.Build
                 return x.Level == y.Level &&
                        x.Code == y.Code &&
                        x.Message == y.Message &&
+                       x.Name == y.Name &&
                        x.FilePath == y.FilePath &&
                        x.Line == y.Line &&
                        x.Column == y.Column;
@@ -98,6 +108,7 @@ namespace Microsoft.Docs.Build
                     obj.Level,
                     obj.Code,
                     obj.Message,
+                    obj.Name,
                     obj.FilePath,
                     obj.Line,
                     obj.Column);

@@ -1,0 +1,272 @@
+---
+# Liquid template file missing should not crash
+inputs: 
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  docs/a.md: Hello `docfx`!
+outputs: 
+  docs/a/index.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"liquid-not-found","message":"Liquid template used to generate HTML is not found for mimeType 'Conceptual', the output HTML will not be generated","file":"docs/a.md","line":1,"column":1}
+---
+# Source file name ending with spaces should not crash
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  docs/a b.. ..md:
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/Conceptual.html.liquid:
+outputs:
+  docs/a b/index.html:
+---
+# Apply template and produce html page when output type is html
+# Index page should be handled specially
+# Resource file should not be prettify
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      model.additional = "additional";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/Conceptual.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+  a.md: |
+    # title
+    **strong**
+    ~~removed~~
+    ![](b.png)
+  index.md:
+  b.png:
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <p>
+          <strong>strong</strong>
+          <del>removed</del>
+          <img alt="" src="../b.png"></img>
+        </p>
+      </div>
+  b.png:
+  index.html:
+  .publish.json: |
+    {
+      "files": [
+        {"url": "/a/", "additional": "additional"},
+        {"url": "/b.png"},
+        {"url": "/"}
+      ]
+    }
+---
+# Apply template and produce html page when output type is html and outputUrlType is Ugly
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: ugly
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/Conceptual.html.liquid: |
+  a.md:
+  index.md:
+outputs:
+  a.html:
+  index.html:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/a.html" },
+        { "url": "/index.html"}
+      ]
+    }
+---
+# Always ues Docs URL to check redirection rule with document_id as true
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: Ugly
+  redirections.yml: |
+    renames:
+      a.md: /b
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/Conceptual.html.liquid: |
+  b.md:
+outputs:
+  b.html:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/a.html", "redirect_url": "/b" },
+        { "url": "/b.html"}
+      ]
+    }
+---
+# Apply template and produce html page with versioning
+# 1. Link should be resolved to the physical relative path
+# 2. Asset_id should should contains group prefix
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: ugly
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+    routes:
+      docs/v1/: .
+    monikerDefinition: '{APP_BASE_PATH}/data/monikers.json'
+  _themes/ContentTemplate/Conceptual.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "Conceptual";
+      return {
+        content: JSON.stringify(model)
+      };
+    }
+  _themes/Conceptual.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+  _themes/ContentTemplate/toc.html.js: |
+    exports.transform = function (model) {
+      return {
+        content: model.items
+      }
+    }
+  _themes/ContentTemplate/toc.html.tmpl: |
+    <!DOCTYPE html>
+      <div>
+          {{#content}}
+            <li>
+            {{#href}} <a class="normal" href="{{ href }}">{{ name }}</a> {{/href}}
+            </li>
+          {{/content}}
+      </div>
+  docs/v1/a.md: |
+    ---
+    monikerRange: netcore-1.0
+    ---
+    [B](b.md)
+  docs/v1/b.md: |
+    ---
+    monikerRange: netcore-1.1
+    ---
+  docs/v1/TOC.md: |
+    # [A](a.md)
+outputs:
+  1dd7adba/toc.html: |
+    <!DOCTYPE html>
+      <div>
+        <li>
+          <a class="normal" href="../136a42ac/a.html">A</a> 
+        </li>
+      </div>
+  1dd7adba/toc.json: |
+    {
+      "items": [{"name": "A","href": "../136a42ac/a.html"}],
+      "_path": "1dd7adba/toc.html"
+    }
+  136a42ac/a.html: |
+    <!DOCTYPE html>
+    <div><p><a href="../218c13d0/b.html" data-linktype="relative-path">B</a></p></div>
+  218c13d0/b.html:    
+  .manifest.json: |
+    {
+      "files": [
+        {"asset_id": "136a42ac/a.html","output":{".html":{"relative_path":"136a42ac/a.html"}},"group": "136a42ac","version": "< netcore-2.0", "is_moniker_range":true, "source_relative_path": "docs/v1/a.md"},
+        {
+          "asset_id": "1dd7adba/toc.html",
+          "output":{".html":{"relative_path":"1dd7adba/toc.html"}},
+          "group": "1dd7adba",
+          "version":"< netcore-2.0",
+          "is_moniker_range": true,
+          "source_relative_path": "docs/v1/TOC.md"
+        },
+        {"asset_id": "218c13d0/b.html"}
+      ]
+    }
+---
+# Verify SDP pipeline
+# YAML mime in the SDP document should have a corresponding *.html.primary.js file
+# Set config.output.json to false to run *.html.liquid to output static HTML
+# Provide *.mta.json.js to transform metadata
+# Provide *.html.primary.js and *.html.primary.tmpl to transform json content to HTML
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.mta.json.js: |
+    exports.transform = function (model) {
+      model.layout = "test"
+      return {
+        content: JSON.stringify(model)
+      }
+    }
+  _themes/ContentTemplate/TestData.html.primary.tmpl: |
+    <div>{{.}}</div>
+  _themes/ContentTemplate/TestData.html.primary.js: |
+    exports.transform = function (model) {
+      return model.prop;
+    }
+  _themes/test.html.liquid: |
+    <!DOCTYPE html>
+      <div>
+          {{content}}
+      </div>
+outputs:
+  a/index.html: |
+    <!DOCTYPE html>
+      <div>
+        <div>value</div>
+
+      </div>
+---
+# Static Build mode for `Data` type SDP
+# Should generate json output
+# Url should not be prettify
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify({result: model.prop + " has run js data transform"})
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
+  a.json: |
+    {"result": "value has run js data transform"}

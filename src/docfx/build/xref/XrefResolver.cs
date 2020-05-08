@@ -90,6 +90,11 @@ namespace Microsoft.Docs.Build
         public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByUid(
             SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
+            if (string.IsNullOrEmpty(uid))
+            {
+                return default;
+            }
+
             // need to url decode uid from input content
             var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot);
             if (error != null || xrefSpec == null || href == null)
@@ -195,7 +200,7 @@ namespace Microsoft.Docs.Build
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, DependencyType.Uid);
+                _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, DependencyType.Uid, referencingFile.ContentType);
                 var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
                 return (spec, href);
             }

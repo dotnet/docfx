@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
+            options.NoCache = true;
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
@@ -50,7 +51,7 @@ namespace Microsoft.Docs.Build
                         return true;
                     }
 
-                    errorLog.Configure(config, buildOptions.OutputPath);
+                    errorLog.Configure(config, buildOptions.OutputPath, null);
                     using (packageResolver)
                     {
                         // download dependencies to disk

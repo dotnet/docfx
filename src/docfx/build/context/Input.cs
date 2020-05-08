@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
     internal class Input
     {
         private readonly Config _config;
-        private readonly SourceMap _sourceMap;
         private readonly BuildOptions _buildOptions;
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
@@ -27,10 +26,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
         private readonly ConcurrentDictionary<FilePath, JToken> _generatedContents = new ConcurrentDictionary<FilePath, JToken>();
 
-        public Input(BuildOptions buildOptions, Config config, SourceMap sourceMap, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
+        public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
         {
             _config = config;
-            _sourceMap = sourceMap;
             _buildOptions = buildOptions;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
@@ -51,14 +49,14 @@ namespace Microsoft.Docs.Build
             return file.IsGitCommit ? ReadBytesFromGit(fullPath) != null : File.Exists(fullPath);
         }
 
-        public PathString GetFullPath(FilePath file, bool preferOriginalPath = false)
+        public PathString GetFullPath(FilePath file)
         {
             switch (file.Origin)
             {
                 case FileOrigin.Main:
                 case FileOrigin.Generated:
                 case FileOrigin.External:
-                    return _buildOptions.DocsetPath.Concat(preferOriginalPath ? file.OriginalPath ?? file.Path : file.Path);
+                    return _buildOptions.DocsetPath.Concat(file.Path);
 
                 case FileOrigin.Dependency:
                     var package = _config.Dependencies[file.DependencyName];
@@ -127,6 +125,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public (List<Error> errors, JToken token) ReadYaml(FilePath file)
         {
+            if (file.Origin == FileOrigin.Generated)
+            {
+                return (new List<Error>(), _generatedContents[file]);
+            }
+
             return _yamlTokenCache.GetOrAdd(file, path =>
             {
                 using var reader = ReadText(path);
@@ -168,7 +171,7 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Main:
-                    return GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file, _sourceMap.GetOriginalFilePath(file))).ToArray();
+                    return GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file)).ToArray();
 
                 case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
                     return GetFiles(_buildOptions.FallbackDocsetPath).Select(file => FilePath.Fallback(file)).ToArray();

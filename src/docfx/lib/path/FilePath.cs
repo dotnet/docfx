@@ -37,11 +37,6 @@ namespace Microsoft.Docs.Build
         public bool IsGitCommit { get; }
 
         /// <summary>
-        /// Gets the original file path specified in source map.
-        /// </summary>
-        public PathString? OriginalPath { get; }
-
-        /// <summary>
         /// Creates an unknown file path.
         /// </summary>
         public FilePath(string path)
@@ -51,45 +46,44 @@ namespace Microsoft.Docs.Build
             Origin = FileOrigin.External;
         }
 
-        private FilePath(FileOrigin origin, PathString path, PathString? originalPath, PathString dependencyName, bool isGitCommit)
+        private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit)
         {
             Path = path;
-            OriginalPath = originalPath;
             Origin = origin;
             DependencyName = dependencyName;
             IsGitCommit = isGitCommit;
             Format = GetFormat(path);
         }
 
-        public static FilePath Content(PathString path, PathString? originalPath)
+        public static FilePath Content(PathString path)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Main, path, originalPath, default, default);
+            return new FilePath(FileOrigin.Main, path, default, default);
         }
 
         public static FilePath Redirection(PathString path)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Redirection, path, default, default, default);
+            return new FilePath(FileOrigin.Redirection, path, default, default);
         }
 
         public static FilePath Fallback(PathString path, bool isGitCommit = false)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Fallback, path, default, default, isGitCommit);
+            return new FilePath(FileOrigin.Fallback, path, default, isGitCommit);
         }
 
         public static FilePath Dependency(PathString path, PathString dependencyName)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
             Debug.Assert(path.StartsWithPath(dependencyName, out _));
-            return new FilePath(FileOrigin.Dependency, path, default, dependencyName, default);
+            return new FilePath(FileOrigin.Dependency, path, dependencyName, default);
         }
 
         public static FilePath Generated(PathString path)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Generated, path, default, default, default);
+            return new FilePath(FileOrigin.Generated, path, default, default);
         }
 
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
@@ -115,11 +109,6 @@ namespace Microsoft.Docs.Build
                     break;
             }
 
-            if (OriginalPath != null)
-            {
-                tags += $"(<<{OriginalPath})";
-            }
-
             if (IsGitCommit)
             {
                 tags += $"!";
@@ -135,7 +124,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, OriginalPath);
+            return HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
         }
 
         public bool Equals(FilePath? other)
@@ -148,8 +137,7 @@ namespace Microsoft.Docs.Build
             return Path.Equals(other.Path) &&
                    DependencyName.Equals(other.DependencyName) &&
                    other.Origin == Origin &&
-                   IsGitCommit == other.IsGitCommit &&
-                   OriginalPath == other.OriginalPath;
+                   IsGitCommit == other.IsGitCommit;
         }
 
         public int CompareTo(FilePath other)
@@ -168,11 +156,6 @@ namespace Microsoft.Docs.Build
             if (result == 0)
             {
                 result = IsGitCommit.CompareTo(other.IsGitCommit);
-            }
-
-            if (result == 0)
-            {
-                result = Nullable.Compare(OriginalPath, other.OriginalPath);
             }
 
             return result;
