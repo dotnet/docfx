@@ -6,6 +6,7 @@ using System.IO;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -151,6 +152,56 @@ namespace Microsoft.Docs.Build
             writer.Flush();
 
             return writer.ToString();
+        }
+
+        public static string ToHtml(this MarkdownObject containerBlock)
+        {
+            using var writer = new StringWriter();
+            var renderer = new HtmlRenderer(writer)
+            {
+                EnableHtmlForBlock = true,
+                EnableHtmlForInline = true,
+                EnableHtmlEscape = true,
+            };
+
+            renderer.Render(containerBlock);
+            writer.Flush();
+
+            return writer.ToString();
+        }
+
+        public static bool IsVisiable(this MarkdownObject markdownObject)
+        {
+            var html = markdownObject.ToHtml();
+
+            return Visiable(html);
+
+            bool Visiable(string html)
+            {
+                var reader = new HtmlReader(html);
+                while (reader.Read(out var token))
+                {
+                    // check if there are text
+                    if (token.Type == HtmlTokenType.Text)
+                    {
+                        if (!string.IsNullOrWhiteSpace(token.RawText.ToString()))
+                        {
+                            return true;
+                        }
+                    }
+
+                    // check if there are imgs
+                    foreach (ref var attribute in token.Attributes.Span)
+                    {
+                        if (token.NameIs("img") && attribute.NameIs("src"))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
         }
 
         private class DelegatingExtension : IMarkdownExtension
