@@ -579,7 +579,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MissingPairedAttribute(SourceInfo? source, string name, string otherKey)
-                => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source, otherKey);
+                => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source, name);
 
             /// <summary>
             /// Attributes do not meet the requirements of either logic.
