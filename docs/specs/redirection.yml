@@ -509,7 +509,7 @@ outputs:
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: b.md [redirection] --> c.md [redirection] --> a.md [redirection] --> b.md [redirection]","file":"redirections.yml","line":3,"column":9}
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: c.md [redirection] --> a.md [redirection] --> b.md [redirection] --> c.md [redirection]","file":"redirections.yml","line":4,"column":9}
 ---
-# Versioning file redirec to url of non-versioning file
+# Versioning file redirection to url of non-versioning file
 inputs:
   docfx.yml: |
     monikerRange:
