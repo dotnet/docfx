@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public readonly HtmlTextRange ValueRange { get; }
 
-        public bool NameIs(string name)
+        public bool NameIs(ReadOnlySpan<char> name)
         {
             return Name.Span.Equals(name, StringComparison.OrdinalIgnoreCase);
         }
