@@ -57,7 +57,7 @@ Use an _allow list_ to sanitize HTML tags and attributes. HTML tags can contain 
 
 Each allowed HTML tag can have additional attributes as follows:
 
-> NOTE: This list may be adjustmented based on docs usage collected from telemetry
+> NOTE: This list may be adjusted based on docs usage collected from telemetry
 
 ```html
 <!-- Content sectioning -->
