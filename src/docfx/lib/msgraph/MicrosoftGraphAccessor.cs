@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 using Polly;
@@ -43,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             var (error, user) = _aliasCache.GetOrAdd(alias.Value, GetMicrosoftGraphUserCore);
 
-            return error ?? (user is null ? Errors.JsonSchema.MsAliasInvalid(alias, name) : null);
+            return error ?? (user?.Id is null ? Errors.JsonSchema.MsAliasInvalid(alias, name) : null);
         }
 
         public Error[] Save()
@@ -58,14 +59,9 @@ namespace Microsoft.Docs.Build
 
         private async Task<(Error?, MicrosoftGraphUser?)> GetMicrosoftGraphUserCore(string alias)
         {
-            if (string.IsNullOrWhiteSpace(alias))
-            {
-                return default;
-            }
-
             var options = new List<Option>
             {
-                new QueryOption("$select", "mailNickname"),
+                new QueryOption("$select", "id,mailNickname"),
                 new QueryOption("$filter", $"mailNickname eq '{alias}'"),
             };
 
@@ -76,7 +72,7 @@ namespace Microsoft.Docs.Build
                     .RetryAsync(3)
                     .ExecuteAsync(() => _msGraphClient!.Users.Request(options).GetAsync());
 
-                return (null, users != null && users.Count > 0 ? new MicrosoftGraphUser { Alias = alias } : null);
+                return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
             }
             catch (Exception e)
             {
