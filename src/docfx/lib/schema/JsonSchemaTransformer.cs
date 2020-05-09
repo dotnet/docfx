@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -256,18 +257,19 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return (errors, HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun).WriteTo());
+                    return (errors, html);
 
                 case JsonSchemaContentType.InlineMarkdown:
                     var (inlineMarkupErrors, inlineHtml) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return (errors, HtmlUtility.LoadHtml(inlineHtml).PostMarkup(context.Config.DryRun).WriteTo());
+                    return (errors, inlineHtml);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
-                    var htmlWithLinks = HtmlUtility.TransformHtml(content, (ref HtmlToken token) =>
+
+                    var htmlWithLinks = HtmlUtility.TransformHtml(content, (ref HtmlReader reader, ref HtmlToken token) =>
                     {
                         HtmlUtility.TransformLink(ref token, null, href =>
                         {

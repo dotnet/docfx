@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
             var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
             errors.AddRange(markupErrors);
 
-            var htmlDom = HtmlUtility.LoadHtml(html).PostMarkup(context.Config.DryRun);
+            var htmlDom = HtmlUtility.LoadHtml(html);
             ValidateBookmarks(context, file, htmlDom);
             if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
             {
@@ -310,7 +310,7 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(deserializeErrors);
 
                 var razorHtml = RazorTemplate.Render(file.Mime, landingData).GetAwaiter().GetResult();
-                var htmlDom = HtmlUtility.LoadHtml(razorHtml).PostMarkup(context.Config.DryRun);
+                var htmlDom = HtmlUtility.LoadHtml(razorHtml);
                 ValidateBookmarks(context, file, htmlDom);
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
