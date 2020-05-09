@@ -214,10 +214,10 @@ namespace Microsoft.Docs.Build
                 _errorLog.Write(errors);
 
                 var candidates = redirectionSourceMonikers.Length == 0
-                                    ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0)
-                                    : docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any());
+                                    ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0).ToList()
+                                    : docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
 
-                if (candidates.Any())
+                if (candidates.Count > 0)
                 {
                     redirectionHistory.TryAdd(file, (candidates.OrderBy(x => x).Last(), item.RedirectUrl.Source));
                 }
