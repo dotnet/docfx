@@ -103,28 +103,15 @@ namespace Microsoft.Docs.Build
                 var newRefrencedTocs = new List<Document>();
                 var newErrors = new List<Error>();
                 newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newRefrencedTocs, newErrors);
-                UpdateCollections(newReferencedFiles, newRefrencedTocs, newErrors);
+                lock (newNodes)
+                {
+                    errors.AddRange(newErrors);
+                    referencedFiles.AddRange(newReferencedFiles);
+                    referencedTocs.AddRange(newRefrencedTocs);
+                }
             });
 
             return newNodes.ToList();
-
-            void UpdateCollections(List<Document> files, List<Document> tocs, List<Error> newErrors)
-            {
-                lock (errors)
-                {
-                    errors.AddRange(newErrors);
-                }
-
-                lock (referencedFiles)
-                {
-                    referencedFiles.AddRange(files);
-                }
-
-                lock (referencedTocs)
-                {
-                    referencedTocs.AddRange(tocs);
-                }
-            }
         }
 
         private SourceInfo<TableOfContentsNode> LoadTocNode(
