@@ -19,12 +19,12 @@ namespace Microsoft.Docs.Build
             _errorLog = log;
         }
 
-        public void ValidateHeadings(Document file, List<Heading> headings, bool isIncluded)
+        public void ValidateHeadings(Document file, List<ContentNode> nodes, bool isIncluded)
         {
             if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, isIncluded, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
-                Write(_validator.ValidateHeadings(headings, validationContext).GetAwaiter().GetResult());
+                Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
             }
         }
 
