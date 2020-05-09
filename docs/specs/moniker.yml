@@ -199,6 +199,36 @@ outputs:
       }
     }
 ---
+# Versioning file redirec to url of non-versioning file
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    hostName: docs.com
+    basePath: /docs
+    routes:
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
+    monikerDefinition: monikerDefinition.json
+  redirections.yml: |
+    redirections:
+      docs/v1/c.md: /docs/test/a
+      docs/v2/c.md: /docs/b
+  docs/test/a.md:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+    docs/test/a.json:
+---
 # Redirection file with monikers - document id should be taken to the target file with corresponding version
 inputs:
   docfx.yml: |
