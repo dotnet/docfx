@@ -139,8 +139,7 @@ outputs:
 # Json schema microsoft alias rule: Mute error, when no connection with Graph API
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     { 
       "properties":
@@ -165,8 +164,7 @@ outputs:
 # Json schema microsoft alias rule: The author is in the allow list
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -194,8 +192,7 @@ outputs:
 # Json schema microsoft alias rule: The author is in the cache
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -228,8 +225,7 @@ outputs:
   # Json schema microsoft alias rule: Missing author in the cache
   inputs:
     docfx.yml: |
-      metadataSchema:
-        - schema.json
+      metadataSchema: schema.json
       microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
     schema.json: |
       { 
@@ -259,12 +255,11 @@ outputs:
     a.json:
     .errors.log: |
       {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
-  ---
+---
 # Json schema microsoft alias rule: The author information has expired 
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -287,7 +282,7 @@ cache:
   msgraph-users.json: |
     { 
       "items": [
-        { "alias": "123over123", "updated_at": "2018-06-08T01:40:33.1981669Z" }
+        { "alias": "123over123", "id": "1", "updated_at": "2018-06-08T01:40:33.1981669Z" }
       ]
     }
 environments:
@@ -298,8 +293,7 @@ outputs:
 # Json schema microsoft alias rule: The author is valid with graph call 
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -316,19 +310,18 @@ inputs:
     }
   a.md: |
     ---
-    ms.author: yazhao
+    ms.author: yufeih
     ---
 environments:
   - MICROSOFT_GRAPH_CLIENT_SECRET
 outputs:
   a.json: |
-    { "ms.author": "yazhao" }
+    { "ms.author": "yufeih" }
 ---
 # Json schema microsoft alias rule: The author is invalid with graph call 
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -456,8 +449,7 @@ outputs:
 # Json schema docset unique: the attribute value must be unique within docset
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     {
       "docsetUnique": [ "title", "description"]
@@ -482,8 +474,7 @@ outputs:
 # Json schema docset unique: null/empty values are not in-scope
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     {
       "docsetUnique": [ "title", "description"]
@@ -505,8 +496,7 @@ outputs:
 # Json schema docset unique: global metadata and file metadata
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     globalMetadata:
       description: abc
   schema.json: |
@@ -528,8 +518,7 @@ outputs:
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     { 
       "properties":
