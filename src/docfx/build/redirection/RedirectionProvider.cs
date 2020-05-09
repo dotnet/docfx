@@ -213,19 +213,19 @@ namespace Microsoft.Docs.Build
                 var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
                 _errorLog.Write(errors);
 
-                List<FilePath> candidates;
+                IEnumerable<FilePath> candidates;
                 if (redirectionSourceMonikers.Length == 0)
                 {
-                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0).ToList();
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0);
                 }
                 else
                 {
-                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
+                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any());
                 }
 
-                if (candidates.Count > 0)
+                if (candidates.Any())
                 {
-                    redirectionHistory.TryAdd(file, (candidates.Count > 1 ? candidates.OrderBy(x => x).Last() : candidates.Single(), item.RedirectUrl.Source));
+                    redirectionHistory.TryAdd(file, (candidates.OrderBy(x => x).Last(), item.RedirectUrl.Source));
                 }
 
                 foreach (var candidate in candidates)
