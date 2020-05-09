@@ -213,15 +213,9 @@ namespace Microsoft.Docs.Build
                 var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
                 _errorLog.Write(errors);
 
-                IEnumerable<FilePath> candidates;
-                if (redirectionSourceMonikers.Length == 0)
-                {
-                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0);
-                }
-                else
-                {
-                    candidates = docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any());
-                }
+                var candidates = redirectionSourceMonikers.Length == 0
+                                    ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0)
+                                    : docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any());
 
                 if (candidates.Any())
                 {
