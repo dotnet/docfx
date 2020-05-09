@@ -150,19 +150,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     if (_settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
                     {
-                        if (string.IsNullOrWhiteSpace(result))
+                        if (string.IsNullOrWhiteSpace(result) && _settings.DebugMode)
                         {
-                            string message;
-                            if (_settings.DebugMode)
-                            {
-                                var viewModelPath = ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
-                                message = $"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"";
-                            }
-                            else
-                            {
-                                message = $"Model is transformed to empty string with template \"{template.Name}\". To get the detailed view model, please run docfx with debug mode --debug";
-                            }
-                            Logger.LogWarning(message, code: WarningCodes.Build.EmptyOutputFiles);
+                            ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
                         }
 
                         TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem, out List<XRefDetails> invalidXRefs);
