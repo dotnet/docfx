@@ -50,13 +50,14 @@ namespace Microsoft.Docs.Build
                 // The following code ensures we preserve the original html when changing links.
                 return HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlToken token) =>
                 {
+                    HtmlUtility.TransformLink(ref token, block, getLink);
+                    HtmlUtility.TransformXref(ref reader, ref token, block, resolveXref);
+
                     if (scanTags)
                     {
                         HtmlUtility.ScanTags(ref token, block, errors);
                     }
 
-                    HtmlUtility.TransformLink(ref token, block, getLink);
-                    HtmlUtility.TransformXref(ref reader, ref token, block, resolveXref);
                     HtmlUtility.RemoveRerunCodepenIframes(ref token);
                     HtmlUtility.StripTags(ref reader, ref token);
                 });
