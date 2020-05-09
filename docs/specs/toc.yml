@@ -272,8 +272,6 @@ inputs:
     # [Topic1](index.md) #
     ## Reference toc
     ### [Reference TOC 1.1](f1/TOC.md)
-    ### [Reference TOC 1.2](f1/TOC.md)
-    ### [Reference TOC 2.1](f2/TOC.md)
   docs/f1/TOC.md: |
     # [Topic1](../index.md)
     ## [Reference TOC 1.1.1](../f2/TOC.md)
