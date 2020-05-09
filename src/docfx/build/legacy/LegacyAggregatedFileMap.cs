@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         {
             var aggregatedFileMapItems = new List<(string path, object item)>();
 
-            foreach (var (legacyFilePathRelativeToBaseFolder, fileMapItem) in items)
+            foreach (var (path, fileMapItem) in items.GroupBy(x => x.legacyFilePathRelativeToBaseFolder).ToDictionary(g => g.Key, g => g.ToList().First().fileMapItem))
             {
                 if (fileMapItem.Type == "Resource")
                 {
@@ -26,8 +26,8 @@ namespace Microsoft.Docs.Build
 
                 var aggregatedFileMapItem = new
                 {
-                    dependencies = dependencyMap.ContainsKey(legacyFilePathRelativeToBaseFolder)
-                                    ? dependencyMap[legacyFilePathRelativeToBaseFolder].Select(
+                    dependencies = dependencyMap.ContainsKey(path)
+                                    ? dependencyMap[path].Select(
                                         x => new DependencyItem
                                         {
                                             FromFilePath = x.From,
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                     type = fileMapItem.Type,
                 };
 
-                aggregatedFileMapItems.Add((legacyFilePathRelativeToBaseFolder, aggregatedFileMapItem));
+                aggregatedFileMapItems.Add((path, aggregatedFileMapItem));
             }
 
             context.Output.WriteJson(
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 new
                 {
                     aggregated_file_map_items = aggregatedFileMapItems
-                        .OrderBy(item => item.path).ToDictionary(item => item.path, item => item.item),
+                    .OrderBy(item => item.path).ToDictionary(item => item.path, item => item.item),
                     docset_infos = new Dictionary<string, object>
                     {
                         [context.Config.Name] = new

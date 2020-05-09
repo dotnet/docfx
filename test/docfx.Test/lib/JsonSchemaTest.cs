@@ -357,6 +357,8 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'suggestion','log_item_type':'user','code':'key1-attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead','file':'file','line':1,'end_line':1,'column':10,'end_column':10}")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'customErrors': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "{'message_severity':'error','log_item_type':'user','code':'precluded-attributes','message':'Only one of the following attributes can exist: 'key1', 'key2'','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
+        [InlineData("{'dependencies': {'key1': ['key2']}, 'customErrors': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
+            "{'message_severity':'warning','log_item_type':'user','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // strict required validation
         [InlineData("{'strictRequired': ['key1']}", "{'key1': 'a'}", "")]
@@ -378,7 +380,8 @@ namespace Microsoft.Docs.Build
 
 
         [Theory]
-        // attribut docset unique validation
+
+        // attribute docset unique validation
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" }, 0)]
         [InlineData("{'docsetUnique': ['key1', 'key1']}", new[] { "{'key1': 'a'}" }, 0)]
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" , "{'key1': 'b'}" }, 0)]

@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 outputPath,
-                file.FilePath.Path,
+                context.SourceMap.GetOriginalFilePath(file.FilePath) ?? file.FilePath.Path,
                 context.BuildOptions.Locale,
                 monikers,
                 context.MonikerProvider.GetConfigMonikerRange(file.FilePath),

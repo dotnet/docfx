@@ -986,6 +986,15 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b#bookmark'","file":"docs/a.md","line":3,"column":22}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unexist'","file":"docs/a.md","line":7,"column":35}
 ---
+# Support <xref> tag with neither uid nor href
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    <xref data-raw-source="@Me"></xref>
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>@Me</p>"}
+---
 # support multiple uids with different xref properties
 repos:
   https://docs.com/test-multiple-uid-different-xref-property#live:
