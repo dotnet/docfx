@@ -217,10 +217,7 @@ inputs:
 cache:
   msgraph-users.json: |
     { 
-      "items": [
-        { "alias": "over123" },
-        { "alias": "zikun", "updated_at": "2018-06-08T01:40:33.1981669Z" }
-      ]
+      "items": [{ "alias": "over123", "id": "1" }]
     }
 environments:
   - MICROSOFT_GRAPH_CLIENT_SECRET
@@ -228,6 +225,41 @@ outputs:
   a.json: |
     { "ms.author": "over123" }
 ---
+  # Json schema microsoft alias rule: Missing author in the cache
+  inputs:
+    docfx.yml: |
+      metadataSchema:
+        - schema.json
+      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+    schema.json: |
+      { 
+        "properties":
+        { 
+          "ms.author":
+          { 
+            "microsoftAlias": 
+            {
+              "allowedDLs":[]
+            }
+          }
+        } 
+      }
+    a.md: |
+      ---
+      ms.author: over123
+      ---
+  cache:
+    msgraph-users.json: |
+      { 
+        "items": [{ "alias": "over123" }]
+      }
+  environments:
+    - MICROSOFT_GRAPH_CLIENT_SECRET
+  outputs:
+    a.json:
+    .errors.log: |
+      {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
+  ---
 # Json schema microsoft alias rule: The author information has expired 
 inputs:
   docfx.yml: |
@@ -255,7 +287,6 @@ cache:
   msgraph-users.json: |
     { 
       "items": [
-        { "alias": "yazhao" },
         { "alias": "123over123", "updated_at": "2018-06-08T01:40:33.1981669Z" }
       ]
     }
