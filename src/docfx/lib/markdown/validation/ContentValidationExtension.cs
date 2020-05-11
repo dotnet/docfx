@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                         }
                         else if (node is InclusionBlock inclusionBlock)
                         {
-                            // Heading block cannot be in InclusionInline
+                            // Heading block cannot be in the InclusionInline
                             var inclusionDocument = (Document?)readFile(inclusionBlock.IncludedFilePath, InclusionContext.File, node).file;
                             if (inclusionDocument != null)
                             {
@@ -59,6 +59,9 @@ namespace Microsoft.Docs.Build
                             documentNodes.Add(new ContentNode
                             {
                                 SourceInfo = node.ToSourceInfo(),
+
+                                // TODO: will be replace by IsVisible function
+                                IsVisible = string.IsNullOrWhiteSpace(MarkdigUtility.ToPlainText(leafBlock)),
                             });
                         }
 
