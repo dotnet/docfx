@@ -21,11 +21,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, InclusionContext.File, inclusion);
+            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, inclusion);
 
             if (content == null)
             {
-                _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.", inclusion);
+                _context.LogWarning("include-not-found", $"Invalid include link: '{inclusion.IncludedFilePath}'.", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }

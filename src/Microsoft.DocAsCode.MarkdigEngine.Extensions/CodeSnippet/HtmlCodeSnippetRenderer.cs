@@ -174,11 +174,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
-            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, InclusionContext.File, codeSnippet);
+            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, codeSnippet);
             
             if (content == null)
             {
-                _context.LogWarning("codesnippet-not-found", $"Cannot resolve '{codeSnippet.CodePath}' relative to '{InclusionContext.File}'.", codeSnippet);
+                _context.LogWarning("codesnippet-not-found", $"Invalid code snippet link: '{codeSnippet.CodePath}'.", codeSnippet);
                 renderer.Write(GetWarning());
                 return;
             }

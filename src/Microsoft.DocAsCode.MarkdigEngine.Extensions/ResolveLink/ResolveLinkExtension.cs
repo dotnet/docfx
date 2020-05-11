@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (markdownObject is LinkInline linkInline && !linkInline.IsAutoLink)
             {
-                linkInline.Url = _context.GetLink(linkInline.Url, InclusionContext.File, InclusionContext.RootFile, linkInline);
+                linkInline.Url = _context.GetLink(linkInline.Url, linkInline);
             }
 
             if (markdownObject is ContainerBlock containerBlock)
