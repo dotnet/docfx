@@ -21,6 +21,10 @@ namespace Microsoft.Docs.Build
         [InlineData("<a>test</a>", true)]
         [InlineData("`code`", true)]
         [InlineData("```\ncode\n````", true)]
+        [InlineData("<a></a>", true)]
+        [InlineData("<a/>", true)]
+        [InlineData("<a href=\"https://www.microsoft.com\"></a>", true)]
+        [InlineData("<a href=\"https://www.microsoft.com\"/>", true)]
 
         [InlineData(" <!--comments--> ", false)]
         [InlineData("[](https://github.com)", false)]
@@ -28,10 +32,6 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n  \n  ", false)]
         [InlineData("  \n\n  \n\n  ", false)]
         [InlineData("  \n <!--comments--> \n  ", false)]
-        [InlineData("<a></a>", false)]
-        [InlineData("<a/>", false)]
-        [InlineData("<a href=\"https://www.microsoft.com\"></a>", false)]
-        [InlineData("<a href=\"https://www.microsoft.com\"/>", false)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
             var markdownDoucment = Markdown.Parse(markdownContent, _markdownPipeline);

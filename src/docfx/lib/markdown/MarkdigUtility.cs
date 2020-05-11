@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using DotLiquid.Util;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -159,62 +160,55 @@ namespace Microsoft.Docs.Build
             var visiable = false;
             Visit(markdownObject, node =>
             {
-                if (node is HtmlBlock htmlBlock)
+                switch (node)
                 {
-                    visiable = visiable || VisibleHtml(htmlBlock.Lines.ToString());
-                    return true;
+                    case HtmlBlock htmlBlock:
+                        foreach (var line in htmlBlock.Lines.Lines)
+                        {
+                            visiable = visiable || VisibleHtml(line.Slice.Text);
+                        }
+                        return true;
+                    case HtmlInline htmlInline:
+                        visiable = visiable || VisibleHtml(htmlInline.Tag);
+                        return false;
+                    case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
+                        visiable = true;
+                        return true;
+                    case LeafInline _:
+                        visiable = true;
+                        return true;
+                    default:
+                        return false;
                 }
-
-                if (node is HtmlInline htmlInline)
-                {
-                    visiable = visiable || VisibleHtml(htmlInline.Tag);
-                    return false;
-                }
-
-                if (node is LeafBlock leafBlock &&
-                    (leafBlock.Inline is null || !leafBlock.Inline.Any()))
-                {
-                    visiable = true;
-                    return true;
-                }
-
-                if (node is LeafInline)
-                {
-                    visiable = true;
-                    return true;
-                }
-
-                return false;
             });
 
             return visiable;
 
-            bool VisibleHtml(string html)
+            static bool VisibleHtml(string? html)
             {
+                if (string.IsNullOrWhiteSpace(html))
+                {
+                    return false;
+                }
+
+                var visibleHtml = false;
                 var reader = new HtmlReader(html);
                 while (reader.Read(out var token))
                 {
                     // check if there are text
-                    if (token.Type == HtmlTokenType.Text)
-                    {
-                        if (!string.IsNullOrWhiteSpace(token.RawText.ToString()))
-                        {
-                            return true;
-                        }
-                    }
-
-                    // check if there are imgs
-                    foreach (ref var attribute in token.Attributes.Span)
-                    {
-                        if (token.NameIs("img") && attribute.NameIs("src"))
-                        {
-                            return true;
-                        }
-                    }
+                    visibleHtml = visibleHtml || VisibleHtmlType(token);
                 }
 
-                return false;
+                return visibleHtml;
             }
+
+            static bool VisibleHtmlType(HtmlToken token)
+                => token.Type switch
+                {
+                    HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
+                    HtmlTokenType.Comment => false,
+                    _ => true,
+                };
         }
 
         private class DelegatingExtension : IMarkdownExtension
