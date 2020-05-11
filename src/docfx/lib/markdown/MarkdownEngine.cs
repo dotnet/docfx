@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
 
-            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
+            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
             _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
 
             if (!string.IsNullOrEmpty(_markdownValidationRules))
@@ -112,7 +112,6 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
                 .UseTelemetry()
-                .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
@@ -126,7 +125,6 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
                 .UseTelemetry()
-                .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
@@ -194,6 +192,16 @@ namespace Microsoft.Docs.Build
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);
+        }
+
+        private string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
+        {
+            var status = t_status.Value!.Peek();
+
+            var (error, link, _) = _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)relativeTo, (Document)resultRelativeTo);
+            status.Errors.AddIfNotNull(error);
+
+            return link;
         }
 
         private string GetLink(SourceInfo<string> href)
