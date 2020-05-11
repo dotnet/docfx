@@ -1043,9 +1043,14 @@ inputs:
     <div></div>
 
     [!include[](b.md)]
+    #### H4 -a
+    <!-- comments -->
   b.md: |
     ### H3 -b
     [!include[](c.md)]
+
+    [!include[](c.md)]
+    abc
   c.md: |
     some content
     ## H2 -c
@@ -1054,6 +1059,4 @@ outputs:
   a.json:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H1 contains no content. Add content or remove the unused heading.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-include","message":"H1 headings aren't allowed in included files. Every parent file should have an H1.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-include","message":"H1 headings aren't allowed in included files. Every parent file should have an H1.","file":"c.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
