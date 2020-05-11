@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     /// same markdown pipeline instance at the same time.
     /// Thus a thread static <see cref="InclusionContext"/> class is created to store per document information.
     /// </remarks>
-    [Obsolete("InclusionContext will be removed in docfx v3")]
     public static class InclusionContext
     {
         private static readonly ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>> t_markupStacks
