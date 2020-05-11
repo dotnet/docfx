@@ -256,40 +256,6 @@ outputs:
     .errors.log: |
       {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
 ---
-# Json schema microsoft alias rule: The author information has expired 
-inputs:
-  docfx.yml: |
-    metadataSchema: schema.json
-    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
-  schema.json: |
-    { 
-      "properties":
-      { 
-        "ms.author":
-        { 
-          "microsoftAlias": 
-          {
-            "allowedDLs":[]
-          }
-        }
-      } 
-    }
-  a.md: |
-    ---
-    ms.author: 123over123
-    ---
-cache:
-  msgraph-users.json: |
-    { 
-      "items": [
-        { "alias": "123over123", "id": "1", "updated_at": "2018-06-08T01:40:33.1981669Z" }
-      ]
-    }
-environments:
-  - MICROSOFT_GRAPH_CLIENT_SECRET
-outputs:
-  a.json:
----
 # Json schema microsoft alias rule: The author is valid with graph call 
 inputs:
   docfx.yml: |
@@ -512,8 +478,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","file":"a.md","line":2,"column":14}
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","file":"docfx.yml","line":4,"column":16}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"a.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"docfx.yml","line":3,"column":16}
 ---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
