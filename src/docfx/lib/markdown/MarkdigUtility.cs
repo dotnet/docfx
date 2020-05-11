@@ -167,12 +167,18 @@ namespace Microsoft.Docs.Build
                             visiable = visiable || VisibleHtml(line.Slice.Text);
                         }
                         return true;
-                    case HtmlInline htmlInline:
-                        visiable = visiable || VisibleHtml(htmlInline.Tag);
+                    case ThematicBreakBlock _:
+                        visiable = false;
+                        return true;
+                    case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
+                        visiable = false;
                         return false;
                     case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
                         visiable = true;
                         return true;
+                    case HtmlInline htmlInline:
+                        visiable = visiable || VisibleHtml(htmlInline.Tag);
+                        return false;
                     case LeafInline _:
                         visiable = true;
                         return true;

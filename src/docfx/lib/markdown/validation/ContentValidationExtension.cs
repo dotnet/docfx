@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseContentValidation(
             this MarkdownPipelineBuilder builder,
             OnlineServiceMarkdownValidatorProvider? validatorProvider,
-            Func<List<Node>, Dictionary<Document, (List<Node> nodes, bool isIncluded)>> getValidationNodes,
+            Func<List<ValidationNode>, Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>> getValidationNodes,
             Func<string, object, MarkdownObject, (string? content, object? file)> readFile)
         {
             var validators = validatorProvider?.GetValidators();
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             {
                 if (((Document)InclusionContext.File).FilePath.Format == FileFormat.Markdown)
                 {
-                    var documentNodes = new List<Node>();
+                    var documentNodes = new List<ValidationNode>();
                     document.Visit(node =>
                     {
                         if (node is HeadingBlock headingBlock)
@@ -39,6 +39,7 @@ namespace Microsoft.Docs.Build
                                 Content = GetHeadingContent(headingBlock), // used for reporting
                                 HeadingChar = headingBlock.HeaderChar,
                                 RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
+                                IsVisible = MarkdigUtility.IsVisible(headingBlock),
                             });
                         }
                         else if (node is InclusionBlock inclusionBlock)
@@ -59,9 +60,7 @@ namespace Microsoft.Docs.Build
                             documentNodes.Add(new ContentNode
                             {
                                 SourceInfo = node.ToSourceInfo(),
-
-                                // TODO: will be replace by IsVisible function
-                                IsVisible = !string.IsNullOrWhiteSpace(MarkdigUtility.ToPlainText(leafBlock)),
+                                IsVisible = MarkdigUtility.IsVisible(leafBlock),
                             });
                         }
 
@@ -89,7 +88,7 @@ namespace Microsoft.Docs.Build
                                     nodes.RemoveAt(index);
                                     nodes.InsertRange(index, documentNodes.Select(node =>
                                     {
-                                        var newNode = (Node)node.Clone();
+                                        var newNode = (ValidationNode)node.Clone();
                                         newNode.InclusionSourceInfo = node.SourceInfo;
                                         newNode.SourceInfo = current.SourceInfo;
                                         return newNode;
@@ -149,7 +148,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal class InclusionNode : Node, ICloneable
+        private class InclusionNode : ValidationNode, ICloneable
         {
             public string? IncludedFilePath { get; set; }
 

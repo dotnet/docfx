@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private Dictionary<Document, (List<Node> nodes, bool isIncluded)> GetValidationNodes(List<Node> nodes)
+        private Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> GetValidationNodes(List<ValidationNode> nodes)
         {
             var status = t_status.Value!.Peek();
 
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
         {
             public List<Error> Errors { get; } = new List<Error>();
 
-            public Dictionary<Document, (List<Node> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<Node> nodes, bool isIncluded)>();
+            public Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>();
         }
     }
 }
