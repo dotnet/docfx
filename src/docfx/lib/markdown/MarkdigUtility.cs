@@ -195,7 +195,6 @@ namespace Microsoft.Docs.Build
                 var reader = new HtmlReader(html);
                 while (reader.Read(out var token))
                 {
-                    // check if there are text
                     visibleHtml = visibleHtml || VisibleHtmlType(token);
                 }
 
