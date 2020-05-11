@@ -10,14 +10,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class GlobUtility
     {
-        private static readonly Dictionary<string, string> s_globNormalizers = new Dictionary<string, string>
-        {
-            { @"\*{2,}", "**" }, // **** => **
-            { @"^\*{2}(?=\.)", "**/*" }, // ^**.md => ^**/*.md
-            { @"(?<=\/)\*{2}(?=\.)", "**/*" }, // /**.md => /**/*.md
-            { @"(?<!\/)\*{2}(?=\.)", "*" }, // text**.md => text*.md
-        };
-
         public static Func<string, bool> CreateGlobMatcher(string pattern)
         {
             var glob = CreateGlob(pattern);
@@ -79,11 +71,11 @@ namespace Microsoft.Docs.Build
 
         private static string PreProcessPattern(string pattern)
         {
-            foreach (var (regex, replace) in s_globNormalizers)
-            {
-                pattern = Regex.Replace(pattern, regex, replace);
-            }
-            return pattern;
+            // Pre process glob pattern so `**.md` means `**/*.md`
+            // **** => **, **.md => **/*.md
+            pattern = Regex.Replace(pattern, @"\*{2,}", "**");
+            pattern = Regex.Replace(pattern, @"^\*{2}\.", "**/*.");
+            return pattern.Replace("/**.", "/**/*.");
         }
     }
 }
