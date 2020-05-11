@@ -3,6 +3,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using DotLiquid.Util;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -154,29 +156,42 @@ namespace Microsoft.Docs.Build
             return writer.ToString();
         }
 
-        public static string ToHtml(this MarkdownObject markdownObject)
-        {
-            using var writer = new StringWriter();
-            var renderer = new HtmlRenderer(writer)
-            {
-                EnableHtmlForBlock = true,
-                EnableHtmlForInline = true,
-                EnableHtmlEscape = true,
-            };
-
-            renderer.Render(markdownObject);
-            writer.Flush();
-
-            return writer.ToString();
-        }
-
         public static bool IsVisible(this MarkdownObject markdownObject)
         {
-            var html = markdownObject.ToHtml();
+            var visiable = false;
+            Visit(markdownObject, node =>
+            {
+                if (node is HtmlBlock htmlBlock)
+                {
+                    visiable = visiable || VisibleHtml(htmlBlock.Lines.ToString());
+                    return true;
+                }
 
-            return Visible(html);
+                if (node is HtmlInline htmlInline)
+                {
+                    visiable = visiable || VisibleHtml(htmlInline.Tag);
+                    return false;
+                }
 
-            bool Visible(string html)
+                if (node is LeafBlock leafBlock &&
+                    (leafBlock.Inline is null || !leafBlock.Inline.Any()))
+                {
+                    visiable = true;
+                    return true;
+                }
+
+                if (node is LeafInline)
+                {
+                    visiable = true;
+                    return true;
+                }
+
+                return false;
+            });
+
+            return visiable;
+
+            bool VisibleHtml(string html)
             {
                 var reader = new HtmlReader(html);
                 while (reader.Read(out var token))
