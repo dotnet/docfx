@@ -4,11 +4,9 @@
 using System;
 using System.IO;
 using System.Linq;
-using DotLiquid.Util;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
-using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
