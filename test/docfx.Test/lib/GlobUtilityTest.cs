@@ -60,6 +60,8 @@ namespace Microsoft.Docs.Build
         [InlineData("**/[EJ]/*.{md,cs,csproj}", "Root/M/K.md, Root/J\\K.csp", false)]
         [InlineData("a**/*.md", "ab/c.md, a/b.md", true)]
         [InlineData("a**/*.md", "a/b/c.md, a/b.cs", false)]
+        [InlineData("a.b**.md", "a.b.c.md, a.b.c.a.md", true)]
+        [InlineData("a.b**.md", "a.e.md, a.c.a.md", false)]
 
         // For backward compatibility with v2
         [InlineData("****", "a.md, a/b.md", true)]

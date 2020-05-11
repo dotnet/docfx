@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -151,6 +152,61 @@ namespace Microsoft.Docs.Build
             writer.Flush();
 
             return writer.ToString();
+        }
+
+        public static bool IsVisible(this MarkdownObject markdownObject)
+        {
+            var visiable = false;
+            Visit(markdownObject, node =>
+            {
+                switch (node)
+                {
+                    case HtmlBlock htmlBlock:
+                        foreach (var line in htmlBlock.Lines.Lines)
+                        {
+                            visiable = visiable || VisibleHtml(line.Slice.Text);
+                        }
+                        return true;
+                    case HtmlInline htmlInline:
+                        visiable = visiable || VisibleHtml(htmlInline.Tag);
+                        return false;
+                    case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
+                        visiable = true;
+                        return true;
+                    case LeafInline _:
+                        visiable = true;
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+
+            return visiable;
+
+            static bool VisibleHtml(string? html)
+            {
+                if (string.IsNullOrWhiteSpace(html))
+                {
+                    return false;
+                }
+
+                var visibleHtml = false;
+                var reader = new HtmlReader(html);
+                while (reader.Read(out var token))
+                {
+                    visibleHtml = visibleHtml || VisibleHtmlToken(token);
+                }
+
+                return visibleHtml;
+            }
+
+            static bool VisibleHtmlToken(HtmlToken token)
+                => token.Type switch
+                {
+                    HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
+                    HtmlTokenType.Comment => false,
+                    _ => true,
+                };
         }
 
         private class DelegatingExtension : IMarkdownExtension
