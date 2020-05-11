@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     if(currentType == "complex" && obj.Count == 0)
                     {
-                        logError("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
+                        logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
                     }
                     var htmlId = GetHtmlId(obj.Line, obj.Column);
