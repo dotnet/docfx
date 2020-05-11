@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.52) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.53) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.52) | DocFX website ">
-    <meta name="generator" content="docfx 2.52.0.0">
+    <meta name="title" content="Version Notes (Current Version: v2.53) | DocFX website ">
+    <meta name="generator" content="docfx 2.53.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -70,8 +70,22 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v252">Version Notes (Current Version: v2.52)</h1>
+<h1 id="version-notes-current-version-v253">Version Notes (Current Version: v2.53)</h1>
 
+<h2 id="v253">v2.53</h2>
+<ol>
+<li>Support extracting metadata from FSharp projects incrementally. Thanks @saul! (#5810)</li>
+<li>Support XrefService as parameter. e.g. <code>docfx --xrefService https://xref.docs.microsoft.com/query?uid={uid}</code>. (#5786)</li>
+<li>Feature, improvement and bug fix in several Markdown extension syntax. (#5792, #5804, #5838, #5857)</li>
+<li>Do not warn when certain output is empty. (#5878)</li>
+<li>Bug fix:
+<ol>
+<li>Fix crash when building FSharp projects with override methods. Thanks @saul! (#5811)</li>
+<li>Fix applying template preprocessor failure for Python reference in some cases. (#5781)</li>
+<li>Fix PDF outline issue, add check for user style sheet existence. Thanks @icnocop (#5490, #5858)</li>
+</ol>
+</li>
+</ol>
 <h2 id="v252">v2.52</h2>
 <ol>
 <li>Improve readibility of default theme (#5156). Thanks @djee-ms!</li>
@@ -1032,7 +1046,7 @@ console.log('hello world');
 <ol>
 <li>Fix isssue #719 that assertion failed.</li>
 </ol>
-<h2 id="v253">v2.5.3</h2>
+<h2 id="v253-1">v2.5.3</h2>
 <ol>
 <li>Update documenation</li>
 <li>Remove debug build option in Release configuration</li>
