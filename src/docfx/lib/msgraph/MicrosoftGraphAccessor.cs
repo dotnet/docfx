@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 using Polly;
@@ -23,7 +24,8 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret))
+                !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret) &&
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(
                     config.MicrosoftGraphTenantId,

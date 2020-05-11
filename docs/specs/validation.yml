@@ -162,6 +162,7 @@ outputs:
     { "ms.author": "over123" }
 ---
 # Json schema microsoft alias rule: The author is in the allow list
+os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -190,6 +191,7 @@ outputs:
     { "ms.author": "over123" }
 ---
 # Json schema microsoft alias rule: The author is in the cache
+os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -222,41 +224,43 @@ outputs:
   a.json: |
     { "ms.author": "over123" }
 ---
-  # Json schema microsoft alias rule: Missing author in the cache
-  inputs:
-    docfx.yml: |
-      metadataSchema: schema.json
-      microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
-    schema.json: |
+# Json schema microsoft alias rule: Missing author in the cache
+os: windows
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
       { 
-        "properties":
+        "ms.author":
         { 
-          "ms.author":
-          { 
-            "microsoftAlias": 
-            {
-              "allowedDLs":[]
-            }
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
           }
-        } 
-      }
-    a.md: |
-      ---
-      ms.author: over123
-      ---
-  cache:
-    msgraph-users.json: |
-      { 
-        "items": [{ "alias": "over123" }]
-      }
-  environments:
-    - MICROSOFT_GRAPH_CLIENT_SECRET
-  outputs:
-    a.json:
-    .errors.log: |
-      {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: over123
+    ---
+cache:
+  msgraph-users.json: |
+    { 
+      "items": [{ "alias": "over123" }]
+    }
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
 ---
-# Json schema microsoft alias rule: The author is valid with graph call 
+# Json schema microsoft alias rule: The author is valid with graph call
+os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -284,7 +288,8 @@ outputs:
   a.json: |
     { "ms.author": "yufeih" }
 ---
-# Json schema microsoft alias rule: The author is invalid with graph call 
+# Json schema microsoft alias rule: The author is invalid with graph call
+os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
