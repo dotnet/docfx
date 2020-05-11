@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
     {
         public string? Alias { get; set; }
 
+        public string? Id { get; set; }
+
         public DateTime? UpdatedAt { get; set; }
 
         public IEnumerable<string> GetKeys()

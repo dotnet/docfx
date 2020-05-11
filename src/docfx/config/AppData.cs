@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public static string GitHubUserCachePath => Path.Combine(CacheRoot, "github-users.json");
 
-        public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "microsoft-graph.json");
+        public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "msgraph-users.json");
 
         public static string GetFileDownloadDir(string url)
         {

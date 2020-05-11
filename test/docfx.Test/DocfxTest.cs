@@ -42,21 +42,18 @@ namespace Microsoft.Docs.Build
         [MarkdownTest("~/docs/designs/**/*.md")]
         public static async Task Run(TestData test, DocfxTestSpec spec)
         {
+            if (!OsMatches(spec.OS))
+            {
+                throw new TestSkippedException("OS not supported");
+            }
+
             var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
 
             try
             {
                 t_repos.Value = repos;
                 t_appDataPath.Value = appDataPath;
-
-                if (OsMatches(spec.OS))
-                {
-                    await RunCore(docsetPath, outputPath, spec);
-                }
-                else
-                {
-                    await Assert.ThrowsAnyAsync<Exception>(() => RunCore(docsetPath, outputPath, spec));
-                }
+                await RunCore(docsetPath, outputPath, spec);
             }
             finally
             {

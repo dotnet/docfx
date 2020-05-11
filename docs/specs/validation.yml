@@ -139,8 +139,7 @@ outputs:
 # Json schema microsoft alias rule: Mute error, when no connection with Graph API
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     { 
       "properties":
@@ -163,10 +162,10 @@ outputs:
     { "ms.author": "over123" }
 ---
 # Json schema microsoft alias rule: The author is in the allow list
+os: windows
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -192,10 +191,10 @@ outputs:
     { "ms.author": "over123" }
 ---
 # Json schema microsoft alias rule: The author is in the cache
+os: windows
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -215,12 +214,9 @@ inputs:
     ms.author: over123
     ---
 cache:
-  microsoft-graph.json: |
+  msgraph-users.json: |
     { 
-      "items": [
-        { "alias": "over123" },
-        { "alias": "zikun", "updated_at": "2018-06-08T01:40:33.1981669Z" }
-      ]
+      "items": [{ "alias": "over123", "id": "1" }]
     }
 environments:
   - MICROSOFT_GRAPH_CLIENT_SECRET
@@ -228,11 +224,11 @@ outputs:
   a.json: |
     { "ms.author": "over123" }
 ---
-# Json schema microsoft alias rule: The author information has expired 
+# Json schema microsoft alias rule: Missing author in the cache
+os: windows
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -249,26 +245,25 @@ inputs:
     }
   a.md: |
     ---
-    ms.author: 123over123
+    ms.author: over123
     ---
 cache:
-  microsoft-graph.json: |
+  msgraph-users.json: |
     { 
-      "items": [
-        { "alias": "yazhao" },
-        { "alias": "123over123", "updated_at": "2018-06-08T01:40:33.1981669Z" }
-      ]
+      "items": [{ "alias": "over123" }]
     }
 environments:
   - MICROSOFT_GRAPH_CLIENT_SECRET
 outputs:
   a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
 ---
-# Json schema microsoft alias rule: The author is valid with graph call 
+# Json schema microsoft alias rule: The author is valid with graph call
+os: windows
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -285,19 +280,19 @@ inputs:
     }
   a.md: |
     ---
-    ms.author: yazhao
+    ms.author: yufeih
     ---
 environments:
   - MICROSOFT_GRAPH_CLIENT_SECRET
 outputs:
   a.json: |
-    { "ms.author": "yazhao" }
+    { "ms.author": "yufeih" }
 ---
-# Json schema microsoft alias rule: The author is invalid with graph call 
+# Json schema microsoft alias rule: The author is invalid with graph call
+os: windows
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
   schema.json: |
     { 
@@ -425,8 +420,7 @@ outputs:
 # Json schema docset unique: the attribute value must be unique within docset
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     {
       "docsetUnique": [ "title", "description"]
@@ -451,8 +445,7 @@ outputs:
 # Json schema docset unique: null/empty values are not in-scope
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     {
       "docsetUnique": [ "title", "description"]
@@ -474,8 +467,7 @@ outputs:
 # Json schema docset unique: global metadata and file metadata
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
     globalMetadata:
       description: abc
   schema.json: |
@@ -491,14 +483,13 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","file":"a.md","line":2,"column":14}
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(4,16)'","file":"docfx.yml","line":4,"column":16}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"a.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"docfx.yml","line":3,"column":16}
 ---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
   docfx.yml: |
-    metadataSchema:
-      - schema.json
+    metadataSchema: schema.json
   schema.json: |
     { 
       "properties":
