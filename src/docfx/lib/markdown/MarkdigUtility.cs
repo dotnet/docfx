@@ -194,13 +194,13 @@ namespace Microsoft.Docs.Build
                 var reader = new HtmlReader(html);
                 while (reader.Read(out var token))
                 {
-                    visibleHtml = visibleHtml || VisibleHtmlType(token);
+                    visibleHtml = visibleHtml || VisibleHtmlToken(token);
                 }
 
                 return visibleHtml;
             }
 
-            static bool VisibleHtmlType(HtmlToken token)
+            static bool VisibleHtmlToken(HtmlToken token)
                 => token.Type switch
                 {
                     HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
