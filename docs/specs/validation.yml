@@ -1016,7 +1016,7 @@ inputs:
         "rules": [
           {
             "type": "NoContent",
-            "message": "H{0} contains no content. Add content or remove the unused heading.",
+            "message": "{0} contains no content. Add content or remove the unused heading.",
             "code": "heading-no-content",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -1034,21 +1034,24 @@ inputs:
     }
   a.md: |
     # H1 -a
-    ## H2 -a
+    ## H2-1 -a
         
 
-    ## H2 -a
+    ## H2-2 -a
     some content
     ### H3 -a
-    <div></div>
+
 
     [!include[](b.md)]
     #### H4 -a
-    <!-- comments -->
-  b.md: |
-    ### H3 -b
-    [!include[](c.md)]
 
+  b.md: |
+    ### H3-1 -b
+    ### H3-2 -b
+    [!include[](c.md)]
+    ### H3-3 -b
+    [!include[](c.md)]
+    ## H2 -b
     [!include[](c.md)]
     abc
   c.md: |
@@ -1058,5 +1061,9 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H1 contains no content. Add content or remove the unused heading.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"h2 'H2-1 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"h3 'H3 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"h3 'H3-1 -b'(b.md) contains no content. Add content or remove the unused heading.","file":"a.md","line":10,"end_line":10,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"h2 'H2 -c'(c.md(2,1)) contains no content. Add content or remove the unused heading.","file":"a.md","line":10,"end_line":10,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"h4 'H4 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":11, "end_line":11,"column":1,"end_column":1}
 ---

@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                                 SourceInfo = node.ToSourceInfo(),
 
                                 // TODO: will be replace by IsVisible function
-                                IsVisible = string.IsNullOrWhiteSpace(MarkdigUtility.ToPlainText(leafBlock)),
+                                IsVisible = !string.IsNullOrWhiteSpace(MarkdigUtility.ToPlainText(leafBlock)),
                             });
                         }
 
