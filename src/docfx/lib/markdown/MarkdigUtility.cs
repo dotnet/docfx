@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                         return true;
                     case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
                         visiable = false;
-                        return false;
+                        return true;
                     case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
                         visiable = true;
                         return true;

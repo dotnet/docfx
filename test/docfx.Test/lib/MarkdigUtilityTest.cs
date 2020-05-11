@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         [InlineData("[link](https://github.com)", true)]
         [InlineData("![image](image.png)", true)]
         [InlineData("<img src=\"imag.png\"/>", true)]
+        [InlineData("## <img src=\"imag.png\"/>", true)]
         [InlineData("<img src=\"imag.png\">abc</img>", true)]
         [InlineData("<a href=\"www.microsoft.com\"><img src=\"imag.png\"/></a>", true)]
         [InlineData("<a>test</a>", true)]
@@ -32,6 +33,7 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n  \n  ", false)]
         [InlineData("  \n\n  \n\n  ", false)]
         [InlineData("  \n <!--comments--> \n  ", false)]
+        [InlineData("## ", false)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
             var markdownDoucment = Markdown.Parse(markdownContent, _markdownPipeline);

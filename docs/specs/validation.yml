@@ -959,10 +959,10 @@ inputs:
     ###
     #### <!-- comments -->
     #####            
-    ##### <img src="image.png" alt="xxx"/>
     Ignore empty h1
     # 
     Headings below are not empty.
+    ##### <img src="image.png" alt="xxx"/>
     ###### &nbsp;
     ###### &#160;
     ###### <a href="image.png"></a>
@@ -1019,12 +1019,12 @@ inputs:
   a.md: |
     # H1 -a
     ## H2-1 -a
-        
-
+          
+                
     ## H2-2 -a
     some content
     ### H3 -a
-
+    <!-- comments -->
 
     [!include[](b.md)]
     #### H4 -a
