@@ -45,6 +45,10 @@ namespace Microsoft.Docs.Build
             {
                 result = string.CompareOrdinal(SourceMonikerGroup, other.SourceMonikerGroup);
             }
+            if (result == 0)
+            {
+                result = SourceLine - other.SourceLine;
+            }
             return result;
         }
 
@@ -57,7 +61,8 @@ namespace Microsoft.Docs.Build
 
             return SourceUrl == other.SourceUrl
                 && TargetUrl == other.TargetUrl
-                && SourceMonikerGroup == other.SourceMonikerGroup;
+                && SourceMonikerGroup == other.SourceMonikerGroup
+                && SourceLine == other.SourceLine;
         }
 
         public override bool Equals(object? obj) => Equals(obj as FileLinkItem);

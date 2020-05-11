@@ -4,10 +4,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -26,7 +28,7 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        private static ThreadLocal<Stack<Document>> t_recursionDetector = new ThreadLocal<Stack<Document>>(() => new Stack<Document>());
+        private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector = new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
 
         public TableOfContentsLoader(
             LinkResolver linkResolver,
@@ -62,6 +64,8 @@ namespace Microsoft.Docs.Build
             Document file, Document rootPath, List<Document> referencedFiles, List<Document> referencedTocs, List<Error> errors)
         {
             // add to parent path
+            t_recursionDetector.Value = t_recursionDetector.Value ?? ImmutableStack<Document>.Empty;
+
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(file))
             {
@@ -70,19 +74,20 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                recursionDetector.Push(file);
+                recursionDetector = recursionDetector.Push(file);
+                t_recursionDetector.Value = recursionDetector;
 
                 var node = _parser.Parse(file.FilePath, errors);
-                node.Items = LoadTocNode(node.Items, file, rootPath, referencedFiles, referencedTocs, errors);
+                node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs, errors);
                 return node;
             }
             finally
             {
-                recursionDetector.Pop();
+                t_recursionDetector.Value = recursionDetector.Pop();
             }
         }
 
-        private List<SourceInfo<TableOfContentsNode>> LoadTocNode(
+        private List<SourceInfo<TableOfContentsNode>> LoadTocNodes(
             List<SourceInfo<TableOfContentsNode>> nodes,
             Document filePath,
             Document rootPath,
@@ -90,47 +95,69 @@ namespace Microsoft.Docs.Build
             List<Document> referencedTocs,
             List<Error> errors)
         {
-            var newItems = new List<SourceInfo<TableOfContentsNode>>();
-            foreach (var node in nodes)
+            var newNodes = new SourceInfo<TableOfContentsNode>[nodes.Count];
+
+            Parallel.For(0, nodes.Count, i =>
             {
-                // process
-                var tocHref = GetTocHref(node, errors);
-                var topicHref = GetTopicHref(node, errors);
-                var topicUid = node.Value.Uid;
-
-                var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
-                    filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
-                var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(
-                    filePath, rootPath, referencedFiles, topicUid, topicHref, errors, addToReferencedFiles: !IsTocIncludeHref(tocHrefType));
-
-                // resolve children
-                var items = subChildren?.Items ?? LoadTocNode(node.Value.Items, filePath, rootPath, referencedFiles, referencedTocs, errors);
-
-                // set resolved href/document back
-                var newItem = new TableOfContentsNode(node)
+                var newReferencedFiles = new List<Document>();
+                var newRefrencedTocs = new List<Document>();
+                var newErrors = new List<Error>();
+                newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newRefrencedTocs, newErrors);
+                lock (newNodes)
                 {
-                    Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
-                    TocHref = default,
-                    TopicHref = default,
-                    Homepage = string.IsNullOrEmpty(node.Value.Href) && !string.IsNullOrEmpty(node.Value.TopicHref)
-                        ? resolvedTopicHref : default,
-                    Name = node.Value.Name.Or(resolvedTopicName),
-                    Document = document ?? subChildrenFirstItem?.Document,
-                    Items = items,
-                };
-
-                // resolve monikers
-                newItem.Monikers = GetMonikers(newItem, errors);
-                newItems.Add(new SourceInfo<TableOfContentsNode>(newItem, node.Source));
-
-                // validate
-                if (string.IsNullOrEmpty(newItem.Name))
-                {
-                    errors.Add(Errors.TableOfContents.MissingTocName(newItem.Name.Source ?? node.Source));
+                    errors.AddRange(newErrors);
+                    referencedFiles.AddRange(newReferencedFiles);
+                    referencedTocs.AddRange(newRefrencedTocs);
                 }
+            });
+
+            return newNodes.ToList();
+        }
+
+        private SourceInfo<TableOfContentsNode> LoadTocNode(
+            SourceInfo<TableOfContentsNode> node,
+            Document filePath,
+            Document rootPath,
+            List<Document> referencedFiles,
+            List<Document> referencedTocs,
+            List<Error> errors)
+        {
+            // process
+            var tocHref = GetTocHref(node, errors);
+            var topicHref = GetTopicHref(node, errors);
+            var topicUid = node.Value.Uid;
+
+            var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
+                filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
+            var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(
+                filePath, rootPath, referencedFiles, topicUid, topicHref, errors, addToReferencedFiles: !IsTocIncludeHref(tocHrefType));
+
+            // resolve children
+            var items = subChildren?.Items ?? LoadTocNodes(node.Value.Items, filePath, rootPath, referencedFiles, referencedTocs, errors);
+
+            // set resolved href/document back
+            var newNode = new TableOfContentsNode(node)
+            {
+                Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
+                TocHref = default,
+                TopicHref = default,
+                Homepage = string.IsNullOrEmpty(node.Value.Href) && !string.IsNullOrEmpty(node.Value.TopicHref)
+                    ? resolvedTopicHref : default,
+                Name = node.Value.Name.Or(resolvedTopicName),
+                Document = document ?? subChildrenFirstItem?.Document,
+                Items = items,
+            };
+
+            // resolve monikers
+            newNode.Monikers = GetMonikers(newNode, errors);
+
+            // validate
+            if (string.IsNullOrEmpty(newNode.Name))
+            {
+                errors.Add(Errors.TableOfContents.MissingTocName(newNode.Name.Source ?? node.Source));
             }
 
-            return newItems;
+            return new SourceInfo<TableOfContentsNode>(newNode, node);
         }
 
         private IReadOnlyList<string> GetMonikers(TableOfContentsNode currentItem, List<Error> errors)
