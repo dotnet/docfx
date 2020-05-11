@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using GlobExpressions;
 
@@ -9,6 +10,14 @@ namespace Microsoft.Docs.Build
 {
     internal static class GlobUtility
     {
+        private static readonly Dictionary<string, string> s_globNormalizers = new Dictionary<string, string>
+        {
+            { @"\*{2,}", "**" }, // **** => **
+            { @"^\*{2}(?=\.)", "**/*" }, // ^**.md => ^**/*.md
+            { @"(?<=\/)\*{2}(?=\.)", "**/*" }, // /**.md => /**/*.md
+            { @"(?<!\/)\*{2}(?=\.)", "*" }, // text**.md => text*.md
+        };
+
         public static Func<string, bool> CreateGlobMatcher(string pattern)
         {
             var glob = CreateGlob(pattern);
@@ -70,9 +79,11 @@ namespace Microsoft.Docs.Build
 
         private static string PreProcessPattern(string pattern)
         {
-            // Pre process glob pattern so `**.md` means `**/*.md`
-            // **** => **, **.md => **/*.md
-            return Regex.Replace(pattern, @"\*{2,}", "**").Replace("**.", "**/*");
+            foreach (var (regex, replace) in s_globNormalizers)
+            {
+                pattern = Regex.Replace(pattern, regex, replace);
+            }
+            return pattern;
         }
     }
 }
