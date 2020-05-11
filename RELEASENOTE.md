@@ -1,8 +1,19 @@
-Version Notes (Current Version: v2.53)
+Version Notes (Current Version: v2.54)
 =======================================
 
-v2.53(Pre-release)
+v2.54(Pre-release)
 -----------
+
+v2.53
+-----------
+1. Support extracting metadata from FSharp projects incrementally. Thanks @saul! (#5810)
+2. Support XrefService as parameter. e.g. `docfx --xrefService https://xref.docs.microsoft.com/query?uid={uid}`. (#5786)
+3. Feature, improvement and bug fix in several Markdown extension syntax. (#5792, #5804, #5838, #5857)
+4. Do not warn when certain output is empty. (#5878)
+5. Bug fix:
+    1. Fix crash when building FSharp projects with override methods. Thanks @saul! (#5811)
+    2. Fix applying template preprocessor failure for Python reference in some cases. (#5781)
+    3. Fix PDF outline issue, add check for user style sheet existence. Thanks @icnocop (#5490, #5858)
 
 v2.52
 -----------
