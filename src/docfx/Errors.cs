@@ -260,7 +260,7 @@ namespace Microsoft.Docs.Build
             ///   - a.md references b.json's property with xref syntax, and b.json includes a.md reversely
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error CircularReference<T>(SourceInfo? source, T current, Stack<T> recursionDetector, Func<T, string?>? display = null)
+            public static Error CircularReference<T>(SourceInfo? source, T current, IEnumerable<T> recursionDetector, Func<T, string?>? display = null)
             {
                 display ??= obj => obj?.ToString();
                 var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{display(file)}'"));

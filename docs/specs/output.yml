@@ -488,6 +488,7 @@ outputs:
         {"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v2/b.md","source_line": 1},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 1},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 2},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 4},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 5},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 6},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 8},

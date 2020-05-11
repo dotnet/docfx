@@ -45,6 +45,25 @@ namespace Microsoft.Docs.Build
             _length = html.Length;
         }
 
+        public bool ReadToEndTag(ReadOnlySpan<char> name)
+        {
+            if (((_type == HtmlTokenType.StartTag && _isSelfClosing) || _type == HtmlTokenType.EndTag) &&
+                _html.AsSpan(_nameStart.Index, _nameEnd.Index - _nameStart.Index).Equals(name, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            while (Read(out var token))
+            {
+                if (token.Type == HtmlTokenType.EndTag && token.NameIs(name))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool Read(out HtmlToken token)
         {
             // Simplified pasing algorithm based on https://html.spec.whatwg.org/multipage/parsing.html

@@ -508,3 +508,30 @@ outputs:
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: a.md [redirection] --> b.md [redirection] --> c.md [redirection] --> a.md [redirection]","file":"redirections.yml","line":2,"column":9}
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: b.md [redirection] --> c.md [redirection] --> a.md [redirection] --> b.md [redirection]","file":"redirections.yml","line":3,"column":9}
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: c.md [redirection] --> a.md [redirection] --> b.md [redirection] --> c.md [redirection]","file":"redirections.yml","line":4,"column":9}
+---
+# Versioning file redirection to url of non-versioning file
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+    hostName: docs.com
+    basePath: /docs
+    routes:
+      docs/: .
+      docs/v1/: .
+    monikerDefinition: monikerDefinition.json
+  redirections.yml: |
+    redirections:
+      docs/v1/c.md: /docs/test/a
+  docs/test/a.md:
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+    docs/test/a.json:
