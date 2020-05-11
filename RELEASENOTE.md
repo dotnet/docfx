@@ -4,6 +4,11 @@ Version Notes (Current Version: v2.54)
 v2.54(Pre-release)
 -----------
 
+v2.53.1
+-----------
+1. But fix:
+    1. Downgrade error to warning for Markdown complex image.
+
 v2.53
 -----------
 1. Support extracting metadata from FSharp projects incrementally. Thanks @saul! (#5810)
