@@ -674,3 +674,15 @@ inputs:
 outputs:
   docs/docs/a.json:
   docs/docs/b.json:
+---
+# Resolve image link inside NOTE
+inputs:
+  docfx.yml:
+  a.md: |
+    > [!TIP]
+    > [![](./b.png)](https://docs.com)
+  b.png:
+outputs:
+  a.json: |
+    { "conceptual": "<div class=\"TIP\"><h5>TIP</h5><p><a href=\"https://docs.com\"><img alt=\"\" src=\"b.png\"></img></a></p></div>" }
+  b.png:
