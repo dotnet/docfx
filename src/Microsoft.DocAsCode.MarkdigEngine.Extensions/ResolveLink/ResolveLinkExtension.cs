@@ -35,6 +35,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 case LinkInline linkInline:
                     linkInline.Url = _context.GetLink(linkInline.Url, linkInline);
+                    foreach (var subBlock in linkInline)
+                    {
+                        UpdateLinks(subBlock);
+                    }
                     break;
 
                 case ContainerBlock containerBlock:
