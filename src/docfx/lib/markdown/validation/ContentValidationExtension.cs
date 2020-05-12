@@ -12,6 +12,8 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
 
+#pragma warning disable CS0618
+
 namespace Microsoft.Docs.Build
 {
     internal static class ContentValidationExtension
@@ -20,7 +22,7 @@ namespace Microsoft.Docs.Build
             this MarkdownPipelineBuilder builder,
             OnlineServiceMarkdownValidatorProvider? validatorProvider,
             Func<List<ValidationNode>, Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>> getValidationNodes,
-            Func<string, object, MarkdownObject, (string? content, object? file)> readFile)
+            Func<string, MarkdownObject, (string? content, object? file)> readFile)
         {
             var validators = validatorProvider?.GetValidators();
             return builder.Use(document =>
@@ -45,7 +47,8 @@ namespace Microsoft.Docs.Build
                         else if (node is InclusionBlock inclusionBlock)
                         {
                             // Heading block cannot be in the InclusionInline
-                            var inclusionDocument = (Document?)readFile(inclusionBlock.IncludedFilePath, InclusionContext.File, node).file;
+                            var inclusionDocument = (Document?)readFile(inclusionBlock.IncludedFilePath, node).file;
+
                             if (inclusionDocument != null)
                             {
                                 documentNodes.Add(new InclusionNode
