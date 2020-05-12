@@ -478,7 +478,7 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'resource.png'.","file":"docs/a.md","line":2,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokena.md' relative to 'docs/a.md'.","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokena.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # fallback to inclusion parent toc
 locale: zh-cn
@@ -610,9 +610,9 @@ repos:
           [!include[include deleted tokena](tokenx.md)]
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokenx.md' relative to 'docs/1.md'.","file":"docs/1.md","line":1,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokenx.md' relative to 'docs/2.md'.","file":"docs/2.md","line":1,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'tokenx.md' relative to 'docs/3.md'.","file":"docs/3.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/1.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/2.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/3.md","line":1,"column":1}
 ---
 # fallback to corresponding source branch 1
 locale: zh-cn

@@ -12,6 +12,8 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
 
+#pragma warning disable CS0618
+
 namespace Microsoft.Docs.Build
 {
     internal class MarkdownEngine
@@ -47,7 +49,7 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
 
-            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
+            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
             _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
 
             if (!string.IsNullOrEmpty(_markdownValidationRules))
@@ -112,7 +114,6 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
                 .UseTelemetry()
-                .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
@@ -126,7 +127,6 @@ namespace Microsoft.Docs.Build
                 .UseYamlFrontMatter()
                 .UseDocfxExtensions(_markdownContext)
                 .UseTelemetry()
-                .UseLink(GetLink)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
@@ -185,15 +185,25 @@ namespace Microsoft.Docs.Build
             return t_status.Value!.Peek().Errors;
         }
 
-        private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
+        private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var referencingFile = (Document)relativeTo;
+            var referencingFile = (Document)InclusionContext.File;
 
             var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), referencingFile);
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);
+        }
+
+        private string GetLink(string path, MarkdownObject origin)
+        {
+            var status = t_status.Value!.Peek();
+
+            var (error, link, _) = _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            status.Errors.AddIfNotNull(error);
+
+            return link;
         }
 
         private string GetLink(SourceInfo<string> href)
