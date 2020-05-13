@@ -81,8 +81,16 @@ namespace Microsoft.Docs.Build
                         },
                         node =>
                         {
-                            monikers = null;
-                            zoneTarget = null;
+                            // moniker range and triple colon zone can NOT be nested
+                            if (node is MonikerRangeBlock)
+                            {
+                                monikers = null;
+                            }
+
+                            if (node is TripleColonBlock tripleColonBlock && tripleColonBlock.Extension.Name == "zone")
+                            {
+                                zoneTarget = null;
+                            }
                         });
 
                     var allHeadings = getHeadings(documentHeadings);
