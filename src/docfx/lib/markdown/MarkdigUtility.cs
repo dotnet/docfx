@@ -169,10 +169,10 @@ namespace Microsoft.Docs.Build
                             visible = visible || VisibleHtml(line.Slice.Text);
                             if (visible)
                             {
-                                break;
+                                return true;
                             }
                         }
-                        break;
+                        return true;
                     case HtmlInline htmlInline:
                         visible = visible || VisibleHtml(htmlInline.Tag);
                         break;
