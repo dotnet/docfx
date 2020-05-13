@@ -482,7 +482,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 xrefSpec,
                 (_, old) =>
                 {
-                    Logger.LogWarning($"Uid({xrefSpec.Uid}) has already been defined in {((RelativePath)xrefSpec.Href).RemoveWorkingFolder()}.", 
+                    Logger.LogWarning($"Uid({xrefSpec.Uid}) has already been defined in {((RelativePath)old.Href).RemoveWorkingFolder()}.",
                         code: WarningCodes.Build.DuplicateUids);
                     return FilePathComparer.OSPlatformSensitiveStringComparer.Compare(old.Href, xrefSpec.Href) > 0 ? xrefSpec : old;
                 });
