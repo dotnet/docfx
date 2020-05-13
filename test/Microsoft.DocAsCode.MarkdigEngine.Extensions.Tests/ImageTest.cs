@@ -59,8 +59,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 
             var expected = @"<img src=""example.svg"" role=""presentation"">
 <div class=""mx-imgBorder""><p>
-<img src=""example.jpg"" alt=""example"" aria-describedby=""42570"">
-<div id=""42570"" class=""visually-hidden"">
+<img src=""example.jpg"" alt=""example"" aria-describedby=""3-0"">
+<div id=""3-0"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 </p></div>
@@ -69,15 +69,15 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 </p></div>
 <a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
 <div class=""mx-imgBorder""><p>
-<img src=""example.jpg"" alt=""example"" aria-describedby=""8ce94"">
-<div id=""8ce94"" class=""visually-hidden"">
+<img src=""example.jpg"" alt=""example"" aria-describedby=""9-0"">
+<div id=""9-0"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 </p></div>
 </a>
 <a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
-<img src=""example.jpg"" alt=""example"" aria-describedby=""9e4c4"">
-<div id=""9e4c4"" class=""visually-hidden"">
+<img src=""example.jpg"" alt=""example"" aria-describedby=""13-0"">
+<div id=""13-0"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 </a>
