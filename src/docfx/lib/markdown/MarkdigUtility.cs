@@ -177,6 +177,7 @@ namespace Microsoft.Docs.Build
                         visible = visible || VisibleHtml(htmlInline.Tag);
                         break;
                     case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
+                    case ThematicBreakBlock _:
                         // empty heading
                         break;
                     case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
