@@ -440,6 +440,7 @@ outputs:
     { "document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80" }
 ---
 # Support redirect_url ends with '/' for index files
+# query string will be ignored for redirect document id calculation
 repos:
   https://docs.com/ops/redirect-3:
   - files:
@@ -448,7 +449,7 @@ repos:
           "redirections": [
             {
               "source_path": "original.md",
-              "redirect_url": "https://docs.com/folder/",
+              "redirect_url": "https://docs.com/folder/?view=version-1.0",
               "redirect_document_id": "true"
             }
           ]
