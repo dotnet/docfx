@@ -27,13 +27,13 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href=\"https://www.microsoft.com\"></a>", true)]
         [InlineData("<a href=\"https://www.microsoft.com\"/>", true)]
 
+        [InlineData("#", false)]
         [InlineData(" <!--comments--> ", false)]
         [InlineData("[](https://github.com)", false)]
         [InlineData("    ", false)]
         [InlineData("  \n  \n  ", false)]
         [InlineData("  \n\n  \n\n  ", false)]
         [InlineData("  \n <!--comments--> \n  ", false)]
-        [InlineData("## ", false)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
             var markdownDoucment = Markdown.Parse(markdownContent, _markdownPipeline);
