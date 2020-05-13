@@ -22,7 +22,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UsePipeTables()
                 .UseAutoLinks()
                 .UseHeadingIdRewriter()
-                .UseResolveLink(context)
                 .UseIncludeFile(context)
                 .UseCodeSnippet(context)
                 .UseDFMCodeInfoPrefix()
@@ -36,6 +35,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseNestedColumn(context)
                 .UseTripleColon(context)
                 .UseNoloc()
+                .UseResolveLink(context)
                 .RemoveUnusedExtensions();
         }
 
@@ -94,19 +94,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static MarkdownPipelineBuilder UseResolveLink(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new ResolveLinkExtension(context));
+            pipeline.Extensions.Add(new ResolveLinkExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new InclusionExtension(context));
+            pipeline.Extensions.Add(new InclusionExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new CodeSnippetExtension(context));
+            pipeline.Extensions.Add(new CodeSnippetExtension(context));
             return pipeline;
         }
 
@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static MarkdownPipelineBuilder UseXref(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.Insert(0, new XrefInlineExtension());
+            pipeline.Extensions.Add(new XrefInlineExtension());
             return pipeline;
         }
 

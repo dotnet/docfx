@@ -2,15 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Parsers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Security.Cryptography;
-    using System.Text;
 
     public class ImageExtension : ITripleColonExtensionInfo
     {
@@ -88,7 +84,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", _context.GetLink(src, InclusionContext.File, InclusionContext.RootFile, block));
+            htmlAttributes.AddProperty("src", _context.GetLink(src, block));
 
             if (type == "icon")
             {
@@ -97,7 +93,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 htmlAttributes.AddProperty("alt", alt);
             }
-            var id = GetHtmlId(block.Line, block.Column);
+            var id = GetHtmlId(block);
             if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             RenderDelegate = (renderer, obj) =>
@@ -128,13 +124,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if(!string.IsNullOrEmpty(currentLink))
                 {
                     var linkHtmlAttributes = new HtmlAttributes();
-                    currentLink = _context.GetLink(currentLink, InclusionContext.File, InclusionContext.RootFile, obj);
+                    currentLink = _context.GetLink(currentLink, obj);
                     linkHtmlAttributes.AddProperty("href", $"{currentLink}");
                     renderer.Write("<a").WriteAttributes(linkHtmlAttributes).WriteLine(">");
                 } else if (!string.IsNullOrEmpty(currentLightbox))
                 {
                     var lighboxHtmlAttributes = new HtmlAttributes();
-                    var path = _context.GetLink(currentLightbox, InclusionContext.File, InclusionContext.RootFile, obj);
+                    var path = _context.GetLink(currentLightbox, obj);
                     lighboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
                     lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
                     renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
@@ -153,7 +149,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
                     }
-                    var htmlId = GetHtmlId(obj.Line, obj.Column);
+                    var htmlId = GetHtmlId(obj);
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                     renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
                     renderer.WriteChildren(obj);
@@ -179,13 +175,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        public static string GetHtmlId(int line, int column)
+        public static string GetHtmlId(MarkdownObject obj)
         {
-            using var md5 = MD5.Create();
-            var id = $"{InclusionContext.File}-{line}-{column}";
-            var fileBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(id));
-
-            return new Guid(fileBytes).ToString("N").Substring(0, 5);
+            return $"{obj.Line}-{obj.Column}";
         }
 
         public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)

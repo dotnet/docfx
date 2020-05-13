@@ -162,14 +162,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return builder.Build();
         }
 
-        private (string content, object file) ReadFile(string path, object relativeTo, MarkdownObject origin)
+        private (string content, object file) ReadFile(string path, MarkdownObject origin)
         {
             if (!PathUtility.IsRelativePath(path))
             {
                 return (null, null);
             }
 
-            var currentFilePath = ((RelativePath)relativeTo).GetPathFromWorkingFolder();
+            var currentFilePath = ((RelativePath)InclusionContext.File).GetPathFromWorkingFolder();
             var includedFilePath = ((RelativePath)path).BasedOn(currentFilePath);
             var includedFilePathWithoutWorkingFolder = includedFilePath.RemoveWorkingFolder();
             var parentFileDirectoryToDocset = Path.GetDirectoryName(Path.Combine(_parameters.BasePath, ((RelativePath)InclusionContext.RootFile).RemoveWorkingFolder()));
@@ -185,11 +185,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return (content, includedFilePath);
         }
 
-        private static string GetLink(string path, object relativeTo, object resultRelativeTo, MarkdownObject origin)
+        private static string GetLink(string path, MarkdownObject origin)
         {
             if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#", StringComparison.Ordinal))
             {
-                return ((RelativePath)relativeTo + (RelativePath)path).GetPathFromWorkingFolder();
+                return ((RelativePath)InclusionContext.File + (RelativePath)path).GetPathFromWorkingFolder();
             }
             return path;
         }

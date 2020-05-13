@@ -738,10 +738,9 @@ body";
             var root = "[!include[](embed)]";
 
             var context = new MarkdownContext(
-                readFile: (path, relativeTo, _) =>
+                readFile: (path, _) =>
                 {
                     Assert.Equal("embed", path);
-                    Assert.Equal("root", relativeTo);
 
                     Assert.Equal("root", InclusionContext.RootFile);
                     Assert.Equal("root", InclusionContext.File);
@@ -791,8 +790,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             var marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
 
             var expected = @"<div class=""mx-imgBorder""><p>
-<img src=""~/r/b/example.jpg"" alt=""example"" aria-describedby=""e68bf"">
-<div id=""e68bf"" class=""visually-hidden"">
+<img src=""~/r/b/example.jpg"" alt=""example"" aria-describedby=""1-0"">
+<div id=""1-0"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 </p></div>

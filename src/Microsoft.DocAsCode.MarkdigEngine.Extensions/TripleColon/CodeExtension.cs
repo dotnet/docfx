@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Parsers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
@@ -103,7 +102,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 obj.Attributes.TryGetValue("id", out currentId); //it's okay if this is null
                 obj.Attributes.TryGetValue("range", out currentRange); //it's okay if this is null
                 obj.Attributes.TryGetValue("source", out currentSource); //source has already been checked above
-                var (code, codePath) = _context.ReadFile(currentSource, InclusionContext.File, obj);
+                var (code, codePath) = _context.ReadFile(currentSource, obj);
                 if (string.IsNullOrEmpty(code))
                 {
                     logWarning($"The code snippet \"{currentSource}\" could not be found.");

@@ -28,36 +28,42 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private void UpdateLinks(MarkdownObject markdownObject)
         {
-            if (markdownObject == null) return;
+            switch (markdownObject)
+            {
+                case TabTitleBlock _:
+                    break;
 
-            if (markdownObject is LinkInline linkInline && !linkInline.IsAutoLink)
-            {
-                linkInline.Url = _context.GetLink(linkInline.Url, InclusionContext.File, InclusionContext.RootFile, linkInline);
-            }
+                case LinkInline linkInline:
+                    linkInline.Url = _context.GetLink(linkInline.Url, linkInline);
+                    foreach (var subBlock in linkInline)
+                    {
+                        UpdateLinks(subBlock);
+                    }
+                    break;
 
-            if (markdownObject is ContainerBlock containerBlock)
-            {
-                foreach (var subBlock in containerBlock)
-                {
-                    UpdateLinks(subBlock);
-                }
-            }
-            else if (markdownObject is LeafBlock leafBlock)
-            {
-                if (leafBlock.Inline != null)
-                {
+                case ContainerBlock containerBlock:
+                    foreach (var subBlock in containerBlock)
+                    {
+                        UpdateLinks(subBlock);
+                    }
+                    break;
+
+                case LeafBlock leafBlock when leafBlock.Inline != null:
                     foreach (var subInline in leafBlock.Inline)
                     {
                         UpdateLinks(subInline);
                     }
-                }
-            }
-            else if (markdownObject is ContainerInline containerInline)
-            {
-                foreach (var subInline in containerInline)
-                {
-                    UpdateLinks(subInline);
-                }
+                    break;
+
+                case ContainerInline containerInline:
+                    foreach (var subInline in containerInline)
+                    {
+                        UpdateLinks(subInline);
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
     }
