@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
 
         public static bool IsVisible(this MarkdownObject markdownObject)
         {
-            var visiable = false;
+            var visible = false;
             Visit(markdownObject, node =>
             {
                 switch (node)
@@ -166,24 +166,31 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock:
                         foreach (var line in htmlBlock.Lines.Lines)
                         {
-                            visiable = visiable || VisibleHtml(line.Slice.Text);
+                            visible = visible || VisibleHtml(line.Slice.Text);
+                            if (visible)
+                            {
+                                return true;
+                            }
                         }
                         return true;
                     case HtmlInline htmlInline:
-                        visiable = visiable || VisibleHtml(htmlInline.Tag);
-                        return false;
+                        visible = visible || VisibleHtml(htmlInline.Tag);
+                        break;
+                    case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
+                        // empty heading
+                        break;
                     case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
-                        visiable = true;
-                        return true;
                     case LeafInline _:
-                        visiable = true;
-                        return true;
+                        visible = true;
+                        break;
                     default:
-                        return false;
+                        break;
                 }
+
+                return visible;
             });
 
-            return visiable;
+            return visible;
 
             static bool VisibleHtml(string? html)
             {
@@ -194,7 +201,7 @@ namespace Microsoft.Docs.Build
 
                 var visibleHtml = false;
                 var reader = new HtmlReader(html);
-                while (reader.Read(out var token))
+                while (!visibleHtml && reader.Read(out var token))
                 {
                     visibleHtml = visibleHtml || VisibleHtmlToken(token);
                 }

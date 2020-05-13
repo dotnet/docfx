@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href=\"https://www.microsoft.com\"></a>", true)]
         [InlineData("<a href=\"https://www.microsoft.com\"/>", true)]
 
+        [InlineData("#", false)]
         [InlineData(" <!--comments--> ", false)]
         [InlineData("[](https://github.com)", false)]
         [InlineData("    ", false)]
