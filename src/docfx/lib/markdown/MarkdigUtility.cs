@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Traverse the markdown object graph, returns true to skip the current node.
         /// </summary>
-        public static void Visit(this MarkdownObject? obj, Func<MarkdownObject, bool> action)
+        public static void Visit(this MarkdownObject? obj, Func<MarkdownObject, bool> action, Action<MarkdownObject>? postAction = null)
         {
             if (obj is null)
             {
@@ -86,6 +86,8 @@ namespace Microsoft.Docs.Build
             {
                 Visit(leaf.Inline, action);
             }
+
+            postAction?.Invoke(obj);
         }
 
         /// <summary>

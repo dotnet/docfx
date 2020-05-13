@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Markdig;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -30,37 +31,59 @@ namespace Microsoft.Docs.Build
                 if (((Document)InclusionContext.File).FilePath.Format == FileFormat.Markdown)
                 {
                     var documentHeadings = new List<Heading>();
-                    document.Visit(node =>
-                    {
-                        if (node is HeadingBlock headingBlock)
+                    string[]? monikers = null;
+                    string? zoneTarget = null;
+                    document.Visit(
+                        node =>
                         {
-                            documentHeadings.Add(new Heading
+                            if (node is MonikerRangeBlock monikerRangeBlock)
                             {
-                                Level = headingBlock.Level,
-                                SourceInfo = headingBlock.ToSourceInfo(),
-                                Content = GetHeadingContent(headingBlock), // used for reporting
-                                HeadingChar = headingBlock.HeaderChar,
-                                RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
-                            });
-                        }
+                                monikers = monikerRangeBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-moniker").Value?.Split(" ");
+                            }
 
-                        if (node is InclusionBlock || node is InclusionInline)
-                        {
-                            var includedFilePath = node is InclusionInline inline ? inline.IncludedFilePath : ((InclusionBlock)node).IncludedFilePath;
-                            var inclusionDocument = (Document?)readFile(includedFilePath, node).file;
-                            if (inclusionDocument != null)
+                            if (node is TripleColonBlock tripleColonBlock && tripleColonBlock.Extension.Name == "zone")
+                            {
+                                zoneTarget = tripleColonBlock.Attributes.TryGetValue("target", out var target) ? target : null;
+                            }
+
+                            if (node is HeadingBlock headingBlock)
                             {
                                 documentHeadings.Add(new Heading
                                 {
-                                    Level = -1,
-                                    SourceInfo = node.ToSourceInfo(),
-                                    Content = inclusionDocument.FilePath.ToString(),
+                                    // Monikers = monikers,
+                                    // ZoneTarget = zoneTarget,
+                                    Level = headingBlock.Level,
+                                    SourceInfo = headingBlock.ToSourceInfo(),
+                                    Content = GetHeadingContent(headingBlock), // used for reporting
+                                    HeadingChar = headingBlock.HeaderChar,
+                                    RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
                                 });
                             }
-                        }
 
-                        return false;
-                    });
+                            if (node is InclusionBlock || node is InclusionInline)
+                            {
+                                var includedFilePath = node is InclusionInline inline ? inline.IncludedFilePath : ((InclusionBlock)node).IncludedFilePath;
+                                var inclusionDocument = (Document?)readFile(includedFilePath, node).file;
+                                if (inclusionDocument != null)
+                                {
+                                    documentHeadings.Add(new Heading
+                                    {
+                                        // Monikers = monikers,
+                                        // ZoneTarget = zoneTarget,
+                                        Level = -1,
+                                        SourceInfo = node.ToSourceInfo(),
+                                        Content = inclusionDocument.FilePath.ToString(),
+                                    });
+                                }
+                            }
+
+                            return false;
+                        },
+                        node =>
+                        {
+                            monikers = null;
+                            zoneTarget = null;
+                        });
 
                     var allHeadings = getHeadings(documentHeadings);
 
@@ -83,6 +106,8 @@ namespace Microsoft.Docs.Build
                                     headings.RemoveAt(index);
                                     headings.InsertRange(index, documentHeadings.Select(d => new Heading
                                     {
+                                        // Monikers = d.Monikers ?? current.Monikers,
+                                        // ZoneTarget = d.ZoneTarget ?? current.ZoneTarget,
                                         Content = d.Content,
                                         Level = d.Level,
                                         SourceInfo = current.SourceInfo,
