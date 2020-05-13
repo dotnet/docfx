@@ -299,7 +299,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         }
     }
 
-    public static class CodeTagExtentions
+    public static class CodeTagExtensions
     {
         public static int FindIndexOfTag(this string[] codeLines, string id, bool isEnd = false)
         {
@@ -308,11 +308,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return Array.FindIndex(codeLines, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1) + 2;
             } else
             {
+                Regex endTagRegex = new Regex($"\\s*(?:</\\s*{id}\\s*?>)|(?:(?:;|%)\\s*<\\s*{id}\\s*?>)", RegexOptions.IgnoreCase);
                 var startTagIndex = Array.FindIndex(codeLines, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1) + 2;
                 var endTagIndex = Array.FindIndex(codeLines, startTagIndex, line => {
-                    return line.IndexOf($"</{id}>", StringComparison.OrdinalIgnoreCase) > -1 //normal end tag
-                           || line.IndexOf($";<{id}>", StringComparison.OrdinalIgnoreCase) > -1 //Erlang end tag
-                           || line.IndexOf($"%<{id}>", StringComparison.OrdinalIgnoreCase) > -1; //Lisp end tag
+                    var match = endTagRegex.Match(line);
+                    return match.Success;
                 });
 
                 if(endTagIndex == -1) //search for region then

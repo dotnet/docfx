@@ -946,7 +946,7 @@ Key = ht
 Remove(""doc"")
 Key ""doc"" is not found.
  */
-//</Snippet1>";
+//</ Snippet1  >";
         static public string contentCrazy = @"//<Snippet1>
 using namespace System;
 
