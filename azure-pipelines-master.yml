@@ -33,12 +33,122 @@ steps:
     workingFolder: tools/Deployment
 
 - task: EsrpCodeSigning@1
-  displayName: Sign executables and dlls
+  displayName: Sign docfx executables and dlls
   inputs:
     ConnectedServiceName: 'CodeSigning-APEX'
     FolderPath: '$(Build.SourcesDirectory)/target/Release'
-    signType: 'batchSigning'
-    batchSignPolicyFile: '$(Build.SourcesDirectory)/codesign_policy.json'
+    Pattern: |
+        **\Microsoft.DocAsCode.*.dll
+        **\*.exe
+    UseMinimatch: true
+    signConfigType: inlineSignParams
+    inlineOperation: |
+     [
+        {
+          "KeyCode": "CP-230012",
+          "OperationSetCode": "SigntoolSign",
+          "parameters": [
+            {
+              "parameterName": "OpusName",
+              "parameterValue": "Microsoft"
+            },
+            {
+              "parameterName": "OpusInfo",
+              "parameterValue": "http://www.microsoft.com"
+            },
+            {
+              "parameterName": "PageHash",
+              "parameterValue": "/NPH"
+            },
+            {
+              "parameterName": "TimeStamp",
+              "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+            },
+            {
+              "parameterName": "FileDigest",
+              "parameterValue": "/fd \"SHA256\""
+            }
+          ],
+          "ToolName": "sign",
+          "ToolVersion": "1.0"
+        },
+        {
+          "KeyCode": "CP-230012",
+          "OperationSetCode": "SigntoolVerify",
+          "Parameters": [
+            {
+              "parameterName": "VerifyAll",
+              "parameterValue": "/all"
+            }
+          ],
+          "ToolName": "sign",
+          "ToolVersion": "1.0"
+        }
+      ]
+    SessionTimeout: '60'
+    MaxConcurrency: '50'
+    MaxRetryAttempts: '5'
+
+- task: EsrpCodeSigning@1
+  displayName: Sign dependent dlls
+  inputs:
+    ConnectedServiceName: 'CodeSigning-APEX'
+    FolderPath: '$(Build.SourcesDirectory)/target/Release'
+    Pattern: |
+        **\*.dll
+        !**\System.*.dll
+        !**\Microsoft.*.dll
+        !**\NuGet.*.dll
+        !**\FSharp.Core.*.dll
+    UseMinimatch: true
+    signConfigType: inlineSignParams
+    inlineOperation: |
+     [
+        {
+          "KeyCode": "CP-231522",
+          "OperationSetCode": "SigntoolSign",
+          "parameters": [
+            {
+              "parameterName": "OpusName",
+              "parameterValue": "Microsoft"
+            },
+            {
+              "parameterName": "OpusInfo",
+              "parameterValue": "http://www.microsoft.com"
+            },
+            {
+              "parameterName": "Append",
+              "parameterValue": "/as"
+            },
+            {
+              "parameterName": "PageHash",
+              "parameterValue": "/NPH"
+            },
+            {
+              "parameterName": "TimeStamp",
+              "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+            },
+            {
+              "parameterName": "FileDigest",
+              "parameterValue": "/fd \"SHA256\""
+            }
+          ],
+          "ToolName": "sign",
+          "ToolVersion": "1.0"
+        },
+        {
+          "KeyCode": "CP-231522",
+          "OperationSetCode": "SigntoolVerify",
+          "Parameters": [
+            {
+              "parameterName": "VerifyAll",
+              "parameterValue": "/all"
+            }
+          ],
+          "ToolName": "sign",
+          "ToolVersion": "1.0"
+        }
+      ]
     SessionTimeout: '60'
     MaxConcurrency: '50'
     MaxRetryAttempts: '5'
