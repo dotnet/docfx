@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
     {
+        private readonly int _hashCode;
+
         /// <summary>
         /// Gets the file path relative to the main docset.
         /// </summary>
@@ -44,6 +46,8 @@ namespace Microsoft.Docs.Build
             Path = new PathString(path);
             Format = GetFormat(path);
             Origin = FileOrigin.External;
+
+            _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
         }
 
         private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit)
@@ -53,6 +57,8 @@ namespace Microsoft.Docs.Build
             DependencyName = dependencyName;
             IsGitCommit = isGitCommit;
             Format = GetFormat(path);
+
+            _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
         }
 
         public static FilePath Content(PathString path)
@@ -124,7 +130,7 @@ namespace Microsoft.Docs.Build
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
+            return _hashCode;
         }
 
         public bool Equals(FilePath? other)
