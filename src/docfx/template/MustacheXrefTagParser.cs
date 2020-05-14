@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
         /// Using `href` property to indicate xref spec resolve success.
         /// </summary>
         private const string XrefTagTemplate =
-        "{{#href}}" +
+        "{{#resolved}}" +
         "  @resolvedTag" +
-        "{{/href}}" +
-        "{{^href}}" +
+        "{{/resolved}}" +
+        "{{^resolved}}" +
         "  <span> {{uid}} </span>" +
-        "{{/href}}";
+        "{{/resolved}}";
 
         private static readonly char[] s_trimChars = new[] { '{', ' ', '}' };
 

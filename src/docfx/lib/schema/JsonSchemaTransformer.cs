@@ -283,10 +283,13 @@ namespace Microsoft.Docs.Build
                     // the content here must be an UID, not href
                     var (xrefError, xrefSpec, href) = context.XrefResolver.ResolveXrefSpec(content, file, file);
                     errors.AddIfNotNull(xrefError);
-
-                    return xrefSpec != null
-                        ? (errors, JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href)))
-                        : (errors, new JObject { ["uid"] = value, ["href"] = null });
+                    if (xrefSpec != null)
+                    {
+                        var result = JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
+                        result.Add("resolved", new JValue(true));
+                        return (errors, result);
+                    }
+                    return (errors, new JObject { ["uid"] = value, ["resolved"] = false });
             }
 
             return (errors, value);

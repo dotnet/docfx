@@ -414,7 +414,7 @@ outputs:
     {
       "xref": {
         "uid": "a",
-        "href": null
+        "href": undefined
       }
      }
   .errors.log: |
@@ -1319,7 +1319,7 @@ outputs:
              "uid":"child1",
              "xref": {
                "uid": "a",
-               "href": null
+               "href": undefined
              }
           },
           {
