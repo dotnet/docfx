@@ -413,8 +413,8 @@ outputs:
   docs/b.json: | 
     {
       "xref": {
-        "uid": "a",
-        "href": undefined
+        "name": "a",
+        "href": null
       }
      }
   .errors.log: |
@@ -1318,8 +1318,8 @@ outputs:
           {
              "uid":"child1",
              "xref": {
-               "uid": "a",
-               "href": undefined
+               "name": "a",
+               "href": null
              }
           },
           {

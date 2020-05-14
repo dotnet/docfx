@@ -10,51 +10,51 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("<xref/>",
             "{{#uid}}" +
-            "  {{#resolved}}" +
+            "  {{#href}}" +
             "    <a href=\"{{href}}\"> {{name}} </a>" +
-            "  {{/resolved}}" +
-            "  {{^resolved}}" +
-            "    <span> {{uid}} </span>" +
-            "  {{/resolved}}" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    <span> {{name}} </span>" +
+            "  {{/href}}" +
             "{{/uid}}"
             )]
         [InlineData("<xref uid='{{uid}}'/>",
             "{{#uid}}" +
-            "  {{#resolved}}" +
+            "  {{#href}}" +
             "    <a href=\"{{href}}\"> {{name}} </a>" +
-            "  {{/resolved}}" +
-            "  {{^resolved}}" +
-            "    <span> {{uid}} </span>" +
-            "  {{/resolved}}" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    <span> {{name}} </span>" +
+            "  {{/href}}" +
             "{{/uid}}"
             )]
         [InlineData("<xref uid='{{namespace}}'/>",
             "{{#namespace}}" +
-            "  {{#resolved}}" +
+            "  {{#href}}" +
             "    <a href='{{href}}'> {{name}} </a>" +
-            "  {{/resolved}}" +
-            "  {{^resolved}}" +
-            "    <span> {{uid}} </span>" +
-            "  {{/resolved}}" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    <span> {{name}} </span>" +
+            "  {{/href}}" +
             "{{/namespace}}"
             )]
         [InlineData("<xref uid='{{ uid }}' template='partials/dotnet/xref-name.tmpl' />",
             "{{#uid}}" +
-            "  {{#resolved}}" +
+            "  {{#href}}" +
             "    {{> partials/dotnet/xref-name.tmpl}}" +
-            "  {{/resolved}}" +
-            "  {{^resolved}}" +
-            "    <span> {{uid}} </span>" +
-            "  {{/resolved}}" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    <span> {{name}} </span>" +
+            "  {{/href}}" +
             "{{/uid}}"
             )]
         [InlineData("<xref uid='{{ . }}'/>",
-            "{{#resolved}}" +
+            "{{#href}}" +
             "  <a href=\"{{href}}\"> {{name}} </a>" +
-            "{{/resolved}}" +
-            "{{^resolved}}" +
-            "  <span> {{uid}} </span>" +
-            "{{/resolved}}"
+            "{{/href}}" +
+            "{{^href}}" +
+            "  <span> {{name}} </span>" +
+            "{{/href}}"
             )]
         public void ProcessXrefTag(string template, string expected)
         {
