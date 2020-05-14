@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                     return true;
                 }
 
-                new OpsPreProcessor(config, buildOptions).Run();
+                new OpsPreProcessor(config, errorLog, buildOptions).Run();
                 var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
                 errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);

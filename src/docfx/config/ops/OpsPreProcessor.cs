@@ -12,10 +12,12 @@ namespace Microsoft.Docs.Build
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
+        private readonly ErrorLog _errorLog;
 
-        public OpsPreProcessor(Config config, BuildOptions buildOptions)
+        public OpsPreProcessor(Config config, ErrorLog errorLog, BuildOptions buildOptions)
         {
             _config = config;
+            _errorLog = errorLog;
             _buildOptions = buildOptions;
         }
 
@@ -50,12 +52,27 @@ namespace Microsoft.Docs.Build
                         Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.SourceXmlFolder),
                         Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.OutputYamlFolder),
                         fallbackXmlPath,
-                        null,
+                        item => _errorLog.Write(ConstructError(item)),
                         _buildOptions.DocsetPath,
                         Path.Combine(_buildOptions.DocsetPath, ".sourcemap.json"),
                         _config.Monodoc);
                 }
             }
+        }
+
+        private Error ConstructError(LogItem item)
+        {
+            return new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, new FilePath(item.File), item.Line ?? 0);
+
+            ErrorLevel MapLevel(MessageSeverity level)
+                => level switch
+                {
+                    MessageSeverity.Error => ErrorLevel.Error,
+                    MessageSeverity.Warning => ErrorLevel.Warning,
+                    MessageSeverity.Suggestion => ErrorLevel.Suggestion,
+                    MessageSeverity.Info => ErrorLevel.Info,
+                    _ => ErrorLevel.Off,
+                };
         }
     }
 }
