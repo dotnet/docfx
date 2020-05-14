@@ -516,8 +516,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' length should be >= 2","file":"a.md","line":2,"column":14}
-    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' length should be <= 10","file":"b.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too short: 1 characters. Length should be >= 2","file":"a.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10","file":"b.md","line":2,"column":14}
 ---
 # Content validation - H1 unique
 inputs:

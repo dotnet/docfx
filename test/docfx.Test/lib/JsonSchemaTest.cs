@@ -125,15 +125,15 @@ namespace Microsoft.Docs.Build
         // string length validation
         [InlineData("{'type': 'string', 'minLength': 1, 'maxLength': 5}", "'a'", "")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'1963-06-19T08:30:06Z'",
-            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String '' length should be <= 1','file':'file','line':1,'end_line':1,'column':22,'end_column':22}")]
+            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String '' is too long: 20 characters. Length should be <= 1','file':'file','line':1,'end_line':1,'column':22,'end_column':22}")]
         [InlineData("{'properties': {'str': {'minLength': 1, 'maxLength': 5}}}", "{'str': null}", "")]
         [InlineData("{'type': 'string', 'minLength': 1}", "''",
-            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String '' length should be >= 1','file':'file','line':1,'end_line':1,'column':2,'end_column':2}")]
+            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String '' is too short: 0 characters. Length should be >= 1','file':'file','line':1,'end_line':1,'column':2,'end_column':2}")]
         [InlineData("{'type': 'string', 'maxLength': 1}", "'ab'",
-            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String '' length should be <= 1','file':'file','line':1,'end_line':1,'column':4,'end_column':4}")]
+            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String '' is too long: 2 characters. Length should be <= 1','file':'file','line':1,'end_line':1,'column':4,'end_column':4}")]
         [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
-            @"{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String 'str' length should be <= 2','file':'file','line':1,'end_line':1,'column':13,'end_column':13}
-              {'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String 'str' length should be >= 4','file':'file','line':1,'end_line':1,'column':13,'end_column':13}")]
+            @"{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String 'str' is too long: 3 characters. Length should be <= 2','file':'file','line':1,'end_line':1,'column':13,'end_column':13}
+              {'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String 'str' is too short: 3 characters. Length should be >= 4','file':'file','line':1,'end_line':1,'column':13,'end_column':13}")]
 
         // number validation
         [InlineData("{'minimum': 1, 'maximum': 1}", "1", "")]
@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
         // property name validation
         [InlineData("{'propertyNames': {'maxLength': 1}}", "{'a': 0}", "")]
         [InlineData("{'propertyNames': {'maxLength': 1}}", "{'ab': 0}",
-            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String 'ab' length should be <= 1','file':'file','line':1,'end_line':1,'column':6,'end_column':6}")]
+            "{'message_severity':'warning','log_item_type':'user','code':'string-length-invalid','message':'String 'ab' is too long: 2 characters. Length should be <= 1','file':'file','line':1,'end_line':1,'column':6,'end_column':6}")]
 
         // property count validation
         [InlineData("{'maxProperties': 3}", "{}", "")]

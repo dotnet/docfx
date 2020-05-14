@@ -557,8 +557,8 @@ namespace Microsoft.Docs.Build
             /// String length not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error StringLengthInvalid(SourceInfo? source, string propName, string criteria)
-                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source, propName);
+            public static Error StringLengthInvalid(SourceInfo? source, string propName, string type, int length, string criteria)
+                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' is too {type}: {length} characters. Length should be {criteria}", source, propName);
 
             /// <summary>
             /// Number not within min and max.
