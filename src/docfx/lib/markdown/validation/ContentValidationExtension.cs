@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseContentValidation(
             this MarkdownPipelineBuilder builder,
             OnlineServiceMarkdownValidatorProvider? validatorProvider,
-            Func<List<Heading>, Dictionary<Document, (List<Heading> headings, bool isIncluded)>> getHeadings,
+            Func<List<ValidationNode>, Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>> getValidationNodes,
             Func<string, MarkdownObject, (string? content, object? file)> readFile)
         {
             var validators = validatorProvider?.GetValidators();
@@ -29,44 +29,52 @@ namespace Microsoft.Docs.Build
             {
                 if (((Document)InclusionContext.File).FilePath.Format == FileFormat.Markdown)
                 {
-                    var documentHeadings = new List<Heading>();
+                    var documentNodes = new List<ValidationNode>();
                     document.Visit(node =>
                     {
                         if (node is HeadingBlock headingBlock)
                         {
-                            documentHeadings.Add(new Heading
+                            documentNodes.Add(new Heading
                             {
                                 Level = headingBlock.Level,
                                 SourceInfo = headingBlock.ToSourceInfo(),
                                 Content = GetHeadingContent(headingBlock), // used for reporting
                                 HeadingChar = headingBlock.HeaderChar,
                                 RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
+                                IsVisible = MarkdigUtility.IsVisible(headingBlock),
                             });
                         }
-
-                        if (node is InclusionBlock || node is InclusionInline)
+                        else if (node is InclusionBlock inclusionBlock)
                         {
-                            var includedFilePath = node is InclusionInline inline ? inline.IncludedFilePath : ((InclusionBlock)node).IncludedFilePath;
-                            var inclusionDocument = (Document?)readFile(includedFilePath, node).file;
+                            // Heading block cannot be in the InclusionInline
+                            var inclusionDocument = (Document?)readFile(inclusionBlock.IncludedFilePath, node).file;
+
                             if (inclusionDocument != null)
                             {
-                                documentHeadings.Add(new Heading
+                                documentNodes.Add(new InclusionNode
                                 {
-                                    Level = -1,
                                     SourceInfo = node.ToSourceInfo(),
-                                    Content = inclusionDocument.FilePath.ToString(),
+                                    IncludedFilePath = inclusionDocument.FilePath.ToString(),
                                 });
                             }
+                        }
+                        else if (node is LeafBlock leafBlock)
+                        {
+                            documentNodes.Add(new ContentNode
+                            {
+                                SourceInfo = node.ToSourceInfo(),
+                                IsVisible = MarkdigUtility.IsVisible(leafBlock),
+                            });
                         }
 
                         return false;
                     });
 
-                    var allHeadings = getHeadings(documentHeadings);
+                    var allNodes = getValidationNodes(documentNodes);
 
                     if (InclusionContext.IsInclude)
                     {
-                        foreach (var (doc, (headings, _)) in allHeadings)
+                        foreach (var (doc, (nodes, _)) in allNodes)
                         {
                             var currentFile = (Document)InclusionContext.File;
                             if (doc == currentFile)
@@ -75,22 +83,20 @@ namespace Microsoft.Docs.Build
                             }
 
                             var index = 0;
-                            while (index < headings.Count)
+                            while (index < nodes.Count)
                             {
-                                var current = headings[index];
-                                if (current.Level == -1 && current.Content == $"{currentFile.FilePath}")
+                                var current = nodes[index];
+                                if (current is InclusionNode inclusionNode && inclusionNode.IncludedFilePath == $"{currentFile.FilePath}")
                                 {
-                                    headings.RemoveAt(index);
-                                    headings.InsertRange(index, documentHeadings.Select(d => new Heading
+                                    nodes.RemoveAt(index);
+                                    nodes.InsertRange(index, documentNodes.Select(node =>
                                     {
-                                        Content = d.Content,
-                                        Level = d.Level,
-                                        SourceInfo = current.SourceInfo,
-                                        HeadingChar = d.HeadingChar,
-                                        RenderedPlainText = d.RenderedPlainText,
-                                        InclusionSourceInfo = d.SourceInfo,
+                                        var newNode = (ValidationNode)node.Clone();
+                                        newNode.InclusionSourceInfo = node.SourceInfo;
+                                        newNode.SourceInfo = current.SourceInfo;
+                                        return newNode;
                                     }));
-                                    index += documentHeadings.Count - 1;
+                                    index += documentNodes.Count - 1;
                                 }
 
                                 index++;
@@ -142,6 +148,26 @@ namespace Microsoft.Docs.Build
                 }
 
                 return content.ToString();
+            }
+        }
+
+        private class InclusionNode : ValidationNode, ICloneable
+        {
+            public string? IncludedFilePath { get; set; }
+
+            public InclusionNode()
+            {
+            }
+
+            protected InclusionNode(InclusionNode inclusionNode)
+                : base(inclusionNode)
+            {
+                this.IncludedFilePath = inclusionNode.IncludedFilePath;
+            }
+
+            public override object Clone()
+            {
+                return new InclusionNode(this);
             }
         }
     }

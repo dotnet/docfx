@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Markdig;
 using Markdig.Parsers;
@@ -117,7 +118,7 @@ namespace Microsoft.Docs.Build
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
+                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
                 .Build();
         }
 
@@ -130,7 +131,7 @@ namespace Microsoft.Docs.Build
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
+                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
                 .UseInlineOnly()
                 .Build();
         }
@@ -239,24 +240,24 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private Dictionary<Document, (List<Heading> headings, bool isIncluded)> GetHeadings(List<Heading> headings)
+        private Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> GetValidationNodes(List<ValidationNode> nodes)
         {
             var status = t_status.Value!.Peek();
 
-            if (!status.Headings.ContainsKey((Document)InclusionContext.File))
+            if (!status.Nodes.ContainsKey((Document)InclusionContext.File))
             {
-                status.Headings.Add((Document)InclusionContext.File, (headings, InclusionContext.IsInclude));
+                status.Nodes.Add((Document)InclusionContext.File, (nodes, InclusionContext.IsInclude));
             }
 
-            return status.Headings;
+            return status.Nodes;
         }
 
         private void ValidateHeadings()
         {
             var status = t_status.Value!.Peek();
-            foreach (var (document, (headings, isIncluded)) in status.Headings)
+            foreach (var (document, (nodes, isIncluded)) in status.Nodes)
             {
-                _contentValidator.ValidateHeadings(document, headings, isIncluded);
+                _contentValidator.ValidateHeadings(document, nodes.OfType<ContentNode>().ToList(), isIncluded);
             }
         }
 
@@ -264,7 +265,7 @@ namespace Microsoft.Docs.Build
         {
             public List<Error> Errors { get; } = new List<Error>();
 
-            public Dictionary<Document, (List<Heading> headings, bool isIncluded)> Headings { get; } = new Dictionary<Document, (List<Heading> headings, bool isIncluded)>();
+            public Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>();
         }
     }
 }

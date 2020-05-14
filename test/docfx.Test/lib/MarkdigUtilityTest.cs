@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         [InlineData("[link](https://github.com)", true)]
         [InlineData("![image](image.png)", true)]
         [InlineData("<img src=\"imag.png\"/>", true)]
+        [InlineData("## <img src=\"imag.png\"/>", true)]
         [InlineData("<img src=\"imag.png\">abc</img>", true)]
         [InlineData("<a href=\"www.microsoft.com\"><img src=\"imag.png\"/></a>", true)]
         [InlineData("<a>test</a>", true)]

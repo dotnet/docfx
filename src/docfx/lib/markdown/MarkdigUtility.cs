@@ -178,6 +178,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
                         // empty heading
+                    case ThematicBreakBlock _:
                         break;
                     case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
                     case LeafInline _:
