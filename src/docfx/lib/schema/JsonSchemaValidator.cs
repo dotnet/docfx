@@ -253,12 +253,12 @@ namespace Microsoft.Docs.Build
                 var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
                 if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
                 {
-                    errors.Add(Errors.JsonSchema.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, $"<= {schema.MaxLength}"));
+                    errors.Add(Errors.JsonSchema.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, "long", unicodeLength, $"<= {schema.MaxLength}"));
                 }
 
                 if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
                 {
-                    errors.Add(Errors.JsonSchema.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, $">= {schema.MinLength}"));
+                    errors.Add(Errors.JsonSchema.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, "short", unicodeLength, $">= {schema.MinLength}"));
                 }
             }
 
