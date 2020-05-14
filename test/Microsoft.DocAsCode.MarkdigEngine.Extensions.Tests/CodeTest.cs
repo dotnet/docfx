@@ -652,7 +652,7 @@ namespace TagHelpersBuiltIn
         </tr>
     </tfoot>
 </table>";
-        static public string contentVB = @"''<Snippet1>
+        static public string contentVB = @"'<Snippet1>
 Class ADSetupInformation
 
     Shared Sub Main()
@@ -682,7 +682,7 @@ End Class
 '        C:\Program Files\MyApp\MyAppSubfolder\
 '</Snippet1>
 
-<snippet2>
+'<snippet2>
 Imports System.Reflection
 
 Class AppDomain1
@@ -1087,12 +1087,11 @@ public partial class Window1 : Window
     }
 
     void TableColumnsProperty()
+            tbl.Columns.Add(new TableColumn());
+        // &lt;/Snippet_Table_Columns_Add&gt;
 
-   tbl.Columns.Add(new TableColumn());
-// &lt;/Snippet_Table_Columns_Add&gt;
-
-// Insert a new first column.
-// &lt;Snippet_Table_Columns_Insert&gt;
+        // Insert a new first column.
+        // &lt;Snippet_Table_Columns_Insert&gt;
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" range=""1-2"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
@@ -1108,11 +1107,10 @@ using System.Windows;
         [InlineData(@":::code source=""source.cs"" range=""1-2,205-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">using System;
 using System.Windows;
-
-           TableCell cellx = new TableCell(parx);
-           // &lt;/Snippet_TableCell_Const1&gt;
-       }
-   }
+            TableCell cellx = new TableCell(parx);
+            // &lt;/Snippet_TableCell_Const1&gt;
+        }
+    }
 }
 </code></pre>
 ")]
@@ -1301,161 +1299,161 @@ End Class
         [InlineData(@":::code source=""asp.cshtml"" id=""snippet_BigSnippet"":::
 ", @"<pre>
 <code class=""lang-cshtml"">&lt;tbody&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-action&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-controller=&quot;Speaker&quot;
-              asp-action=&quot;Evaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-all-route-data&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevalscurrent&quot;&quot; asp-all-route-data=&quot;&quot;parms&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           @{
-           var parms = new Dictionary&lt;string, string&gt;
-                       {
-                           { &quot;speakerId&quot;, &quot;11&quot; },
-                           { &quot;currentYear&quot;, &quot;true&quot; }
-                       };
-           }
+    &lt;tr&gt;
+        &lt;td&gt;asp-action&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-controller=&quot;Speaker&quot;
+               asp-action=&quot;Evaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-all-route-data&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevalscurrent&quot;&quot; asp-all-route-data=&quot;&quot;parms&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            @{
+            var parms = new Dictionary&lt;string, string&gt;
+                        {
+                            { &quot;speakerId&quot;, &quot;11&quot; },
+                            { &quot;currentYear&quot;, &quot;true&quot; }
+                        };
+            }
 
-           &lt;a asp-route=&quot;speakerevalscurrent&quot;
-              asp-all-route-data=&quot;parms&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td rowspan=&quot;2&quot;&gt;asp-area&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Blogs&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;AboutBlog&quot;&quot;&gt;About Blog&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-area=&quot;Blogs&quot;
-              asp-controller=&quot;Home&quot;
-              asp-action=&quot;AboutBlog&quot;&gt;About Blog&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Sessions&quot;&quot; asp-page=&quot;&quot;/Index&quot;&quot;&gt;View Sessions&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-area=&quot;Sessions&quot;
-              asp-page=&quot;/Index&quot;&gt;View Sessions&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-controller&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Index&quot;&quot;&gt;All Speakers&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-controller=&quot;Speaker&quot;
-              asp-action=&quot;Index&quot;&gt;All Speakers&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-fragment&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot; asp-fragment=&quot;&quot;SpeakerEvaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-controller=&quot;Speaker&quot;
-              asp-action=&quot;Evaluations&quot;
-              asp-fragment=&quot;SpeakerEvaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-host&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-host=&quot;&quot;microsoft.com&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-protocol=&quot;https&quot;
-              asp-host=&quot;microsoft.com&quot;
-              asp-controller=&quot;Home&quot;
-              asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-page &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot;&gt;All Attendees&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-page=&quot;/Attendee&quot;&gt;All Attendees&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-page-handler &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-page-handler=&quot;&quot;Profile&quot;&quot; asp-route-attendeeid=&quot;&quot;12&quot;&quot;&gt;Attendee Profile&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-page=&quot;/Attendee&quot;
-              asp-page-handler=&quot;Profile&quot;
-              asp-route-attendeeid=&quot;12&quot;&gt;Attendee Profile&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-protocol&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-protocol=&quot;https&quot;
-              asp-controller=&quot;Home&quot;
-              asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-route&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevals&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-route=&quot;speakerevals&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-route-&lt;em&gt;{value}&lt;/em&gt;&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-route-attendeeid=&quot;&quot;10&quot;&quot;&gt;View Attendee&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-page=&quot;/Attendee&quot;
-              asp-route-attendeeid=&quot;10&quot;&gt;View Attendee&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
+            &lt;a asp-route=&quot;speakerevalscurrent&quot;
+               asp-all-route-data=&quot;parms&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td rowspan=&quot;2&quot;&gt;asp-area&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Blogs&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;AboutBlog&quot;&quot;&gt;About Blog&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-area=&quot;Blogs&quot;
+               asp-controller=&quot;Home&quot;
+               asp-action=&quot;AboutBlog&quot;&gt;About Blog&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Sessions&quot;&quot; asp-page=&quot;&quot;/Index&quot;&quot;&gt;View Sessions&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-area=&quot;Sessions&quot;
+               asp-page=&quot;/Index&quot;&gt;View Sessions&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-controller&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Index&quot;&quot;&gt;All Speakers&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-controller=&quot;Speaker&quot;
+               asp-action=&quot;Index&quot;&gt;All Speakers&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-fragment&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot; asp-fragment=&quot;&quot;SpeakerEvaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-controller=&quot;Speaker&quot;
+               asp-action=&quot;Evaluations&quot;
+               asp-fragment=&quot;SpeakerEvaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-host&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-host=&quot;&quot;microsoft.com&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-protocol=&quot;https&quot;
+               asp-host=&quot;microsoft.com&quot;
+               asp-controller=&quot;Home&quot;
+               asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-page &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot;&gt;All Attendees&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-page=&quot;/Attendee&quot;&gt;All Attendees&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-page-handler &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-page-handler=&quot;&quot;Profile&quot;&quot; asp-route-attendeeid=&quot;&quot;12&quot;&quot;&gt;Attendee Profile&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-page=&quot;/Attendee&quot;
+               asp-page-handler=&quot;Profile&quot;
+               asp-route-attendeeid=&quot;12&quot;&gt;Attendee Profile&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-protocol&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-protocol=&quot;https&quot;
+               asp-controller=&quot;Home&quot;
+               asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-route&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevals&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-route=&quot;speakerevals&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-route-&lt;em&gt;{value}&lt;/em&gt;&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-route-attendeeid=&quot;&quot;10&quot;&quot;&gt;View Attendee&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-page=&quot;/Attendee&quot;
+               asp-route-attendeeid=&quot;10&quot;&gt;View Attendee&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
 &lt;/tbody&gt;
 </code></pre>
 ")]
@@ -1490,10 +1488,9 @@ def hello():
         [InlineData(@":::code source=""source.bat"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-batchfile"">:Label1
-:Label2
+    :Label2
 :: Comment line 3
-</code></pre>
-")]
+</code></pre>")]
         [InlineData(@":::code source=""source.erl"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-erlang"">hello() -&gt;
@@ -1512,7 +1509,9 @@ USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns no
 
 :::code language=""csharp"" source=""source3.cs"" id=""Delegate"":::", @"<p>An example of a delegate would be:</p>
 <pre>
-<code class=""lang-csharp"">/// The delegate receives batches of changes as they are generated in the change feed and can process them.
+<code class=""lang-csharp"">/// &lt;summary&gt;
+/// The delegate receives batches of changes as they are generated in the change feed and can process them.
+/// &lt;/summary&gt;
 static async Task HandleChangesAsync(IReadOnlyCollection&lt;ToDoItem&gt; changes, CancellationToken cancellationToken)
 {
     Console.WriteLine(&quot;Started handling changes...&quot;);
@@ -1762,12 +1761,8 @@ Key &quot;doc&quot; is not found.
         }
 
         [Theory]
-        [InlineData(@":::code source=""source.cs"" range=""205-250"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.cs"" id=""doesnotexist"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.missing"" range=""1-3"" interactive=""try-dotnet"" language=""azurecli"":::")]
         public void CodeTestBlockGeneralCSharp_Error(string source)
