@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
                         monikerRangeBlock.GetAttributes().Properties.Remove(new KeyValuePair<string, string>("range", monikerRangeBlock.MonikerRange));
                         monikerRangeBlock.GetAttributes().AddPropertyIfNotExist("data-moniker", string.Join(
                             " ",
-                            parseMonikerRange(new SourceInfo<string?>(monikerRangeBlock.MonikerRange, monikerRangeBlock.ToSourceInfo()))));
+                            parseMonikerRange(new SourceInfo<string?>(monikerRangeBlock.MonikerRange, monikerRangeBlock.GetSourceInfo()))));
                     }
                     return node;
                 });

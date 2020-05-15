@@ -17,13 +17,40 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null)
+        private static readonly object s_filePathKey = new object();
+
+        public static Document GetFilePath(this MarkdownObject obj)
         {
-            var path = file ?? (InclusionContext.File as Document)?.FilePath;
-            if (path is null)
+            while (true)
             {
-                return default;
+                switch (obj)
+                {
+                    case Block block when block.Parent is null:
+                    case Inline inline when inline.Parent is null:
+                        return obj.GetData(s_filePathKey) as Document ?? (Document)InclusionContext.File;
+
+                    case Block block:
+                        obj = block.Parent;
+                        break;
+
+                    case Inline inline:
+                        obj = inline.Parent;
+                        break;
+
+                    default:
+                        return (Document)InclusionContext.File;
+                }
             }
+        }
+
+        public static void SetFilePath(this MarkdownObject obj, Document value)
+        {
+            obj.SetData(s_filePathKey, value);
+        }
+
+        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, int? line = null)
+        {
+            var path = GetFilePath(obj).FilePath;
 
             if (line != null)
             {
@@ -34,13 +61,9 @@ namespace Microsoft.Docs.Build
             return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
         }
 
-        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
+        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
         {
-            var path = (InclusionContext.File as Document)?.FilePath;
-            if (path is null)
-            {
-                return default;
-            }
+            var path = GetFilePath(obj).FilePath;
 
             var start = OffSet(obj.Line, obj.Column, html.Start.Line, html.Start.Column);
             var end = OffSet(obj.Line, obj.Column, html.End.Line, html.End.Column);
