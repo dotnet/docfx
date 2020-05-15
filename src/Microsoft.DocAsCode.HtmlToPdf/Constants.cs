@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     internal static class Constants
     {
         public const string PdfCommandName = "wkhtmltopdf";
-        public const string PdfCommandNotExistMessage = "wkhtmltopdf is a prerequisite when generating PDF. Please install it from https://wkhtmltopdf.org/downloads.html and save the executable folder to %PATH% first. Alternatively you can install it from https://chocolatey.org with `choco install wkhtmltopdf`.";
+        public const string PdfCommandNotExistMessage = "wkhtmltopdf is a prerequisite when generating PDF. Please install it from https://wkhtmltopdf.org/downloads.html and save the executable folder to %PATH% first or set the 'filePath' property. Alternatively you can install it from https://chocolatey.org with `choco install wkhtmltopdf`.";
     }
 
     internal static class BuildToolConstants

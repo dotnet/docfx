@@ -36,9 +36,13 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         #region Public Methods
 
-        public static void PrerequisiteCheck()
+        public static void PrerequisiteCheck(string filePath)
         {
-            if (!CommandUtility.ExistCommand(Constants.PdfCommandName))
+            if ((!string.IsNullOrEmpty(filePath)) && (!File.Exists(filePath)))
+            {
+                throw new DocfxException($"The file specified could not be found: '{filePath}'.");
+            }
+            else if (string.IsNullOrEmpty(filePath) && (!Common.CommandUtility.ExistCommand(Constants.PdfCommandName)))
             {
                 throw new DocfxException(Constants.PdfCommandNotExistMessage);
             }
@@ -333,6 +337,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     BasePath = basePath,
                     UserStyleSheet = _pdfOptions.CssFilePath,
                     LoadErrorHandling = _pdfOptions.LoadErrorHandling,
+                    FilePath = _pdfOptions.FilePath,
                     AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs,
                     OutlineOption = _pdfOptions.OutlineOption,
                     IsReadArgsFromStdin = !_pdfOptions.NoInputStreamArgs,
