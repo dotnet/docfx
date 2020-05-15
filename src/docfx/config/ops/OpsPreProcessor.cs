@@ -52,7 +52,13 @@ namespace Microsoft.Docs.Build
                         Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.SourceXmlFolder),
                         Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.OutputYamlFolder),
                         fallbackXmlPath,
-                        item => _errorLog.Write(ConstructError(item)),
+                        item =>
+                        {
+                            if (!string.IsNullOrEmpty(item.Code))
+                            {
+                                _errorLog.Write(ConstructError(item));
+                            }
+                        },
                         _buildOptions.DocsetPath,
                         Path.Combine(_buildOptions.DocsetPath, ".sourcemap.json"),
                         _config.Monodoc);
