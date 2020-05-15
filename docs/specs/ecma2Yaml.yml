@@ -76,6 +76,7 @@ repos:
                     Constructor with one generic parameter.
                     </summary>
                 <remarks>To be added.</remarks>
+                <exception cref="T:None.Existing.Ex">This exception type does not exist.</exception>
               </Docs>
             </Member>
           </Members>
@@ -98,6 +99,7 @@ repos:
         {}
 outputs:
   cat/.errors.log: |
+    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"xml/CatLibrary/Cat`2.xml"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'"}
