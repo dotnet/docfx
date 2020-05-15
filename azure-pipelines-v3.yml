@@ -216,6 +216,10 @@ jobs:
         params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 30
       azure-docs-rest-apis:
         params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
+      sql-docs-pr:
+        params: https://github.com/OPS-E2E-PPE/sql-docs-pr --branch v3-integration-test --timeout 120
+      roslyn-api-docs:
+        params: https://github.com/OPS-E2E-PPE/roslyn-api-docs --branch v3-integration-test --timeout 105
 
   steps:
   # Install .NET Core sdk
