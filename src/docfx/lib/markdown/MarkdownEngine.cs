@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
+using Markdig.Extensions.EmphasisExtras;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Syntax;
@@ -68,21 +70,24 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public (List<Error> errors, MarkdownDocument ast) Parse(string content, MarkdownPipelineType piplineType)
+        public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType piplineType)
         {
-            try
+            using (InclusionContext.PushFile(file))
             {
-                var status = new Status();
+                try
+                {
+                    var status = new Status();
 
-                t_status.Value!.Push(status);
+                    t_status.Value!.Push(status);
 
-                var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
+                    var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
 
-                return (status.Errors, ast);
-            }
-            finally
-            {
-                t_status.Value!.Pop();
+                    return (status.Errors, ast);
+                }
+                finally
+                {
+                    t_status.Value!.Pop();
+                }
             }
         }
 
@@ -111,29 +116,44 @@ namespace Microsoft.Docs.Build
 
         private MarkdownPipeline CreateMarkdownPipeline()
         {
-            return new MarkdownPipelineBuilder()
-                .UseYamlFrontMatter()
-                .UseDocfxExtensions(_markdownContext)
-                .UseTelemetry()
-                .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref)
-                .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
-                .Build();
+            return CreateMarkdownPipelineBuilder().Build();
         }
 
         private MarkdownPipeline CreateInlineMarkdownPipeline()
         {
+            return CreateMarkdownPipelineBuilder().UseInlineOnly().Build();
+        }
+
+        private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder()
+        {
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
-                .UseDocfxExtensions(_markdownContext)
+                .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
+                .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
+                .UseMediaLinks()
+                .UsePipeTables()
+                .UseAutoLinks()
+                .UseHeadingIdRewriter()
+                .UseIncludeFile(_markdownContext)
+                .UseCodeSnippet(_markdownContext)
+                .UseDFMCodeInfoPrefix()
+                .UseQuoteSectionNote(_markdownContext)
+                .UseXref()
+                .UseEmojiAndSmiley(false)
+                .UseTabGroup(_markdownContext)
+                .UseMonikerRange(_markdownContext)
+                .UseInteractiveCode()
+                .UseRow(_markdownContext)
+                .UseNestedColumn(_markdownContext)
+                .UseTripleColon(_markdownContext)
+                .UseNoloc()
+                .UseFilePath()
+                .UseResolveLink(_markdownContext)
                 .UseTelemetry()
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
-                .UseInlineOnly()
-                .Build();
+                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile);
         }
 
         private static MarkdownPipeline CreateTocMarkdownPipeline()
@@ -149,7 +169,8 @@ namespace Microsoft.Docs.Build
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
-            builder.UseYamlFrontMatter()
+            builder.UseFilePath()
+                   .UseYamlFrontMatter()
                    .UseXref()
                    .UsePreciseSourceLocation();
 
@@ -168,17 +189,17 @@ namespace Microsoft.Docs.Build
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.GetSourceInfo(line)));
         }
 
         private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.GetSourceInfo(line)));
         }
 
         private static void LogSuggestion(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.GetSourceInfo(line)));
         }
 
         private static List<Error> GetErrors()
@@ -189,9 +210,7 @@ namespace Microsoft.Docs.Build
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var referencingFile = (Document)InclusionContext.File;
-
-            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), referencingFile);
+            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath());
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);
@@ -200,8 +219,7 @@ namespace Microsoft.Docs.Build
         private string GetLink(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-
-            var (error, link, _) = _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.ToSourceInfo()), (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            var (error, link, _) = _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
 
             return link;
