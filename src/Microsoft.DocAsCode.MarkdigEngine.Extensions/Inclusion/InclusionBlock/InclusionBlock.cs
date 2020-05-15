@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Parsers;
     using Markdig.Syntax;
 
-    public class InclusionBlock : LeafBlock
+    public class InclusionBlock : ContainerBlock
     {
         public string Title { get; set; }
 

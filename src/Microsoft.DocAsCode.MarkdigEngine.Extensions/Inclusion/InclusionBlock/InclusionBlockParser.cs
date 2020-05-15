@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             string title = null, path = null;
 
-            if (!ExtensionsHelper.MatchLink(ref line, ref title, ref path) || !ExtensionsHelper.MatchInlcusionEnd(ref line))
+            if (!ExtensionsHelper.MatchLink(ref line, ref title, ref path) || !ExtensionsHelper.MatchInclusionEnd(ref line))
             {
                 return BlockState.None;
             }
