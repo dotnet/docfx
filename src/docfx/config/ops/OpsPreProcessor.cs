@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                         Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.SourceXmlFolder),
                         Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.OutputYamlFolder),
                         fallbackXmlPath,
-                        item => _errorLog.Write(ConstructError(item)),
+                        LogError,
                         _buildOptions.DocsetPath,
                         Path.Combine(_buildOptions.DocsetPath, ".sourcemap.json"),
                         _config.Monodoc);
@@ -60,9 +60,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Error ConstructError(LogItem item)
+        private void LogError(LogItem item)
         {
-            return new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, new FilePath(item.File), item.Line ?? 0);
+            if (!string.IsNullOrEmpty(item.Code))
+            {
+                _errorLog.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, new FilePath(item.File), item.Line ?? 0));
+            }
 
             ErrorLevel MapLevel(MessageSeverity level)
                 => level switch
