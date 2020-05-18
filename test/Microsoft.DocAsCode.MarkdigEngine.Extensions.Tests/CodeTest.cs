@@ -652,7 +652,7 @@ namespace TagHelpersBuiltIn
         </tr>
     </tfoot>
 </table>";
-        static public string contentVB = @"''<Snippet1>
+        static public string contentVB = @"'<Snippet1>
 Class ADSetupInformation
 
     Shared Sub Main()
@@ -682,7 +682,7 @@ End Class
 '        C:\Program Files\MyApp\MyAppSubfolder\
 '</Snippet1>
 
-<snippet2>
+'<snippet2>
 Imports System.Reflection
 
 Class AppDomain1
@@ -772,6 +772,181 @@ int main()
     AppDomain4::Main();
 }
 // </snippet2>";
+        static public string contentCPP2 = @"//<Snippet1>
+using namespace System;
+using namespace System::Collections::Generic;
+
+public ref class Example
+{
+public:
+    static void Main()
+    {
+        //<Snippet2>
+        // Create a new dictionary of strings, with string keys,
+        // and access it through the IDictionary generic interface.
+        IDictionary<String^, String^>^ openWith =
+            gcnew Dictionary<String^, String^>();
+
+        // Add some elements to the dictionary. There are no
+        // duplicate keys, but some of the values are duplicates.
+        openWith->Add(""txt"", ""notepad.exe"");
+        openWith->Add(""bmp"", ""paint.exe"");
+        openWith->Add(""dib"", ""paint.exe"");
+        openWith->Add(""rtf"", ""wordpad.exe"");
+
+        // The Add method throws an exception if the new key is
+        // already in the dictionary.
+        try
+        {
+            openWith->Add(""txt"", ""winword.exe"");
+        }
+        catch (ArgumentException^)
+        {
+            Console::WriteLine(""An element with Key = \""txt\"" already exists."");
+        }
+        //</Snippet2>
+
+        //<Snippet3>
+        // The Item property is another name for the indexer, so you
+        // can omit its name when accessing elements.
+        Console::WriteLine(""For key = \""rtf\"", value = {0}."",
+            openWith[""rtf""]);
+
+        // The indexer can be used to change the value associated
+        // with a key.
+        openWith[""rtf""] = ""winword.exe"";
+        Console::WriteLine(""For key = \""rtf\"", value = {0}."",
+            openWith[""rtf""]);
+
+        // If a key does not exist, setting the indexer for that key
+        // adds a new key/value pair.
+        openWith[""doc""] = ""winword.exe"";
+        //</Snippet3>
+
+        //<Snippet4>
+        // The indexer throws an exception if the requested key is
+        // not in the dictionary.
+        try
+        {
+            Console::WriteLine(""For key = \""tif\"", value = {0}."",
+                openWith[""tif""]);
+        }
+        catch (KeyNotFoundException^)
+        {
+            Console::WriteLine(""Key = \""tif\"" is not found."");
+        }
+        //</Snippet4>
+
+        //<Snippet5>
+        // When a program often has to try keys that turn out not to
+        // be in the dictionary, TryGetValue can be a more efficient
+        // way to retrieve values.
+        String^ value = """";
+        if (openWith->TryGetValue(""tif"", value))
+        {
+            Console::WriteLine(""For key = \""tif\"", value = {0}."", value);
+        }
+        else
+        {
+            Console::WriteLine(""Key = \""tif\"" is not found."");
+        }
+        //</Snippet5>
+
+        //<Snippet6>
+        // ContainsKey can be used to test keys before inserting
+        // them.
+        if (!openWith->ContainsKey(""ht""))
+        {
+            openWith->Add(""ht"", ""hypertrm.exe"");
+            Console::WriteLine(""Value added for key = \""ht\"": {0}"",
+                openWith[""ht""]);
+        }
+        //</Snippet6>
+
+        //<Snippet7>
+        // When you use foreach to enumerate dictionary elements,
+        // the elements are retrieved as KeyValuePair objects.
+        Console::WriteLine();
+        for each( KeyValuePair<String^, String^> kvp in openWith )
+        {
+            Console::WriteLine(""Key = {0}, Value = {1}"",
+                kvp.Key, kvp.Value);
+        }
+        //</Snippet7>
+
+        //<Snippet8>
+        // To get the values alone, use the Values property.
+        ICollection<String^>^ icoll = openWith->Values;
+
+        // The elements of the ValueCollection are strongly typed
+        // with the type that was specified for dictionary values.
+        Console::WriteLine();
+        for each( String^ s in icoll )
+        {
+            Console::WriteLine(""Value = {0}"", s);
+        }
+        //</Snippet8>
+
+        //<Snippet9>
+        // To get the keys alone, use the Keys property.
+        icoll = openWith->Keys;
+
+        // The elements of the ValueCollection are strongly typed
+        // with the type that was specified for dictionary values.
+        Console::WriteLine();
+        for each( String^ s in icoll )
+        {
+            Console::WriteLine(""Key = {0}"", s);
+        }
+        //</Snippet9>
+
+        //<Snippet10>
+        // Use the Remove method to remove a key/value pair.
+        Console::WriteLine(""\nRemove(\""doc\"")"");
+        openWith->Remove(""doc"");
+
+        if (!openWith->ContainsKey(""doc""))
+        {
+            Console::WriteLine(""Key \""doc\"" is not found."");
+        }
+        //</Snippet10>
+    }
+};
+
+int main()
+{
+    Example::Main();
+}
+
+/* This code example produces the following output:
+An element with Key = ""txt"" already exists.
+For key = ""rtf"", value = wordpad.exe.
+For key = ""rtf"", value = winword.exe.
+Key = ""tif"" is not found.
+Key = ""tif"" is not found.
+Value added for key = ""ht"": hypertrm.exe
+Key = txt, Value = notepad.exe
+Key = bmp, Value = paint.exe
+Key = dib, Value = paint.exe
+Key = rtf, Value = winword.exe
+Key = doc, Value = winword.exe
+Key = ht, Value = hypertrm.exe
+Value = notepad.exe
+Value = paint.exe
+Value = paint.exe
+Value = winword.exe
+Value = winword.exe
+Value = hypertrm.exe
+Key = txt
+Key = bmp
+Key = dib
+Key = rtf
+Key = doc
+Key = ht
+Remove(""doc"")
+Key ""doc"" is not found.
+ */
+//</ Snippet1  >";
         static public string contentCrazy = @"//<Snippet1>
 using namespace System;
 
@@ -912,12 +1087,11 @@ public partial class Window1 : Window
     }
 
     void TableColumnsProperty()
+            tbl.Columns.Add(new TableColumn());
+        // &lt;/Snippet_Table_Columns_Add&gt;
 
-   tbl.Columns.Add(new TableColumn());
-// &lt;/Snippet_Table_Columns_Add&gt;
-
-// Insert a new first column.
-// &lt;Snippet_Table_Columns_Insert&gt;
+        // Insert a new first column.
+        // &lt;Snippet_Table_Columns_Insert&gt;
 </code></pre>
 ")]
         [InlineData(@":::code source=""source.cs"" range=""1-2"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
@@ -933,11 +1107,10 @@ using System.Windows;
         [InlineData(@":::code source=""source.cs"" range=""1-2,205-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">using System;
 using System.Windows;
-
-           TableCell cellx = new TableCell(parx);
-           // &lt;/Snippet_TableCell_Const1&gt;
-       }
-   }
+            TableCell cellx = new TableCell(parx);
+            // &lt;/Snippet_TableCell_Const1&gt;
+        }
+    }
 }
 </code></pre>
 ")]
@@ -1126,161 +1299,161 @@ End Class
         [InlineData(@":::code source=""asp.cshtml"" id=""snippet_BigSnippet"":::
 ", @"<pre>
 <code class=""lang-cshtml"">&lt;tbody&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-action&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-controller=&quot;Speaker&quot;
-              asp-action=&quot;Evaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-all-route-data&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevalscurrent&quot;&quot; asp-all-route-data=&quot;&quot;parms&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           @{
-           var parms = new Dictionary&lt;string, string&gt;
-                       {
-                           { &quot;speakerId&quot;, &quot;11&quot; },
-                           { &quot;currentYear&quot;, &quot;true&quot; }
-                       };
-           }
+    &lt;tr&gt;
+        &lt;td&gt;asp-action&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-controller=&quot;Speaker&quot;
+               asp-action=&quot;Evaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-all-route-data&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevalscurrent&quot;&quot; asp-all-route-data=&quot;&quot;parms&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            @{
+            var parms = new Dictionary&lt;string, string&gt;
+                        {
+                            { &quot;speakerId&quot;, &quot;11&quot; },
+                            { &quot;currentYear&quot;, &quot;true&quot; }
+                        };
+            }
 
-           &lt;a asp-route=&quot;speakerevalscurrent&quot;
-              asp-all-route-data=&quot;parms&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td rowspan=&quot;2&quot;&gt;asp-area&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Blogs&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;AboutBlog&quot;&quot;&gt;About Blog&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-area=&quot;Blogs&quot;
-              asp-controller=&quot;Home&quot;
-              asp-action=&quot;AboutBlog&quot;&gt;About Blog&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Sessions&quot;&quot; asp-page=&quot;&quot;/Index&quot;&quot;&gt;View Sessions&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-area=&quot;Sessions&quot;
-              asp-page=&quot;/Index&quot;&gt;View Sessions&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-controller&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Index&quot;&quot;&gt;All Speakers&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-controller=&quot;Speaker&quot;
-              asp-action=&quot;Index&quot;&gt;All Speakers&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-fragment&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot; asp-fragment=&quot;&quot;SpeakerEvaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-controller=&quot;Speaker&quot;
-              asp-action=&quot;Evaluations&quot;
-              asp-fragment=&quot;SpeakerEvaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-host&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-host=&quot;&quot;microsoft.com&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-protocol=&quot;https&quot;
-              asp-host=&quot;microsoft.com&quot;
-              asp-controller=&quot;Home&quot;
-              asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-page &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot;&gt;All Attendees&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-page=&quot;/Attendee&quot;&gt;All Attendees&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-page-handler &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-page-handler=&quot;&quot;Profile&quot;&quot; asp-route-attendeeid=&quot;&quot;12&quot;&quot;&gt;Attendee Profile&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-page=&quot;/Attendee&quot;
-              asp-page-handler=&quot;Profile&quot;
-              asp-route-attendeeid=&quot;12&quot;&gt;Attendee Profile&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-protocol&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-protocol=&quot;https&quot;
-              asp-controller=&quot;Home&quot;
-              asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-route&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevals&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-route=&quot;speakerevals&quot;&gt;Speaker Evaluations&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-       &lt;td&gt;asp-route-&lt;em&gt;{value}&lt;/em&gt;&lt;/td&gt;
-       &lt;td&gt;
-           &lt;code&gt;
-               @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-route-attendeeid=&quot;&quot;10&quot;&quot;&gt;View Attendee&lt;/a&gt;&quot;))
-           &lt;/code&gt;
-       &lt;/td&gt;
-       &lt;td&gt;
-           &lt;a asp-page=&quot;/Attendee&quot;
-              asp-route-attendeeid=&quot;10&quot;&gt;View Attendee&lt;/a&gt;
-       &lt;/td&gt;
-   &lt;/tr&gt;
+            &lt;a asp-route=&quot;speakerevalscurrent&quot;
+               asp-all-route-data=&quot;parms&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td rowspan=&quot;2&quot;&gt;asp-area&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Blogs&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;AboutBlog&quot;&quot;&gt;About Blog&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-area=&quot;Blogs&quot;
+               asp-controller=&quot;Home&quot;
+               asp-action=&quot;AboutBlog&quot;&gt;About Blog&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-area=&quot;&quot;Sessions&quot;&quot; asp-page=&quot;&quot;/Index&quot;&quot;&gt;View Sessions&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-area=&quot;Sessions&quot;
+               asp-page=&quot;/Index&quot;&gt;View Sessions&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-controller&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Index&quot;&quot;&gt;All Speakers&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-controller=&quot;Speaker&quot;
+               asp-action=&quot;Index&quot;&gt;All Speakers&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-fragment&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-controller=&quot;&quot;Speaker&quot;&quot; asp-action=&quot;&quot;Evaluations&quot;&quot; asp-fragment=&quot;&quot;SpeakerEvaluations&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-controller=&quot;Speaker&quot;
+               asp-action=&quot;Evaluations&quot;
+               asp-fragment=&quot;SpeakerEvaluations&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-host&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-host=&quot;&quot;microsoft.com&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-protocol=&quot;https&quot;
+               asp-host=&quot;microsoft.com&quot;
+               asp-controller=&quot;Home&quot;
+               asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-page &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot;&gt;All Attendees&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-page=&quot;/Attendee&quot;&gt;All Attendees&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-page-handler &lt;span class=&quot;badge&quot;&gt;RP&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-page-handler=&quot;&quot;Profile&quot;&quot; asp-route-attendeeid=&quot;&quot;12&quot;&quot;&gt;Attendee Profile&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-page=&quot;/Attendee&quot;
+               asp-page-handler=&quot;Profile&quot;
+               asp-route-attendeeid=&quot;12&quot;&gt;Attendee Profile&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-protocol&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-protocol=&quot;&quot;https&quot;&quot; asp-controller=&quot;&quot;Home&quot;&quot; asp-action=&quot;&quot;About&quot;&quot;&gt;About&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-protocol=&quot;https&quot;
+               asp-controller=&quot;Home&quot;
+               asp-action=&quot;About&quot;&gt;About&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-route&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevals&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-route=&quot;speakerevals&quot;&gt;Speaker Evaluations&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;asp-route-&lt;em&gt;{value}&lt;/em&gt;&lt;/td&gt;
+        &lt;td&gt;
+            &lt;code&gt;
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-page=&quot;&quot;/Attendee&quot;&quot; asp-route-attendeeid=&quot;&quot;10&quot;&quot;&gt;View Attendee&lt;/a&gt;&quot;))
+            &lt;/code&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+            &lt;a asp-page=&quot;/Attendee&quot;
+               asp-route-attendeeid=&quot;10&quot;&gt;View Attendee&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
 &lt;/tbody&gt;
 </code></pre>
 ")]
@@ -1315,10 +1488,9 @@ def hello():
         [InlineData(@":::code source=""source.bat"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-batchfile"">:Label1
-:Label2
+    :Label2
 :: Comment line 3
-</code></pre>
-")]
+</code></pre>")]
         [InlineData(@":::code source=""source.erl"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-erlang"">hello() -&gt;
@@ -1337,7 +1509,9 @@ USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns no
 
 :::code language=""csharp"" source=""source3.cs"" id=""Delegate"":::", @"<p>An example of a delegate would be:</p>
 <pre>
-<code class=""lang-csharp"">/// The delegate receives batches of changes as they are generated in the change feed and can process them.
+<code class=""lang-csharp"">/// &lt;summary&gt;
+/// The delegate receives batches of changes as they are generated in the change feed and can process them.
+/// &lt;/summary&gt;
 static async Task HandleChangesAsync(IReadOnlyCollection&lt;ToDoItem&gt; changes, CancellationToken cancellationToken)
 {
     Console.WriteLine(&quot;Started handling changes...&quot;);
@@ -1350,6 +1524,164 @@ static async Task HandleChangesAsync(IReadOnlyCollection&lt;ToDoItem&gt; changes
 
     Console.WriteLine(&quot;Finished handling changes.&quot;);
 }
+</code></pre>
+")]
+        [InlineData(@":::code source=""source2.cpp"" id=""Snippet1"":::", @"<pre>
+<code class=""lang-cpp"">using namespace System;
+using namespace System::Collections::Generic;
+
+public ref class Example
+{
+public:
+    static void Main()
+    {
+        // Create a new dictionary of strings, with string keys,
+        // and access it through the IDictionary generic interface.
+        IDictionary&lt;String^, String^&gt;^ openWith =
+            gcnew Dictionary&lt;String^, String^&gt;();
+
+        // Add some elements to the dictionary. There are no
+        // duplicate keys, but some of the values are duplicates.
+        openWith-&gt;Add(&quot;txt&quot;, &quot;notepad.exe&quot;);
+        openWith-&gt;Add(&quot;bmp&quot;, &quot;paint.exe&quot;);
+        openWith-&gt;Add(&quot;dib&quot;, &quot;paint.exe&quot;);
+        openWith-&gt;Add(&quot;rtf&quot;, &quot;wordpad.exe&quot;);
+
+        // The Add method throws an exception if the new key is
+        // already in the dictionary.
+        try
+        {
+            openWith-&gt;Add(&quot;txt&quot;, &quot;winword.exe&quot;);
+        }
+        catch (ArgumentException^)
+        {
+            Console::WriteLine(&quot;An element with Key = \&quot;txt\&quot; already exists.&quot;);
+        }
+
+        // The Item property is another name for the indexer, so you
+        // can omit its name when accessing elements.
+        Console::WriteLine(&quot;For key = \&quot;rtf\&quot;, value = {0}.&quot;,
+            openWith[&quot;rtf&quot;]);
+
+        // The indexer can be used to change the value associated
+        // with a key.
+        openWith[&quot;rtf&quot;] = &quot;winword.exe&quot;;
+        Console::WriteLine(&quot;For key = \&quot;rtf\&quot;, value = {0}.&quot;,
+            openWith[&quot;rtf&quot;]);
+
+        // If a key does not exist, setting the indexer for that key
+        // adds a new key/value pair.
+        openWith[&quot;doc&quot;] = &quot;winword.exe&quot;;
+
+        // The indexer throws an exception if the requested key is
+        // not in the dictionary.
+        try
+        {
+            Console::WriteLine(&quot;For key = \&quot;tif\&quot;, value = {0}.&quot;,
+                openWith[&quot;tif&quot;]);
+        }
+        catch (KeyNotFoundException^)
+        {
+            Console::WriteLine(&quot;Key = \&quot;tif\&quot; is not found.&quot;);
+        }
+
+        // When a program often has to try keys that turn out not to
+        // be in the dictionary, TryGetValue can be a more efficient
+        // way to retrieve values.
+        String^ value = &quot;&quot;;
+        if (openWith-&gt;TryGetValue(&quot;tif&quot;, value))
+        {
+            Console::WriteLine(&quot;For key = \&quot;tif\&quot;, value = {0}.&quot;, value);
+        }
+        else
+        {
+            Console::WriteLine(&quot;Key = \&quot;tif\&quot; is not found.&quot;);
+        }
+
+        // ContainsKey can be used to test keys before inserting
+        // them.
+        if (!openWith-&gt;ContainsKey(&quot;ht&quot;))
+        {
+            openWith-&gt;Add(&quot;ht&quot;, &quot;hypertrm.exe&quot;);
+            Console::WriteLine(&quot;Value added for key = \&quot;ht\&quot;: {0}&quot;,
+                openWith[&quot;ht&quot;]);
+        }
+
+        // When you use foreach to enumerate dictionary elements,
+        // the elements are retrieved as KeyValuePair objects.
+        Console::WriteLine();
+        for each( KeyValuePair&lt;String^, String^&gt; kvp in openWith )
+        {
+            Console::WriteLine(&quot;Key = {0}, Value = {1}&quot;,
+                kvp.Key, kvp.Value);
+        }
+
+        // To get the values alone, use the Values property.
+        ICollection&lt;String^&gt;^ icoll = openWith-&gt;Values;
+
+        // The elements of the ValueCollection are strongly typed
+        // with the type that was specified for dictionary values.
+        Console::WriteLine();
+        for each( String^ s in icoll )
+        {
+            Console::WriteLine(&quot;Value = {0}&quot;, s);
+        }
+
+        // To get the keys alone, use the Keys property.
+        icoll = openWith-&gt;Keys;
+
+        // The elements of the ValueCollection are strongly typed
+        // with the type that was specified for dictionary values.
+        Console::WriteLine();
+        for each( String^ s in icoll )
+        {
+            Console::WriteLine(&quot;Key = {0}&quot;, s);
+        }
+
+        // Use the Remove method to remove a key/value pair.
+        Console::WriteLine(&quot;\nRemove(\&quot;doc\&quot;)&quot;);
+        openWith-&gt;Remove(&quot;doc&quot;);
+
+        if (!openWith-&gt;ContainsKey(&quot;doc&quot;))
+        {
+            Console::WriteLine(&quot;Key \&quot;doc\&quot; is not found.&quot;);
+        }
+    }
+};
+
+int main()
+{
+    Example::Main();
+}
+
+/* This code example produces the following output:
+An element with Key = &quot;txt&quot; already exists.
+For key = &quot;rtf&quot;, value = wordpad.exe.
+For key = &quot;rtf&quot;, value = winword.exe.
+Key = &quot;tif&quot; is not found.
+Key = &quot;tif&quot; is not found.
+Value added for key = &quot;ht&quot;: hypertrm.exe
+Key = txt, Value = notepad.exe
+Key = bmp, Value = paint.exe
+Key = dib, Value = paint.exe
+Key = rtf, Value = winword.exe
+Key = doc, Value = winword.exe
+Key = ht, Value = hypertrm.exe
+Value = notepad.exe
+Value = paint.exe
+Value = paint.exe
+Value = winword.exe
+Value = winword.exe
+Value = hypertrm.exe
+Key = txt
+Key = bmp
+Key = dib
+Key = rtf
+Key = doc
+Key = ht
+Remove(&quot;doc&quot;)
+Key &quot;doc&quot; is not found.
+ */
 </code></pre>
 ")]
         public void CodeTestBlockGeneral(string source, string expected)
@@ -1386,6 +1718,11 @@ static async Task HandleChangesAsync(IReadOnlyCollection&lt;ToDoItem&gt; changes
             {
                 filename = "source.cpp";
                 content = contentCPP;
+            }
+            else if (source.Contains("source2.cpp"))
+            {
+                filename = "source2.cpp";
+                content = contentCPP2;
             }
             else if (source.Contains("source.sql"))
             {
@@ -1424,12 +1761,8 @@ static async Task HandleChangesAsync(IReadOnlyCollection&lt;ToDoItem&gt; changes
         }
 
         [Theory]
-        [InlineData(@":::code source=""source.cs"" range=""205-250"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.cs"" id=""doesnotexist"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.cs"" id=""id"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.cs"" range=""abc-def"" language=""azurecli"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::")]
         [InlineData(@":::code source=""source.missing"" range=""1-3"" interactive=""try-dotnet"" language=""azurecli"":::")]
         public void CodeTestBlockGeneralCSharp_Error(string source)

@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.Tests
 
             BuildJsonConfig buildOptions = JsonConvert.DeserializeObject<BuildJsonConfig>(jsonString);
 
-            Assert.Equal(buildOptions.GlobalMetadata.Count(), 7);
+            Assert.Equal(7, buildOptions.GlobalMetadata.Count());
 
             JsonSerializerSettings settings = new JsonSerializerSettings
             {

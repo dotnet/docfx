@@ -117,7 +117,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return false;
         }
 
-        public static bool MatchInlcusionEnd(ref StringSlice slice)
+        public static bool MatchInclusionEnd(ref StringSlice slice)
         {
             if (slice.CurrentChar != ']')
             {

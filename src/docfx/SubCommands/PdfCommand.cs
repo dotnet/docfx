@@ -19,14 +19,17 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         private readonly BuildCommand _innerBuildCommand;
         private readonly PdfJsonConfig _config;
+        private readonly string _wkhtmltopdfFilePath;
 
         public string Name { get; } = nameof(PdfCommand);
         public bool AllowReplay => true;
 
         public PdfCommand(PdfCommandOptions options)
         {
-            ConvertWrapper.PrerequisiteCheck();
             _config = ParseOptions(options);
+            _wkhtmltopdfFilePath = _config.Wkhtmltopdf?.GetFullFilePath(_config.BaseDirectory);
+            ConvertWrapper.PrerequisiteCheck(_wkhtmltopdfFilePath);
+
             if (_config.Serve == true)
             {
                 Logger.LogWarning("--serve is not supported in pdf command, ignored");
@@ -63,6 +66,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 ExcludeTocs = _config.ExcludedTocs?.ToArray(),
                 KeepRawFiles = _config.KeepRawFiles,
                 LoadErrorHandling = _config.LoadErrorHandling,
+                FilePath = _wkhtmltopdfFilePath,
                 AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments,
                 TocTitle = _config.TocTitle,
                 OutlineOption = _config.OutlineOption,
