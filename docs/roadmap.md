@@ -24,7 +24,7 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 ### Phase 4: API Reference Contents
 
 - [x] Schema driven documents for reference contents _(in progress)_
-- [ ] Integration with [mdoc](https://www.mono-project.com/docs/tools+libraries/tools/monodocer/) for .NET reference doc.
+- [x] Integration with [mdoc](https://www.mono-project.com/docs/tools+libraries/tools/monodocer/) for .NET reference doc. _(done)_
 
 ### Phase 5: Learn Contents
 
@@ -32,5 +32,5 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 
 ### Phase 6: Future
 
-- [ ] PDF
+- [ ] PDF _(in progress)_
 - [ ] Tweak <https://docs.microsoft.com> template for community needs
