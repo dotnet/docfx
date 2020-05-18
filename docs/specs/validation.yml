@@ -1047,3 +1047,41 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2 -c'(a.md(10,1)->b.md(5,1)->c.md(2,1)) contains no content. Add content or remove the unused heading.","file":"c.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H4 'H4 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":11, "end_line":11,"column":1,"end_column":1}
 ---
+# Content validation - indented lines within triple-colon syntax is OK for code-block-indented
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "codeBlocks": {
+        "name": "CodeBlocks",
+        "description": "Validates code block content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "CodeBlockIndented",
+            "message": "Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple colons.",
+            "code": "code-block-indented",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    :::image type="complex" source="image.png" alt-text="triple-colon tset":::
+         intented line
+    :::image-end:::
+
+         intented line2
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: 'image.png'.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"code-block-indented","message":"Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple colons.","file":"a.md","line":5,"end_line":5,"column":0,"end_column":0}
+---
