@@ -92,8 +92,7 @@ namespace Microsoft.Docs.Build
                                     nodes.InsertRange(index, documentNodes.Select(node =>
                                     {
                                         var newNode = (ValidationNode)node.Clone();
-                                        newNode.InclusionSourceInfo = node.SourceInfo;
-                                        newNode.SourceInfo = current.SourceInfo;
+                                        newNode.ParentSourceInfoList = current.ParentSourceInfoList.Concat(new object?[] { current.SourceInfo }).ToList();
                                         return newNode;
                                     }));
                                     index += documentNodes.Count - 1;
