@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         "  @resolvedTag" +
         "{{/href}}" +
         "{{^href}}" +
-        "  <span> {{uid}} </span>" +
+        "  <span> {{name}} </span>" +
         "{{/href}}";
 
         private static readonly char[] s_trimChars = new[] { '{', ' ', '}' };

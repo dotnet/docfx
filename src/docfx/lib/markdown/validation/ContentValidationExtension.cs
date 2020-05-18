@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                             documentNodes.Add(new Heading
                             {
                                 Level = headingBlock.Level,
-                                SourceInfo = headingBlock.ToSourceInfo(),
+                                SourceInfo = headingBlock.GetSourceInfo(),
                                 Content = GetHeadingContent(headingBlock), // used for reporting
                                 HeadingChar = headingBlock.HeaderChar,
                                 RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                             {
                                 documentNodes.Add(new InclusionNode
                                 {
-                                    SourceInfo = node.ToSourceInfo(),
+                                    SourceInfo = node.GetSourceInfo(),
                                     IncludedFilePath = inclusionDocument.FilePath.ToString(),
                                 });
                             }
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                         {
                             documentNodes.Add(new ContentNode
                             {
-                                SourceInfo = node.ToSourceInfo(),
+                                SourceInfo = node.GetSourceInfo(),
                                 IsVisible = MarkdigUtility.IsVisible(leafBlock),
                             });
                         }

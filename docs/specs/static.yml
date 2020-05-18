@@ -116,7 +116,7 @@ inputs:
         content: JSON.stringify(model)
       };
     }
-  _themes/Conceptual.html.liquid: |
+  _themes/Conceptual.html.liquid:
   b.md:
 outputs:
   b.html:
@@ -270,3 +270,38 @@ inputs:
 outputs:
   a.json: |
     {"result": "value has run js data transform"}
+---
+# Referenced image in fallback origin should also be built in static output mode
+locale: zh-cn
+repos: 
+  https://github.com/c/image1#master:
+    - files:
+        docfx.yml:
+        docs/b.png:
+  https://github.com/c/image1.zh-cn#master:
+    - files:
+        docfx.yml: |
+          outputType: html
+          outputUrlType: ugly
+        _themes/ContentTemplate/Conceptual.mta.json.js: |
+          exports.transform = function (model) {
+            model.layout = "Conceptual";
+            return {
+              content: JSON.stringify(model)
+            };
+          }
+        _themes/Conceptual.html.liquid: |
+          {{content}}
+        docs/a.md: |
+          ![B](b.png)
+outputs:
+  docs/a.html: |
+    <p><img src="b.png" alt="B" data-linktype="relative-path"></p>
+  docs/b.png:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/docs/a.html" },
+        { "url": "/docs/b.png" }
+      ]
+    }

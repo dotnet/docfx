@@ -169,6 +169,8 @@ inputs:
         href: https://docs.com/uid1
       - uid: uid2
         href: https://docfx.com/uid2
+      - uid: uid-non-href
+        name: uni-non-href-name-use-span
     
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -225,6 +227,9 @@ inputs:
   uid-unresolve.yml: |
     ### YamlMime: TestPage
     uid: unresolve
+  uid-non-href.yml: |
+    ### YamlMime: TestPage
+    uid: uid-non-href
   uid-partial.yml: |
     ### YamlMime: TestPage
     uidPartial: uid1
@@ -253,6 +258,9 @@ outputs:
   uid-unresolve.mta.json:
   uid-unresolve.raw.page.json: |
     {"content": "<p> <span> unresolve </span> </p>"}
+  uid-non-href.mta.json:
+  uid-non-href.raw.page.json: |
+    {"content": "<p> <span> uni-non-href-name-use-span </span> </p> "}
   uid-partial.mta.json:
   uid-partial.raw.page.json: |
     {"content": "<p> <a href=\"/en-us/uid1\" data-linktype=\"absolute-path\"> uid1-name </a> </p> "}

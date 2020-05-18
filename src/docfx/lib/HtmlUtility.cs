@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.ToSourceInfo(attribute.ValueRange);
+                    var source = block?.GetSourceInfo(attribute.ValueRange);
                     var link = HttpUtility.HtmlEncode(transform(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source)));
 
                     attribute = attribute.WithValue(link);
@@ -216,8 +216,8 @@ namespace Microsoft.Docs.Build
             var isShorthand = (rawHtml ?? rawSource)?.StartsWith("@") ?? false;
 
             var (resolvedHref, display) = resolveXref(
-                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.ToSourceInfo(token.Range)),
-                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.ToSourceInfo(token.Range)),
+                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo(token.Range)),
+                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo(token.Range)),
                 isShorthand);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
@@ -367,7 +367,7 @@ namespace Microsoft.Docs.Build
             var tokenName = token.Name.ToString();
             if (!s_allowedTagAttributeMap.TryGetValue(tokenName, out var additionalAttributes))
             {
-                errors.Add(Errors.Content.DisallowedHtml(obj.ToSourceInfo(token.NameRange), tokenName));
+                errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(token.NameRange), tokenName));
                 return;
             }
 
@@ -383,7 +383,7 @@ namespace Microsoft.Docs.Build
 
                 if (additionalAttributes is null || !additionalAttributes.Contains(attributeName))
                 {
-                    errors.Add(Errors.Content.DisallowedHtml(obj.ToSourceInfo(attribute.NameRange), tokenName, attributeName));
+                    errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(attribute.NameRange), tokenName, attributeName));
                 }
             }
         }

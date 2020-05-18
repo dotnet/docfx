@@ -413,7 +413,7 @@ outputs:
   docs/b.json: | 
     {
       "xref": {
-        "uid": "a",
+        "name": "a",
         "href": null
       }
      }
@@ -1318,7 +1318,7 @@ outputs:
           {
              "uid":"child1",
              "xref": {
-               "uid": "a",
+               "name": "a",
                "href": null
              }
           },
