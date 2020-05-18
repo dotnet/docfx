@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -17,7 +18,9 @@ namespace Microsoft.Docs.Build
         {
             var aggregatedFileMapItems = new List<(string path, object item)>();
 
-            foreach (var (path, fileMapItem) in items.GroupBy(x => x.legacyFilePathRelativeToBaseFolder).ToDictionary(g => g.Key, g => g.ToList().First().fileMapItem))
+            foreach (var (path, (fileMapItem, monikers))
+                in items.GroupBy(x => x.legacyFilePathRelativeToBaseFolder)
+                        .ToDictionary(g => g.Key, g => (g.ToList().First().fileMapItem, g.ToList().SelectMany(x => x.fileMapItem.Monikers).OrderBy(_ => _, StringComparer.Ordinal))))
             {
                 if (fileMapItem.Type == "Resource")
                 {
@@ -36,7 +39,7 @@ namespace Microsoft.Docs.Build
                                             Version = x.Version,
                                         })
                                     : new List<DependencyItem>(),
-                    aggregated_monikers = fileMapItem.Monikers,
+                    aggregated_monikers = monikers,
                     docset_names = new[] { context.Config.Name },
                     has_non_moniker_url = fileMapItem.Monikers.Count == 0,
                     type = fileMapItem.Type,
