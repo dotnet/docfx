@@ -72,6 +72,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public int MaxDegreeOfParallelism { get; set; } = 8;
 
         /// <summary>
+        /// Gets or sets the path and file name of the pdf executable.
+        /// </summary>
+        public string FilePath { get; set; }
+
+        /// <summary>
         /// Additional arguments.
         /// </summary>
         public string AdditionalArguments { get; set; }

@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     RedirectStandardInput = _htmlToPdfOptions.IsReadArgsFromStdin,
                     RedirectStandardOutput = _htmlToPdfOptions.IsOutputToStdout,
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = Constants.PdfCommandName,
+                    FileName = _htmlToPdfOptions.FilePath ?? Constants.PdfCommandName,
                     Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" " + arguments)),
                 }
             };
