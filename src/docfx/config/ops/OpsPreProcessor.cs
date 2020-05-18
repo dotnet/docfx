@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(item.Code))
             {
-                _errorLog.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, new FilePath(Path.GetRelativePath(_buildOptions.DocsetPath, item.File)), item.Line ?? 0));
+                _errorLog.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, new FilePath(item.File), item.Line ?? 0));
             }
 
             ErrorLevel MapLevel(MessageSeverity level)
