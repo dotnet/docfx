@@ -1074,7 +1074,7 @@ inputs:
       }
     }
   a.md: |
-    :::image type="complex" source="image.png" alt-text="triple-colon tset":::
+    :::image type="complex" source="image.png" alt-text="triple-colon test":::
          intented line
     :::image-end:::
 
