@@ -305,3 +305,36 @@ outputs:
         { "url": "/docs/b.png" }
       ]
     }
+---
+# File reference in fallback origin should also be resolved to  in static output mode
+locale: zh-cn
+repos: 
+  https://github.com/c/image1#master:
+    - files:
+        docfx.yml:
+        docs/index.md:
+  https://github.com/c/image1.zh-cn#master:
+    - files:
+        docfx.yml: |
+          outputType: html
+          outputUrlType: ugly
+        _themes/ContentTemplate/Conceptual.mta.json.js: |
+          exports.transform = function (model) {
+            model.layout = "Conceptual";
+            return {
+              content: JSON.stringify(model)
+            };
+          }
+        _themes/Conceptual.html.liquid: |
+          {{content}}
+        docs/a.md: |
+          [引用](index.md)
+outputs:
+  docs/a.html: |
+    <p><a data-linktype="external" href="https://docs.com/docs/">引用</a></p>
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/docs/a.html" }
+      ]
+    }
