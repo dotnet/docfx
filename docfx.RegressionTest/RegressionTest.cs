@@ -40,15 +40,15 @@ namespace Microsoft.Docs.Build
 
             static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
 
-            static async Task Main(string[] args)
+            static void Main(string[] args)
             {
-                await Parser.Default.ParseArguments<Options>(args)
-                    .MapResult(async opts =>
+                Parser.Default.ParseArguments<Options>(args)
+                    .WithParsed(opts =>
                     {
                         EnsureTestData(opts.Repository, opts.Branch);
-                        await Test(opts);
+                        Test(opts);
                         PushChanges(opts.Repository);
-                    }, _ => throw new ArgumentException("Invalid arguments"));
+                    });
             }
 
             static (string, string[]) GetCommitString()
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 return ($"{docsBuildSha}-{docfxSha}", new[] { docsBuildMessage, docfxMessage });
             }
 
-            async static Task<bool> Test(Options opts)
+            static bool Test(Options opts)
             {
                 var testRepositoryName = Path.GetFileName(opts.Repository);
                 var testWorkingFolder = Path.Combine(s_testDataRoot, testRepositoryName);
