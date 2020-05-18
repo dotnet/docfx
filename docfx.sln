@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.Test", "test\docfx.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Template", "src\Microsoft.Docs.Template\Microsoft.Docs.Template.csproj", "{CECDC553-0AB4-4C3D-B093-F9EAD61A2948}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx.RegressionTest", "docfx.RegressionTest\docfx.RegressionTest.csproj", "{09449ABE-6F58-4728-BB4E-DD8362E21A2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx.RegressionTest", "test\docfx.RegressionTest\docfx.RegressionTest.csproj", "{09449ABE-6F58-4728-BB4E-DD8362E21A2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
