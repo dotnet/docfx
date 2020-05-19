@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             while (reader.Read(out var token))
             {
                 transform(ref reader, ref token);
-                writer.Write(token);
+                writer.Write(ref token);
             }
 
             return result.WrittenSpan.ToString();
