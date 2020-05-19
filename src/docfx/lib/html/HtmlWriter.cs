@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             _writer = writer;
         }
 
-        public void Write(in HtmlToken token)
+        public void Write(ref HtmlToken token)
         {
             if (token.Type == HtmlTokenType.StartTag)
             {
@@ -40,11 +40,11 @@ namespace Microsoft.Docs.Build
             {
                 if (attribute.RawText.Length > 0)
                 {
-                    sizeHint += attribute.RawText.Length;
+                    sizeHint += attribute.RawText.Length + 1;
                 }
                 else
                 {
-                    sizeHint += attribute.Name.Length + attribute.Value.Length + 3;
+                    sizeHint += attribute.Name.Length + attribute.Value.Length + 4;
                 }
             }
 
