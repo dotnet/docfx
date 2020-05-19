@@ -10,7 +10,7 @@ using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class IncludeExtension
+    internal static class FilePathExtension
     {
         public static MarkdownPipelineBuilder UseFilePath(this MarkdownPipelineBuilder builder)
         {

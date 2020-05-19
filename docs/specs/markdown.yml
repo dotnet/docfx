@@ -686,3 +686,48 @@ outputs:
   a.json: |
     { "conceptual": "<div class=\"TIP\"><h5>TIP</h5><p><a href=\"https://docs.com\"><img alt=\"\" src=\"b.png\"></img></a></p></div>" }
   b.png:
+---
+# Use lang- prefix for fenced code
+inputs:
+  docfx.yml: |
+    files: a.md
+  a.md: |
+    ```json
+    a
+    ```
+    [!include[](b.md)]
+  b.md: |
+    ```yml
+    b
+    ```
+outputs:
+  a.json: |
+    { "conceptual": "<pre><code class=\"lang-json\">a\n</code></pre>\n<pre><code class=\"lang-yml\">b\n</code></pre>" }
+---
+# Triple colon image extension in included file
+inputs:
+  docfx.yml:
+  a.md: '[!include[](include/b.md)]'
+  include/b.md: ':::image type="content" source="b.png" alt-text="Image":::'
+  include/b.png:
+outputs:
+  a.json: |
+    { 
+      "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>"
+    }
+  include/b.json:
+  include/b.png:
+---
+# Triple colon code snippet extension
+inputs:
+  docfx.yml: |
+    files: a.md
+  a.md: |
+    :::code language="json" source="b.json" highlight="1-2":::
+  b.json: |
+    { "a": 1 }
+outputs:
+  a.json: |
+    {
+      "conceptual": "<pre><code class=\"lang-json\" highlight-lines=\"1-2\">{ &quot;a&quot;: 1 }</code></pre>"
+    }
