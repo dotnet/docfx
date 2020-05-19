@@ -145,6 +145,13 @@ namespace Microsoft.Docs.Build
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
+            // For static hosting, reference file in fallback repo should be resolved to docs site URL
+            if (file.FilePath.Origin == FileOrigin.Fallback && file.ContentType == ContentType.Page && _config.OutputUrlType != OutputUrlType.Docs)
+            {
+                var siteUrl = _documentProvider.GetDocsSiteUrl(file.FilePath);
+                return (error, UrlUtility.MergeUrl($"https://{_config.HostName}{siteUrl}", query, fragment), fragment, linkType, file, false);
+            }
+
             return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), fragment, linkType, file, false);
         }
 
