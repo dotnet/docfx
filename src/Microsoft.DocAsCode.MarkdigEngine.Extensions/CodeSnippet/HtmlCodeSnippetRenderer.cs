@@ -101,17 +101,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         // Erlang code snippet comment block: % <[/]snippetname>
         private static readonly string ErlangCodeSnippetRegionStartLineTemplate = "%<{tagname}>";
-        private static readonly string ErlangCodeSnippetRegionEndLineTemplate = "%</{tagname}>";
+        private static readonly string ErlangCodeSnippetRegionEndLineTemplate = "%<{tagname}>";
 
         // Lisp code snippet comment block: ; <[/]snippetname>
         private static readonly string LispCodeSnippetRegionStartLineTemplate = ";<{tagname}>";
-        private static readonly string LispCodeSnippetRegionEndLineTemplate = ";</{tagname}>";
+        private static readonly string LispCodeSnippetRegionEndLineTemplate = ";<{tagname}>";
 
         // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-        private Dictionary<string, List<CodeSnippetExtractor>> CodeLanguageExtractors = new Dictionary<string, List<CodeSnippetExtractor>>();
+        private Dictionary<string, List<CodeSnippetExtrator>> CodeLanguageExtractors = new Dictionary<string, List<CodeSnippetExtrator>>();
 
         public HtmlCodeSnippetRenderer(MarkdownContext context)
         {
@@ -123,28 +123,28 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private void BuildCodeLanguageExtractors()
         {
             AddExtractorItems(new[] { "vb", "vbhtml" },
-                new CodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtrator(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate, _context));
             AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "pascal", "php", "processing", "rust", "scala", "smalltalk", "swift", "typescript" },
-                new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtrator(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate, _context));
             AddExtractorItems(new[] { "xml", "xaml", "html", "cshtml", "vbhtml" },
-                new CodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtrator(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate, _context));
             AddExtractorItems(new[] { "haskell", "lua", "sql" },
-                new CodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineTemplate, SqlFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtrator(SqlFamilyCodeSnippetCommentStartLineTemplate, SqlFamilyCodeSnippetCommentEndLineTemplate, _context));
             AddExtractorItems(new[] { "perl", "powershell", "python", "r", "ruby", "shell" },
-                new CodeSnippetExtractor(ScriptFamilyCodeSnippetCommentStartLineTemplate, ScriptFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtrator(ScriptFamilyCodeSnippetCommentStartLineTemplate, ScriptFamilyCodeSnippetCommentEndLineTemplate, _context));
             AddExtractorItems(new[] { "batchfile" },
-                new CodeSnippetExtractor(BatchFileCodeSnippetRegionStartLineTemplate, BatchFileCodeSnippetRegionEndLineTemplate, _context));
+                new CodeSnippetExtrator(BatchFileCodeSnippetRegionStartLineTemplate, BatchFileCodeSnippetRegionEndLineTemplate, _context));
             AddExtractorItems(new[] { "csharp", "cshtml" },
-                new CodeSnippetExtractor(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, _context, false));
+                new CodeSnippetExtrator(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, _context, false));
             AddExtractorItems(new[] { "erlang", "matlab" },
-                new CodeSnippetExtractor(ErlangCodeSnippetRegionStartLineTemplate, ErlangCodeSnippetRegionEndLineTemplate, _context));
+                new CodeSnippetExtrator(ErlangCodeSnippetRegionStartLineTemplate, ErlangCodeSnippetRegionEndLineTemplate, _context));
             AddExtractorItems(new[] { "lisp" },
-                new CodeSnippetExtractor(LispCodeSnippetRegionStartLineTemplate, LispCodeSnippetRegionEndLineTemplate, _context));
+                new CodeSnippetExtrator(LispCodeSnippetRegionStartLineTemplate, LispCodeSnippetRegionEndLineTemplate, _context));
             AddExtractorItems(new[] { "vb", "vbhtml" },
-                new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, _context, false));
+                new CodeSnippetExtrator(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, _context, false));
         }
 
-        private void AddExtractorItems(string[] languages, CodeSnippetExtractor extractor)
+        private void AddExtractorItems(string[] languages, CodeSnippetExtrator extractor)
         {
             foreach (var language in languages)
             {
@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        private void AddExtractorItem(string language, CodeSnippetExtractor extractor)
+        private void AddExtractorItem(string language, CodeSnippetExtrator extractor)
         {
             if (CodeLanguageExtractors.ContainsKey(language))
             {
@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                CodeLanguageExtractors[language] = new List<CodeSnippetExtractor> { extractor };
+                CodeLanguageExtractors[language] = new List<CodeSnippetExtrator> { extractor };
             }
         }
 
@@ -231,7 +231,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return showCode.ToString();
         }
 
-        public string GetContent(string content, CodeSnippet obj)
+        private string GetContent(string content, CodeSnippet obj)
         {
             var allLines = ReadAllLines(content).ToArray();
 
@@ -245,7 +245,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     return GetNoteBookContent(content, obj.TagName, obj);
                 }
 
-                if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtractor> extractors))
+                if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtrator> extrators))
                 {
                     _context.LogError(
                         "unknown-language-code",
@@ -253,13 +253,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         obj);
                 }
 
-                if (extractors != null)
+                if (extrators != null)
                 {
                     var tagWithPrefix = tagPrefix + obj.TagName;
-                    foreach (var extractor in extractors)
+                    foreach (var extrator in extrators)
                     {
                         HashSet<int> tagLines = new HashSet<int>();
-                        var tagToCoderangeMapping = extractor.GetAllTags(allLines, ref tagLines);
+                        var tagToCoderangeMapping = extrator.GetAllTags(allLines, ref tagLines);
                         if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
                             || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
                         {
@@ -431,65 +431,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {warningTitle}
 <p>{warningMessage}</p>
 </div>";
-
-        }
-
-        public static bool TryGetLineRanges(string query, out List<CodeRange> codeRanges)
-        {
-            codeRanges = null;
-            if (string.IsNullOrEmpty(query)) return false;
-
-            var rangesSplit = query.Split(new[] { ',' });
-
-            foreach (var range in rangesSplit)
-            {
-                if (!TryGetLineRange(range, out var codeRange, false))
-                {
-                    return false;
-                }
-
-                if (codeRanges == null)
-                {
-                    codeRanges = new List<CodeRange>();
-                }
-
-                codeRanges.Add(codeRange);
-            }
-
-            return true;
-        }
-
-        public static bool TryGetLineRange(string query, out CodeRange codeRange, bool withL = true)
-        {
-            codeRange = null;
-            if (string.IsNullOrEmpty(query)) return false;
-
-            int endLine;
-
-            var splitLine = query.Split(new[] { '-' });
-            if (splitLine.Length > 2) return false;
-
-            var result = TryGetLineNumber(splitLine[0], out var startLine, withL);
-            endLine = startLine;
-
-            if (splitLine.Length > 1)
-            {
-                result &= TryGetLineNumber(splitLine[1], out endLine, withL);
-            }
-
-            codeRange = new CodeRange { Start = startLine, End = endLine };
-
-            return result;
-        }
-
-        public static bool TryGetLineNumber(string lineNumberString, out int lineNumber, bool withL = true)
-        {
-            lineNumber = int.MaxValue;
-            if (string.IsNullOrEmpty(lineNumberString)) return true;
-
-            if (withL && (lineNumberString.Length < 2 || Char.ToUpper(lineNumberString[0]) != 'L')) return false;
-
-            return int.TryParse(withL ? lineNumberString.Substring(1) : lineNumberString, out lineNumber);
 
         }
     }
