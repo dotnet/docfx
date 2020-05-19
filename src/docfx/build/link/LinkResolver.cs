@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
             }
 
             // For static hosting, reference file in fallback repo should be resolved to docs site URL
-            if (file.FilePath.Origin == FileOrigin.Fallback && file.ContentType != ContentType.Resource && _config.OutputUrlType != OutputUrlType.Docs)
+            if (file.FilePath.Origin == FileOrigin.Fallback && file.ContentType == ContentType.Page && _config.OutputUrlType != OutputUrlType.Docs)
             {
                 var siteUrl = _documentProvider.GetDocsSiteUrl(file.FilePath);
                 return (error, UrlUtility.MergeUrl($"https://{_config.HostName}{siteUrl}", query, fragment), fragment, linkType, file, false);
