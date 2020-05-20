@@ -1085,3 +1085,176 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: 'image.png'.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"code-block-indented","message":"Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple colons.","file":"a.md","line":5,"end_line":5,"column":0,"end_column":0}
 ---
+#Content validation - h1-not-first in docs zone
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before H1.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target="docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+  b.md: |
+    ::: zone target="chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  c.md: |
+    ::: zone target="chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+
+    This is paragraph
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  d.md: |
+    ## This is H2
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+  e.md: |
+    # This is H1
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+  f.md: |
+    ::: zone target = "docs"
+    This is paragraph
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  g.md: |
+    ::: zone target = "chromeless"
+    This is paragraph
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  h.md: |
+    ::: image type="complex" source="../media/buttonElementWithRenderers.png" alt-text="test":::
+        Indented line withon triple-colon syntax
+    ::: image-end:::
+  i.md: |
+    ::: zone
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  j.md: |
+    ::: zone pivot = "test"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  g.json:
+  h.json:
+  j.json:
+  .errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"i.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"h.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"c.md","line":4,"end_line":4,"column":0,"end_column":0}
+---
+#Content validation - h1-missing in docs zone
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading",
+            "code": "h1-missing",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target="docs"
+    # H1 heading text\r\n
+    ::: zone-end
+  b.md: |
+    ::: zone target="docs"
+    #H1heading
+    ::: zone-end
+  c.md: |
+    ::: zone target="docs"
+    ::: zone-end
+  d.md: |
+    ::: zone
+    # H1heading
+    ::: zone-end
+  e.md: |
+    ::: zone target="chromeless"
+    # H1 heading text
+    ::: zone-end
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  e.json:
+  .errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"d.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"c.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"e.md","line":1,"end_line":1,"column":0,"end_column":0}
+---
