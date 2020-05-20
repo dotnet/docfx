@@ -20,16 +20,17 @@ namespace Microsoft.Docs.Build
             }
 
             var hasError = false;
-            var fetchOptions = options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache;
+            var restoreFetchOptions = options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache;
+            var buildFetchOptions = options.NoRestore ? FetchOptions.NoFetch : FetchOptions.UseCache;
             Parallel.ForEach(docsets, docset =>
             {
-                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, fetchOptions))
+                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
                 {
                     hasError = true;
                     return;
                 }
 
-                if (BuildDocset(docset.docsetPath, docset.outputPath, options, FetchOptions.NoFetch))
+                if (BuildDocset(docset.docsetPath, docset.outputPath, options, buildFetchOptions))
                 {
                     hasError = true;
                 }
