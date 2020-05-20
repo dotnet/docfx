@@ -488,6 +488,18 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}", monikers.FirstOrDefault());
         }
 
+        public static class Markdown
+        {
+            public static Error IncludeNotFound(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "include-not-found", $"Invalid include link: '{source}'.", source);
+
+            public static Error CircularReference<T>(SourceInfo? source, T current, IEnumerable<T> recursionDetector)
+            {
+                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{file}'"));
+                return new Error(ErrorLevel.Warning, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}", source);
+            }
+        }
+
         public static class JsonSchema
         {
             /// <summary>

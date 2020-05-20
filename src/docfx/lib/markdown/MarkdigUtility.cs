@@ -25,8 +25,8 @@ namespace Microsoft.Docs.Build
             {
                 switch (obj)
                 {
-                    case Block block when block.Parent is null:
-                    case Inline inline when inline.Parent is null:
+                    case Block block when block.Parent is null || block.Parent is InclusionBlock:
+                    case Inline inline when inline.Parent is null || inline.Parent is InclusionInline:
                         return obj.GetData(s_filePathKey) as Document ?? (Document)InclusionContext.File;
 
                     case Block block:
@@ -120,51 +120,72 @@ namespace Microsoft.Docs.Build
         /// Traverses the markdown object graph and replace each node with another node,
         /// If <paramref name="action"/> returns null, remove the node from the graph.
         /// </summary>
-        public static MarkdownObject Replace(this MarkdownObject obj, Func<MarkdownObject, MarkdownObject> action)
+        public static MarkdownObject Replace(this MarkdownObject obj, Func<MarkdownObject, MarkdownObject?> action)
         {
-            obj = action(obj);
+            return ReplaceCore(obj, action) ?? new MarkdownDocument();
 
-            if (obj is ContainerBlock block)
+            static MarkdownObject? ReplaceCore(MarkdownObject obj, Func<MarkdownObject, MarkdownObject?> action)
             {
-                for (var i = 0; i < block.Count; i++)
+                switch (action(obj))
                 {
-                    var replacement = (Block)Replace(block[i], action);
-                    if (replacement != block[i])
-                    {
-                        block.RemoveAt(i--);
-                        if (replacement != null)
+                    case null:
+                        return null;
+
+                    case ContainerBlock block:
+                        for (var i = 0; i < block.Count; i++)
                         {
-                            block.Insert(i, replacement);
+                            var replacement = ReplaceCore(block[i], action) as Block;
+                            if (replacement != block[i])
+                            {
+                                block.RemoveAt(i--);
+                                if (replacement != null)
+                                {
+                                    block.Insert(i, replacement);
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            else if (obj is ContainerInline inline)
-            {
-                foreach (var child in inline)
-                {
-                    var replacement = Replace(child, action);
-                    if (replacement is null)
-                    {
-                        child.Remove();
-                    }
-                    else if (replacement != child)
-                    {
-                        child.ReplaceBy((Inline)replacement);
-                    }
-                }
-            }
-            else if (obj is LeafBlock leaf)
-            {
-                leaf.Inline = (ContainerInline)Replace(leaf.Inline, action);
-            }
+                        return block;
 
-            return obj;
+                    case ContainerInline inline:
+                        foreach (var child in inline)
+                        {
+                            var replacement = ReplaceCore(child, action) as Inline;
+                            if (replacement is null)
+                            {
+                                child.Remove();
+                            }
+                            else if (replacement != child)
+                            {
+                                child.ReplaceBy(replacement);
+                            }
+                        }
+                        return inline;
+
+                    case LeafBlock leaf:
+                        leaf.Inline = ReplaceCore(leaf.Inline, action) as ContainerInline;
+                        return leaf;
+
+                    case MarkdownObject other:
+                        return other;
+                }
+            }
+        }
+
+        public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, Action<IMarkdownRenderer>? setupRenderer)
+        {
+            builder.Extensions.Add(new DelegatingExtension(null, setupRenderer));
+            return builder;
+        }
+
+        public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, Action<MarkdownPipelineBuilder> setupPipeline)
+        {
+            builder.Extensions.Add(new DelegatingExtension(setupPipeline, null));
+            return builder;
         }
 
         public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, ProcessDocumentDelegate documentProcessed)
         {
-            builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
+            builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed, null));
             return builder;
         }
 
@@ -194,7 +215,7 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock:
                         foreach (var line in htmlBlock.Lines.Lines)
                         {
-                            visible = visible || VisibleHtml(line.Slice.Text);
+                            visible = visible || VisibleHtml(line.Slice.ToString());
                             if (visible)
                             {
                                 return true;
@@ -249,18 +270,18 @@ namespace Microsoft.Docs.Build
 
         private class DelegatingExtension : IMarkdownExtension
         {
-            private readonly Action<MarkdownPipelineBuilder> _setupPipeline;
+            private readonly Action<MarkdownPipelineBuilder>? _setupPipeline;
+            private readonly Action<IMarkdownRenderer>? _setupRenderer;
 
-            public DelegatingExtension(Action<MarkdownPipelineBuilder> setupPipeline)
+            public DelegatingExtension(Action<MarkdownPipelineBuilder>? setupPipeline, Action<IMarkdownRenderer>? setupRenderer)
             {
                 _setupPipeline = setupPipeline;
+                _setupRenderer = setupRenderer;
             }
 
             public void Setup(MarkdownPipelineBuilder pipeline) => _setupPipeline?.Invoke(pipeline);
 
-            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
-            {
-            }
+            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer) => _setupRenderer?.Invoke(renderer);
         }
     }
 }
