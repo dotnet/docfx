@@ -146,8 +146,13 @@ namespace Microsoft.Docs.Build
                    IsGitCommit == other.IsGitCommit;
         }
 
-        public int CompareTo(FilePath other)
+        public int CompareTo(FilePath? other)
         {
+            if (other is null)
+            {
+                return 1;
+            }
+
             var result = Path.CompareTo(other.Path);
             if (result == 0)
             {

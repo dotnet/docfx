@@ -100,9 +100,9 @@ namespace Microsoft.Docs.Build
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
         }
 
-        public int CompareTo(Document other)
+        public int CompareTo(Document? other)
         {
-            return FilePath.CompareTo(other.FilePath);
+            return other is null ? 1 : FilePath.CompareTo(other.FilePath);
         }
 
         public override int GetHashCode()
