@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Jint.Runtime.References;
 
 namespace Microsoft.Docs.Build
 {
@@ -91,8 +92,18 @@ namespace Microsoft.Docs.Build
 
         private class EqualityComparer : IEqualityComparer<Error>
         {
-            public bool Equals(Error x, Error y)
+            public bool Equals(Error? x, Error? y)
             {
+                if (ReferenceEquals(x, y))
+                {
+                    return true;
+                }
+
+                if (x is null || y is null)
+                {
+                    return false;
+                }
+
                 return x.Level == y.Level &&
                        x.Code == y.Code &&
                        x.Message == y.Message &&

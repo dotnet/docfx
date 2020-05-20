@@ -8,13 +8,25 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishItemComparer : IEqualityComparer<PublishItem>
     {
-        public bool Equals(PublishItem x, PublishItem y)
+        public bool Equals(PublishItem? x, PublishItem? y)
         {
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x is null || y is null)
+            {
+                return false;
+            }
+
             return OutputPathEquals(x, y) || PublishUrlEquals(x, y);
         }
 
         public int GetHashCode(PublishItem obj)
-            => PathUtility.PathComparer.GetHashCode(obj.Url);
+        {
+            return PathUtility.PathComparer.GetHashCode(obj.Url);
+        }
 
         public static bool PublishUrlEquals(PublishItem x, PublishItem y)
         {

@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             return Line <= 1 && Column <= 1 ? File.ToString() : $"{File}({Line},{Column})";
         }
 
-        public int CompareTo(SourceInfo other)
+        public int CompareTo(SourceInfo? other)
         {
             if (other is null)
             {

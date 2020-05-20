@@ -34,8 +34,13 @@ namespace Microsoft.Docs.Build
             SourceLine = sourceLine;
         }
 
-        public int CompareTo(FileLinkItem other)
+        public int CompareTo(FileLinkItem? other)
         {
+            if (other is null)
+            {
+                return 1;
+            }
+
             var result = string.CompareOrdinal(SourceUrl, other.SourceUrl);
             if (result == 0)
             {
