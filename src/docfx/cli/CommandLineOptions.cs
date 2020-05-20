@@ -20,10 +20,6 @@ namespace Microsoft.Docs.Build
 
         public JObject? StdinConfig;
 
-        public FetchOptions FetchOptions => NoRestore
-            ? FetchOptions.NoFetch
-            : (NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
-
         public JObject ToJObject()
         {
             var config = new JObject
