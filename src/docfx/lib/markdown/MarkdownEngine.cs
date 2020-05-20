@@ -130,7 +130,6 @@ namespace Microsoft.Docs.Build
         private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder()
         {
             return new MarkdownPipelineBuilder()
-                .UseFilePath()
                 .UseYamlFrontMatter()
                 .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
@@ -154,6 +153,7 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseMonikerZone(GetMonikerRange)
                 .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
+                .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
                 // - Once AST for the entry file without InclusionBlock expanded
