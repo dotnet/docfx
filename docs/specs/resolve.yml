@@ -235,7 +235,7 @@ inputs:
     Link to [!INCLUDE[](redirect.md)]
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"include-not-found","message":"Cannot resolve 'redirect.md' relative to 'docs/a.md'.","file":"docs/a.md","line":1,"column":9}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'redirect.md'.","file":"docs/a.md","line":1,"column":9}
 ---
 # Show warning if redirection file conflicts with existing file
 inputs:

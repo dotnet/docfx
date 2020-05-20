@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
+        private readonly DocumentProvider _documentProvider;
         private readonly Input _input;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
@@ -41,6 +42,7 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
+            DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
             ContentValidator contentValidator)
@@ -48,6 +50,7 @@ namespace Microsoft.Docs.Build
             _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
+            _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
@@ -136,7 +139,7 @@ namespace Microsoft.Docs.Build
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(_markdownContext)
                 .UseCodeSnippet(_markdownContext)
-                .UseDFMCodeInfoPrefix()
+                .UseFencedCodeLangPrefix()
                 .UseQuoteSectionNote(_markdownContext)
                 .UseXref()
                 .UseEmojiAndSmiley(false)
@@ -147,13 +150,20 @@ namespace Microsoft.Docs.Build
                 .UseNestedColumn(_markdownContext)
                 .UseTripleColon(_markdownContext)
                 .UseNoloc()
-                .UseFilePath()
-                .UseResolveLink(_markdownContext)
                 .UseTelemetry()
-                .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref)
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile);
+                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
+                .UseFilePath()
+
+                // Extensions before this line sees inclusion AST twice:
+                // - Once AST for the entry file without InclusionBlock expanded
+                // - Once AST for only the included file.
+                .UseExpandInclude(_markdownContext, GetErrors)
+
+                // Extensions after this line sees an expanded inclusion AST only once.
+                .UseResolveLink(_markdownContext)
+                .UseXref(GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref);
         }
 
         private static MarkdownPipeline CreateTocMarkdownPipeline()
@@ -228,8 +238,7 @@ namespace Microsoft.Docs.Build
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value!.Peek();
-
-            var (error, link, _) = _linkResolver.ResolveLink(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetDocument(href), (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
 
             return link;
@@ -240,14 +249,21 @@ namespace Microsoft.Docs.Build
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile)
-                : _xrefResolver.ResolveXrefByUid(uid ?? default, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value), (Document)InclusionContext.RootFile)
+                : uid.HasValue
+                ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
+                : default;
 
             if (!isShorthand)
             {
                 status.Errors.AddIfNotNull(error);
             }
             return (link, display);
+        }
+
+        private Document GetDocument<T>(SourceInfo<T> sourceInfo)
+        {
+            return sourceInfo.Source?.File is FilePath filePath ? _documentProvider.GetDocument(filePath) : (Document)InclusionContext.File;
         }
 
         private IReadOnlyList<string> GetMonikerRange(SourceInfo<string?> monikerRange)
