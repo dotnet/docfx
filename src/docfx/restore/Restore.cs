@@ -13,7 +13,6 @@ namespace Microsoft.Docs.Build
     {
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
-            options.NoCache = true;
             var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
             if (docsets.Length == 0)
             {
@@ -24,7 +23,7 @@ namespace Microsoft.Docs.Build
             var hasError = false;
             Parallel.ForEach(docsets, docset =>
             {
-                if (RestoreDocset(docset.docsetPath, docset.outputPath, options))
+                if (RestoreDocset(docset.docsetPath, docset.outputPath, options, FetchOptions.Latest))
                 {
                     hasError = true;
                 }
@@ -32,7 +31,7 @@ namespace Microsoft.Docs.Build
             return hasError ? 1 : 0;
         }
 
-        public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options)
+        public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
@@ -45,7 +44,7 @@ namespace Microsoft.Docs.Build
                 {
                     // load configuration from current entry or fallback repository
                     var configLoader = new ConfigLoader(errorLog);
-                    var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options);
+                    var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options, fetchOptions);
                     if (errorLog.Write(errors))
                     {
                         return true;
