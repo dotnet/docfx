@@ -235,7 +235,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var queryString = query.ToString().Trim();
 
-            if (HtmlCodeSnippetRenderer.TryGetLineRange(queryString, out var codeRange))
+            if (TryGetLineRange(queryString, out var codeRange))
             {
                 codeSnippet.BookMarkRange = codeRange;
             }
@@ -315,7 +315,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         }
                         break;
                     case "range":
-                        if (!HtmlCodeSnippetRenderer.TryGetLineRanges(value, out temp))
+                        if (!TryGetLineRanges(value, out temp))
                         {
                             return false;
                         }
@@ -323,7 +323,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         codeSnippet.CodeRanges = temp;
                         break;
                     case "highlight":
-                        if (!HtmlCodeSnippetRenderer.TryGetLineRanges(value, out temp))
+                        if (!TryGetLineRanges(value, out temp))
                         {
                             return false;
                         }
@@ -353,5 +353,63 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
+        private bool TryGetLineRanges(string query, out List<CodeRange> codeRanges)
+        {
+            codeRanges = null;
+            if (string.IsNullOrEmpty(query)) return false;
+
+            var rangesSplit = query.Split(new[] { ',' });
+
+            foreach (var range in rangesSplit)
+            {
+                if (!TryGetLineRange(range, out var codeRange, false))
+                {
+                    return false;
+                }
+
+                if (codeRanges == null)
+                {
+                    codeRanges = new List<CodeRange>();
+                }
+
+                codeRanges.Add(codeRange);
+            }
+
+            return true;
+        }
+
+        private bool TryGetLineRange(string query, out CodeRange codeRange, bool withL = true)
+        {
+            codeRange = null;
+            if (string.IsNullOrEmpty(query)) return false;
+
+            int endLine;
+
+            var splitLine = query.Split(new[] { '-' });
+            if (splitLine.Length > 2) return false;
+
+            var result = TryGetLineNumber(splitLine[0], out var startLine, withL);
+            endLine = startLine;
+
+            if (splitLine.Length > 1)
+            {
+                result &= TryGetLineNumber(splitLine[1], out endLine, withL);
+            }
+
+            codeRange = new CodeRange { Start = startLine, End = endLine };
+
+            return result;
+        }
+
+        private bool TryGetLineNumber(string lineNumberString, out int lineNumber, bool withL = true)
+        {
+            lineNumber = int.MaxValue;
+            if (string.IsNullOrEmpty(lineNumberString)) return true;
+
+            if (withL && (lineNumberString.Length < 2 || Char.ToUpper(lineNumberString[0]) != 'L')) return false;
+
+            return int.TryParse(withL ? lineNumberString.Substring(1) : lineNumberString, out lineNumber);
+
+        }
     }
 }
