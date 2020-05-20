@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]
         [InlineData(
             "list.tmpl",
-            "{'list':['l1','l2'],'list-empty':[]}",
+            "{'list':['l1','l2'], 'list-empty':[], 'list-empty-string':['']}",
             "list=' l1 l2'")]
         public void RenderMustacheTemplate(string name, string json, string html)
         {
