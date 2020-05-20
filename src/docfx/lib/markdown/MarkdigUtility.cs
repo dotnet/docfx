@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly object s_filePathKey = new object();
 
-        public static Document GetFilePath(this MarkdownObject obj)
+        public static Document GetFilePath(this MarkdownObject? obj)
         {
             while (true)
             {
@@ -48,13 +48,18 @@ namespace Microsoft.Docs.Build
             obj.SetData(s_filePathKey, value);
         }
 
-        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, int? line = null)
+        public static SourceInfo? GetSourceInfo(this MarkdownObject? obj, int? line = null)
         {
             var path = GetFilePath(obj).FilePath;
 
             if (line != null)
             {
                 return new SourceInfo(path, line.Value + 1, 0);
+            }
+
+            if (obj is null)
+            {
+                return new SourceInfo(path, 0, 0);
             }
 
             // Line info in markdown object is zero based, turn it into one based.
