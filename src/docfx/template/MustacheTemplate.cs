@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                            .AddValueGetter(typeof(JValue), GetJValueValue)
                            .AddTruthyCheck<string>(value => !string.IsNullOrEmpty(value))
                            .AddTruthyCheck<JObject>(value => value != null)
-                           .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null)
+                           .AddTruthyCheck<JValue>(value => value.Type != JTokenType.Null && !(value.Type == JTokenType.String && string.IsNullOrEmpty(value.Value as string)))
                            .AddSectionBlacklistType(typeof(JObject))
                            .AddSectionBlacklistType(typeof(JValue));
 
