@@ -25,7 +25,6 @@ namespace Microsoft.Docs.Build
             Template.RegisterTag<StyleTag>("style");
             Template.RegisterTag<JavaScriptTag>("js");
             Template.RegisterTag<LocalizeTag>("loc");
-            Template.RegisterFilter(typeof(LiquidFilter));
         }
 
         public LiquidTemplate(string templateDir)
