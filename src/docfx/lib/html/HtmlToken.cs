@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public ReadOnlyMemory<char> RawText { get; }
 
-        public Memory<HtmlAttribute> Attributes { get; }
+        public Memory<HtmlAttribute> Attributes { get; private set; }
 
         public HtmlTextRange Range { get; }
 
@@ -48,6 +48,23 @@ namespace Microsoft.Docs.Build
             Attributes = attributes;
             Range = range;
             NameRange = nameRange;
+        }
+
+        public void SetAttributeValue(string name, string value)
+        {
+            foreach (ref var attribute in Attributes.Span)
+            {
+                if (attribute.NameIs(name))
+                {
+                    attribute = attribute.WithValue(value);
+                    return;
+                }
+            }
+
+            var attributes = new HtmlAttribute[Attributes.Length + 1];
+            attributes[Attributes.Length] = new HtmlAttribute(name, value);
+            Attributes.CopyTo(attributes);
+            Attributes = attributes;
         }
     }
 }
