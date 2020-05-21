@@ -143,8 +143,8 @@ namespace Microsoft.Docs.Build
                 return module;
             }
 
-            var exports = modules[scriptPath] = JavaScriptValue.CreateObject();
             var sourceCode = File.ReadAllText(scriptPath);
+            var exports = modules[scriptPath] = JavaScriptValue.CreateObject();
 
             // add `process` to input to get the correct file path while running script inside docs-ui
             var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}
@@ -186,10 +186,19 @@ namespace Microsoft.Docs.Build
                 return JavaScriptValue.CreateObject();
             }
 
-            var dirname = t_dirnames.Value!.Peek();
-            var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
+            try
+            {
+                var dirname = t_dirnames.Value!.Peek();
+                var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
 
-            return Run(scriptPath);
+                return Run(scriptPath);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                Native.JsSetException(JavaScriptValue.CreateError(JavaScriptValue.FromString(ex.Message)));
+                return JavaScriptValue.Invalid;
+            }
         }
 
         private static JavaScriptValue ToJavaScriptValue(JToken token)

@@ -143,6 +143,11 @@ namespace Microsoft.Docs.Build
 
         private static void PrintFatalErrorMessage(Exception exception)
         {
+            if (exception is AggregateException ae && ae.InnerException != null)
+            {
+                exception = ae.InnerException;
+            }
+
             Console.ResetColor();
             Console.WriteLine();
 
