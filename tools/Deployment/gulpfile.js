@@ -14,7 +14,7 @@ format.extend(String.prototype, {})
 
 let Common = require("./out/common").Common;
 let Guard = require("./out/common").Guard;
-let Myget = require("./out/myget").Myget;
+let Nuget = require("./out/nuget").Nuget;
 let Github = require("./out/github").Github;
 let Chocolatey = require("./out/chocolatey").Chocolatey;
 let SyncBranch = require("./out/syncBranch").SyncBranch;
@@ -93,7 +93,7 @@ gulp.task("publish:azdevops-perf-login", () => {
 
 gulp.task("publish:azdevops-perf", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["perfUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["perfUrl"]);
 });
 
 gulp.task("publish:azdevops-internal-login", () => {
@@ -102,7 +102,7 @@ gulp.task("publish:azdevops-internal-login", () => {
 
 gulp.task("publish:azdevops-internal", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["internalUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["internalUrl"]);
 });
 
 gulp.task("publish:azdevops-ppe-login", () => {
@@ -111,7 +111,7 @@ gulp.task("publish:azdevops-ppe-login", () => {
 
 gulp.task("publish:azdevops-ppe", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["ppeUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["ppeUrl"]);
 });
 
 gulp.task("publish:azdevops-prod-login", () => {
@@ -122,7 +122,7 @@ gulp.task("publish:azdevops-prod", () => {
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
-    return Myget.publishToMygetAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["prodUrl"], releaseNotePath);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["prodUrl"], releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {
