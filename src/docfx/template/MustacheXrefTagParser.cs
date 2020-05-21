@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
@@ -12,12 +11,12 @@ namespace Microsoft.Docs.Build
         /// Using `href` property to indicate xref spec resolve success.
         /// </summary>
         private const string XrefTagTemplate =
-        "{{#href}}" +
-        "  @resolvedTag" +
-        "{{/href}}" +
-        "{{^href}}" +
-        "  <span> {{name}} </span>" +
-        "{{/href}}";
+            "{{#href}}" +
+            "  @resolvedTag" +
+            "{{/href}}" +
+            "{{^href}}" +
+            "  <span> {{name}} </span>" +
+            "{{/href}}";
 
         private static readonly char[] s_trimChars = new[] { '{', ' ', '}' };
 
@@ -28,37 +27,35 @@ namespace Microsoft.Docs.Build
 
         private static string ReplaceXrefTag(Match match)
         {
-            var xrefTag = HtmlUtility.LoadHtml(match.Value).ChildNodes.FindFirst("xref");
             var uidName = "uid";
             var partialName = default(string);
-            foreach (var attribute in xrefTag.Attributes)
+            var reader = new HtmlReader(match.Value);
+            while (reader.Read(out var token))
             {
-                // TODO: uid may fallback to href in ProfileList
-                if (string.Equals(attribute.Name, "uid", StringComparison.OrdinalIgnoreCase))
+                if (token.NameIs("xref"))
                 {
-                    uidName = attribute.Value.Trim(s_trimChars);
-                }
-                else if (string.Equals(attribute.Name, "template", StringComparison.OrdinalIgnoreCase))
-                {
-                    partialName = attribute.Value.Trim(s_trimChars);
+                    foreach (ref readonly var attribute in token.Attributes.Span)
+                    {
+                        // TODO: uid may fallback to href in ProfileList
+                        if (attribute.NameIs("uid"))
+                        {
+                            uidName = attribute.Value.ToString().Trim(s_trimChars);
+                        }
+                        else if (attribute.NameIs("template"))
+                        {
+                            partialName = attribute.Value.ToString().Trim(s_trimChars);
+                        }
+                    }
                 }
             }
 
             var resolvedTag = partialName == null
                 ? "<a href=\"{{href}}\"> {{name}} </a>"
                 : "{{> " + partialName + "}}";
+
             var resultTemplate = XrefTagTemplate.Replace("@resolvedTag", resolvedTag);
 
-            if (uidName == ".")
-            {
-                return resultTemplate;
-            }
-            else
-            {
-                return "{{#" + uidName + "}}" +
-                       resultTemplate +
-                       "{{/" + uidName + "}}";
-            }
+            return uidName == "." ? resultTemplate : $"{{{{#{uidName}}}}}{resultTemplate}{{{{/{uidName}}}}}";
         }
     }
 }
