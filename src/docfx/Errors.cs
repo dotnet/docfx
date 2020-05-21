@@ -304,16 +304,6 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
         }
 
-        public static class Heading
-        {
-            /// <summary>
-            /// The first tag in an article.md isn't h1 tag.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error HeadingNotFound(Document file)
-                => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.FilePath);
-        }
-
         public static class Redirection
         {
             /// <summary>

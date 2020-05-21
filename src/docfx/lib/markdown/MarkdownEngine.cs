@@ -94,13 +94,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType)
+        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
         {
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    var status = new Status();
+                    var status = new Status(conceptual);
 
                     t_status.Value!.Push(status);
 
@@ -161,6 +161,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
+                .UseExtractTitle(GetConceptual)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref);
@@ -215,6 +216,11 @@ namespace Microsoft.Docs.Build
         private static List<Error> GetErrors()
         {
             return t_status.Value!.Peek().Errors;
+        }
+
+        private static ConceptualModel? GetConceptual()
+        {
+            return t_status.Value!.Peek().Conceptual;
         }
 
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
@@ -297,9 +303,16 @@ namespace Microsoft.Docs.Build
 
         private class Status
         {
+            public ConceptualModel? Conceptual { get; }
+
             public List<Error> Errors { get; } = new List<Error>();
 
             public Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>();
+
+            public Status(ConceptualModel? conceptual = null)
+            {
+                Conceptual = conceptual;
+            }
         }
     }
 }

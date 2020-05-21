@@ -4,7 +4,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Markdig;
+using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -189,9 +191,28 @@ namespace Microsoft.Docs.Build
             return builder;
         }
 
-        public static string ToPlainText(this MarkdownObject containerBlock)
+        public static string ToHtml(this MarkdownObject containerBlock)
         {
-            using var writer = new StringWriter();
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
+            var renderer = new HtmlRenderer(writer);
+
+            renderer.Render(containerBlock);
+            writer.Flush();
+
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
+        }
+
+        public static string ToPlainText(this MarkdownObject markdownObject)
+        {
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
             var renderer = new HtmlRenderer(writer)
             {
                 EnableHtmlForBlock = false,
@@ -199,10 +220,16 @@ namespace Microsoft.Docs.Build
                 EnableHtmlEscape = false,
             };
 
-            renderer.Render(containerBlock);
+            renderer.Render(markdownObject);
             writer.Flush();
 
-            return writer.ToString();
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
         }
 
         public static bool IsVisible(this MarkdownObject markdownObject)
@@ -228,6 +255,7 @@ namespace Microsoft.Docs.Build
                     case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
                         // empty heading
                     case ThematicBreakBlock _:
+                    case YamlFrontMatterBlock _:
                         break;
                     case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
                     case LeafInline _:

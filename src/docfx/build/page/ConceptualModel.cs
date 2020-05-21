@@ -18,7 +18,10 @@ namespace Microsoft.Docs.Build
         public string? Title { get; set; }
 
         [JsonProperty("rawTitle")]
-        public string? RawTitle { get; set; }
+        public string RawTitle { get; set; } = "";
+
+        [JsonIgnore]
+        public string? RawTitleId { get; set; }
 
         [JsonExtensionData]
         public JObject? ExtensionData { get; set; }
