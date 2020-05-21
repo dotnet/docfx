@@ -3,13 +3,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Extensions.EmphasisExtras;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
+using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
@@ -117,6 +120,49 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public string ToHtml(MarkdownObject markdownObject)
+        {
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
+            var renderer = new HtmlRenderer(writer);
+
+            _pipelines[(int)MarkdownPipelineType.Markdown].Setup(renderer);
+            renderer.Render(markdownObject);
+            writer.Flush();
+
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
+        }
+
+        public string ToPlainText(MarkdownObject markdownObject)
+        {
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
+            var renderer = new HtmlRenderer(writer)
+            {
+                EnableHtmlForBlock = false,
+                EnableHtmlForInline = false,
+                EnableHtmlEscape = false,
+            };
+
+            _pipelines[(int)MarkdownPipelineType.Markdown].Setup(renderer);
+            renderer.Render(markdownObject);
+            writer.Flush();
+
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
+        }
+
         private MarkdownPipeline CreateMarkdownPipeline()
         {
             return CreateMarkdownPipelineBuilder().Build();
@@ -152,7 +198,7 @@ namespace Microsoft.Docs.Build
                 .UseNoloc()
                 .UseTelemetry()
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
+                .UseContentValidation(this, _validatorProvider, GetValidationNodes, ReadFile)
                 .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
@@ -161,10 +207,10 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
-                .UseExtractTitle(GetConceptual)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref);
+                .UseHtml(GetErrors, GetLink, GetXref)
+                .UseExtractTitle(this, GetConceptual);
         }
 
         private static MarkdownPipeline CreateTocMarkdownPipeline()

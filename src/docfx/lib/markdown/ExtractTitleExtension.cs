@@ -4,14 +4,13 @@
 using System;
 using System.Linq;
 using Markdig;
-using Markdig.Renderers.Html;
 using Markdig.Syntax;
 
 namespace Microsoft.Docs.Build
 {
     internal static class ExtractTitleExtension
     {
-        public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder, Func<ConceptualModel?> getConceptual)
+        public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder, MarkdownEngine markdownEngine, Func<ConceptualModel?> getConceptual)
         {
             return builder.Use(document =>
             {
@@ -29,12 +28,12 @@ namespace Microsoft.Docs.Build
                         case HeadingBlock heading when heading.Level == 1 || heading.Level == 2 || heading.Level == 3:
                             if (conceptual.Title is null && heading.Inline.Any())
                             {
-                                conceptual.Title = heading.ToPlainText();
+                                conceptual.Title = markdownEngine.ToPlainText(heading);
                             }
 
                             if (!hasVisibleNodes)
                             {
-                                conceptual.RawTitle = heading.ToHtml();
+                                conceptual.RawTitle = markdownEngine.ToHtml(heading);
                                 hasVisibleNodes = true;
                                 return null;
                             }

@@ -2,9 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
@@ -189,47 +187,6 @@ namespace Microsoft.Docs.Build
         {
             builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed, null));
             return builder;
-        }
-
-        public static string ToHtml(this MarkdownObject containerBlock)
-        {
-            var sb = new StringBuilder();
-            using var writer = new StringWriter(sb);
-            var renderer = new HtmlRenderer(writer);
-
-            renderer.Render(containerBlock);
-            writer.Flush();
-
-            // Trim trailing \n
-            if (sb.Length > 0 && sb[^1] == '\n')
-            {
-                sb.Length--;
-            }
-
-            return sb.ToString();
-        }
-
-        public static string ToPlainText(this MarkdownObject markdownObject)
-        {
-            var sb = new StringBuilder();
-            using var writer = new StringWriter(sb);
-            var renderer = new HtmlRenderer(writer)
-            {
-                EnableHtmlForBlock = false,
-                EnableHtmlForInline = false,
-                EnableHtmlEscape = false,
-            };
-
-            renderer.Render(markdownObject);
-            writer.Flush();
-
-            // Trim trailing \n
-            if (sb.Length > 0 && sb[^1] == '\n')
-            {
-                sb.Length--;
-            }
-
-            return sb.ToString();
         }
 
         public static bool IsVisible(this MarkdownObject markdownObject)

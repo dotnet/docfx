@@ -236,22 +236,22 @@ outputs:
     }
   docs/b.json:
 ---
-# title
+# title with inline markdown syntax
 inputs:
   docfx.yml:
   docs/a.md: |
     ---
     metaKey: metaValue
     ---
-    # This is *a* title &
+    # This is *a* title using @b &
     
     body
 outputs:
   docs/a.json: |
     {
       "conceptual": "<p>body</p>",
-      "title": "This is a title &",
-      "rawTitle": "<h1 id=\"this-is-a-title-\">This is <em>a</em> title &amp;</h1>",
+      "title": "This is a title using @b &",
+      "rawTitle": "<h1 id=\"this-is-a-title-using--\">This is <em>a</em> title using @b &amp;</h1>",
       "metaKey": "metaValue"
     }
 ---
