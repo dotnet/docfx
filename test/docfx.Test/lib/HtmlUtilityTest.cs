@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Xunit;
 using Yunit;
 
@@ -24,7 +25,9 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='external' />")]
         public void HtmlAddLinkType(string input, string output)
         {
-            var actual = HtmlUtility.LoadHtml(input).AddLinkType("zh-cn").WriteTo();
+            var actual = HtmlUtility.TransformHtml(
+                input,
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.AddLinkType(ref token, "zh-cn"));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -37,7 +40,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.RemoveRerunCodepenIframes(ref token));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.RemoveRerunCodepenIframes(ref token));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -52,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.StripTags(ref reader, ref token));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.StripTags(ref reader, ref token));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -74,7 +77,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
 
             Assert.Equal(output, actual);
         }
@@ -96,7 +99,8 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlToken token) => HtmlUtility.TransformXref(ref reader, ref token, null, (href, uid, isShorthand) => (xref, display)));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformXref(
+                    ref reader, ref token, null, (href, uid, isShorthand) => (xref, display)));
 
             Assert.Equal(output, actual);
         }
@@ -113,9 +117,14 @@ namespace Microsoft.Docs.Build
         [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the MSDN and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
         [InlineData(@"<div><title>Connect and TFS information</title><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the MSDN and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 39)]
         [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the <a href=""http://www.msdn.com"">MSDN</a> and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
-        public static void CountWord(string html, long expectedCount)
+        public static void CountWord(string input, long expectedCount)
         {
-            Assert.Equal(expectedCount, HtmlUtility.CountWord(HtmlUtility.LoadHtml(html)));
+            var actualCount = 0L;
+            HtmlUtility.TransformHtml(
+                input,
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.CountWord(ref token, ref actualCount));
+
+            Assert.Equal(expectedCount, actualCount);
         }
 
         [Theory]
@@ -124,9 +133,14 @@ namespace Microsoft.Docs.Build
         [InlineData("<h1 id='a'></h1><h2 id='b'></h2>", "a, b")]
         [InlineData("<a id='a'></a>", "a")]
         [InlineData("<a name='a'></a>", "a")]
-        public static void GetBookmarks(string html, string expected)
+        public static void GetBookmarks(string input, string expected)
         {
-            Assert.Equal(expected, string.Join(", ", HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(html))));
+            var bookmarks = new HashSet<string>();
+            HtmlUtility.TransformHtml(
+                input,
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.GetBookmarks(ref token, bookmarks));
+
+            Assert.Equal(expected, string.Join(", ", bookmarks));
         }
 
         [Theory]
