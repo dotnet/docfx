@@ -119,7 +119,6 @@ jobs:
 
 # Build integration test
 - job: IntegrationTestBuild
-  dependsOn: WindowsBuild
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
@@ -193,21 +192,23 @@ jobs:
     name: DocFX
   strategy:
     matrix:
-      DevSandbox:
-        params: https://github.com/OPS-E2E-PPE/DevSandbox --branch v3-integration-test --timeout 30
+      office-dev-O365API:
+        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
+      azure-docs-pr:
+        params: https://github.com/OPS-E2E-PPE/azure-docs-pr --branch v3-integration-test --timeout 150
+      sql-docs-pr:
+        params: https://github.com/OPS-E2E-PPE/sql-docs-pr --branch v3-integration-test --timeout 120
+      roslyn-api-docs:
+        params: https://github.com/OPS-E2E-PPE/roslyn-api-docs --branch v3-integration-test --timeout 105
       docs-help-pr:
         params: >
           https://github.com/OPS-E2E-PPE/docs-help-pr --build-type PullRequest --branch v3-integration-test
           --pull-request-url https://github.com/yufeih/docs-help-pr --pull-request-branch patch-1
           --timeout 30
-      azure-docs-pr:
-        params: https://github.com/OPS-E2E-PPE/azure-docs-pr --branch v3-integration-test --timeout 150
       Dynamics-365-Operations:
         params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --branch v3-integration-test --timeout 65
       biztalk-docs.zh-cn:
         params: https://github.com/OPS-E2E-PPE/biztalk-docs.zh-cn --branch v3-integration-test-sxs --locale zh-cn --timeout 50
-      office-dev-O365API:
-        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
       dynamics-crm-notinTOC_1.he-il:
         params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
       mc-docs-pr:
@@ -216,10 +217,8 @@ jobs:
         params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 30
       azure-docs-rest-apis:
         params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
-      sql-docs-pr:
-        params: https://github.com/OPS-E2E-PPE/sql-docs-pr --branch v3-integration-test --timeout 120
-      roslyn-api-docs:
-        params: https://github.com/OPS-E2E-PPE/roslyn-api-docs --branch v3-integration-test --timeout 105
+      DevSandbox:
+        params: https://github.com/OPS-E2E-PPE/DevSandbox --branch v3-integration-test --timeout 30
 
   steps:
   # Install .NET Core sdk
