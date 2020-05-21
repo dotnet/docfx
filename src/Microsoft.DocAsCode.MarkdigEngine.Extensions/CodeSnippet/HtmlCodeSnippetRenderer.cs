@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "cshtml", new List<string>{".cshtml", "aspx-cs", "aspx-csharp" } },
             { "vbhtml", new List<string>{".vbhtml", "aspx-vb" } },
             { "java", new List<string>{".java" } },
-            { "javascript", new List<string>{"js", "node", ".js" } },
+            { "javascript", new List<string>{"js", "node", ".js", "json", ".json" } },
             { "lisp", new List<string>{".lisp", ".lsp" } },
             { "lua", new List<string>{".lua" } },
             { "matlab", new List<string>{".matlab" } },
