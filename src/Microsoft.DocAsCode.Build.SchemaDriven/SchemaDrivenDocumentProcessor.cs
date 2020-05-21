@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
+    using System.Diagnostics;
+    using System.Collections.Concurrent;
 
     public class SchemaDrivenDocumentProcessor
         : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
@@ -102,14 +104,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
+            var time = string.Empty;
+            var watch = Stopwatch.StartNew();
             switch (file.Type)
             {
                 case DocumentType.Article:
                     // TODO: Support dynamic in YAML deserializer
                     try
                     {
+                        time += $"\t{watch.Elapsed}";
                         // MUST be a dictionary
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
+                        time += $"\t{watch.Elapsed}";
 
                         // load overwrite fragments
                         string markdownFragmentsContent = null;
@@ -124,8 +130,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         }
                         else
                         {
+                            time += $"\t{watch.Elapsed}";
                             // Validate against the schema first, only when markdown fragments don't exist
                             SchemaValidator.Validate(obj);
+                            time += $"\t{watch.Elapsed}";
                         }
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
@@ -170,6 +178,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                 EnvironmentContext.BaseDirectory,
                                 EnvironmentContext.FileAbstractLayer.GetPhysicalPath(markdownFragmentsFile));
                         }
+                        time += $"\t{watch.Elapsed}";
+                        
+                        var manifestProperties = (IDictionary<string, object>)fm.ManifestProperties;
+                        manifestProperties["CheckSDPLoadTime"] = time;
                         return fm;
                     }
                     catch (YamlDotNet.Core.YamlException e)
@@ -308,7 +320,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 TypeNameHandling = TypeNameHandling.All,
             };
         }
-
         #endregion
     }
 }
