@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(markupErrors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
-            ValidateBookmarks(context, file, htmlDom, conceptual.RawTitleId);
+            ValidateBookmarks(context, file, htmlDom, conceptual.RawTitle);
 
             if (context.Config.DryRun)
             {
@@ -360,12 +360,12 @@ namespace Microsoft.Docs.Build
                 HtmlUtility.AddLinkType(html, context.BuildOptions.Locale).WriteTo());
         }
 
-        private static void ValidateBookmarks(Context context, Document file, HtmlNode html, string? rawTitleId = null)
+        private static void ValidateBookmarks(Context context, Document file, HtmlNode html, string? rawTitle = null)
         {
             var bookmarks = HtmlUtility.GetBookmarks(html);
-            if (!string.IsNullOrEmpty(rawTitleId))
+            if (!string.IsNullOrEmpty(rawTitle))
             {
-                bookmarks.Add(rawTitleId);
+                bookmarks.AddRange(HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(rawTitle)));
             }
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
         }

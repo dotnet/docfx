@@ -35,7 +35,6 @@ namespace Microsoft.Docs.Build
                             if (!hasVisibleNodes)
                             {
                                 conceptual.RawTitle = heading.ToHtml();
-                                conceptual.RawTitleId = heading.TryGetAttributes()?.Id;
                                 hasVisibleNodes = true;
                                 return null;
                             }
