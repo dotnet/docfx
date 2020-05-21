@@ -61,9 +61,9 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 ### Packages
 
-| Chocolatey | Nuget | Nightly Build
-| - | - | -
-| [![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx) | [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) | [![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
+| Chocolatey | Nuget
+| - | -
+| [![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx) | [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)
 
 ### Running Status
 
