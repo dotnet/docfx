@@ -93,6 +93,17 @@ outputs:
     }
   index.json:
 ---
+# Customized heading bookmark should not report invalid bookmark
+inputs:
+  docfx.yml:
+  a.md: |
+    # <a id="b" /> a
+  b.md: |
+    [](a.md#b)
+outputs:
+  a.json:
+  b.json:
+---
 # Support both / and \ as directory separator
 inputs:
   docfx.yml:

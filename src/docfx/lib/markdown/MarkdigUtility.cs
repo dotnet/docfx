@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Linq;
 using Markdig;
+using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -189,22 +189,6 @@ namespace Microsoft.Docs.Build
             return builder;
         }
 
-        public static string ToPlainText(this MarkdownObject containerBlock)
-        {
-            using var writer = new StringWriter();
-            var renderer = new HtmlRenderer(writer)
-            {
-                EnableHtmlForBlock = false,
-                EnableHtmlForInline = false,
-                EnableHtmlEscape = false,
-            };
-
-            renderer.Render(containerBlock);
-            writer.Flush();
-
-            return writer.ToString();
-        }
-
         public static bool IsVisible(this MarkdownObject markdownObject)
         {
             var visible = false;
@@ -228,6 +212,7 @@ namespace Microsoft.Docs.Build
                     case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
                         // empty heading
                     case ThematicBreakBlock _:
+                    case YamlFrontMatterBlock _:
                         break;
                     case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
                     case LeafInline _:

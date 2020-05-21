@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseContentValidation(
             this MarkdownPipelineBuilder builder,
+            MarkdownEngine markdownEngine,
             OnlineServiceMarkdownValidatorProvider? validatorProvider,
             Func<List<ValidationNode>, Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>> getValidationNodes,
             Func<string, MarkdownObject, (string? content, object? file)> readFile)
@@ -40,7 +41,7 @@ namespace Microsoft.Docs.Build
                                 SourceInfo = headingBlock.GetSourceInfo(),
                                 Content = GetHeadingContent(headingBlock), // used for reporting
                                 HeadingChar = headingBlock.HeaderChar,
-                                RenderedPlainText = MarkdigUtility.ToPlainText(headingBlock), // used for validation
+                                RenderedPlainText = markdownEngine.ToPlainText(headingBlock), // used for validation
                                 IsVisible = MarkdigUtility.IsVisible(headingBlock),
                             });
                         }

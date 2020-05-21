@@ -3,13 +3,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Extensions.EmphasisExtras;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
+using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
@@ -94,13 +97,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType)
+        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
         {
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    var status = new Status();
+                    var status = new Status(conceptual);
 
                     t_status.Value!.Push(status);
 
@@ -115,6 +118,49 @@ namespace Microsoft.Docs.Build
                     t_status.Value!.Pop();
                 }
             }
+        }
+
+        public string ToHtml(MarkdownObject markdownObject)
+        {
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
+            var renderer = new HtmlRenderer(writer);
+
+            _pipelines[(int)MarkdownPipelineType.Markdown].Setup(renderer);
+            renderer.Render(markdownObject);
+            writer.Flush();
+
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
+        }
+
+        public string ToPlainText(MarkdownObject markdownObject)
+        {
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
+            var renderer = new HtmlRenderer(writer)
+            {
+                EnableHtmlForBlock = false,
+                EnableHtmlForInline = false,
+                EnableHtmlEscape = false,
+            };
+
+            _pipelines[(int)MarkdownPipelineType.Markdown].Setup(renderer);
+            renderer.Render(markdownObject);
+            writer.Flush();
+
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
         }
 
         private MarkdownPipeline CreateMarkdownPipeline()
@@ -152,7 +198,7 @@ namespace Microsoft.Docs.Build
                 .UseNoloc()
                 .UseTelemetry()
                 .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetValidationNodes, ReadFile)
+                .UseContentValidation(this, _validatorProvider, GetValidationNodes, ReadFile)
                 .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
@@ -163,7 +209,8 @@ namespace Microsoft.Docs.Build
                 // Extensions after this line sees an expanded inclusion AST only once.
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref);
+                .UseHtml(GetErrors, GetLink, GetXref)
+                .UseExtractTitle(this, GetConceptual);
         }
 
         private static MarkdownPipeline CreateTocMarkdownPipeline()
@@ -215,6 +262,11 @@ namespace Microsoft.Docs.Build
         private static List<Error> GetErrors()
         {
             return t_status.Value!.Peek().Errors;
+        }
+
+        private static ConceptualModel? GetConceptual()
+        {
+            return t_status.Value!.Peek().Conceptual;
         }
 
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
@@ -297,9 +349,16 @@ namespace Microsoft.Docs.Build
 
         private class Status
         {
+            public ConceptualModel? Conceptual { get; }
+
             public List<Error> Errors { get; } = new List<Error>();
 
             public Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>();
+
+            public Status(ConceptualModel? conceptual = null)
+            {
+                Conceptual = conceptual;
+            }
         }
     }
 }

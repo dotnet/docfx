@@ -232,33 +232,25 @@ namespace Microsoft.Docs.Build
             var content = context.Input.ReadString(file.FilePath);
             errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file.FilePath));
 
-            var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
+            var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+            errors.AddRange(metadataErrors);
+
+            var conceptual = new ConceptualModel { Title = userMetadata.Title };
+            var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, conceptual);
             errors.AddRange(markupErrors);
 
             var htmlDom = HtmlUtility.LoadHtml(html);
-            ValidateBookmarks(context, file, htmlDom);
-            if (!HtmlUtility.TryExtractTitle(htmlDom, out var title, out var rawTitle))
-            {
-                errors.Add(Errors.Heading.HeadingNotFound(file));
-            }
-
-            var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-            errors.AddRange(metadataErrors);
+            ValidateBookmarks(context, file, htmlDom, conceptual.RawTitle);
 
             if (context.Config.DryRun)
             {
                 return (errors, new JObject());
             }
 
-            var pageModel = JsonUtility.ToJObject(new ConceptualModel
-            {
-                Conceptual = CreateHtmlContent(context, htmlDom),
-                WordCount = HtmlUtility.CountWord(htmlDom),
-                RawTitle = rawTitle,
-                Title = userMetadata.Title ?? title,
-            });
+            conceptual.Conceptual = CreateHtmlContent(context, htmlDom);
+            conceptual.WordCount = HtmlUtility.CountWord(htmlDom);
 
-            return (errors, pageModel);
+            return (errors, JsonUtility.ToJObject(conceptual));
         }
 
         private static (List<Error> errors, JObject model) LoadYaml(Context context, Document file)
@@ -368,9 +360,13 @@ namespace Microsoft.Docs.Build
                 HtmlUtility.AddLinkType(html, context.BuildOptions.Locale).WriteTo());
         }
 
-        private static void ValidateBookmarks(Context context, Document file, HtmlNode html)
+        private static void ValidateBookmarks(Context context, Document file, HtmlNode html, string? rawTitle = null)
         {
             var bookmarks = HtmlUtility.GetBookmarks(html);
+            if (!string.IsNullOrEmpty(rawTitle))
+            {
+                bookmarks.AddRange(HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(rawTitle)));
+            }
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
         }
 

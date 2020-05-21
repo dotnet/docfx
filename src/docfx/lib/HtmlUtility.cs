@@ -227,46 +227,6 @@ namespace Microsoft.Docs.Build
             token = new HtmlToken(resolvedNode);
         }
 
-        /// <summary>
-        /// Get title and raw title, remove title node if all previous nodes are invisible
-        /// </summary>
-        public static bool TryExtractTitle(HtmlNode node, out string? title, [NotNullWhen(true)] out string? rawTitle)
-        {
-            var existVisibleNode = false;
-
-            title = null;
-            rawTitle = string.Empty;
-            foreach (var child in node.ChildNodes)
-            {
-                if (!IsInvisibleNode(child))
-                {
-                    if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
-                    {
-                        title = string.IsNullOrEmpty(child.InnerText) ? null : HttpUtility.HtmlDecode(child.InnerText);
-
-                        // NOTE: for backward compatibility during migration phase, the logic of title and raw title is different...
-                        if (!existVisibleNode)
-                        {
-                            rawTitle = child.OuterHtml;
-                            child.Remove();
-                        }
-
-                        return true;
-                    }
-
-                    existVisibleNode = true;
-                }
-            }
-
-            return false;
-
-            static bool IsInvisibleNode(HtmlNode n)
-            {
-                return n.NodeType == HtmlNodeType.Comment ||
-                    (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
-            }
-        }
-
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
         {
             var result = new StringBuilder();
