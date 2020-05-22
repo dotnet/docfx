@@ -1,6 +1,19 @@
 <Project>
 
   <PropertyGroup>
+    <Product>docfx</Product>
+    <Company>Microsoft Corporation</Company>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <Authors>Microsoft</Authors>
+    <PackageIcon>docs-logo-ms.png</PackageIcon>
+    <RepositoryUrl>https://github.com/dotnet/docfx</RepositoryUrl>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Build markdown documentation and API references for .NET</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <LangVersion>8.0</LangVersion>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)stylecop.ruleset</CodeAnalysisRuleSet>
     <NoWarn>NU1701</NoWarn>
@@ -12,6 +25,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../docs-logo-ms.png" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="" />
     <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
