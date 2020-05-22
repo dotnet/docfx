@@ -7,6 +7,7 @@ using System.Linq;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 #pragma warning disable CS0618
@@ -97,11 +98,15 @@ namespace Microsoft.Docs.Build
 
             using (InclusionContext.PushInclusion(file))
             {
-                var child = Markdown.Parse(content, pipeline).LastChild is LeafBlock leaf ? leaf.Inline : null;
-                if (child != null)
+                var child = Markdown.Parse(content, pipeline);
+                ExpandInclude(context, child, pipeline, inlinePipeline, errors);
+
+                foreach (var block in child)
                 {
-                    ExpandInclude(context, child, pipeline, inlinePipeline, errors);
-                    inclusionInline.AppendChild(child);
+                    if (block is LeafBlock leaf && leaf.Inline != null)
+                    {
+                        inclusionInline.AppendChild(leaf.Inline);
+                    }
                 }
             }
         }
