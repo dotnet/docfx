@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
-            _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
+            _xrefHostName = config.HostName;
         }
 
         public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByHref(

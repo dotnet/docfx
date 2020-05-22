@@ -122,7 +122,10 @@ namespace Microsoft.Docs.Build
                 return (error, "", fragment, linkType, null, false);
             }
 
-
+            if (linkType == LinkType.External)
+            {
+                return (error, UrlUtility.RemoveLeadingHostNameLocale(href, _config.HostName), fragment, LinkType.AbsolutePath, null, false);
+            }
 
             // Cannot resolve the file, leave href as is
             if (file is null)
@@ -163,25 +166,21 @@ namespace Microsoft.Docs.Build
         {
             href = new SourceInfo<string>(href.Value.Trim(), href.Source).Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
-
-            switch (UrlUtility.GetLinkType(href))
+            var linkType = UrlUtility.GetLinkType(href);
+            switch (linkType)
             {
                 case LinkType.SelfBookmark:
-                    return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
+                    return (null, referencingFile, query, fragment, linkType);
 
                 case LinkType.WindowsAbsolutePath:
-                    return (Errors.Link.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath);
-
-                case LinkType.External:
-                    path = 
-                    return (null, referencingFile, )
+                    return (Errors.Link.LocalFilePath(href), null, null, null, linkType);
 
                 case LinkType.RelativePath:
                     if (string.IsNullOrEmpty(path))
                     {
                         // https://tools.ietf.org/html/rfc2396#section-4.2
                         // a hack way to process empty href
-                        return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
+                        return (null, referencingFile, query, fragment, linkType);
                     }
 
                     // resolve file
@@ -200,19 +199,19 @@ namespace Microsoft.Docs.Build
                         }
 
                         // Do not report error for landing page
-                        return (null, file, query, fragment, LinkType.RelativePath);
+                        return (null, file, query, fragment, linkType);
                     }
 
                     if (file is null)
                     {
                         return (Errors.Link.FileNotFound(
-                            new SourceInfo<string>(path, href)), null, query, fragment, LinkType.RelativePath);
+                            new SourceInfo<string>(path, href)), null, query, fragment, linkType);
                     }
 
-                    return (null, file, query, fragment, LinkType.RelativePath);
+                    return (null, file, query, fragment, linkType);
 
                 default:
-                    return default;
+                    return (null, null, null, null, linkType);
             }
         }
 

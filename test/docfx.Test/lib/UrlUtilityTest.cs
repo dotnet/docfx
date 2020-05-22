@@ -168,5 +168,17 @@ namespace Microsoft.Docs.Build
 
             Assert.False(parsed);
         }
+
+        [Theory]
+        [InlineData("https://docs.com/en-us/c", "docs.com", "/c")]
+        [InlineData("https://docs.com/en-us/c", "", "https://docs.com/en-us/c")]
+        [InlineData("https://docs.com/c", "docs.com", "/c")]
+        [InlineData("https://docs.com/en-us/c", "docs1.com", "https://docs.com/en-us/c")]
+        [InlineData("https://docs.com/", "docs.com", "https://docs.com/")]
+        public static void RemoveHostNameAndLocale(string url, string hostName, string expected)
+        {
+            var result = UrlUtility.RemoveLeadingHostNameLocale(url, hostName);
+            Assert.Equal(expected, result);
+        }
     }
 }

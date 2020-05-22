@@ -273,9 +273,23 @@ namespace Microsoft.Docs.Build
 
         public static string RemoveLeadingHostNameLocale(string url, string hostName)
         {
-            var uri = new Uri(url);
+            if (string.IsNullOrEmpty(hostName))
+            {
+                return url;
+            }
+
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
+                return url;
+            }
+
             var redirectPath = MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
             if (!string.Equals(uri.Host, hostName, StringComparison.OrdinalIgnoreCase))
+            {
+                return url;
+            }
+
+            if (string.IsNullOrEmpty(redirectPath))
             {
                 return url;
             }

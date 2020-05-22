@@ -403,11 +403,12 @@ outputs:
 # remove host name for external link
 inputs:
   docfx.yml: |
-    hostName: https://docs.com
+    hostName: docs.com
   docs/a.md: |
     [external link](https://docs.com/c)
 outputs:
-  docs/a.json:
+  docs/a.json: |
+    {"conceptual": "<p><a href=\"/en-us/c\" data-linktype=\"absolute-path\">external link</a></p>"}
 ---
 # do not output file if bookmark-not-found is treated as error
 inputs:
