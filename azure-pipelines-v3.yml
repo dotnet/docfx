@@ -82,8 +82,8 @@ jobs:
     inputs:
       command: push
       packagesToPush: drop/**/*.nupkg
-      nugetFeedType: 'external'
-      publishFeedCredentials: 'docs-public-packages'
+      publishFeedCredentials: docs-public-packages
+      nugetFeedType: external
 
   # Publish binary packages to sandbox
   - task: AzureFileCopy@3
