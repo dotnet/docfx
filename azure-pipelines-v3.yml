@@ -82,10 +82,10 @@ jobs:
     inputs:
       command: push
       packagesToPush: drop/**/*.nupkg
-      nugetFeedType: 'external'
-      publishFeedCredentials: 'docs-public-packages'
-      # publishVstsFeed: 'docfx/docs-public-packages'
-      # allowPackageConflicts: true
+      # nugetFeedType: 'external'
+      # publishFeedCredentials: 'docs-public-packages'
+      publishVstsFeed: 'docfx/docs-public-packages'
+      allowPackageConflicts: true
 
   # Publish binary packages to sandbox
   - task: AzureFileCopy@3
