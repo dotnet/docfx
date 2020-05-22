@@ -75,25 +75,15 @@ jobs:
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
 
-  # Push to sandbox MyGet feed
+  # Push to sandbox azure devops feed
   - task: NuGetCommand@2
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
     displayName: Push to Sandbox MyGet Feed
     inputs:
       command: push
       packagesToPush: drop/**/*.nupkg
-      nuGetFeedType: external
-      publishFeedCredentials: myget.docfx-v3-sandbox
-
-  # Push to production MyGet feed
-  - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Push to Production MyGet Feed
-    inputs:
-      command: push
-      packagesToPush: drop/**/*.nupkg
-      nuGetFeedType: external
-      publishFeedCredentials: myget.docfx-v3
+      publishFeedCredentials: docs-public-packages
+      nugetFeedType: external
 
   # Publish binary packages to sandbox
   - task: AzureFileCopy@3
