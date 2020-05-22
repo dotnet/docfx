@@ -1,6 +1,6 @@
 # Build your docs with DocFX
 
-[![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release) [![Azure devops](https://img.shields.io/myget/docfx-v3/v/docfx.svg?label=myget)](https://docfx.visualstudio.com/docfx/_packaging?_a=feed&feed=docs-public-packages)
+[![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release)
 
 Build your docs website with [DocFX](https://github.com/dotnet/docfx), with landing pages, markdown documents, API references for .NET, REST and more.
 
