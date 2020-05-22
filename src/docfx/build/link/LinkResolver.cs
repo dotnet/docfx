@@ -3,7 +3,6 @@
 
 using System;
 using System.IO;
-using Jint.Native;
 
 namespace Microsoft.Docs.Build
 {
