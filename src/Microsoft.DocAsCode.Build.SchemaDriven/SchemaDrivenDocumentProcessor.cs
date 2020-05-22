@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
     using System.Diagnostics;
-    using System.Collections.Concurrent;
 
     public class SchemaDrivenDocumentProcessor
         : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
