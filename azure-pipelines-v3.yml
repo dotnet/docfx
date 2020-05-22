@@ -82,8 +82,8 @@ jobs:
     inputs:
       command: push
       packagesToPush: drop/**/*.nupkg
-      nuGetFeedType: external
-      publishFeedCredentials: myget.docfx-v3-sandbox
+      publishVstsFeed: 'docfx/docs-build-v3-test'
+      allowPackageConflicts: true
 
   # Push to production MyGet feed
   - task: NuGetCommand@2
