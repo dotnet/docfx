@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                     {
                         // https://tools.ietf.org/html/rfc2396#section-4.2
                         // a hack way to process empty href
-                        return (null, referencingFile, query, fragment, linkType);
+                        return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
                     }
 
                     // resolve file
