@@ -83,7 +83,7 @@ jobs:
       command: push
       packagesToPush: drop/**/*.nupkg
       nugetFeedType: 'external'
-      publishFeedCredentials: 'docs-public-package'
+      publishFeedCredentials: 'docs-public-packages'
       # publishVstsFeed: 'docfx/docs-public-packages'
       # allowPackageConflicts: true
 
