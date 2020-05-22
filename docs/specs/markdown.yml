@@ -170,6 +170,22 @@ outputs:
   docs/a.json: |
     { "rawTitle": "", "title": "Title from yaml header" }
 ---
+# Link definition before h1 is treated as invisible
+inputs:
+  docfx.yml:
+  a.md: |
+    ---
+    key: value
+    ---
+    [//]: # (START>DO_NOT_EDIT)
+    # h1
+outputs:
+  a.json: |
+    {
+      "conceptual": "",
+      "rawTitle": "<h1 id=\"h1\">h1</h1>"
+    }
+---
 # include another file
 inputs:
   docfx.yml:
