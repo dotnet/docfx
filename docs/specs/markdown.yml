@@ -710,7 +710,7 @@ inputs:
   b.png:
 outputs:
   a.json: |
-    { "conceptual": "<div class=\"TIP\"><h5>TIP</h5><p><a href=\"https://docs.com\"><img alt=\"\" src=\"b.png\"></img></a></p></div>" }
+    { "conceptual": "<div class=\"TIP\"><h5>TIP</h5><p><a href=\"/en-us/\"><img alt=\"\" src=\"b.png\"></img></a></p></div>" }
   b.png:
 ---
 # Use lang- prefix for fenced code

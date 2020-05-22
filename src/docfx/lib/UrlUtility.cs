@@ -289,11 +289,6 @@ namespace Microsoft.Docs.Build
                 return url;
             }
 
-            if (string.IsNullOrEmpty(redirectPath))
-            {
-                return url;
-            }
-
             var slashIndex = redirectPath.IndexOf('/');
             if (slashIndex < 0)
             {
