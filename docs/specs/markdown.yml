@@ -747,3 +747,22 @@ outputs:
     {
       "conceptual": "<pre><code class=\"lang-json\" highlight-lines=\"1-2\">{ &quot;a&quot;: 1 }</code></pre>"
     }
+---
+# Handle inline include with multiple paragraphs
+inputs:
+  docfx.yml: |
+    files: a.md
+  a.md: |
+    - a [!include[](token.md)]
+  token.md: |
+    ---
+    key: value
+    ---
+    p1 [link](https://github.com)
+
+    p2
+outputs:
+  a.json: |
+    {
+      "conceptual": "<ul><li>a p1 <a href='https://github.com'>link</a> p2</li></ul>"
+    }
