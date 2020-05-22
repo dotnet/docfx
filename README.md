@@ -1,6 +1,6 @@
 # Build your docs with DocFX
 
-[![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release) [![MyGet](https://img.shields.io/myget/docfx-v3/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-v3)
+[![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-pipeline?branchName=v3-release)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1429&branchName=v3-release) [![Azure devops](https://img.shields.io/myget/docfx-v3/v/docfx.svg?label=myget)](https://docfx.visualstudio.com/docfx/_packaging?_a=feed&feed=docs-public-packages)
 
 Build your docs website with [DocFX](https://github.com/dotnet/docfx), with landing pages, markdown documents, API references for .NET, REST and more.
 
@@ -12,7 +12,7 @@ Our current focus is conceptual document parity with https://docs.microsoft.com,
 - Install [.NET Core](https://www.microsoft.com/net/download)
 - Install latest `docfx` pre release using:
 ```powershell
-dotnet tool install -g docfx --version "3.0.0-*" --add-source https://www.myget.org/F/docfx-v3/api/v2
+dotnet tool install -g docfx --version "3.0.0-*" --add-source https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-public-packages/nuget/v3
 ```
 - Create a directory with a `docfx.yml` config file, markdown files and other contents. See examples in our [specification](https://github.com/dotnet/docfx/tree/v3/docs/specs).
 - Run `docfx restore` to restore the dependencies of your docset.
