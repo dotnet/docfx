@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Syntax.Inlines;
 
-    public class InclusionInline : LeafInline
+    public class InclusionInline : ContainerInline
     {
         public string Title { get; set; }
 

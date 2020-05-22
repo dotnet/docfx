@@ -34,6 +34,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public string ExternalLinkFormat => $"{Normalize(Host)}{Normalize(Locale)}{Normalize(BasePath)}{{0}}";
 
         /// <summary>
+        /// Gets or sets the path and file name of the pdf executable.
+        /// </summary>
+        public string FilePath { get; set; }
+
+        /// <summary>
         /// Specify additional command line arguments that should be passed to the pdf command.
         /// </summary>
         public string AdditionalPdfCommandArgs { get; set; }
@@ -72,5 +77,5 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         /// Are input arguments set using command line
         /// </summary>
         public bool NoInputStreamArgs { get; set; }
-	}
+    }
 }

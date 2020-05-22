@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             string title = null, path = null;
 
-            if (!ExtensionsHelper.MatchLink(ref slice, ref title, ref path) || !ExtensionsHelper.MatchInlcusionEnd(ref slice))
+            if (!ExtensionsHelper.MatchLink(ref slice, ref title, ref path) || !ExtensionsHelper.MatchInclusionEnd(ref slice))
             {
                 return false;
             }
@@ -44,6 +44,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Line = line,
                 Column = column,
                 Span = new SourceSpan(startPosition, processor.GetSourcePosition(slice.Start - 1)),
+                IsClosed = true,
             };
 
             return true;

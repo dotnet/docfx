@@ -88,8 +88,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             renderer.WriteLine("</div>");
         }
 
-        private static string FixUpLink(string link)
+        public static string FixUpLink(string link)
         {
+            if (!link.Contains("https"))
+            {
+                link = link.Replace("http", "https");
+            }
             if (Uri.TryCreate(link, UriKind.Absolute, out Uri videoLink))
             {
                 var host = videoLink.Host;

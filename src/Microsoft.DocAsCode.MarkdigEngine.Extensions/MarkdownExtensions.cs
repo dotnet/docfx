@@ -50,19 +50,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public static MarkdownPipelineBuilder UseInlineOnly(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.Add(new InlineOnlyExtentsion());
+            pipeline.Extensions.AddIfNotAlready(new InlineOnlyExtentsion());
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseTabGroup(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new TabGroupExtension(context));
+            pipeline.Extensions.AddIfNotAlready(new TabGroupExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseHeadingIdRewriter(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.Add(new HeadingIdExtension());
+            pipeline.Extensions.AddIfNotAlready(new HeadingIdExtension());
             return pipeline;
         }
 
@@ -75,50 +75,50 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser { InfoPrefix = Constants.FencedCodePrefix });
+                pipeline.BlockParsers.AddIfNotAlready(new FencedCodeBlockParser { InfoPrefix = Constants.FencedCodePrefix });
             }
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseQuoteSectionNote(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new QuoteSectionNoteExtension(context));
+            pipeline.Extensions.AddIfNotAlready(new QuoteSectionNoteExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseLineNumber(this MarkdownPipelineBuilder pipeline, Func<object, string> getFilePath = null)
         {
-            pipeline.Extensions.Add(new LineNumberExtension(getFilePath));
+            pipeline.Extensions.AddIfNotAlready(new LineNumberExtension(getFilePath));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseResolveLink(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new ResolveLinkExtension(context));
+            pipeline.Extensions.AddIfNotAlready(new ResolveLinkExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseIncludeFile(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new InclusionExtension(context));
+            pipeline.Extensions.AddIfNotAlready(new InclusionExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Add(new CodeSnippetExtension(context));
+            pipeline.Extensions.AddIfNotAlready(new CodeSnippetExtension(context));
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseInteractiveCode(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.Add(new InteractiveCodeExtension());
+            pipeline.Extensions.AddIfNotAlready(new InteractiveCodeExtension());
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseXref(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.Add(new XrefInlineExtension());
+            pipeline.Extensions.AddIfNotAlready(new XrefInlineExtension());
             return pipeline;
         }
 
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.Insert(0, new TripleColonExtension(context));
+            pipeline.Extensions.AddIfNotAlready(new TripleColonExtension(context));
             return pipeline;
         }
 

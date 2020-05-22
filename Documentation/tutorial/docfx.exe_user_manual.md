@@ -543,6 +543,7 @@ noStdin                  | Do not use `--read-args-from-stdin` for the wkhtmltop
 
 Key                      | Description
 -------------------------|-----------------------------
+filePath                 | The path and file name of a wkhtmltopdf.exe compatible executable.
 additionalArguments      | Additional arguments that should be passed to the wkhtmltopdf executable.
 
 ## 4. Supported File Mapping Format
