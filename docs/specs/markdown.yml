@@ -400,6 +400,15 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/a.md","line":1,"column":1}
 ---
+# remove host name for external link
+inputs:
+  docfx.yml: |
+    hostName: https://docs.com
+  docs/a.md: |
+    [external link](https://docs.com/c)
+outputs:
+  docs/a.json:
+---
 # do not output file if bookmark-not-found is treated as error
 inputs:
   docfx.yml: |

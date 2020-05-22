@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using Jint.Native;
 
 namespace Microsoft.Docs.Build
 {
@@ -121,6 +122,8 @@ namespace Microsoft.Docs.Build
                 return (error, "", fragment, linkType, null, false);
             }
 
+
+
             // Cannot resolve the file, leave href as is
             if (file is null)
             {
@@ -168,6 +171,10 @@ namespace Microsoft.Docs.Build
 
                 case LinkType.WindowsAbsolutePath:
                     return (Errors.Link.LocalFilePath(href), null, null, null, LinkType.WindowsAbsolutePath);
+
+                case LinkType.External:
+                    path = 
+                    return (null, referencingFile, )
 
                 case LinkType.RelativePath:
                     if (string.IsNullOrEmpty(path))

@@ -271,6 +271,27 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
+        public static string RemoveLeadingHostNameLocale(string url, string hostName)
+        {
+            var uri = new Uri(url);
+            var redirectPath = MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
+            if (!string.Equals(uri.Host, hostName, StringComparison.OrdinalIgnoreCase))
+            {
+                return url;
+            }
+
+            var slashIndex = redirectPath.IndexOf('/');
+            if (slashIndex < 0)
+            {
+                return $"/{redirectPath}";
+            }
+
+            var firstSegment = redirectPath.Substring(0, slashIndex);
+            return LocalizationUtility.IsValidLocale(firstSegment)
+                ? $"{redirectPath.Substring(firstSegment.Length)}"
+                : $"/{redirectPath}";
+        }
+
         private static string ToQueryString(this NameValueCollection collection)
         {
             var result = new StringBuilder("?");
