@@ -77,7 +77,7 @@ jobs:
 
   # Push to sandbox azure devops feed
   - task: NuGetCommand@2
-    # condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
     displayName: Push to Sandbox MyGet Feed
     inputs:
       command: push
