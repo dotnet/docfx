@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Dfm
                 .AddAlias("cshtml", ".cshtml", "aspx-cs", "aspx-csharp")
                 .AddAlias("vbhtml", ".vbhtml", "aspx-vb")
                 .AddAlias("java", ".java")
-                .AddAlias("javascript", "js", "node", ".js")
+                .AddAlias("javascript", "js", "node", ".js", ".json", "json")
                 .AddAlias("lisp", ".lisp", ".lsp")
                 .AddAlias("lua", ".lua")
                 .AddAlias("matlab", ".matlab")
