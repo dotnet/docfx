@@ -265,10 +265,15 @@ jobs:
       version: $(dotnetVersion)
 
   # Run integration tests
-  - powershell: |
-      dotnet build ./test/docfx.RegressionTest -c Release
-      dotnet run -c Release -p ./test/docfx.RegressionTest -- $(params)
+  - task: AzureCLI@2
     displayName: Run regression tests
+    inputs:
+      azureSubscription: 'Open Publishing - Build Production'
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        dotnet build ./test/docfx.RegressionTest -c Release
+        dotnet run -c Release -p ./test/docfx.RegressionTest -- $(params)
     env:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
@@ -276,6 +281,6 @@ jobs:
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
       DOCS_GENERATE_DOCFX_YML: 'false'
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      AzureServicesAuthConnectionString: $(TEMP_CONN_STRING)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+
