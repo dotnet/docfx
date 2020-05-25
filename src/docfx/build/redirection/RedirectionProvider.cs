@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
                         case LinkType.AbsolutePath:
                             break;
                         case LinkType.External:
-                            absoluteRedirectUrl = UrlUtility.RemoveLeadingHostNameLocale(absoluteRedirectUrl, hostName);
+                            absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
                             break;
                         default:
                             _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));

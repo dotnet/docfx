@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
 
             if (linkType == LinkType.External)
             {
-                return (error, UrlUtility.RemoveLeadingHostNameLocale(href, _config.HostName), fragment, LinkType.AbsolutePath, null, false);
+                return (error, UrlUtility.RemoveLeadingHostName(href, _config.HostName), fragment, LinkType.AbsolutePath, null, false);
             }
 
             // Cannot resolve the file, leave href as is

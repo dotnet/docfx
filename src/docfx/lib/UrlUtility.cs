@@ -271,7 +271,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public static string RemoveLeadingHostNameLocale(string url, string hostName)
+        public static string RemoveLeadingHostName(string url, string hostName, bool removeLocale = false)
         {
             if (string.IsNullOrEmpty(hostName))
             {
@@ -283,22 +283,27 @@ namespace Microsoft.Docs.Build
                 return url;
             }
 
-            var redirectPath = MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
             if (!string.Equals(uri.Host, hostName, StringComparison.OrdinalIgnoreCase))
             {
                 return url;
             }
 
-            var slashIndex = redirectPath.IndexOf('/');
-            if (slashIndex < 0)
+            var path = MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
+            if (!removeLocale)
             {
-                return $"/{redirectPath}";
+                return $"/{path}";
             }
 
-            var firstSegment = redirectPath.Substring(0, slashIndex);
+            var slashIndex = path.IndexOf('/');
+            if (slashIndex < 0)
+            {
+                return $"/{path}";
+            }
+
+            var firstSegment = path.Substring(0, slashIndex);
             return LocalizationUtility.IsValidLocale(firstSegment)
-                ? $"{redirectPath.Substring(firstSegment.Length)}"
-                : $"/{redirectPath}";
+                ? $"{path.Substring(firstSegment.Length)}"
+                : $"/{path}";
         }
 
         private static string ToQueryString(this NameValueCollection collection)
