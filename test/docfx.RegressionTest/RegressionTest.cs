@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
     {
         static RegressionTest()
         {
-            Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PPE");
+            Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PROD");
             Environment.SetEnvironmentVariable("DOCS_SITE_NAME", "Docs");
             Environment.SetEnvironmentVariable("DOCFX_MAX_WARNINGS", "5000");
         }
@@ -93,7 +93,6 @@ namespace Microsoft.Docs.Build
             var gitToken = opts.Repository.StartsWith("https://github.com") ? s_githubToken : s_azureDevopsToken;
 
             // Set Env for Build
-            Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PROD");
             Environment.SetEnvironmentVariable("DOCFX_GIT_TOKEN", gitToken);
             Environment.SetEnvironmentVariable("DOCFX_GITHUB_TOKEN", s_githubToken);
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
@@ -154,7 +153,7 @@ namespace Microsoft.Docs.Build
 
         static TimeSpan Build(string repositoryPath, string outputPath)
         {
-            return Exec(Path.Combine(AppContext.BaseDirectory, "docfx.exe"), arguments: $"build -o \"{outputPath}\" --legacy", cwd: repositoryPath);
+            return Exec(Path.Combine(AppContext.BaseDirectory, "docfx.exe"), arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-cache", cwd: repositoryPath);
         }
 
         static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
