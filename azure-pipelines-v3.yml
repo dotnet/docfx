@@ -16,7 +16,7 @@ jobs:
 - job: LinuxBuild
   pool:
     vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: false #eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
@@ -36,7 +36,7 @@ jobs:
 - job: MacBuild
   pool:
     vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: false # eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
@@ -55,6 +55,7 @@ jobs:
 
 # Test and deploy on windows
 - job: WindowsBuild
+  condition: false
   pool:
     vmImage: 'windows-latest'
   steps:
@@ -110,7 +111,7 @@ jobs:
 # Build integration test
 - job: IntegrationTestBuild
   dependsOn: WindowsBuild
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
+  condition: false #and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
   pool:
     name: DocFX
 
@@ -235,6 +236,39 @@ jobs:
   - powershell: |
       $(Pipeline.Workspace)/integration-test/integration-test.exe $(params)
     displayName: Run integration tests
+    env:
+      BUILD_REASON: $(Build.Reason)
+      DOCFX_APPDATA_PATH: D:/appdata
+      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
+      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
+      DOCS_GENERATE_DOCFX_YML: 'false'
+      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
+      AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
+      PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+      APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+
+# Regression test
+- job: RegressionTest
+  pool:
+    name: DocFX
+  strategy:
+    matrix:
+      engineering:
+        params: https://github.com/MicrosoftDocs/engineering --timeout 30
+
+  steps:
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
+    inputs:
+      packageType: sdk
+      version: $(dotnetVersion)
+
+  # Run integration tests
+  - powershell: |
+      dotnet build ./test/docfx.RegressionTest -c Release
+      dotnet run -c Release -p ./test/docfx.RegressionTest -- $(params)
+    displayName: Run regression tests
     env:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
