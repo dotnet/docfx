@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         {
             // Restore has to use Config directly, it cannot depend on Docset,
             // because Docset assumes the repo to physically exist on disk.
-            using (var errorLog = new ErrorLog(outputPath, options.Legacy))
+            using (var errorLog = new ErrorLog(outputPath))
             using (Progress.Start("Restore dependencies"))
             {
                 var stopwatch = Stopwatch.StartNew();

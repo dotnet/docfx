@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class ErrorLog : IDisposable
     {
-        private readonly bool _legacy;
         private readonly object _outputLock = new object();
 
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
@@ -36,9 +35,8 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> ErrorFiles => _errorFiles;
 
-        public ErrorLog(string? outputPath = null, bool legacy = false)
+        public ErrorLog(string? outputPath = null)
         {
-            _legacy = legacy;
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
