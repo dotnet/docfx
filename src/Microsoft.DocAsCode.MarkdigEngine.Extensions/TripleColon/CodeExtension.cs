@@ -108,7 +108,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     logWarning($"The code snippet \"{currentSource}\" could not be found.");
                     return false;
                 }
-                var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
+                //var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
+                var htmlCodeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
+                var snippet = new CodeSnippet(null);
+                snippet.CodePath = source;
+                snippet.TagName = currentId;
+                List<CodeRange> ranges;
+                HtmlCodeSnippetRenderer.TryGetLineRanges(currentRange, out ranges);
+                snippet.CodeRanges = ranges;
+                var updatedCode = htmlCodeSnippetRenderer.GetContent(code, snippet);
+                updatedCode = ExtensionsHelper.Escape(updatedCode).TrimEnd();
 
                 if (updatedCode == string.Empty)
                 {
@@ -124,7 +133,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             return true;
         }
-
+        
         private string InferLanguageFromFile(string source, Action<string> logError)
         {
             var fileExtension = Path.GetExtension(source);
@@ -140,205 +149,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return language.Key;
         }
 
-        private static string GetCodeSnippet(string range, string id, string code, Action<string> logError)
-        {
-            if(!string.IsNullOrEmpty(range) && !string.IsNullOrEmpty(id))
-            {
-                logError("You must set only either Range or Id, but not both.");
-            }
-            
-            var codeSections = new List<string>();
-
-            if (!string.IsNullOrEmpty(range))
-            {
-                var codeLines = code.Split('\n');
-                codeSections = GetCodeSectionsFromRange(range, codeLines, codeSections, logError);
-            }
-            else if (!string.IsNullOrEmpty(id))
-            {
-                var codeLines = code.Split('\n');
-                var beg = codeLines.FindIndexOfTag(id);
-                var end = codeLines.FindIndexOfTag(id, true);
-                if(end == 0)
-                {
-                    logError($"Could not find snippet id '{id}'. Make sure your snippet is in your source file.");
-                }
-                codeSections = GetCodeSectionsFromRange($"{beg}-{end}", codeLines, codeSections, logError, false);
-            }
-            else
-            {
-                codeSections.Add(code);
-            }
-
-            if (codeSections == null)
-            {
-                return string.Empty;
-            }
-
-            codeSections = Dedent(codeSections);
-            var source = string.Join("\n", codeSections.ToArray());
-            source = ExtensionsHelper.Escape(source);
-            return source;
-        }
-
-        public static List<string> Dedent(List<string> sections)
-        {
-            var indentRegex = new Regex(@"^\s*\W");
-            var RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
-            var dedentedSections = new List<string>();
-            foreach (var section in sections)
-            {
-                var codeLines = section.Split('\n');
-                var length = 0;
-
-                if (codeLines.Any(oo => !string.IsNullOrWhiteSpace(oo)))
-                {
-                    length = codeLines.Where(oo => !string.IsNullOrWhiteSpace(oo))
-                                          .Min(oo =>
-                    {
-                        var matches = indentRegex.Matches(oo);
-                        if (matches.Count > 0)
-                        {
-                            var match = matches[0];
-                            return match.Value.Length;
-                        } else
-                        {
-                            return 0;
-                        }
-                    });
-                }
-
-                var normalizedLines = (length == 0 ? codeLines : codeLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, length), string.Empty))).ToArray();
-                dedentedSections.Add(string.Join("\n", normalizedLines));
-            }
-            return dedentedSections;
-        }
-
-        private static List<string> GetCodeSectionsFromRange(string range, string[] codeLines, List<string> codeSections, Action<string> logError, bool shouldKeepSnippetTags = true)
-        {
-            var ranges = range.Split(',');
-            foreach (var codeRange in ranges)
-            {
-                if (codeRange.Contains("-"))
-                {
-                    var rangeParts = codeRange.Split('-');
-                    if (!string.IsNullOrEmpty(rangeParts[1]))
-                    {
-                        var beg = 0;
-                        var end = 0;
-                        if(int.TryParse(rangeParts[0], out beg)
-                            && int.TryParse(rangeParts[1], out end))
-                        {
-                            beg--;
-                            end--;
-                        } else
-                        {
-                            logError("Your ranges must be numbers.");
-                            return null;
-                        }
-                        if(beg > codeLines.Length || end > codeLines.Length)
-                        {
-                            logError("Your range is greater than the number of lines in the document.");
-                            return null;
-                        }
-                        var section = string.Empty;
-                        for (var i = beg; i <= end; i++)
-                        {
-                            if(shouldKeepSnippetTags || !tagRegex.IsMatch(codeLines[i]))
-                            {
-                                section += codeLines[i] + "\n";
-                            }
-                        }
-                        codeSections.Add(section);
-                    }
-                    else
-                    {
-                        var section = string.Empty;
-                        var beg = 0;
-                        if (int.TryParse(rangeParts[0], out beg))
-                        {
-                            beg--;
-                        }
-                        else
-                        {
-                            logError("Your ranges must be numbers.");
-                            return null;
-                        }
-                        var end = codeLines.Length;
-                        for (var i = beg; i < end; i++)
-                        {
-                            if (shouldKeepSnippetTags || !tagRegex.IsMatch(codeLines[i]))
-                            {
-                                section += codeLines[i] + "\n";
-                            }
-                        }
-                        codeSections.Add(section);
-                    }
-                }
-                else
-                {
-                    var beg = 0;
-                    if (int.TryParse(codeRange, out beg))
-                    {
-                        codeSections.Add(codeLines[beg-1]);
-                    }
-                    else
-                    {
-                        logError("Your ranges must be numbers.");
-                        return null;
-                    }
-                }
-            }
-
-            return codeSections;
-        }
-
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             return true;
-        }
-    }
-
-    public static class CodeTagExtentions
-    {
-        public static int FindIndexOfTag(this string[] codeLines, string id, bool isEnd = false)
-        {
-            if (!isEnd)
-            {
-                return Array.FindIndex(codeLines, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1) + 2;
-            } else
-            {
-                var startTagIndex = Array.FindIndex(codeLines, line => line.IndexOf(id, StringComparison.OrdinalIgnoreCase) > -1) + 2;
-                var endTagIndex = Array.FindIndex(codeLines, startTagIndex, line => {
-                    return line.IndexOf($"</{id}", StringComparison.OrdinalIgnoreCase) > -1 //normal end tag
-                           || line.IndexOf($";<{id}", StringComparison.OrdinalIgnoreCase) > -1 //Erlang end tag
-                           || line.IndexOf($"%<{id}", StringComparison.OrdinalIgnoreCase) > -1; //Lisp end tag
-                });
-
-                if(endTagIndex == -1) //search for region then
-                {
-                    var endRegionIndex1 = Array.FindIndex(codeLines, startTagIndex, line => line.IndexOf("endRegion", StringComparison.OrdinalIgnoreCase) > -1) + 1;
-                    var endRegionIndex2 = Array.FindIndex(codeLines, endRegionIndex1, line => line.IndexOf("endRegion", StringComparison.OrdinalIgnoreCase) > -1) + 1;
-                    var region2Index = Array.FindIndex(codeLines, startTagIndex, line => line.IndexOf("#region", StringComparison.OrdinalIgnoreCase) > -1);
-
-                    if(endRegionIndex2 == -1)
-                    {
-                        return endRegionIndex1;
-                    } else
-                    {
-                        if(region2Index > -1 && endRegionIndex1 > region2Index)
-                        {
-                            return endRegionIndex2;
-                        } else
-                        {
-                            return endRegionIndex1;
-                        }
-                    }
-                } else
-                {
-                    return endTagIndex;
-                }
-            }
         }
     }
 }
