@@ -304,16 +304,6 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
         }
 
-        public static class Heading
-        {
-            /// <summary>
-            /// The first tag in an article.md isn't h1 tag.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error HeadingNotFound(Document file)
-                => new Error(ErrorLevel.Off, "heading-not-found", $"The first visible block is not a heading block with `#`, `##` or `###`", file.FilePath);
-        }
-
         public static class Redirection
         {
             /// <summary>
@@ -488,6 +478,18 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}", monikers.FirstOrDefault());
         }
 
+        public static class Markdown
+        {
+            public static Error IncludeNotFound(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "include-not-found", $"Invalid include link: '{source}'.", source);
+
+            public static Error CircularReference<T>(SourceInfo? source, T current, IEnumerable<T> recursionDetector)
+            {
+                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{file}'"));
+                return new Error(ErrorLevel.Warning, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}", source);
+            }
+        }
+
         public static class JsonSchema
         {
             /// <summary>
@@ -557,8 +559,8 @@ namespace Microsoft.Docs.Build
             /// String length not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error StringLengthInvalid(SourceInfo? source, string propName, string criteria)
-                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' length should be {criteria}", source, propName);
+            public static Error StringLengthInvalid(SourceInfo? source, string propName, string type, int length, string criteria)
+                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' is too {type}: {length} characters. Length should be {criteria}", source, propName);
 
             /// <summary>
             /// Number not within min and max.

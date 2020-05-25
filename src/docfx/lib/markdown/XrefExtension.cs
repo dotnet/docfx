@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                     {
                         var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
                         var isShorthand = raw.StartsWith("@");
-                        var source = new SourceInfo<string>(xref.Href, xref.ToSourceInfo());
+                        var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
                         var (href, display) = resolveXref(source, null, isShorthand);
 
                         if (href is null)

@@ -286,7 +286,7 @@ namespace Microsoft.Docs.Build
 
                     return xrefSpec != null
                         ? (errors, JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href)))
-                        : (errors, new JObject { ["uid"] = value, ["href"] = null });
+                        : (errors, new JObject { ["name"] = value, ["href"] = null });
             }
 
             return (errors, value);

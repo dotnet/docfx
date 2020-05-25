@@ -383,6 +383,34 @@ outputs:
     }
    }
 ---
+# Dependency map for include file containing codesnippet inside tab group
+inputs:
+  docfx.yml: |
+    files: a.md
+  a.md: |
+    [!include[](b.md)]
+  b.md: |
+    ## [Android](#tab/x-android)
+
+    [!code-csharp[](android.cs)]
+
+    ## [ios](#tab/x-ios)
+
+    [!code-csharp[](ios.cs)]
+  android.cs:
+  ios.cs:
+outputs:
+  a.json:
+  .dependencymap.json: |
+    {
+       "dependencies":{
+          "b.md": [
+            { "source": "android.cs", "type":"include" },
+            { "source": "ios.cs", "type":"include" }
+          ]
+       }
+    }
+---
 # circular chain a include b include c include d link b
 inputs:
   docfx.yml:

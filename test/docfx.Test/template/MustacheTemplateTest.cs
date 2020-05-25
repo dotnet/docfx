@@ -29,13 +29,13 @@ namespace Microsoft.Docs.Build
         [InlineData("section.tmpl", "{'section':'string'}", "<p></p>")]
         [InlineData("section.tmpl", "{'section':''}", "")]
         [InlineData("xref.tmpl", "{'uid':{'name':'uid-name-resolve','href':'https://domain/path'}}", "<a href=\"https://domain/path\"> uid-name-resolve </a>")]
-        [InlineData("xref.tmpl", "{'uid':'uid-name-unresolve'}", "<span> uid-name-unresolve </span>")]
-        [InlineData("xref-partial.tmpl", "{'uid':'uid-name-unresolve'}", "<span> uid-name-unresolve </span>")]
+        [InlineData("xref.tmpl", "{'uid':{'name':'uid-name-unresolve'}}", "<span> uid-name-unresolve </span>")]
+        [InlineData("xref-partial.tmpl", "{'uid':{'name':'uid-name-unresolve'}}", "<span> uid-name-unresolve </span>")]
         [InlineData("xref-partial.tmpl",
             "{'uid':{'name':'uid-name-resolve','href':'https://domain/path'}}",
             "<a class=\"xref\" href=\"https://domain/path\">uid-name-resolve</a>")]
         [InlineData("xref-list.tmpl",
-            "{'uids': [{'name':'uid-name-resolve', 'href': 'https://domain/path'}, {'uid':'uid-name-unresolve', 'href':null}]}",
+            "{'uids': [{'name':'uid-name-resolve', 'href': 'https://domain/path'}, {'name':'uid-name-unresolve', 'href':null }]}",
             "<a href=\"https://domain/path\"> uid-name-resolve </a>\n<span> uid-name-unresolve </span>")]
         [InlineData(
             "include.tmpl",
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]
         [InlineData(
             "list.tmpl",
-            "{'list':['l1','l2'],'list-empty':[]}",
+            "{'list':['l1','l2'], 'list-empty':[], 'list-empty-string':['']}",
             "list=' l1 l2'")]
         public void RenderMustacheTemplate(string name, string json, string html)
         {

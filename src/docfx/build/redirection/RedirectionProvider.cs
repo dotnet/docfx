@@ -200,8 +200,8 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                redirectUrl = RemoveTrailingIndex(redirectUrl);
-                if (!publishUrlMap.TryGetValue(redirectUrl, out var docs))
+                var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(redirectUrl);
+                if (!publishUrlMap.TryGetValue(trimmedRedirectUrl, out var docs))
                 {
                     if (item.RedirectDocumentId)
                     {
@@ -217,7 +217,8 @@ namespace Microsoft.Docs.Build
                                     ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0).ToList()
                                     : docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
 
-                if (candidates.Count > 0)
+                // skip circular redirection validation for url containing query string
+                if (candidates.Count > 0 && string.IsNullOrEmpty(redirectQuery))
                 {
                     redirectionHistory.TryAdd(file, (candidates.OrderBy(x => x).Last(), item.RedirectUrl.Source));
                 }
@@ -244,10 +245,10 @@ namespace Microsoft.Docs.Build
             return publishUrlMap;
         }
 
-        private static string RemoveTrailingIndex(string redirectionUrl)
+        private static (string path, string query) RemoveTrailingIndex(string redirectionUrl)
         {
-            var (url, _, _) = UrlUtility.SplitUrl(redirectionUrl);
-            return url.EndsWith("/index", PathUtility.PathComparison) ? url.Substring(0, url.Length - "index".Length) : url;
+            var (path, query, _) = UrlUtility.SplitUrl(redirectionUrl);
+            return (path.EndsWith("/index", PathUtility.PathComparison) ? path.Substring(0, path.Length - "index".Length) : path, query);
         }
 
         private static string RemoveLeadingHostNameLocale(string redirectionUrl, string hostName)

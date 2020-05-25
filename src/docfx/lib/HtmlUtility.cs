@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             while (reader.Read(out var token))
             {
                 transform(ref reader, ref token);
-                writer.Write(token);
+                writer.Write(ref token);
             }
 
             return result.WrittenSpan.ToString();
@@ -159,13 +159,39 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        public static bool IsVisible(string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                return false;
+            }
+
+            var reader = new HtmlReader(html);
+            while (reader.Read(out var token))
+            {
+                if (IsVisible(ref token))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+            static bool IsVisible(ref HtmlToken token) => token.Type switch
+            {
+                HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
+                HtmlTokenType.Comment => false,
+                _ => true,
+            };
+        }
+
         public static void TransformLink(ref HtmlToken token, MarkdownObject? block, Func<SourceInfo<string>, string> transform)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.ToSourceInfo(attribute.ValueRange);
+                    var source = block?.GetSourceInfo(attribute.ValueRange);
                     var link = HttpUtility.HtmlEncode(transform(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source)));
 
                     attribute = attribute.WithValue(link);
@@ -216,8 +242,8 @@ namespace Microsoft.Docs.Build
             var isShorthand = (rawHtml ?? rawSource)?.StartsWith("@") ?? false;
 
             var (resolvedHref, display) = resolveXref(
-                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.ToSourceInfo(token.Range)),
-                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.ToSourceInfo(token.Range)),
+                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo(token.Range)),
+                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo(token.Range)),
                 isShorthand);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
@@ -225,46 +251,6 @@ namespace Microsoft.Docs.Build
                 : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
 
             token = new HtmlToken(resolvedNode);
-        }
-
-        /// <summary>
-        /// Get title and raw title, remove title node if all previous nodes are invisible
-        /// </summary>
-        public static bool TryExtractTitle(HtmlNode node, out string? title, [NotNullWhen(true)] out string? rawTitle)
-        {
-            var existVisibleNode = false;
-
-            title = null;
-            rawTitle = string.Empty;
-            foreach (var child in node.ChildNodes)
-            {
-                if (!IsInvisibleNode(child))
-                {
-                    if (child.NodeType == HtmlNodeType.Element && (child.Name == "h1" || child.Name == "h2" || child.Name == "h3"))
-                    {
-                        title = string.IsNullOrEmpty(child.InnerText) ? null : HttpUtility.HtmlDecode(child.InnerText);
-
-                        // NOTE: for backward compatibility during migration phase, the logic of title and raw title is different...
-                        if (!existVisibleNode)
-                        {
-                            rawTitle = child.OuterHtml;
-                            child.Remove();
-                        }
-
-                        return true;
-                    }
-
-                    existVisibleNode = true;
-                }
-            }
-
-            return false;
-
-            static bool IsInvisibleNode(HtmlNode n)
-            {
-                return n.NodeType == HtmlNodeType.Comment ||
-                    (n.NodeType == HtmlNodeType.Text && string.IsNullOrWhiteSpace(n.OuterHtml));
-            }
         }
 
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
@@ -367,7 +353,7 @@ namespace Microsoft.Docs.Build
             var tokenName = token.Name.ToString();
             if (!s_allowedTagAttributeMap.TryGetValue(tokenName, out var additionalAttributes))
             {
-                errors.Add(Errors.Content.DisallowedHtml(obj.ToSourceInfo(token.NameRange), tokenName));
+                errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(token.NameRange), tokenName));
                 return;
             }
 
@@ -383,7 +369,7 @@ namespace Microsoft.Docs.Build
 
                 if (additionalAttributes is null || !additionalAttributes.Contains(attributeName))
                 {
-                    errors.Add(Errors.Content.DisallowedHtml(obj.ToSourceInfo(attribute.NameRange), tokenName, attributeName));
+                    errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(attribute.NameRange), tokenName, attributeName));
                 }
             }
         }

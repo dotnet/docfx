@@ -81,6 +81,7 @@ outputs:
 ---
 # redirect to can start with https and hostname with locale
 # output document_id and canonical_url for redirection file as well
+# query string will be ignored for redirect document id calculation
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
@@ -535,3 +536,30 @@ inputs:
     }
 outputs:
     docs/test/a.json:
+---
+# No warning for self redirection to url with version
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '< netcore-1.0'
+    hostName: docs.com
+    basePath: /docs
+    routes:
+      docs/: .
+      docs/v1/: .
+    monikerDefinition: monikerDefinition.json
+  redirections.yml: |
+    redirections:
+      docs/v1/c.md: /docs/c?view=netcore2.0
+    renames:
+      docs/v1/d.md: /docs/d?view=netcore2.0
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+outputs:

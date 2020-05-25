@@ -20,16 +20,17 @@ namespace Microsoft.Docs.Build
             }
 
             var hasError = false;
+            var restoreFetchOptions = options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache;
+            var buildFetchOptions = options.NoRestore ? FetchOptions.NoFetch : FetchOptions.UseCache;
             Parallel.ForEach(docsets, docset =>
             {
-                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options))
+                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
                 {
                     hasError = true;
                     return;
                 }
 
-                options.NoCache = false;
-                if (BuildDocset(docset.docsetPath, docset.outputPath, options))
+                if (BuildDocset(docset.docsetPath, docset.outputPath, options, buildFetchOptions))
                 {
                     hasError = true;
                 }
@@ -37,7 +38,7 @@ namespace Microsoft.Docs.Build
             return hasError ? 1 : 0;
         }
 
-        private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options)
+        private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             using var errorLog = new ErrorLog(outputPath, options.Legacy);
             var stopwatch = Stopwatch.StartNew();
@@ -45,13 +46,13 @@ namespace Microsoft.Docs.Build
             try
             {
                 var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options, fetchOptions);
                 if (errorLog.Write(errors))
                 {
                     return true;
                 }
 
-                new OpsPreProcessor(config, buildOptions).Run();
+                new OpsPreProcessor(config, errorLog, buildOptions).Run();
                 var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
                 errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
@@ -122,7 +123,7 @@ namespace Microsoft.Docs.Build
             var errors = file.ContentType switch
             {
                 ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
-                ContentType.Resource when path.Origin != FileOrigin.Fallback => BuildResource.Build(context, file),
+                ContentType.Resource when path.Origin != FileOrigin.Fallback || context.Config.OutputType == OutputType.Html => BuildResource.Build(context, file),
                 ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
                 ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
                 _ => new List<Error>(),

@@ -2,42 +2,73 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
+using System.Linq;
 using Markdig;
+using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
+#pragma warning disable CS0618
+
 namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, int? line = null, FilePath? file = null)
+        private static readonly object s_filePathKey = new object();
+
+        public static Document GetFilePath(this MarkdownObject? obj)
         {
-            var path = file ?? (InclusionContext.File as Document)?.FilePath;
-            if (path is null)
+            while (true)
             {
-                return default;
+                switch (obj)
+                {
+                    case Block block when block.Parent is null || block.Parent is InclusionBlock:
+                    case Inline inline when inline.Parent is null || inline.Parent is InclusionInline:
+                        return obj.GetData(s_filePathKey) as Document ?? (Document)InclusionContext.File;
+
+                    case Block block:
+                        obj = block.Parent;
+                        break;
+
+                    case Inline inline:
+                        obj = inline.Parent;
+                        break;
+
+                    default:
+                        return (Document)InclusionContext.File;
+                }
             }
+        }
+
+        public static void SetFilePath(this MarkdownObject obj, Document value)
+        {
+            obj.SetData(s_filePathKey, value);
+        }
+
+        public static SourceInfo? GetSourceInfo(this MarkdownObject? obj, int? line = null)
+        {
+            var path = GetFilePath(obj).FilePath;
 
             if (line != null)
             {
                 return new SourceInfo(path, line.Value + 1, 0);
             }
 
+            if (obj is null)
+            {
+                return new SourceInfo(path, 0, 0);
+            }
+
             // Line info in markdown object is zero based, turn it into one based.
             return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
         }
 
-        public static SourceInfo? ToSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
+        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
         {
-            var path = (InclusionContext.File as Document)?.FilePath;
-            if (path is null)
-            {
-                return default;
-            }
+            var path = GetFilePath(obj).FilePath;
 
             var start = OffSet(obj.Line, obj.Column, html.Start.Line, html.Start.Column);
             var end = OffSet(obj.Line, obj.Column, html.End.Line, html.End.Column);
@@ -89,84 +120,112 @@ namespace Microsoft.Docs.Build
         /// Traverses the markdown object graph and replace each node with another node,
         /// If <paramref name="action"/> returns null, remove the node from the graph.
         /// </summary>
-        public static MarkdownObject Replace(this MarkdownObject obj, Func<MarkdownObject, MarkdownObject> action)
+        public static MarkdownObject Replace(this MarkdownObject obj, Func<MarkdownObject, MarkdownObject?> action)
         {
-            obj = action(obj);
+            return ReplaceCore(obj, action) ?? new MarkdownDocument();
 
-            if (obj is ContainerBlock block)
+            static MarkdownObject? ReplaceCore(MarkdownObject obj, Func<MarkdownObject, MarkdownObject?> action)
             {
-                for (var i = 0; i < block.Count; i++)
+                switch (action(obj))
                 {
-                    var replacement = (Block)Replace(block[i], action);
-                    if (replacement != block[i])
-                    {
-                        block.RemoveAt(i--);
-                        if (replacement != null)
+                    case null:
+                        return null;
+
+                    case ContainerBlock block:
+                        for (var i = 0; i < block.Count; i++)
                         {
-                            block.Insert(i, replacement);
+                            var replacement = ReplaceCore(block[i], action) as Block;
+                            if (replacement != block[i])
+                            {
+                                block.RemoveAt(i--);
+                                if (replacement != null)
+                                {
+                                    block.Insert(i, replacement);
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            else if (obj is ContainerInline inline)
-            {
-                foreach (var child in inline)
-                {
-                    var replacement = Replace(child, action);
-                    if (replacement is null)
-                    {
-                        child.Remove();
-                    }
-                    else if (replacement != child)
-                    {
-                        child.ReplaceBy((Inline)replacement);
-                    }
-                }
-            }
-            else if (obj is LeafBlock leaf)
-            {
-                leaf.Inline = (ContainerInline)Replace(leaf.Inline, action);
-            }
+                        return block;
 
-            return obj;
+                    case ContainerInline inline:
+                        foreach (var child in inline)
+                        {
+                            var replacement = ReplaceCore(child, action) as Inline;
+                            if (replacement is null)
+                            {
+                                child.Remove();
+                            }
+                            else if (replacement != child)
+                            {
+                                child.ReplaceBy(replacement);
+                            }
+                        }
+                        return inline;
+
+                    case LeafBlock leaf:
+                        leaf.Inline = ReplaceCore(leaf.Inline, action) as ContainerInline;
+                        return leaf;
+
+                    case MarkdownObject other:
+                        return other;
+                }
+            }
+        }
+
+        public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, Action<IMarkdownRenderer>? setupRenderer)
+        {
+            builder.Extensions.Add(new DelegatingExtension(null, setupRenderer));
+            return builder;
+        }
+
+        public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, Action<MarkdownPipelineBuilder> setupPipeline)
+        {
+            builder.Extensions.Add(new DelegatingExtension(setupPipeline, null));
+            return builder;
         }
 
         public static MarkdownPipelineBuilder Use(this MarkdownPipelineBuilder builder, ProcessDocumentDelegate documentProcessed)
         {
-            builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed));
+            builder.Extensions.Add(new DelegatingExtension(pipeline => pipeline.DocumentProcessed += documentProcessed, null));
             return builder;
         }
 
-        public static string ToPlainText(this MarkdownObject containerBlock)
+        public static bool IsVisible(this MarkdownObject markdownObject)
         {
-            using var writer = new StringWriter();
-            var renderer = new HtmlRenderer(writer)
+            var visible = false;
+
+            Visit(markdownObject, node =>
             {
-                EnableHtmlForBlock = false,
-                EnableHtmlForInline = false,
-                EnableHtmlEscape = false,
-            };
+                return visible = node switch
+                {
+                    HtmlBlock htmlBlock => htmlBlock.Lines.Lines.Any(line => HtmlUtility.IsVisible(line.Slice.ToString())),
+                    HtmlInline htmlInline => HtmlUtility.IsVisible(htmlInline.Tag),
+                    LinkReferenceDefinition _ => false,
+                    ThematicBreakBlock _ => false,
+                    YamlFrontMatterBlock _ => false,
+                    HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any() => false,
+                    LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => true,
+                    LeafInline _ => true,
+                    _ => false,
+                };
+            });
 
-            renderer.Render(containerBlock);
-            writer.Flush();
-
-            return writer.ToString();
+            return visible;
         }
 
         private class DelegatingExtension : IMarkdownExtension
         {
-            private readonly Action<MarkdownPipelineBuilder> _setupPipeline;
+            private readonly Action<MarkdownPipelineBuilder>? _setupPipeline;
+            private readonly Action<IMarkdownRenderer>? _setupRenderer;
 
-            public DelegatingExtension(Action<MarkdownPipelineBuilder> setupPipeline)
+            public DelegatingExtension(Action<MarkdownPipelineBuilder>? setupPipeline, Action<IMarkdownRenderer>? setupRenderer)
             {
                 _setupPipeline = setupPipeline;
+                _setupRenderer = setupRenderer;
             }
 
             public void Setup(MarkdownPipelineBuilder pipeline) => _setupPipeline?.Invoke(pipeline);
 
-            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
-            {
-            }
+            public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer) => _setupRenderer?.Invoke(renderer);
         }
     }
 }

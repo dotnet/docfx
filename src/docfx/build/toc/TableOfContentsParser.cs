@@ -19,11 +19,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly MarkdownEngine _markdownEngine;
+        private readonly DocumentProvider _documentProvider;
 
-        public TableOfContentsParser(Input input, MarkdownEngine markdownEngine)
+        public TableOfContentsParser(Input input, MarkdownEngine markdownEngine, DocumentProvider documentProvider)
         {
             _input = input;
             _markdownEngine = markdownEngine;
+            _documentProvider = documentProvider;
         }
 
         public TableOfContentsNode Parse(FilePath file, List<Error> errors)
@@ -62,7 +64,7 @@ namespace Microsoft.Docs.Build
         private TableOfContentsNode ParseMarkdown(string content, FilePath file, List<Error> errors)
         {
             var headingBlocks = new List<HeadingBlock>();
-            var (markupErrors, ast) = _markdownEngine.Parse(content, MarkdownPipelineType.TocMarkdown);
+            var (markupErrors, ast) = _markdownEngine.Parse(content, _documentProvider.GetDocument(file), MarkdownPipelineType.TocMarkdown);
             errors.AddRange(markupErrors);
 
             foreach (var block in ast)
@@ -76,16 +78,16 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.ToSourceInfo(file: file)));
+                        errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.GetSourceInfo()));
                         break;
                 }
             }
 
             using var reader = new StringReader(content);
-            return new TableOfContentsNode { Items = BuildTree(errors, file, headingBlocks) };
+            return new TableOfContentsNode { Items = BuildTree(errors, headingBlocks) };
         }
 
-        private static List<SourceInfo<TableOfContentsNode>> BuildTree(List<Error> errors, FilePath filePath, List<HeadingBlock> blocks)
+        private static List<SourceInfo<TableOfContentsNode>> BuildTree(List<Error> errors, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
@@ -102,7 +104,7 @@ namespace Microsoft.Docs.Build
             foreach (var block in blocks)
             {
                 var currentLevel = block.Level;
-                var currentItem = GetItem(errors, filePath, block);
+                var currentItem = GetItem(errors, block);
                 if (currentItem == null)
                 {
                     continue;
@@ -115,7 +117,7 @@ namespace Microsoft.Docs.Build
 
                 if (parent.node is null || currentLevel != parent.level + 1)
                 {
-                    errors.Add(Errors.TableOfContents.InvalidTocLevel(block.ToSourceInfo(file: filePath), parent.level, currentLevel));
+                    errors.Add(Errors.TableOfContents.InvalidTocLevel(block.GetSourceInfo(), parent.level, currentLevel));
                 }
                 else
                 {
@@ -128,9 +130,9 @@ namespace Microsoft.Docs.Build
             return result.Items;
         }
 
-        private static SourceInfo<TableOfContentsNode>? GetItem(List<Error> errors, FilePath filePath, HeadingBlock block)
+        private static SourceInfo<TableOfContentsNode>? GetItem(List<Error> errors, HeadingBlock block)
         {
-            var source = block.ToSourceInfo(file: filePath);
+            var source = block.GetSourceInfo();
             var currentItem = new TableOfContentsNode();
             if (block.Inline is null || !block.Inline.Any())
             {
@@ -140,14 +142,14 @@ namespace Microsoft.Docs.Build
 
             if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
             {
-                errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.ToSourceInfo(file: filePath)));
+                errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.GetSourceInfo()));
                 return null;
             }
 
             var xrefLink = block.Inline.FirstOrDefault(l => l is XrefInline);
             if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
             {
-                currentItem.Uid = new SourceInfo<string?>(xrefInline.Href, xrefInline.ToSourceInfo(file: filePath));
+                currentItem.Uid = new SourceInfo<string?>(xrefInline.Href, xrefInline.GetSourceInfo());
                 return new SourceInfo<TableOfContentsNode>(currentItem, source);
             }
 
@@ -156,23 +158,23 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(linkInline.Url))
                 {
-                    currentItem.Href = new SourceInfo<string?>(linkInline.Url, linkInline.ToSourceInfo(file: filePath));
+                    currentItem.Href = new SourceInfo<string?>(linkInline.Url, linkInline.GetSourceInfo());
                 }
                 if (!string.IsNullOrEmpty(linkInline.Title))
                 {
                     currentItem.DisplayName = linkInline.Title;
                 }
-                currentItem.Name = GetLiteral(errors, filePath, linkInline);
+                currentItem.Name = GetLiteral(errors, linkInline);
             }
 
             if (currentItem.Name.Value is null)
             {
-                currentItem.Name = GetLiteral(errors, filePath, block.Inline);
+                currentItem.Name = GetLiteral(errors, block.Inline);
             }
             return new SourceInfo<TableOfContentsNode>(currentItem, source);
         }
 
-        private static SourceInfo<string?> GetLiteral(List<Error> errors, FilePath filePath, ContainerInline inline)
+        private static SourceInfo<string?> GetLiteral(List<Error> errors, ContainerInline inline)
         {
             var result = new StringBuilder();
             var child = inline.FirstChild;
@@ -199,12 +201,12 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add(Errors.TableOfContents.InvalidTocSyntax(inline.ToSourceInfo(file: filePath)));
+                    errors.Add(Errors.TableOfContents.InvalidTocSyntax(inline.GetSourceInfo()));
                     return default;
                 }
             }
 
-            return new SourceInfo<string?>(result.ToString(), inline.ToSourceInfo(file: filePath));
+            return new SourceInfo<string?>(result.ToString(), inline.GetSourceInfo());
         }
     }
 }

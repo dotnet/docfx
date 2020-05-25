@@ -3,14 +3,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
+using Markdig.Extensions.EmphasisExtras;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
+using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
+
+#pragma warning disable CS0618
 
 namespace Microsoft.Docs.Build
 {
@@ -18,6 +26,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
+        private readonly DocumentProvider _documentProvider;
         private readonly Input _input;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
@@ -36,6 +45,7 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
+            DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
             ContentValidator contentValidator)
@@ -43,11 +53,12 @@ namespace Microsoft.Docs.Build
             _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
+            _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
 
-            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile);
+            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
             _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
 
             if (!string.IsNullOrEmpty(_markdownValidationRules))
@@ -65,31 +76,34 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public (List<Error> errors, MarkdownDocument ast) Parse(string content, MarkdownPipelineType piplineType)
-        {
-            try
-            {
-                var status = new Status();
-
-                t_status.Value!.Push(status);
-
-                var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
-
-                return (status.Errors, ast);
-            }
-            finally
-            {
-                t_status.Value!.Pop();
-            }
-        }
-
-        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType)
+        public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType piplineType)
         {
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
                     var status = new Status();
+
+                    t_status.Value!.Push(status);
+
+                    var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
+
+                    return (status.Errors, ast);
+                }
+                finally
+                {
+                    t_status.Value!.Pop();
+                }
+            }
+        }
+
+        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
+        {
+            using (InclusionContext.PushFile(file))
+            {
+                try
+                {
+                    var status = new Status(conceptual);
 
                     t_status.Value!.Push(status);
 
@@ -106,33 +120,97 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public string ToHtml(MarkdownObject markdownObject)
+        {
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
+            var renderer = new HtmlRenderer(writer);
+
+            _pipelines[(int)MarkdownPipelineType.Markdown].Setup(renderer);
+            renderer.Render(markdownObject);
+            writer.Flush();
+
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
+        }
+
+        public string ToPlainText(MarkdownObject markdownObject)
+        {
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
+            var renderer = new HtmlRenderer(writer)
+            {
+                EnableHtmlForBlock = false,
+                EnableHtmlForInline = false,
+                EnableHtmlEscape = false,
+            };
+
+            _pipelines[(int)MarkdownPipelineType.Markdown].Setup(renderer);
+            renderer.Render(markdownObject);
+            writer.Flush();
+
+            // Trim trailing \n
+            if (sb.Length > 0 && sb[^1] == '\n')
+            {
+                sb.Length--;
+            }
+
+            return sb.ToString();
+        }
+
         private MarkdownPipeline CreateMarkdownPipeline()
         {
-            return new MarkdownPipelineBuilder()
-                .UseYamlFrontMatter()
-                .UseDocfxExtensions(_markdownContext)
-                .UseTelemetry()
-                .UseLink(GetLink)
-                .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref)
-                .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
-                .Build();
+            return CreateMarkdownPipelineBuilder().Build();
         }
 
         private MarkdownPipeline CreateInlineMarkdownPipeline()
         {
+            return CreateMarkdownPipelineBuilder().UseInlineOnly().Build();
+        }
+
+        private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder()
+        {
             return new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
-                .UseDocfxExtensions(_markdownContext)
+                .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
+                .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
+                .UseMediaLinks()
+                .UsePipeTables()
+                .UseAutoLinks()
+                .UseHeadingIdRewriter()
+                .UseIncludeFile(_markdownContext)
+                .UseCodeSnippet(_markdownContext)
+                .UseFencedCodeLangPrefix()
+                .UseQuoteSectionNote(_markdownContext)
+                .UseXref()
+                .UseEmojiAndSmiley(false)
+                .UseTabGroup(_markdownContext)
+                .UseMonikerRange(_markdownContext)
+                .UseInteractiveCode()
+                .UseRow(_markdownContext)
+                .UseNestedColumn(_markdownContext)
+                .UseTripleColon(_markdownContext)
+                .UseNoloc()
                 .UseTelemetry()
-                .UseLink(GetLink)
+                .UseMonikerZone(GetMonikerRange)
+                .UseContentValidation(this, _validatorProvider, GetValidationNodes, ReadFile)
+                .UseFilePath()
+
+                // Extensions before this line sees inclusion AST twice:
+                // - Once AST for the entry file without InclusionBlock expanded
+                // - Once AST for only the included file.
+                .UseExpandInclude(_markdownContext, GetErrors)
+
+                // Extensions after this line sees an expanded inclusion AST only once.
+                .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
-                .UseMonikerZone(GetMonikerRange)
-                .UseContentValidation(_validatorProvider, GetHeadings, ReadFile)
-                .UseInlineOnly()
-                .Build();
+                .UseExtractTitle(this, GetConceptual);
         }
 
         private static MarkdownPipeline CreateTocMarkdownPipeline()
@@ -148,7 +226,8 @@ namespace Microsoft.Docs.Build
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
-            builder.UseYamlFrontMatter()
+            builder.UseFilePath()
+                   .UseYamlFrontMatter()
                    .UseXref()
                    .UsePreciseSourceLocation();
 
@@ -167,17 +246,17 @@ namespace Microsoft.Docs.Build
 
         private static void LogError(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.GetSourceInfo(line)));
         }
 
         private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.GetSourceInfo(line)));
         }
 
         private static void LogSuggestion(string code, string message, MarkdownObject origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.ToSourceInfo(line)));
+            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.GetSourceInfo(line)));
         }
 
         private static List<Error> GetErrors()
@@ -185,22 +264,33 @@ namespace Microsoft.Docs.Build
             return t_status.Value!.Peek().Errors;
         }
 
-        private (string? content, object? file) ReadFile(string path, object relativeTo, MarkdownObject origin)
+        private static ConceptualModel? GetConceptual()
+        {
+            return t_status.Value!.Peek().Conceptual;
+        }
+
+        private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var referencingFile = (Document)relativeTo;
-
-            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.ToSourceInfo()), referencingFile);
+            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath());
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);
         }
 
+        private string GetLink(string path, MarkdownObject origin)
+        {
+            var status = t_status.Value!.Peek();
+            var (error, link, _) = _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
+            status.Errors.AddIfNotNull(error);
+
+            return link;
+        }
+
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value!.Peek();
-
-            var (error, link, _) = _linkResolver.ResolveLink(href, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetDocument(href), (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
 
             return link;
@@ -211,14 +301,21 @@ namespace Microsoft.Docs.Build
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, (Document)InclusionContext.File, (Document)InclusionContext.RootFile)
-                : _xrefResolver.ResolveXrefByUid(uid ?? default, (Document)InclusionContext.File, (Document)InclusionContext.RootFile);
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value), (Document)InclusionContext.RootFile)
+                : uid.HasValue
+                ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
+                : default;
 
             if (!isShorthand)
             {
                 status.Errors.AddIfNotNull(error);
             }
             return (link, display);
+        }
+
+        private Document GetDocument<T>(SourceInfo<T> sourceInfo)
+        {
+            return sourceInfo.Source?.File is FilePath filePath ? _documentProvider.GetDocument(filePath) : (Document)InclusionContext.File;
         }
 
         private IReadOnlyList<string> GetMonikerRange(SourceInfo<string?> monikerRange)
@@ -229,32 +326,39 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private Dictionary<Document, (List<Heading> headings, bool isIncluded)> GetHeadings(List<Heading> headings)
+        private Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> GetValidationNodes(List<ValidationNode> nodes)
         {
             var status = t_status.Value!.Peek();
 
-            if (!status.Headings.ContainsKey((Document)InclusionContext.File))
+            if (!status.Nodes.ContainsKey((Document)InclusionContext.File))
             {
-                status.Headings.Add((Document)InclusionContext.File, (headings, InclusionContext.IsInclude));
+                status.Nodes.Add((Document)InclusionContext.File, (nodes, InclusionContext.IsInclude));
             }
 
-            return status.Headings;
+            return status.Nodes;
         }
 
         private void ValidateHeadings()
         {
             var status = t_status.Value!.Peek();
-            foreach (var (document, (headings, isIncluded)) in status.Headings)
+            foreach (var (document, (nodes, isIncluded)) in status.Nodes)
             {
-                _contentValidator.ValidateHeadings(document, headings, isIncluded);
+                _contentValidator.ValidateHeadings(document, nodes.OfType<ContentNode>().ToList(), isIncluded);
             }
         }
 
         private class Status
         {
+            public ConceptualModel? Conceptual { get; }
+
             public List<Error> Errors { get; } = new List<Error>();
 
-            public Dictionary<Document, (List<Heading> headings, bool isIncluded)> Headings { get; } = new Dictionary<Document, (List<Heading> headings, bool isIncluded)>();
+            public Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>();
+
+            public Status(ConceptualModel? conceptual = null)
+            {
+                Conceptual = conceptual;
+            }
         }
     }
 }

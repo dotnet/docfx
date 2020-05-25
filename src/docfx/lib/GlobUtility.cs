@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using GlobExpressions;
 
@@ -72,7 +73,9 @@ namespace Microsoft.Docs.Build
         {
             // Pre process glob pattern so `**.md` means `**/*.md`
             // **** => **, **.md => **/*.md
-            return Regex.Replace(pattern, @"\*{2,}", "**").Replace("**.", "**/*");
+            pattern = Regex.Replace(pattern, @"\*{2,}", "**");
+            pattern = Regex.Replace(pattern, @"^\*{2}\.", "**/*.");
+            return pattern.Replace("/**.", "/**/*.");
         }
     }
 }

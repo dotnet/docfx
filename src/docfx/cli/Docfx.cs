@@ -68,7 +68,10 @@ namespace Microsoft.Docs.Build
 
             using (Log.BeginScope(options.Verbose))
             {
-                Log.Write($"Using docfx {GetDocfxVersion()}");
+                Log.Write($"docfx: {GetDocfxVersion()}");
+                Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Microsoft.Docs.Validation.IValidator))}");
+                Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
+                Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
 
                 var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
                 ThreadPool.SetMinThreads(minThreads, minThreads);
@@ -140,6 +143,11 @@ namespace Microsoft.Docs.Build
 
         private static void PrintFatalErrorMessage(Exception exception)
         {
+            if (exception is AggregateException ae && ae.InnerException != null)
+            {
+                exception = ae.InnerException;
+            }
+
             Console.ResetColor();
             Console.WriteLine();
 
@@ -213,9 +221,14 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
 
         private static string? GetDocfxVersion()
         {
+            return GetVersion(typeof(Docfx));
+        }
+
+        private static string? GetVersion(Type type)
+        {
             try
             {
-                return typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                return type.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
             }
             catch (Exception ex)
             {
