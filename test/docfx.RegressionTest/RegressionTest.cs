@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,6 +11,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CommandLine;
+using Microsoft.Docs.Validation;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -30,7 +31,7 @@ namespace Microsoft.Docs.Build
             const string TestDiskRoot = "D:/";
 
             static readonly string s_repositoryRoot = Environment.GetEnvironmentVariable("BUILD_SOURCESDIRECTORY") ?? FindRepositoryRoot(AppContext.BaseDirectory);
-            static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "Docs.Build.TestData");
+            static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "Docfx.RegressionTest.TestData");
 
             static readonly string s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
             static readonly string s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
@@ -64,48 +65,47 @@ namespace Microsoft.Docs.Build
 
             static bool Test(Options opts)
             {
-                var testRepositoryName = Path.GetFileName(opts.Repository);
-                var testWorkingFolder = Path.Combine(s_testDataRoot, testRepositoryName);
-                var testRepositoryPath = Path.Combine(testWorkingFolder, testRepositoryName);
+
+                var (baseLinePath, outputPath, workingFolder, repositoryPath) = Prepare(opts);
+
+                Clean(outputPath);
+
+                var buildTime = Build(repositoryPath);
+                Prettify(outputPath);
+                Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
                 Console.BackgroundColor = ConsoleColor.DarkMagenta;
-                Console.WriteLine($"Testing {testRepositoryName}");
+                Console.WriteLine($"Test Pass {workingFolder}");
+                Console.ResetColor();
+                return true;
+            }
+
+            private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath) Prepare(Options opts)
+            {
+                var repositoryName = "engineering";// Path.GetFileName(opts.Repository);
+                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
+                var repositoryPath = Path.Combine(workingFolder, repositoryName);
+
+                Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                Console.WriteLine($"Testing {repositoryName}");
                 Console.ResetColor();
 
-                var existingOutputPath = Path.Combine(testWorkingFolder, "output");
-                Directory.CreateDirectory(existingOutputPath);
-                var outputPath = s_isPullRequest ? Path.Combine(testWorkingFolder, ".temp") : existingOutputPath;
+                var baseLinePath = Path.Combine(workingFolder, "output");
+                Directory.CreateDirectory(baseLinePath);
+                var outputPath = s_isPullRequest ? Path.Combine(workingFolder, ".temp") : baseLinePath;
 
                 var gitToken = opts.Repository.StartsWith("https://github.com") ? s_githubToken : s_azureDevopsToken;
 
                 // Set Env for Build
-                Environment.SetEnvironmentVariable("DOCS_GIT_TOKEN", gitToken);
+                Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PROD");
                 Environment.SetEnvironmentVariable("DOCS_OUTPUT_PATH", outputPath);
-                Environment.SetEnvironmentVariable("DOCS_REPOSITORY_URL", opts.Repository);
-                Environment.SetEnvironmentVariable("DOCS_REPOSITORY_BRANCH", opts.Branch);
-                Environment.SetEnvironmentVariable("DOCS_BUILD_TYPE", opts.BuildType);
-                Environment.SetEnvironmentVariable("DOCS_PULL_REQUEST_REPOSITORY_URL", opts.PullRequestUrl);
-                Environment.SetEnvironmentVariable("DOCS_PULL_REQUEST_REPOSITORY_BRANCH", opts.PullRequestBranch);
-                Environment.SetEnvironmentVariable("DOCS_NEED_PUBLISH", opts.NeedPublish ? "true" : "false");
-                Environment.SetEnvironmentVariable("DOCS_FORCE_PUBLISH", opts.NeedPublish ? "true" : "false");
-                Environment.SetEnvironmentVariable("DOCS_LOCALE", opts.Locale);
-                Environment.SetEnvironmentVariable("DOCS_BUILD_ID", $"{DateTime.UtcNow.ToString("yyyyMMddHHmmssffff")}-{testRepositoryName}");
+                Environment.SetEnvironmentVariable("DOCFX_GIT_TOKEN", gitToken);
+                Environment.SetEnvironmentVariable("DOCFX_GITHUB_TOKEN", gitToken);
+                Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
+                Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
+                Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
 
-                if (opts.BuildType == "PullRequest")
-                    Environment.SetEnvironmentVariable("DOCFX_BUILD_TIME", "2020-01-01T00:00:00Z");
-
-
-
-                Clean(outputPath, testRepositoryPath);
-
-                var buildTime = Build(testRepositoryPath);
-                Prettify(outputPath);
-                Compare(outputPath, opts.Repository, existingOutputPath, buildTime, opts.Timeout, testWorkingFolder);
-
-                Console.BackgroundColor = ConsoleColor.DarkMagenta;
-                Console.WriteLine($"Test Pass {testRepositoryName}");
-                Console.ResetColor();
-                return true;
+                return (baseLinePath, outputPath, workingFolder, repositoryPath);
             }
 
             private static void EnsureTestData(string repository, string branch)
@@ -147,23 +147,18 @@ namespace Microsoft.Docs.Build
                 Exec("git", $"clean -xdf -e **/_cache/* -e **/_repo_cache/*", Path.Combine(testWorkingFolder, testRepositoryName));
             }
 
-            static void Clean(string outputPath, string repositoryPath)
+            static void Clean(string outputPath)
             {
                 if (Directory.Exists(outputPath))
                 {
                     Directory.Delete(outputPath, recursive: true);
-                }
-
-                var publishCacheFolder = Path.Combine(repositoryPath, "_cache", "publish-cache");
-                if (Directory.Exists(publishCacheFolder))
-                {
-                    Directory.Delete(publishCacheFolder, recursive: true);
+                    Directory.CreateDirectory(outputPath);
                 }
             }
 
             static TimeSpan Build(string repositoryPath)
             {
-                return Exec(Path.Combine(AppContext.BaseDirectory, "docs-pipeline.exe"), cwd: repositoryPath);
+                return Exec(Path.Combine(AppContext.BaseDirectory, "docfx.exe"), arguments: "build --legacy", cwd: repositoryPath);
             }
 
             static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
@@ -211,22 +206,6 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-
-            static string RemoveUriSAS(string uri)
-            {
-                if (string.IsNullOrEmpty(uri))
-                {
-                    return uri;
-                }
-
-                var index = uri.IndexOf('?');
-                if (index > 0)
-                {
-                    return uri.Substring(0, index);
-                }
-                return uri;
-            }
-
             static void PushChanges(string repository)
             {
                 if (s_isPullRequest)
@@ -250,7 +229,14 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.WriteLine($"{fileName} {sanitizedArguments}");
                 Console.ResetColor();
-                var process = Process.Start(new ProcessStartInfo { FileName = fileName, Arguments = arguments, WorkingDirectory = cwd, UseShellExecute = false, RedirectStandardError = redirectStandardError });
+                var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = fileName,
+                    Arguments = arguments,
+                    WorkingDirectory = cwd,
+                    UseShellExecute = false,
+                    RedirectStandardError = redirectStandardError,
+                });
                 var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
                 process.WaitForExit();
 
