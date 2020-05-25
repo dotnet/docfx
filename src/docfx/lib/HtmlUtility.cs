@@ -159,6 +159,32 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
+        public static bool IsVisible(string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                return false;
+            }
+
+            var reader = new HtmlReader(html);
+            while (reader.Read(out var token))
+            {
+                if (IsVisible(ref token))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+            static bool IsVisible(ref HtmlToken token) => token.Type switch
+            {
+                HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
+                HtmlTokenType.Comment => false,
+                _ => true,
+            };
+        }
+
         public static void TransformLink(ref HtmlToken token, MarkdownObject? block, Func<SourceInfo<string>, string> transform)
         {
             foreach (ref var attribute in token.Attributes.Span)
