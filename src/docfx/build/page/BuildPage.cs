@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -239,18 +238,9 @@ namespace Microsoft.Docs.Build
             var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, conceptual);
             errors.AddRange(markupErrors);
 
-            var htmlDom = HtmlUtility.LoadHtml(html);
-            ValidateBookmarks(context, file, htmlDom, conceptual.RawTitle);
+            ProcessConceptualHtml(conceptual, context, file, html);
 
-            if (context.Config.DryRun)
-            {
-                return (errors, new JObject());
-            }
-
-            conceptual.Conceptual = CreateHtmlContent(context, htmlDom);
-            conceptual.WordCount = HtmlUtility.CountWord(htmlDom);
-
-            return (errors, JsonUtility.ToJObject(conceptual));
+            return (errors, context.Config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual));
         }
 
         private static (List<Error> errors, JObject model) LoadYaml(Context context, Document file)
@@ -302,12 +292,10 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(deserializeErrors);
 
                 var razorHtml = RazorTemplate.Render(file.Mime, landingData).GetAwaiter().GetResult();
-                var htmlDom = HtmlUtility.LoadHtml(razorHtml);
-                ValidateBookmarks(context, file, htmlDom);
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = CreateHtmlContent(context, htmlDom),
+                    Conceptual = ProcessHtml(context, file, razorHtml),
                     ExtensionData = pageModel,
                 });
             }
@@ -353,23 +341,6 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private static string CreateHtmlContent(Context context, HtmlNode html)
-        {
-            return LocalizationUtility.AddLeftToRightMarker(
-                context.BuildOptions.Culture,
-                HtmlUtility.AddLinkType(html, context.BuildOptions.Locale).WriteTo());
-        }
-
-        private static void ValidateBookmarks(Context context, Document file, HtmlNode html, string? rawTitle = null)
-        {
-            var bookmarks = HtmlUtility.GetBookmarks(html);
-            if (!string.IsNullOrEmpty(rawTitle))
-            {
-                bookmarks.AddRange(HtmlUtility.GetBookmarks(HtmlUtility.LoadHtml(rawTitle)));
-            }
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
-        }
-
         private static string CreateContent(Context context, Document file, JObject pageModel)
         {
             if (TemplateEngine.IsConceptual(file.Mime) || TemplateEngine.IsLandingData(file.Mime))
@@ -382,9 +353,51 @@ namespace Microsoft.Docs.Build
             var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
             var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model);
 
-            var htmlDom = HtmlUtility.LoadHtml(content);
-            ValidateBookmarks(context, file, htmlDom);
-            return CreateHtmlContent(context, htmlDom);
+            return ProcessHtml(context, file, content);
+        }
+
+        private static string ProcessHtml(Context context, Document file, string html)
+        {
+            var bookmarks = new HashSet<string>();
+            var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+            {
+                HtmlUtility.GetBookmarks(ref token, bookmarks);
+                HtmlUtility.AddLinkType(ref token, context.BuildOptions.Locale);
+            });
+
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            return LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);
+        }
+
+        private static void ProcessConceptualHtml(ConceptualModel conceptual, Context context, Document file, string html)
+        {
+            var wordCount = 0L;
+            var bookmarks = new HashSet<string>();
+            var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+            {
+                HtmlUtility.GetBookmarks(ref token, bookmarks);
+                HtmlUtility.AddLinkType(ref token, context.BuildOptions.Locale);
+
+                if (!context.Config.DryRun)
+                {
+                    HtmlUtility.CountWord(ref token, ref wordCount);
+                }
+            });
+
+            // Populate anchors from raw title
+            if (!string.IsNullOrEmpty(conceptual.RawTitle))
+            {
+                var reader = new HtmlReader(conceptual.RawTitle);
+                while (reader.Read(out var token))
+                {
+                    HtmlUtility.GetBookmarks(ref token, bookmarks);
+                }
+            }
+
+            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+
+            conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);
+            conceptual.WordCount = wordCount;
         }
 
         private static bool IsCustomized404Page(Document file)

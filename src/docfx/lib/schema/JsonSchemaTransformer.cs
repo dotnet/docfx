@@ -267,7 +267,7 @@ namespace Microsoft.Docs.Build
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
 
-                    var htmlWithLinks = HtmlUtility.TransformHtml(content, (ref HtmlReader reader, ref HtmlToken token) =>
+                    var htmlWithLinks = HtmlUtility.TransformHtml(content, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
                     {
                         HtmlUtility.TransformLink(ref token, null, href =>
                         {
