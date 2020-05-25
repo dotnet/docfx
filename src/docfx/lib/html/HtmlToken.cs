@@ -61,6 +61,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            // TODO: This API is very specific for appending data-linktype
             var attributes = new HtmlAttribute[Attributes.Length + 1];
             attributes[Attributes.Length] = new HtmlAttribute(name, value);
             Attributes.CopyTo(attributes);
