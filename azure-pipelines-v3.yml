@@ -276,6 +276,6 @@ jobs:
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
       DOCS_GENERATE_DOCFX_YML: 'false'
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
+      AzureServicesAuthConnectionString: $(TEMP_CONN_STRING)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
