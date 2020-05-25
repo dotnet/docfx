@@ -8,7 +8,7 @@
     <title>DocFX Document Schema v1.0 Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Document Schema v1.0 Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.53.1.0">
+    <meta name="generator" content="docfx 2.54.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -384,7 +384,7 @@ To leverage this feature, a new <code>xref</code> syntax with <code>template</co
 <pre><code class="lang-html">&lt;xref uid=&quot;{uid}&quot; template=&quot;{path_of_partial_template}&quot; /&gt;
 </code></pre>
 <p>For the parital template, the input model is the object containing properties <code>xrefProperties</code> defines.</p>
-<p>For example, in the sample schema defined by <a href="#7-samples">7. Samples</a>, <code>&quot;xrefProperties&quot;: [ &quot;title&quot;, &quot;description&quot; ],</code>, <code>title</code> and <code>description</code> are <code>xrefProperties</code> for uid <code>webapp</code>. A partial template to render this xref, for example, named <code>partials/overview.tmpl</code>, looks like:</p>
+<p>For example, in the sample schema defined by <a href="#7-samples">7. Samples</a>, <code> &quot;xrefProperties&quot;: [ &quot;title&quot;, &quot;description&quot; ],</code>, <code>title</code> and <code>description</code> are <code>xrefProperties</code> for uid <code>webapp</code>. A partial template to render this xref, for example, named <code>partials/overview.tmpl</code>, looks like:</p>
 <pre><code class="lang-mustache">{{title}}: {{{description}}}
 </code></pre>
 <p>When someone references this uid using <code>&lt;xref uid=&quot;webapp&quot; template=&quot;partials/overview.tmpl&quot;</code>, <code>docfx</code> expand this <code>xref</code> into the following html:</p>

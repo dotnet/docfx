@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.53.1) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.54) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.53.1) | DocFX website ">
-    <meta name="generator" content="docfx 2.53.1.0">
+    <meta name="title" content="Version Notes (Current Version: v2.54) | DocFX website ">
+    <meta name="generator" content="docfx 2.54.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -70,11 +70,21 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2531">Version Notes (Current Version: v2.53.1)</h1>
+<h1 id="version-notes-current-version-v254">Version Notes (Current Version: v2.54)</h1>
 
+<h2 id="v254">v2.54</h2>
+<ol>
+<li>Supporting setting <code>wkhtmltopdf.exe</code> path in config. Thanks @icnocop! (#4422)</li>
+<li>Add video Markdown extension syntax. (#5945)</li>
+<li>Bug fix:
+<ol>
+<li>Fix inaccurate error message when UIDs are duplicate. (#5898).</li>
+</ol>
+</li>
+</ol>
 <h2 id="v2531">v2.53.1</h2>
 <ol>
-<li>But fix:
+<li>Bug fix:
 <ol>
 <li>Downgrade error to warning for Markdown complex image.</li>
 </ol>
@@ -1050,7 +1060,7 @@ console.log('hello world');
 <li>Fix assert fail in metadata. (<a href="https://github.com/dotnet/docfx/issues/741">https://github.com/dotnet/docfx/issues/741</a>)</li>
 <li>Add new command option: repositoryRoot.</li>
 </ol>
-<h2 id="v254">v2.5.4</h2>
+<h2 id="v254-1">v2.5.4</h2>
 <ol>
 <li>Fix isssue #719 that assertion failed.</li>
 </ol>

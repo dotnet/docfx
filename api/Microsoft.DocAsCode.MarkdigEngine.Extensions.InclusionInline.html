@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class InclusionInline
    | DocFX website ">
-    <meta name="generator" content="docfx 2.53.1.0">
+    <meta name="generator" content="docfx 2.54.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -90,16 +90,60 @@
     <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
     <div class="level1"><span class="xref">Markdig.Syntax.MarkdownObject</span></div>
     <div class="level2"><span class="xref">Markdig.Syntax.Inlines.Inline</span></div>
-    <div class="level3"><span class="xref">Markdig.Syntax.Inlines.LeafInline</span></div>
+    <div class="level3"><span class="xref">Markdig.Syntax.Inlines.ContainerInline</span></div>
     <div class="level4"><span class="xref">InclusionInline</span></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
     <div><span class="xref">Markdig.Syntax.Inlines.IInline</span></div>
     <div><span class="xref">Markdig.Syntax.IMarkdownObject</span></div>
+    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<span class="xref">Markdig.Syntax.Inlines.Inline</span>&gt;</div>
+    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.Clear()</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.AppendChild(Markdig.Syntax.Inlines.Inline)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.ContainsChild(Markdig.Syntax.Inlines.Inline)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.FindDescendants&lt;T&gt;()</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.MoveChildrenAfter(Markdig.Syntax.Inlines.Inline)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.EmbraceChildrenBy(Markdig.Syntax.Inlines.ContainerInline)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.OnChildInsert(Markdig.Syntax.Inlines.Inline)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.OnChildRemove(Markdig.Syntax.Inlines.Inline)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.DumpChildTo(System.IO.TextWriter, System.Int32)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.GetEnumerator()</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.System.Collections.Generic.IEnumerable&lt;Markdig.Syntax.Inlines.Inline&gt;.GetEnumerator()</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.System.Collections.IEnumerable.GetEnumerator()</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.FirstChild</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.Inlines.ContainerInline.LastChild</span>
+    </div>
     <div>
       <span class="xref">Markdig.Syntax.Inlines.Inline.InsertAfter(Markdig.Syntax.Inlines.Inline)</span>
     </div>
@@ -122,19 +166,10 @@
       <span class="xref">Markdig.Syntax.Inlines.Inline.FindBestParent()</span>
     </div>
     <div>
-      <span class="xref">Markdig.Syntax.Inlines.Inline.OnChildRemove(Markdig.Syntax.Inlines.Inline)</span>
-    </div>
-    <div>
-      <span class="xref">Markdig.Syntax.Inlines.Inline.OnChildInsert(Markdig.Syntax.Inlines.Inline)</span>
-    </div>
-    <div>
       <span class="xref">Markdig.Syntax.Inlines.Inline.DumpTo(System.IO.TextWriter)</span>
     </div>
     <div>
       <span class="xref">Markdig.Syntax.Inlines.Inline.DumpTo(System.IO.TextWriter, System.Int32)</span>
-    </div>
-    <div>
-      <span class="xref">Markdig.Syntax.Inlines.Inline.DumpChildTo(System.IO.TextWriter, System.Int32)</span>
     </div>
     <div>
       <span class="xref">Markdig.Syntax.Inlines.Inline.Parent</span>
@@ -198,7 +233,7 @@
   <h6><strong>Assembly</strong>: Microsoft.DocAsCode.MarkdigEngine.Extensions.dll</h6>
   <h5 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionInline_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class InclusionInline : LeafInline, IInline, IMarkdownObject</code></pre>
+    <pre><code class="lang-csharp hljs">public class InclusionInline : ContainerInline, IInline, IMarkdownObject, IEnumerable&lt;Inline&gt;, IEnumerable</code></pre>
   </div>
   <h3 id="properties">Properties
   </h3>
@@ -300,6 +335,12 @@
   </div>
   <div>
       <span class="xref">Markdig.Syntax.IMarkdownObject</span>
+  </div>
+  <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">System.Collections.Generic.IEnumerable&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.ienumerable">System.Collections.IEnumerable</a>
   </div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>

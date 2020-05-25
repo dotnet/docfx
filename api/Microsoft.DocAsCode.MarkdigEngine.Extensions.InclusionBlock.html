@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class InclusionBlock
    | DocFX website ">
-    <meta name="generator" content="docfx 2.53.1.0">
+    <meta name="generator" content="docfx 2.54.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -90,27 +90,70 @@
     <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
     <div class="level1"><span class="xref">Markdig.Syntax.MarkdownObject</span></div>
     <div class="level2"><span class="xref">Markdig.Syntax.Block</span></div>
-    <div class="level3"><span class="xref">Markdig.Syntax.LeafBlock</span></div>
+    <div class="level3"><span class="xref">Markdig.Syntax.ContainerBlock</span></div>
     <div class="level4"><span class="xref">InclusionBlock</span></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
     <div><span class="xref">Markdig.Syntax.IBlock</span></div>
     <div><span class="xref">Markdig.Syntax.IMarkdownObject</span></div>
+    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<span class="xref">Markdig.Syntax.Block</span>&gt;</div>
+    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<span class="xref">Markdig.Syntax.Block</span>&gt;</div>
+    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<span class="xref">Markdig.Syntax.Block</span>&gt;</div>
+    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <span class="xref">Markdig.Syntax.LeafBlock.Lines</span>
+      <span class="xref">Markdig.Syntax.ContainerBlock.GetEnumerator()</span>
     </div>
     <div>
-      <span class="xref">Markdig.Syntax.LeafBlock.AppendLine(Markdig.Helpers.StringSlice, System.Int32, System.Int32, System.Int32)</span>
+      <span class="xref">Markdig.Syntax.ContainerBlock.System.Collections.Generic.IEnumerable&lt;Markdig.Syntax.Block&gt;.GetEnumerator()</span>
     </div>
     <div>
-      <span class="xref">Markdig.Syntax.LeafBlock.Inline</span>
+      <span class="xref">Markdig.Syntax.ContainerBlock.System.Collections.IEnumerable.GetEnumerator()</span>
     </div>
     <div>
-      <span class="xref">Markdig.Syntax.LeafBlock.ProcessInlines</span>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Add(Markdig.Syntax.Block)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Clear()</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Contains(Markdig.Syntax.Block)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.CopyTo(Markdig.Syntax.Block[], System.Int32)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Remove(Markdig.Syntax.Block)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.IndexOf(Markdig.Syntax.Block)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Insert(System.Int32, Markdig.Syntax.Block)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.RemoveAt(System.Int32)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Sort(System.Collections.Generic.IComparer&lt;Markdig.Syntax.Block&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Sort(System.Comparison&lt;Markdig.Syntax.Block&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.LastChild</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Count</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.IsReadOnly</span>
+    </div>
+    <div>
+      <span class="xref">Markdig.Syntax.ContainerBlock.Item[System.Int32]</span>
     </div>
     <div>
       <span class="xref">Markdig.Syntax.Block.UpdateSpanEnd(System.Int32)</span>
@@ -186,7 +229,7 @@
   <h6><strong>Assembly</strong>: Microsoft.DocAsCode.MarkdigEngine.Extensions.dll</h6>
   <h5 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_InclusionBlock_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class InclusionBlock : LeafBlock, IBlock, IMarkdownObject</code></pre>
+    <pre><code class="lang-csharp hljs">public class InclusionBlock : ContainerBlock, IBlock, IMarkdownObject, IList&lt;Block&gt;, ICollection&lt;Block&gt;, IEnumerable&lt;Block&gt;, IEnumerable</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -322,6 +365,18 @@
   </div>
   <div>
       <span class="xref">Markdig.Syntax.IMarkdownObject</span>
+  </div>
+  <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ilist-1">System.Collections.Generic.IList&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.icollection-1">System.Collections.Generic.ICollection&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">System.Collections.Generic.IEnumerable&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.ienumerable">System.Collections.IEnumerable</a>
   </div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>
