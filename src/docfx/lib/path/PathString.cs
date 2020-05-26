@@ -43,6 +43,8 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(PathString other) => string.CompareOrdinal(Value, other.Value);
 
+        public static PathString DangerousCreate(string value) => new PathString(value);
+
         public static bool operator ==(PathString a, PathString b) => Equals(a, b);
 
         public static bool operator !=(PathString a, PathString b) => !Equals(a, b);
