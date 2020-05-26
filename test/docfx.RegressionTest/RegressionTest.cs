@@ -41,6 +41,7 @@ namespace Microsoft.Docs.Build
 
         static void Main(string[] args)
         {
+            Console.WriteLine($"Test env: {s_gitCmdAuth}");
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(opts =>
                 {
