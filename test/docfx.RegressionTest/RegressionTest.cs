@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
         static void Main(string[] args)
         {
-            Console.WriteLine($"Test env: {s_gitCmdAuth}");
+            Console.WriteLine($"Test s_isPullRequest: {Environment.GetEnvironmentVariable("BUILD_REASON")} {s_isPullRequest}");
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(opts =>
                 {
