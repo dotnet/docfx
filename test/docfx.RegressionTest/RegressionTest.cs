@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
         static (string, string[]) GetCommitString()
         {
-            var docfxPath = Path.Combine(s_repositoryRoot, "../docfx");
+            var docfxPath = Path.Combine(s_repositoryRoot, ".");
             var docfxSha = ExecOutput("git", "rev-parse --short HEAD", docfxPath);
             var docsBuildSha = ExecOutput("git", "rev-parse --short HEAD", s_repositoryRoot);
             var docfxMessage = new string(ExecOutput("git", $"show -s --format=%B HEAD", docfxPath).ToArray());
