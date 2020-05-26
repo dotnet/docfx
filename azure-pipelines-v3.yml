@@ -271,6 +271,7 @@ jobs:
       azureSubscription: 'Open Publishing - Build Production'
       scriptType: ps
       scriptLocation: inlineScript
+      powerShellErrorActionPreference: continue
       inlineScript: |
         dotnet build ./test/docfx.RegressionTest -c Release
         dotnet run -c Release -p ./test/docfx.RegressionTest -- $(params)
