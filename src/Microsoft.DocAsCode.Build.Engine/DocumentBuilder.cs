@@ -170,7 +170,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     if (parameter.Files.Count == 0)
                     {
-                        manifests.Add(new Manifest());
+                        manifests.Add(new Manifest() { SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory) });
                     }
                     else
                     {
