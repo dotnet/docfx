@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.IO.Enumeration;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -17,6 +18,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class Input
     {
+        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
+
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly PackageResolver _packageResolver;
@@ -199,16 +202,22 @@ namespace Microsoft.Docs.Build
 
         private IEnumerable<PathString> GetFiles(string directory)
         {
-            if (!Directory.Exists(directory))
+            return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
             {
-                return Array.Empty<PathString>();
-            }
+                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
+                ShouldRecursePredicate = (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
+            };
 
-            return from file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories)
-                   where !file.Contains("/.git/") && !file.Contains("\\.git\\")
-                   let path = new PathString(Path.GetRelativePath(directory, file))
-                   where !path.Value.StartsWith('.')
-                   select path;
+            static PathString ToPathString(ref FileSystemEntry entry)
+            {
+                Debug.Assert(!entry.IsDirectory);
+
+                var path = entry.RootDirectory.Length == entry.Directory.Length
+                    ? entry.FileName.ToString()
+                    : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
+
+                return PathString.DangerousCreate(path);
+            }
         }
 
         private byte[]? ReadBytesFromGit(PathString fullPath)
