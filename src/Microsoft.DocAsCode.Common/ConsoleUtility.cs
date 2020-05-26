@@ -9,29 +9,35 @@ namespace Microsoft.DocAsCode.Common
     {
         public static void Write(string message, ConsoleColor color)
         {
-            var originalColor = Console.ForegroundColor;
             try
             {
-                Console.ForegroundColor = color;
+                if (color == ConsoleColor.White)
+                    Console.ResetColor();
+                else
+                    Console.ForegroundColor = color;
                 Console.Write(message);
             }
             finally
             {
-                Console.ForegroundColor = originalColor;
+                Console.ResetColor();
             }
         }
 
         public static void WriteLine(string message, ConsoleColor color)
         {
-            var originalColor = Console.ForegroundColor;
+            
             try
             {
-                Console.ForegroundColor = color;
+                if (color == ConsoleColor.White)
+                    Console.ResetColor();
+                else
+                    Console.ForegroundColor = color;
+
                 Console.WriteLine(message);
             }
             finally
             {
-                Console.ForegroundColor = originalColor;
+                Console.ResetColor();
             }
         }
     }
