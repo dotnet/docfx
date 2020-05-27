@@ -78,7 +78,7 @@ jobs:
   # Push to azure devops feed
   - task: NuGetCommand@2
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
-    displayName: Push to Sandbox MyGet Feed
+    displayName: Publish NuGet Packages
     inputs:
       command: push
       packagesToPush: drop/**/*.nupkg
