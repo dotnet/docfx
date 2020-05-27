@@ -233,7 +233,7 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => Volatile.Read(ref _errorCount) >= config.MaxErrors,
                 ErrorLevel.Warning => Volatile.Read(ref _warningCount) >= config.MaxWarnings,
                 ErrorLevel.Suggestion => Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions,
-                ErrorLevel.Info => Volatile.Read(ref _infoCount) >= config.MaxSuggestions,
+                ErrorLevel.Info => Volatile.Read(ref _infoCount) >= config.MaxInfos,
                 _ => false,
             };
         }
@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => Interlocked.Increment(ref _errorCount) > (config?.MaxErrors ?? int.MaxValue),
                 ErrorLevel.Warning => Interlocked.Increment(ref _warningCount) > (config?.MaxWarnings ?? int.MaxValue),
                 ErrorLevel.Suggestion => Interlocked.Increment(ref _suggestionCount) > (config?.MaxSuggestions ?? int.MaxValue),
-                ErrorLevel.Info => Interlocked.Increment(ref _infoCount) > (config?.MaxSuggestions ?? int.MaxValue),
+                ErrorLevel.Info => Interlocked.Increment(ref _infoCount) > (config?.MaxInfos ?? int.MaxValue),
                 _ => false,
             };
         }
