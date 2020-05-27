@@ -6,7 +6,8 @@ $commitCount = & { git rev-list --count HEAD }
 $revision = $commitCount.ToString().PadLeft(5, '0')
 
 # CI triggered by v3
-$version = "3.0.0-beta-$revision-$commitSha"
+$versionSuffix = "beta-$revision-$commitSha"
+$version = "3.0.0-$versionSuffix"
 
 function exec([string] $cmd) {
     Write-Host $cmd -ForegroundColor Green
@@ -32,6 +33,8 @@ function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     Write-Host "##vso[build.addbuildtag]$version"
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
+    exec "dotnet pack src\Microsoft.DocAsCode.MarkdigEngine.Validators -c Release -o $PSScriptRoot\drop --version-suffix $versionSuffix"
+    exec "dotnet pack src\Microsoft.DocAsCode.MarkdigEngine.Extensions -c Release -o $PSScriptRoot\drop --version-suffix $versionSuffix"
     publishBinaryPackages
 }
 
