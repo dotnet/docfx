@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
 
-            BuildScope = new BuildScope(ErrorLog, Config, Input, buildOptions);
+            BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
@@ -101,7 +101,6 @@ namespace Microsoft.Docs.Build
 
             LinkResolver = new LinkResolver(
                 config,
-                Input,
                 BuildOptions,
                 BuildScope,
                 BuildQueue,
