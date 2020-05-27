@@ -214,6 +214,7 @@ namespace Microsoft.Docs.Build
         private Document? TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
+            FilePath? actualPath;
             PathString pathToDocset;
 
             if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
@@ -234,12 +235,6 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // use the actual file name case
-            if (_buildScope.GetActualFileName(pathToDocset, out var pathActualCase))
-            {
-                pathToDocset = pathActualCase;
-            }
-
             // resolve from the current docset for files in dependencies
             if (referencingFile.Origin == FileOrigin.Dependency)
             {
@@ -248,9 +243,9 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
                 path = FilePath.Dependency(pathToDocset, referencingFile.DependencyName);
-                if (_buildScope.Exists(path))
+                if (_buildScope.TryGetActualFilePath(path, out actualPath))
                 {
-                    return _documentProvider.GetDocument(path);
+                    return _documentProvider.GetDocument(actualPath);
                 }
                 return null;
             }
@@ -268,45 +263,45 @@ namespace Microsoft.Docs.Build
                 if (pathToDocset.StartsWithPath(dependencyName, out _))
                 {
                     path = FilePath.Dependency(pathToDocset, dependencyName);
-                    if (_buildScope.Exists(path))
+                    if (_buildScope.TryGetActualFilePath(path, out actualPath))
                     {
-                        return _documentProvider.GetDocument(path);
+                        return _documentProvider.GetDocument(actualPath);
                     }
                 }
             }
 
             // resolve from entry docset
             path = FilePath.Content(pathToDocset);
-            if (_buildScope.Exists(path))
+            if (_buildScope.TryGetActualFilePath(path, out actualPath))
             {
-                return _documentProvider.GetDocument(path);
+                return _documentProvider.GetDocument(actualPath);
             }
 
             // resolve from fallback docset
             if (_buildOptions.IsLocalizedBuild)
             {
                 path = FilePath.Fallback(pathToDocset);
-                if (_buildScope.Exists(path))
+                if (_buildScope.TryGetActualFilePath(path, out actualPath))
                 {
-                    return _documentProvider.GetDocument(path);
+                    return _documentProvider.GetDocument(actualPath);
                 }
 
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
                     path = FilePath.Fallback(pathToDocset, isGitCommit: true);
-                    if (_buildScope.Exists(path))
+                    if (_buildScope.TryGetActualFilePath(path, out actualPath))
                     {
-                        return _documentProvider.GetDocument(path);
+                        return _documentProvider.GetDocument(actualPath);
                     }
                 }
             }
 
             // resolve generated content docset
             path = FilePath.Generated(pathToDocset);
-            if (_buildScope.Exists(path))
+            if (_buildScope.TryGetActualFilePath(path, out actualPath))
             {
-                return _documentProvider.GetDocument(path);
+                return _documentProvider.GetDocument(actualPath);
             }
 
             return default;

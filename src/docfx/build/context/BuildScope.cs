@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Microsoft.Docs.Build
     internal class BuildScope
     {
         private readonly Config _config;
+        private readonly BuildOptions _buildOptions;
         private readonly (Func<string, bool>, FileMappingConfig)[] _globs;
         private readonly Input _input;
         private readonly Func<string, bool>[] _resourceGlobs;
@@ -21,9 +23,8 @@ namespace Microsoft.Docs.Build
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
-        private readonly HashSet<PathString> _allFileNames = new HashSet<PathString>();
-        private readonly HashSet<FilePath> _allFiles = new HashSet<FilePath>();
-        private readonly ConcurrentDictionary<FilePath, ContentType> _files = new ConcurrentDictionary<FilePath, ContentType>();
+        private readonly HashSet<FilePath> _allFiles;
+        private readonly IReadOnlyDictionary<FilePath, ContentType> _files;
 
         private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
                    = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)>();
@@ -36,29 +37,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public IEnumerable<FilePath> Files => _files.Keys;
 
-        public BuildScope(ErrorLog errorLog, Config config, Input input, BuildOptions buildOptions)
+        public BuildScope(Config config, Input input, BuildOptions buildOptions)
         {
             _config = config;
+            _buildOptions = buildOptions;
             _globs = CreateGlobs(config);
             _input = input;
             _resourceGlobs = CreateResourceGlob(config);
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
 
-            using (Progress.Start("Globing files"))
-            {
-                var allFiles = ListFiles(config, input, buildOptions);
-
-                ParallelUtility.ForEach(errorLog, allFiles, file =>
-                {
-                    if (Glob(file.Path))
-                    {
-                        _files.TryAdd(file, GetContentType(file));
-                    }
-                });
-
-                _allFiles = allFiles;
-                _allFileNames = _allFiles.Select(file => file.Path).ToHashSet();
-            }
+            (_allFiles, _files) = GlobFiles();
         }
 
         public IEnumerable<FilePath> GetFiles(ContentType contentType)
@@ -66,24 +54,20 @@ namespace Microsoft.Docs.Build
             return from pair in _files where pair.Value == contentType select pair.Key;
         }
 
-        public bool Exists(FilePath path)
+        public bool TryGetActualFilePath(FilePath path, [NotNullWhen(true)] out FilePath? actualPath)
         {
-            if (path.Path.Value.StartsWith('.'))
+            if (_allFiles.TryGetValue(path, out actualPath))
             {
-                return _input.Exists(path);
+                return true;
             }
 
-            if (path.Origin == FileOrigin.Main)
+            if (_input.Exists(path))
             {
-                return _allFiles.Contains(path);
+                actualPath = path;
+                return true;
             }
 
-            if (path.Origin == FileOrigin.Fallback && !path.IsGitCommit)
-            {
-                return _allFiles.Contains(path);
-            }
-
-            return _input.Exists(path);
+            return false;
         }
 
         public ContentType GetContentType(FilePath path)
@@ -177,40 +161,53 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public bool GetActualFileName(PathString fileName, out PathString actualFileName)
+        private (HashSet<FilePath>, IReadOnlyDictionary<FilePath, ContentType>) GlobFiles()
         {
-            return _allFileNames.TryGetValue(fileName, out actualFileName);
-        }
-
-        private static HashSet<FilePath> ListFiles(Config config, Input input, BuildOptions buildOptions)
-        {
-            var files = new HashSet<FilePath>();
-
-            var defaultFiles = input.ListFilesRecursive(FileOrigin.Main);
-            files.UnionWith(defaultFiles);
-
-            if (buildOptions.IsLocalizedBuild)
+            using (Progress.Start("Globing files"))
             {
-                var fileNames = defaultFiles.Select(file => file.Path).ToHashSet();
-                var fallbackFiles = input.ListFilesRecursive(FileOrigin.Fallback).Where(file => !fileNames.Contains(file.Path));
-                files.UnionWith(fallbackFiles);
-            }
+                var allFiles = new HashSet<FilePath>();
+                var files = new DictionaryBuilder<FilePath, ContentType>();
 
-            Parallel.ForEach(config.Dependencies, dep =>
-            {
-                var (dependencyName, dependency) = dep;
-                var depFiles = input.ListFilesRecursive(FileOrigin.Dependency, dependencyName);
+                var defaultFiles = _input.ListFilesRecursive(FileOrigin.Main);
+                allFiles.UnionWith(defaultFiles);
 
-                lock (files)
+                if (_buildOptions.IsLocalizedBuild)
                 {
-                    if (dependency.IncludeInBuild)
-                    {
-                        files.UnionWith(depFiles);
-                    }
+                    var fileNames = defaultFiles.Select(file => file.Path).ToHashSet();
+                    var fallbackFiles = _input.ListFilesRecursive(FileOrigin.Fallback).Where(file => !fileNames.Contains(file.Path));
+                    allFiles.UnionWith(fallbackFiles);
                 }
-            });
 
-            return files;
+                Parallel.ForEach(allFiles, file =>
+                {
+                    if (Glob(file.Path))
+                    {
+                        files.TryAdd(file, GetContentType(file));
+                    }
+                });
+
+                Parallel.ForEach(_config.Dependencies, dep =>
+                {
+                    var depFiles = _input.ListFilesRecursive(FileOrigin.Dependency, dep.Key);
+                    lock (allFiles)
+                    {
+                        allFiles.AddRange(depFiles);
+                    }
+
+                    if (dep.Value.IncludeInBuild)
+                    {
+                        Parallel.ForEach(allFiles, file =>
+                        {
+                            if (Glob(file.Path))
+                            {
+                                files.TryAdd(file, GetContentType(file));
+                            }
+                        });
+                    }
+                });
+
+                return (allFiles, files.ToDictionary());
+            }
         }
 
         private static (Func<string, bool>, FileMappingConfig)[] CreateGlobs(Config config)
