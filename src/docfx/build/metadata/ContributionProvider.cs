@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -19,6 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
         private readonly RepositoryProvider _repositoryProvider;
         private readonly SourceMap _sourceMap;
+
+        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls = new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
 
         public ContributionProvider(
             Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider, SourceMap sourceMap)
@@ -127,22 +128,27 @@ namespace Microsoft.Docs.Build
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate)
             GetGitUrl(FilePath file)
         {
-            var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
+            return _gitUrls.GetOrAdd(file, GetGitUrlsCore);
 
-            var (repo, pathToRepo) = _repositoryProvider.GetRepository(GetOriginalFullPath(file));
-            if (repo is null || pathToRepo is null)
+            (string?, string?, string?) GetGitUrlsCore(FilePath file)
             {
-                return default;
+                var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
+
+                var (repo, pathToRepo) = _repositoryProvider.GetRepository(GetOriginalFullPath(file));
+                if (repo is null || pathToRepo is null)
+                {
+                    return default;
+                }
+
+                var gitUrlTemplate = GetGitUrlTemplate(repo.Remote, pathToRepo);
+                var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
+                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo) : originalContentGitUrl;
+
+                return (
+                    contentGitUrl,
+                    originalContentGitUrl,
+                    !isWhitelisted ? originalContentGitUrl : gitUrlTemplate);
             }
-
-            var gitUrlTemplate = GetGitUrlTemplate(repo.Remote, pathToRepo);
-            var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-            var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo) : originalContentGitUrl;
-
-            return (
-                contentGitUrl,
-                originalContentGitUrl,
-                !isWhitelisted ? originalContentGitUrl : gitUrlTemplate);
         }
 
         public string? GetGitCommitUrl(FilePath file)
