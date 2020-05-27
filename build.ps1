@@ -33,8 +33,6 @@ function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     Write-Host "##vso[build.addbuildtag]$version"
     exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
-    exec "dotnet pack src\Microsoft.DocAsCode.MarkdigEngine.Validators -c Release -o $PSScriptRoot\drop --version-suffix $versionSuffix"
-    exec "dotnet pack src\Microsoft.DocAsCode.MarkdigEngine.Extensions -c Release -o $PSScriptRoot\drop --version-suffix $versionSuffix"
     publishBinaryPackages
 }
 
