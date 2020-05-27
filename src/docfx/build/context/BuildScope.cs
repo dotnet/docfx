@@ -21,7 +21,8 @@ namespace Microsoft.Docs.Build
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
-        private readonly HashSet<PathString> _fileNames = new HashSet<PathString>();
+        private readonly HashSet<PathString> _allFileNames = new HashSet<PathString>();
+        private readonly HashSet<FilePath> _allFiles = new HashSet<FilePath>();
         private readonly ConcurrentDictionary<FilePath, ContentType> _files = new ConcurrentDictionary<FilePath, ContentType>();
 
         private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
@@ -45,7 +46,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Globing files"))
             {
-                var (fileNames, allFiles) = ListFiles(config, input, buildOptions);
+                var allFiles = ListFiles(config, input, buildOptions);
 
                 ParallelUtility.ForEach(errorLog, allFiles, file =>
                 {
@@ -55,13 +56,34 @@ namespace Microsoft.Docs.Build
                     }
                 });
 
-                _fileNames = fileNames;
+                _allFiles = allFiles;
+                _allFileNames = _allFiles.Select(file => file.Path).ToHashSet();
             }
         }
 
         public IEnumerable<FilePath> GetFiles(ContentType contentType)
         {
             return from pair in _files where pair.Value == contentType select pair.Key;
+        }
+
+        public bool Exists(FilePath path)
+        {
+            if (path.Path.Value.StartsWith('.'))
+            {
+                return _input.Exists(path);
+            }
+
+            if (path.Origin == FileOrigin.Main)
+            {
+                return _allFiles.Contains(path);
+            }
+
+            if (path.Origin == FileOrigin.Fallback && !path.IsGitCommit)
+            {
+                return _allFiles.Contains(path);
+            }
+
+            return _input.Exists(path);
         }
 
         public ContentType GetContentType(FilePath path)
@@ -157,23 +179,21 @@ namespace Microsoft.Docs.Build
 
         public bool GetActualFileName(PathString fileName, out PathString actualFileName)
         {
-            return _fileNames.TryGetValue(fileName, out actualFileName);
+            return _allFileNames.TryGetValue(fileName, out actualFileName);
         }
 
-        private static (HashSet<PathString> fileNames, HashSet<FilePath> files) ListFiles(Config config, Input input, BuildOptions buildOptions)
+        private static HashSet<FilePath> ListFiles(Config config, Input input, BuildOptions buildOptions)
         {
             var files = new HashSet<FilePath>();
-            var fileNames = new HashSet<PathString>();
 
             var defaultFiles = input.ListFilesRecursive(FileOrigin.Main);
             files.UnionWith(defaultFiles);
-            fileNames.UnionWith(defaultFiles.Select(file => file.Path));
 
             if (buildOptions.IsLocalizedBuild)
             {
+                var fileNames = defaultFiles.Select(file => file.Path).ToHashSet();
                 var fallbackFiles = input.ListFilesRecursive(FileOrigin.Fallback).Where(file => !fileNames.Contains(file.Path));
                 files.UnionWith(fallbackFiles);
-                fileNames.UnionWith(fallbackFiles.Select(file => file.Path));
             }
 
             Parallel.ForEach(config.Dependencies, dep =>
@@ -181,9 +201,8 @@ namespace Microsoft.Docs.Build
                 var (dependencyName, dependency) = dep;
                 var depFiles = input.ListFilesRecursive(FileOrigin.Dependency, dependencyName);
 
-                lock (fileNames)
+                lock (files)
                 {
-                    fileNames.UnionWith(depFiles.Select(file => file.Path));
                     if (dependency.IncludeInBuild)
                     {
                         files.UnionWith(depFiles);
@@ -191,7 +210,7 @@ namespace Microsoft.Docs.Build
                 }
             });
 
-            return (fileNames, files);
+            return files;
         }
 
         private static (Func<string, bool>, FileMappingConfig)[] CreateGlobs(Config config)
@@ -228,12 +247,12 @@ namespace Microsoft.Docs.Build
                 //       thus we are forced to get the mime type of a token file here even if it's not useful.
                 //
                 //       After token resolve does not create Document, this Exists check can be removed.
-                case FileFormat.Json when input.Exists(filePath):
+                case FileFormat.Json:
                     using (var reader = input.ReadText(filePath))
                     {
                         return JsonUtility.ReadMime(reader, filePath);
                     }
-                case FileFormat.Yaml when input.Exists(filePath):
+                case FileFormat.Yaml:
                     using (var reader = input.ReadText(filePath))
                     {
                         return new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));

@@ -9,7 +9,6 @@ namespace Microsoft.Docs.Build
     internal class LinkResolver
     {
         private readonly Config _config;
-        private readonly Input _input;
         private readonly BuildOptions _buildOptions;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
@@ -23,7 +22,6 @@ namespace Microsoft.Docs.Build
 
         public LinkResolver(
             Config config,
-            Input input,
             BuildOptions buildOptions,
             BuildScope buildScope,
             WorkQueue<FilePath> buildQueue,
@@ -36,7 +34,6 @@ namespace Microsoft.Docs.Build
             FileLinkMapBuilder fileLinkMapBuilder)
         {
             _config = config;
-            _input = input;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
             _buildQueue = buildQueue;
@@ -251,7 +248,7 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
                 path = FilePath.Dependency(pathToDocset, referencingFile.DependencyName);
-                if (_input.Exists(path))
+                if (_buildScope.Exists(path))
                 {
                     return _documentProvider.GetDocument(path);
                 }
@@ -271,7 +268,7 @@ namespace Microsoft.Docs.Build
                 if (pathToDocset.StartsWithPath(dependencyName, out _))
                 {
                     path = FilePath.Dependency(pathToDocset, dependencyName);
-                    if (_input.Exists(path))
+                    if (_buildScope.Exists(path))
                     {
                         return _documentProvider.GetDocument(path);
                     }
@@ -280,7 +277,7 @@ namespace Microsoft.Docs.Build
 
             // resolve from entry docset
             path = FilePath.Content(pathToDocset);
-            if (_input.Exists(path))
+            if (_buildScope.Exists(path))
             {
                 return _documentProvider.GetDocument(path);
             }
@@ -289,7 +286,7 @@ namespace Microsoft.Docs.Build
             if (_buildOptions.IsLocalizedBuild)
             {
                 path = FilePath.Fallback(pathToDocset);
-                if (_input.Exists(path))
+                if (_buildScope.Exists(path))
                 {
                     return _documentProvider.GetDocument(path);
                 }
@@ -298,7 +295,7 @@ namespace Microsoft.Docs.Build
                 if (lookupFallbackCommits)
                 {
                     path = FilePath.Fallback(pathToDocset, isGitCommit: true);
-                    if (_input.Exists(path))
+                    if (_buildScope.Exists(path))
                     {
                         return _documentProvider.GetDocument(path);
                     }
@@ -307,7 +304,7 @@ namespace Microsoft.Docs.Build
 
             // resolve generated content docset
             path = FilePath.Generated(pathToDocset);
-            if (_input.Exists(path))
+            if (_buildScope.Exists(path))
             {
                 return _documentProvider.GetDocument(path);
             }

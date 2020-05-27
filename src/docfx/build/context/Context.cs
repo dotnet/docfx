@@ -101,7 +101,6 @@ namespace Microsoft.Docs.Build
 
             LinkResolver = new LinkResolver(
                 config,
-                Input,
                 BuildOptions,
                 BuildScope,
                 BuildQueue,
