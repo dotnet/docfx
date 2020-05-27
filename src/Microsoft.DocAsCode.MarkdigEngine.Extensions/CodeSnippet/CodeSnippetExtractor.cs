@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private readonly bool IsEndLineContainsTagName;
         public const string TagNamePlaceHolder = "{tagname}";
 
-        public CodeSnippetExtractor(string startLineTemplate, string endLineTemplate, MarkdownContext context, bool isEndLineContainsTagName = true)
+        public CodeSnippetExtractor(string startLineTemplate, string endLineTemplate, bool isEndLineContainsTagName = true)
         {
             this.StartLineTemplate = startLineTemplate;
             this.EndLineTemplate = endLineTemplate;
