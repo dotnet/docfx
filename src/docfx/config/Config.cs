@@ -104,6 +104,12 @@ namespace Microsoft.Docs.Build
         public int MaxSuggestions { get; private set; } = 10000;
 
         /// <summary>
+        /// Gets the maximum info to output.
+        /// There are may be too many info messages so increase the limit.
+        /// </summary>
+        public int MaxInfos { get; private set; } = 10000;
+
+        /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
         public GlobalMetadata GlobalMetadata { get; private set; } = new GlobalMetadata();
