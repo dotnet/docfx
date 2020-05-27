@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
         private int _errorCount;
         private int _warningCount;
         private int _suggestionCount;
+        private int _infoCount;
 
         private int _maxExceeded;
 
@@ -232,6 +233,7 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => Volatile.Read(ref _errorCount) >= config.MaxErrors,
                 ErrorLevel.Warning => Volatile.Read(ref _warningCount) >= config.MaxWarnings,
                 ErrorLevel.Suggestion => Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions,
+                ErrorLevel.Info => Volatile.Read(ref _infoCount) >= config.MaxSuggestions,
                 _ => false,
             };
         }
@@ -243,6 +245,7 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => Interlocked.Increment(ref _errorCount) > (config?.MaxErrors ?? int.MaxValue),
                 ErrorLevel.Warning => Interlocked.Increment(ref _warningCount) > (config?.MaxWarnings ?? int.MaxValue),
                 ErrorLevel.Suggestion => Interlocked.Increment(ref _suggestionCount) > (config?.MaxSuggestions ?? int.MaxValue),
+                ErrorLevel.Info => Interlocked.Increment(ref _infoCount) > (config?.MaxSuggestions ?? int.MaxValue),
                 _ => false,
             };
         }
@@ -254,7 +257,8 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => ConsoleColor.Red,
                 ErrorLevel.Warning => ConsoleColor.Yellow,
                 ErrorLevel.Suggestion => ConsoleColor.Magenta,
-                _ => ConsoleColor.Cyan,
+                ErrorLevel.Info => ConsoleColor.DarkGray,
+                _ => ConsoleColor.DarkGray,
             };
         }
     }
