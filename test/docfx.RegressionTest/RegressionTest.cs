@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CommandLine;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -32,7 +33,8 @@ namespace Microsoft.Docs.Build
         static readonly string s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         static readonly string s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
         static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
-        static readonly bool s_isPullRequest = Environment.GetEnvironmentVariable("BUILD_REASON") == "PullRequest";
+        static readonly string s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
+        static readonly bool s_isPullRequest = s_buildReason == "PullRequest";
         static readonly (string hash, string[] descriptions) s_commitString = s_isPullRequest ? default : GetCommitString();
 
         static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
@@ -62,11 +64,11 @@ namespace Microsoft.Docs.Build
         static bool Test(Options opts)
         {
 
-            var (baseLinePath, outputPath, workingFolder, repositoryPath) = Prepare(opts);
+            var (baseLinePath, outputPath, workingFolder, repositoryPath, docfxConfig) = Prepare(opts);
 
             Clean(outputPath);
 
-            var buildTime = Build(repositoryPath, outputPath);
+            var buildTime = Build(repositoryPath, outputPath, docfxConfig);
             Prettify(outputPath);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
@@ -76,7 +78,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath) Prepare(Options opts)
+        private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
         {
             var repositoryName = "engineering";// Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
@@ -99,7 +101,25 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
 
-            return (baseLinePath, outputPath, workingFolder, repositoryPath);
+            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
+
+            static string GetDocfxConfig()
+            {
+                // Git token for CRR restore
+                var http = new Dictionary<string, object>();
+                http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
+                http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
+                var docfxConfig = new { http };
+                return JsonUtility.Serialize(docfxConfig);
+            }
+
+            static Dictionary<string, string> ToAuthHeader(string token)
+            {
+                return new Dictionary<string, string>
+                {
+                    {"authorization", $"basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"))}" }
+                };
+            }
         }
 
         private static void EnsureTestData(string repository, string branch)
@@ -127,10 +147,10 @@ namespace Microsoft.Docs.Build
                     // A new repo is added for the first time
                     Exec("git", $"checkout -B {testRepositoryName} origin/template", cwd: testWorkingFolder);
                     Exec("git", $"clean -xdff", cwd: testWorkingFolder);
-                    Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {branch} {repository} {testRepositoryName}", testWorkingFolder, secrets: s_gitCmdAuth);
+                    Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {branch} {repository} {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
                     return;
                 }
-                throw ex;
+                throw;
             }
 
             Exec("git", $"checkout --force origin/{testRepositoryName}", cwd: testWorkingFolder);
@@ -151,9 +171,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        static TimeSpan Build(string repositoryPath, string outputPath)
+        static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
         {
-            return Exec(Path.Combine(AppContext.BaseDirectory, "docfx.exe"), arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-cache", cwd: repositoryPath);
+            return Exec(
+                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
+                arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-cache --stdin",
+                stdIn: docfxConfig,
+                cwd: repositoryPath);
         }
 
         static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
@@ -216,7 +240,7 @@ namespace Microsoft.Docs.Build
 
         }
 
-        static TimeSpan Exec(string fileName, string arguments = "", string cwd = null, bool ignoreError = false, bool redirectStandardError = false, params string[] secrets)
+        static TimeSpan Exec(string fileName, string arguments = "", string stdIn = null, string cwd = null, bool ignoreError = false, bool redirectStandardError = false, params string[] secrets)
         {
             var stopwatch = Stopwatch.StartNew();
             var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrEmpty(secret) ? arg : arg.Replace(secret, "***"));
@@ -231,7 +255,13 @@ namespace Microsoft.Docs.Build
                 WorkingDirectory = cwd,
                 UseShellExecute = false,
                 RedirectStandardError = redirectStandardError,
+                RedirectStandardInput = !string.IsNullOrEmpty(stdIn),
             });
+            if (!string.IsNullOrEmpty(stdIn))
+            {
+                process.StandardInput.Write(stdIn);
+                process.StandardInput.Close();
+            }
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
