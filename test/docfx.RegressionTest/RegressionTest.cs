@@ -17,18 +17,11 @@ namespace Microsoft.Docs.Build
 {
     static class RegressionTest
     {
-        static RegressionTest()
-        {
-            Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PROD");
-            Environment.SetEnvironmentVariable("DOCS_SITE_NAME", "Docs");
-            Environment.SetEnvironmentVariable("DOCFX_MAX_WARNINGS", "5000");
-        }
-
-        const string TestDataRepositoryUrl = "https://dev.azure.com/ceapex/Engineering/_git/docfx.RegressionTest.TestData";
+        const string TestDataRepositoryUrl = "https://dev.azure.com/ceapex/Engineering/_git/docfx.TestData";
         const string TestDiskRoot = "D:/";
 
         static readonly string s_repositoryRoot = Environment.GetEnvironmentVariable("BUILD_SOURCESDIRECTORY") ?? FindRepositoryRoot(AppContext.BaseDirectory);
-        static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.RegressionTest.TestData");
+        static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
 
         static readonly string s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         static readonly string s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
@@ -61,6 +54,56 @@ namespace Microsoft.Docs.Build
             return ($"{docsBuildSha}-{docfxSha}", new[] { docsBuildMessage, docfxMessage });
         }
 
+        private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
+        {
+            var repositoryName = "engineering";// Path.GetFileName(opts.Repository);
+            var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
+            var repositoryPath = Path.Combine(workingFolder, repositoryName);
+            var cachePath = Path.Combine(workingFolder, "cache");
+            var statePath = Path.Combine(workingFolder, "state");
+
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine($"Testing {repositoryName}");
+            Console.ResetColor();
+
+            var baseLinePath = Path.Combine(workingFolder, "output");
+            Directory.CreateDirectory(baseLinePath);
+            var outputPath = s_isPullRequest ? Path.Combine(workingFolder, ".temp") : baseLinePath;
+
+            // Set Env for Build
+            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
+            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
+            Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
+            Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
+            Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
+
+            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
+
+            static string GetDocfxConfig()
+            {
+                // Git token for CRR restore
+                var http = new Dictionary<string, object>();
+                http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
+                http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
+                var docfxConfig = new {
+                    http,
+                    maxWarnings = 5000,
+                    maxInfos = 30000,
+                    updateTimeAsCommitBuildTime = true,
+                    githubToken = s_githubToken,
+                };
+                return JsonUtility.Serialize(docfxConfig);
+            }
+
+            static Dictionary<string, string> ToAuthHeader(string token)
+            {
+                return new Dictionary<string, string>
+                {
+                    {"authorization", $"basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"))}" }
+                };
+            }
+        }
+
         static bool Test(Options opts)
         {
 
@@ -78,49 +121,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
-        {
-            var repositoryName = "engineering";// Path.GetFileName(opts.Repository);
-            var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
-            var repositoryPath = Path.Combine(workingFolder, repositoryName);
-
-            Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine($"Testing {repositoryName}");
-            Console.ResetColor();
-
-            var baseLinePath = Path.Combine(workingFolder, "output");
-            Directory.CreateDirectory(baseLinePath);
-            var outputPath = s_isPullRequest ? Path.Combine(workingFolder, ".temp") : baseLinePath;
-
-            var gitToken = opts.Repository.StartsWith("https://github.com") ? s_githubToken : s_azureDevopsToken;
-
-            // Set Env for Build
-            Environment.SetEnvironmentVariable("DOCFX_GIT_TOKEN", gitToken);
-            Environment.SetEnvironmentVariable("DOCFX_GITHUB_TOKEN", s_githubToken);
-            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
-            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
-            Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
-
-            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
-
-            static string GetDocfxConfig()
-            {
-                // Git token for CRR restore
-                var http = new Dictionary<string, object>();
-                http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
-                http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
-                var docfxConfig = new { http };
-                return JsonUtility.Serialize(docfxConfig);
-            }
-
-            static Dictionary<string, string> ToAuthHeader(string token)
-            {
-                return new Dictionary<string, string>
-                {
-                    {"authorization", $"basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"))}" }
-                };
-            }
-        }
+        
 
         private static void EnsureTestData(string repository, string branch)
         {
@@ -173,9 +174,15 @@ namespace Microsoft.Docs.Build
 
         static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
         {
+            Exec(
+                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
+                arguments: $"restore --legacy --verbose --stdin",
+                stdIn: docfxConfig,
+                cwd: repositoryPath);
+
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-cache --stdin",
+                arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
                 stdIn: docfxConfig,
                 cwd: repositoryPath);
         }
