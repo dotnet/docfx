@@ -1,5 +1,5 @@
 {
-    "version": "3.0.0-beta1.{height}",
+    "version": "2.48.0-beta.{height}",
     "publicReleaseRefSpec": [
         "^refs/tags/v\\d+\\.\\d+$"
     ]

@@ -1,14 +1,5 @@
 param ([switch]$noTest = $false)
 
-# Create NuGet package
-$commitSha = & { git rev-parse --short HEAD }
-$commitCount = & { git rev-list --count HEAD }
-$revision = $commitCount.ToString().PadLeft(5, '0')
-
-# CI triggered by v3
-$versionSuffix = "beta-$revision-$commitSha"
-$version = "3.0.0-$versionSuffix"
-
 function exec([string] $cmd) {
     Write-Host $cmd -ForegroundColor Green
     & ([scriptblock]::Create($cmd))
@@ -31,8 +22,7 @@ function test() {
 
 function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
-    Write-Host "##vso[build.addbuildtag]$version"
-    exec "dotnet pack src\docfx -c Release -o $PSScriptRoot\drop /p:Version=$version /p:InformationalVersion=$version"
+    exec "dotnet pack -c Release -o $PSScriptRoot\drop"
     publishBinaryPackages
 }
 
@@ -44,8 +34,10 @@ function publishBinaryPackages() {
 
     $rids = @("win7-x64", "osx-x64", "linux-x64") # Microsoft.ChakraCore doesn't provide win-x64 runtime build, using win7-x64
     foreach ($rid in $rids) {
+        exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false"
+        $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
+        Write-Host "##vso[build.addbuildtag]$version"
         $packageName = "docfx-$rid-$version"
-        exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:Version=$version /p:InformationalVersion=$version /p:PackAsTool=false"
         Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
         New-Item -Path "$stagingPath" -Name "$packageName.zip.sha256" -Force -ItemType "file" -Value (Get-FileHash "$stagingPath/$packageName.zip").Hash
         Copy-Item "$stagingPath/$packageName.zip" "$stagingPath/docfx-$rid-latest.zip" 

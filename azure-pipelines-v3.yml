@@ -84,6 +84,7 @@ jobs:
       packagesToPush: drop/**/*.nupkg
       publishFeedCredentials: docs-public-packages
       nugetFeedType: external
+      allowPackageConflicts: true
 
   # Publish binary packages to sandbox
   - task: AzureFileCopy@3

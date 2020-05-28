@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.48.0</Version>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
 
