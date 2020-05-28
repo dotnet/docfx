@@ -241,7 +241,7 @@ namespace Microsoft.Docs.Build
             else
             {
                 var testRepositoryName = Path.GetFileName(repository);
-                var testWorkingFolder = Path.Combine(s_testDataRoot, testRepositoryName);
+                var testWorkingFolder = Path.Combine(s_testDataRoot, $"regression-test.{testRepositoryName}");
                 Exec("git", $"{s_gitCmdAuth} push origin HEAD:{testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             }
 
