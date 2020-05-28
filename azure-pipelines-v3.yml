@@ -16,7 +16,7 @@ jobs:
 - job: LinuxBuild
   pool:
     vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: false #eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
@@ -36,7 +36,7 @@ jobs:
 - job: MacBuild
   pool:
     vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: false #eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
