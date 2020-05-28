@@ -120,9 +120,9 @@ namespace Microsoft.Docs.Build
 
             if (linkType == LinkType.External)
             {
-                if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out _))
+                if (!UrlUtility.IsValidIdnName(href))
                 {
-                    return (error, "", null, linkType, null, false);
+                    return (error, "", null, LinkType.RelativePath, null, false);
                 }
 
                 return (error, UrlUtility.RemoveLeadingHostName(href, _config.HostName), fragment, LinkType.AbsolutePath, null, false);
