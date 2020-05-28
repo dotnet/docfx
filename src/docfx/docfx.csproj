@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.2.0-preview.1" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.0.3" />
-    <PackageReference Include="docs.validation" Version="1.0.0-beta-00098-2e38206" />
+    <PackageReference Include="docs.validation" Version="1.0.0-beta-00108-63a1deb" />
     <PackageReference Include="DotLiquid" Version="2.0.325" />
     <PackageReference Include="Glob" Version="1.1.6" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.298" />

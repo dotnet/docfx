@@ -867,12 +867,12 @@ outputs:
   normal-2.json:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H1 'Title 1-1' followed by heading: H3 'Title 3'. Headings must increment with no skipped levels","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H1 'Title 1-2' followed by heading: H3 'Title 3-b'(a.md(5,1)->b.md). Headings must increment with no skipped levels","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(7,1)->b.md) followed by heading: H5 'Title 5'. Headings must increment with no skipped levels","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(10,1)->b.md) followed by heading: H5 'Title 5-c'(a.md(11,1)->c.md). Headings must increment with no skipped levels","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-d'(a.md(13,1)->d.md) followed by heading: H5 'Title 5-d'(a.md(13,1)->d.md(2,1)). Headings must increment with no skipped levels","file":"d.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(15,1)->e.md->b.md) followed by heading: H5 'Title 5-c'(a.md(15,1)->e.md(2,1)->c.md). Headings must increment with no skipped levels","file":"e.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-d'(a.md(15,1)->e.md(4,1)->d.md) followed by heading: H5 'Title 5-d'(a.md(15,1)->e.md(4,1)->d.md(2,1)). Headings must increment with no skipped levels","file":"d.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H1 'Title 1-2' followed by heading: H3 'Title 3-b'(a.md(5,1) -> b.md). Headings must increment with no skipped levels","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(7,1) -> b.md) followed by heading: H5 'Title 5'. Headings must increment with no skipped levels","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(10,1) -> b.md) followed by heading: H5 'Title 5-c'(a.md(11,1) -> c.md). Headings must increment with no skipped levels","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-d'(a.md(13,1) -> d.md) followed by heading: H5 'Title 5-d'(a.md(13,1) -> d.md(2,1)). Headings must increment with no skipped levels","file":"d.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(15,1) -> e.md -> b.md) followed by heading: H5 'Title 5-c'(a.md(15,1) -> e.md(2,1) -> c.md). Headings must increment with no skipped levels","file":"e.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-d'(a.md(15,1) -> e.md(4,1) -> d.md) followed by heading: H5 'Title 5-d'(a.md(15,1) -> e.md(4,1) -> d.md(2,1)). Headings must increment with no skipped levels","file":"d.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
 # Content validation - h1 in inclusion
 inputs:
@@ -976,7 +976,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H3. Headings must have content.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H4 '<!-- comments -->'. Headings must have content.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H4 '<!-- comments --> '. Headings must have content.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H5. Headings must have content.","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
@@ -1043,8 +1043,8 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2-1 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H3 'H3 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H3 'H3-1 -b'(a.md(10,1)->b.md) contains no content. Add content or remove the unused heading.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2 -c'(a.md(10,1)->b.md(5,1)->c.md(2,1)) contains no content. Add content or remove the unused heading.","file":"c.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H3 'H3-1 -b'(a.md(10,1) -> b.md) contains no content. Add content or remove the unused heading.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2 -c'(a.md(10,1) -> b.md(5,1) -> c.md(2,1)) contains no content. Add content or remove the unused heading.","file":"c.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H4 'H4 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":11, "end_line":11,"column":1,"end_column":1}
 ---
 # Content validation - indented lines within triple-colon syntax is OK for code-block-indented
