@@ -75,6 +75,18 @@ jobs:
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
       CODECOV_TOKEN: $(CODECOV_TOKEN)
 
+  # Build RegressionTest into Artifact 
+  - powershell: |
+      $regressionTestDir = './drop/RegressionTest'
+      Remove-Item $regressionTestDir -Force -Recurse -ErrorAction Ignore
+      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o $regressionTestDir/bin
+    displayName: Build RegressionTest into Artifact 
+
+  # Publish RegressionTest binary
+  - publish: ./drop/RegressionTest/bin
+    displayName: Publish RegressionTest binary
+    artifact: RegressionTest
+
   # Push to azure devops feed
   - task: NuGetCommand@2
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
@@ -108,111 +120,41 @@ jobs:
       storage: opsbuildk8sprod
       containerName: docfx-bin
 
-# Build integration test
-- job: IntegrationTestBuild
+
+# Run RegressionTest
+- job: RunRegressionTest
   dependsOn: WindowsBuild
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/v3'), eq(variables['System.PullRequest.TargetBranch'], 'v3')))
-  pool:
-    name: DocFX
-
-  steps:
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # Checkout
-  - checkout: self
-    clean: true
-    path: docfx
-
-  # Checkout Docs.Build
-  - powershell: |
-      function exec([string] $cmd) {
-          & ([scriptblock]::Create($cmd))
-          if ($lastexitcode -ne 0) {
-              throw ("Error")
-          }
-      }
-
-      # Sometimes when docfx needs to make a breaking change, name the branch breaking/<downstream_branch>,
-      # where <downstream_branch> is the branch name of corresponding changes in Docs.Build, this allows
-      # integration test to run against both changes
-      $docsBuildBranch = $env:PULL_REQUEST_SOURCE_BRANCH -replace '^(.*)breaking/(.*)$', '$2'
-      if ($docsBuildBranch -eq $env:PULL_REQUEST_SOURCE_BRANCH) {
-        $docsBuildBranch = 'develop'
-      }
-
-      $basicAuth = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$env:AZURE_DEVOPS_TOKEN"))
-      $auth = "-c http.https://dev.azure.com.extraheader=""AUTHORIZATION: basic $basicAuth"""
-
-      if (-Not (Test-Path -Path ../Docs.Build)) {
-          # Clone Docs.Build if not exists
-          exec "git $auth clone https://dev.azure.com/ceapex/Engineering/_git/Docs.Build ../Docs.Build"
-      }
-
-      try {
-          # Update Docs.Build to latest
-          pushd ../Docs.Build
-          exec "git $auth fetch origin"
-          exec "git checkout --force origin/$docsBuildBranch"
-          exec "git clean -xdff"
-      } finally {
-          popd
-      }
-
-      $integrationTestDir = './drop/integration-test'
-      Remove-Item $integrationTestDir -Force -Recurse -ErrorAction Ignore
-      dotnet build ../Docs.Build/test/integration-test -c Release -r win7-x64 -o $integrationTestDir/bin
-      Remove-Item $integrationTestDir/bin/ConfigMigration -Force -Recurse -ErrorAction Ignore
-    displayName: Checkout Docs.Build
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      PULL_REQUEST_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
-
-  # Publish integration-test binary
-  - publish: ./drop/integration-test/bin
-    displayName: Publish integration-test binary
-    artifact: integration-test
-
-# Integration test
-- job: IntegrationTest
-  dependsOn: IntegrationTestBuild
   pool:
     name: DocFX
   strategy:
     matrix:
       azure-docs-pr:
-        params: https://github.com/OPS-E2E-PPE/azure-docs-pr --branch v3-integration-test --timeout 150
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
       sql-docs-pr:
-        params: https://github.com/OPS-E2E-PPE/sql-docs-pr --branch v3-integration-test --timeout 120
+        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120
       dynamics-365-customer-engagement-pr:
-        params: https://github.com/opse2epr/dynamics-365-customer-engagement-pr --branch v3-integration-test --timeout 70
+        params: https://github.com/MicrosoftDocs/dynamics-365-customer-engagement-pr --timeout 70
       roslyn-api-docs:
-        params: https://github.com/OPS-E2E-PPE/roslyn-api-docs --branch v3-integration-test --timeout 105
+        params: https://github.com/dotnet/roslyn-api-docs --timeout 105
       docs-help-pr:
         params: >
-          https://github.com/OPS-E2E-PPE/docs-help-pr --build-type PullRequest --branch v3-integration-test
-          --pull-request-url https://github.com/yufeih/docs-help-pr --pull-request-branch patch-1
-          --timeout 30
+          https://github.com/MicrosoftDocs/docs-help-pr --timeout 30
       Dynamics-365-Operations:
-        params: https://github.com/OPS-E2E-PPE/Dynamics-365-Operations --branch v3-integration-test --timeout 65
-      office-dev-O365API:
-        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/office-dev-O365API --timeout 20
+        params: https://github.com/MicrosoftDocs/Dynamics-365-Operations --timeout 65
       mc-docs-pr:
-        params: https://github.com/opse2epr/mc-docs-pr --branch v3-integration-test --timeout 70
+        params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
       ATADocs-pr:
-        params: https://github.com/OPS-E2E-PPE/ATADocs-pr --branch v3-integration-test --timeout 30
+        params: https://github.com/MicrosoftDocs/ATADocs-pr --timeout 30
       azure-docs-rest-apis:
-        params: https://github.com/OPS-E2E-PPE/azure-docs-rest-apis --branch v3-integration-test --timeout 130
+        params: https://github.com/Azure/azure-docs-rest-apis --timeout 130
       biztalk-docs.zh-cn:
-        params: https://github.com/OPS-E2E-PPE/biztalk-docs.zh-cn --branch v3-integration-test-sxs --locale zh-cn --timeout 50
-      dynamics-crm-notinTOC_1.he-il:
-        params: https://dev.azure.com/docs-archive/docs-archive-test/_git/dynamics-crm-notinTOC_1.he-il --locale he-il --timeout 40
+        params: https://github.com/MicrosoftDocs/biztalk-docs.zh-cn --branch master-sxs --locale zh-cn --timeout 50
       DevSandbox:
-        params: https://github.com/OPS-E2E-PPE/DevSandbox --branch v3-integration-test --timeout 30
+        params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
+      office-dev-O365API:
+        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/office-dev-O365API --timeout 20
+      dynamics-crm-notinTOC_1.he-il:
+        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/dynamics-crm-notinTOC.he-il --locale he-il --timeout 40
 
   steps:
   # Install .NET Core sdk
@@ -227,22 +169,24 @@ jobs:
     clean: false
     path: docfx
 
-  # Download integration-test binary
+  # Download RegressionTest binary
   - download: current
-    displayName: Download integration-test binary
-    artifact: integration-test
+    displayName: Download RegressionTest binary
+    artifact: RegressionTest
 
-  # Run integration tests
-  - powershell: |
-      $(Pipeline.Workspace)/integration-test/integration-test.exe $(params)
-    displayName: Run integration tests
+  # Run Regression Tests
+  - task: AzureCLI@2
+    displayName: Run regression tests
+    inputs:
+      azureSubscription: 'Open Publishing - Build Production'
+      scriptType: ps
+      scriptLocation: inlineScript
+      powerShellErrorActionPreference: continue
+      inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
     env:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      DOCS_GENERATE_DOCFX_YML: 'false'
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      AzureServicesAuthConnectionString: $(AzureServicesAuthConnectionString)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
