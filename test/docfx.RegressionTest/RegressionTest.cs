@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
             Exec("git", $"{s_gitCmdAuth} submodule sync {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"clean -xdf -e **/_cache/* -e **/_repo_cache/*", Path.Combine(testWorkingFolder, testRepositoryName));
+            Exec("git", $"clean -xdf", cwd: Path.Combine(testWorkingFolder, testRepositoryName));
         }
 
         static void Clean(string outputPath)
@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
             else
             {
                 var commitMessageDetails = string.Join(' ', s_commitString.descriptions.Select(m => $"-m \"{m.Replace('\"', ' ')}\""));
-                Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", testWorkingFolder);
+                Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: testWorkingFolder);
                 Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString.hash}\" {commitMessageDetails}", cwd: testWorkingFolder, ignoreError: true);
             }
         }
@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
             {
                 var testRepositoryName = Path.GetFileName(repository);
                 var testWorkingFolder = Path.Combine(s_testDataRoot, testRepositoryName);
-                Exec("git", $"{s_gitCmdAuth} push  origin HEAD:{testRepositoryName}", testWorkingFolder, secrets: s_gitCmdAuth);
+                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             }
 
         }
