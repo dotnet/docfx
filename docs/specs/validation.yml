@@ -976,7 +976,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H3. Headings must have content.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H4 '<!-- comments --> '. Headings must have content.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H4 '<!-- comments -->'. Headings must have content.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H5. Headings must have content.","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
