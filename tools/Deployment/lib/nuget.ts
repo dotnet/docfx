@@ -5,31 +5,29 @@ import * as glob from "glob";
 
 import { Common, Guard } from "./common";
 
-export class Myget {
-    static async publishToMygetAsync(
+export class Nuget {
+    static async publishAsync(
         artifactsFolder: string,
-        mygetCommand: string,
-        mygetKey: string,
-        mygetUrl: string,
+        nugetPath: string,
+        url: string,
         releaseNotePath = null): Promise<void> {
 
         Guard.argumentNotNullOrEmpty(artifactsFolder, "artifactsFolder");
-        Guard.argumentNotNullOrEmpty(mygetCommand, "mygetCommand");
-        Guard.argumentNotNullOrEmpty(mygetKey, "mygetKey");
-        Guard.argumentNotNullOrEmpty(mygetUrl, "mygetUrl");
+        Guard.argumentNotNullOrEmpty(nugetPath, "nugetPath");
+        Guard.argumentNotNullOrEmpty(url, "url");
 
         if (releaseNotePath) {
-            // Ignore to publish myget package if RELEASENOTE.md hasn't been modified.
+            // Ignore to publish nuget package if RELEASENOTE.md hasn't been modified.
             let isUpdated = await Common.isReleaseNoteVersionChangedAsync(releaseNotePath);
             if (!isUpdated) {
-                console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package to myget.org.`);
+                console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package.`);
                 return Promise.resolve();
             }
         }
 
         let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
-        let promises = packages.map(p => {
-            return Common.execAsync(mygetCommand, ["push", p, mygetKey, "-Source", mygetUrl]);
+        let promises = packages.map((p: string) => {
+            return Common.execAsync(nugetPath, ["push", p, "anything", "-Source", url]);
         });
 
         await Promise.all(promises);

@@ -1,12 +1,19 @@
-Version Notes (Current Version: v2.54)
+Version Notes (Current Version: v2.55)
 =======================================
 
-v2.54(Pre-release)
+v2.55(Pre-release)
 -----------
+
+v2.54
+-----------
+1. Supporting setting `wkhtmltopdf.exe` path in config. Thanks @icnocop! (#4422)
+1. Add video Markdown extension syntax. (#5945)
+1. Bug fix:
+    1. Fix inaccurate error message when UIDs are duplicate. (#5898).
 
 v2.53.1
 -----------
-1. But fix:
+1. Bug fix:
     1. Downgrade error to warning for Markdown complex image.
 
 v2.53

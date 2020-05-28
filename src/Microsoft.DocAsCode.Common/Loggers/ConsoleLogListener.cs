@@ -41,16 +41,8 @@ namespace Microsoft.DocAsCode.Common
 
             formatter += message;
 
-            var foregroundColor = Console.ForegroundColor;
-            try
-            {
-                ChangeConsoleColor(level);
-                Console.WriteLine(formatter);
-            }
-            finally
-            {
-                Console.ForegroundColor = foregroundColor;
-            }
+            var consoleColor = GetConsoleColor(level);
+            ConsoleUtility.WriteLine(formatter, consoleColor);
         }
 
         public void Dispose()
@@ -61,25 +53,20 @@ namespace Microsoft.DocAsCode.Common
         {
         }
 
-        private void ChangeConsoleColor(LogLevel level)
+        private ConsoleColor GetConsoleColor(LogLevel level)
         {
             switch (level)
             {
                 case LogLevel.Verbose:
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    break;
+                    return ConsoleColor.Gray;
                 case LogLevel.Info:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
+                    return ConsoleColor.White;
                 case LogLevel.Suggestion:
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    break;
+                    return ConsoleColor.Blue;
                 case LogLevel.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
+                    return ConsoleColor.Yellow;
                 case LogLevel.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
+                    return ConsoleColor.Red;
                 default:
                     throw new NotSupportedException(level.ToString());
             }

@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "cshtml", new List<string>{".cshtml", "aspx-cs", "aspx-csharp" } },
             { "vbhtml", new List<string>{".vbhtml", "aspx-vb" } },
             { "java", new List<string>{".java" } },
-            { "javascript", new List<string>{"js", "node", ".js" } },
+            { "javascript", new List<string>{"js", "node", ".js", "json", ".json" } },
             { "lisp", new List<string>{".lisp", ".lsp" } },
             { "lua", new List<string>{".lua" } },
             { "matlab", new List<string>{".matlab" } },
@@ -111,64 +111,66 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-        private Dictionary<string, List<CodeSnippetExtractor>> CodeLanguageExtractors = new Dictionary<string, List<CodeSnippetExtractor>>();
+        private static readonly IReadOnlyDictionary<string, List<CodeSnippetExtractor>> s_codeLanguageExtractors = BuildCodeLanguageExtractors();
 
         public HtmlCodeSnippetRenderer(MarkdownContext context)
         {
             _context = context;
-
-            BuildCodeLanguageExtractors();
         }
 
-        private void BuildCodeLanguageExtractors()
+        private static IReadOnlyDictionary<string, List<CodeSnippetExtractor>> BuildCodeLanguageExtractors()
         {
+            var result = new Dictionary<string, List<CodeSnippetExtractor>>();
+
             AddExtractorItems(new[] { "vb", "vbhtml" },
-                new CodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "pascal", "php", "processing", "rust", "scala", "smalltalk", "swift", "typescript" },
-                new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "xml", "xaml", "html", "cshtml", "vbhtml" },
-                new CodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "haskell", "lua", "sql" },
-                new CodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineTemplate, SqlFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineTemplate, SqlFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "perl", "powershell", "python", "r", "ruby", "shell" },
-                new CodeSnippetExtractor(ScriptFamilyCodeSnippetCommentStartLineTemplate, ScriptFamilyCodeSnippetCommentEndLineTemplate, _context));
+                new CodeSnippetExtractor(ScriptFamilyCodeSnippetCommentStartLineTemplate, ScriptFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "batchfile" },
-                new CodeSnippetExtractor(BatchFileCodeSnippetRegionStartLineTemplate, BatchFileCodeSnippetRegionEndLineTemplate, _context));
+                new CodeSnippetExtractor(BatchFileCodeSnippetRegionStartLineTemplate, BatchFileCodeSnippetRegionEndLineTemplate));
             AddExtractorItems(new[] { "csharp", "cshtml" },
-                new CodeSnippetExtractor(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, _context, false));
+                new CodeSnippetExtractor(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, false));
             AddExtractorItems(new[] { "erlang", "matlab" },
-                new CodeSnippetExtractor(ErlangCodeSnippetRegionStartLineTemplate, ErlangCodeSnippetRegionEndLineTemplate, _context));
+                new CodeSnippetExtractor(ErlangCodeSnippetRegionStartLineTemplate, ErlangCodeSnippetRegionEndLineTemplate));
             AddExtractorItems(new[] { "lisp" },
-                new CodeSnippetExtractor(LispCodeSnippetRegionStartLineTemplate, LispCodeSnippetRegionEndLineTemplate, _context));
+                new CodeSnippetExtractor(LispCodeSnippetRegionStartLineTemplate, LispCodeSnippetRegionEndLineTemplate));
             AddExtractorItems(new[] { "vb", "vbhtml" },
-                new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, _context, false));
-        }
+                new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false));
 
-        private void AddExtractorItems(string[] languages, CodeSnippetExtractor extractor)
-        {
-            foreach (var language in languages)
+            return result;
+
+            void AddExtractorItems(string[] languages, CodeSnippetExtractor extractor)
             {
-                AddExtractorItem(language, extractor);
-
-                if (LanguageAlias.ContainsKey(language))
+                foreach (var language in languages)
                 {
-                    foreach (var alias in LanguageAlias[language])
+                    AddExtractorItem(language, extractor);
+
+                    if (LanguageAlias.ContainsKey(language))
                     {
-                        AddExtractorItem(alias, extractor);
+                        foreach (var alias in LanguageAlias[language])
+                        {
+                            AddExtractorItem(alias, extractor);
+                        }
                     }
                 }
             }
-        }
 
-        private void AddExtractorItem(string language, CodeSnippetExtractor extractor)
-        {
-            if (CodeLanguageExtractors.ContainsKey(language))
+            void AddExtractorItem(string language, CodeSnippetExtractor extractor)
             {
-                CodeLanguageExtractors[language].Add(extractor);
-            }
-            else
-            {
-                CodeLanguageExtractors[language] = new List<CodeSnippetExtractor> { extractor };
+                if (result.ContainsKey(language))
+                {
+                    result[language].Add(extractor);
+                }
+                else
+                {
+                    result[language] = new List<CodeSnippetExtractor> { extractor };
+                }
             }
         }
 
@@ -245,7 +247,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     return GetNoteBookContent(content, obj.TagName, obj);
                 }
 
-                if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtractor> extractors))
+                if (!s_codeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtractor> extractors))
                 {
                     _context.LogError(
                         "unknown-language-code",
