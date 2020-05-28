@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
 
                     if (dep.Value.IncludeInBuild)
                     {
-                        Parallel.ForEach(allFiles, file =>
+                        Parallel.ForEach(depFiles, file =>
                         {
                             if (Glob(file.Path))
                             {
