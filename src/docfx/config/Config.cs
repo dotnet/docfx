@@ -104,6 +104,12 @@ namespace Microsoft.Docs.Build
         public int MaxSuggestions { get; private set; } = 10000;
 
         /// <summary>
+        /// Gets the maximum info to output.
+        /// There are may be too many info messages so increase the limit.
+        /// </summary>
+        public int MaxInfos { get; private set; } = 10000;
+
+        /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
         public GlobalMetadata GlobalMetadata { get; private set; } = new GlobalMetadata();
@@ -117,11 +123,6 @@ namespace Microsoft.Docs.Build
         /// Gets the site base path.
         /// </summary>
         public BasePath BasePath { get; private set; }
-
-        /// <summary>
-        /// Gets host name used for generating .xrefmap.json
-        /// </summary>
-        public string XrefHostName { get; private set; } = "";
 
         /// <summary>
         /// Gets whether we are running in legacy mode

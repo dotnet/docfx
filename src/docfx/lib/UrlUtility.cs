@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +14,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class UrlUtility
     {
+        private static readonly IdnMapping s_idnMapping = new IdnMapping();
+
         private static readonly Regex s_gitHubUrlRegex =
            new Regex(
                @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
@@ -172,6 +175,45 @@ namespace Microsoft.Docs.Build
             return result.ToString();
         }
 
+        public static bool IsValidIdnName(string content)
+        {
+            // https://github.com/lunet-io/markdig/commit/1c88fb65c86988e29448b23c44e54151275ed5bb#diff-0d0c89e36e0d108b85802f1eafa094b9R224
+            var schemeOffset = content.Length < 8 ? -1 : content.IndexOf("://", 2, StringComparison.Ordinal);
+            if (schemeOffset != -1)
+            {
+                schemeOffset += 3;
+
+                var idnaEncodeDomain = false;
+                var endOfDomain = schemeOffset;
+                for (; endOfDomain < content.Length; endOfDomain++)
+                {
+                    var c = content[endOfDomain];
+                    if (c == '/' || c == '?' || c == '#' || c == ':')
+                    {
+                        break;
+                    }
+                    if (c > 127)
+                    {
+                        idnaEncodeDomain = true;
+                    }
+                }
+
+                if (idnaEncodeDomain)
+                {
+                    try
+                    {
+                        s_idnMapping.GetAscii(content, schemeOffset, endOfDomain - schemeOffset);
+                        return true;
+                    }
+                    catch (ArgumentException)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         public static LinkType GetLinkType(string? link)
         {
             if (string.IsNullOrEmpty(link))
@@ -269,6 +311,41 @@ namespace Microsoft.Docs.Build
             repo = match.Groups["repository"].Value;
 
             return true;
+        }
+
+        public static string RemoveLeadingHostName(string url, string hostName, bool removeLocale = false)
+        {
+            if (string.IsNullOrEmpty(hostName))
+            {
+                return url;
+            }
+
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
+                return url;
+            }
+
+            if (!string.Equals(uri.Host, hostName, StringComparison.OrdinalIgnoreCase))
+            {
+                return url;
+            }
+
+            var path = MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
+            if (!removeLocale)
+            {
+                return $"/{path}";
+            }
+
+            var slashIndex = path.IndexOf('/');
+            if (slashIndex < 0)
+            {
+                return $"/{path}";
+            }
+
+            var firstSegment = path.Substring(0, slashIndex);
+            return LocalizationUtility.IsValidLocale(firstSegment)
+                ? $"{path.Substring(firstSegment.Length)}"
+                : $"/{path}";
         }
 
         private static string ToQueryString(this NameValueCollection collection)

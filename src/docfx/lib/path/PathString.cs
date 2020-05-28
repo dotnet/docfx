@@ -43,6 +43,8 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(PathString other) => string.CompareOrdinal(Value, other.Value);
 
+        public static PathString DangerousCreate(string value) => new PathString(value);
+
         public static bool operator ==(PathString a, PathString b) => Equals(a, b);
 
         public static bool operator !=(PathString a, PathString b) => !Equals(a, b);
@@ -181,12 +183,12 @@ namespace Microsoft.Docs.Build
         {
             public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
             {
-                return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
+                return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
             }
 
             public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
             {
-                return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
+                return destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
             }
 
             public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)

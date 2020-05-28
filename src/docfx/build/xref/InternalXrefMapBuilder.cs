@@ -42,9 +42,6 @@ namespace Microsoft.Docs.Build
             }
 
             var errors = new List<Error>();
-            var content = context.Input.ReadString(file.FilePath);
-            var callStack = new List<Document> { file };
-
             switch (file.FilePath.Format)
             {
                 case FileFormat.Markdown:

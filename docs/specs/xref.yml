@@ -144,7 +144,6 @@ repos:
         docfx.yml: |
           hostName: docs.com
           basePath: /base_path
-          xrefhostName: test.docs.com
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -166,12 +165,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://test.docs.com/base_path/docs/a",
+          "href": "https://docs.com/base_path/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://test.docs.com/base_path/docs/b",
+          "href": "https://docs.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
       ],

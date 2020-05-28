@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
                 // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.
                 // The following code ensures we preserve the original html when changing links.
-                return HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlToken token) =>
+                return HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
                 {
                     HtmlUtility.TransformLink(ref token, block, getLink);
                     HtmlUtility.TransformXref(ref reader, ref token, block, resolveXref);
