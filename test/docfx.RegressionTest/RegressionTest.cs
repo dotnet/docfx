@@ -71,7 +71,6 @@ namespace Microsoft.Docs.Build
             var outputPath = s_isPullRequest ? Path.Combine(workingFolder, ".temp") : baseLinePath;
 
             // Set Env for Build
-            Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PROD");
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
@@ -92,9 +91,6 @@ namespace Microsoft.Docs.Build
                     maxInfos = 30000,
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
-                    // don't expire cache on pull request ci
-                    githubUserCacheExpirationInHours = s_isPullRequest ? 999999 : 30 * 24,
-                    microsoftGraphCacheExpirationInHours = s_isPullRequest ? 999999 : 30 * 24,
                 };
                 return JsonUtility.Serialize(docfxConfig);
             }
