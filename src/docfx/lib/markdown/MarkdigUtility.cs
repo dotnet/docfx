@@ -192,65 +192,24 @@ namespace Microsoft.Docs.Build
         public static bool IsVisible(this MarkdownObject markdownObject)
         {
             var visible = false;
+
             Visit(markdownObject, node =>
             {
-                switch (node)
+                return visible = node switch
                 {
-                    case HtmlBlock htmlBlock:
-                        foreach (var line in htmlBlock.Lines.Lines)
-                        {
-                            visible = visible || VisibleHtml(line.Slice.ToString());
-                            if (visible)
-                            {
-                                return true;
-                            }
-                        }
-                        return true;
-                    case HtmlInline htmlInline:
-                        visible = visible || VisibleHtml(htmlInline.Tag);
-                        break;
-                    case HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any():
-                    case LinkReferenceDefinition _:
-                    case ThematicBreakBlock _:
-                    case YamlFrontMatterBlock _:
-                        break;
-                    case LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any():
-                    case LeafInline _:
-                        visible = true;
-                        break;
-                    default:
-                        break;
-                }
-
-                return visible;
+                    HtmlBlock htmlBlock => htmlBlock.Lines.Lines.Any(line => HtmlUtility.IsVisible(line.Slice.ToString())),
+                    HtmlInline htmlInline => HtmlUtility.IsVisible(htmlInline.Tag),
+                    LinkReferenceDefinition _ => false,
+                    ThematicBreakBlock _ => false,
+                    YamlFrontMatterBlock _ => false,
+                    HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any() => false,
+                    LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => true,
+                    LeafInline _ => true,
+                    _ => false,
+                };
             });
 
             return visible;
-
-            static bool VisibleHtml(string? html)
-            {
-                if (string.IsNullOrWhiteSpace(html))
-                {
-                    return false;
-                }
-
-                var visibleHtml = false;
-                var reader = new HtmlReader(html);
-                while (!visibleHtml && reader.Read(out var token))
-                {
-                    visibleHtml = visibleHtml || VisibleHtmlToken(token);
-                }
-
-                return visibleHtml;
-            }
-
-            static bool VisibleHtmlToken(HtmlToken token)
-                => token.Type switch
-                {
-                    HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
-                    HtmlTokenType.Comment => false,
-                    _ => true,
-                };
         }
 
         private class DelegatingExtension : IMarkdownExtension

@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
@@ -28,12 +29,22 @@ namespace Microsoft.Docs.Build
                 return new[] { (workingDirectory, options.Output) };
             }
 
-            var files = Directory.GetFiles(workingDirectory, "docfx.*", SearchOption.AllDirectories);
+            var files = new FileSystemEnumerable<string>(
+                workingDirectory,
+                (ref FileSystemEntry entry) => entry.ToFullPath(),
+                new EnumerationOptions { RecurseSubdirectories = true })
+            {
+                ShouldRecursePredicate = (ref FileSystemEntry entry) => entry.FileName[0] != '.',
+                ShouldIncludePredicate = (ref FileSystemEntry entry) =>
+                {
+                    return !entry.IsDirectory && (
+                        entry.FileName.Equals("docfx.json", StringComparison.OrdinalIgnoreCase) ||
+                        entry.FileName.Equals("docfx.yml", StringComparison.OrdinalIgnoreCase));
+                },
+            };
 
             return (
                 from file in files
-                let extension = Path.GetExtension(file)
-                where extension.Equals(".json", PathUtility.PathComparison) || extension.Equals(".yml", PathUtility.PathComparison)
                 let configPath = Path.GetRelativePath(workingDirectory, file)
                 where glob(configPath)
                 let docsetPath = Path.GetDirectoryName(file)

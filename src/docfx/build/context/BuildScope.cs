@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -175,16 +176,20 @@ namespace Microsoft.Docs.Build
                 fileNames.UnionWith(fallbackFiles.Select(file => file.Path));
             }
 
-            foreach (var (dependencyName, dependency) in config.Dependencies)
+            Parallel.ForEach(config.Dependencies, dep =>
             {
+                var (dependencyName, dependency) = dep;
                 var depFiles = input.ListFilesRecursive(FileOrigin.Dependency, dependencyName);
-                fileNames.UnionWith(depFiles.Select(file => file.Path));
 
-                if (dependency.IncludeInBuild)
+                lock (fileNames)
                 {
-                    files.UnionWith(depFiles);
+                    fileNames.UnionWith(depFiles.Select(file => file.Path));
+                    if (dependency.IncludeInBuild)
+                    {
+                        files.UnionWith(depFiles);
+                    }
                 }
-            }
+            });
 
             return (fileNames, files);
         }

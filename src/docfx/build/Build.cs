@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            using var errorLog = new ErrorLog(outputPath, options.Legacy);
+            using var errorLog = new ErrorLog(outputPath);
             var stopwatch = Stopwatch.StartNew();
 
             try

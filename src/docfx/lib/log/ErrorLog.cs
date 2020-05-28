@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class ErrorLog : IDisposable
     {
-        private readonly bool _legacy;
         private readonly object _outputLock = new object();
 
         private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
@@ -25,6 +24,7 @@ namespace Microsoft.Docs.Build
         private int _errorCount;
         private int _warningCount;
         private int _suggestionCount;
+        private int _infoCount;
 
         private int _maxExceeded;
 
@@ -36,9 +36,8 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> ErrorFiles => _errorFiles;
 
-        public ErrorLog(string? outputPath = null, bool legacy = false)
+        public ErrorLog(string? outputPath = null)
         {
-            _legacy = legacy;
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
@@ -234,6 +233,7 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => Volatile.Read(ref _errorCount) >= config.MaxErrors,
                 ErrorLevel.Warning => Volatile.Read(ref _warningCount) >= config.MaxWarnings,
                 ErrorLevel.Suggestion => Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions,
+                ErrorLevel.Info => Volatile.Read(ref _infoCount) >= config.MaxInfos,
                 _ => false,
             };
         }
@@ -245,6 +245,7 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => Interlocked.Increment(ref _errorCount) > (config?.MaxErrors ?? int.MaxValue),
                 ErrorLevel.Warning => Interlocked.Increment(ref _warningCount) > (config?.MaxWarnings ?? int.MaxValue),
                 ErrorLevel.Suggestion => Interlocked.Increment(ref _suggestionCount) > (config?.MaxSuggestions ?? int.MaxValue),
+                ErrorLevel.Info => Interlocked.Increment(ref _infoCount) > (config?.MaxInfos ?? int.MaxValue),
                 _ => false,
             };
         }
@@ -256,7 +257,8 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Error => ConsoleColor.Red,
                 ErrorLevel.Warning => ConsoleColor.Yellow,
                 ErrorLevel.Suggestion => ConsoleColor.Magenta,
-                _ => ConsoleColor.Cyan,
+                ErrorLevel.Info => ConsoleColor.DarkGray,
+                _ => ConsoleColor.DarkGray,
             };
         }
     }
