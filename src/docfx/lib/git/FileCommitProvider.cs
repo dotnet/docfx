@@ -69,6 +69,7 @@ namespace Microsoft.Docs.Build
                 return Array.Empty<GitCommit>();
             }
 
+            var searchSteps = 0;
             var updateCache = true;
             var result = new List<Commit>();
             var parentBlobs = new long[MaxParentBlob];
@@ -83,6 +84,8 @@ namespace Microsoft.Docs.Build
             // Reusing a single branch commit history is a performance optimization.
             foreach (var commit in commits)
             {
+                searchSteps++;
+
                 // Find and remove if this commit should be followed by the tree traversal.
                 if (!TryRemoveCommit(commit, commitsToFollow, out var blob))
                 {
@@ -131,6 +134,11 @@ namespace Microsoft.Docs.Build
                 {
                     result.Add(commit);
                 }
+            }
+
+            if (searchSteps > 100)
+            {
+                Log.Write($"GetCommitHistory took {searchSteps} steps on '{file}'");
             }
 
             if (updateCache)
