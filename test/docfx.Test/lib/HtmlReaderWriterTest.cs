@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Graph;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -209,8 +210,16 @@ namespace Microsoft.Docs.Build
                     new HtmlAttribute("b", "c", HtmlAttributeType.Unquoted),
                 },
                 isSelfClosing: false);
+            writer.WriteStartTag(
+                "a",
+                new[]
+                {
+                    new HtmlAttribute("href", "#to", HtmlAttributeType.Unquoted),
+                    new HtmlAttribute("name", "to", HtmlAttributeType.DoubleQuoted)
+                },
+                isSelfClosing: false);
 
-            Assert.Equal("<a/><a><a b b=\"c\" b='c' b=c>", htmlWriter.WrittenSpan.ToString());
+            Assert.Equal("<a/><a><a b b=\"c\" b='c' b=c><a href=#to name=\"to\">", htmlWriter.WrittenSpan.ToString());
         }
     }
 }

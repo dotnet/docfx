@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                     case HtmlAttributeType.Unquoted:
                         span[pos++] = '=';
                         attribute.Value.Span.CopyTo(span.Slice(pos));
-                        pos += attribute.Name.Length;
+                        pos += attribute.Value.Length;
                         break;
 
                     case HtmlAttributeType.SingleQuoted:
