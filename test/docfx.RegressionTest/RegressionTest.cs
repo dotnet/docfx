@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
-            Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", statePath);
+            Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
 
             return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
 
