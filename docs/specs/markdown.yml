@@ -738,9 +738,7 @@ inputs:
   include/b.png:
 outputs:
   a.json: |
-    { 
-      "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>"
-    }
+    { "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>" }
   include/b.json:
   include/b.png:
 ---
@@ -754,9 +752,7 @@ inputs:
     { "a": 1 }
 outputs:
   a.json: |
-    {
-      "conceptual": "<pre><code class=\"lang-json\" highlight-lines=\"1-2\">{ &quot;a&quot;: 1 }</code></pre>"
-    }
+    { "conceptual": "<pre><code class=\"lang-json\" highlight-lines=\"1-2\">{ &quot;a&quot;: 1 }</code></pre>" }
 ---
 # Handle inline include with multiple paragraphs
 inputs:
@@ -773,6 +769,17 @@ inputs:
     p2
 outputs:
   a.json: |
-    {
-      "conceptual": "<ul><li>a p1 <a href='https://github.com'>link</a> p2</li></ul>"
-    }
+    { "conceptual": "<ul><li>a p1 <a href='https://github.com'>link</a> p2</li></ul>" }
+---
+# Handle bad HTML tag
+inputs:
+  docfx.yml: |
+    files: a.md
+  a.md: |
+    <a href=#to name="to">to</a>
+
+    a  
+    b  
+outputs:
+  a.json: |
+    { "conceptual": "<p><a href=\"#to\" name=\"to\">to</a></p><p>a<br></br>b</p>" }

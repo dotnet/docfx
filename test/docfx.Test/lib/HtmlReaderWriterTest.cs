@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
@@ -209,8 +208,16 @@ namespace Microsoft.Docs.Build
                     new HtmlAttribute("b", "c", HtmlAttributeType.Unquoted),
                 },
                 isSelfClosing: false);
+            writer.WriteStartTag(
+                "a",
+                new[]
+                {
+                    new HtmlAttribute("href", "#to", HtmlAttributeType.Unquoted),
+                    new HtmlAttribute("name", "to", HtmlAttributeType.DoubleQuoted)
+                },
+                isSelfClosing: false);
 
-            Assert.Equal("<a/><a><a b b=\"c\" b='c' b=c>", htmlWriter.WrittenSpan.ToString());
+            Assert.Equal("<a/><a><a b b=\"c\" b='c' b=c><a href=#to name=\"to\">", htmlWriter.WrittenSpan.ToString());
         }
     }
 }
