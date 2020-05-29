@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
 
         private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
         {
-            var repositoryName = "engineering";// Path.GetFileName(opts.Repository);
+            var repositoryName = Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
             var repositoryPath = Path.Combine(workingFolder, repositoryName);
             var cachePath = Path.Combine(workingFolder, "cache");
@@ -74,8 +74,8 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
-            Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
+            Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
 
             return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
 
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
             Exec("git", $"{s_gitCmdAuth} submodule sync {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"clean -xdf -e **/_cache/* -e **/_repo_cache/*", Path.Combine(testWorkingFolder, testRepositoryName));
+            Exec("git", $"clean -xdf", cwd: Path.Combine(testWorkingFolder, testRepositoryName));
         }
 
         static void Clean(string outputPath)
@@ -227,8 +227,8 @@ namespace Microsoft.Docs.Build
             else
             {
                 var commitMessageDetails = string.Join(' ', s_commitString.descriptions.Select(m => $"-m \"{m.Replace('\"', ' ')}\""));
-                Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", testWorkingFolder);
-                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString.hash}\" {commitMessageDetails}", testWorkingFolder, ignoreError: true);
+                Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: testWorkingFolder);
+                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString.hash}\" {commitMessageDetails}", cwd: testWorkingFolder, ignoreError: true);
             }
         }
 
@@ -241,8 +241,8 @@ namespace Microsoft.Docs.Build
             else
             {
                 var testRepositoryName = Path.GetFileName(repository);
-                var testWorkingFolder = Path.Combine(s_testDataRoot, testRepositoryName);
-                Exec("git", $"{s_gitCmdAuth} push  origin HEAD:{testRepositoryName}", testWorkingFolder, secrets: s_gitCmdAuth);
+                var testWorkingFolder = Path.Combine(s_testDataRoot, $"regression-test.{testRepositoryName}");
+                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             }
 
         }
