@@ -272,7 +272,7 @@ namespace Microsoft.Docs.Build
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
-            // TODO: docs-pipeline shoud not exit 1 for content error while reporting moved to docs.build
+            // TODO: docs-pipeline should not exit 1 for content error while reporting moved to docs.build
             if (!new int[] { 0, 1 }.Contains(process.ExitCode) && !ignoreError)
             {
                 throw new InvalidOperationException(
@@ -367,17 +367,17 @@ namespace Microsoft.Docs.Build
 
             static string PrettifyJson(string json)
             {
-                return PrettfyNewLine(JToken.Parse(json).ToString());
+                return PrettifyNewLine(JToken.Parse(json).ToString());
             }
 
             static string PrettifyLogJson(string json)
             {
                 var obj = JObject.Parse(json);
                 obj.Remove("date_time");
-                return PrettfyNewLine(obj.ToString());
+                return PrettifyNewLine(obj.ToString());
             }
 
-            static string PrettfyNewLine(string text)
+            static string PrettifyNewLine(string text)
             {
                 return text.Replace("\r", "").Replace("\\n\\n", "⬇\n").Replace("\\n", "⬇\n");
             }

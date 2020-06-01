@@ -113,17 +113,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var stringBuilder = StringBuilderCache.Local();
             var c = processor.CurrentChar;
 
-            var hasExcape = false;
-            while (c != '\0' && (c != ']' || hasExcape))
+            var hasEscape = false;
+            while (c != '\0' && (c != ']' || hasEscape))
             {
-                if (c == '\\' && !hasExcape)
+                if (c == '\\' && !hasEscape)
                 {
-                    hasExcape = true;
+                    hasEscape = true;
                 }
                 else
                 {
                     stringBuilder.Append(c);
-                    hasExcape = false;
+                    hasEscape = false;
                 }
                 c = processor.NextChar();
             }
@@ -147,7 +147,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                                      IsNoteType(infoString);
                 if (processor.CurrentChar != '\0' && isNoteVideoDiv)
                 {
-                    _context.LogWarning("invalid-note-section", "Text in the first line of Note/Section/Video is not valid. Will be rendererd to <blockquote>", block);
+                    _context.LogWarning("invalid-note-section", "Text in the first line of Note/Section/Video is not valid. Will be rendered to <blockquote>", block);
                     processor.GoToColumn(originalColumn);
                     return false;
                 }

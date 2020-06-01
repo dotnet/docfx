@@ -275,7 +275,7 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
-        /// Determines if validate the moniker confguration.
+        /// Determines if validate the moniker configuration.
         /// </summary>
         public bool SkipMonikerValidation { get; private set; }
 

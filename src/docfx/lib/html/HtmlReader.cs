@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
         public bool Read(out HtmlToken token)
         {
-            // Simplified pasing algorithm based on https://html.spec.whatwg.org/multipage/parsing.html
+            // Simplified parsing algorithm based on https://html.spec.whatwg.org/multipage/parsing.html
             _attributesLength = 0;
             _tokenStart = _tokenEnd = Position();
             _nameStart = _nameEnd = default;

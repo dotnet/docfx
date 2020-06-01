@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 new object[] { new YamlFrontMatterBlock (null), "YamlHeader" },
                 new object[] { new InclusionBlock (null), "IncludeFile" },
                 new object[] { new InclusionInline (), "IncludeFile" },
-                new object[] { new LiteralInline () { IsFirstCharacterEscaped = true }, "BlackslashEscape" },
+                new object[] { new LiteralInline () { IsFirstCharacterEscaped = true }, "BackslashEscape" },
                 new object[] { new LiteralInline () { IsFirstCharacterEscaped = false }, "TextualContent" },
                 new object[] { new HtmlEntityInline (), "HTMLEntity" },
                 new object[] { new CodeInline (), "CodeSpan" },

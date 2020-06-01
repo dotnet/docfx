@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Json schema defnitions
+        /// Json schema definitions
         /// </summary>
         public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
 
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
         public JsonSchemaType[]? Type { get; set; }
 
         /// <summary>
-        /// The JSON schema that applies to each property if the currnet value is object.
+        /// The JSON schema that applies to each property if the current value is object.
         /// </summary>
         public Dictionary<string, JsonSchema> Properties { get; } = new Dictionary<string, JsonSchema>();
 

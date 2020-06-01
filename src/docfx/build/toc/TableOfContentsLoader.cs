@@ -100,14 +100,14 @@ namespace Microsoft.Docs.Build
             Parallel.For(0, nodes.Count, i =>
             {
                 var newReferencedFiles = new List<Document>();
-                var newRefrencedTocs = new List<Document>();
+                var newReferencedTocs = new List<Document>();
                 var newErrors = new List<Error>();
-                newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newRefrencedTocs, newErrors);
+                newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newReferencedTocs, newErrors);
                 lock (newNodes)
                 {
                     errors.AddRange(newErrors);
                     referencedFiles.AddRange(newReferencedFiles);
-                    referencedTocs.AddRange(newRefrencedTocs);
+                    referencedTocs.AddRange(newReferencedTocs);
                 }
             });
 

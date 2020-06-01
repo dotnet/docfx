@@ -36,9 +36,9 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n <!--comments--> \n  ", false)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
-            var markdownDoucment = Markdown.Parse(markdownContent, _markdownPipeline);
+            var markdownDocument = Markdown.Parse(markdownContent, _markdownPipeline);
 
-            Assert.Equal(expectedVisible, MarkdigUtility.IsVisible(markdownDoucment));
+            Assert.Equal(expectedVisible, MarkdigUtility.IsVisible(markdownDocument));
         }
     }
 }

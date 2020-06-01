@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType piplineType)
+        public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
+                    var ast = Markdown.Parse(content, _pipelines[(int)pipelineType]);
 
                     return (status.Errors, ast);
                 }

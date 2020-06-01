@@ -445,8 +445,8 @@ namespace Microsoft.Docs.Build
             /// and can't decide which article to use when referencing that uid with this overlapped version
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingmonikers)
-                => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingmonikers)}");
+            public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingMonikers)
+                => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}");
 
             /// <summary>
             /// Failed to parse moniker string.

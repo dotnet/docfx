@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public bool Disabled { get; set; }
 
-        // DateformatRule
+        // DateFormatRule
         public string? Format { get; set; }
 
         // DateRangeRule

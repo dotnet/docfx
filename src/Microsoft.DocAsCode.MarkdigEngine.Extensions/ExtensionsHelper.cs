@@ -214,18 +214,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var c = slice.NextChar();
             var str = StringBuilderCache.Local();
-            var hasExcape = false;
+            var hasEscape = false;
 
-            while (c != '\0' && (c != ']' || hasExcape))
+            while (c != '\0' && (c != ']' || hasEscape))
             {
-                if (c == '\\' && !hasExcape)
+                if (c == '\\' && !hasEscape)
                 {
-                    hasExcape = true;
+                    hasEscape = true;
                 }
                 else
                 {
                     str.Append(c);
-                    hasExcape = false;
+                    hasEscape = false;
                 }
                 c = slice.NextChar();
             }
