@@ -5,10 +5,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
     using System;
     using System.Collections.Generic;
 
-    public class ImageExtension : ITripleColonExtensionInfo
+    public class ImageExtensionBlock : ITripleColonExtensionInfo
     {
         private readonly MarkdownContext _context;
 
@@ -16,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool SelfClosing => true;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
-        public ImageExtension(MarkdownContext context)
+        public ImageExtensionBlock(MarkdownContext context)
         {
             _context = context;
         }
@@ -144,7 +145,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 } else
                 {
-                    if(currentType == "complex" && obj.Count == 0)
+                    if (currentType == "complex" && obj.Count == 0)
                     {
                         logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
@@ -192,11 +193,5 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
         }
-    }
-
-    public class ImageProperties
-    {
-        public string id { get; set; }
-        public string type { get; set; }
     }
 }

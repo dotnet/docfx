@@ -8,27 +8,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
 
-    public class VideoExtension : ITripleColonExtensionInfo
+    public class VideoExtensionInline : ITripleColonExtensionInlineInfo
     {
         private readonly MarkdownContext _context;
 
         public string Name => "video";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+        public Func<HtmlRenderer, TripleColonInline, bool> RenderDelegate { get; private set; }
 
-        public VideoExtension(MarkdownContext context)
+        public VideoExtensionInline(MarkdownContext context)
         {
             _context = context;
         }
 
-        public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+        public bool Render(HtmlRenderer renderer, TripleColonInline inline)
         {
             return RenderDelegate != null
-                ? RenderDelegate(renderer, block)
+                ? RenderDelegate(renderer, inline)
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonInline inline)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();

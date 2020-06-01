@@ -10,33 +10,36 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
-    public class TripleColonParser : BlockParser
+    public class TripleColonParserInline : InlineParser
     {
         private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
         private readonly MarkdownContext _context;
-        private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
+        private readonly IDictionary<string, ITripleColonExtensionInlineInfo> _extensions;
 
-        public TripleColonParser(MarkdownContext context, IDictionary<string, ITripleColonExtensionInfo> extensions)
+        private readonly string[] StartStrings = { ":::image", ":::video", ":::code" };
+        private const string EndString = "\":::";
+
+        public TripleColonParserInline(MarkdownContext context, IDictionary<string, ITripleColonExtensionInlineInfo> extensions)
         {
             OpeningCharacters = new[] { ':' };
             _context = context;
             _extensions = extensions;
         }
 
-        public override BlockState TryOpen(BlockProcessor processor)
+        public override bool Match(InlineProcessor processor, ref StringSlice slice)
         {
-            var slice = processor.Line;
-            var sourcePosition = processor.Start;
+            //if (!ExtensionsHelper.MatchStartMultiple(ref slice, StartStrings, true))
+            //{
+            //    return false;
+            //}
 
-            if (processor.IsCodeIndent
-                || !ExtensionsHelper.MatchStart(ref slice, ":::"))
+            if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
-                return BlockState.None;
+                return false;
             }
 
-            ExtensionsHelper.SkipSpaces(ref slice);
-
             var extensionName = "triple-colon";
+            var sourcePosition = processor.LineIndex;
             Action<string> logError = (string message) => _context.LogError(
                 $"invalid-{extensionName}",
                 $"{message}",
@@ -48,123 +51,38 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 null,
                 line: processor.LineIndex);
 
-            var block = new TripleColonBlock(this)
+            var inline = new TripleColonInline(this)
             {
                 Closed = false,
-                Column = processor.Column,
+                Column = 0,
                 Line = processor.LineIndex,
                 Span = new SourceSpan(sourcePosition, slice.End),
             };
 
+
             if (!TryMatchIdentifier(ref slice, out extensionName)
                 || !_extensions.TryGetValue(extensionName, out var extension)
-                || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
                 || !TryMatchAttributes(ref slice, out var attributes, extensionName, extension.SelfClosing, logError)
-                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, logWarning, block))
+                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, logWarning, inline))
             {
-                return BlockState.None;
+                return false;
             }
 
-            block.Extension = extension;
-            block.Attributes = attributes;
-            block.RenderProperties = renderProperties;
+            inline.Extension = extension;
+            inline.Attributes = attributes;
+            inline.RenderProperties = renderProperties;
 
             if (htmlAttributes != null)
             {
-                block.SetData(typeof(HtmlAttributes), htmlAttributes);
+                inline.SetData(typeof(HtmlAttributes), htmlAttributes);
             }
 
-            processor.NewBlocks.Push(block);
+            processor.Inline = inline;
 
-            if (extension.GetType() == typeof(ImageExtensionBlock)
-                && htmlAttributes != null
-                && ImageExtensionInline.RequiresClosingTripleColon(attributes))
-            {
-                block.EndingTripleColons = true;
-                return BlockState.ContinueDiscard;
-            }
-
-            if (extension.SelfClosing)
-            {
-                return BlockState.BreakDiscard;
-            }
-
-            return BlockState.ContinueDiscard;
-        }
-
-        public override BlockState TryContinue(BlockProcessor processor, Block block)
-        {
-            var slice = processor.Line;
-            if (processor.IsBlankLine)
-            {
-                return BlockState.Continue;
-            }
-
-            ExtensionsHelper.SkipSpaces(ref slice);
-
-            if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
-            {
-                ExtensionsHelper.ResetLineIndent(processor);
-                return BlockState.Continue;
-            }
-
-            ExtensionsHelper.SkipSpaces(ref slice);
-
-            var extensionName = ((TripleColonBlock)block).Extension.Name;
-
-            if (!ExtensionsHelper.MatchStart(ref slice, extensionName) || !ExtensionsHelper.MatchStart(ref slice, "-end"))
-            {
-                ExtensionsHelper.ResetLineIndent(processor);
-                return BlockState.Continue;
-            }
-
-            var c = ExtensionsHelper.SkipSpaces(ref slice);
-
-            var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
-            if (endingTripleColons && !ExtensionsHelper.MatchStart(ref slice, ":::"))
-            {
-                _context.LogWarning(
-                    $"invalid-{extensionName}",
-                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Missing ending \":::{extensionName}-end:::\"",
-                    block);
-                return BlockState.Continue;
-            }
-
-            if (!c.IsZero() && !endingTripleColons)
-            {
-                _context.LogWarning(
-                    $"invalid-{extensionName}",
-                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {extensionName}-end\": \"{c}\"",
-                    block);
-            }
-
-            block.UpdateSpanEnd(slice.End);
-            block.IsOpen = false;
-            (block as TripleColonBlock).Closed = true;
-
-            return BlockState.BreakDiscard;
-        }
-
-        public override bool Close(BlockProcessor processor, Block block)
-        {
-            var tripleColonBlock = (TripleColonBlock)block;
-            if (tripleColonBlock.Extension.SelfClosing)
-            {
-                block.IsOpen = false;
-                return true;
-            }
-
-            var extensionName = tripleColonBlock.Extension.Name;
-            if (block.IsOpen)
-            {
-                _context.LogWarning(
-                    $"invalid-{extensionName}",
-                    $"Invalid {extensionName} on line {block.Line}. No \"::: {extensionName}-end\" found. Blocks should be explicitly closed.",
-                    block);
-            }
             return true;
         }
 
+        
         private bool TryMatchIdentifier(ref StringSlice slice, out string name)
         {
             name = string.Empty;
@@ -212,6 +130,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, bool selfClosing, Action<string> logError)
         {
             attributes = EmptyAttributes;
+
             while (true)
             {
                 ExtensionsHelper.SkipSpaces(ref slice);
