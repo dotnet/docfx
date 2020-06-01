@@ -3,5 +3,9 @@ https://aka\.ms/[-a-zA-Z0-9?&=\/_]*
 https://www.w3.org/[-a-zA-Z0-9?&=\/_#]*
 https://(?:(?:www\.|)youtube\.com|youtu.be)/[-a-zA-Z0-9?&=]*
 https://[a-z-]+\.githubusercontent\.com/[-a-zA-Z0-9?&=_\/.]*
+# uuid:
+\{[0-9A-FA-F]{8}-(?:[0-9A-FA-F]{4}-){3}[0-9A-FA-F]{12}\}
+# hash:
 \b[0-9a-fA-F]{35,40}\b
-\[InlineData\(".*"\)\]
+# xunit InlineData
+\[InlineData\(".*
