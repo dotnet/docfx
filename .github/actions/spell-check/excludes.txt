@@ -1,9 +1,3 @@
-(?:^|/)dirs$
-(?:^|/)go\.mod$
-(?:^|/)go\.sum$
-(?:^|/)package-lock\.json$
-(?:^|/)sources(?:|\.dep)$
-SUMS$
 \.ai$
 \.bmp$
 \.cer$
@@ -51,15 +45,8 @@ SUMS$
 \.xpm$
 \.yml$
 \.zip$
-^consolegit2gitfilters\.json$
-^dep/
 ^oss/
 /data/
-^doc/reference/UTF8-torture-test\.txt$
-^src/interactivity/onecore/BgfxEngine\.
-^src/renderer/wddmcon/WddmConRenderer\.
-^src/terminal/parser/ft_fuzzer/VTCommandFuzzer\.cpp$
-^src/tools/U8U16Test/(?:fr|ru|zh)\.txt$
 ^\.vsconfig$
 ^\.github/actions/spell-check/
 ^\.gitignore$
