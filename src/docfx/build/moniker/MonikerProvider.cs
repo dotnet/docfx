@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
 
             if (metadata.MonikerRange != null)
             {
-                // For conceptual docet,
+                // For conceptual docset,
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
                 if (!_config.SkipMonikerValidation && configMonikerRange.Value is null)

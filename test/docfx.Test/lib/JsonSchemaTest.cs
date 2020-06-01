@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [MemberData(nameof(GetJsonSchemaTestSuite))]
-        public void TestJsonSchemaConfirmance(string description, string schemaText, string testText)
+        public void TestJsonSchemaConformance(string description, string schemaText, string testText)
         {
             var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, new FilePath(""));
             var test = JObject.Parse(testText);

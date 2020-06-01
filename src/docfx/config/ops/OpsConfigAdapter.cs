@@ -244,7 +244,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 // Getting validation rules failure should not block build proceeding,
-                // catch and log the excpeition without rethrow.
+                // catch and log the exception without rethrow.
                 Log.Write(ex);
                 _errorLog.Write(Errors.System.ValidationIncomplete());
                 return "{}";

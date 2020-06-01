@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var content = "";
-                var name = htmlMetaNames.TryGetValue(key, out var diplayName) ? diplayName : key;
+                var name = htmlMetaNames.TryGetValue(key, out var displayName) ? displayName : key;
 
                 if (value is JArray arr)
                 {

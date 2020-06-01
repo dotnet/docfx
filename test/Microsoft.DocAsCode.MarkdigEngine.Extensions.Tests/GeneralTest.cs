@@ -123,7 +123,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        [Trait("A wrong case need to be fixed in dfm", "' in title should be traslated to &#39; instead of &amp;#39;")]
+        [Trait("A wrong case need to be fixed in dfm", "' in title should be translated to &#39; instead of &amp;#39;")]
         public void TestDfmLink_LinkWithSpecialCharactorsInTitle()
         {
             var source = @"[text's string](https://www.google.com.sg/?gfe_rd=cr&ei=Xk ""Google's homepage"")";
@@ -160,7 +160,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestPathUtility_AbsoluteLinkWithBracketAndBrackt()
+        public void TestPathUtility_AbsoluteLinkWithBracketAndBracket()
         {
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
             var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33(VS.90).aspx"">User-Defined Date/Time Formats (Format Function)</a></p>

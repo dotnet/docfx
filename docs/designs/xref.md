@@ -322,7 +322,7 @@ The expected resolved result would be a `XrefSpec` instance for the referenced u
 
 ### Dependency map
 For xref reference to the internal document, the reference relationship should be included into the dependency map. The dependency type should be `UidInclusion` since `@uid` implicitly means `@uid?displayProperty=name`.
-The outpupt `build.manidest` would look like:
+The outpupt `build.manifest` would look like:
 ```json
     {
       "dependencies": {

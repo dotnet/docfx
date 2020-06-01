@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestNotprimitiveKey()
+        public void TestNotPrimitiveKey()
         {
             var yaml = @"
 ? - item1

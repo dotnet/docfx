@@ -378,7 +378,7 @@ namespace ChangeFeedSample
         }
     }
 }";
-        static public string contentCharpRegion = @"using Microsoft.AspNetCore.Builder;
+        static public string contentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -1697,7 +1697,7 @@ Key &quot;doc&quot; is not found.
             else if (source.Contains("source2.cs"))
             {
                 filename = "source2.cs";
-                content = contentCharpRegion;
+                content = contentCSharpRegion;
             }
             else if (source.Contains("source3.cs"))
             {
