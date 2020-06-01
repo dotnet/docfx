@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             { "summary", null },
             { "details", null },
             { "nobr", null },
-            { "strike", null }
+            { "strike", null },
         };
 
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
