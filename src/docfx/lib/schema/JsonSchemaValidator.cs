@@ -201,13 +201,13 @@ namespace Microsoft.Docs.Build
                     Validate(schema.PropertyNames, key, propertyName, errors);
                 }
 
-                var isAdditonalProperty = true;
+                var isAdditionalProperty = true;
 
                 // properties
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
                     Validate(propertySchema, key, value, errors);
-                    isAdditonalProperty = false;
+                    isAdditionalProperty = false;
                 }
 
                 // patternProperties
@@ -216,12 +216,12 @@ namespace Microsoft.Docs.Build
                     if (Regex.IsMatch(key, pattern))
                     {
                         Validate(patternPropertySchema, key, value, errors);
-                        isAdditonalProperty = false;
+                        isAdditionalProperty = false;
                     }
                 }
 
                 // additionalProperties
-                if (isAdditonalProperty && schema.AdditionalProperties != null)
+                if (isAdditionalProperty && schema.AdditionalProperties != null)
                 {
                     if (schema.AdditionalProperties == JsonSchema.FalseSchema)
                     {

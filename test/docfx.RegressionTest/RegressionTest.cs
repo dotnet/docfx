@@ -272,7 +272,7 @@ namespace Microsoft.Docs.Build
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
-            // TODO: docs-pipeline shoud not exit 1 for content error while reporting moved to docs.build
+            // TODO: docs-pipeline should not exit 1 for content error while reporting moved to docs.build
             if (!new int[] { 0, 1 }.Contains(process.ExitCode) && !ignoreError)
             {
                 throw new InvalidOperationException(

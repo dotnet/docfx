@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 InclusionBlock inclusionBlock => "IncludeFile",
                 InclusionInline inclusionInline => "IncludeFile",
                 EmojiInline emojiInline => "Emoji",
-                LiteralInline literalInline => literalInline.IsFirstCharacterEscaped ? "BlackslashEscape" : "TextualContent",
+                LiteralInline literalInline => literalInline.IsFirstCharacterEscaped ? "BackslashEscape" : "TextualContent",
                 HtmlEntityInline htmlEntityInline => "HTMLEntity",
                 CodeInline codeInline => "CodeSpan",
                 EmphasisInline emphasisInline => emphasisInline.DelimiterCount == 2 ? "StrongEmphasis" : "Emphasis",

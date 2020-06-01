@@ -8,9 +8,9 @@ Have a question using docfx? Please use [Stack Overflow](https://stackoverflow.c
 
 ## Requesting Features
 
-Your comments and feedbacks are important to us. We want to hear from you to continously improve this project!
+Your comments and feedbacks are important to us. We want to hear from you to continuously improve this project!
 
-Before you create a new issue, search in the [issues](https://github.com/dotnet/docfx/issues) page to see if the idea has already been presented. Partitipate in the discussion with friendly and relavant comments, or simply add your reactions (👍 👎) in place. 
+Before you create a new issue, search in the [issues](https://github.com/dotnet/docfx/issues) page to see if the idea has already been presented. Participate in the discussion with friendly and relavant comments, or simply add your reactions (👍 👎) in place. 
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 +For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).

@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class GitCommit
     {
         /// <summary>
-        /// Gets or sets the git commmit author name
+        /// Gets or sets the git commit author name
         /// </summary>
         public string AuthorName { get; }
 

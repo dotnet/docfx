@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
         [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
-        internal void TestNulllValue(string json, string message, string errorCode, ErrorLevel errorLevel)
+        internal void TestNullValue(string json, string message, string errorCode, ErrorLevel errorLevel)
         {
             var (errors, result) = JsonUtility.Parse(json.Replace('\'', '"'), null);
             Assert.Collection(errors, error =>
@@ -435,7 +435,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("{}---")]
         [InlineData("{}{}")]
-        public void TestDeserializeJsonWithCheckAddionalContent(string json)
+        public void TestDeserializeJsonWithCheckAdditionalContent(string json)
         {
             Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), true));
         }
@@ -443,7 +443,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("{}---")]
         [InlineData("{}{}")]
-        public void TestDeserializeJsonWithoutCheckAddionalContent(string json)
+        public void TestDeserializeJsonWithoutCheckAdditionalContent(string json)
         {
             var result = JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), false);
             Assert.NotNull(result);

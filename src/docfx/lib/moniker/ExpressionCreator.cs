@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
         private static (List<Error>, IExpression?) GetMonikerRange(ref string rangeString, SourceInfo? source)
         {
             var errors = new List<Error>();
-            var (firstErros, result) = GetComparatorSet(ref rangeString, source);
-            errors.AddRange(firstErros);
+            var (firstError, result) = GetComparatorSet(ref rangeString, source);
+            errors.AddRange(firstError);
             if (result is null)
             {
                 return (errors, result);
