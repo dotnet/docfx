@@ -73,7 +73,7 @@ _Example Response:_
 
 ##### Config parameterization
 
-Server side config is different between repos, docsets or locals. `docfx` parametrizes outgoing HTTP requests using HTTP headers:
+Server side config is different between repos, docsets or locals. `docfx` parameterizes outgoing HTTP requests using HTTP headers:
 
 name | example
 ----|----

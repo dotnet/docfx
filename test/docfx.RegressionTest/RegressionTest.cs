@@ -367,17 +367,17 @@ namespace Microsoft.Docs.Build
 
             static string PrettifyJson(string json)
             {
-                return PrettfyNewLine(JToken.Parse(json).ToString());
+                return PrettifyNewLine(JToken.Parse(json).ToString());
             }
 
             static string PrettifyLogJson(string json)
             {
                 var obj = JObject.Parse(json);
                 obj.Remove("date_time");
-                return PrettfyNewLine(obj.ToString());
+                return PrettifyNewLine(obj.ToString());
             }
 
-            static string PrettfyNewLine(string text)
+            static string PrettifyNewLine(string text)
             {
                 return text.Replace("\r", "").Replace("\\n\\n", "⬇\n").Replace("\\n", "⬇\n");
             }

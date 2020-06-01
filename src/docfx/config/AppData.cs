@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Get the application cache root dir, default is under user proflie dir.
+        /// Get the application cache root dir, default is under user profile dir.
         /// User can set the DOCFX_APPDATA_PATH environment to change the root
         /// </summary>
         private static string GetAppDataRoot()

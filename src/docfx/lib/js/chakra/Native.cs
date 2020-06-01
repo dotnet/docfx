@@ -228,7 +228,7 @@ namespace ChakraHost.Hosting
         internal static extern JavaScriptErrorCode JsConvertValueToNumber(JavaScriptValue value, out JavaScriptValue numberValue);
 
         [DllImport(DllName)]
-        internal static extern JavaScriptErrorCode JsGetStringLength(JavaScriptValue sringValue, out int length);
+        internal static extern JavaScriptErrorCode JsGetStringLength(JavaScriptValue stringValue, out int length);
 
         [DllImport(DllName, CharSet = CharSet.Unicode)]
         internal static extern JavaScriptErrorCode JsPointerToString(string value, UIntPtr stringLength, out JavaScriptValue stringValue);

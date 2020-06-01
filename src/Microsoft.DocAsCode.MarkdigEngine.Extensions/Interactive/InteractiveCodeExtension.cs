@@ -11,10 +11,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
             var codeSnippetInteractiveRewriter = new CodeSnippetInteractiveRewriter();
-            var fencedCodeInteractiveRewrtier = new FencedCodeInteractiveRewriter();
+            var fencedCodeInteractiveRewriter = new FencedCodeInteractiveRewriter();
 
             var codeSnippetVisitor = new MarkdownDocumentVisitor(codeSnippetInteractiveRewriter);
-            var fencedCodeVisitor = new MarkdownDocumentVisitor(fencedCodeInteractiveRewrtier);
+            var fencedCodeVisitor = new MarkdownDocumentVisitor(fencedCodeInteractiveRewriter);
 
             pipeline.DocumentProcessed += document =>
             {

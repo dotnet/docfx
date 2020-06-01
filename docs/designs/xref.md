@@ -322,7 +322,7 @@ The expected resolved result would be a `XrefSpec` instance for the referenced u
 
 ### Dependency map
 For xref reference to the internal document, the reference relationship should be included into the dependency map. The dependency type should be `UidInclusion` since `@uid` implicitly means `@uid?displayProperty=name`.
-The outpupt `build.manifest` would look like:
+The output `build.manifest` would look like:
 ```json
     {
       "dependencies": {
@@ -372,9 +372,9 @@ outputs:
 
 ### External uid with multiple versioning
 The resolving logic for external uid is the same as internal uid, but how to consume `xrefmap` is different.
-v3 is consuming `xrefmap.json` of v2 output for now. And for multiple versioning, v2 would output multiple `xrefmap-versionxx.json` files. There are two options here:
+v3 is consuming `xrefmap.json` of v2 output for now. And for multiple versioning, v2 would output multiple `xrefmap-version-{xx}.json` files. There are two options here:
 - switch to consume `xrefmap.json` from v3 output, we need to publish `xrefmap.json` with multiple versioning in v3
-- v2 needs to modify `xrefspec` model to include versioning information, and combine multiple `xrefmap-versionxx.json` into one `xrefmap.json`
+- v2 needs to modify `xrefspec` model to include versioning information, and combine multiple `xrefmap-version-{xx}.json` into one `xrefmap.json`
 > We should notice that, the versioning information for conceptual versioning in v2 is inaccurate. The versioning information is the group definition, which could be larger than the actual file versioning. While consuming the output from v3, we should have the accurate versioning information in place.
 ## Performance tuning
 During creating internal xref map, docfx needs to go through all the files containing uid, and during building pages docfx needs to go through all the files again. We can add some cache to avoid doing the same thing twice.

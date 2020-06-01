@@ -19,11 +19,11 @@ namespace Microsoft.Docs.Build
         [InlineData("a?b#c#d", "a", "?b", "#c#d")]
         public static void SplitUrl(string url, string path, string query, string fragment)
         {
-            var (apath, aquery, afragment) = UrlUtility.SplitUrl(url);
+            var (aPath, aQuery, aFragment) = UrlUtility.SplitUrl(url);
 
-            Assert.Equal(path, apath);
-            Assert.Equal(query, aquery);
-            Assert.Equal(fragment, afragment);
+            Assert.Equal(path, aPath);
+            Assert.Equal(query, aQuery);
+            Assert.Equal(fragment, aFragment);
         }
 
         [Theory]

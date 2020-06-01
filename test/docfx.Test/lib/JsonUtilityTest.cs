@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestBasicClassWithNullCharactor()
+        public void TestBasicClassWithNullCharacter()
         {
             var json = JsonUtility.Serialize(new BasicClass { C = null, });
             Assert.Equal("{\"b\":0,\"d\":false}", json);

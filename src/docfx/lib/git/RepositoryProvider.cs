@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RepositoryProvider : IDisposable
     {
-        private readonly ConcurrentDictionary<string, Repository?> _repositores = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Repository?> _repositories = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
 
         public Repository? Repository { get; }
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var repository = _repositores.GetOrAdd(directory, GetRepositoryCore);
+            var repository = _repositories.GetOrAdd(directory, GetRepositoryCore);
             if (repository is null)
             {
                 return default;

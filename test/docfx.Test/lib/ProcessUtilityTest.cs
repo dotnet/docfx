@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void NestedRunInMutexWithSameNameTest()
         {
-            // nested run doesn't work for sanme lock name
+            // nested run doesn't work for same lock name
             Assert.ThrowsAny<Exception>(() =>
             {
                 var name = Guid.NewGuid().ToString();

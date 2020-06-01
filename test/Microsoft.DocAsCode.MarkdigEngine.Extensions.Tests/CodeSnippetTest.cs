@@ -161,7 +161,7 @@ print(azureml.core.VERSION)</code></pre>";
         }
 
         [Fact]
-        public void CodeSnippetShouldNotWorkInParagragh()
+        public void CodeSnippetShouldNotWorkInParagraph()
         {
             var source = "text [!code[test](CodeSnippet.cs)]";
 
