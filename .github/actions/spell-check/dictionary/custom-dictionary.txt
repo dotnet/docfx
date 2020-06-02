@@ -503,3 +503,4 @@ zzz
 kbd
 nobr
 allowtransparency
+addbuildtag
