@@ -8,6 +8,8 @@ allowfullscreen
 allowfullscreen
 allowlist
 allowlists
+disallowlist
+disallowlists
 aperiod
 api
 appdata
