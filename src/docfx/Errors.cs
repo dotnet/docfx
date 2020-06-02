@@ -135,6 +135,9 @@ namespace Microsoft.Docs.Build
             /// Behavior: ❌ Message: ❌
             public static Error ViolateSchema(SourceInfo? source, string message)
                 => new Error(ErrorLevel.Error, "violate-schema", message, source);
+
+            public static Error JsonDuplicateKey(SourceInfo? source, string key)
+                => new Error(ErrorLevel.Warning, "json-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
         }
 
         public static class Yaml

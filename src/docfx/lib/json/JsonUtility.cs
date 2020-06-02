@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
     {
         public static readonly JTokenDeepEqualsComparer DeepEqualsComparer = new JTokenDeepEqualsComparer();
 
+        private static readonly Regex s_duplicateProperty = new Regex(@"^Property with the name '(.*)' already exists in the current JSON object", RegexOptions.Compiled);
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonConverter[] s_jsonConverters =
         {
@@ -212,18 +213,29 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
         {
-            return Parse(new StringReader(json), file);
+            using var reader = new StringReader(json);
+            return Parse(reader, file);
         }
 
         public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file)
         {
+            var errors = new List<Error>();
             try
             {
                 using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
-                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
+                return SetSourceInfo(JToken.ReadFrom(reader, new JsonLoadSettings { DuplicatePropertyNameHandling = DuplicatePropertyNameHandling.Error }), file).RemoveNulls();
             }
             catch (JsonReaderException ex)
             {
+                var match = s_duplicateProperty.Match(ex.Message);
+                if (match.Success && match.Groups.Count >= 2)
+                {
+                    errors.Add(Errors.Json.JsonDuplicateKey(new SourceInfo(file, ex.LineNumber, ex.LinePosition), match.Groups[1].ToString()));
+                    using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
+                    var (nullErrors, value) = SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
+                    errors.AddRange(nullErrors);
+                    return (errors, value);
+                }
                 throw ToError(ex, file).ToException(ex);
             }
         }

@@ -254,3 +254,26 @@ outputs:
     { "metadata": { "universal_conceptual_toc": "/dotnet-1/azure/sdk/toc.json", "universal_ref_toc": undefined } }
   docs-ref-conceptual-2/toc.json: |
     { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet-2/api/azure_ref_toc/toc.json" } }
+---
+# Should warn on invalid redirection JSON
+repos:
+  https://github.com/ops/redirect-3:
+  - files:
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {
+              "source_path": "articles/cosmos-db/multi-master-conflict-resolution.md",
+              "redirect_url": "/azure/cosmos-db/conflict-resolution-policies",
+              "source_path": "articles/cosmos-db/provision-throughput-autopilot.md",
+              "redirect_url": "/azure/cosmos-db/provision-throughput-autoscale"
+            },
+          ]
+        }
+      docfx.yml: |
+        name: azure
+        product: MSDN
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"json-duplicate-key","message":"Key 'source_path' is already defined, remove the duplicate key.","file":".openpublishing.redirection.json","line":6,"column":20}
+---
