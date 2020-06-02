@@ -35,13 +35,16 @@ function publishBinaryPackages() {
     $rids = @("win7-x64", "osx-x64", "linux-x64") # Microsoft.ChakraCore doesn't provide win-x64 runtime build, using win7-x64
     foreach ($rid in $rids) {
         exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false"
-        $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
+        if ($rid -eq "win7-x64") {
+            $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
+        }
         $packageName = "docfx-$rid-$version"
         Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
         New-Item -Path "$stagingPath" -Name "$packageName.zip.sha256" -Force -ItemType "file" -Value (Get-FileHash "$stagingPath/$packageName.zip").Hash
         Copy-Item "$stagingPath/$packageName.zip" "$stagingPath/docfx-$rid-latest.zip" 
         Copy-Item "$stagingPath/$packageName.zip.sha256" "$stagingPath/docfx-$rid-latest.zip.sha256" 
     }
+    Write-Host "##vso[build.addbuildtag]$version"
 }
 
 try {
