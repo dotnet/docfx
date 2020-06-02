@@ -94,16 +94,6 @@ namespace Microsoft.Docs.Build
             { "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "allowfullscreen", "height", "src", "width" } },
         };
 
-        private static readonly List<Tuple<char, char>> s_cjkCharUnicodeRangeList = new List<Tuple<char, char>>
-        {
-            new Tuple<char, char>('\u2E80', '\u9FFF'),  // CJK character
-            new Tuple<char, char>('\xAC00', '\xD7A3'),  // Hangul Syllables
-            new Tuple<char, char>('\uFF00', '\uFFEF'),  // Halfwidth and Fullwidth Forms(Include Chinese punctuation)
-        };
-
-        private static readonly char[] s_wordSeparatorChars = { ' ', '\t', '\n', '\r' };
-        private static readonly char[] s_punctuationChars = { '.', '?', '!', ';', ':', ',', '(', ')', '[', ']' };
-
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
             var result = new ArrayBufferWriter<char>(html.Length + 64);
@@ -420,7 +410,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    if (s_wordSeparatorChars.Any(i => i == ch))
+                    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
                     {
                         if (word)
                         {
@@ -428,7 +418,11 @@ namespace Microsoft.Docs.Build
                             total++;
                         }
                     }
-                    else if (!s_punctuationChars.Any(i => i == ch))
+                    else if (
+                        ch != '.' && ch != '?' && ch != '!' &&
+                        ch != ';' && ch != ':' && ch != ',' &&
+                        ch != '(' && ch != ')' && ch != '[' &&
+                        ch != ']')
                     {
                         word = true;
                     }
@@ -443,9 +437,11 @@ namespace Microsoft.Docs.Build
             return total;
         }
 
-        private static bool IsCJKChar(char c)
+        private static bool IsCJKChar(char ch)
         {
-            return s_cjkCharUnicodeRangeList.Any(i => c >= i.Item1 && c <= i.Item2);
+            return (ch >= '\u2E80' && ch <= '\u9FFF') || // CJK character
+                   (ch >= '\xAC00' && ch <= '\xD7A3') || // Hangul Syllables
+                   (ch >= '\uFF00' && ch <= '\uFFEF');   // Halfwidth and Fullwidth Forms(Include Chinese punctuation)
         }
     }
 }
