@@ -31,6 +31,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly bool _allowOverwrite;
         private readonly MarkdigMarkdownService _markdigMarkdownService;
         private readonly FolderRedirectionManager _folderRedirectionManager;
+        private readonly string _liveSiteHostName;
+        private readonly HashSet<string> _schemaToProcessRemoveHostName = new HashSet<string> { "Achivement", "ModuleAvailability", "ContextObject", "ContentNav" };
         #endregion
 
         public SchemaValidator SchemaValidator { get; }
@@ -40,7 +42,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             DocumentSchema schema,
             ICompositionContainer container,
             MarkdigMarkdownService markdigMarkdownService,
-            FolderRedirectionManager folderRedirectionManager)
+            FolderRedirectionManager folderRedirectionManager,
+            string liveSiteHostName = null)
         {
             if (string.IsNullOrWhiteSpace(schema.Title))
             {
@@ -59,6 +62,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var commonSteps = container.GetExports<IDocumentBuildStep>(nameof(SchemaDrivenDocumentProcessor));
                 var schemaSpecificSteps = container.GetExports<IDocumentBuildStep>($"{nameof(SchemaDrivenDocumentProcessor)}.{_schemaName}");
                 BuildSteps = commonSteps.Union(schemaSpecificSteps).ToList();
+            }
+            if (_schemaToProcessRemoveHostName.Contains(_schemaName))
+            {
+                _liveSiteHostName = liveSiteHostName;
             }
         }
 
@@ -218,7 +225,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             var pc = new ProcessContext(null, model, context);
             DocumentSchema schema = model.Properties.Schema;
             model.Content = new SchemaProcessor(
-                new HrefInterpreter(false, true),
+                new HrefInterpreter(false, true, _liveSiteHostName),
                 new FileInterpreter(false, true),
                 new XrefInterpreter(false, true)
                 ).Process(content, schema, pc);

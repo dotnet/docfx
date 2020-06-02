@@ -89,6 +89,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
         [Fact]
         public void TestContextObjectSDP()
         {
+            Environment.SetEnvironmentVariable("_op_systemMetadata",
+                JsonUtility.ToJsonString(new Dictionary<string, object> { { "_op_siteHostName", "ppe.docs.microsoft.com" } }));
+
             using var listener = new TestListenerScope("TestContextObjectSDP");
             var schemaFile = CreateFile("template/schemas/contextobject.schema.json", File.ReadAllText("TestData/schemas/contextobject.test.schema.json"), _templateFolder);
             var tocTemplate = CreateFile("template/toc.json.tmpl", "toc template", _templateFolder);
@@ -97,7 +100,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             var includeFile = CreateFile("a b/inc.md", @"[root](../co/active.yml)", _inputFolder);
             var includeFile2 = CreateFile("c/d/inc.md", @"../../a b/toc.md", _inputFolder);
             var inputFile = CreateFile(inputFileName, @"### YamlMime:ContextObject
-breadcrumb_path: /absolute/toc.json
+breadcrumb_path: https://ppe.docs.microsoft.com/absolute/toc.json
 toc_rel: ../a b/toc.md
 file_include: ../a b/inc.md
 file_include2: ../c/d/inc.md

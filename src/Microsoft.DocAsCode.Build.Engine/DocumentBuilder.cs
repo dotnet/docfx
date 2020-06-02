@@ -377,6 +377,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         return result;
                     }
 
+                    var liveSiteHostName = TryGetLiveSiteHostNameFromEnvironment();
                     var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
                     foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
                     {
@@ -400,7 +401,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 schema,
                                 new CompositionContainer(CompositionContainer.DefaultContainer),
                                 markdigMarkdownService,
-                                new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules));
+                                new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules),
+                                liveSiteHostName);
                             Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                             result.Add(sdp);
                         }
@@ -495,6 +497,21 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             Logger.LogVerbose($"Plugin hash is '{result}'");
             return result;
+        }
+
+        private static string TryGetLiveSiteHostNameFromEnvironment()
+        {
+            string value = Environment.GetEnvironmentVariable(Constants.OPSEnvironmentVariable.SystemMetadata);
+
+            if (value != null)
+            {
+                var metadata = JsonUtility.FromJsonString<Dictionary<string, object>>(value)?.ToImmutableDictionary();
+                if (metadata.TryGetValue(Constants.OPSEnvironmentVariable.OpSiteHostName, out object liveSiteHostName))
+                {
+                    return (string)liveSiteHostName;
+                }
+            }
+            return null;
         }
 
         public void Dispose()
