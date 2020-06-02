@@ -13,7 +13,8 @@ namespace Microsoft.Docs.Build
     {
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
-            var docsets = ConfigLoader.FindDocsets(workingDirectory, options);
+            var (errors, docsets) = ConfigLoader.FindDocsets(workingDirectory, options);
+            ErrorLog.PrintErrors(errors);
             if (docsets.Length == 0)
             {
                 ErrorLog.PrintError(Errors.Config.ConfigNotFound(workingDirectory));

@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void PrintError(List<Error> errors)
+        public static void PrintErrors(List<Error> errors)
         {
             foreach (var error in errors)
             {
