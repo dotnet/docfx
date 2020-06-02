@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/disallowlists", headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
