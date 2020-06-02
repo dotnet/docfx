@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly MarkdigMarkdownService _markdigMarkdownService;
         private readonly FolderRedirectionManager _folderRedirectionManager;
         private readonly string _liveSiteHostName;
-        private readonly HashSet<string> _schemaToProcessRemoveHostName = new HashSet<string> { "Achivement", "ModuleAvailability", "ContextObject", "ContentNav" };
+        private readonly HashSet<string> _schemaToProcessRemoveHostName = new HashSet<string> { "Achievements", "ModuleAvailability", "ContextObject", "ContentNav" };
         #endregion
 
         public SchemaValidator SchemaValidator { get; }
