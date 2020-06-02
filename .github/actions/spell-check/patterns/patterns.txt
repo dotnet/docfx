@@ -11,3 +11,6 @@
 \bms\..*?:
 # locale
 \b[a-z]{2}-[a-z]{2}\b
+# unicode
+'\\u[a-fA-F0-9]{4}'
+'\\x[a-fA-F0-9]{4}'

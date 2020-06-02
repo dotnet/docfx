@@ -441,7 +441,7 @@ namespace Microsoft.Docs.Build
         {
             return (ch >= '\u2E80' && ch <= '\u9FFF') || // CJK character
                    (ch >= '\xAC00' && ch <= '\xD7A3') || // Hangul Syllables
-                   (ch >= '\uFF00' && ch <= '\uFFEF');   // Halfwidth and Fullwidth Forms(Include Chinese punctuation)
+                   (ch >= '\uFF00' && ch <= '\uFFEF');   // Half width and Full width Forms (including Chinese punctuation)
         }
     }
 }
