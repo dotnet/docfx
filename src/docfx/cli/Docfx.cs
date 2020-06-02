@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Stdin)
                 {
-                    options.StdinConfig = JsonUtility.Deserialize<JObject>(Console.ReadLine(), new FilePath("--stdin"));
+                    options.StdinConfig = JsonUtility.DeserializeData<JObject>(Console.ReadLine(), new FilePath("--stdin"));
                 }
 
                 return (command, workingDirectory, options);

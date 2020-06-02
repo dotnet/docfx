@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ECMA2Yaml;
@@ -11,33 +12,34 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static OpsConfig? LoadOpsConfig(string workingDirectory)
+        public static (List<Error>, OpsConfig?) LoadOpsConfig(string workingDirectory)
         {
             var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
             if (!File.Exists(fullPath))
             {
-                return null;
+                return (new List<Error>(), null);
             }
 
             var filePath = new FilePath(Path.GetRelativePath(workingDirectory, fullPath));
             return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
         }
 
-        public static (string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(string docsetPath, Repository? repository)
+        public static (List<Error> errors, string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(string docsetPath, Repository? repository)
         {
             if (repository is null)
             {
-                return default;
+                return (new List<Error>(), default, default, default);
             }
 
-            var opsConfig = LoadOpsConfig(repository.Path);
+            var (errors, opsConfig) = LoadOpsConfig(repository.Path);
             if (opsConfig is null)
             {
-                return default;
+                return (new List<Error>(), default, default, default);
             }
 
             var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
-            return ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
+            var (xrefEndpoint, xrefQueryTags, config) = ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
+            return (errors, xrefEndpoint, xrefQueryTags, config);
         }
 
         private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)

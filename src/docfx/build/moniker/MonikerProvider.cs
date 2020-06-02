@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(_config.MonikerDefinition))
             {
                 var content = fileResolver.ReadString(_config.MonikerDefinition);
-                monikerDefinition = JsonUtility.Deserialize<MonikerDefinitionModel>(content, new FilePath(_config.MonikerDefinition));
+                monikerDefinition = JsonUtility.DeserializeData<MonikerDefinitionModel>(content, new FilePath(_config.MonikerDefinition));
             }
             _rangeParser = new MonikerRangeParser(monikerDefinition);
 

@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             string json, PackageType expectedPackageType, string expectedUrl, string expectedBranch, string expectedPath)
         {
             // Act
-            var packageUrl = JsonUtility.Deserialize<PackagePath>(json.Replace('\'', '"'), new FilePath("file"));
+            var packageUrl = JsonUtility.DeserializeData<PackagePath>(json.Replace('\'', '"'), new FilePath("file"));
 
             // Assert
             Assert.Equal(expectedUrl, packageUrl.Url);

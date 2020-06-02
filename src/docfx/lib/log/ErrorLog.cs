@@ -164,6 +164,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void PrintErrors(List<Error> errors)
+        {
+            foreach (var error in errors)
+            {
+                PrintError(error);
+            }
+        }
+
         public void Dispose()
         {
             lock (_outputLock)

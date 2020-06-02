@@ -300,9 +300,8 @@ items:
         [InlineData(@"b: not number")]
         public void ThrowWithoutSchemaValidation(string yaml)
         {
-            Assert.ThrowsAny<Exception>(() => YamlUtility.Deserialize<BasicClass>(yaml, null));
+            Assert.ThrowsAny<Exception>(() => YamlUtility.DeserializeData<BasicClass>(yaml, null));
         }
-
 
         /// <summary>
         /// De-serialize a user input string to an object, return error list at the same time

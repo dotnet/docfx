@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
+            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
             return (new JsonSchemaValidator(jsonSchema, forceError: true), new JsonSchemaTransformer(jsonSchema));
         }
     }

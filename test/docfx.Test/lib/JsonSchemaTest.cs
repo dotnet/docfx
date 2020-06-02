@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(GetJsonSchemaTestSuite))]
         public void TestJsonSchemaConformance(string description, string schemaText, string testText)
         {
-            var schema = JsonUtility.Deserialize<JsonSchema>(schemaText, new FilePath(""));
+            var schema = JsonUtility.DeserializeData<JsonSchema>(schemaText, new FilePath(""));
             var test = JObject.Parse(testText);
             var errors = new JsonSchemaValidator(schema).Validate(test["data"]);
 
@@ -370,7 +370,7 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','log_item_type':'user','code':'missing-attribute','message':'Missing required attribute: 'key1'','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
-            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
+            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
             var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), new FilePath("file"));
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
@@ -393,7 +393,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'docsetUnique': ['key11']}}}", new[] { "{'key1': {'key11': 'a'}}", "{'key1': {'key11': 'a'}, 'key11': 'a'}" }, 2)]
         public void TestJsonSchemaPostValidation(string schema, string [] jsons, int errorCount)
         {
-            var jsonSchema = JsonUtility.Deserialize<JsonSchema>(schema.Replace('\'', '"'), null);
+            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
             var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i+1}")).value);
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 

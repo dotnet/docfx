@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(config.SourceMap))
             {
                 var content = fileResolver.ReadString(config.SourceMap);
-                var map = JsonUtility.Deserialize<SourceMapModel>(content, new FilePath(config.SourceMap));
+                var map = JsonUtility.DeserializeData<SourceMapModel>(content, new FilePath(config.SourceMap));
                 var sourceMapDirectory = Path.GetDirectoryName(fileResolver.ResolveFilePath(config.SourceMap)) ?? "";
 
                 foreach (var (path, originalPath) in map.Files)
