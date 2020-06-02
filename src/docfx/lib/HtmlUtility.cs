@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
 using Markdig.Syntax;
@@ -94,6 +95,13 @@ namespace Microsoft.Docs.Build
             { "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "allowfullscreen", "height", "src", "width" } },
         };
 
+        private static readonly List<string> s_cjkCharUnicodeRangeList = new List<string>
+        {
+            "^[\u2E80-\u9FFF]$",    // CJK character
+            "^[\xAC00-\xD7A3]$",    // Hangul Syllables
+            "^[\uFF00-\uFFEF]$",    // Halfwidth and Fullwidth Forms(Include Chinese punctuation)
+        };
+
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
             var result = new ArrayBufferWriter<char>(html.Length + 64);
@@ -118,7 +126,6 @@ namespace Microsoft.Docs.Build
 
         public static void CountWord(ref HtmlToken token, ref long wordCount)
         {
-            // TODO: word count does not work for CJK locales...
             if (token.Type == HtmlTokenType.Text)
             {
                 wordCount += CountWordInText(token.RawText.Span);
@@ -395,34 +402,52 @@ namespace Microsoft.Docs.Build
         private static int CountWordInText(ReadOnlySpan<char> text)
         {
             var total = 0;
-            var word = false;
+            var isEnglishWord = false;
 
             foreach (var ch in text)
             {
-                if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
+                if (IsCJKChar(ch))
                 {
-                    if (word)
+                    total++;
+
+                    if (isEnglishWord)
                     {
-                        word = false;
+                        isEnglishWord = false;
                         total++;
                     }
                 }
-                else if (
-                    ch != '.' && ch != '?' && ch != '!' &&
-                    ch != ';' && ch != ':' && ch != ',' &&
-                    ch != '(' && ch != ')' && ch != '[' &&
-                    ch != ']')
+                else
                 {
-                    word = true;
+                    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
+                    {
+                        if (isEnglishWord)
+                        {
+                            isEnglishWord = false;
+                            total++;
+                        }
+                    }
+                    else if (
+                        ch != '.' && ch != '?' && ch != '!' &&
+                        ch != ';' && ch != ':' && ch != ',' &&
+                        ch != '(' && ch != ')' && ch != '[' &&
+                        ch != ']')
+                    {
+                        isEnglishWord = true;
+                    }
                 }
             }
 
-            if (word)
+            if (isEnglishWord)
             {
                 total++;
             }
 
             return total;
+        }
+
+        private static bool IsCJKChar(char c)
+        {
+            return s_cjkCharUnicodeRangeList.Any(p => Regex.IsMatch(c.ToString(), p));
         }
     }
 }
