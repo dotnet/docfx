@@ -309,6 +309,8 @@ namespace Microsoft.Docs.Build
             yield return SourceMap;
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
+            yield return Allowlists;
+            yield return Disallowlists;
 
             foreach (var metadataSchema in MetadataSchema)
             {
