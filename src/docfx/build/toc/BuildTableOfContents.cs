@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
             // load toc tree
             var (errors, node, _, _) = context.TableOfContentsLoader.Load(file);
 
+            context.ContentValidator.ValidateTocDeprecated(file.FilePath); // toc-deprecated
+
             var (metadataErrors, metadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
@@ -30,6 +32,13 @@ namespace Microsoft.Docs.Build
             errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
+
+            var jsonOutputPath = LegacyUtility.ChangeExtension(context.DocumentProvider.GetOutputPath(file.FilePath, true), ".json");
+
+            if (string.Compare(jsonOutputPath, metadata.BreadcrumbPath, System.StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                context.ContentValidator.ValidateBreadcrumbLinkExternal(model.Items, file.FilePath, metadata.BreadcrumbPath); // toc-breadcrumb-link-external
+            }
 
             // enable pdf
             if (context.Config.OutputPdf)

@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             return _documents.GetOrAdd(path, GetDocumentCore);
         }
 
-        public string GetOutputPath(FilePath path)
+        public string GetOutputPath(FilePath path, bool withLeadingSlash = false)
         {
             var file = GetDocument(path);
             var outputPath = file.SitePath;
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
             }
 
-            return UrlUtility.Combine(_config.BasePath, outputPath);
+            return UrlUtility.Combine(withLeadingSlash ? _config.BasePath.ValueWithLeadingSlash : _config.BasePath, outputPath);
         }
 
         public string GetDocsSiteUrl(FilePath path)
