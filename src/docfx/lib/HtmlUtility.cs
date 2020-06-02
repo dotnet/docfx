@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
             { "tr", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
 
             // other
-            { "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "frameborder", "allowtransparency", "allowfullscreen", "height", "src", "width" } },
+            { "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "frameborder", "allowtransparency", "allowfullscreen", "scrolling", "height", "src", "width" } },
             { "center", null },
             { "summary", null },
             { "details", null },
