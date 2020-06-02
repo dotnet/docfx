@@ -6,7 +6,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
 using Markdig.Syntax;
@@ -95,12 +94,15 @@ namespace Microsoft.Docs.Build
             { "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "allowfullscreen", "height", "src", "width" } },
         };
 
-        private static readonly List<string> s_cjkCharUnicodeRangeList = new List<string>
+        private static readonly List<Tuple<char, char>> s_cjkCharUnicodeRangeList = new List<Tuple<char, char>>
         {
-            "^[\u2E80-\u9FFF]$",    // CJK character
-            "^[\xAC00-\xD7A3]$",    // Hangul Syllables
-            "^[\uFF00-\uFFEF]$",    // Halfwidth and Fullwidth Forms(Include Chinese punctuation)
+            new Tuple<char, char>('\u2E80', '\u9FFF'),  // CJK character
+            new Tuple<char, char>('\xAC00', '\xD7A3'),  // Hangul Syllables
+            new Tuple<char, char>('\uFF00', '\uFFEF'),  // Halfwidth and Fullwidth Forms(Include Chinese punctuation)
         };
+
+        private static readonly char[] s_wordSeparatorChars = { ' ', '\t', '\n', '\r' };
+        private static readonly char[] s_punctuationChars = { '.', '?', '!', ';', ':', ',', '(', ')', '[', ']' };
 
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
@@ -402,7 +404,7 @@ namespace Microsoft.Docs.Build
         private static int CountWordInText(ReadOnlySpan<char> text)
         {
             var total = 0;
-            var isEnglishWord = false;
+            var word = false;
 
             foreach (var ch in text)
             {
@@ -410,34 +412,30 @@ namespace Microsoft.Docs.Build
                 {
                     total++;
 
-                    if (isEnglishWord)
+                    if (word)
                     {
-                        isEnglishWord = false;
+                        word = false;
                         total++;
                     }
                 }
                 else
                 {
-                    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
+                    if (s_wordSeparatorChars.Any(i => i == ch))
                     {
-                        if (isEnglishWord)
+                        if (word)
                         {
-                            isEnglishWord = false;
+                            word = false;
                             total++;
                         }
                     }
-                    else if (
-                        ch != '.' && ch != '?' && ch != '!' &&
-                        ch != ';' && ch != ':' && ch != ',' &&
-                        ch != '(' && ch != ')' && ch != '[' &&
-                        ch != ']')
+                    else if (!s_punctuationChars.Any(i => i == ch))
                     {
-                        isEnglishWord = true;
+                        word = true;
                     }
                 }
             }
 
-            if (isEnglishWord)
+            if (word)
             {
                 total++;
             }
@@ -447,7 +445,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsCJKChar(char c)
         {
-            return s_cjkCharUnicodeRangeList.Any(p => Regex.IsMatch(c.ToString(), p));
+            return s_cjkCharUnicodeRangeList.Any(i => c >= i.Item1 && c <= i.Item2);
         }
     }
 }

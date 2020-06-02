@@ -110,12 +110,16 @@ namespace Microsoft.Docs.Build
         [InlineData("a", 1)]
         [InlineData("a b", 2)]
         [InlineData("a b ?!", 2)]
+        [InlineData("中 文 ?!", 2)]
         [InlineData(@"<p>a</p>b", 2)]
         [InlineData(@"<p>a</p>b<p>c</p>", 3)]
+        [InlineData(@"<p>日</p>本<p>語</p>", 3)]
         [InlineData(@"<div><div class=""content""><h1>Connect and TFS information ?!</h1></div></div>", 4)]
         [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1></div></div>", 4)]
+        [InlineData(@"<div><div class=""content""><h1>Windows Forms 애플리케이션에서 데이터 흐름 사용</h1></div></div>", 17)]
         [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the MSDN and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
         [InlineData(@"<div><title>Connect and TFS information</title><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the MSDN and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 39)]
+        [InlineData(@"<div><title>.NET 中的并行编程</title><div class=""content""><h1>.NET 中的并行编程</h1><p>Visual Studio 和 .NET Framework 提供了运行时、类库类型和诊断工具，从而增强了对并行编程的支持。 .NET Framework 4 中引入的这些功能简化了并行开发。</p></div></div>", 69)]
         [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the <a href=""http://www.msdn.com"">MSDN</a> and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
         public static void CountWord(string input, long expectedCount)
         {
