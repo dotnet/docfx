@@ -48,7 +48,8 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     using var reader = new StreamReader(stream);
-                    var xrefMap = JsonUtility.DeserializeData<XrefMapModel>(reader, path);
+                    var (errors, xrefMap) = JsonUtility.Deserialize<XrefMapModel>(reader, path);
+                    errorLog.Write(errors);
                     foreach (var spec in xrefMap.References)
                     {
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
