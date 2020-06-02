@@ -500,3 +500,6 @@ yufeih
 yufeih
 yunit
 zzz
+kbd
+nobr
+allowtransparency
