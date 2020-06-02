@@ -118,7 +118,6 @@ namespace Microsoft.Docs.Build
 
         public static void CountWord(ref HtmlToken token, ref long wordCount)
         {
-            // TODO: word count does not work for CJK locales...
             if (token.Type == HtmlTokenType.Text)
             {
                 wordCount += CountWordInText(token.RawText.Span);
@@ -399,21 +398,34 @@ namespace Microsoft.Docs.Build
 
             foreach (var ch in text)
             {
-                if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
+                if (IsCJKChar(ch))
                 {
+                    total++;
+
                     if (word)
                     {
                         word = false;
                         total++;
                     }
                 }
-                else if (
-                    ch != '.' && ch != '?' && ch != '!' &&
-                    ch != ';' && ch != ':' && ch != ',' &&
-                    ch != '(' && ch != ')' && ch != '[' &&
-                    ch != ']')
+                else
                 {
-                    word = true;
+                    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
+                    {
+                        if (word)
+                        {
+                            word = false;
+                            total++;
+                        }
+                    }
+                    else if (
+                        ch != '.' && ch != '?' && ch != '!' &&
+                        ch != ';' && ch != ':' && ch != ',' &&
+                        ch != '(' && ch != ')' && ch != '[' &&
+                        ch != ']')
+                    {
+                        word = true;
+                    }
                 }
             }
 
@@ -423,6 +435,13 @@ namespace Microsoft.Docs.Build
             }
 
             return total;
+        }
+
+        private static bool IsCJKChar(char ch)
+        {
+            return (ch >= '\u2E80' && ch <= '\u9FFF') || // CJK character
+                   (ch >= '\xAC00' && ch <= '\xD7A3') || // Hangul Syllables
+                   (ch >= '\uFF00' && ch <= '\uFFEF');   // Halfwidth and Fullwidth Forms(Include Chinese punctuation)
         }
     }
 }
