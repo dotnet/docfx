@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
-        private readonly string _markdownValidationRules;
         private readonly ContentValidator _contentValidator;
 
         private readonly MarkdownContext _markdownContext;
@@ -59,12 +58,14 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
-            _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
+            var markdownValidationRules = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules);
+            var allowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Allowlists);
+            var disallowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Disallowlists);
 
-            if (!string.IsNullOrEmpty(_markdownValidationRules))
+            if (!string.IsNullOrEmpty(markdownValidationRules))
             {
                 _validatorProvider = new OnlineServiceMarkdownValidatorProvider(
-                    new ContentValidationContext(_markdownValidationRules),
+                    new ContentValidationContext(markdownValidationRules, allowlists, disallowlists),
                     new ContentValidationLogger(_markdownContext));
             }
 

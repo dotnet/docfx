@@ -207,6 +207,16 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> MarkdownValidationRules { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
+        /// Get the file path of allow lists
+        /// </summary>
+        public SourceInfo<string> Allowlists { get; private set; } = new SourceInfo<string>("");
+
+        /// <summary>
+        /// Get the file path of disallow lists
+        /// </summary>
+        public SourceInfo<string> Disallowlists { get; private set; } = new SourceInfo<string>("");
+
+        /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]

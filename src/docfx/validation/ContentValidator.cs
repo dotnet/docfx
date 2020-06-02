@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public ContentValidator(Config config, FileResolver fileResolver, ErrorLog log)
         {
-            _validator = new Validator(GetMarkdownValidationRulesFilePath(fileResolver, config));
+            _validator = new Validator(GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules));
             _errorLog = log;
         }
 
@@ -48,12 +48,12 @@ namespace Microsoft.Docs.Build
             Write(_validator.PostValidate().GetAwaiter().GetResult());
         }
 
-        public static string GetMarkdownValidationRulesFilePath(FileResolver fileResolver, Config config)
+        public static string GetValidationPhysicalFilePath(FileResolver fileResolver, SourceInfo<string> configFilePath)
         {
-            string filePath = config.MarkdownValidationRules;
+            string filePath = configFilePath;
             if (!string.IsNullOrEmpty(filePath))
             {
-                using var stream = fileResolver.ReadStream(config.MarkdownValidationRules);
+                using var stream = fileResolver.ReadStream(configFilePath);
 
                 // TODO: validation rules currently only supports physical file.
                 filePath = ((FileStream)stream).Name;

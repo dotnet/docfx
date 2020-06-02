@@ -33,6 +33,8 @@ namespace Microsoft.Docs.Build
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
+        private const string AllowlistsApi = "https://ops/allowlists/";
+        private const string DisallowlistsApi = "https://ops/disallowlists/";
 
         private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
 
@@ -74,6 +76,8 @@ namespace Microsoft.Docs.Build
                 (MonikerDefinitionApi, GetMonikerDefinition),
                 (MetadataSchemaApi, GetMetadataSchema),
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
+                (AllowlistsApi, GetAllowlists),
+                (DisallowlistsApi, GetDisallowlists),
             };
         }
 
@@ -145,6 +149,8 @@ namespace Microsoft.Docs.Build
                     Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
+                allowlists = AllowlistsApi,
+                disallowlists = DisallowlistsApi,
                 xref = xrefMaps,
                 skipMonikerValidation = docset.use_template,
                 reduceTOCChildMonikers = docset.use_template,
@@ -186,6 +192,20 @@ namespace Microsoft.Docs.Build
             var headers = GetValidationServiceHeaders(url);
 
             return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
+        }
+
+        private async Task<string> GetAllowlists(Uri url)
+        {
+            var headers = GetValidationServiceHeaders(url);
+
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+        }
+
+        private async Task<string> GetDisallowlists(Uri url)
+        {
+            var headers = GetValidationServiceHeaders(url);
+
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
