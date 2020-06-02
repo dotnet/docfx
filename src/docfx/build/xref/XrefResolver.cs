@@ -25,7 +25,8 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             Repository? repository,
             DependencyMapBuilder dependencyMapBuilder,
-            FileLinkMapBuilder fileLinkMapBuilder)
+            FileLinkMapBuilder fileLinkMapBuilder,
+            ErrorLog errorLog)
         {
             _config = config;
             _repository = repository;
@@ -33,7 +34,7 @@ namespace Microsoft.Docs.Build
                 () => InternalXrefMapBuilder.Build(context));
 
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver));
+                () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;

@@ -332,7 +332,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{'b': 'not number'}")]
         public void SyntaxErrorShouldBeThrownWithoutSchemaValidation(string json)
         {
-            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"'), null));
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.DeserializeData<BasicClass>(json.Replace('\'', '\"'), null));
             Assert.Equal("json-syntax-error", exception.Error.Code);
             Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }
@@ -437,7 +437,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{}{}")]
         public void TestDeserializeJsonWithCheckAdditionalContent(string json)
         {
-            Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), true));
+            Assert.Throws<DocfxException>(() => JsonUtility.DeserializeData<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), true));
         }
 
         [Theory]
@@ -445,14 +445,14 @@ namespace Microsoft.Docs.Build
         [InlineData("{}{}")]
         public void TestDeserializeJsonWithoutCheckAdditionalContent(string json)
         {
-            var result = JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), false);
+            var result = JsonUtility.DeserializeData<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), false);
             Assert.NotNull(result);
         }
 
         [Fact]
         public void TestDeserializeWithSourceInfo()
         {
-            var result = JsonUtility.Deserialize<ClassWithSourceInfo>("{\"a\": \"a value\"}", new FilePath("path"));
+            var result = JsonUtility.DeserializeData<ClassWithSourceInfo>("{\"a\": \"a value\"}", new FilePath("path"));
             Assert.NotNull(result.A.Source);
             Assert.Equal("path", result.A.Source.File.Path);
             Assert.Equal(1, result.A.Source.Line);

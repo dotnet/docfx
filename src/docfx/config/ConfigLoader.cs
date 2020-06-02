@@ -76,7 +76,8 @@ namespace Microsoft.Docs.Build
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
+            var (opsConfigErrors, xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
+            errors.AddRange(opsConfigErrors);
             var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
                 ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
                 : null;
@@ -159,7 +160,8 @@ namespace Microsoft.Docs.Build
 
         private static Func<string, bool>? FindDocsetsGlob(string workingDirectory)
         {
-            var opsConfig = OpsConfigLoader.LoadOpsConfig(workingDirectory);
+            var (errors, opsConfig) = OpsConfigLoader.LoadOpsConfig(workingDirectory);
+            ErrorLog.PrintError(errors);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>
@@ -179,7 +181,8 @@ namespace Microsoft.Docs.Build
             {
                 var content = File.ReadAllText(configPath);
                 var source = new FilePath(Path.GetFileName(configPath));
-                var config = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+
+                var (configErrors, config) = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
                     ? YamlUtility.Deserialize<DocsetsConfig>(content, source)
                     : JsonUtility.Deserialize<DocsetsConfig>(content, source);
 

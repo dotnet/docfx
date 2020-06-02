@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                return JsonUtility.Deserialize<T>(content, new FilePath(path));
+                return JsonUtility.DeserializeData<T>(content, new FilePath(path));
             }
             catch (Exception ex)
             {

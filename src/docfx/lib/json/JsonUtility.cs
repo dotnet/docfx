@@ -121,19 +121,19 @@ namespace Microsoft.Docs.Build
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(string json, FilePath? file) where T : class, new()
+        public static T DeserializeData<T>(string data, FilePath? file) where T : class, new()
         {
-            using var reader = new StringReader(json);
-            return Deserialize<T>(reader, file, true);
+            using var reader = new StringReader(data);
+            return DeserializeData<T>(reader, file, true);
         }
 
         /// <summary>
         /// De-serialize a data string, which is not user input, to an object
         /// schema validation errors will be ignored, syntax errors and type mismatching will be thrown
         /// </summary>
-        public static T Deserialize<T>(TextReader json, FilePath? file, bool checkAdditionalContent = true) where T : class, new()
+        public static T DeserializeData<T>(TextReader data, FilePath? file, bool checkAdditionalContent = true) where T : class, new()
         {
-            using var reader = new JsonTextReader(json);
+            using var reader = new JsonTextReader(data);
             try
             {
                 var status = new Status { FilePath = file };
@@ -165,6 +165,20 @@ namespace Microsoft.Docs.Build
         public static JObject ToJObject(object model)
         {
             return JObject.FromObject(model, s_serializer);
+        }
+
+        public static (List<Error> errors, T value) Deserialize<T>(string json, FilePath file) where T : class, new()
+        {
+            using var reader = new StringReader(json);
+            return Deserialize<T>(reader, file);
+        }
+
+        public static (List<Error> errors, T value) Deserialize<T>(TextReader reader, FilePath file) where T : class, new()
+        {
+            var (errors, token) = Parse(reader, file);
+            var (schemaErrors, value) = ToObject<T>(token);
+            errors.AddRange(schemaErrors);
+            return (errors, value);
         }
 
         /// <summary>

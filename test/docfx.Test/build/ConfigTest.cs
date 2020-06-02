@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://a.com/a/b/1", "a/b")]
         public static void HttpCredential_Respect_LongestMatch(string url, string value)
         {
-            var config = JsonUtility.Deserialize<PreloadConfig>(@"{
+            var config = JsonUtility.DeserializeData<PreloadConfig>(@"{
     'http': {
         'https://a.com/a': { 'headers': { 'key': 'a' } },
         'https://a.com/a/b': { 'headers': { 'key': 'a/b' } }
