@@ -15,7 +15,6 @@ namespace Microsoft.Docs.Build
 {
     internal class FileResolver
     {
-        // TODO: expire state
         private static readonly HashSet<string> s_downloadedFiles = new HashSet<string>();
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {

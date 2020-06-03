@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build
 {
     internal class PackageResolver : IDisposable
     {
-        // TODO: expire state
         private static readonly HashSet<PackagePath> s_downloadedPackages = new HashSet<PackagePath>();
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;

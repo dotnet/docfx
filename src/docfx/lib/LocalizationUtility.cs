@@ -87,16 +87,13 @@ namespace Microsoft.Docs.Build
             // here to generate the correct contributor list.
             if (repository != null && TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
-                using (InterProcessReaderWriterLock.CreateWriterLock(repository.Path))
+                try
                 {
-                    try
-                    {
-                        GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
-                    }
+                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
                 }
             }
         }
