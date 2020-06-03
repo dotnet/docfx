@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
         private readonly BuildOptions _buildOptions;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
-        private readonly WorkQueue<FilePath> _buildQueue;
         private readonly DocumentProvider _documentProvider;
         private readonly BookmarkValidator _bookmarkValidator;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
@@ -24,7 +23,6 @@ namespace Microsoft.Docs.Build
             Config config,
             BuildOptions buildOptions,
             BuildScope buildScope,
-            WorkQueue<FilePath> buildQueue,
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
             BookmarkValidator bookmarkValidator,
@@ -36,7 +34,6 @@ namespace Microsoft.Docs.Build
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
-            _buildQueue = buildQueue;
             _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
             _bookmarkValidator = bookmarkValidator;
@@ -77,10 +74,6 @@ namespace Microsoft.Docs.Build
             }
 
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile);
-            if (file != null)
-            {
-                _buildQueue.Enqueue(file.FilePath);
-            }
 
             inclusionRoot ??= referencingFile;
             if (!isCrossReference)

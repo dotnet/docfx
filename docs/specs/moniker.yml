@@ -1356,9 +1356,7 @@ inputs:
     Moniker: netcore-1.2
     ![image](c.png)
   docs/v1/c.png:
-  docs/v1/b.png:
   docs/v2/c.png:
-  docs/v2/b.png:
   monikerDefinition.json: |
     {
       "monikers": [
