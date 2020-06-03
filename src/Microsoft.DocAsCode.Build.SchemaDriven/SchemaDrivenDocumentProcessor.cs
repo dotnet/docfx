@@ -32,7 +32,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly MarkdigMarkdownService _markdigMarkdownService;
         private readonly FolderRedirectionManager _folderRedirectionManager;
         private readonly string _liveSiteHostName;
-        private readonly HashSet<string> _schemaToProcessRemoveHostName = new HashSet<string> { "Achievements", "ModuleAvailability", "ContextObject", "ContentNav" };
         #endregion
 
         public SchemaValidator SchemaValidator { get; }
@@ -63,10 +62,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var schemaSpecificSteps = container.GetExports<IDocumentBuildStep>($"{nameof(SchemaDrivenDocumentProcessor)}.{_schemaName}");
                 BuildSteps = commonSteps.Union(schemaSpecificSteps).ToList();
             }
-            if (_schemaToProcessRemoveHostName.Contains(_schemaName))
-            {
-                _liveSiteHostName = liveSiteHostName;
-            }
+            _liveSiteHostName = liveSiteHostName;
+
         }
 
         #endregion
