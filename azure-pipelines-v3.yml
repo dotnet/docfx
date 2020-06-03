@@ -128,6 +128,8 @@ jobs:
     name: DocFX
   strategy:
     matrix:
+      OfficeDocs-O365ITPro-pr.pt-PT:
+        params: https://github.com/MicrosoftDocs/OfficeDocs-O365ITPro-pr.pt-PT --timeout 150
       azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
       sql-docs-pr:
