@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a/>", true)]
         [InlineData("<a href=\"https://www.microsoft.com\"></a>", true)]
         [InlineData("<a href=\"https://www.microsoft.com\"/>", true)]
+        [InlineData("image case ![A fallback image](windows.jpg) \n  <!--comments--> \n ", true)]
 
         [InlineData("#", false)]
         [InlineData(" <!--comments--> ", false)]
