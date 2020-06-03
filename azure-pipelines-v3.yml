@@ -67,7 +67,7 @@ jobs:
       version: $(dotnetVersion)
 
   # Build and test
-  - powershell: ./build.ps1
+  - powershell: ./build.ps1 -noTest
     displayName: Build
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
