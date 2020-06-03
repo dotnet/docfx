@@ -44,7 +44,8 @@ namespace Microsoft.Docs.Build
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool EnableLocSxs { get; set; }
 
-        public MonikerList? Monikers { get; set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public MonikerList Monikers { get; set; }
 
         public string? SiteName { get; set; }
 
