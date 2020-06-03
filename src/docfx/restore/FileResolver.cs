@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,9 @@ namespace Microsoft.Docs.Build
 {
     internal class FileResolver
     {
+        // TODO: expire state
+        private static readonly HashSet<string> s_downloadedFiles = new HashSet<string>();
+
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
@@ -54,7 +58,7 @@ namespace Microsoft.Docs.Build
         {
             if (_fetchOptions != FetchOptions.NoFetch)
             {
-                Download(file).GetAwaiter().GetResult();
+                Download(file);
             }
 
             if (!UrlUtility.IsHttp(file))
@@ -81,60 +85,69 @@ namespace Microsoft.Docs.Build
             return filePath;
         }
 
-        public async Task Download(SourceInfo<string> file)
+        public void Download(SourceInfo<string> file)
         {
-            if (!UrlUtility.IsHttp(file))
+            if (!s_downloadedFiles.Contains(file))
             {
-                return;
-            }
-
-            if (_fetchOptions == FetchOptions.NoFetch)
-            {
-                throw Errors.System.NeedRestore(file).ToException();
-            }
-
-            var filePath = GetRestorePathFromUrl(file);
-            var etagPath = GetRestoreEtagPath(file);
-            var existingEtag = default(EntityTagHeaderValue);
-
-            using (InterProcessMutex.Create(filePath))
-            {
-                if (_fetchOptions == FetchOptions.UseCache && File.Exists(filePath))
+                lock (s_downloadedFiles)
                 {
-                    return;
-                }
+                    if (!s_downloadedFiles.Contains(file))
+                    {
+                        s_downloadedFiles.Add(file);
+                        if (!UrlUtility.IsHttp(file))
+                        {
+                            return;
+                        }
 
-                var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
-                if (!string.IsNullOrEmpty(etagContent))
-                {
-                    existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
+                        if (_fetchOptions == FetchOptions.NoFetch)
+                        {
+                            throw Errors.System.NeedRestore(file).ToException();
+                        }
+
+                        var filePath = GetRestorePathFromUrl(file);
+                        var etagPath = GetRestoreEtagPath(file);
+                        var existingEtag = default(EntityTagHeaderValue);
+
+                        using (InterProcessMutex.Create(filePath))
+                        {
+                            if (_fetchOptions == FetchOptions.UseCache && File.Exists(filePath))
+                            {
+                                return;
+                            }
+
+                            var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
+                            if (!string.IsNullOrEmpty(etagContent))
+                            {
+                                existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
+                            }
+                        }
+
+                        var (tempFile, etag) = DownloadToTempFile(file, existingEtag).GetAwaiter().GetResult();
+                        if (tempFile is null)
+                        {
+                            // no change at all
+                            return;
+                        }
+
+                        using (InterProcessMutex.Create(filePath))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
+
+                            if (File.Exists(filePath))
+                            {
+                                File.Delete(filePath);
+                            }
+
+                            File.Move(tempFile, filePath);
+
+                            if (etag != null)
+                            {
+                                File.WriteAllText(etagPath, etag.ToString());
+                            }
+                        }
+                    }
                 }
             }
-
-            var (tempFile, etag) = await DownloadToTempFile(file, existingEtag);
-            if (tempFile is null)
-            {
-                // no change at all
-                return;
-            }
-
-            using (InterProcessMutex.Create(filePath))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
-
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                File.Move(tempFile, filePath);
-
-                if (etag != null)
-                {
-                    File.WriteAllText(etagPath, etag.ToString());
-                }
-            }
-
             return;
         }
 

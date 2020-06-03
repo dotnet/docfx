@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal class PackageResolver : IDisposable
     {
+        // TODO: expire state
+        private static readonly HashSet<PackagePath> s_downloadedPackages = new HashSet<PackagePath>();
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
@@ -46,13 +48,23 @@ namespace Microsoft.Docs.Build
 
         public void DownloadPackage(PackagePath path, PackageFetchOptions options)
         {
-            if (path.Type == PackageType.Git)
+            if (!s_downloadedPackages.Contains(path))
             {
-                DownloadGitRepository(
-                    path.Url,
-                    path.Branch,
-                    options.HasFlag(PackageFetchOptions.DepthOne),
-                    path is DependencyConfig dependency && dependency.IncludeInBuild);
+                lock (s_downloadedPackages)
+                {
+                    if (!s_downloadedPackages.Contains(path))
+                    {
+                        if (path.Type == PackageType.Git)
+                        {
+                            s_downloadedPackages.Add(path);
+                            DownloadGitRepository(
+                                path.Url,
+                                path.Branch,
+                                options.HasFlag(PackageFetchOptions.DepthOne),
+                                path is DependencyConfig dependency && dependency.IncludeInBuild);
+                        }
+                    }
+                }
             }
         }
 
