@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, T value) Deserialize<T>(TextReader reader, FilePath file) where T : class, new()
         {
             var (errors, token) = Parse(reader, file);
-            var (schemaErrors, value) = ToObject<T>(token);
+            var (schemaErrors, value) = ToObject<T>(token!);
             errors.AddRange(schemaErrors);
             return (errors, value);
         }
@@ -217,15 +217,15 @@ namespace Microsoft.Docs.Build
         {
             using var reader = new StringReader(json);
             var (errors, value) = Parse(reader, file, checkDuplicateKey: true);
-            if (value.IsNullOrUndefined())
+            if (value is null)
             {
                 using var anotherReader = new StringReader(json);
                 (_, value) = Parse(anotherReader, file);
             }
-            return (errors, value);
+            return (errors, value!);
         }
 
-        public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file, bool checkDuplicateKey = false)
+        public static (List<Error> errors, JToken? value) Parse(TextReader json, FilePath file, bool checkDuplicateKey = false)
         {
             var errors = new List<Error>();
             try
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
                 if (match.Success && match.Groups.Count >= 2)
                 {
                     errors.Add(Errors.Json.JsonDuplicateKey(new SourceInfo(file, ex.LineNumber, ex.LinePosition), match.Groups[1].ToString()));
-                    return (errors, JValue.CreateNull());
+                    return (errors, null);
                 }
                 throw ToError(ex, file).ToException(ex);
             }
