@@ -170,8 +170,10 @@ namespace Microsoft.Docs.Build
 
         public static (List<Error> errors, T value) Deserialize<T>(string json, FilePath file) where T : class, new()
         {
-            using var reader = new StringReader(json);
-            return Deserialize<T>(reader, file);
+            var (errors, token) = Parse(json, file);
+            var (schemaErrors, value) = ToObject<T>(token);
+            errors.AddRange(schemaErrors);
+            return (errors, value);
         }
 
         public static (List<Error> errors, T value) Deserialize<T>(TextReader reader, FilePath file) where T : class, new()
@@ -214,16 +216,23 @@ namespace Microsoft.Docs.Build
         public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
         {
             using var reader = new StringReader(json);
-            return Parse(reader, file);
+            var (errors, value) = Parse(reader, file, checkDuplicateKey: true);
+            if (value.IsNullOrUndefined())
+            {
+                using var anotherReader = new StringReader(json);
+                (_, value) = Parse(anotherReader, file);
+            }
+            return (errors, value);
         }
 
-        public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file)
+        public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file, bool checkDuplicateKey = false)
         {
             var errors = new List<Error>();
             try
             {
                 using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
-                return SetSourceInfo(JToken.ReadFrom(reader, new JsonLoadSettings { DuplicatePropertyNameHandling = DuplicatePropertyNameHandling.Error }), file).RemoveNulls();
+                return SetSourceInfo(JToken.ReadFrom(reader, checkDuplicateKey ? new JsonLoadSettings { DuplicatePropertyNameHandling = DuplicatePropertyNameHandling.Error } : null), file)
+                    .RemoveNulls();
             }
             catch (JsonReaderException ex)
             {
@@ -231,10 +240,7 @@ namespace Microsoft.Docs.Build
                 if (match.Success && match.Groups.Count >= 2)
                 {
                     errors.Add(Errors.Json.JsonDuplicateKey(new SourceInfo(file, ex.LineNumber, ex.LinePosition), match.Groups[1].ToString()));
-                    using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
-                    var (nullErrors, value) = SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
-                    errors.AddRange(nullErrors);
-                    return (errors, value);
+                    return (errors, JValue.CreateNull());
                 }
                 throw ToError(ex, file).ToException(ex);
             }
