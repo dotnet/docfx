@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            xref.Monikers = monikers.ToHashSet();
+            xref.Monikers = monikers;
             return (errors, xref);
         }
 

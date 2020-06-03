@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -24,14 +23,14 @@ namespace Microsoft.Docs.Build
         Document? IXrefSpec.DeclaringFile => null;
 
         [JsonIgnore]
-        public HashSet<string> Monikers { get; private set; } = new HashSet<string>();
+        public MonikerList Monikers { get; private set; }
 
         [JsonExtensionData]
         public JObject ExtensionData { get; private set; } = new JObject();
 
         public ExternalXrefSpec() { }
 
-        public ExternalXrefSpec(string? name, string uid, string href, HashSet<string> monikers)
+        public ExternalXrefSpec(string? name, string uid, string href, MonikerList monikers)
         {
             _name = name;
             Uid = uid;

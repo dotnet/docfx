@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             if (_config.OutputUrlType == OutputUrlType.Docs)
             {
                 var (_, monikers) = _monikerProvider.GetFileLevelMonikers(path);
-                outputPath = UrlUtility.Combine(MonikerUtility.GetGroup(monikers) ?? "", outputPath);
+                outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
             }
 
             return UrlUtility.Combine(_config.BasePath, outputPath);
@@ -165,8 +165,7 @@ namespace Microsoft.Docs.Build
             if (outputUrlType != OutputUrlType.Docs)
             {
                 var (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
-                var group = MonikerUtility.GetGroup(monikers) ?? "";
-                sitePath = Path.Combine(group, sitePath);
+                sitePath = Path.Combine(monikers.MonikerGroup ?? "", sitePath);
             }
             if (_config.LowerCaseUrl)
             {

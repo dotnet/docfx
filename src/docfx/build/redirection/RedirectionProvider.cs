@@ -214,8 +214,8 @@ namespace Microsoft.Docs.Build
                 var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
                 _errorLog.Write(errors);
 
-                var candidates = redirectionSourceMonikers.Length == 0
-                                    ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Length == 0).ToList()
+                var candidates = redirectionSourceMonikers.Count == 0
+                                    ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList()
                                     : docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
 
                 // skip circular redirection validation for url containing query string

@@ -29,13 +29,12 @@ namespace Microsoft.Docs.Build
             errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
-            var monikerGroup = MonikerUtility.GetGroup(monikers);
 
             // enable pdf
             if (context.Config.OutputPdf)
             {
                 model.Metadata.PdfAbsolutePath = "/" +
-                    UrlUtility.Combine(context.Config.BasePath, "opbuildpdf", monikerGroup ?? string.Empty, LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
+                    UrlUtility.Combine(context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
             // TODO: Add experimental and experiment_id to publish item

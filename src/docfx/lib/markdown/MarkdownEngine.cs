@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
                 .UseTripleColon(_markdownContext)
                 .UseNoloc()
                 .UseTelemetry()
-                .UseMonikerZone(GetMonikerRange)
+                .UseMonikerZone(ParseMonikerRange)
                 .UseContentValidation(this, _validatorProvider, GetValidationNodes, ReadFile)
                 .UseFilePath()
 
@@ -319,7 +319,7 @@ namespace Microsoft.Docs.Build
             return sourceInfo.Source?.File is FilePath filePath ? _documentProvider.GetDocument(filePath) : (Document)InclusionContext.File;
         }
 
-        private IReadOnlyList<string> GetMonikerRange(SourceInfo<string?> monikerRange)
+        private MonikerList ParseMonikerRange(SourceInfo<string?> monikerRange)
         {
             var status = t_status.Value!.Peek();
             var (monikerErrors, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);
