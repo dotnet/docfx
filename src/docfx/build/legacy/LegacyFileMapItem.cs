@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty(PropertyName = "version")]
         public string? Version { get; set; }
 
-        [JsonProperty(PropertyName = "is_moniker_range")]
+        [JsonProperty(PropertyName = "is_moniker_range", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool IsMonikerRange { get; set; } = true;
 
         [JsonProperty(PropertyName = "monikers")]
