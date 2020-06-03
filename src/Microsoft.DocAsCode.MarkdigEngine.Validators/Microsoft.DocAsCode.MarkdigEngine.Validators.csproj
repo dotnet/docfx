@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <nullable>disable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

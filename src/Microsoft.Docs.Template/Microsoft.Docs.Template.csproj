@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
+    <nullable>disable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -16,6 +16,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)stylecop.ruleset</CodeAnalysisRuleSet>
     <NoWarn>NU1701</NoWarn>
     <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
@@ -26,8 +27,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)../docs-logo-ms.png" Pack="true" PackagePath="" />
-    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)/docs-logo-ms.png" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)/README.md" Pack="true" PackagePath="" />
     <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
