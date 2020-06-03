@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
         private readonly ConcurrentDictionary<FilePath, JToken> _generatedContents = new ConcurrentDictionary<FilePath, JToken>();
+        private bool _hasFallbackFolder;
 
         public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
         {
@@ -69,6 +70,14 @@ namespace Microsoft.Docs.Build
                     return new PathString(Path.Combine(packagePath, pathToPackage));
 
                 case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
+                    if (_hasFallbackFolder)
+                    {
+                        var pathFromFallbackFolder = PathString.Combine(_buildOptions.DocsetPath, LocalizationUtility.DefaultFallbackFolder, file.Path);
+                        if (File.Exists(pathFromFallbackFolder))
+                        {
+                            return pathFromFallbackFolder;
+                        }
+                    }
                     return _buildOptions.FallbackDocsetPath.Value.Concat(file.Path);
 
                 default:
@@ -177,7 +186,16 @@ namespace Microsoft.Docs.Build
                     return GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file)).ToArray();
 
                 case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
-                    return GetFiles(_buildOptions.FallbackDocsetPath).Select(file => FilePath.Fallback(file)).ToArray();
+                    var fallbackFolder = Path.Combine(_buildOptions.DocsetPath, LocalizationUtility.DefaultFallbackFolder);
+                    var files = Directory.Exists(fallbackFolder)
+                        ? (from f in GetFiles(fallbackFolder) select FilePath.Fallback(f)).ToList()
+                        : new List<FilePath>();
+                    _hasFallbackFolder = files.Count > 0;
+                    var filePaths = (from f in files select f.Path).ToHashSet();
+                    return files.Concat(
+                        from f in GetFiles(_buildOptions.FallbackDocsetPath)
+                        where !filePaths.Contains(f)
+                        select FilePath.Fallback(f)).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var package = _config.Dependencies[dependencyName.Value];

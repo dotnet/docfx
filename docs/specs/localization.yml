@@ -120,15 +120,15 @@ outputs:
       "gitcommit":"https://github.com/c/contribution4.zh-cn/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
     }
 ---
-# loc page link and content fallback 1
+# loc page link and content fallback
 locale: zh-cn
 repos:
-  https://docs.com/page-fallback1#master:
+  https://docs.com/page-fallback#master:
     - files:
         docfx.yml:
         docs/b.md: |
           [link in a](a.md)
-  https://docs.com/page-fallback1.zh-cn#master:
+  https://docs.com/page-fallback.zh-cn#master:
     - files:
         docfx.yml:
         docs/a.md: |
@@ -138,14 +138,14 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
-# loc resource fallback 1
+# loc resource fallback
 locale: zh-cn
 repos:
-  https://docs.com/resource-fallback1#master:
+  https://docs.com/resource-fallback#master:
     - files:
         docs/b.png:
         docfx.yml:
-  https://docs.com/resource-fallback1.zh-cn#master:
+  https://docs.com/resource-fallback.zh-cn#master:
     - files:
         docfx.yml:
         docs/a.md: |
@@ -154,25 +154,70 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
 ---
-# loc resource fallback 3
-# bilingual
+# loc resource fallback bilingual
 locale: zh-cn
 repos:
-  https://docs.com/resource-fallback3#master:
+  https://docs.com/resource-fallback#master:
     - files:
         docs/b.png:
         docfx.yml:
-  https://docs.com/resource-fallback3.zh-cn#master-sxs:
+  https://docs.com/resource-fallback.zh-cn#master-sxs:
     - files:
         docfx.yml:
         docs/a.md: |
           [link to b](b.png)
-  https://docs.com/resource-fallback3.zh-cn#master:
+  https://docs.com/resource-fallback.zh-cn#master:
     - files:
         docs/a.md:
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
+---
+# loc page link and content fallback folder
+locale: zh-cn
+repos:
+  https://docs.com/page-fallback#master:
+    - files:
+        docfx.yml:
+  https://docs.com/page-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        .fallback/docs/b.md: token
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p>token</p>\n"}
+---
+# ignore .fallback for non-loc build
+inputs:
+  docfx.yml:
+  .fallback/docs/b.md: token
+  docs/a.md: |
+    [link in b](b.md)
+outputs:
+  docs/a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'b.md'.","file":"docs/a.md","line":1,"column":1}
+---
+# loc page link and content fallback folder has higher priority than fallback docset
+locale: zh-cn
+repos:
+  https://docs.com/page-fallback#master:
+    - files:
+        docfx.yml:
+        docs/b.md: from fallback docset
+  https://docs.com/page-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        .fallback/docs/b.md: from fallback folder
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p>from fallback folder</p>\n"}
 ---
 # loc build with TOC map, loc TOC has higher priority
 locale: zh-cn

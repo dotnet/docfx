@@ -247,20 +247,20 @@ And also, if we combine all localization content into multiple repos, there must
 
 **Answer**: Two models are needed: all locales in one repo, or every locale in separate repo. There is no need for mixed model
 
-### Fallback to corresponding branch only?
+### Fallback to corresponding branch only
 
 Docfx localization build need involve missing content from source repo, strictly speaking, from source repo's one branch.
 
-Involving source repo's content is try to resolve two things:
+Involving source repo's content is for solving two things:
 
   - resolve urls which linked documents/resources have not been localized
   - resolve missing inclusions like token and code snippet
 
 For example, loc `live` branch content need involve source repo's `live` branch content and loc `master` branch need source repo's `master` branch content.
 
-Basically involving corresponding source repos' branch content can meet our requirement, but sometimes for test purpose, we need create some non-live test branch in loc repo and also need them to be built successfully.
+Basically involving corresponding source repo's branch content can meet our requirement, but sometimes for test purpose, we need create some non-live test branch in loc repo and also need them to be built successfully.
 
-The problem is above requirement is that usually these non-live test branch don't have corresponding branch in source repo, so we have three options here:
+The problem of above requirement is that usually these non-live test branch don't have corresponding branch in source repo, so we have three options here:
 
   - always need fallback to corresponding branch only, that's means user to create these test branch like `loc-test` in source repo
   - fallback to corresponding branch first and if it doesn't exist in source repo, fallback to master branch
@@ -268,6 +268,25 @@ The problem is above requirement is that usually these non-live test branch don'
 
 Option-1 is easy and simple way, but a little hard for localization repo users, since usually they don't have the write permission to source repo.  
 Option-2 and Option-3 are more user-friendly, but build some extra works, appends `branch` info to resolved urls which linked to source content like `url?branch=master`
+
+### Additional fallback folder
+
+For localization build, an additional `.fallback` folder in localization repository will also be used by convention.  
+It will be merged with source repo as the full fallback content, and applied with a higher priority.
+
+`.fallback` folder example:
+```txt
+localization(repo):
+    |- docs/
+        |- a.md
+    |- .fallback/
+        |- docs/
+            |- b.md  <- will overwrite b.md in source repository
+source(repo):
+    |- docs/
+        |- b.md
+```
+
 
 **Answer**: Loc team confirmed that they always use `master/live` branch, so we only need fallback to `corresponding` branch **only** is enough.
 

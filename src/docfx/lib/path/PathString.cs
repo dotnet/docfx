@@ -89,6 +89,19 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Concat a list of paths and return a new <see cref="PathString"/>
+        /// </summary>
+        public static PathString Combine(params PathString[] paths)
+        {
+            var result = new PathString("");
+            foreach (var path in paths)
+            {
+                result = result.Concat(path);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Check if the file is the same as matcher or is inside the directory specified by matcher.
         /// </summary>
         public bool StartsWithPath(PathString basePath, out PathString remainingPath)

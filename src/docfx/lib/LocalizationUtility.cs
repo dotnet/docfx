@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocalizationUtility
     {
+        public static readonly PathString DefaultFallbackFolder = new PathString(".fallback");
         private static readonly HashSet<string> s_locales = new HashSet<string>(
             CultureInfo.GetCultures(CultureTypes.AllCultures).Except(
                 CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(
