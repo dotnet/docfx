@@ -9,6 +9,11 @@ function exec([string] $cmd) {
 }
 
 function test() {
+    # test remove
+    exec "dotnet publish src\docfx\docfx.csproj -c release -r win7-x64 -o $PSScriptRoot/drop/docfx-bin /p:PackAsTool=false"
+    $version = Invoke-Expression "$PSScriptRoot/drop/docfx-bin/docfx.exe --version"
+    Write-Host "##vso[build.addbuildtag]$version"
+
     if ($noTest) {
         return
     }

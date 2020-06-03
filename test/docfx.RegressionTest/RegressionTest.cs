@@ -47,11 +47,9 @@ namespace Microsoft.Docs.Build
         {
             var docfxPath = Path.Combine(s_repositoryRoot, ".");
             var docfxSha = ExecOutput("git", "rev-parse --short HEAD", docfxPath);
-            var docsBuildSha = ExecOutput("git", "rev-parse --short HEAD", s_repositoryRoot);
             var docfxMessage = new string(ExecOutput("git", $"show -s --format=%B HEAD", docfxPath).ToArray());
-            var docsBuildMessage = new string(ExecOutput("git", $"show -s --format=%B HEAD", s_repositoryRoot).ToArray());
 
-            return ($"{docsBuildSha}-{docfxSha}", new[] { docsBuildMessage, docfxMessage });
+            return ($"{docfxSha}", new[] { docfxMessage });
         }
 
         private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
