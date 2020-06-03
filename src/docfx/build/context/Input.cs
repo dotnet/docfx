@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
                 case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
                     var files = _alternativeFallbackFolder != null
                         ? GetFiles(_alternativeFallbackFolder).Select(f => FilePath.Fallback(f))
-                        : new List<FilePath>();
+                        : Array.Empty<FilePath>();
                     return files.Concat(GetFiles(_buildOptions.FallbackDocsetPath).Select(f => FilePath.Fallback(f))).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
