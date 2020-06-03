@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -25,7 +24,7 @@ namespace Microsoft.Docs.Build
         public bool IsMonikerRange { get; set; } = true;
 
         [JsonProperty(PropertyName = "monikers")]
-        public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
+        public MonikerList Monikers { get; set; }
 
         public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
 
@@ -34,7 +33,7 @@ namespace Microsoft.Docs.Build
             string legacySiteUrlRelativeToBasePath,
             ContentType contentType,
             string? version,
-            IReadOnlyList<string> monikers)
+            MonikerList monikers)
         {
             switch (contentType)
             {
@@ -65,7 +64,7 @@ namespace Microsoft.Docs.Build
             string legacySiteUrlRelativeToBasePath,
             ContentType contentType,
             string? version,
-            IReadOnlyList<string> monikers)
+            MonikerList monikers)
         {
             if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
             {

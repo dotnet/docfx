@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
 
             _errorLog.Write(errors);
-            _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, MonikerUtility.GetGroup(monikers), targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
+            _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, monikers.MonikerGroup, targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
         }
 
         public object Build()

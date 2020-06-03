@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
 
         public Document DeclaringFile { get; }
 
-        public HashSet<string> Monikers { get; set; } = new HashSet<string>();
+        public MonikerList Monikers { get; set; }
 
         public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
 

@@ -18,14 +18,14 @@ namespace Microsoft.Docs.Build
 
         public PublishItem[] Files { get; }
 
-        public IReadOnlyDictionary<string, string[]> MonikerGroups { get; }
+        public IReadOnlyDictionary<string, MonikerList> MonikerGroups { get; }
 
         public PublishModel(
             string name,
             string product,
             string basePath,
             PublishItem[] files,
-            IReadOnlyDictionary<string, string[]> monikerGroups)
+            IReadOnlyDictionary<string, MonikerList> monikerGroups)
         {
             Name = name;
             Product = product;
