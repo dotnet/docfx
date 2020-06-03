@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
     {
         // TODO: expire state
         private static readonly HashSet<string> s_downloadedFiles = new HashSet<string>();
-
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
@@ -93,7 +92,6 @@ namespace Microsoft.Docs.Build
                 {
                     if (!s_downloadedFiles.Contains(file))
                     {
-                        s_downloadedFiles.Add(file);
                         if (!UrlUtility.IsHttp(file))
                         {
                             return;
@@ -123,6 +121,7 @@ namespace Microsoft.Docs.Build
                         }
 
                         var (tempFile, etag) = DownloadToTempFile(file, existingEtag).GetAwaiter().GetResult();
+                        s_downloadedFiles.Add(file);
                         if (tempFile is null)
                         {
                             // no change at all
