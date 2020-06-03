@@ -9,11 +9,6 @@ function exec([string] $cmd) {
 }
 
 function test() {
-    # test remove
-    exec "dotnet publish src\docfx\docfx.csproj -c release -r win7-x64 -o $PSScriptRoot/drop/docfx-bin /p:PackAsTool=false"
-    $version = Invoke-Expression "$PSScriptRoot/drop/docfx-bin/docfx.exe --version"
-    Write-Host "##vso[build.addbuildtag]$version"
-
     if ($noTest) {
         return
     }
@@ -42,7 +37,6 @@ function publishBinaryPackages() {
         exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false"
         if ($rid -eq "win7-x64") {
             $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
-            Write-Host "##vso[build.addbuildtag]$version"
         }
         $packageName = "docfx-$rid-$version"
         Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
