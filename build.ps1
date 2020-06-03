@@ -44,7 +44,6 @@ function publishBinaryPackages() {
         Copy-Item "$stagingPath/$packageName.zip" "$stagingPath/docfx-$rid-latest.zip" 
         Copy-Item "$stagingPath/$packageName.zip.sha256" "$stagingPath/docfx-$rid-latest.zip.sha256" 
     }
-    Write-Host "##vso[build.addbuildtag]$version"
 }
 
 try {
