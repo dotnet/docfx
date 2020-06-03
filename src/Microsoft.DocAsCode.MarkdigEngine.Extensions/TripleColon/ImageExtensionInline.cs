@@ -1,34 +1,35 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
     using System;
     using System.Collections.Generic;
 
-    public class ImageExtension : ITripleColonExtensionInfo
+    public class ImageExtensionInline : ITripleColonExtensionInlineInfo
     {
         private readonly MarkdownContext _context;
 
         public string Name => "image";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+        public Func<HtmlRenderer, TripleColonInline, bool> RenderDelegate { get; private set; }
 
-        public ImageExtension(MarkdownContext context)
+        public ImageExtensionInline(MarkdownContext context)
         {
             _context = context;
         }
 
-        public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+        public bool Render(HtmlRenderer renderer, TripleColonInline inline)
         {
             return RenderDelegate != null
-                ? RenderDelegate(renderer, block)
+                ? RenderDelegate(renderer, inline)
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonInline inline)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
@@ -84,7 +85,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", _context.GetLink(src, block));
+            htmlAttributes.AddProperty("src", _context.GetLink(src, inline));
 
             if (type == "icon")
             {
@@ -93,7 +94,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 htmlAttributes.AddProperty("alt", alt);
             }
-            var id = GetHtmlId(block);
+            var id = GetHtmlId(inline);
             if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             RenderDelegate = (renderer, obj) =>
@@ -144,11 +145,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 } else
                 {
-                    if(currentType == "complex" && obj.Count == 0)
-                    {
-                        logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
-                        return false;
-                    }
                     var htmlId = GetHtmlId(obj);
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                     renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");

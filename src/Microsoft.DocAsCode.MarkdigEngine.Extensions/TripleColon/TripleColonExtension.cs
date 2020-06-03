@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         private readonly MarkdownContext _context;
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
+        private readonly IDictionary<string, ITripleColonExtensionInlineInfo> _extensionsInline;
 
         public TripleColonExtension(MarkdownContext context)
         {
@@ -24,15 +25,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 new ZoneExtension(),
                 new ChromelessFormExtension(),
-                new ImageExtension(context),
+                new ImageExtensionBlock(context),
                 new CodeExtension(context),
-                new VideoExtension(context)
                 // todo: moniker range, row, etc...
+            }).ToDictionary(x => x.Name);
+
+            _extensionsInline = (new ITripleColonExtensionInlineInfo[]
+            {
+                new ImageExtensionInline(context),
+                new VideoExtensionInline(context)
             }).ToDictionary(x => x.Name);
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
+
             var parser = new TripleColonParser(_context, _extensions);
             if (pipeline.BlockParsers.Contains<CustomContainerParser>())
             {
@@ -42,6 +49,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 pipeline.BlockParsers.AddIfNotAlready(parser);
             }
+
+            var inlineParser = new TripleColonParserInline(_context, _extensionsInline);
+            pipeline.InlineParsers.InsertBefore<InlineParser>(inlineParser);
+
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
@@ -49,6 +60,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<TripleColonRenderer>())
             {
                 htmlRenderer.ObjectRenderers.Insert(0, new TripleColonRenderer());
+                htmlRenderer.ObjectRenderers.Insert(0, new TripleColonInlineRenderer());
             }
         }
     }
@@ -60,5 +72,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
         bool Render(HtmlRenderer renderer, TripleColonBlock block);
+    }
+
+    public interface ITripleColonExtensionInlineInfo
+    {
+        string Name { get; }
+        bool SelfClosing { get; }
+        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonInline inline);
+        bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
+        bool Render(HtmlRenderer renderer, TripleColonInline inline);
     }
 }
