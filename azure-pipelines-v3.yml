@@ -163,11 +163,6 @@ jobs:
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
-  
-  # Checkout
-  - checkout: self
-    clean: false
-    path: docfx
 
   # Download RegressionTest binary
   - download: current
