@@ -501,11 +501,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string TryGetLiveSiteHostNameFromEnvironment()
         {
-            string metadtaString = Environment.GetEnvironmentVariable(Constants.OPSEnvironmentVariable.SystemMetadata);
+            string metadataString = Environment.GetEnvironmentVariable(Constants.OPSEnvironmentVariable.SystemMetadata);
 
-            if (metadtaString != null)
+            if (metadataString != null)
             {
-                var metadata = JsonUtility.FromJsonString<Dictionary<string, object>>(metadtaString)?.ToImmutableDictionary();
+                var metadata = JsonUtility.FromJsonString<Dictionary<string, object>>(metadataString)?.ToImmutableDictionary();
                 if (metadata.TryGetValue(Constants.OPSEnvironmentVariable.OpSiteHostName, out object liveSiteHostName))
                 {
                     return (string)liveSiteHostName;
