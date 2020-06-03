@@ -240,6 +240,26 @@ outputs:
   docs/b.json: |
     {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">Title from internal a</a></p>\n"}
 ---
+# resolve uid in `.fallback` folder for loc build
+locale: zh-cn
+repos:
+  https://docs.com/xref-fallback#master:
+    - files:
+        docfx.yml:
+  https://docs.com/xref-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        .fallback/b.md: |
+          ---
+          title: uid from fallback
+          uid: fallback
+          ---
+        a.md: |
+          @fallback
+outputs:
+  a.json: |
+    { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid from fallback</a></p>\n"}
+---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document
 # Resolve xref with non-existing display property, display name
