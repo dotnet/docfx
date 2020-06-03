@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -130,11 +130,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.Write("<a").WriteAttributes(linkHtmlAttributes).WriteLine(">");
                 } else if (!string.IsNullOrEmpty(currentLightbox))
                 {
-                    var lighboxHtmlAttributes = new HtmlAttributes();
+                    var lightboxHtmlAttributes = new HtmlAttributes();
                     var path = _context.GetLink(currentLightbox, obj);
-                    lighboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
-                    lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
-                    renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
+                    lightboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
+                    lightboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
+                    renderer.Write("<a").WriteAttributes(lightboxHtmlAttributes).WriteLine(">");
                 }
                 if(currentBorder)
                 {
