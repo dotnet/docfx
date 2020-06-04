@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
             GitHubAccessor = new GitHubAccessor(Config);
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
-            PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, Config, Output, ErrorLog, ContentValidator);
+            PublishModelBuilder = new PublishModelBuilder(buildOptions.OutputPath, this);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, PublishModelBuilder, ContributionProvider);
