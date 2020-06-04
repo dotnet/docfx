@@ -81,14 +81,9 @@ namespace Microsoft.Docs.Build
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));
 
-                Parallel.Invoke(
-                    () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
-                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
-                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
-                    () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
+                context.BuildQueue.Enqueue(context.PublishModelBuilder.GetFiles());
 
                 context.BuildQueue.WaitForCompletion();
-                context.PublishModelBuilder.ExcludeErrorFiles();
             }
 
             Parallel.Invoke(
@@ -99,6 +94,8 @@ namespace Microsoft.Docs.Build
                 () => context.RepositoryProvider.Save(),
                 () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
                 () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
+
+            context.PublishModelBuilder.ExcludeErrorFiles();
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();

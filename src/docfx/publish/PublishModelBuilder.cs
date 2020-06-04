@@ -21,6 +21,11 @@ namespace Microsoft.Docs.Build
             _publishItems = new ConcurrentDictionary<FilePath, PublishItem>(_outputMapping.ToDictionary(kvp => kvp.Value, kvp => kvp.Key));
         }
 
+        public IEnumerable<FilePath> GetFiles()
+        {
+            return _publishItems.Keys;
+        }
+
         public PublishItem GetPublishItem(FilePath file)
         {
             return _publishItems[file];
