@@ -75,6 +75,8 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
+            var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
+
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));
@@ -99,8 +101,6 @@ namespace Microsoft.Docs.Build
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
-            var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
-            context.ErrorLog.Write(errors);
 
             if (context.Config.DryRun)
             {
