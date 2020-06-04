@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.NewBlocks.Push(block);
 
-            if (extension.GetType() == typeof(ImageExtensionBlock)
+            if (extension.GetType() == typeof(ImageExtension)
                 && htmlAttributes != null
                 && ImageExtensionInline.RequiresClosingTripleColon(attributes))
             {
