@@ -102,23 +102,25 @@ namespace Microsoft.Docs.Build
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
 
+            if (_fetchOptions == FetchOptions.UseCache && File.Exists(gitDocfxHead))
+            {
+                return;
+            }
+
             using (InterProcessReaderWriterLock.CreateWriterLock(gitPath))
             {
-                if (!File.Exists(gitDocfxHead) || _fetchOptions != FetchOptions.UseCache)
+                DeleteIfExist(gitDocfxHead);
+                using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                 {
-                    DeleteIfExist(gitDocfxHead);
-                    using (PerfScope.Start($"Downloading '{url}#{committish}'"))
-                    {
-                        DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
-                    }
-                    File.WriteAllText(gitDocfxHead, committish);
+                    DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
+                }
+                File.WriteAllText(gitDocfxHead, committish);
 
-                    // ensure contribution branch for CRR included in build
-                    if (fetchContributionBranch)
-                    {
-                        var crrRepository = Repository.Create(gitPath, committish, url);
-                        LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
-                    }
+                // ensure contribution branch for CRR included in build
+                if (fetchContributionBranch)
+                {
+                    var crrRepository = Repository.Create(gitPath, committish, url);
+                    LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
                 }
                 Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
             }
