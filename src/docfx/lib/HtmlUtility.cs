@@ -403,34 +403,22 @@ namespace Microsoft.Docs.Build
 
             foreach (var ch in text)
             {
-                if (IsCJKChar(ch))
+                if (IsWordEndChar(ch))
                 {
-                    total++;
-
                     if (word)
                     {
                         word = false;
                         total++;
                     }
+
+                    if (IsCJKChar(ch))
+                    {
+                        total++;
+                    }
                 }
-                else
+                else if (!IsPunctuation(ch))
                 {
-                    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
-                    {
-                        if (word)
-                        {
-                            word = false;
-                            total++;
-                        }
-                    }
-                    else if (
-                        ch != '.' && ch != '?' && ch != '!' &&
-                        ch != ';' && ch != ':' && ch != ',' &&
-                        ch != '(' && ch != ')' && ch != '[' &&
-                        ch != ']')
-                    {
-                        word = true;
-                    }
+                    word = true;
                 }
             }
 
@@ -442,11 +430,22 @@ namespace Microsoft.Docs.Build
             return total;
         }
 
+        private static bool IsWordEndChar(char ch)
+        {
+            return IsCJKChar(ch) || ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+        }
+
         private static bool IsCJKChar(char ch)
         {
             return (ch >= '\u2E80' && ch <= '\u9FFF') || // CJK character
                    (ch >= '\xAC00' && ch <= '\xD7A3') || // Hangul Syllables
                    (ch >= '\uFF00' && ch <= '\uFFEF');   // Half width and Full width Forms (including Chinese punctuation)
+        }
+
+        private static bool IsPunctuation(char ch)
+        {
+            return ch == '.' || ch == '?' || ch == '!' || ch == ';' || ch == ':' || ch == ',' ||
+                   ch == '(' || ch == ')' || ch == '[' || ch == ']';
         }
     }
 }
