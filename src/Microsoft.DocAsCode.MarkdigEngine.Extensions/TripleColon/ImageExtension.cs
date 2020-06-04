@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
 
-    public class ImageExtensionBlock : ITripleColonExtensionInfo
+    public class ImageExtension : ITripleColonExtensionInfo
     {
         private readonly MarkdownContext _context;
 
@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool SelfClosing => true;
         public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
 
-        public ImageExtensionBlock(MarkdownContext context)
+        public ImageExtension(MarkdownContext context)
         {
             _context = context;
         }
