@@ -95,7 +95,7 @@ gulp.task("publish:azdevops-perf-login", () => {
 
 gulp.task("publish:azdevops-perf", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["perfUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["perfUrl"]);
 });
 
 gulp.task("publish:azdevops-internal-login", () => {
@@ -104,7 +104,7 @@ gulp.task("publish:azdevops-internal-login", () => {
 
 gulp.task("publish:azdevops-internal", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["internalUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["internalUrl"]);
 });
 
 gulp.task("publish:azdevops-ppe-login", () => {
@@ -113,7 +113,7 @@ gulp.task("publish:azdevops-ppe-login", () => {
 
 gulp.task("publish:azdevops-ppe", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["ppeUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["ppeUrl"]);
 });
 
 gulp.task("publish:azdevops-prod-login", () => {
@@ -124,7 +124,7 @@ gulp.task("publish:azdevops-prod", () => {
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["prodUrl"], releaseNotePath);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["prodUrl"], releaseNotePath);
 });
 
 gulp.task("publish:nuget", () => {
@@ -227,6 +227,6 @@ gulp.task("dev:release", gulp.series("pack", "publish:azdevops-perf-login", "pub
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
 gulp.task("master:pack", gulp.series("pack"));
-gulp.task("master:release", gulp.series("packAssetZip", "publish:azdevops-prod-login", "publish:azdevops-prod", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
+gulp.task("master:release", gulp.series("packAssetZip", "publish:azdevops-prod-login", "publish:azdevops-prod", "publish:gh-release", "publish:gh-asset", "publish:chocolatey", "publish:nuget"));
 
 gulp.task("default", gulp.series("dev"));
