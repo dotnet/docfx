@@ -349,15 +349,15 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','log_item_type':'user','code':'invalid-value','message':'Invalid value for 'key1[0]': 'yyy'','file':'file','line':1,'end_line':1,'column':15,'end_column':15}")]
 
         // custom errors
-        [InlineData("{'required': ['author'], 'customErrors': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
+        [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
             "{'message_severity':'suggestion','log_item_type':'user','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
-        [InlineData("{'required': ['author'], 'customErrors': {'author': {'missing-attribute': {'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
+        [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
             "{'message_severity':'warning','log_item_type':'user','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
-        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'customErrors': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated'}}}}", "{'key1': 1}",
+        [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'customRules': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated'}}}}", "{'key1': 1}",
             "{'message_severity':'suggestion','log_item_type':'user','code':'key1-attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead','file':'file','line':1,'end_line':1,'column':10,'end_column':10}")]
-        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'customErrors': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'customRules': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "{'message_severity':'error','log_item_type':'user','code':'precluded-attributes','message':'Only one of the following attributes can exist: 'key1', 'key2'','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
-        [InlineData("{'dependencies': {'key1': ['key2']}, 'customErrors': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
+        [InlineData("{'dependencies': {'key1': ['key2']}, 'customRules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
             "{'message_severity':'warning','log_item_type':'user','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // strict required validation
