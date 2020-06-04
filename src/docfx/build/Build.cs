@@ -81,7 +81,8 @@ namespace Microsoft.Docs.Build
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));
 
-                context.BuildQueue.Enqueue(context.PublishModelBuilder.GetFiles());
+                var files = context.PublishModelBuilder.GetFiles();
+                context.BuildQueue.Enqueue(files);
 
                 context.BuildQueue.WaitForCompletion();
             }

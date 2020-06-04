@@ -11,14 +11,12 @@ namespace Microsoft.Docs.Build
     internal class PublishModelBuilder
     {
         private readonly Context _context;
-        private readonly Dictionary<PublishItem, FilePath> _outputMapping;
         private readonly ConcurrentDictionary<FilePath, PublishItem> _publishItems;
 
         public PublishModelBuilder(Context context)
         {
             _context = context;
-            _outputMapping = Initialize();
-            _publishItems = new ConcurrentDictionary<FilePath, PublishItem>(_outputMapping.ToDictionary(kvp => kvp.Value, kvp => kvp.Key));
+            _publishItems = Initialize();
         }
 
         public IEnumerable<FilePath> GetFiles()
@@ -89,13 +87,15 @@ namespace Microsoft.Docs.Build
             return outputFilePath.StartsWith(PathUtility.NormalizeFolder(_context.Output.OutputPath));
         }
 
-        private Dictionary<PublishItem, FilePath> Initialize()
+        private ConcurrentDictionary<FilePath, PublishItem> Initialize()
         {
             var builder = new ListBuilder<(PublishItem item, Document file)>();
             var files = _context.RedirectionProvider.Files
                          .Concat(_context.BuildScope.GetFiles(ContentType.Resource))
                          .Concat(_context.BuildScope.GetFiles(ContentType.Page))
-                         .Concat(_context.TocMap.GetFiles());
+                         .Concat(_context.TocMap.GetFiles())
+                         .Where(file => file.Origin != FileOrigin.Fallback);
+
             using (Progress.Start("Building publish map"))
             {
                 ParallelUtility.ForEach(
@@ -105,15 +105,18 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve output path conflicts
-            var groupByOutputPath = builder.ToList().GroupBy(x => x.item.Path, PathUtility.PathComparer);
-            var temp = groupByOutputPath.Where(g => g.Count() == 1).SelectMany(g => g)
+            var publishMap = builder.ToList();
+            var groupByOutputPath = publishMap.Where(x => x.item.Path != null).GroupBy(x => x.item.Path, PathUtility.PathComparer);
+            var temp =
+                publishMap.Where(x => x.item.Path is null)
+                .Concat(groupByOutputPath.Where(g => g.Count() == 1).SelectMany(g => g))
                 .Concat(groupByOutputPath.Where(g => g.Count() > 1).Select(g => ResolveOutputPathConflicts(g.ToArray())));
 
             // resolve publish url conflicts
             var groupByPublishUrl = temp.GroupBy(x => x.Item1, new PublishItemComparer());
             var result = groupByPublishUrl.Where(g => g.Count() == 1).SelectMany(g => g)
                 .Concat(groupByPublishUrl.Where(g => g.Count() > 1).Select(g => ResolvePublishUrlConflicts(g.ToArray())));
-            return result.ToDictionary(g => g.Item1, g => g.Item2.FilePath);
+            return new ConcurrentDictionary<FilePath, PublishItem>(result.ToDictionary(g => g.Item2.FilePath, g => g.Item1));
         }
 
         private (PublishItem, Document) ResolveOutputPathConflicts((PublishItem item, Document file)[] conflicts)
@@ -133,10 +136,10 @@ namespace Microsoft.Docs.Build
             var redirectionFiles = conflicts.Where(x => x.file.ContentType == ContentType.Redirection).Select(x => x.file);
             if (redirectionFiles.Any())
             {
-                return (publishItem, redirectionFiles.OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+                return (publishItem, redirectionFiles.OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
             }
 
-            return (publishItem, conflicts.Select(x => x.file).OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+            return (publishItem, conflicts.Select(x => x.file).OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
         }
 
         private (PublishItem, Document) ResolvePublishUrlConflicts((PublishItem item, Document file)[] conflicts)
@@ -152,7 +155,7 @@ namespace Microsoft.Docs.Build
             var conflictingFiles = conflicts.ToDictionary(x => x.file.FilePath, x => x.item.Monikers);
             _context.ErrorLog.Write(Errors.UrlPath.PublishUrlConflict(publishItem.Url, conflictingFiles, conflictMonikers));
 
-            var lastestMonikerGroup = conflicts.OrderBy(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
+            var lastestMonikerGroup = conflicts.OrderByDescending(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
             var itemsWithChosenMonikerGroup = conflicts.Where(x => x.item.MonikerGroup == lastestMonikerGroup);
             if (itemsWithChosenMonikerGroup.Count() == 1)
             {
@@ -162,10 +165,10 @@ namespace Microsoft.Docs.Build
             var redirectionFiles = itemsWithChosenMonikerGroup.Where(x => x.file.ContentType == ContentType.Redirection).Select(x => x.file);
             if (redirectionFiles.Any())
             {
-                return (publishItem, redirectionFiles.OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+                return (publishItem, redirectionFiles.OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
             }
 
-            return (publishItem, itemsWithChosenMonikerGroup.Select(x => x.file).OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+            return (publishItem, itemsWithChosenMonikerGroup.Select(x => x.file).OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
         }
 
         private void AddToPublishMapping(ListBuilder<(PublishItem item, Document file)> outputMapping, FilePath path)
