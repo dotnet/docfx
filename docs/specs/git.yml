@@ -448,7 +448,7 @@ repos:
       files:
         docs/index.md: |
           ---
-          author: charlie
+          author: osmondjiang
           ---
           Osmond creates this. Bob updates this. Charlie becomes author.
     - author: Bob 
@@ -460,15 +460,14 @@ repos:
       email: xinjiang@microsoft.com
       files:
         docs/index.md: |
-          Osmond creates this, without email
+          Osmond creates this
 inputs:
   docfx.yml: |
     githubToken: {DOCS_GITHUB_TOKEN}
-    editRepositoryUrl: https://github.com/docascode/contribution-test
+    editRepositoryUrl: https://github.com/is/github-repo
 cache:
   github-users.json: |
       { "items": [
-          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
           {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
         ]
@@ -480,11 +479,10 @@ outputs:
     {
       "_op_gitContributorInformation":
       {
-        "author": 
-          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "author": { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "Osmond Jiang", "id": "19990166" },
         "contributors": [
-          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
-          { "name": "OsmondJiang", "profile_url": "https://github.com/OsmondJiang", "display_name": "Osmond Jiang", "id": "19990166" }
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" }
         ]
       },
       "updated_at": "2018-10-30 12:00 AM"

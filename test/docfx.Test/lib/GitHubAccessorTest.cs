@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         [InlineData("error@example.com", "docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
         [InlineData("error@example.com", null, null, "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
         [InlineData("51308672+disabled-account-osmond@users.noreply.github.com", "docascode", "contribution-test", "b2b280fbc64790011c7a4d01bca5b84b6d98e386", null, null, null, null)]
-        [InlineData("yufeih@live.com", "docascode", "contribution-test", "6d0e5bc3595e3841ac62dc545dfbb2c01fe64e7c", "yufeih", 511355, "Yufei Huang", new[] { "yufeih@live.com", "yufeih@microsoft.com" })]
+        [InlineData("yufeih@live.com", "dotnet", "docfx", "3c667ad9267a7d007cb60adcd53781db53bfb6ab", "yufeih", 511355, "Yufei Huang", new[] { "yufeih@live.com", "yufeih@users.noreply.github.com" })]
         public static void GetUserByEmail(
             string email, string repoOwner, string repoName, string commit, string expectedLogin, int? expectedId, string expectedName, string[] expectedEmails)
         {
