@@ -12,13 +12,18 @@ namespace Microsoft.Docs.Build
     {
         private readonly Context _context;
         private readonly Dictionary<PublishItem, FilePath> _outputMapping;
-        private readonly Dictionary<FilePath, PublishItem> _publishItems;
+        private readonly ConcurrentDictionary<FilePath, PublishItem> _publishItems;
 
         public PublishModelBuilder(Context context)
         {
             _context = context;
             _outputMapping = Initialize();
-            _publishItems = _outputMapping.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+            _publishItems = new ConcurrentDictionary<FilePath, PublishItem>(_outputMapping.ToDictionary(kvp => kvp.Value, kvp => kvp.Key));
+        }
+
+        public PublishItem GetPublishItem(FilePath file)
+        {
+            return _publishItems[file];
         }
 
         public bool HasOutput(FilePath file)
@@ -53,16 +58,46 @@ namespace Microsoft.Docs.Build
             return (model, fileManifests);
         }
 
+        public void ExcludeErrorFiles()
+        {
+            foreach (var file in _context.ErrorLog.ErrorFiles)
+            {
+                DeleteOutput(file);
+            }
+        }
+
+        private void DeleteOutput(FilePath file)
+        {
+            if (!_context.Config.DryRun && _publishItems.TryGetValue(file, out var item))
+            {
+                item.HasError = true;
+                if (item.Path != null && IsInsideOutputFolder(item.Path))
+                {
+                    _context.Output.Delete(item.Path, _context.Config.Legacy);
+                }
+            }
+        }
+
+        private bool IsInsideOutputFolder(string path)
+        {
+            var outputFilePath = PathUtility.NormalizeFolder(Path.Combine(_context.Output.OutputPath, path));
+            return outputFilePath.StartsWith(PathUtility.NormalizeFolder(_context.Output.OutputPath));
+        }
+
         private Dictionary<PublishItem, FilePath> Initialize()
         {
             var builder = new ListBuilder<(PublishItem item, Document file)>();
-            ParallelUtility.ForEach(
-                    _context.ErrorLog,
-                    _context.RedirectionProvider.Files
+            var files = _context.RedirectionProvider.Files
                          .Concat(_context.BuildScope.GetFiles(ContentType.Resource))
                          .Concat(_context.BuildScope.GetFiles(ContentType.Page))
-                         .Concat(_context.TocMap.GetFiles()),
+                         .Concat(_context.TocMap.GetFiles());
+            using (Progress.Start("Building publish map"))
+            {
+                ParallelUtility.ForEach(
+                    _context.ErrorLog,
+                    files,
                     file => AddToPublishMapping(builder, file));
+            }
 
             // resolve output path conflicts
             var groupByOutputPath = builder.ToList().GroupBy(x => x.item.Path, PathUtility.PathComparer);
@@ -128,7 +163,7 @@ namespace Microsoft.Docs.Build
             return (publishItem, itemsWithChosenMonikerGroup.Select(x => x.file).OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
         }
 
-        private void AddToPublishMapping(ListBuilder<(PublishItem item, Document file)> outputMapping,FilePath path)
+        private void AddToPublishMapping(ListBuilder<(PublishItem item, Document file)> outputMapping, FilePath path)
         {
             var file = _context.DocumentProvider.GetDocument(path);
             var (monikerErrors, monikers) = _context.MonikerProvider.GetFileLevelMonikers(path);
@@ -153,6 +188,8 @@ namespace Microsoft.Docs.Build
                     }
                     break;
             }
+
+            // TODO: Add experimental and experiment_id to publish item for TOC
             var publishItem = new PublishItem(
                 file.SiteUrl,
                 publishPath,

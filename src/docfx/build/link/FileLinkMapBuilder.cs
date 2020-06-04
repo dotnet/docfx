@@ -10,16 +10,20 @@ namespace Microsoft.Docs.Build
     {
         private readonly ErrorLog _errorLog;
         private readonly MonikerProvider _monikerProvider;
-        private readonly PublishModelBuilder _publishModelBuilder;
         private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
+        private PublishModelBuilder _publishModelBuilder;
 
-        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, PublishModelBuilder publishModelBuilder, ContributionProvider contributionProvider)
+        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
         {
             _errorLog = errorLog;
             _monikerProvider = monikerProvider;
-            _publishModelBuilder = publishModelBuilder;
             _contributionProvider = contributionProvider;
+        }
+
+        public void Configure(PublishModelBuilder publishModelBuilder)
+        {
+            _publishModelBuilder = publishModelBuilder;
         }
 
         public void AddFileLink(FilePath inclusionRoot, FilePath referencingFile, string sourceUrl, string targetUrl, SourceInfo? source)

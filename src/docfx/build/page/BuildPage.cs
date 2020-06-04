@@ -25,20 +25,10 @@ namespace Microsoft.Docs.Build
             errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
-
-            var publishItem = new PublishItem(
-                file.SiteUrl,
-                outputPath,
-                context.SourceMap.GetOriginalFilePath(file.FilePath) ?? file.FilePath.Path,
-                context.BuildOptions.Locale,
-                monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-                file.ContentType,
-                file.Mime);
+            var publishItem = context.PublishModelBuilder.GetPublishItem(file.FilePath);
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
-                context.PublishModelBuilder.Add(file.FilePath, publishItem);
                 return errors;
             }
 
@@ -48,30 +38,27 @@ namespace Microsoft.Docs.Build
             errors.AddRange(outputErrors);
             publishItem.ExtensionData = metadata;
 
-            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
+            if (!context.Config.DryRun)
             {
-                if (!context.Config.DryRun)
+                if (context.Config.OutputType == OutputType.Json)
                 {
-                    if (context.Config.OutputType == OutputType.Json)
-                    {
-                        context.Output.WriteJson(outputPath, output);
-                    }
-                    else if (output is string str)
-                    {
-                        context.Output.WriteText(outputPath, str);
-                    }
-                    else
-                    {
-                        context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
-                    }
-
-                    if (context.Config.Legacy && file.IsPage)
-                    {
-                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                        context.Output.WriteJson(metadataPath, metadata);
-                    }
+                    context.Output.WriteJson(outputPath, output);
                 }
-            });
+                else if (output is string str)
+                {
+                    context.Output.WriteText(outputPath, str);
+                }
+                else
+                {
+                    context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
+                }
+
+                if (context.Config.Legacy && file.IsPage)
+                {
+                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    context.Output.WriteJson(metadataPath, metadata);
+                }
+            }
 
             return errors;
         }

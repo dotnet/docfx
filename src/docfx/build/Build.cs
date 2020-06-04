@@ -88,6 +88,7 @@ namespace Microsoft.Docs.Build
                     () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
 
                 context.BuildQueue.WaitForCompletion();
+                context.PublishModelBuilder.ExcludeErrorFiles();
             }
 
             Parallel.Invoke(
