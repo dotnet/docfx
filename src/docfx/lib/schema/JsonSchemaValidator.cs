@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)> _metadataBuilder;
-        private static readonly ThreadLocal<bool?> _isCanoicalVersion = new ThreadLocal<bool?>();
+        private static readonly ThreadLocal<bool?> _isCanonicalVersion = new ThreadLocal<bool?>();
 
         public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor? microsoftGraphAccessor = null, bool forceError = false)
         {
@@ -34,12 +34,12 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                _isCanoicalVersion.Value = isCanonicalVersion;
+                _isCanonicalVersion.Value = isCanonicalVersion;
                 return Validate(_schema, token);
             }
             finally
             {
-                _isCanoicalVersion.Value = null;
+                _isCanonicalVersion.Value = null;
             }
         }
 
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new List<Error>();
             Validate(schema, "", token, errors);
-            return errors.Select(error => GetError(_schema, error, _isCanoicalVersion.Value)).ToList();
+            return errors.Select(error => GetError(_schema, error, _isCanonicalVersion.Value)).ToList();
         }
 
         private void Validate(JsonSchema schema, string name, JToken token, List<Error> errors)
@@ -511,7 +511,7 @@ namespace Microsoft.Docs.Build
             {
                 if (map.TryGetValue(docsetUniqueKey, out var value))
                 {
-                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value), _isCanoicalVersion.Value));
+                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value), _isCanonicalVersion.Value));
                 }
             }
         }
