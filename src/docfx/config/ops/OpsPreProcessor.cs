@@ -47,15 +47,18 @@ namespace Microsoft.Docs.Build
                     var fallbackXmlPath = _buildOptions.FallbackDocsetPath is null
                         ? null
                         : Path.Combine(_buildOptions.FallbackDocsetPath.Value, _config.Monodoc.SourceXmlFolder);
-
+                    var fallbackOutputDirectory = _buildOptions.FallbackDocsetPath is null
+                        ? null
+                        : Path.Combine(_buildOptions.DocsetPath, ".fallback", _config.Monodoc.OutputYamlFolder);
                     ECMA2YamlConverter.Run(
-                        Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.SourceXmlFolder),
-                        Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.OutputYamlFolder),
-                        fallbackXmlPath,
-                        LogError,
-                        _buildOptions.DocsetPath,
-                        Path.Combine(_buildOptions.DocsetPath, ".sourcemap.json"),
-                        _config.Monodoc);
+                        xmlDirectory: Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.SourceXmlFolder),
+                        outputDirectory: Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.OutputYamlFolder),
+                        fallbackXmlDirectory: fallbackXmlPath,
+                        fallbackOutputDirectory: fallbackOutputDirectory,
+                        logWriter: LogError,
+                        logContentBaseDirectory: _buildOptions.DocsetPath,
+                        sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, ".sourcemap.json"),
+                        config: _config.Monodoc);
                 }
             }
         }
