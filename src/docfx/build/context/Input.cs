@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
         private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
         private readonly ConcurrentDictionary<FilePath, JToken> _generatedContents = new ConcurrentDictionary<FilePath, JToken>();
+        private readonly PathString? _alternativeFallbackFolder;
 
         public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
         {
@@ -35,6 +36,10 @@ namespace Microsoft.Docs.Build
             _buildOptions = buildOptions;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
+            if (!Directory.Exists(_alternativeFallbackFolder = _buildOptions.DocsetPath.Concat(new PathString(".fallback"))))
+            {
+                _alternativeFallbackFolder = null;
+            }
         }
 
         /// <summary>
@@ -69,6 +74,14 @@ namespace Microsoft.Docs.Build
                     return new PathString(Path.Combine(packagePath, pathToPackage));
 
                 case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
+                    if (_alternativeFallbackFolder != null)
+                    {
+                        var pathFromFallbackFolder = _alternativeFallbackFolder.Value.Concat(file.Path);
+                        if (File.Exists(pathFromFallbackFolder))
+                        {
+                            return pathFromFallbackFolder;
+                        }
+                    }
                     return _buildOptions.FallbackDocsetPath.Value.Concat(file.Path);
 
                 default:
@@ -177,7 +190,10 @@ namespace Microsoft.Docs.Build
                     return GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file)).ToArray();
 
                 case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
-                    return GetFiles(_buildOptions.FallbackDocsetPath).Select(file => FilePath.Fallback(file)).ToArray();
+                    var files = _alternativeFallbackFolder != null
+                        ? GetFiles(_alternativeFallbackFolder).Select(f => FilePath.Fallback(f))
+                        : Array.Empty<FilePath>();
+                    return files.Concat(GetFiles(_buildOptions.FallbackDocsetPath).Select(f => FilePath.Fallback(f))).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var package = _config.Dependencies[dependencyName.Value];

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -30,10 +29,7 @@ namespace Microsoft.Docs.Build
 
         public static bool PublishUrlEquals(PublishItem x, PublishItem y)
         {
-            return PathUtility.PathComparer.Compare(x.Url, y.Url) == 0
-                  && (x.Monikers.Length == 0
-                  || y.Monikers.Length == 0
-                  || x.Monikers.Intersect(y.Monikers).Any());
+            return PathUtility.PathComparer.Compare(x.Url, y.Url) == 0 && x.Monikers.Intersects(y.Monikers);
         }
 
         public static bool OutputPathEquals(PublishItem x, PublishItem y)

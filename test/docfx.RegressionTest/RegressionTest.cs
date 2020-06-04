@@ -2,37 +2,36 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using CommandLine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using CommandLine;
-using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    static class RegressionTest
+    internal static class RegressionTest
     {
-        const string TestDataRepositoryUrl = "https://dev.azure.com/ceapex/Engineering/_git/docfx.TestData";
-        const string TestDiskRoot = "D:/";
+        private const string TestDataRepositoryUrl = "https://dev.azure.com/ceapex/Engineering/_git/docfx.TestData";
+        private const string TestDiskRoot = "D:/";
 
-        static readonly string s_repositoryRoot = Environment.GetEnvironmentVariable("BUILD_SOURCESDIRECTORY") ?? FindRepositoryRoot(AppContext.BaseDirectory);
-        static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
+        private static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
+        private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
+        private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
+        private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
+        private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
+        private static readonly bool s_isPullRequest = s_buildReason == "PullRequest";
+        private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
-        static readonly string s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
-        static readonly string s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
-        static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
-        static readonly string s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
-        static readonly bool s_isPullRequest = s_buildReason == "PullRequest";
-        static readonly (string hash, string[] descriptions) s_commitString = s_isPullRequest ? default : GetCommitString();
+        private static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
 
-        static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
-
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(opts =>
@@ -41,15 +40,6 @@ namespace Microsoft.Docs.Build
                     Test(opts);
                     PushChanges(opts.Repository);
                 });
-        }
-
-        static (string, string[]) GetCommitString()
-        {
-            var docfxPath = Path.Combine(s_repositoryRoot, ".");
-            var docfxSha = ExecOutput("git", "rev-parse --short HEAD", docfxPath);
-            var docfxMessage = new string(ExecOutput("git", $"show -s --format=%B HEAD", docfxPath).ToArray());
-
-            return ($"{docfxSha}", new[] { docfxMessage });
         }
 
         private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
@@ -83,7 +73,8 @@ namespace Microsoft.Docs.Build
                 var http = new Dictionary<string, object>();
                 http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
                 http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
-                var docfxConfig = new {
+                var docfxConfig = new
+                {
                     http,
                     maxWarnings = 5000,
                     maxInfos = 30000,
@@ -93,18 +84,17 @@ namespace Microsoft.Docs.Build
                 return JsonUtility.Serialize(docfxConfig);
             }
 
-            static Dictionary<string, string> ToAuthHeader(string token)
+            static Dictionary<string, string> ToAuthHeader(string? token)
             {
                 return new Dictionary<string, string>
                 {
-                    {"authorization", $"basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"))}" }
+                    { "authorization", $"basic {BasicAuth(token)}" },
                 };
             }
         }
 
-        static bool Test(Options opts)
+        private static bool Test(Options opts)
         {
-
             var (baseLinePath, outputPath, workingFolder, repositoryPath, docfxConfig) = Prepare(opts);
 
             Clean(outputPath);
@@ -119,13 +109,10 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        
-
         private static void EnsureTestData(string repository, string branch)
         {
             var testRepositoryName = Path.GetFileName(repository);
             var testWorkingFolder = Path.Combine(s_testDataRoot, $"regression-test.{testRepositoryName}");
-
 
             if (!Directory.Exists(testWorkingFolder))
             {
@@ -161,7 +148,7 @@ namespace Microsoft.Docs.Build
             Exec("git", $"clean -xdf", cwd: Path.Combine(testWorkingFolder, testRepositoryName));
         }
 
-        static void Clean(string outputPath)
+        private static void Clean(string outputPath)
         {
             if (Directory.Exists(outputPath))
             {
@@ -170,22 +157,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
+        private static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
         {
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"restore --legacy --verbose --stdin",
-                stdIn: docfxConfig,
+                stdin: docfxConfig,
                 cwd: repositoryPath);
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
-                stdIn: docfxConfig,
+                stdin: docfxConfig,
                 cwd: repositoryPath);
         }
 
-        static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
+        private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
         {
             var testRepositoryName = Path.GetFileName(repository);
             if (s_isPullRequest)
@@ -224,13 +211,12 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                var commitMessageDetails = string.Join(' ', s_commitString.descriptions.Select(m => $"-m \"{m.Replace('\"', ' ')}\""));
                 Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: testWorkingFolder);
-                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString.hash}\" {commitMessageDetails}", cwd: testWorkingFolder, ignoreError: true);
+                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString}\"", cwd: testWorkingFolder, ignoreError: true);
             }
         }
 
-        static void PushChanges(string repository)
+        private static void PushChanges(string repository)
         {
             if (s_isPullRequest)
             {
@@ -242,10 +228,9 @@ namespace Microsoft.Docs.Build
                 var testWorkingFolder = Path.Combine(s_testDataRoot, $"regression-test.{testRepositoryName}");
                 Exec("git", $"{s_gitCmdAuth} push origin HEAD:{testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             }
-
         }
 
-        static TimeSpan Exec(string fileName, string arguments = "", string stdIn = null, string cwd = null, bool ignoreError = false, bool redirectStandardError = false, params string[] secrets)
+        private static TimeSpan Exec(string fileName, string arguments = "", string? stdin = null, string? cwd = null, bool ignoreError = false, bool redirectStandardError = false, params string[] secrets)
         {
             var stopwatch = Stopwatch.StartNew();
             var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrEmpty(secret) ? arg : arg.Replace(secret, "***"));
@@ -260,11 +245,11 @@ namespace Microsoft.Docs.Build
                 WorkingDirectory = cwd,
                 UseShellExecute = false,
                 RedirectStandardError = redirectStandardError,
-                RedirectStandardInput = !string.IsNullOrEmpty(stdIn),
+                RedirectStandardInput = !string.IsNullOrEmpty(stdin),
             });
-            if (!string.IsNullOrEmpty(stdIn))
+            if (!string.IsNullOrEmpty(stdin))
             {
-                process.StandardInput.Write(stdIn);
+                process.StandardInput.Write(stdin);
                 process.StandardInput.Close();
             }
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
@@ -282,20 +267,7 @@ namespace Microsoft.Docs.Build
             return stopwatch.Elapsed;
         }
 
-        static string ExecOutput(string fileName, string arguments, string cwd = null)
-        {
-            var process = Process.Start(new ProcessStartInfo { FileName = fileName, Arguments = arguments, WorkingDirectory = cwd, UseShellExecute = false, RedirectStandardOutput = true });
-            var result = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                throw new InvalidOperationException(
-                    $"'\"{fileName}\" {arguments}' failed in directory '{cwd}' with exit code {process.ExitCode}");
-            }
-            return result.Trim();
-        }
-
-        static (string, int) PipeOutputToFile(StreamReader reader, string path, int maxLines)
+        private static (string, int) PipeOutputToFile(StreamReader reader, string path, int maxLines)
         {
             var maxSummaryLines = 200;
             var totalLines = 0;
@@ -303,7 +275,7 @@ namespace Microsoft.Docs.Build
 
             using (var output = File.CreateText(path))
             {
-                string line;
+                string? line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (totalLines++ < maxLines)
@@ -320,24 +292,19 @@ namespace Microsoft.Docs.Build
             return (result.ToString(), Math.Max(0, totalLines - maxSummaryLines));
         }
 
-        static string FindRepositoryRoot(string path)
-        {
-            return Directory.Exists(Path.Combine(path, ".git")) ? path : FindRepositoryRoot(Path.GetDirectoryName(path));
-        }
-
-        static string GetGitCommandLineAuthorization()
+        private static string GetGitCommandLineAuthorization()
         {
             var azureReposBasicAuth = $"-c http.https://dev.azure.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_azureDevopsToken)}\"";
             var githubBasicAuth = $"-c http.https://github.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_githubToken)}\"";
             return $"{azureReposBasicAuth} {githubBasicAuth}";
         }
 
-        static string BasicAuth(string token)
+        private static string BasicAuth(string? token)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
         }
 
-        static void Prettify(string outputPath)
+        private static void Prettify(string outputPath)
         {
             // remove docfx.yml to ignore the diff caused by xref url for now
             // the logic can be removed while docfx.yml not generated anymore
@@ -381,7 +348,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        static Task SendPullRequestComments()
+        private static Task SendPullRequestComments()
         {
             var isTimeout = s_testResult.buildTime.TotalSeconds > s_testResult.timeout;
             if (s_testResult.succeeded && !isTimeout)
@@ -414,7 +381,7 @@ namespace Microsoft.Docs.Build
             return Task.CompletedTask;
         }
 
-        static async Task SendGitHubPullRequestComments(int prNumber, string body)
+        private static async Task SendGitHubPullRequestComments(int prNumber, string body)
         {
             using (var http = new HttpClient())
             {
@@ -429,7 +396,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        static async Task SendAzureDevOpsPullRequestComments(int prId, string content)
+        private static async Task SendAzureDevOpsPullRequestComments(int prId, string content)
         {
             using (var http = new HttpClient())
             {

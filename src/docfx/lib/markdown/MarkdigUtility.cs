@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
 
             Visit(markdownObject, node =>
             {
-                return visible = node switch
+                var nodeVisible = node switch
                 {
                     HtmlBlock htmlBlock => htmlBlock.Lines.Lines.Any(line => HtmlUtility.IsVisible(line.Slice.ToString())),
                     HtmlInline htmlInline => HtmlUtility.IsVisible(htmlInline.Tag),
@@ -207,6 +207,8 @@ namespace Microsoft.Docs.Build
                     LeafInline _ => true,
                     _ => false,
                 };
+
+                return visible = nodeVisible || visible;
             });
 
             return visible;

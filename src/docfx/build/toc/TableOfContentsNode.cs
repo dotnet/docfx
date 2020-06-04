@@ -34,7 +34,8 @@ namespace Microsoft.Docs.Build
 
         public bool ShouldSerializeSplitItemsBy() => false;
 
-        public IReadOnlyList<string> Monikers { get; set; } = Array.Empty<string>();
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public MonikerList Monikers { get; set; }
 
         public List<SourceInfo<TableOfContentsNode>> Items { get; set; } = new List<SourceInfo<TableOfContentsNode>>();
 
