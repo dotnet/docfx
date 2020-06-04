@@ -9,6 +9,7 @@ export class Nuget {
     static async publishAsync(
         artifactsFolder: string,
         nugetPath: string,
+        token: string,
         url: string,
         releaseNotePath = null): Promise<void> {
 
@@ -27,7 +28,7 @@ export class Nuget {
 
         let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
         let promises = packages.map((p: string) => {
-            return Common.execAsync(nugetPath, ["push", p, "anything", "-Source", url]);
+            return Common.execAsync(nugetPath, ["push", p, token, "-Source", url]);
         });
 
         await Promise.all(promises);

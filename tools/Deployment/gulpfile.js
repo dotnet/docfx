@@ -33,12 +33,14 @@ let config = {
     "choco": nconf.get("choco"),
     "sync": nconf.get("sync"),
     "azdevops": nconf.get("azdevops"),
+    "nuget": nconf.get("nuget"),
 };
 
 Guard.argumentNotNull(config.docfx, "config.docfx", "Can't find docfx configuration.");
-Guard.argumentNotNull(config.azdevops, "config.docfx", "Can't find Azure DevOps configuration.");
-Guard.argumentNotNull(config.git, "config.docfx", "Can't find git configuration.");
-Guard.argumentNotNull(config.choco, "config.docfx", "Can't find choco configuration.");
+Guard.argumentNotNull(config.azdevops, "config.azdevops", "Can't find Azure DevOps configuration.");
+Guard.argumentNotNull(config.git, "config.git", "Can't find git configuration.");
+Guard.argumentNotNull(config.choco, "config.choco", "Can't find choco configuration.");
+Guard.argumentNotNull(config.nuget, "config.nuget", "Can't find nuget configuration.");
 
 gulp.task("build", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
@@ -123,6 +125,13 @@ gulp.task("publish:azdevops-prod", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
     return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["prodUrl"], releaseNotePath);
+});
+
+gulp.task("publish:nuget", () => {
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, process.env.NUGETAPIKEY, config.nuget["nuget.org"], releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {

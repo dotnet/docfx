@@ -27,6 +27,9 @@
     "nuspec": "../../src/nuspec/chocolatey/docfx/docfx.nuspec",
     "chocoScript": "../../src/nuspec/chocolatey/docfx/tools/chocolateyinstall.ps1"
   },
+  "nuget": {
+    "nuget.org": "https://api.nuget.org/v3/index.json"
+  },
   "git": {
     "name": "DocFX CI",
     "email": "vscopbld@microsoft.com",
