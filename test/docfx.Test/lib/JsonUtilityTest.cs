@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
-        public void TestBasicClassWithNullCharactor()
+        public void TestBasicClassWithNullCharacter()
         {
             var json = JsonUtility.Serialize(new BasicClass { C = null, });
             Assert.Equal("{\"b\":0,\"d\":false}", json);
@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
         [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
-        internal void TestNulllValue(string json, string message, string errorCode, ErrorLevel errorLevel)
+        internal void TestNullValue(string json, string message, string errorCode, ErrorLevel errorLevel)
         {
             var (errors, result) = JsonUtility.Parse(json.Replace('\'', '"'), null);
             Assert.Collection(errors, error =>
@@ -332,7 +332,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"{'b': 'not number'}")]
         public void SyntaxErrorShouldBeThrownWithoutSchemaValidation(string json)
         {
-            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<BasicClass>(json.Replace('\'', '\"'), null));
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.DeserializeData<BasicClass>(json.Replace('\'', '\"'), null));
             Assert.Equal("json-syntax-error", exception.Error.Code);
             Assert.Equal(ErrorLevel.Error, exception.Error.Level);
         }
@@ -435,24 +435,24 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("{}---")]
         [InlineData("{}{}")]
-        public void TestDeserializeJsonWithCheckAddionalContent(string json)
+        public void TestDeserializeJsonWithCheckAdditionalContent(string json)
         {
-            Assert.Throws<DocfxException>(() => JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), true));
+            Assert.Throws<DocfxException>(() => JsonUtility.DeserializeData<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), true));
         }
 
         [Theory]
         [InlineData("{}---")]
         [InlineData("{}{}")]
-        public void TestDeserializeJsonWithoutCheckAddionalContent(string json)
+        public void TestDeserializeJsonWithoutCheckAdditionalContent(string json)
         {
-            var result = JsonUtility.Deserialize<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), false);
+            var result = JsonUtility.DeserializeData<ClassWithSourceInfo>(new StringReader(json), new FilePath("path"), false);
             Assert.NotNull(result);
         }
 
         [Fact]
         public void TestDeserializeWithSourceInfo()
         {
-            var result = JsonUtility.Deserialize<ClassWithSourceInfo>("{\"a\": \"a value\"}", new FilePath("path"));
+            var result = JsonUtility.DeserializeData<ClassWithSourceInfo>("{\"a\": \"a value\"}", new FilePath("path"));
             Assert.NotNull(result.A.Source);
             Assert.Equal("path", result.A.Source.File.Path);
             Assert.Equal(1, result.A.Source.Line);

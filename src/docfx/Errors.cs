@@ -284,7 +284,7 @@ namespace Microsoft.Docs.Build
             /// Files published to the same url have no monikers or share common monikers.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, IReadOnlyList<string>> files, List<string> conflictMonikers)
+            public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, MonikerList> files, List<string> conflictMonikers)
             {
                 var message = conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
                 return new Error(
@@ -445,8 +445,8 @@ namespace Microsoft.Docs.Build
             /// and can't decide which article to use when referencing that uid with this overlapped version
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingmonikers)
-                => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingmonikers)}");
+            public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingMonikers)
+                => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}");
 
             /// <summary>
             /// Failed to parse moniker string.
@@ -468,13 +468,13 @@ namespace Microsoft.Docs.Build
             /// or moniker-zone defined in article.md has no intersection with file-level monikers.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikeRangeOutOfScope(SourceInfo<string?> source, IReadOnlyList<string> zoneLevelMonikers, IReadOnlyList<string> fileLevelMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> source, IEnumerable<string> zoneLevelMonikers, IEnumerable<string> fileLevelMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{source}' is {StringUtility.Join(zoneLevelMonikers)}, while file level monikers is {StringUtility.Join(fileLevelMonikers)}.", source);
 
-            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string?> monikerRange, IReadOnlyList<string> fileMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IEnumerable<string> configMonikers, SourceInfo<string?> monikerRange, IEnumerable<string> fileMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file moniker range '{monikerRange}' is {StringUtility.Join(fileMonikers)}", monikerRange);
 
-            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IReadOnlyList<string> configMonikers, SourceInfo<string?>[] monikers, IReadOnlyList<string> fileMonikers)
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IEnumerable<string> configMonikers, SourceInfo<string?>[] monikers, IEnumerable<string> fileMonikers)
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}", monikers.FirstOrDefault());
         }
 

@@ -21,9 +21,9 @@ namespace Microsoft.Docs.Build
         public string? SourcePath { get; }
 
         [JsonIgnore]
-        public string[] Monikers { get; }
+        public MonikerList Monikers { get; }
 
-        public string? MonikerGroup { get; }
+        public string? MonikerGroup => Monikers.MonikerGroup;
 
         public string? ConfigMonikerRange { get; }
 
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public string? Mime { get; }
 
-        public PublishItem(string url, string? path, string? sourcePath, string locale, string[] monikers, string? configMonikerRange, ContentType contentType, string? mime)
+        public PublishItem(string url, string? path, string? sourcePath, string locale, MonikerList monikers, string? configMonikerRange, ContentType contentType, string? mime)
         {
             Url = url;
             Path = path;
@@ -51,7 +51,6 @@ namespace Microsoft.Docs.Build
             Locale = locale;
             Monikers = monikers;
             ConfigMonikerRange = configMonikerRange;
-            MonikerGroup = MonikerUtility.GetGroup(monikers);
             ContentType = contentType;
             Mime = mime;
         }

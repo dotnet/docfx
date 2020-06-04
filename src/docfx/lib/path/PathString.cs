@@ -21,8 +21,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// A non-nullable, non-empty string that can never contain
         ///     - backslashes
-        ///     - consegtive dots
-        ///     - consegtive forward slashes
+        ///     - consecutive dots
+        ///     - consecutive forward slashes
         ///     - leading ./
         /// </summary>
         public string Value => string.IsNullOrEmpty(_value) ? "." : _value;

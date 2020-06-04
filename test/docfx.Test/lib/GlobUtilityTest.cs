@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         // Do not support negate pattern
         [InlineData("!abc", "d, dd, def", false)]
 
-        // To match folders, / should be explictly specified
+        // To match folders, / should be explicitly specified
         [InlineData("[a-c]b*", "abc, abd, abe, bb, cb", true)]
         [InlineData("[a-y]*[!c]", "abd, abe, bb, bcd", true)]
         [InlineData("a*?c", "abc", true)]

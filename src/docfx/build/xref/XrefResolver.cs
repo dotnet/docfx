@@ -25,7 +25,8 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             Repository? repository,
             DependencyMapBuilder dependencyMapBuilder,
-            FileLinkMapBuilder fileLinkMapBuilder)
+            FileLinkMapBuilder fileLinkMapBuilder,
+            ErrorLog errorLog)
         {
             _config = config;
             _repository = repository;
@@ -33,11 +34,11 @@ namespace Microsoft.Docs.Build
                 () => InternalXrefMapBuilder.Build(context));
 
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver));
+                () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
-            _xrefHostName = config.HostName;
+            _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
         public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByHref(
@@ -123,7 +124,7 @@ namespace Microsoft.Docs.Build
             var references = _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
-                    // DHS appends branch infomation from cookie cache to URL, which is wrong for UID resolved URL
+                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);

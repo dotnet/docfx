@@ -213,7 +213,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             catch (JsonException)
             {
-                _context.LogError("mutiple-tags-with-same-name", $"Multiple entries with the name '{tagName}' where found in the notebook.", obj);
+                _context.LogError("multiple-tags-with-same-name", $"Multiple entries with the name '{tagName}' where found in the notebook.", obj);
                 return string.Empty;
             }
 

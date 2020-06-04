@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
-        private readonly string _markdownValidationRules;
         private readonly ContentValidator _contentValidator;
 
         private readonly MarkdownContext _markdownContext;
@@ -59,12 +58,14 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
-            _markdownValidationRules = ContentValidator.GetMarkdownValidationRulesFilePath(fileResolver, config);
+            var markdownValidationRules = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules);
+            var allowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Allowlists);
+            var disallowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Disallowlists);
 
-            if (!string.IsNullOrEmpty(_markdownValidationRules))
+            if (!string.IsNullOrEmpty(markdownValidationRules))
             {
                 _validatorProvider = new OnlineServiceMarkdownValidatorProvider(
-                    new ContentValidationContext(_markdownValidationRules),
+                    new ContentValidationContext(markdownValidationRules, allowlists, disallowlists),
                     new ContentValidationLogger(_markdownContext));
             }
 
@@ -76,7 +77,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType piplineType)
+        public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -86,7 +87,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    var ast = Markdown.Parse(content, _pipelines[(int)piplineType]);
+                    var ast = Markdown.Parse(content, _pipelines[(int)pipelineType]);
 
                     return (status.Errors, ast);
                 }
@@ -197,7 +198,7 @@ namespace Microsoft.Docs.Build
                 .UseTripleColon(_markdownContext)
                 .UseNoloc()
                 .UseTelemetry()
-                .UseMonikerZone(GetMonikerRange)
+                .UseMonikerZone(ParseMonikerRange)
                 .UseContentValidation(this, _validatorProvider, GetValidationNodes, ReadFile)
                 .UseFilePath()
 
@@ -318,7 +319,7 @@ namespace Microsoft.Docs.Build
             return sourceInfo.Source?.File is FilePath filePath ? _documentProvider.GetDocument(filePath) : (Document)InclusionContext.File;
         }
 
-        private IReadOnlyList<string> GetMonikerRange(SourceInfo<string?> monikerRange)
+        private MonikerList ParseMonikerRange(SourceInfo<string?> monikerRange)
         {
             var status = t_status.Value!.Peek();
             var (monikerErrors, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);

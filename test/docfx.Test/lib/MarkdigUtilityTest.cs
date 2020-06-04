@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a/>", true)]
         [InlineData("<a href=\"https://www.microsoft.com\"></a>", true)]
         [InlineData("<a href=\"https://www.microsoft.com\"/>", true)]
+        [InlineData("image case ![A fallback image](windows.jpg) \n  <!--comments--> \n ", true)]
 
         [InlineData("#", false)]
         [InlineData(" <!--comments--> ", false)]
@@ -36,9 +37,9 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n <!--comments--> \n  ", false)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
-            var markdownDoucment = Markdown.Parse(markdownContent, _markdownPipeline);
+            var markdownDocument = Markdown.Parse(markdownContent, _markdownPipeline);
 
-            Assert.Equal(expectedVisible, MarkdigUtility.IsVisible(markdownDoucment));
+            Assert.Equal(expectedVisible, MarkdigUtility.IsVisible(markdownDocument));
         }
     }
 }

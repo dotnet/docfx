@@ -5,10 +5,10 @@ using CommandLine;
 
 namespace Microsoft.Docs.Build
 {
-    class Options
+    internal class Options
     {
         [Value(0, Required = true)]
-        public string Repository { get; set; }
+        public string Repository { get; set; } = "";
 
         [Option("branch")]
         public string Branch { get; set; } = "master";

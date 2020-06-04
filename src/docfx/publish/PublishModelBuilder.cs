@@ -16,8 +16,8 @@ namespace Microsoft.Docs.Build
         private readonly Output _output;
         private readonly ErrorLog _errorLog;
         private readonly ContentValidator _contentValidator;
-        private readonly ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>> _outputsByPublishItem
-            = new ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>>(new PublishItemComparer());
+        private readonly ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, MonikerList)>, ConflictingType)>> _outputsByPublishItem
+            = new ConcurrentDictionary<PublishItem, Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, MonikerList)>, ConflictingType)>>(new PublishItemComparer());
 
         private readonly Dictionary<FilePath, PublishItem> _publishItems = new Dictionary<FilePath, PublishItem>();
 
@@ -40,8 +40,8 @@ namespace Microsoft.Docs.Build
             var (addedItem, writeLock, _, _, _) = _outputsByPublishItem
                 .AddOrUpdate(
                 item,
-                key => new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>(
-                    () => (item, new object(), file, new ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>(), ConflictingType.None)),
+                key => new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, MonikerList)>, ConflictingType)>(
+                    () => (item, new object(), file, new ConcurrentDictionary<FilePath, (string?, MonikerList)>(), ConflictingType.None)),
                 (key, existing) =>
                 {
                     var (existingItem, writeLock, existingFile, conflicts, _) = existing.Value;
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
                     if (PublishItemComparer.OutputPathEquals(item, existingItem))
                     {
-                        return new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>(
+                        return new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, MonikerList)>, ConflictingType)>(
                             () =>
                             {
                                 // redirection file is preferred than source file
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
                     if (PublishItemComparer.PublishUrlEquals(item, existingItem))
                     {
-                        return new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, IReadOnlyList<string>)>, ConflictingType)>(
+                        return new Lazy<(PublishItem, object, FilePath, ConcurrentDictionary<FilePath, (string?, MonikerList)>, ConflictingType)>(
                             () =>
                             {
                                 var compareMoniker = CompareMonikerGroup(item.MonikerGroup, existingItem.MonikerGroup);
@@ -160,13 +160,13 @@ namespace Microsoft.Docs.Build
                 orderby item.Locale, item.Path, item.Url, item.RedirectUrl, item.MonikerGroup
                 select item).ToArray();
 
-            var monikerGroups = new Dictionary<string, string[]>(
+            var monikerGroups = new Dictionary<string, MonikerList>(
                 from item in _publishItems.Values
                 let monikerGroup = item.MonikerGroup
                 where !string.IsNullOrEmpty(monikerGroup)
                 orderby monikerGroup
                 group item by monikerGroup into g
-                select new KeyValuePair<string, string[]>(g.Key, g.First().Monikers));
+                select new KeyValuePair<string, MonikerList>(g.Key, g.First().Monikers));
 
             var model = new PublishModel(
                 _config.Name,

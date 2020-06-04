@@ -21,12 +21,12 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
         }
 
-        public static (string docsetPath, string? outputPath)[] FindDocsets(string workingDirectory, CommandLineOptions options)
+        public static (List<Error> errors, (string docsetPath, string? outputPath)[]) FindDocsets(string workingDirectory, CommandLineOptions options)
         {
-            var glob = FindDocsetsGlob(workingDirectory);
+            var (errors, glob) = FindDocsetsGlob(workingDirectory);
             if (glob is null)
             {
-                return new[] { (workingDirectory, options.Output) };
+                return (errors, new[] { (workingDirectory, options.Output) });
             }
 
             var files = new FileSystemEnumerable<string>(
@@ -43,14 +43,14 @@ namespace Microsoft.Docs.Build
                 },
             };
 
-            return (
+            return (errors, (
                 from file in files
                 let configPath = Path.GetRelativePath(workingDirectory, file)
                 where glob(configPath)
                 let docsetPath = Path.GetDirectoryName(file)
                 let docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath)
                 let outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder)
-                select (docsetPath, outputPath)).Distinct().ToArray();
+                select (docsetPath, outputPath)).Distinct().ToArray());
         }
 
         /// <summary>
@@ -76,7 +76,8 @@ namespace Microsoft.Docs.Build
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
+            var (opsConfigErrors, xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
+            errors.AddRange(opsConfigErrors);
             var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
                 ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
                 : null;
@@ -157,12 +158,14 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static Func<string, bool>? FindDocsetsGlob(string workingDirectory)
+        private static (List<Error>, Func<string, bool>?) FindDocsetsGlob(string workingDirectory)
         {
-            var opsConfig = OpsConfigLoader.LoadOpsConfig(workingDirectory);
+            var errors = new List<Error>();
+            var (opsConfigErrors, opsConfig) = OpsConfigLoader.LoadOpsConfig(workingDirectory);
+            errors.AddRange(opsConfigErrors);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
-                return docsetFolder =>
+                return (errors, docsetFolder =>
                 {
                     var docsetDirectoryName = Path.GetDirectoryName(docsetFolder);
                     if (docsetDirectoryName is null)
@@ -171,7 +174,7 @@ namespace Microsoft.Docs.Build
                     }
                     var sourceFolder = new PathString(docsetDirectoryName);
                     return opsConfig.DocsetsToPublish.Any(docset => docset.BuildSourceFolder.FolderEquals(sourceFolder));
-                };
+                });
             }
 
             var configPath = PathUtility.FindYamlOrJson(workingDirectory, "docsets");
@@ -179,14 +182,16 @@ namespace Microsoft.Docs.Build
             {
                 var content = File.ReadAllText(configPath);
                 var source = new FilePath(Path.GetFileName(configPath));
-                var config = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+
+                var (configErrors, config) = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
                     ? YamlUtility.Deserialize<DocsetsConfig>(content, source)
                     : JsonUtility.Deserialize<DocsetsConfig>(content, source);
+                errors.AddRange(configErrors);
 
-                return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
+                return (errors, GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude));
             }
 
-            return null;
+            return (errors, null);
         }
 
         private static JObject LoadEnvironmentVariables()

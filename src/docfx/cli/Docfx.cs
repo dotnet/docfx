@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
 
                 if (options.Stdin)
                 {
-                    options.StdinConfig = JsonUtility.Deserialize<JObject>(Console.ReadLine(), new FilePath("--stdin"));
+                    options.StdinConfig = JsonUtility.DeserializeData<JObject>(Console.ReadLine(), new FilePath("--stdin"));
                 }
 
                 return (command, workingDirectory, options);
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
             syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
             syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
-            syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectores that contains docfx.yml/docfx.json.");
+            syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectories that contains docfx.yml/docfx.json.");
         }
 
         private static void PrintFatalErrorMessage(Exception exception)

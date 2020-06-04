@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 {
                     var exports = Run(key.scriptPath);
 
-                    // Avoid exports been GCed by javascript garbarge collector.
+                    // Avoid exports been GCed by javascript garbage collector.
                     exports.AddRef();
                     return exports;
                 }
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
             {
                 var global = ToJavaScriptValue(_global);
 
-                // Avoid exports been GCed by javascript garbarge collector.
+                // Avoid exports been GCed by javascript garbage collector.
                 global.AddRef();
                 return global;
             });

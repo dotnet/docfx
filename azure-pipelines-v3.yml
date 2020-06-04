@@ -154,7 +154,7 @@ jobs:
       office-dev-O365API:
         params: https://dev.azure.com/docs-archive/docs-archive-project/_git/office-dev-O365API --timeout 20
       dynamics-crm-notinTOC_1.he-il:
-        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/dynamics-crm-notinTOC.he-il --locale he-il --timeout 40
+        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/dynamics-crm-notinTOC.he-il --locale he-il --timeout 70
 
   steps:
   # Install .NET Core sdk
@@ -163,11 +163,6 @@ jobs:
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
-  
-  # Checkout
-  - checkout: self
-    clean: false
-    path: docfx
 
   # Download RegressionTest binary
   - download: current

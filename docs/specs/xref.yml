@@ -144,6 +144,7 @@ repos:
         docfx.yml: |
           hostName: docs.com
           basePath: /base_path
+          xrefhostName: test.docs.com
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -165,12 +166,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://docs.com/base_path/docs/a",
+          "href": "https://test.docs.com/base_path/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://docs.com/base_path/docs/b",
+          "href": "https://test.docs.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
       ],
@@ -238,6 +239,26 @@ outputs:
   docs/a.json:
   docs/b.json: |
     {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">Title from internal a</a></p>\n"}
+---
+# resolve uid in `.fallback` folder for loc build
+locale: zh-cn
+repos:
+  https://docs.com/xref-fallback#master:
+    - files:
+        docfx.yml:
+  https://docs.com/xref-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        .fallback/b.md: |
+          ---
+          title: uid from fallback
+          uid: fallback
+          ---
+        a.md: |
+          @fallback
+outputs:
+  a.json: |
+    { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid from fallback</a></p>\n"}
 ---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document

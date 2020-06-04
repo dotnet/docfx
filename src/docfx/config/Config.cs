@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class Config : PreloadConfig
     {
-        public static string[] DefaultInclude => new[] { "**/*.{md,yml,json}" };
+        public static string[] DefaultInclude => new[] { "**" };
 
         public static string[] DefaultExclude => new[]
         {
@@ -125,6 +125,11 @@ namespace Microsoft.Docs.Build
         public BasePath BasePath { get; private set; }
 
         /// <summary>
+        /// Gets host name used for generating .xrefmap.json
+        /// </summary>
+        public string XrefHostName { get; private set; } = "";
+
+        /// <summary>
         /// Gets whether we are running in legacy mode
         /// </summary>
         public bool Legacy { get; private set; }
@@ -207,6 +212,16 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> MarkdownValidationRules { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
+        /// Get the file path of allow lists
+        /// </summary>
+        public SourceInfo<string> Allowlists { get; private set; } = new SourceInfo<string>("");
+
+        /// <summary>
+        /// Get the file path of disallow lists
+        /// </summary>
+        public SourceInfo<string> Disallowlists { get; private set; } = new SourceInfo<string>("");
+
+        /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -275,7 +290,7 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
-        /// Determines if validate the moniker confguration.
+        /// Determines if validate the moniker configuration.
         /// </summary>
         public bool SkipMonikerValidation { get; private set; }
 
@@ -299,6 +314,8 @@ namespace Microsoft.Docs.Build
             yield return SourceMap;
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
+            yield return Allowlists;
+            yield return Disallowlists;
 
             foreach (var metadataSchema in MetadataSchema)
             {

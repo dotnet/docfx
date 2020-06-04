@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, (List<Error>, string[])> _cache = new ConcurrentDictionary<string, (List<Error>, string[])>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, (List<Error>, MonikerList)> _cache = new ConcurrentDictionary<string, (List<Error>, MonikerList)>(StringComparer.OrdinalIgnoreCase);
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
         }
 
-        public (List<Error>, string[]) Validate(SourceInfo<string?>[] monikers)
+        public (List<Error>, MonikerList) Validate(SourceInfo<string?>[] monikers)
         {
             var errors = new List<Error>();
             var result = new List<string>();
@@ -37,15 +37,15 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            return (errors, result.OrderBy(_ => _, StringComparer.Ordinal).ToArray());
+            return (errors, new MonikerList(result));
         }
 
-        public (List<Error>, string[]) Parse(SourceInfo<string?> rangeString)
+        public (List<Error>, MonikerList) Parse(SourceInfo<string?> rangeString)
         {
             var key = rangeString.Value;
             if (string.IsNullOrWhiteSpace(key))
             {
-                return (new List<Error>(), Array.Empty<string>());
+                return (new List<Error>(), default);
             }
 
             return _cache.GetOrAdd(key, value =>
@@ -53,14 +53,13 @@ namespace Microsoft.Docs.Build
                 var (errors, result) = ExpressionCreator.Create(value, rangeString.Source);
                 if (result is null)
                 {
-                    return (errors, Array.Empty<string>());
+                    return (errors, default);
                 }
+
                 var (evaluateErrors, monikers) = result.Accept(_monikersEvaluator, rangeString);
                 errors.AddRange(evaluateErrors);
-                return (errors, monikers
-                    .Select(x => x.MonikerName.ToLowerInvariant())
-                    .OrderBy(_ => _, StringComparer.Ordinal)
-                    .ToArray());
+
+                return (errors, new MonikerList(monikers.Select(x => x.MonikerName)));
             });
         }
     }

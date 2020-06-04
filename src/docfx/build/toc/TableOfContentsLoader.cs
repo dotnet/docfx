@@ -100,14 +100,14 @@ namespace Microsoft.Docs.Build
             Parallel.For(0, nodes.Count, i =>
             {
                 var newReferencedFiles = new List<Document>();
-                var newRefrencedTocs = new List<Document>();
+                var newReferencedTocs = new List<Document>();
                 var newErrors = new List<Error>();
-                newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newRefrencedTocs, newErrors);
+                newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newReferencedTocs, newErrors);
                 lock (newNodes)
                 {
                     errors.AddRange(newErrors);
                     referencedFiles.AddRange(newReferencedFiles);
-                    referencedTocs.AddRange(newRefrencedTocs);
+                    referencedTocs.AddRange(newReferencedTocs);
                 }
             });
 
@@ -160,55 +160,47 @@ namespace Microsoft.Docs.Build
             return new SourceInfo<TableOfContentsNode>(newNode, node);
         }
 
-        private IReadOnlyList<string> GetMonikers(TableOfContentsNode currentItem, List<Error> errors)
+        private MonikerList GetMonikers(TableOfContentsNode currentItem, List<Error> errors)
         {
-            var monikers = new List<string>();
+            var monikers = MonikerList.Union(GetMonikerLists(currentItem, errors));
+
+            // TODO: remove _reduceTOCChildMonikers flag and apply it to all toc after more e2e-testing
+            if (_reduceTOCChildMonikers)
+            {
+                foreach (var item in currentItem.Items)
+                {
+                    if (monikers == item.Value.Monikers)
+                    {
+                        item.Value.Monikers = default;
+                    }
+                }
+            }
+            return monikers;
+        }
+
+        private IEnumerable<MonikerList> GetMonikerLists(TableOfContentsNode currentItem, List<Error> errors)
+        {
             if (!string.IsNullOrEmpty(currentItem.Href))
             {
                 var linkType = UrlUtility.GetLinkType(currentItem.Href);
                 if (linkType == LinkType.External || linkType == LinkType.AbsolutePath)
                 {
-                    return Array.Empty<string>();
+                    yield return default;
                 }
-                else
+                else if (currentItem.Document != null)
                 {
-                    if (currentItem.Document != null)
-                    {
-                        var (monikerErrors, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
-                        errors.AddRange(monikerErrors);
+                    var (monikerErrors, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
+                    errors.AddRange(monikerErrors);
 
-                        if (referenceFileMonikers.Length == 0)
-                        {
-                            return Array.Empty<string>();
-                        }
-                        monikers = referenceFileMonikers.ToList();
-                    }
+                    yield return referenceFileMonikers;
                 }
             }
 
             // Union with children's monikers
             foreach (var item in currentItem.Items)
             {
-                if (item.Value.Monikers.Count == 0)
-                {
-                    return Array.Empty<string>();
-                }
-                monikers = monikers.Union(item.Value.Monikers, StringComparer.OrdinalIgnoreCase).ToList();
+                yield return item.Value.Monikers;
             }
-            monikers.Sort(StringComparer.OrdinalIgnoreCase);
-
-            // TODO: remove _reduceTOCChildMonikers flag and apply it to all toc after more e2e-testing
-            if (_reduceTOCChildMonikers && monikers.Count > 0)
-            {
-                foreach (var item in currentItem.Items)
-                {
-                    if (Enumerable.SequenceEqual(item.Value.Monikers, monikers, StringComparer.OrdinalIgnoreCase))
-                    {
-                        item.Value.Monikers = Array.Empty<string>();
-                    }
-                }
-            }
-            return monikers;
         }
 
         private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, List<Error> errors)

@@ -33,7 +33,11 @@ namespace Microsoft.Docs.Build
 
         public int MaxTransientFailureCount { get; set; }
 
-        public ContentValidationContext(string markdownValidationRulesPath)
+        public string AllowlistFilePath { get; set; }
+
+        public string DisallowlistFilePath { get; set; }
+
+        public ContentValidationContext(string markdownValidationRulesPath, string allowlistsPath, string disallowlistsPath)
         {
             MarkdownRulesFilePath = markdownValidationRulesPath;
             RepositoryUrl = EnvironmentVariable.RepositoryUrl;
@@ -44,6 +48,8 @@ namespace Microsoft.Docs.Build
             MaxTries = ValidationMaxTries;
             RetryDelaySeconds = ValidationRetryDelaySeconds;
             MaxTransientFailureCount = ValidationMaxTransientFailureCount;
+            AllowlistFilePath = allowlistsPath;
+            DisallowlistFilePath = disallowlistsPath;
         }
     }
 }

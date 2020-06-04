@@ -1,10 +1,11 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
     using System;
     using System.Collections.Generic;
 
@@ -129,11 +130,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.Write("<a").WriteAttributes(linkHtmlAttributes).WriteLine(">");
                 } else if (!string.IsNullOrEmpty(currentLightbox))
                 {
-                    var lighboxHtmlAttributes = new HtmlAttributes();
+                    var lightboxHtmlAttributes = new HtmlAttributes();
                     var path = _context.GetLink(currentLightbox, obj);
-                    lighboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
-                    lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
-                    renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
+                    lightboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
+                    lightboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
+                    renderer.Write("<a").WriteAttributes(lightboxHtmlAttributes).WriteLine(">");
                 }
                 if(currentBorder)
                 {
@@ -144,7 +145,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 } else
                 {
-                    if(currentType == "complex" && obj.Count == 0)
+                    if (currentType == "complex" && obj.Count == 0)
                     {
                         logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
@@ -192,11 +193,5 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
         }
-    }
-
-    public class ImageProperties
-    {
-        public string id { get; set; }
-        public string type { get; set; }
     }
 }
