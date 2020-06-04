@@ -41,24 +41,29 @@ namespace Microsoft.Docs.Build
 
         private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            using var errorLog = new ErrorLog(outputPath);
             var stopwatch = Stopwatch.StartNew();
+
+            using var errorLog = new ErrorLog(outputPath);
+            using var disposables = new DisposableCollector();
 
             try
             {
                 var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options, fetchOptions);
-                if (errorLog.Write(errors))
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
+                using (packageResolver)
                 {
-                    return true;
-                }
+                    if (errorLog.Write(errors))
+                    {
+                        return true;
+                    }
 
-                new OpsPreProcessor(config, errorLog, buildOptions).Run();
-                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
-                errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
-                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
-                Run(context);
-                return errorLog.ErrorCount > 0;
+                    new OpsPreProcessor(config, errorLog, buildOptions).Run();
+                    var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
+                    errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
+                    using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
+                    Run(context);
+                    return errorLog.ErrorCount > 0;
+                }
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error>, Config, BuildOptions, PackageResolver, FileResolver) Load(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        public (List<Error>, Config, BuildOptions, PackageResolver, FileResolver) Load(DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             // load and trace entry repository
             var repository = Repository.Create(docsetPath);
@@ -92,6 +92,8 @@ namespace Microsoft.Docs.Build
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
             var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions);
+            disposables.Add(packageResolver);
+
             var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, packageResolver);
             var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
             var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath, outputPath, repository, preloadConfig);
