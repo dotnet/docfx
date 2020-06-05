@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class Config : PreloadConfig
     {
-        public static string[] DefaultInclude => new[] { "**" };
+        public static string[] DefaultInclude => new[] { "**/*.{md,yml,json}" };
 
         public static string[] DefaultExclude => new[]
         {

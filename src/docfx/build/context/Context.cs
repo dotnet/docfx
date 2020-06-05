@@ -103,6 +103,7 @@ namespace Microsoft.Docs.Build
                 config,
                 BuildOptions,
                 BuildScope,
+                BuildQueue,
                 RedirectionProvider,
                 DocumentProvider,
                 BookmarkValidator,

@@ -118,6 +118,7 @@ outputs:
 os: windows, osx
 inputs:
   docfx.yml: |
+    files: '*'
   a.md: '[](media/ImAGe.PNG) [](MEdia/ImAGe.PNG)'
   b.md: '[](MEdia/iMaGe.png) [](meDIa/ImAGe.PNG)'
   c.md: '[](meDia/imAgE.pNg) [](MEDIA/ImAGe.PNG)'

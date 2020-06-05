@@ -675,7 +675,6 @@ repos:
   https://github.com/relocate/source-file:
     - files:
         docfx.yml: |
-          files: '**/*.{md,yml}'
           sourceMap: a/sourceMap.json
         a/sourceMap.json: |
           {
@@ -715,7 +714,6 @@ repos:
   https://github.com/relocate/source-file:
     - files:
         docfx.yml: |
-          files: '**/*.{md,yml}'
           sourceMap: a/sourceMap.json
         a/sourceMap.json: |
           {
@@ -745,7 +743,6 @@ repos:
   https://github.com/relocate/source-file:
     - files:
         docfx.yml: |
-          files: '**/*.{md,yml}'
           sourceMap: a/sourceMap.json
         a/sourceMap.json: |
           {
