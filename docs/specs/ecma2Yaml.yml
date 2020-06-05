@@ -215,7 +215,7 @@ repos:
       
 outputs:
   cat/.errors.log: |
-    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"*xml/CatLibrary/Cat`2.xml*"}
+    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"_repo.en-us/CatLibrary/Cat`2.xml"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'"}
