@@ -174,8 +174,8 @@ namespace Microsoft.Docs.Build
                 return itemsWithoutMoniker.OrderByDescending(x => x.file.FilePath.Path, PathUtility.PathComparer).First();
             }
 
-            var lastestMonikerGroup = conflicts.OrderByDescending(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
-            var itemsWithChosenMonikerGroup = conflicts.Where(x => x.item.MonikerGroup == lastestMonikerGroup);
+            var latestMonikerGroup = conflicts.OrderByDescending(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
+            var itemsWithChosenMonikerGroup = conflicts.Where(x => x.item.MonikerGroup == latestMonikerGroup);
             if (itemsWithChosenMonikerGroup.Count() == 1)
             {
                 return itemsWithChosenMonikerGroup.First();
