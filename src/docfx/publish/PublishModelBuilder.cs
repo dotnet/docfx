@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -154,6 +155,16 @@ namespace Microsoft.Docs.Build
                 .ToList();
             var conflictingFiles = conflicts.ToDictionary(x => x.file.FilePath, x => x.item.Monikers);
             _context.ErrorLog.Write(Errors.UrlPath.PublishUrlConflict(publishItem.Url, conflictingFiles, conflictMonikers));
+
+            var itemsWithoutMoniker = conflicts.Where(x => x.item.MonikerGroup is null);
+            if (itemsWithoutMoniker.Count() == 1)
+            {
+                return itemsWithoutMoniker.First();
+            }
+            else if (itemsWithoutMoniker.Count() > 1)
+            {
+                throw new InvalidOperationException();
+            }
 
             var lastestMonikerGroup = conflicts.OrderByDescending(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
             var itemsWithChosenMonikerGroup = conflicts.Where(x => x.item.MonikerGroup == lastestMonikerGroup);
