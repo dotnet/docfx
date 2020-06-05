@@ -50,20 +50,17 @@ namespace Microsoft.Docs.Build
             {
                 var configLoader = new ConfigLoader(errorLog);
                 var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
-                using (packageResolver)
+                if (errorLog.Write(errors))
                 {
-                    if (errorLog.Write(errors))
-                    {
-                        return true;
-                    }
-
-                    new OpsPreProcessor(config, errorLog, buildOptions).Run();
-                    var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
-                    errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
-                    using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
-                    Run(context);
-                    return errorLog.ErrorCount > 0;
+                    return true;
                 }
+
+                new OpsPreProcessor(config, errorLog, buildOptions).Run();
+                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
+                errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
+                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
+                Run(context);
+                return errorLog.ErrorCount > 0;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
