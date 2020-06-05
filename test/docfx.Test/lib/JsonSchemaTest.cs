@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -384,26 +385,76 @@ namespace Microsoft.Docs.Build
         // attribute docset unique validation
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" }, 0)]
         [InlineData("{'docsetUnique': ['key1', 'key1']}", new[] { "{'key1': 'a'}" }, 0)]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}" , "{'key1': 'b'}" }, 0)]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'b'}" }, 0)]
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, 2)]
         [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" }, 2)]
         [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a'}", "{'key2': 'a', 'key1': 'a'}" }, 2)]
         [InlineData("{'docsetUnique': ['key1', 'key2']}", new[] { "{'key1': 'a', 'key2': 'b'}", "{'key2': 'b', 'key1': 'a'}" }, 4)]
         [InlineData("{'docsetUnique': ['key11']}", new[] { "{'key1': {'key11': 'a'}}", "'key11': 'a'}" }, 0)]
         [InlineData("{'properties': {'key1': {'docsetUnique': ['key11']}}}", new[] { "{'key1': {'key11': 'a'}}", "{'key1': {'key11': 'a'}, 'key11': 'a'}" }, 2)]
-        public void TestJsonSchemaPostValidation(string schema, string [] jsons, int errorCount)
+        public void TestJsonSchemaPostValidation(string schema, string[] jsons, int errorCount)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i+1}")).value);
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")).value);
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
-            foreach(var payload in payloads)
+            foreach (var payload in payloads)
             {
                 jsonSchemaValidator.Validate(payload);
             }
 
             var errors = jsonSchemaValidator.PostValidate();
             Assert.Equal(errorCount, errors.Count);
+        }
+
+        [Theory]
+        [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
+            new[] { "{'key1': 'a'}" }, new[] { "" }, new[] { "missing-attribute:Warning" })]
+        [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
+            new[] { "{'key1': 'a'}" }, new[] { "t" }, new[] { "missing-attribute:Warning" })]
+        [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
+            new[] { "{'key1': 'a'}" }, new[] { "f" }, new[] { "missing-attribute:Off" })]
+        [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
+            new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "f" }, new[] { "missing-attribute:Warning", "missing-attribute:Off" })]
+        [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
+            new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "f" }, new[] { "missing-attribute:Warning", "missing-attribute:Off" })]
+        [InlineData("{'required': ['author']}",
+            new[] { "{'key1': 'a'}" }, new[] { "" }, new[] { "missing-attribute:Warning" })]
+        [InlineData("{'required': ['author']}",
+            new[] { "{'key1': 'a'}" }, new[] { "t" }, new[] { "missing-attribute:Warning" })]
+        [InlineData("{'required': ['author']}",
+            new[] { "{'key1': 'a'}" }, new[] { "f" }, new[] { "missing-attribute:Warning" })]
+
+        [InlineData("{'docsetUnique': ['key1'], 'customRules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1'], 'customRules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1'], 'customRules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1'], 'customRules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "f" }, new string[] { })]
+        [InlineData("{'docsetUnique': ['key1'], 'customRules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "f", "f" }, new string[] { })]
+        [InlineData("{'docsetUnique': ['key1'], 'customRules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "f" }, new string[] { })]
+
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "f" }, new string[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "f", "f" }, new string[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "f" }, new string[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
+        public void TestJsonSchemaCanonicalVersionValidation(string schema, string[] jsons, string[] isCanonicalVersions, string[] errors)
+        {
+            Assert.Equal(jsons.Length, isCanonicalVersions.Length);
+            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")).value).ToArray();
+            var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
+
+            var validationErrors = new List<Error>();
+            for (var i = 0; i < payloads.Length; i++)
+            {
+                var isCanonicalVersion = isCanonicalVersions[i] == ""
+                    ? null
+                    : (bool?)(isCanonicalVersions[i] == "t" ? true : false);
+                validationErrors.AddRange(jsonSchemaValidator.Validate(payloads[i], isCanonicalVersion));
+            }
+            validationErrors.AddRange(jsonSchemaValidator.PostValidate());
+            Assert.Equal(errors.OrderBy(e => e), validationErrors.OrderBy(e => e.Code).ThenBy(e => e.Level).Select(e => $"{e.Code}:{e.Level}"));
         }
     }
 }
