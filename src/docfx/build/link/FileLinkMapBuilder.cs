@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
-        private PublishModelBuilder _publishModelBuilder;
+        private PublishModelBuilder? _publishModelBuilder;
 
         public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
         {
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             return new
             {
                 Links = _links
-                        .Where(x => _publishModelBuilder.HasOutput(x.InclusionRoot))
+                        .Where(x => _publishModelBuilder!.HasOutput(x.InclusionRoot))
                         .OrderBy(x => x)
                         .ToArray(),
             };
