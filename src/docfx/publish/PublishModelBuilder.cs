@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             return (model, fileManifests);
         }
 
-        public void ExcludeErrorFiles()
+        public void PostBuild()
         {
             foreach (var file in _context.ErrorLog.ErrorFiles)
             {
@@ -70,6 +70,15 @@ namespace Microsoft.Docs.Build
                 {
                     item.HasError = true;
                     DeleteOutput(item);
+                }
+            }
+
+            foreach (var (filePath, publishItem) in _publishItems)
+            {
+                if (!publishItem.HasError)
+                {
+                    Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
+                    _context.ContentValidator.ValidateManifest(filePath, publishItem);
                 }
             }
         }

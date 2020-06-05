@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
                 () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
                 () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
 
-            context.PublishModelBuilder.ExcludeErrorFiles();
+            context.PublishModelBuilder.PostBuild();
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
