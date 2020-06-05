@@ -123,9 +123,9 @@ namespace Microsoft.Docs.Build
             var errors = file.ContentType switch
             {
                 ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
-                ContentType.Resource when path.Origin != FileOrigin.Fallback || context.Config.OutputType == OutputType.Html => BuildResource.Build(context, file),
-                ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
-                ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
+                ContentType.Resource => BuildResource.Build(context, file),
+                ContentType.Page => BuildPage.Build(context, file),
+                ContentType.Redirection => BuildRedirection.Build(context, file),
                 _ => new List<Error>(),
             };
 

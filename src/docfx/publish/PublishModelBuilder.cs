@@ -66,19 +66,19 @@ namespace Microsoft.Docs.Build
         {
             foreach (var file in _context.ErrorLog.ErrorFiles)
             {
-                DeleteOutput(file);
+                if (!_context.Config.DryRun && _publishItems.TryGetValue(file, out var item))
+                {
+                    item.HasError = true;
+                    DeleteOutput(item);
+                }
             }
         }
 
-        private void DeleteOutput(FilePath file)
+        private void DeleteOutput(PublishItem item)
         {
-            if (!_context.Config.DryRun && _publishItems.TryGetValue(file, out var item))
+            if (item.Path != null && IsInsideOutputFolder(item.Path))
             {
-                item.HasError = true;
-                if (item.Path != null && IsInsideOutputFolder(item.Path))
-                {
-                    _context.Output.Delete(item.Path, _context.Config.Legacy);
-                }
+                _context.Output.Delete(item.Path, _context.Config.Legacy);
             }
         }
 
@@ -91,11 +91,10 @@ namespace Microsoft.Docs.Build
         private ConcurrentDictionary<FilePath, PublishItem> Initialize()
         {
             var builder = new ListBuilder<(PublishItem item, Document file)>();
-            var files = _context.RedirectionProvider.Files
-                         .Concat(_context.BuildScope.GetFiles(ContentType.Resource))
-                         .Concat(_context.BuildScope.GetFiles(ContentType.Page))
-                         .Concat(_context.TocMap.GetFiles())
-                         .Where(file => file.Origin != FileOrigin.Fallback);
+            var files = _context.RedirectionProvider.Files.Where(x => x.Origin != FileOrigin.Fallback)
+                         .Concat(_context.BuildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _context.Config.OutputType == OutputType.Html))
+                         .Concat(_context.BuildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback))
+                         .Concat(_context.TocMap.GetFiles());
 
             using (Progress.Start("Building publish map"))
             {
@@ -108,13 +107,13 @@ namespace Microsoft.Docs.Build
             // resolve output path conflicts
             var publishMap = builder.ToList();
             var groupByOutputPath = publishMap.Where(x => x.item.Path != null).GroupBy(x => x.item.Path, PathUtility.PathComparer);
-            var temp =
+            var itemsWithoutOutputPathConflict =
                 publishMap.Where(x => x.item.Path is null)
                 .Concat(groupByOutputPath.Where(g => g.Count() == 1).SelectMany(g => g))
                 .Concat(groupByOutputPath.Where(g => g.Count() > 1).Select(g => ResolveOutputPathConflicts(g.ToArray())));
 
             // resolve publish url conflicts
-            var groupByPublishUrl = temp.GroupBy(x => x.Item1, new PublishItemComparer());
+            var groupByPublishUrl = itemsWithoutOutputPathConflict.GroupBy(x => x.Item1, new PublishItemComparer());
             var result = groupByPublishUrl.Where(g => g.Count() == 1).SelectMany(g => g)
                 .Concat(groupByPublishUrl.Where(g => g.Count() > 1).Select(g => ResolvePublishUrlConflicts(g.ToArray())));
             return new ConcurrentDictionary<FilePath, PublishItem>(result.ToDictionary(g => g.Item2.FilePath, g => g.Item1));
@@ -163,7 +162,7 @@ namespace Microsoft.Docs.Build
             }
             else if (itemsWithoutMoniker.Count() > 1)
             {
-                throw new InvalidOperationException();
+                return itemsWithoutMoniker.OrderByDescending(x => x.file.FilePath.Path, PathUtility.PathComparer).First();
             }
 
             var lastestMonikerGroup = conflicts.OrderByDescending(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
