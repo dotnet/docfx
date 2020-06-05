@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
 
         public async Task Download(SourceInfo<string> file)
         {
-            if (!UrlUtility.IsHttp(file) || s_downloadedUrls.Contains(file))
+            if (!UrlUtility.IsHttp(file))
             {
                 return;
             }
@@ -98,16 +98,16 @@ namespace Microsoft.Docs.Build
             }
 
             var filePath = GetRestorePathFromUrl(file);
+            if ((_fetchOptions == FetchOptions.UseCache || s_downloadedUrls.Contains(file)) && File.Exists(filePath))
+            {
+                return;
+            }
+
             var etagPath = GetRestoreEtagPath(file);
             var existingEtag = default(EntityTagHeaderValue);
 
             using (InterProcessMutex.Create(filePath))
             {
-                if (_fetchOptions == FetchOptions.UseCache && File.Exists(filePath))
-                {
-                    return;
-                }
-
                 var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
                 if (!string.IsNullOrEmpty(etagContent))
                 {
