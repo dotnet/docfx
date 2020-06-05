@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,9 @@ namespace Microsoft.Docs.Build
 {
     internal class FileResolver
     {
+        // NOTE: This line assumes each build runs in a new process
+        private static readonly ConcurrentHashSet<string> s_downloadedUrls = new ConcurrentHashSet<string>();
+
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
@@ -83,7 +87,7 @@ namespace Microsoft.Docs.Build
 
         public async Task Download(SourceInfo<string> file)
         {
-            if (!UrlUtility.IsHttp(file))
+            if (!UrlUtility.IsHttp(file) || s_downloadedUrls.Contains(file))
             {
                 return;
             }
@@ -135,7 +139,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return;
+            s_downloadedUrls.TryAdd(file);
         }
 
         private static string GetRestorePathFromUrl(string url)
