@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static List<Error> Build(Context context, Document file)
+        public static void Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
@@ -25,21 +25,18 @@ namespace Microsoft.Docs.Build
             errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
-            var publishItem = context.PublishModelBuilder.GetPublishItem(file.FilePath);
-
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
-                publishItem.HasError = true;
-                return errors;
+                context.PublishModelBuilder.Add(file.FilePath, null, null, outputPath);
+                return;
             }
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
-            publishItem.ExtensionData = metadata;
 
-            if (!context.Config.DryRun)
+            if (!context.Config.DryRun && !context.ErrorLog.Write(errors.Where(x => x.FilePath == file.FilePath)))
             {
                 if (context.Config.OutputType == OutputType.Json)
                 {
@@ -61,7 +58,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return errors;
+            context.PublishModelBuilder.Add(file.FilePath, metadata, null, outputPath);
+            context.ErrorLog.Write(errors);
         }
 
         private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(

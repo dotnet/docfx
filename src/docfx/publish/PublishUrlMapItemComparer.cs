@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishItemComparer : IEqualityComparer<PublishItem>
+    internal class PublishUrlMapItemComparer : IEqualityComparer<PublishUrlMapItem>
     {
-        public bool Equals(PublishItem? x, PublishItem? y)
+        public bool Equals(PublishUrlMapItem? x, PublishUrlMapItem? y)
         {
             if (ReferenceEquals(x, y))
             {
@@ -19,22 +19,17 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            return OutputPathEquals(x, y) || PublishUrlEquals(x, y);
+            return PublishUrlEquals(x, y);
         }
 
-        public int GetHashCode(PublishItem obj)
+        public int GetHashCode(PublishUrlMapItem obj)
         {
             return PathUtility.PathComparer.GetHashCode(obj.Url);
         }
 
-        public static bool PublishUrlEquals(PublishItem x, PublishItem y)
+        public static bool PublishUrlEquals(PublishUrlMapItem x, PublishUrlMapItem y)
         {
             return PathUtility.PathComparer.Compare(x.Url, y.Url) == 0 && x.Monikers.Intersects(y.Monikers);
-        }
-
-        public static bool OutputPathEquals(PublishItem x, PublishItem y)
-        {
-            return x.Path != null && y.Path != null && PathUtility.PathComparer.Compare(x.Path, y.Path) == 0;
         }
     }
 }

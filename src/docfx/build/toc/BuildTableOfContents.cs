@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -9,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildTableOfContents
     {
-        public static List<Error> Build(Context context, Document file)
+        public static void Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
@@ -37,16 +36,8 @@ namespace Microsoft.Docs.Build
                     UrlUtility.Combine(context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
-            if (!context.Config.DryRun)
+            if (!context.Config.DryRun && !context.ErrorLog.Write(errors.Where(x => x.FilePath == file.FilePath)))
             {
-                if (errors.Any(x => x.Level == ErrorLevel.Error))
-                {
-                    // TODO: Add experimental and experiment_id to publish item for TOC
-                    var publishItem = context.PublishModelBuilder.GetPublishItem(file.FilePath);
-                    publishItem.HasError = true;
-                    return errors;
-                }
-
                 if (context.Config.OutputType == OutputType.Html)
                 {
                     // Just for current PDF build. toc.json is used for generate PDF outline
@@ -69,7 +60,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return errors;
+            context.PublishModelBuilder.Add(file.FilePath, null, null, context.DocumentProvider.GetOutputPath(file.FilePath));
+            context.ErrorLog.Write(errors);
         }
     }
 }

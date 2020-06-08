@@ -12,14 +12,12 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
-        private readonly PublishModelBuilder _publishModelBuilder;
 
-        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, ContributionProvider contributionProvider, PublishModelBuilder publishModelBuilder)
+        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
         {
             _errorLog = errorLog;
             _monikerProvider = monikerProvider;
             _contributionProvider = contributionProvider;
-            _publishModelBuilder = publishModelBuilder;
         }
 
         public void AddFileLink(FilePath inclusionRoot, FilePath referencingFile, string sourceUrl, string targetUrl, SourceInfo? source)
@@ -41,7 +39,7 @@ namespace Microsoft.Docs.Build
             return new
             {
                 Links = _links
-                        .Where(x => _publishModelBuilder!.HasOutput(x.InclusionRoot))
+                        .Where(x => !_errorLog.IsErrorFile(x.InclusionRoot))
                         .OrderBy(x => x)
                         .ToArray(),
             };

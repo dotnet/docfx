@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -9,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static List<Error> Build(Context context, Document file)
+        internal static void Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Resource);
 
@@ -19,8 +18,9 @@ namespace Microsoft.Docs.Build
             var copy = true;
 
             if (!context.Config.CopyResources &&
-                context.Input.TryGetPhysicalPath(file.FilePath, out _))
+                context.Input.TryGetPhysicalPath(file.FilePath, out var physicalPath))
             {
+                outputPath = PathUtility.NormalizeFile(Path.GetRelativePath(context.Output.OutputPath, physicalPath));
                 copy = false;
             }
 
@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 context.Output.Copy(outputPath, file.FilePath);
             }
 
-            return new List<Error>();
+            context.PublishModelBuilder.Add(file.FilePath, null, null, outputPath);
         }
     }
 }

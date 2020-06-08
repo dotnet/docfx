@@ -75,13 +75,11 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
-            var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context.TocMap);
-
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));
 
-                var files = context.PublishModelBuilder.GetFiles();
+                var files = context.PublishUrlMapBuilder.GetBuildFiles();
                 context.BuildQueue.Enqueue(files);
 
                 context.BuildQueue.WaitForCompletion();
@@ -106,6 +104,7 @@ namespace Microsoft.Docs.Build
 
             // TODO: decouple files and dependencies from legacy.
             var dependencyMap = context.DependencyMapBuilder.Build();
+            var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
 
             Parallel.Invoke(
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
@@ -118,16 +117,21 @@ namespace Microsoft.Docs.Build
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
-            var errors = file.ContentType switch
+            switch (file.ContentType)
             {
-                ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
-                ContentType.Resource => BuildResource.Build(context, file),
-                ContentType.Page => BuildPage.Build(context, file),
-                ContentType.Redirection => BuildRedirection.Build(context, file),
-                _ => new List<Error>(),
-            };
-
-            context.ErrorLog.Write(errors);
+                case ContentType.TableOfContents:
+                    BuildTableOfContents.Build(context, file);
+                    break;
+                case ContentType.Resource:
+                    BuildResource.Build(context, file);
+                    break;
+                case ContentType.Page:
+                    BuildPage.Build(context, file);
+                    break;
+                case ContentType.Redirection:
+                    BuildRedirection.Build(context, file);
+                    break;
+            }
         }
     }
 }
