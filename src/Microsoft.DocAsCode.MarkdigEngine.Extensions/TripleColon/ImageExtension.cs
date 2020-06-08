@@ -14,21 +14,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public string Name => "image";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+        public Func<HtmlRenderer, MarkdownObject, bool> RenderDelegate { get; private set; }
 
         public ImageExtension(MarkdownContext context)
         {
             _context = context;
         }
 
-        public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
         {
             return RenderDelegate != null
-                ? RenderDelegate(renderer, block)
+                ? RenderDelegate(renderer, markdownObject)
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", _context.GetLink(src, block));
+            htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
 
             if (type == "icon")
             {
@@ -93,23 +93,30 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 htmlAttributes.AddProperty("alt", alt);
             }
-            var id = GetHtmlId(block);
+            var id = GetHtmlId(markdownObject);
             if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             RenderDelegate = (renderer, obj) =>
             {
+                dynamic blockOrInline;
+
+                if (obj is TripleColonBlock) {
+                    blockOrInline = (TripleColonBlock)obj;
+                } else {
+                    blockOrInline = (TripleColonInline)obj;
+                } ;
                 var currentType = string.Empty;
                 var currentLightbox = string.Empty;
                 var currentBorderStr = string.Empty;
                 var currentBorder = true;
                 var currentLink = string.Empty;
-                if(!obj.Attributes.TryGetValue("type", out currentType))
+                if(!blockOrInline.Attributes.TryGetValue("type", out currentType))
                 {
                     currentType = "content";
                 }
-                obj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
-                obj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
-                obj.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
+                blockOrInline.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
+                blockOrInline.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
+                blockOrInline.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
                 if (!bool.TryParse(currentBorderStr, out currentBorder))
                 {
                     if(currentType == "icon")
@@ -147,7 +154,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 } else
                 {
-                    if(currentType == "complex" && obj.Count == 0)
+                    if (currentType == "complex" && blockOrInline.Count == 0)
                     {
                         logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
@@ -155,7 +162,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var htmlId = GetHtmlId(obj);
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                     renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-                    renderer.WriteChildren(obj);
+                    renderer.WriteChildren(blockOrInline);
                     renderer.WriteLine("</div>");
                 }
                 if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))

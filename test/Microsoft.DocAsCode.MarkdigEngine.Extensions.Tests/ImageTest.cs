@@ -19,18 +19,62 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
 :::image type=""content"" source=""example.jpg"" alt-text=""example"" lightbox=""example-expanded.jpg"" border=""false"":::
 ";
-            var expected = @"<div class=""mx-imgBorder""><p>
+            var expected = @"<p class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"">
-</p></div>
+</p>
+<p>
 <img src=""example.jpg"" alt=""example"">
-<a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
-<img src=""example.jpg"" alt=""example"">
-</p></div>
-</a>
+</p>
+<p class=""mx-imgBorder"">
 <a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""example.jpg"" alt=""example"">
 </a>
+</p>
+<p>
+<a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
+<img src=""example.jpg"" alt=""example"">
+</a>
+</p>
+<p>
+<img src=""green-checkmark.png"" role=""presentation"">
+</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Admin</th>
+<th>Member</th>
+<th>Contributor</th>
+<th>Viewer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Update and delete the workspace.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Add/remove people, including other admins.</td>
+<td><p>
+<img src=""green-checkmark.png"" role=""presentation"">
+</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Add members or others with lower permissions.</td>
+<td>X</td>
+<td>X</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 ";
 
             TestUtility.VerifyMarkup(source, expected);
@@ -57,30 +101,34 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image-end:::
 ";
 
-            var expected = @"<img src=""example.svg"" role=""presentation"">
-<div class=""mx-imgBorder""><p>
+            var expected = @"<p>
+<img src=""example.svg"" role=""presentation"">
+</p>
+<p class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"" aria-describedby=""3-0"">
 <div id=""3-0"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
-</p></div>
-<div class=""mx-imgBorder""><p>
+</p>
+<p class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"">
-</p></div>
+</p>
+<p class=""mx-imgBorder"">
 <a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
-<div class=""mx-imgBorder""><p>
 <img src=""example.jpg"" alt=""example"" aria-describedby=""9-0"">
 <div id=""9-0"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
-</p></div>
 </a>
+</p>
+<p>
 <a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""example.jpg"" alt=""example"" aria-describedby=""13-0"">
 <div id=""13-0"" class=""visually-hidden"">
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 </a>
+</p>
 ";
 
             TestUtility.VerifyMarkup(source, expected);
@@ -95,16 +143,16 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image source=""example.svg"" lightbox=""example.svg"" alt-text=""Lorum Ipsom"" link=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"":::
 ";
 
-            var expected = @"<a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
-<div class=""mx-imgBorder""><p>
-<img src=""example.svg"" alt=""Lorum Ipsom"">
-</p></div>
-</a>
+            var expected = @"<p class=""mx-imgBorder"">
 <a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
-<div class=""mx-imgBorder""><p>
 <img src=""example.svg"" alt=""Lorum Ipsom"">
-</p></div>
 </a>
+</p>
+<p class=""mx-imgBorder"">
+<a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
+<img src=""example.svg"" alt=""Lorum Ipsom"">
+</a>
+</p>
 ";
 
             TestUtility.VerifyMarkup(source, expected);
@@ -143,10 +191,12 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 
 :::image type=""icon"" source=""example.svg"" border=""true"":::";
 
-            var expected = @"<img src=""example.svg"" role=""presentation"">
-<div class=""mx-imgBorder""><p>
+            var expected = @"<p>
 <img src=""example.svg"" role=""presentation"">
-</p></div>
+</p>
+<p class=""mx-imgBorder"">
+<img src=""example.svg"" role=""presentation"">
+</p>
 ";
 
             TestUtility.VerifyMarkup(source, expected);
