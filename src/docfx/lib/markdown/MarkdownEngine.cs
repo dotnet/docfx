@@ -110,8 +110,6 @@ namespace Microsoft.Docs.Build
 
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
 
-                    ValidateHeadings();
-
                     return (status.Errors, html);
                 }
                 finally
@@ -199,7 +197,7 @@ namespace Microsoft.Docs.Build
                 .UseNoloc()
                 .UseTelemetry()
                 .UseMonikerZone(ParseMonikerRange)
-                .UseContentValidation(this, _validatorProvider, GetValidationNodes, ReadFile)
+                .UseApexValidation(_validatorProvider)
                 .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
@@ -208,6 +206,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
+                .UseDocsValidation(this, _contentValidator)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
@@ -327,34 +326,11 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> GetValidationNodes(List<ValidationNode> nodes)
-        {
-            var status = t_status.Value!.Peek();
-
-            if (!status.Nodes.ContainsKey((Document)InclusionContext.File))
-            {
-                status.Nodes.Add((Document)InclusionContext.File, (nodes, InclusionContext.IsInclude));
-            }
-
-            return status.Nodes;
-        }
-
-        private void ValidateHeadings()
-        {
-            var status = t_status.Value!.Peek();
-            foreach (var (document, (nodes, isIncluded)) in status.Nodes)
-            {
-                _contentValidator.ValidateHeadings(document, nodes.OfType<ContentNode>().ToList(), isIncluded);
-            }
-        }
-
         private class Status
         {
             public ConceptualModel? Conceptual { get; }
 
             public List<Error> Errors { get; } = new List<Error>();
-
-            public Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>();
 
             public Status(ConceptualModel? conceptual = null)
             {

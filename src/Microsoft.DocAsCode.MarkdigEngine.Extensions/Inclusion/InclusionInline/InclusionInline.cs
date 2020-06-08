@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public string IncludedFilePath { get; set; }
 
+        public object File { get; set; }
+
         public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
     }
 }

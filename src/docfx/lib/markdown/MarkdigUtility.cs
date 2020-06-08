@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Extensions.Yaml;
@@ -113,6 +114,56 @@ namespace Microsoft.Docs.Build
             else if (obj is LeafBlock leaf)
             {
                 Visit(leaf.Inline, action);
+            }
+        }
+
+        /// <summary>
+        /// Traverse the markdown object graph, returns true to skip the current node.
+        /// </summary>
+        public static void Visit(this MarkdownObject? obj, List<SourceInfo?>? parents, Document? document, Func<MarkdownObject, List<SourceInfo?>?, Document?, bool> action)
+        {
+            if (obj is null)
+            {
+                return;
+            }
+
+            if (action(obj, parents, document))
+            {
+                return;
+            }
+
+            if (obj is ContainerBlock block)
+            {
+                var currentParent = parents?.ToList() ?? new List<SourceInfo?>();
+                var currentDocument = document;
+                if (block is InclusionBlock inclusionBlock)
+                {
+                    currentParent.Add(inclusionBlock.GetSourceInfo());
+                    currentDocument = (Document?)inclusionBlock.File;
+                }
+                foreach (var child in block)
+                {
+                    Visit(child, currentParent, currentDocument, action);
+                }
+            }
+            else if (obj is ContainerInline inline)
+            {
+                var currentParent = parents?.ToList() ?? new List<SourceInfo?>();
+                var currentDocument = document;
+                if (inline is InclusionInline inclusionInline)
+                {
+                    currentParent.Add(inclusionInline.GetSourceInfo());
+                    currentDocument = (Document?)inclusionInline.File;
+                }
+
+                foreach (var child in inline)
+                {
+                    Visit(child, currentParent, currentDocument, action);
+                }
+            }
+            else if (obj is LeafBlock leaf)
+            {
+                Visit(leaf.Inline, parents, document, action);
             }
         }
 

@@ -78,6 +78,7 @@ namespace Microsoft.Docs.Build
                 var child = Markdown.Parse(content, pipeline);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
                 inclusionBlock.Add(child);
+                inclusionBlock.File = file;
             }
         }
 
@@ -108,6 +109,8 @@ namespace Microsoft.Docs.Build
                         inclusionInline.AppendChild(leaf.Inline);
                     }
                 }
+
+                inclusionInline.File = file;
             }
         }
 
